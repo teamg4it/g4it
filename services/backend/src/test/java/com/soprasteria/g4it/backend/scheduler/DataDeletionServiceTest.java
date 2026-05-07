@@ -9,14 +9,17 @@
 package com.soprasteria.g4it.backend.scheduler;
 
 import com.soprasteria.g4it.backend.apidigitalservice.business.DigitalServiceService;
+import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceVersion;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
+import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceVersionRepository;
 import com.soprasteria.g4it.backend.apiinventory.business.InventoryDeleteService;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
-import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
-import com.soprasteria.g4it.backend.apiuser.modeldb.User;
-import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
+import com.soprasteria.g4it.backend.apiuser.modeldb.*;
+import com.soprasteria.g4it.backend.apiuser.repository.UserRoleWorkspaceRepository;
+import com.soprasteria.g4it.backend.apiuser.repository.UserWorkspaceRepository;
 import com.soprasteria.g4it.backend.apiuser.repository.WorkspaceRepository;
 import com.soprasteria.g4it.backend.common.utils.AzureEmailService;
+import com.soprasteria.g4it.backend.common.utils.Constants;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -29,6 +32,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
@@ -47,10 +52,14 @@ class DataDeletionServiceTest {
     private AzureEmailService azureEmailService;
     @Mock
     private MessageSource messageSource;
-
     @InjectMocks
     private DataDeletionService dataDeletionService;
-
+    @Mock
+    private UserWorkspaceRepository userWorkspaceRepository;
+    @Mock
+    private UserRoleWorkspaceRepository userRoleWorkspaceRepository;
+    @Mock
+    DigitalServiceVersionRepository digitalServiceVersionRepository;
     @BeforeEach
     void setUp() {
         try {
@@ -59,7 +68,9 @@ class DataDeletionServiceTest {
             setField("dataRetentiondDay", 90);
             setField("firstReminderDay", 30);
             setField("secondReminderDay", 2);
-            setField("inventoryLink", "http://dummy-inventory-link/{id}"); // Fix for NPE
+            setField("inventoryLink", "http://dummy-inventory-link/{id}");
+            setField("ecoMindAiLink", "http://dummy-ecomindai-link/{id}");
+            setField("digitalServiceLink", "http://dummy-ecomindai-link/{id}");
             if (mocks != null) {
                 mocks.close();
             }
@@ -100,6 +111,13 @@ class DataDeletionServiceTest {
         var inventory = mockInventory(LocalDateTime.now().minusDays(60));
         when(inventoryRepository.findByWorkspace(any())).thenReturn(List.of(inventory));
         when(digitalServiceRepository.findByWorkspace(any())).thenReturn(Collections.emptyList());
+
+        // Add these lines to mock user/role for inventory reminder
+        UserWorkspace userWorkspace = mockUserWorkspaceWithRole();
+        when(userWorkspaceRepository.findByWorkspace(any())).thenReturn(List.of(userWorkspace));
+        UserRoleWorkspace userRoleWorkspace = mockUserRoleWorkspace("ROLE_INVENTORY_WRITE");
+        when(userRoleWorkspaceRepository.findByUserWorkspaces(userWorkspace)).thenReturn(List.of(userRoleWorkspace));
+
         when(messageSource.getMessage(eq("email.body"), any(), eq(Locale.ENGLISH))).thenReturn("bodyEn");
         when(messageSource.getMessage(eq("email.body"), any(), eq(Locale.FRANCE))).thenReturn("bodyFr");
         when(messageSource.getMessage(eq("email.subject"), any(), eq(Locale.ENGLISH))).thenReturn("subjectEn");
@@ -107,9 +125,14 @@ class DataDeletionServiceTest {
 
         dataDeletionService.executeDeletion();
 
-        verify(azureEmailService, atLeastOnce()).sendEmail(anyString(), contains("subjectEn"), contains("bodyEn"));
+        verify(azureEmailService, atLeastOnce()).sendEmail(
+                "user@example.com",
+                "subjectEn / subjectFr",
+                "bodyEn\n\nbodyFr"
+        );
         verify(inventoryDeleteService, never()).deleteInventory(anyString(), anyLong(), anyLong());
     }
+
 
     @Test
     void testExecuteDeletion_digitalServiceDeletedWhenRetentionExceeded() {
@@ -168,4 +191,138 @@ class DataDeletionServiceTest {
         when(inv.getId()).thenReturn(100L);
         return inv;
     }
+
+    @Test
+    void testHandleInventoryDeletion_sendsSecondReminder() {
+        Workspace workspace = mockWorkspace();
+        when(workspaceRepository.findAllByStatusIn(anyList())).thenReturn(List.of(workspace));
+        var inventory = mockInventory(LocalDateTime.now().minusDays(88)); // retention=90, secondReminder=2
+        when(inventoryRepository.findByWorkspace(any())).thenReturn(List.of(inventory));
+        UserWorkspace userWorkspace = mockUserWorkspaceWithRole();
+        when(userWorkspaceRepository.findByWorkspace(any())).thenReturn(List.of(userWorkspace));
+        UserRoleWorkspace userRoleWorkspace = mockUserRoleWorkspace("ROLE_INVENTORY_WRITE");
+        when(userRoleWorkspaceRepository.findByUserWorkspaces(any())).thenReturn(List.of(userRoleWorkspace));
+        when(messageSource.getMessage(anyString(), any(), eq(Locale.ENGLISH))).thenReturn("bodyEn");
+        when(messageSource.getMessage(anyString(), any(), eq(Locale.FRANCE))).thenReturn("bodyFr");
+        when(messageSource.getMessage(eq("email.subject"), any(), eq(Locale.ENGLISH))).thenReturn("subjectEn");
+        when(messageSource.getMessage(eq("email.subject"), any(), eq(Locale.FRANCE))).thenReturn("subjectFr");
+
+        dataDeletionService.executeDeletion();
+
+        verify(azureEmailService, atLeastOnce()).sendEmail(
+                "user@example.com",
+                "subjectEn / subjectFr",
+                "bodyEn\n\nbodyFr"
+        );
+    }
+
+    @Test
+    void testHandleDigitalServiceDeletion_sendsFirstReminderForAI() {
+        Workspace workspace = mockWorkspace();
+        when(workspaceRepository.findAllByStatusIn(anyList())).thenReturn(List.of(workspace));
+
+        DigitalServiceVersion digitalServiceVersion = mockDigitalServiceVersion("DSV1");
+        var digitalService = mock(com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService.class);
+        when(digitalService.getLastUpdateDate()).thenReturn(LocalDateTime.now().minusDays(60));
+        when(digitalService.isAi()).thenReturn(true);
+        when(digitalService.getUid()).thenReturn("UID1");
+        when(digitalService.getName()).thenReturn("DS1");
+        when(digitalServiceRepository.findByWorkspace(any())).thenReturn(List.of(digitalService));
+        when(digitalServiceVersionRepository.findByDigitalServiceUid(anyString())).thenReturn(List.of(digitalServiceVersion));
+
+        UserWorkspace userWorkspace = mockUserWorkspaceWithRole();
+        UserRoleWorkspace userRoleWorkspace = mockUserRoleWorkspace("ROLE_ECO_MIND_AI_WRITE");
+        when(userWorkspaceRepository.findByWorkspace(any())).thenReturn(List.of(userWorkspace));
+        when(userRoleWorkspaceRepository.findByUserWorkspaces(userWorkspace))
+                .thenReturn(List.of(userRoleWorkspace));
+
+        when(messageSource.getMessage(anyString(), any(), eq(Locale.ENGLISH))).thenReturn("bodyEn");
+        when(messageSource.getMessage(anyString(), any(), eq(Locale.FRANCE))).thenReturn("bodyFr");
+        when(messageSource.getMessage(eq("email.subject"), any(), eq(Locale.ENGLISH))).thenReturn("subjectEn");
+        when(messageSource.getMessage(eq("email.subject"), any(), eq(Locale.FRANCE))).thenReturn("subjectFr");
+
+        dataDeletionService.executeDeletion();
+
+        verify(azureEmailService, atLeastOnce()).sendEmail(
+                "user@example.com",
+                "subjectEn / subjectFr",
+                "bodyEn\n\nbodyFr"
+        );
+    }
+
+
+
+    @Test
+    void testGetWorkspaceUsers_returnsEmptyWhenNoRolesMatch() throws Exception {
+        Workspace workspace = mockWorkspace();
+        UserWorkspace userWorkspace = mockUserWorkspaceWithRole();
+        when(userWorkspaceRepository.findByWorkspace(any())).thenReturn(List.of(userWorkspace));
+        // Fix: stub for each UserWorkspace, not for a list
+        UserRoleWorkspace userRoleWorkspace = mockUserRoleWorkspace("OTHER_ROLE");
+        when(userRoleWorkspaceRepository.findByUserWorkspaces(userWorkspace))
+                .thenReturn(List.of(userRoleWorkspace));
+
+        var method = DataDeletionService.class.getDeclaredMethod("getWorkspaceUsers", Workspace.class, String.class);
+        method.setAccessible(true);
+        List<User> users = (List<User>) method.invoke(dataDeletionService, workspace, Constants.ROLE_INVENTORY_WRITE);
+
+        assertTrue(users.isEmpty());
+    }
+
+
+
+    @Test
+    void testGetWorkspaceUsers_returnsAdmin() throws Exception {
+        Workspace workspace = mockWorkspace();
+        UserWorkspace userWorkspace = mockUserWorkspaceWithRole();
+        when(userWorkspaceRepository.findByWorkspace(any())).thenReturn(List.of(userWorkspace));
+        UserRoleWorkspace userRoleWorkspace = mockUserRoleWorkspace("ROLE_INVENTORY_WRITE");
+        when(userRoleWorkspaceRepository.findByUserWorkspaces(userWorkspace))
+                .thenReturn(List.of(userRoleWorkspace));
+
+        var method = DataDeletionService.class.getDeclaredMethod("getWorkspaceUsers", Workspace.class, String.class);
+        method.setAccessible(true);
+        List<User> users = (List<User>) method.invoke(dataDeletionService, workspace, Constants.ROLE_INVENTORY_WRITE);
+
+        assertFalse(users.isEmpty());
+    }
+
+
+    @Test
+    void testSendRetentionReminderEmail_formatsFrenchBody() throws Exception {
+        var method = DataDeletionService.class.getDeclaredMethod("sendRetentionReminderEmail", String.class, String.class, String.class, Integer.class, String.class);
+        method.setAccessible(true);
+        when(messageSource.getMessage(eq("email.body"), any(), eq(Locale.ENGLISH))).thenReturn("bodyEn");
+        when(messageSource.getMessage(eq("email.body"), any(), eq(Locale.FRANCE))).thenReturn("{0} {1} {2} {3}");
+        when(messageSource.getMessage(eq("email.subject"), any(), eq(Locale.ENGLISH))).thenReturn("subjectEn");
+        when(messageSource.getMessage(eq("email.subject"), any(), eq(Locale.FRANCE))).thenReturn("subjectFr");
+
+        method.invoke(dataDeletionService, "test@example.com", "item", "2024-01-01", 90, "link");
+
+        verify(azureEmailService).sendEmail(anyString(), contains("subjectEn"), contains("item 2024-01-01 90 link"));
+    }
+
+    // --- Helper mocks for roles ---
+    private UserWorkspace mockUserWorkspaceWithRole() {
+        UserWorkspace uw = mock(UserWorkspace.class);
+        User user = mock(User.class);
+        when(uw.getUser()).thenReturn(user);
+        when(user.getEmail()).thenReturn("user@example.com");
+        return uw;
+    }
+
+    private com.soprasteria.g4it.backend.apiuser.modeldb.UserRoleWorkspace mockUserRoleWorkspace(String role) {
+        var urw = mock(com.soprasteria.g4it.backend.apiuser.modeldb.UserRoleWorkspace.class);
+        var roles = mock(com.soprasteria.g4it.backend.apiuser.modeldb.Role.class);
+        when(roles.getName()).thenReturn(role);
+        when(urw.getRoles()).thenReturn(roles);
+        return urw;
+    }
+
+    private DigitalServiceVersion mockDigitalServiceVersion(String uid) {
+        DigitalServiceVersion dsv = mock(DigitalServiceVersion.class);
+        when(dsv.getUid()).thenReturn(uid);
+        return dsv;
+    }
+
 }

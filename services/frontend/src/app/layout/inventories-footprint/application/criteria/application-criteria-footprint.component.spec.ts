@@ -26,6 +26,7 @@ describe("ApplicationCriteriaFootprintComponent", () => {
             appDomain: jasmine.createSpy().and.returnValue("Domain1"),
             appSubDomain: jasmine.createSpy().and.returnValue("SubDomain1"),
             appApplication: jasmine.createSpy().and.returnValue("App1"),
+            appDimension: jasmine.createSpy().and.returnValue("domain"),
             setDomain: jasmine.createSpy(),
             setSubDomain: jasmine.createSpy(),
             setGraphType: jasmine.createSpy(),

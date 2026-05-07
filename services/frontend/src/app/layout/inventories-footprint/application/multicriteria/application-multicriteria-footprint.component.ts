@@ -5,7 +5,7 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component, computed, inject, input, Input, signal, Signal } from "@angular/core";
+import { Component, computed, inject, input, Input, Signal } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { EChartsOption } from "echarts";
@@ -63,7 +63,7 @@ export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboar
     domainFilter: string[] = [];
     appCount: number = 0;
     dimensions = Constants.APPLICATION_DIMENSIONS;
-    selectedDimension = signal(this.dimensions[0]);
+    selectedDimension = computed(() => this.footprintStore.appDimension());
     textDescriptionImpacts: {
         text: string;
         impactName: string;

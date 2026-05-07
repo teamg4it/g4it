@@ -60,7 +60,7 @@ public class CheckPhysicalEquipmentService {
                 .ifPresent(errors::add);
 
         // check type is in itemTypes referential
-        genericRuleService.checkType(context.getLocale(), context.getOrganization(),filename, line, physicalEquipment.getType(), isDigitalService)
+        genericRuleService.checkType(context.getLocale(), context.getOrganization(),filename, line, physicalEquipment.getType(), isDigitalService,context.getWorkspaceId())
                 .ifPresent(errors::add);
 
 

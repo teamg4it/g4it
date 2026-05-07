@@ -50,9 +50,9 @@ class LowImpactServiceTest {
         ReflectionTestUtils.setField(lowImpactService, "criterias", Set.of("Climate change", "Acidification"));
 
         Mockito.when(referentialGetService.getCountries(null)).thenReturn(List.of("France", "Germany"));
-        Mockito.when(referentialService.getElectricityMixQuartiles()).thenReturn(quartileMap);
+        Mockito.when(referentialService.getElectricityMixQuartiles(1L)).thenReturn(quartileMap);
 
-        assertThat(lowImpactService.isLowImpact("France")).isTrue();
-        assertThat(lowImpactService.isLowImpact("Germany")).isFalse();
+        assertThat(lowImpactService.isLowImpact("France",1L)).isTrue();
+        assertThat(lowImpactService.isLowImpact("Germany",1L)).isFalse();
     }
 }

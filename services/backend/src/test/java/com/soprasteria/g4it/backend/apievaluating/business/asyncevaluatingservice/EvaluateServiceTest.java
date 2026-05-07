@@ -119,7 +119,7 @@ class EvaluateServiceTest {
 
         // ---- MOCK REFERENTIAL BEFORE INIT ----
         when(referentialService.getLifecycleSteps()).thenReturn(List.of("STEP1"));
-        when(referentialService.getElectricityMixQuartiles()).thenReturn(Map.of());
+        when(referentialService.getElectricityMixQuartiles(anyLong())).thenReturn(Map.of());
         when(boaviztapiService.getCountryMap()).thenReturn(Map.of("France", "FR"));
 
         // ---- MANUALLY CALL @PostConstruct ----
@@ -201,7 +201,7 @@ class EvaluateServiceTest {
         when(csvFileService.getPrinter(any(FileType.class), any(Path.class))).thenReturn(printer);
 
         when(referentialService.getLifecycleSteps()).thenReturn(List.of("STEP1"));
-        when(referentialService.getElectricityMixQuartiles()).thenReturn(Map.of());
+        when(referentialService.getElectricityMixQuartiles(anyLong())).thenReturn(Map.of());
         when(referentialService.getHypotheses(anyString())).thenReturn(List.of(mock(HypothesisRest.class)));
         when(referentialService.getSipValueMap(anyList())).thenReturn(Map.of("criterion_1", 1.0));
         when(boaviztapiService.getCountryMap()).thenReturn(Map.of("France", "FR"));
@@ -244,7 +244,7 @@ class EvaluateServiceTest {
                 .thenReturn(List.of(criterion("criterion_1", "kg")));
 
         when(referentialService.getLifecycleSteps()).thenReturn(List.of("STEP1"));
-        when(referentialService.getElectricityMixQuartiles()).thenReturn(Map.of());
+        when(referentialService.getElectricityMixQuartiles(anyLong())).thenReturn(Map.of());
         when(referentialService.getHypotheses(anyString())).thenReturn(List.of(mock(HypothesisRest.class)));
         when(referentialService.getSipValueMap(anyList())).thenReturn(Map.of("criterion_1", 1.0));
         when(boaviztapiService.getCountryMap()).thenReturn(Map.of("France", "FR"));
@@ -292,7 +292,7 @@ class EvaluateServiceTest {
                 .thenReturn(List.of(criterion("criterion_1", "kg")));
 
         when(referentialService.getLifecycleSteps()).thenReturn(List.of("STEP1"));
-        when(referentialService.getElectricityMixQuartiles()).thenReturn(Map.of());
+        when(referentialService.getElectricityMixQuartiles(anyLong())).thenReturn(Map.of());
         when(referentialService.getHypotheses(anyString())).thenReturn(List.of(mock(HypothesisRest.class)));
         when(referentialService.getSipValueMap(anyList())).thenReturn(Map.of("criterion_1", 1.0));
         when(boaviztapiService.getCountryMap()).thenReturn(Map.of("France", "FR"));
@@ -325,7 +325,7 @@ class EvaluateServiceTest {
         CSVPrinter printer = mock(CSVPrinter.class);
         when(csvFileService.getPrinter(any(FileType.class), any(Path.class))).thenReturn(printer);
 
-        when(evaluateNumEcoEvalService.calculatePhysicalEquipment(any(), any(), anyString(), anyList(), anyList(), anyList()))
+        when(evaluateNumEcoEvalService.calculatePhysicalEquipment(any(), any(), anyString(), anyList(), anyList(), anyList(),any()))
                 .thenReturn(List.of());
 
         evaluateService.doEvaluate(context, task, tempDir);
@@ -345,7 +345,7 @@ class EvaluateServiceTest {
                 .thenReturn(List.of(criterion("criterion_1", "kg")));
 
         when(referentialService.getLifecycleSteps()).thenReturn(List.of("STEP1"));
-        when(referentialService.getElectricityMixQuartiles()).thenReturn(Map.of());
+        when(referentialService.getElectricityMixQuartiles(anyLong())).thenReturn(Map.of());
         when(referentialService.getHypotheses(anyString())).thenReturn(List.of(mock(HypothesisRest.class)));
         when(referentialService.getSipValueMap(anyList())).thenReturn(Map.of("criterion_1", 1.0));
         when(boaviztapiService.getCountryMap()).thenReturn(Map.of("France", "FR"));
@@ -378,7 +378,7 @@ class EvaluateServiceTest {
         CSVPrinter printer = mock(CSVPrinter.class);
         when(csvFileService.getPrinter(any(FileType.class), any(Path.class))).thenReturn(printer);
 
-        when(evaluateNumEcoEvalService.calculatePhysicalEquipment(any(), any(), anyString(), anyList(), anyList(), anyList()))
+        when(evaluateNumEcoEvalService.calculatePhysicalEquipment(any(), any(), anyString(), anyList(), anyList(), anyList(),anyLong()))
                 .thenReturn(List.of());
 
         doThrow(new RuntimeException("db down"))
@@ -398,7 +398,7 @@ class EvaluateServiceTest {
                 .thenReturn(List.of(criterion("criterion_1", "kg")));
 
         when(referentialService.getLifecycleSteps()).thenReturn(List.of("STEP1"));
-        when(referentialService.getElectricityMixQuartiles()).thenReturn(Map.of());
+        when(referentialService.getElectricityMixQuartiles(anyLong())).thenReturn(Map.of());
         when(referentialService.getHypotheses(anyString())).thenReturn(List.of(mock(HypothesisRest.class)));
         when(referentialService.getSipValueMap(anyList())).thenReturn(Map.of("criterion_1", 1.0));
         when(boaviztapiService.getCountryMap()).thenReturn(Map.of("France", "FR"));
@@ -456,7 +456,7 @@ class EvaluateServiceTest {
 
         when(referentialService.getLifecycleSteps()).thenReturn(List.of("STEP1"));
         when(referentialService.getActiveCriteria(anyList())).thenReturn(List.of(criterionRest));
-        when(referentialService.getElectricityMixQuartiles()).thenReturn(Map.of());
+        when(referentialService.getElectricityMixQuartiles(anyLong())).thenReturn(Map.of());
         when(referentialService.getHypotheses(anyString())).thenReturn(List.of(mock(HypothesisRest.class)));
         when(referentialService.getSipValueMap(anyList())).thenReturn(Map.of("criterion_1", 1.0));
         when(boaviztapiService.getCountryMap()).thenReturn(Map.of("France", "FR"));
@@ -485,7 +485,7 @@ class EvaluateServiceTest {
         when(impactPE.getCritere()).thenReturn("criterion_1");
         when(impactPE.getDureeDeVie()).thenReturn(5.0);
 
-        when(evaluateNumEcoEvalService.calculatePhysicalEquipment(any(), any(), anyString(), anyList(), anyList(), anyList()))
+        when(evaluateNumEcoEvalService.calculatePhysicalEquipment(any(), any(), anyString(), anyList(), anyList(), anyList(),any()))
                 .thenReturn(List.of(impactPE));
 
         when(aggregationToOutput.keyPhysicalEquipment(any(), any(), any(), any(), anyBoolean()))
@@ -526,7 +526,7 @@ class EvaluateServiceTest {
 
         when(referentialService.getLifecycleSteps()).thenReturn(List.of("STEP1"));
         when(referentialService.getActiveCriteria(anyList())).thenReturn(List.of(criterionRest));
-        when(referentialService.getElectricityMixQuartiles()).thenReturn(Map.of());
+        when(referentialService.getElectricityMixQuartiles(anyLong())).thenReturn(Map.of());
         when(referentialService.getHypotheses(anyString())).thenReturn(List.of(mock(HypothesisRest.class)));
         when(referentialService.getSipValueMap(anyList())).thenReturn(Map.of("criterion_1", 1.0));
         when(boaviztapiService.getCountryMap()).thenReturn(Map.of("France", "FR"));
@@ -555,7 +555,7 @@ class EvaluateServiceTest {
         when(impactPE.getCritere()).thenReturn("criterion_1");
         when(impactPE.getDureeDeVie()).thenReturn(5.0);
 
-        when(evaluateNumEcoEvalService.calculatePhysicalEquipment(any(), any(), anyString(), anyList(), anyList(), anyList()))
+        when(evaluateNumEcoEvalService.calculatePhysicalEquipment(any(), any(), anyString(), anyList(), anyList(), anyList(),anyLong()))
                 .thenReturn(List.of(impactPE));
 
         when(aggregationToOutput.keyPhysicalEquipment(any(), any(), any(), any(), anyBoolean()))
@@ -596,7 +596,7 @@ class EvaluateServiceTest {
         when(impactPE.getDureeDeVie()).thenReturn(5.0);
 
         when(evaluateNumEcoEvalService.calculatePhysicalEquipment(
-                any(), any(), anyString(), anyList(), anyList(), anyList()
+                any(), any(), anyString(), anyList(), anyList(), anyList(),any()
         )).thenReturn(List.of(impactPE));
 
         when(aggregationToOutput.keyPhysicalEquipment(
@@ -688,7 +688,7 @@ class EvaluateServiceTest {
         when(impactPE.getStatutIndicateur()).thenReturn("OK");
         when(impactPE.getCritere()).thenReturn("criterion_1");
 
-        when(evaluateNumEcoEvalService.calculatePhysicalEquipment(any(), any(), anyString(), anyList(), anyList(), anyList()))
+        when(evaluateNumEcoEvalService.calculatePhysicalEquipment(any(), any(), anyString(), anyList(), anyList(), anyList(),anyLong()))
                 .thenReturn(List.of(impactPE));
 
         when(aggregationToOutput.keyPhysicalEquipment(any(), any(), any(), any(), anyBoolean()))
@@ -703,7 +703,7 @@ class EvaluateServiceTest {
 
         evaluateService.doEvaluate(context, task, tempDir);
 
-        verify(evaluateNumEcoEvalService).calculatePhysicalEquipment(any(), any(), any(), any(), any(), any());
+        verify(evaluateNumEcoEvalService).calculatePhysicalEquipment(any(), any(), any(), any(), any(), any(),any());
 
         verify(evaluateNumEcoEvalService, never())
                 .calculateVirtualEquipment(any(), any(), anyInt(), anyDouble(), anyDouble(), anyDouble(), anyString());
@@ -774,7 +774,7 @@ class EvaluateServiceTest {
         when(impact.getDureeDeVie()).thenReturn(5.0);
 
         when(evaluateNumEcoEvalService.calculatePhysicalEquipment(
-                any(), any(), anyString(), anyList(), anyList(), anyList()
+                any(), any(), anyString(), anyList(), anyList(), anyList(),any()
         )).thenReturn(List.of(impact));
 
         when(aggregationToOutput.keyPhysicalEquipment(
@@ -913,12 +913,21 @@ class EvaluateServiceTest {
         AggValuesBO result = ReflectionTestUtils.invokeMethod(
                 evaluateService,
                 "createAggValuesBO",
-                "OK", null,
-                2d, 100d, 10d,
-                5d, 1d, 10d, 0.5d, true
+                "OK",
+                null,
+                2d,
+                100d,
+                10d,
+                5d,
+                1d,
+                10d,
+                0.5d,
+                true,
+                null
         );
 
-        assertEquals(20d, result.getUnitImpact()); // 10 * 2
+        // unitImpact * quantity = 10 * 2 = 20
+        assertEquals(20d, result.getUnitImpact());
     }
 
     @Test
@@ -927,11 +936,20 @@ class EvaluateServiceTest {
         AggValuesBO result = ReflectionTestUtils.invokeMethod(
                 evaluateService,
                 "createAggValuesBO",
-                "OK", null,
-                2d, 100d, 10d,
-                5d, 1d, 10d, 0.5d, false
+                "OK",
+                null,
+                2d,
+                100d,
+                10d,
+                5d,
+                1d,
+                10d,
+                0.5d,
+                false,
+                null
         );
 
+        // stays same
         assertEquals(10d, result.getUnitImpact());
     }
 
@@ -944,7 +962,7 @@ class EvaluateServiceTest {
         when(referentialService.getLifecycleSteps())
                 .thenReturn(List.of("STEP"));
 
-        when(referentialService.getElectricityMixQuartiles())
+        when(referentialService.getElectricityMixQuartiles(anyLong()))
                 .thenReturn(Map.of());
 
         evaluateService.init();
@@ -1004,7 +1022,7 @@ class EvaluateServiceTest {
         when(referentialService.getLifecycleSteps()).thenReturn(List.of("STEP1"));
         when(referentialService.getActiveCriteria(anyList()))
                 .thenReturn(List.of(criterionRest));
-        when(referentialService.getElectricityMixQuartiles()).thenReturn(Map.of());
+        when(referentialService.getElectricityMixQuartiles(anyLong())).thenReturn(Map.of());
         when(referentialService.getHypotheses(anyString()))
                 .thenReturn(List.of(mock(HypothesisRest.class)));
         when(referentialService.getSipValueMap(anyList()))

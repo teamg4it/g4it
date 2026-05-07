@@ -14,6 +14,7 @@
         name="workspaceName"
         [(ngModel)]="workspace"
         [style]="{ width: '35%' }"
+        [filter]="true"
         [placeholder]="'administration.user-placeholder' | translate"
         (ngModelChange)="
             membersAndSearchVisible = true;

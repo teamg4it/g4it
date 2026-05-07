@@ -1,6 +1,6 @@
 ---
-title: "3.3.1 Import and Export referential data"
-description: "This use case describes how to import and export referential data via CSV files in the administration module."
+title: "3.3.1 Import and Export platform referential data"
+description: "This use case describes how to import and export platform referential data via CSV files in the administration module."
 weight: 10
 mermaid: true
 ---
@@ -14,10 +14,25 @@ mermaid: true
 
 ## Description
 
-As a **G4IT SuperAdmin**, the user can upload CSV files to update the core referential data used for environmental impact calculations, or download the existing data as a CSV file.
+As a **G4IT SuperAdmin**, the user can upload CSV files to update the platform referential data used for environmental impact calculations, or download the existing data as a CSV file.
+
+**Calculation Behavior for each physical equipment item in the inventory:**
+
+If a model is provided and exists in ref_matching_item (workspace first, platform second):
+→ The associated ref_item_impact reference will be taken
+
+If model does not exist in Matching_item:
+→ The reference associated with the equipment type (workspace first, platform second) will be used.
+
+If no model is provided:
+→ Equipment type reference will be used
+
+**When loading inventory CSVs:**
+Workspace-level references are used first
+Then fallback to platform references
 
 **Navigation Path**  
-Administration panel / Update Referential
+Administration panel / Update Platform Referential
 
 **Access Conditions**  
 The connected user must have the `ROLE_SUPER_ADMINISTRATOR`. Organization administrators do not have access to this feature.

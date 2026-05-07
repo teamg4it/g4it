@@ -94,7 +94,7 @@ export class ApplicationCriteriaFootprintComponent
     impactOrder: ImpactGraph[] = [];
     yAxislist: string[] = [];
     dimensions = Constants.APPLICATION_DIMENSIONS;
-    selectedDimension = signal(this.dimensions[0]);
+    selectedDimension = computed(() => this.footprintStore.appDimension());
     showBackButton = computed(() => {
         if (this.allUnmodifiedFilters()["domain"]?.length <= 2) {
             if (

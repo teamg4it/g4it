@@ -1,84 +1,69 @@
-<div
-    class="filter-component"
-    (click)="overlayVisible = !overlayVisible"
-    (keydown.enter)="overlayVisible = !overlayVisible"
-    label="Show Overlay"
-    tabindex="0"
-    role="button"
-    [attr.aria-label]="'common.access-filters' | translate"
-    id="filter-component"
->
-    <div>
-        @if (selectedFilterNames().length) {
-            <i class="pi pi-filter-fill"></i>
-        } @else {
-            <i class="pi pi-filter"></i>
-        }
+<p-button
+    (onClick)="openFilterSidebar()"
+    styleClass="p-button-secondary-blue uppercase mr-3"
+    id="filter"
+    [icon]="selectedFilterNames().length ? 'pi pi-filter-fill' : 'pi pi-filter'"
+    [ariaLabel]="'inventories-footprint.filter-view' | translate"
+></p-button>
 
-        <span class="ml-3">
-            {{ "inventories-footprint.filter" | translate }}
-            @if (selectedFilterNames().length) {
-                <i>
-                    {{ "-" }}
-                    {{ "inventories-footprint.active-filters" | translate }}
-                    {{ ": " + selectedFilterNames() }}
-                </i>
-            }
-        </span>
-    </div>
-    <i class="pi pi-chevron-down font-bold mx-3"></i>
-</div>
-<p-overlay
-    [(visible)]="overlayVisible"
-    [responsive]="{
-        breakpoint: '1280px',
-        direction: 'bottom',
-        contentStyleClass: 'h-22rem',
-    }"
-    contentStyleClass="p-4 surface-overlay shadow-2 border-round filter-overlay"
->
-    <p-tabView>
-        @for (tab of tabs; track $index) {
-            <p-tabPanel
-                header="{{
-                    'inventories-footprint.filter-tabs-application.' + tab.field
-                        | translate
-                }}"
-            >
-                <p-scrollPanel
-                    mode="vertical"
-                    [style]="{ width: '96%', height: '240px' }"
+@if (filterSidebarVisible) {
+    <app-base-filter-sidebar
+        [(visible)]="filterSidebarVisible"
+        [localFilters]="localFilters"
+        [tabs]="tabs"
+        [allFilters]="allFilters"
+        [useCustomContent]="true"
+        [translationKeyPrefix]="'inventories-footprint.filter-tabs-application'"
+        (filtersApplied)="applyFilters()"
+    >
+        <p-accordion [multiple]="true" styleClass="pl-0">
+            @for (tab of tabs; track $index) {
+                <p-accordionTab
+                    headerStyleClass="h-3rem bg-transparent font-bold mb-0"
+                    contentStyleClass="bg-transparent p-2"
                 >
-                    <ul>
-                        <li *ngFor="let item of allUnusedFilters[tab.field]">
-                            @if (!tab?.children?.length) {
-                                <p-checkbox
-                                    [ariaLabel]="item?.toString()"
-                                    name="groupname"
-                                    [value]="item"
-                                    label="{{
-                                        item?.toString() === all
-                                            ? ('common.all' | translate)
-                                            : item?.toString() === empty
-                                              ? ('common.empty' | translate)
-                                              : item
-                                    }}"
-                                    [(ngModel)]="
-                                        footprintStore.applicationSelectedFilters()[
-                                            tab.field
-                                        ]
-                                    "
-                                    (ngModelChange)="
-                                        onFilterSelected(
-                                            $event,
-                                            tab.field,
-                                            item.toString()
-                                        )
-                                    "
-                                    [id]="item"
-                                ></p-checkbox>
-                            }
-                        </li>
+                    <ng-template pTemplate="header">
+                        <div class="flex flex-column">
+                            <h4 class="mb-0 ml-0 mt-2">
+                                {{
+                                    "inventories-footprint.filter-tabs-application." +
+                                        tab.field | translate
+                                }}
+                                @if (isFilterApplied()[tab.field]) {
+                                    <i class="pi pi-filter-fill"></i>
+                                }
+                            </h4>
+                        </div>
+                    </ng-template>
+                    <ul class="m-0">
+                        @for (item of allUnusedFilters[tab.field]; track $index) {
+                            <li class="my-3">
+                                @if (!tab?.children?.length) {
+                                    <p-checkbox
+                                        [ariaLabel]="item?.toString()"
+                                        name="groupname"
+                                        [value]="item"
+                                        label="{{
+                                            item?.toString() === all
+                                                ? ('common.all' | translate)
+                                                : item?.toString() === empty
+                                                  ? ('common.empty' | translate)
+                                                  : item
+                                        }}"
+                                        [(ngModel)]="localFilters()[tab.field]"
+                                        (ngModelChange)="
+                                            onFilterSelected(
+                                                $event,
+                                                tab.field,
+                                                item.toString()
+                                            )
+                                        "
+                                        [id]="item"
+                                    ></p-checkbox>
+                                }
+                            </li>
+                        }
+
                         @if (tab?.children?.length) {
                             <li>
                                 @for (
@@ -87,7 +72,9 @@
                                 ) {
                                     <li
                                         [ngClass]="
-                                            !filter?.children?.length ? 'ml-6 pl-2' : ''
+                                            !filter?.children?.length
+                                                ? 'ml-5 pl-3'
+                                                : 'margin-in-left'
                                         "
                                     >
                                         @if (filter.visible) {
@@ -128,9 +115,16 @@
                                                 @if (filter.children) {
                                                     @for (
                                                         child of filter.children;
-                                                        track $index
+                                                        track $index;
+                                                        let isFirst = $first
                                                     ) {
-                                                        <li class="ml-8">
+                                                        <li
+                                                            [ngClass]="
+                                                                isFirst
+                                                                    ? 'ml-8 mt-0 mb-3'
+                                                                    : 'ml-8 my-3'
+                                                            "
+                                                        >
                                                             @if (child.visible) {
                                                                 <p-checkbox
                                                                     [binary]="true"
@@ -156,8 +150,9 @@
                             </li>
                         }
                     </ul>
-                </p-scrollPanel>
-            </p-tabPanel>
-        }
-    </p-tabView>
-</p-overlay>
+                </p-accordionTab>
+                <hr class="section-hr" />
+            }
+        </p-accordion>
+    </app-base-filter-sidebar>
+}

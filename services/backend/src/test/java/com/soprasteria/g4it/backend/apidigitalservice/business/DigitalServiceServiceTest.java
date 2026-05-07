@@ -88,7 +88,8 @@ class DigitalServiceServiceTest {
     @Test
     void shouldListDigitalService() {
 
-        final Workspace linkedWorkspace = Workspace.builder().name(WORKSPACE_NAME).build();
+        final Organization organization = Organization.builder().name(ORGANIZATION).dataRetentionDay(30).build();
+        final Workspace linkedWorkspace = Workspace.builder().name(WORKSPACE_NAME).organization(organization).build();
 
         User creator = User.builder().id(1L).firstName("first").lastName("last").build();
 

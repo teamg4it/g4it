@@ -50,6 +50,7 @@ export class RenewServicePopupComponent implements OnInit {
     expiryDate = input<Date | null>(null);
     isInventory = input<boolean>(false);
     @Output() outClose = new EventEmitter<void>();
+    @Output() outExtended = new EventEmitter<boolean>();
     isExtended = false;
 
     renewServiceParams: RenewServiceResp | null = null;
@@ -90,6 +91,7 @@ export class RenewServicePopupComponent implements OnInit {
                 .pipe(takeUntilDestroyed(this.destroyRef))
                 .subscribe((res: RenewServiceUpdateResp) => {
                     this.isExtended = res.isRenewed;
+                    this.outExtended.emit(true);
                 });
         }
     }

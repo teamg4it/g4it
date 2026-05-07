@@ -5,7 +5,15 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component, EventEmitter, inject, Input, OnInit, Output } from "@angular/core";
+import {
+    Component,
+    computed,
+    EventEmitter,
+    inject,
+    Input,
+    OnInit,
+    Output,
+} from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { ConfirmationService, MessageService } from "primeng/api";
@@ -23,6 +31,7 @@ import { InventoryService } from "src/app/core/service/business/inventory.servic
 import { UserService } from "src/app/core/service/business/user.service";
 import { EvaluationDataService } from "src/app/core/service/data/evaluation-data.service";
 import { FootprintDataService } from "src/app/core/service/data/footprint-data.service";
+import { shouldShowExpiryMessage } from "src/app/core/service/mapper/renew-time";
 import { GlobalStoreService } from "src/app/core/store/global.store";
 import * as TimeUtils from "src/app/core/utils/time";
 import { Constants } from "src/constants";
@@ -44,6 +53,11 @@ export class InventoryItemComponent implements OnInit {
     @Output() openTab: EventEmitter<number> = new EventEmitter();
     @Output() closeTab: EventEmitter<number> = new EventEmitter();
     @Output() saveInventory = new EventEmitter<InventoryCriteriaRest>();
+    @Output() renewInventoryId = new EventEmitter<number>();
+
+    showExpiryMessage = computed(() =>
+        shouldShowExpiryMessage(this.inventory.expiryDate ?? ""),
+    );
 
     batchStatusMapping: any = Constants.EVALUATION_BATCH_STATUS_MAPPING;
     displayPopup = false;
@@ -248,5 +262,9 @@ export class InventoryItemComponent implements OnInit {
             this.organization?.criteria ??
             defaultCriteria;
         this.displayPopup = true;
+    }
+
+    renewService(inventory: any) {
+        this.renewInventoryId.emit(inventory.id);
     }
 }
