@@ -1,0 +1,136 @@
+<p-sidebar
+    [(visible)]="visible"
+    (visibleChange)="visibleChange.emit($event)"
+    position="right"
+    styleClass="p-sidebar-md w-5"
+    (onHide)="closeFilterSidebar()"
+>
+    <ng-template pTemplate="headless">
+        <div pFocusTrap class="create-ds-sidebar">
+            <div class="space-form">
+                <h2>{{ "inventories-footprint.filter-view" | translate }}</h2>
+                <p-button
+                    (onClick)="closeFilterSidebar()"
+                    [link]="true"
+                    [rounded]="true"
+                    ariaLabel="Outlined Close Button"
+                    icon="pi pi-times"
+                    class="space-sidebar-close"
+                    styleClass="space-sidebar-close-button text-black-alpha-60"
+                ></p-button>
+
+                <p-scrollPanel [style]="{ width: '100%', height: 'calc(100vh - 150px)' }">
+                    <p class="text-base">
+                        {{ "inventories-footprint.filter-description" | translate }}
+                    </p>
+                    <div class="flex align-items-center gap-2 mt-3">
+                        <h3 class="filter-text font-semibold mx-0 my-1 line-height-1">
+                            {{ "inventories-footprint.filter-text" | translate }}
+                        </h3>
+                        @if (localSelectedFilterNames().length) {
+                            <p-badge
+                                styleClass="bg-blue"
+                                [value]="localSelectedFilterNames().length"
+                            />
+                        }
+                    </div>
+                    <!-- Allow custom content for complex filter structures -->
+                    @if (useCustomContent) {
+                        <!-- Default Application checkbox list -->
+                        <ng-content></ng-content>
+                    } @else {
+                        <!-- Default Equipment checkbox list -->
+                        <p-accordion
+                            [multiple]="true"
+                            [activeIndex]="[]"
+                            styleClass="pl-0"
+                        >
+                            @for (tab of tabs; track $index) {
+                                <p-accordionTab
+                                    headerStyleClass="h-3rem bg-transparent font-bold mb-0"
+                                    contentStyleClass="bg-transparent p-2"
+                                >
+                                    <ng-template pTemplate="header">
+                                        <div class="flex flex-column">
+                                            <h4 class="mb-0 ml-0 mt-2">
+                                                {{
+                                                    translationKeyPrefix +
+                                                        "." +
+                                                        getTabField(tab) | translate
+                                                }}
+                                                @if (
+                                                    isFilterApplied()[getTabField(tab)]
+                                                ) {
+                                                    <i class="pi pi-filter-fill"></i>
+                                                }
+                                            </h4>
+                                        </div>
+                                    </ng-template>
+
+                                    <ul class="m-0">
+                                        @for (
+                                            item of allFilters[getTabField(tab)];
+                                            track $index
+                                        ) {
+                                            <li class="my-3">
+                                                <p-checkbox
+                                                    tabindex="0"
+                                                    [ariaLabel]="item?.toString()"
+                                                    name="groupname"
+                                                    [value]="item"
+                                                    label="{{
+                                                        item?.toString() === all
+                                                            ? ('common.all' | translate)
+                                                            : item?.toString() === empty
+                                                              ? ('common.empty'
+                                                                | translate)
+                                                              : item
+                                                    }}"
+                                                    [(ngModel)]="
+                                                        localFilters()[getTabField(tab)]
+                                                    "
+                                                    (ngModelChange)="
+                                                        onCheckboxChange(
+                                                            $event,
+                                                            getTabField(tab),
+                                                            item.toString()
+                                                        )
+                                                    "
+                                                    [id]="item"
+                                                ></p-checkbox>
+                                            </li>
+                                        }
+                                    </ul>
+                                </p-accordionTab>
+                                <hr class="section-hr" />
+                            }
+                        </p-accordion>
+                    }
+                </p-scrollPanel>
+
+                <!-- Footer Buttons -->
+                <div class="mt-3">
+                    <div
+                        class="space-form--button-group flex align-content-end justify-content-end flex-wrap"
+                    >
+                        <p-button
+                            class="cancel-creation mr-auto"
+                            styleClass="cancel-creation-button uppercase"
+                            (onClick)="closeFilterSidebar()"
+                            [label]="'common.cancel' | translate"
+                            [ariaLabel]="'common.cancel' | translate"
+                        ></p-button>
+
+                        <p-button
+                            (onClick)="applyFilters()"
+                            styleClass="uppercase bg-light-green"
+                            id="apply-selection-button"
+                            [label]="'inventories.apply-selection' | translate"
+                            [ariaLabel]="'inventories.apply-selection' | translate"
+                        ></p-button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ng-template>
+</p-sidebar>

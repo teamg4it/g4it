@@ -1,9 +1,18 @@
-import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import {
+    Component,
+    computed,
+    EventEmitter,
+    input,
+    Input,
+    OnInit,
+    Output,
+} from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { ConfirmationService, MessageService } from "primeng/api";
 import { DigitalService } from "src/app/core/interfaces/digital-service.interfaces";
 import { UserService } from "src/app/core/service/business/user.service";
+import { shouldShowExpiryMessage } from "src/app/core/service/mapper/renew-time";
 
 @Component({
     selector: "app-digital-services-item",
@@ -11,14 +20,18 @@ import { UserService } from "src/app/core/service/business/user.service";
     providers: [MessageService, ConfirmationService],
 })
 export class DigitalServicesItemComponent implements OnInit {
-    @Input() digitalService: DigitalService = {} as DigitalService;
+    digitalService = input.required<DigitalService>({});
     @Input() isAi: boolean = false;
 
     @Output() deleteUid: EventEmitter<string> = new EventEmitter();
-
+    @Output() renewInventoryId: EventEmitter<string> = new EventEmitter();
     isLinkCopied = false;
     sidebarVisible = false;
     firstFootprintTab = "resources";
+
+    showExpiryMessage = computed(() =>
+        shouldShowExpiryMessage(this.digitalService().expiryDate ?? ""),
+    );
 
     constructor(
         private readonly router: Router,

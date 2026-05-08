@@ -95,4 +95,6 @@ public class DigitalServiceBO {
      */
     private Boolean isShared;
 
+    private String expiryDate;
+
 }

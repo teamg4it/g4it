@@ -529,5 +529,77 @@ databaseChangeLog:
                   valueNumeric: 22750
             where: criteria = 'Water use'
 
-        
-              
+
+  # ADD WORKSPACE COLUMN
+  - changeSet:
+      id: add-workspace-id
+      author: G4IT Dev Team
+      changes:
+
+        - addColumn:
+            tableName: ref_item_type
+            columns:
+              - column:
+                  name: workspace_id
+                  type: BIGINT
+
+        - addColumn:
+            tableName: ref_item_impact
+            columns:
+              - column:
+                  name: workspace_id
+                  type: BIGINT
+
+        - addColumn:
+            tableName: ref_matching_item
+            columns:
+              - column:
+                  name: workspace_id
+                  type: BIGINT
+
+  # ADD COMMENTS
+  - changeSet:
+      id: add-workspace-comments
+      author: G4IT Dev Team
+      changes:
+        - setColumnRemarks:
+            tableName: ref_item_type
+            columnName: workspace_id
+            remarks: "Workspace scope (FK to g4it_organization.id). NULL = platform reference data"
+
+        - setColumnRemarks:
+            tableName: ref_item_impact
+            columnName: workspace_id
+            remarks: "Workspace scope (FK to g4it_organization.id). NULL = platform reference data"
+
+        - setColumnRemarks:
+            tableName: ref_matching_item
+            columnName: workspace_id
+            remarks: "Workspace scope (FK to g4it_organization.id). NULL = platform reference data"
+
+  # ADD INDEXES (PERFORMANCE)
+  - changeSet:
+      id: add-workspace-indexes
+      author: G4IT Dev Team
+      changes:
+        - createIndex:
+            tableName: ref_item_type
+            indexName: idx_ref_item_type_workspace
+            columns:
+              - column:
+                  name: workspace_id
+
+        - createIndex:
+            tableName: ref_item_impact
+            indexName: idx_ref_item_impact_workspace
+            columns:
+              - column:
+                  name: workspace_id
+
+        - createIndex:
+            tableName: ref_matching_item
+            indexName: idx_ref_matching_item_workspace
+            columns:
+              - column:
+                  name: workspace_id
+

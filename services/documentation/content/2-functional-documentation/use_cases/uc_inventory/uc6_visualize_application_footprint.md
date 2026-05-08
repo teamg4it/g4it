@@ -278,6 +278,26 @@ representing one of the application|Step8[Visualize impact for an application by
 
 {{% /expand %}}
 
+### Filter Sidebar
+
+![uc6_visualize_application_footprint_filter_sidebar.png](../images/uc6_visualize_application_footprint_filter_sidebar.png)
+
+![uc6_visualize_application_footprint_filter_sidebar2.png](../images/uc6_visualize_application_footprint_filter_sidebar2.png)
+
+![uc6_visualize_application_footprint_filter_sidebar3.png](../images/uc6_visualize_application_footprint_filter_sidebar3.png)
+
+{{% expand title="Show the behavior detail" expanded="false" center="true"%}}
+
+| Reference | Group | Elements                | Sub-Elements | Type   | Description                                                                                                             |
+|-----------| ----- |-------------------------| ------------ | ------ |-------------------------------------------------------------------------------------------------------------------------|
+| 1         |       | Filter your visualization|             | button | <li><u>action rules</u>: Click on Filter your visualization.</li>                                                              |
+| 2         |       | Filter types |          |              | accordion| The filter sections are collapsed by default. Click on a section to expand it and view the available checkbox filters. |
+| 3         |       | Cancel                  |              | button | Click on the button to close Filter sidebar.  |
+| 4         |       | Apply Selection         |              | button | Click on the button to apply selected filters.  |
+
+{{% /expand %}}
+
+
 ## Sequence Diagram
 
 ### Show the Sequence Diagram

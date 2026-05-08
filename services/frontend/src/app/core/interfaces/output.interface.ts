@@ -22,6 +22,7 @@ export interface OutPhysicalEquipmentRest {
     commonFilters?: string[];
     filters?: string[];
     errors?: string[];
+    source?: string;
 }
 
 export interface OutVirtualEquipmentRest {
@@ -52,6 +53,7 @@ export interface OutVirtualEquipmentRest {
     filters?: string[];
     filtersPhysicalEquipment?: string[];
     errors?: string[];
+    source?: string;
 }
 
 export interface OutApplicationsRest {

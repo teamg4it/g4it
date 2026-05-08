@@ -80,14 +80,27 @@ public class ItemType implements Serializable {
      */
     private String version;
 
+    @Column(name = "workspace_id")
+    private Long workspaceId;
+
     public static String[] getCsvHeaders() {
-        return new String[]{"type", "category", "comment", "defaultLifespan", "isServer",
-                "source", "refDefaultItem", "subscriber", "version"};
+        return new String[]{"type", "category", "comment", "default_lifespan", "is_server",
+                "source", "ref_default_item","subscriber", "version"};
     }
 
     public Object[] toCsvRecord() {
         return new Object[]{type, category, comment, defaultLifespan, isServer,
                 source, refDefaultItem, organization, version};
+    }
+
+    public static String[] getCsvHeadersForWorkspace() {
+        return new String[]{"type", "category", "comment", "default_lifespan", "is_server",
+                "source", "ref_default_item","version"};
+    }
+
+    public Object[] toCsvRecordForWorkspace() {
+        return new Object[]{type, category, comment, defaultLifespan, isServer,
+                source, refDefaultItem, version};
     }
 
 }

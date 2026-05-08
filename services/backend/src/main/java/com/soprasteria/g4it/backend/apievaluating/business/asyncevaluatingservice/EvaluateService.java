@@ -132,7 +132,7 @@ public class EvaluateService {
                                 Map.Entry::getKey
                         ));
         lifecycleStepsCache = referentialService.getLifecycleSteps();
-        electricityMixQuartilesCache = referentialService.getElectricityMixQuartiles();
+        electricityMixQuartilesCache = referentialService.getElectricityMixQuartiles(null);
     }
 
     /**
@@ -299,7 +299,7 @@ public class EvaluateService {
                     // Call external tools - lib calculs
                     List<ImpactEquipementPhysique> impactEquipementPhysiqueList = evaluateNumEcoEvalService.calculatePhysicalEquipment(
                             physicalEquipment, datacenter,
-                            organization, activeCriteria, lifecycleSteps, hypothesisRestList);
+                            organization, activeCriteria, lifecycleSteps, hypothesisRestList,context.getWorkspaceId());
 
 
                     // Identify NON-CLOUD VMs for this physical equipment
@@ -322,7 +322,7 @@ public class EvaluateService {
                                 impact.getQuantite(), impact.getConsoElecMoyenne(),
                                 impact.getImpactUnitaire(),
                                 sipValue,
-                                impact.getDureeDeVie(), null, null, false);
+                                impact.getDureeDeVie(), null, null, false, impact.getSource());
 
                         aggregationPhysicalEquipments
                                 .computeIfAbsent(aggregationToOutput.keyPhysicalEquipment(physicalEquipment, datacenter, impact, refShortcutBO, evaluateReportBO.isDigitalService()),
@@ -522,7 +522,7 @@ public class EvaluateService {
                             virtualEquipment.getQuantity(),
                             electricity, impact.getImpactUnitaire(),
                             sipValue,
-                            null, virtualEquipment.getDurationHour(), virtualEquipment.getWorkload(), isCloudService);
+                            null, virtualEquipment.getDurationHour(), virtualEquipment.getWorkload(), isCloudService, impact.getSource());
 
                     aggregationVirtualEquipments
                             .computeIfAbsent(aggregationToOutput.keyVirtualEquipment(physicalEquipment, virtualEquipment, impact, refShortcutBO, evaluateReportBO), k -> new AggValuesBO())
@@ -604,7 +604,7 @@ public class EvaluateService {
                 AggValuesBO values = createAggValuesBO(impact.getStatutIndicateur(), impact.getTrace(),
                         null, electricity, impact.getImpactUnitaire(),
                         sipValue,
-                        null, null, null, false);
+                        null, null, null, false,null);
 
                 aggregationApplications
                         .computeIfAbsent(aggregationToOutput.keyApplication(physicalEquipment, virtualEquipment, application, impact, refShortcutBO), k -> new AggValuesBO())
@@ -668,7 +668,8 @@ public class EvaluateService {
                                           Double sipValue,
                                           Double lifespan,
                                           Double usageDuration,
-                                          Double workload, Boolean isCloudService) {
+                                          Double workload, Boolean isCloudService,
+                                          String source) {
 
         boolean isOk = "OK".equals(indicatorStatus);
 
@@ -693,6 +694,7 @@ public class EvaluateService {
                 .usageDuration(usageDuration == null ? 0d : usageDuration)
                 .workload(workload == null ? 0d : workload)
                 .errors(error == null ? Collections.emptySet() : Collections.singleton(error))
+                .source(source)
                 .build();
     }
 

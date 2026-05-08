@@ -40,7 +40,7 @@ export class FilterService {
     }
 
     getFilterincludes(selectedFilters: Filter, impact: ApplicationImpact): boolean {
-        const domain = selectedFilters["domain"].find(
+        const domain = selectedFilters["domain"]?.find(
             (d) => (d as TransformedDomain)?.label === impact.domain,
         ) as TransformedDomain;
         return (
@@ -66,7 +66,7 @@ export class FilterService {
             const field = filter.field;
             let impactValue = impact[field as any];
             let filterValue: any = selectedFilters[field];
-            if (!filterValue) filterValue = Constants.EMPTY;
+            if (!filterValue) filterValue = [Constants.EMPTY];
             if (!impactValue) impactValue = Constants.EMPTY;
             return filterValue?.some((value: string) =>
                 value?.toLowerCase().includes(impactValue?.toLowerCase()),

@@ -123,6 +123,7 @@ export class DigitalServicesFootprintDashboardComponent
         impactName: string;
         impactNameVisible: string;
     }[] = [];
+    sourceValue = signal<string[]>([]);
     @ViewChildren(BarChartComponent) barChartComponents?: QueryList<BarChartComponent>;
 
     cloudData = computed(() => {
@@ -245,6 +246,16 @@ export class DigitalServicesFootprintDashboardComponent
         this.outPhysicalEquipments = outPhysicalEquipments;
         this.outVirtualEquipments = outVirtualEquipments;
 
+        this.sourceValue.set([
+            ...new Set(
+                [...this.outPhysicalEquipments, ...this.outVirtualEquipments]
+                    .map((item) => item?.source)
+                    .filter(
+                        (val): val is string =>
+                            val !== undefined && val !== null && val !== "",
+                    ),
+            ),
+        ]);
         this.retrieveFootprintData();
         if (this.impacts?.length === 1) {
             this.onlyOneCriteria = true;
@@ -689,7 +700,9 @@ export class DigitalServicesFootprintDashboardComponent
 
     handleFilters(event: { enableConsistency: boolean; unitType: string }) {
         this.selectedUnit = event.unitType;
-        this.updateDataConsistencyInDS(event.enableConsistency);
+        if (event.enableConsistency !== this.digitalService.enableDataInconsistency) {
+            this.updateDataConsistencyInDS(event.enableConsistency);
+        }
     }
 
     ngOnDestroy() {

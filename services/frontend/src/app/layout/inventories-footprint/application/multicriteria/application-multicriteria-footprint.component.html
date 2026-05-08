@@ -13,7 +13,8 @@
     @if (!showInconsitencyGraph) {
         <p-dropdown
             [options]="dimensions"
-            [(ngModel)]="selectedDimension"
+            [ngModel]="selectedDimension()"
+            (ngModelChange)="footprintStore.setApplicationDimension($event)"
             [placeholder]="'inventories-footprint.select-dimension' | translate"
             styleClass="ml-auto"
         >
@@ -71,12 +72,11 @@
             </p>
         </div>
     }
-    <app-application-criteria-pie-chart
-        [footprint]="footprint"
-    ></app-application-criteria-pie-chart>
     <app-graph-description
         [contentText]="getContentText()"
         [textDescriptionImpacts]="textDescriptionImpacts"
         (impactSelectedEvent)="handleImpactClick($event)"
+        [source]="true"
+        [sourceValue]="[]"
     ></app-graph-description>
 }

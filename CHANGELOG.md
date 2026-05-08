@@ -1,5 +1,20 @@
 # G4IT
 
+## 3.12.0
+
+## Major changes
+- 2001 | Inventory module filter the view moves from overlay to side panel
+- 2017 | keep the data for 2 more years - GUI Impact
+- 1983 | Update Reference Data at Workspace level
+- 2080 | Take into account Workspace Reference Data in calculation
+- 2081 | Sources used for calculation below the graphs
+
+### Minor Changes
+- 2129 | Fix for Unit change - Unauthorized error remove in Digital Service
+- 2140 | Inventories - Application View Review Set Graph view as default, Additional elements of analysis section added
+- 2142 | Retain repartition dropdown list selection in the navigation on the inventory results page.
+
+
 ## 3.11.0
 
 ## Major changes

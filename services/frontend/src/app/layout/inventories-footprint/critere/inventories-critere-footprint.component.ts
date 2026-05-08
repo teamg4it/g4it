@@ -13,7 +13,6 @@ import {
     Input,
     OnChanges,
     Signal,
-    signal,
     SimpleChanges,
 } from "@angular/core";
 
@@ -55,6 +54,7 @@ export class InventoriesCritereFootprintComponent
     protected readonly inventoryComponent = inject(InventoriesFootprintComponent);
     private readonly router = inject(Router);
     private readonly route = inject(ActivatedRoute);
+    sourceList = input<string[]>([]);
     @Input() footprint: Criterias = {} as Criterias;
     @Input() criteriaFootprint: Criteria = {} as Criteria;
     @Input() filterFields: string[] = [];
@@ -71,7 +71,6 @@ export class InventoriesCritereFootprintComponent
 
     dimensions = Constants.EQUIPMENT_DIMENSIONS;
     peopleeq = Constants.PEOPLEEQ;
-    selectedDimension = signal(this.dimensions[0]);
     totalValue = 0;
     criteriaMap: StatusCountMap = {};
     xAxisInput: string[] = [];
@@ -100,7 +99,7 @@ export class InventoriesCritereFootprintComponent
         const { footprintCalculated } = this.footprintService.calculate(
             footprint,
             this.footprintStore.filters(),
-            this.selectedDimension(),
+            this.footprintStore.dimension(),
             this.filterFields,
         );
 
@@ -123,7 +122,7 @@ export class InventoriesCritereFootprintComponent
     options: Signal<EChartsOption> = computed(() => {
         return this.renderChart(
             this.criteriaCalculated(),
-            this.selectedDimension(),
+            this.footprintStore.dimension(),
             this.footprintStore.unit(),
             this.inventory()!,
         );

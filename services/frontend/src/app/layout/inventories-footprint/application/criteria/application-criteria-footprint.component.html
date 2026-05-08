@@ -69,7 +69,8 @@
     @if (!showInconsitencyGraph) {
         <p-dropdown
             [options]="dimensions"
-            [(ngModel)]="selectedDimension"
+            [ngModel]="selectedDimension()"
+            (ngModelChange)="footprintStore.setApplicationDimension($event)"
             [placeholder]="'inventories-footprint.select-dimension' | translate"
             styleClass="ml-auto"
         >
@@ -130,6 +131,8 @@
     [contentText]="getContentText()"
     [textDescriptionImpacts]="textDescriptionImpacts"
     (impactSelectedEvent)="handleImpactClick($event)"
+    [source]="true"
+    [sourceValue]="[]"
 ></app-graph-description>
 
 <ng-template #dataConsistencyRef>

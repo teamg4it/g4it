@@ -55,4 +55,6 @@ public class InventoryBO {
 
     private Boolean enableDataInconsistency;
 
+    private String expiryDate;
+
 }
