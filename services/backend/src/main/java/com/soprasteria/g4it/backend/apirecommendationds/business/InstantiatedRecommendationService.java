@@ -102,14 +102,10 @@ public class InstantiatedRecommendationService {
 
         // Compute emission proportions per category
         Map<String, Double> categoryProportions = computeCategoryProportions(digitalServiceVersionUid);
-        log.info("TOPSIS: category proportions for dsVersionUid={}: {}", digitalServiceVersionUid, categoryProportions);
 
         // Compute heuristic context once (shared across recommendations)
         HeuristicContext heuristicContext = buildHeuristicContext(digitalServiceVersionUid);
-        log.info("TOPSIS: heuristic context for dsVersionUid={}: weightedAverages={}, locations={}",
-                digitalServiceVersionUid,
-                heuristicContext.weightedAverages(),
-                heuristicContext.locationWeights());
+       
 
         // Build numeric matrix [n x 4]
         int n = recommendations.size();
@@ -560,7 +556,7 @@ private String normalizeCloudLocation(String location) {
                 double score;
                 
                 if (quartile == null) {
-                    score = 0.5; // Neutre si inconnu
+                    score = 0.5; 
                 } else {
                     score = (quartile - 1.0) / 3.0; // 1->0.0, 4->1.0
                 }
@@ -572,7 +568,6 @@ private String normalizeCloudLocation(String location) {
             if (totalQuantity == 0) return 0.5;
 
             double weightedAvg = totalWeightedScore / totalQuantity;
-            log.info("TOPSIS: Weighted location heuristic score={} over {} total units", weightedAvg, totalQuantity);
             return weightedAvg;
 
         } catch (Exception e) {
@@ -609,10 +604,7 @@ private String normalizeCloudLocation(String location) {
         List<OutPhysicalEquipmentRest> physicalEquipments =
                 outPhysicalEquipmentService.getByDigitalServiceVersionUid(digitalServiceVersionUid);
 
-        log.info("TOPSIS: physical equipments count={}, equipmentTypes={}",
-                physicalEquipments.size(),
-                physicalEquipments.stream().map(OutPhysicalEquipmentRest::getEquipmentType).distinct().toList());
-
+   
         for (OutPhysicalEquipmentRest eq : physicalEquipments) {
             if (!CLIMATE_CHANGE.equals(eq.getCriterion())) continue;
             if (eq.getUnitImpact() == null) continue;
@@ -623,9 +615,6 @@ private String normalizeCloudLocation(String location) {
         List<OutVirtualEquipmentRest> virtualEquipments =
                 outVirtualEquipmentService.getByDigitalServiceVersionUid(digitalServiceVersionUid);
 
-        log.info("TOPSIS: virtual equipments count={}, infrastructureTypes={}",
-                virtualEquipments.size(),
-                virtualEquipments.stream().map(OutVirtualEquipmentRest::getInfrastructureType).distinct().toList());
 
         for (OutVirtualEquipmentRest eq : virtualEquipments) {
             if (!CLIMATE_CHANGE.equals(eq.getCriterion())) continue;
