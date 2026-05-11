@@ -39,6 +39,8 @@
         <liquibase-core.version>4.31.1</liquibase-core.version>
 
         <keycloak-adapter-bom.version>25.0.6</keycloak-adapter-bom.version>
+        <postgresql.version>42.7.11</postgresql.version>
+        <bouncycastle.version>1.84</bouncycastle.version>
         <keycloak-spring-boot-starter.version>25.0.3</keycloak-spring-boot-starter.version>
 
         <spring-cloud-azure-starter-storage-blob.version>5.22.0</spring-cloud-azure-starter-storage-blob.version>
@@ -198,6 +200,11 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk18on</artifactId>
+            <version>${bouncycastle.version}</version>
+        </dependency>
         <!-- Database -->
         <dependency>
             <groupId>org.postgresql</groupId>
@@ -209,6 +216,7 @@
             <artifactId>liquibase-core</artifactId>
             <version>${liquibase-core.version}</version>
         </dependency>
+
 
         <!-- Azure deps -->
         <dependency>
