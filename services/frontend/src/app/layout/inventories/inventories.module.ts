@@ -29,14 +29,6 @@ import { inventoriesRouter } from "./inventories.router";
 import { InventoryItemComponent } from "./inventory-item/inventory-item.component";
 
 @NgModule({
-    declarations: [
-        InventoriesComponent,
-        InventoryItemComponent,
-        FilePanelComponent,
-        SelectFileComponent,
-        BatchStatusComponent,
-        EquipmentsCardComponent,
-    ],
     imports: [
         FileUploadModule,
         CalendarModule,
@@ -53,6 +45,12 @@ import { InventoryItemComponent } from "./inventory-item/inventory-item.componen
         InputTextModule,
         RenewServicePopupComponent,
         inventoriesRouter,
+        InventoriesComponent,
+        InventoryItemComponent,
+        FilePanelComponent,
+        SelectFileComponent,
+        BatchStatusComponent,
+        EquipmentsCardComponent,
     ],
     exports: [InventoriesComponent],
     schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],

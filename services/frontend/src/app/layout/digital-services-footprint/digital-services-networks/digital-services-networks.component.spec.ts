@@ -42,29 +42,27 @@ describe("DigitalServicesNetworksComponent", () => {
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            declarations: [
-                DigitalServicesNetworksComponent,
-                DigitalServicesNetworksSidePanelComponent,
-            ],
-            providers: [
-                TranslatePipe,
-                TranslateService,
-                MessageService,
-                UserService,
-                {
-                    provide: DigitalServicesDataService,
-                    useValue: digitalServiceDataMock,
-                },
-            ],
-            imports: [
-                SharedModule,
-                TableModule,
-                SidebarModule,
-                HttpClientTestingModule,
-                TranslateModule.forRoot(),
-            ],
-            schemas: [CUSTOM_ELEMENTS_SCHEMA],
-        });
+    providers: [
+        TranslatePipe,
+        TranslateService,
+        MessageService,
+        UserService,
+        {
+            provide: DigitalServicesDataService,
+            useValue: digitalServiceDataMock,
+        },
+    ],
+    imports: [
+        SharedModule,
+        TableModule,
+        SidebarModule,
+        HttpClientTestingModule,
+        TranslateModule.forRoot(),
+        DigitalServicesNetworksComponent,
+        DigitalServicesNetworksSidePanelComponent,
+    ],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
+});
         fixture = TestBed.createComponent(DigitalServicesNetworksComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();

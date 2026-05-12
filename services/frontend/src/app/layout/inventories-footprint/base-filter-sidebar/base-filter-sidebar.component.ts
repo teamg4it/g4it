@@ -13,6 +13,16 @@ import {
     isFilterActive,
     mapFilterActiveStatus,
 } from "../filter-helpers";
+import { SidebarModule } from "primeng/sidebar";
+import { PrimeTemplate } from "primeng/api";
+import { FocusTrapModule } from "primeng/focustrap";
+import { Button } from "primeng/button";
+import { ScrollPanelModule } from "primeng/scrollpanel";
+import { BadgeModule } from "primeng/badge";
+import { AccordionModule } from "primeng/accordion";
+import { CheckboxModule } from "primeng/checkbox";
+import { FormsModule } from "@angular/forms";
+import { TranslatePipe } from "@ngx-translate/core";
 
 export type FilterTab = string | { field: string; children?: any[] };
 
@@ -20,6 +30,19 @@ export type FilterTab = string | { field: string; children?: any[] };
     selector: "app-base-filter-sidebar",
     templateUrl: "./base-filter-sidebar.component.html",
     styleUrls: ["./base-filter-sidebar.component.scss"],
+    standalone: true,
+    imports: [
+        SidebarModule,
+        PrimeTemplate,
+        FocusTrapModule,
+        Button,
+        ScrollPanelModule,
+        BadgeModule,
+        AccordionModule,
+        CheckboxModule,
+        FormsModule,
+        TranslatePipe,
+    ],
 })
 export class BaseFilterSidebarComponent {
     // Inputs

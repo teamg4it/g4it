@@ -7,7 +7,7 @@
  */
 import { Component, DestroyRef, inject, OnInit } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
-import { TranslateService } from "@ngx-translate/core";
+import { TranslateService, TranslatePipe } from "@ngx-translate/core";
 import { ConfirmationService, MessageService } from "primeng/api";
 import { firstValueFrom, take } from "rxjs";
 import {
@@ -24,11 +24,35 @@ import { WorkspaceService } from "src/app/core/service/business/workspace.servic
 import { UserDataService } from "src/app/core/service/data/user-data.service";
 import { GlobalStoreService } from "src/app/core/store/global.store";
 import { Constants } from "src/constants";
+import { DropdownModule } from "primeng/dropdown";
+import { FormsModule } from "@angular/forms";
+import { Button } from "primeng/button";
+import { CriteriaPopupComponent } from "../../../common/criteria-popup/criteria-popup.component";
+import { ScrollPanelModule } from "primeng/scrollpanel";
+import { NgIf, NgFor, DatePipe } from "@angular/common";
+import { InputTextModule } from "primeng/inputtext";
+import { ToastModule } from "primeng/toast";
+import { ConfirmDialogModule } from "primeng/confirmdialog";
 
 @Component({
     selector: "app-organizations",
     templateUrl: "./organizations.component.html",
     providers: [ConfirmationService, MessageService],
+    standalone: true,
+    imports: [
+        DropdownModule,
+        FormsModule,
+        Button,
+        CriteriaPopupComponent,
+        ScrollPanelModule,
+        NgIf,
+        InputTextModule,
+        NgFor,
+        ToastModule,
+        ConfirmDialogModule,
+        DatePipe,
+        TranslatePipe,
+    ],
 })
 export class OrganizationsComponent implements OnInit {
     private readonly destroyRef = inject(DestroyRef);

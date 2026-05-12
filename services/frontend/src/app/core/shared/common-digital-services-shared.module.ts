@@ -18,14 +18,11 @@ import { RenewServicePopupComponent } from "src/app/layout/common/renew-service-
 import { SharedModule } from "./shared.module";
 
 @NgModule({
-    declarations: [
-        DigitalServicesFootprintHeaderComponent,
+    imports: [SharedModule, FileUploadModule, ProgressSpinnerModule, InplaceModule, RenewServicePopupComponent, DigitalServicesFootprintHeaderComponent,
         LinkCreatePopupComponent,
         DigitalServicesImportComponent,
         MultiFileImportComponent,
-        VersionTypeTagComponent,
-    ],
-    imports: [SharedModule, FileUploadModule, ProgressSpinnerModule, InplaceModule, RenewServicePopupComponent],
+        VersionTypeTagComponent],
     exports: [
         DigitalServicesFootprintHeaderComponent,
         LinkCreatePopupComponent,

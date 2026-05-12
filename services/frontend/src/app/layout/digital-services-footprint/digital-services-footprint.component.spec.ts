@@ -72,27 +72,26 @@ describe("DigitalServicesFootprintComponent", () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [DigitalServicesFootprintComponent],
-            imports: [TranslateModule.forRoot()],
-            providers: [
-                { provide: ActivatedRoute, useValue: mockRoute },
-                {
-                    provide: DigitalServicesDataService,
-                    useValue: mockDigitalServicesDataService,
-                },
-                {
-                    provide: DigitalServiceStoreService,
-                    useValue: mockDigitalServiceStoreService,
-                },
-                {
-                    provide: DigitalServiceBusinessService,
-                    useValue: mockDigitalServiceBusinessService,
-                },
-                { provide: ChangeDetectorRef, useValue: mockCdr },
-                { provide: GlobalStoreService, useValue: mockGlobal },
-                { provide: InDatacentersService, useValue: mockInDatacentersService },
-            ],
-        }).compileComponents();
+    imports: [TranslateModule.forRoot(), DigitalServicesFootprintComponent],
+    providers: [
+        { provide: ActivatedRoute, useValue: mockRoute },
+        {
+            provide: DigitalServicesDataService,
+            useValue: mockDigitalServicesDataService,
+        },
+        {
+            provide: DigitalServiceStoreService,
+            useValue: mockDigitalServiceStoreService,
+        },
+        {
+            provide: DigitalServiceBusinessService,
+            useValue: mockDigitalServiceBusinessService,
+        },
+        { provide: ChangeDetectorRef, useValue: mockCdr },
+        { provide: GlobalStoreService, useValue: mockGlobal },
+        { provide: InDatacentersService, useValue: mockInDatacentersService },
+    ],
+}).compileComponents();
 
         fixture = TestBed.createComponent(DigitalServicesFootprintComponent);
         component = fixture.componentInstance;

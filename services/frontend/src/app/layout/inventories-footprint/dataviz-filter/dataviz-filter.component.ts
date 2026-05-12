@@ -14,17 +14,25 @@ import {
     signal,
     SimpleChanges,
 } from "@angular/core";
-import { TranslateService } from "@ngx-translate/core";
+import { TranslateService, TranslatePipe } from "@ngx-translate/core";
 import { debounceTime, Subject } from "rxjs";
 import { Filter } from "src/app/core/interfaces/filter.interface";
 import { FilterService } from "src/app/core/service/business/filter.service";
 import { FootprintStoreService } from "src/app/core/store/footprint.store";
 import { Constants } from "src/constants";
+import { Button } from "primeng/button";
+import { BaseFilterSidebarComponent } from "../base-filter-sidebar/base-filter-sidebar.component";
 
 @Component({
     selector: "dataviz-filter",
     templateUrl: "./dataviz-filter.component.html",
     styleUrl: "./dataviz-filter.component.scss",
+    standalone: true,
+    imports: [
+        Button,
+        BaseFilterSidebarComponent,
+        TranslatePipe,
+    ],
 })
 export class DatavizFilterComponent implements OnChanges {
     protected footprintStore = inject(FootprintStoreService);

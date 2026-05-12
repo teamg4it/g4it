@@ -45,24 +45,24 @@ describe("BarChartComponent", () => {
             B: { status: { error: true } },
         };
         await TestBed.configureTestingModule({
-            declarations: [BarChartComponent],
-            imports: [
-                HttpClientTestingModule,
-                ButtonModule,
-                SharedModule,
-                NgxEchartsModule,
-                TranslateModule.forRoot(),
-            ],
-            providers: [
-                TranslatePipe,
-                TranslateService,
-                DigitalServiceBusinessService,
-                {
-                    provide: NGX_ECHARTS_CONFIG,
-                    useFactory: () => ({ echarts: () => import("echarts") }),
-                },
-            ],
-        }).compileComponents();
+    imports: [
+        HttpClientTestingModule,
+        ButtonModule,
+        SharedModule,
+        NgxEchartsModule,
+        TranslateModule.forRoot(),
+        BarChartComponent,
+    ],
+    providers: [
+        TranslatePipe,
+        TranslateService,
+        DigitalServiceBusinessService,
+        {
+            provide: NGX_ECHARTS_CONFIG,
+            useFactory: () => ({ echarts: () => import("echarts") }),
+        },
+    ],
+}).compileComponents();
     });
 
     beforeEach(async () => {

@@ -17,7 +17,7 @@ import {
     SimpleChanges,
 } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { TranslateService } from "@ngx-translate/core";
+import { TranslateService, TranslatePipe } from "@ngx-translate/core";
 import { EChartsOption } from "echarts";
 import { sortByProperty } from "sort-by-property";
 import {
@@ -49,9 +49,33 @@ import { GlobalStoreService } from "src/app/core/store/global.store";
 import { Constants } from "src/constants";
 import { AbstractDashboard } from "../../abstract-dashboard";
 import { InventoriesApplicationFootprintComponent } from "../inventories-application-footprint.component";
+import { NgClass, NgTemplateOutlet, NgIf } from "@angular/common";
+import { DropdownModule } from "primeng/dropdown";
+import { FormsModule } from "@angular/forms";
+import { PrimeTemplate } from "primeng/api";
+import { StackBarChartComponent } from "../../../common/stack-bar-chart/stack-bar-chart.component";
+import { NgxEchartsDirective } from "ngx-echarts";
+import { ApplicationCriteriaPieChartComponent } from "../application-criteria-pie-chart/application-criteria-pie-chart.component";
+import { GraphDescriptionComponent } from "../../../digital-services-footprint/digital-services-footprint-dashboard/graph-description/graph-description.component";
+import { Button } from "primeng/button";
 @Component({
     selector: "app-application-criteria-footprint",
     templateUrl: "./application-criteria-footprint.component.html",
+    standalone: true,
+    imports: [
+        NgClass,
+        NgTemplateOutlet,
+        DropdownModule,
+        FormsModule,
+        PrimeTemplate,
+        NgIf,
+        StackBarChartComponent,
+        NgxEchartsDirective,
+        ApplicationCriteriaPieChartComponent,
+        GraphDescriptionComponent,
+        Button,
+        TranslatePipe,
+    ],
 })
 export class ApplicationCriteriaFootprintComponent
     extends AbstractDashboard

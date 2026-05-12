@@ -50,53 +50,53 @@ describe("DigitalServicesFootprintHeaderComponent", () => {
 
     beforeEach(async () => {
         TestBed.configureTestingModule({
-            declarations: [DigitalServicesFootprintHeaderComponent],
-            imports: [
-                HttpClientTestingModule,
-                RouterTestingModule,
-                InplaceModule,
-                FormsModule,
-                InputTextModule,
-                SharedModule,
-                ConfirmPopupModule,
-                TranslateModule.forRoot(),
-            ],
-            providers: [
-                {
-                    provide: DigitalServicesDataService,
-                    useValue: digitalServiceDataMock,
-                },
-                TranslatePipe,
-                TranslateService,
-                UserService,
-                MessageService,
-                ConfirmationService,
-                {
-                    provide: ActivatedRoute,
-                    useValue: {
-                        snapshot: {
-                            paramMap: convertToParamMap({
-                                digitalServiceVersionId: "12345",
-                            }),
-                            queryParamMap: {
-                                get: (key: string) => {
-                                    const params: { [key: string]: any } = {
-                                        renew: "true",
-                                        inventoryId: "1",
-                                    };
-                                    return params[key] || null;
-                                },
-                            },
+    imports: [
+        HttpClientTestingModule,
+        RouterTestingModule,
+        InplaceModule,
+        FormsModule,
+        InputTextModule,
+        SharedModule,
+        ConfirmPopupModule,
+        TranslateModule.forRoot(),
+        DigitalServicesFootprintHeaderComponent,
+    ],
+    providers: [
+        {
+            provide: DigitalServicesDataService,
+            useValue: digitalServiceDataMock,
+        },
+        TranslatePipe,
+        TranslateService,
+        UserService,
+        MessageService,
+        ConfirmationService,
+        {
+            provide: ActivatedRoute,
+            useValue: {
+                snapshot: {
+                    paramMap: convertToParamMap({
+                        digitalServiceVersionId: "12345",
+                    }),
+                    queryParamMap: {
+                        get: (key: string) => {
+                            const params: {
+                                [key: string]: any;
+                            } = {
+                                renew: "true",
+                                inventoryId: "1",
+                            };
+                            return params[key] || null;
                         },
-                        paramMap: of(
-                            convertToParamMap({
-                                digitalServiceVersionId: "12345",
-                            }),
-                        ),
                     },
                 },
-            ],
-        });
+                paramMap: of(convertToParamMap({
+                    digitalServiceVersionId: "12345",
+                })),
+            },
+        },
+    ],
+});
         fixture = TestBed.createComponent(DigitalServicesFootprintHeaderComponent);
         component = fixture.componentInstance;
 

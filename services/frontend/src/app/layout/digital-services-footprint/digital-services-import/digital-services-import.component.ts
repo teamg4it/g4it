@@ -13,7 +13,7 @@ import {
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormControl, FormGroup } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
-import { TranslateService } from "@ngx-translate/core";
+import { TranslateService, TranslatePipe } from "@ngx-translate/core";
 import { firstValueFrom, lastValueFrom } from "rxjs";
 import { sortByProperty } from "sort-by-property";
 import {
@@ -30,11 +30,33 @@ import { InDatacentersService } from "src/app/core/service/data/in-out/in-datace
 import { TemplateFileService } from "src/app/core/service/data/template-file.service";
 import { DigitalServiceStoreService } from "src/app/core/store/digital-service.store";
 import { Constants } from "src/constants";
+import { FormNavComponent } from "../../common/form-nav/form-nav.component";
+import { ScrollPanelModule } from "primeng/scrollpanel";
+import { Button } from "primeng/button";
+import { NgTemplateOutlet, NgClass, DatePipe } from "@angular/common";
+import { MultiFileImportComponent } from "./multi-file-import/multi-file-import.component";
+import { TableModule } from "primeng/table";
+import { PrimeTemplate } from "primeng/api";
+import { TooltipModule } from "primeng/tooltip";
 
 @Component({
     selector: "app-digital-services-import",
     templateUrl: "./digital-services-import.component.html",
     styleUrl: "./digital-services-import.component.scss",
+    standalone: true,
+    imports: [
+        FormNavComponent,
+        ScrollPanelModule,
+        Button,
+        NgTemplateOutlet,
+        MultiFileImportComponent,
+        TableModule,
+        PrimeTemplate,
+        TooltipModule,
+        NgClass,
+        DatePipe,
+        TranslatePipe,
+    ],
 })
 export class DigitalServicesImportComponent implements OnInit, OnDestroy {
     private readonly destroyRef = inject(DestroyRef);

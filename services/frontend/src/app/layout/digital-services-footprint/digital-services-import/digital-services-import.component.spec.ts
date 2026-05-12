@@ -59,28 +59,28 @@ describe("DigitalServicesImportComponent", () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [DigitalServicesImportComponent],
-            imports: [
-                HttpClientTestingModule,
-                RouterTestingModule,
-                FormsModule,
-                SharedModule,
-                TranslateModule.forRoot(),
-            ],
-            providers: [
-                { provide: TemplateFileService, useValue: mockTemplateFileService },
-                {
-                    provide: DigitalServicesDataService,
-                    useValue: mockDigitalServicesData,
-                },
-                { provide: ActivatedRoute, useValue: mockActivatedRoute },
-                {
-                    provide: FileSystemBusinessService,
-                    useValue: mockFileSystemBusinessService,
-                },
-                { provide: UserService, useValue: mockUserService },
-            ],
-        }).compileComponents();
+    imports: [
+        HttpClientTestingModule,
+        RouterTestingModule,
+        FormsModule,
+        SharedModule,
+        TranslateModule.forRoot(),
+        DigitalServicesImportComponent,
+    ],
+    providers: [
+        { provide: TemplateFileService, useValue: mockTemplateFileService },
+        {
+            provide: DigitalServicesDataService,
+            useValue: mockDigitalServicesData,
+        },
+        { provide: ActivatedRoute, useValue: mockActivatedRoute },
+        {
+            provide: FileSystemBusinessService,
+            useValue: mockFileSystemBusinessService,
+        },
+        { provide: UserService, useValue: mockUserService },
+    ],
+}).compileComponents();
 
         fixture = TestBed.createComponent(DigitalServicesImportComponent);
         component = fixture.componentInstance;

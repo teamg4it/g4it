@@ -48,52 +48,54 @@ describe("InventoryComponent", () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [InventoriesComponent, MonthYearPipe, FilePanelComponent],
-            imports: [
-                HttpClientTestingModule,
-                ToastModule,
-                ButtonModule,
-                AccordionModule,
-                SidebarModule,
-                ScrollPanelModule,
-                ProgressSpinnerModule,
-                ConfirmPopupModule,
-                DropdownModule,
-                BrowserAnimationsModule,
-                FileUploadModule,
-                TranslateModule.forRoot(),
-            ],
-            providers: [
-                TranslatePipe,
-                TranslateService,
-                MessageService,
-                UserService,
-                {
-                    provide: InventoryDataService,
-                    useClass: InventoryServiceMock,
-                },
-                LoadingDataService,
-                EvaluationDataService,
-                Location,
-                {
-                    provide: ActivatedRoute,
-                    useValue: {
-                        params: from([{ inventoryDate: inventoryDate }]),
-                        snapshot: {
-                            queryParamMap: {
-                                get: (key: string) => {
-                                    const params: { [key: string]: any } = {
-                                        renew: "true",
-                                        inventoryId: "1",
-                                    };
-                                    return params[key] || null;
-                                },
-                            },
+    imports: [
+        HttpClientTestingModule,
+        ToastModule,
+        ButtonModule,
+        AccordionModule,
+        SidebarModule,
+        ScrollPanelModule,
+        ProgressSpinnerModule,
+        ConfirmPopupModule,
+        DropdownModule,
+        BrowserAnimationsModule,
+        FileUploadModule,
+        TranslateModule.forRoot(),
+        InventoriesComponent, MonthYearPipe, FilePanelComponent,
+    ],
+    providers: [
+        TranslatePipe,
+        TranslateService,
+        MessageService,
+        UserService,
+        {
+            provide: InventoryDataService,
+            useClass: InventoryServiceMock,
+        },
+        LoadingDataService,
+        EvaluationDataService,
+        Location,
+        {
+            provide: ActivatedRoute,
+            useValue: {
+                params: from([{ inventoryDate: inventoryDate }]),
+                snapshot: {
+                    queryParamMap: {
+                        get: (key: string) => {
+                            const params: {
+                                [key: string]: any;
+                            } = {
+                                renew: "true",
+                                inventoryId: "1",
+                            };
+                            return params[key] || null;
                         },
                     },
                 },
-            ],
-        }).compileComponents();
+            },
+        },
+    ],
+}).compileComponents();
 
         fixture = TestBed.createComponent(InventoriesComponent);
         component = fixture.componentInstance;

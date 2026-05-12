@@ -93,49 +93,49 @@ describe("DigitalServicesFootprintDashboardComponent", () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [DigitalServicesFootprintDashboardComponent],
-            imports: [
-                HttpClientTestingModule,
-                RouterTestingModule,
-                FormsModule,
-                InputTextModule,
-                SharedModule,
-                TranslateModule.forRoot(),
-                IntegerPipe,
-                DecimalsPipe,
-            ],
-            providers: [
-                {
-                    provide: DigitalServicesDataService,
-                    useValue: digitalServicesDataServiceMock,
-                },
-                {
-                    provide: DigitalServiceBusinessService,
-                    useValue: digitalServiceBusinessServiceMock,
-                },
-                { provide: UserService, useValue: userServiceMock },
-                {
-                    provide: OutPhysicalEquipmentsService,
-                    useValue: outPhysicalEquipmentsServiceMock,
-                },
-                {
-                    provide: OutVirtualEquipmentsService,
-                    useValue: outVirtualEquipmentsServiceMock,
-                },
-                {
-                    provide: DigitalServicesAiDataService,
-                    useValue: digitalServicesAiDataServiceMock,
-                },
-                {
-                    provide: DigitalServiceStoreService,
-                    useValue: digitalServiceStoreMock,
-                },
-                { provide: GlobalStoreService, useValue: globalStoreMock },
-                TranslateService,
-                IntegerPipe,
-                DecimalsPipe,
-            ],
-        }).compileComponents();
+    imports: [
+        HttpClientTestingModule,
+        RouterTestingModule,
+        FormsModule,
+        InputTextModule,
+        SharedModule,
+        TranslateModule.forRoot(),
+        IntegerPipe,
+        DecimalsPipe,
+        DigitalServicesFootprintDashboardComponent,
+    ],
+    providers: [
+        {
+            provide: DigitalServicesDataService,
+            useValue: digitalServicesDataServiceMock,
+        },
+        {
+            provide: DigitalServiceBusinessService,
+            useValue: digitalServiceBusinessServiceMock,
+        },
+        { provide: UserService, useValue: userServiceMock },
+        {
+            provide: OutPhysicalEquipmentsService,
+            useValue: outPhysicalEquipmentsServiceMock,
+        },
+        {
+            provide: OutVirtualEquipmentsService,
+            useValue: outVirtualEquipmentsServiceMock,
+        },
+        {
+            provide: DigitalServicesAiDataService,
+            useValue: digitalServicesAiDataServiceMock,
+        },
+        {
+            provide: DigitalServiceStoreService,
+            useValue: digitalServiceStoreMock,
+        },
+        { provide: GlobalStoreService, useValue: globalStoreMock },
+        TranslateService,
+        IntegerPipe,
+        DecimalsPipe,
+    ],
+}).compileComponents();
 
         fixture = TestBed.createComponent(DigitalServicesFootprintDashboardComponent);
         component = fixture.componentInstance;

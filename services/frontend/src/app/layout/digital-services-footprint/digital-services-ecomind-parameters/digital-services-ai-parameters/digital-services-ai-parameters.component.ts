@@ -1,8 +1,8 @@
 import { Component, DestroyRef, inject, OnDestroy, OnInit } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
-import { TranslateService } from "@ngx-translate/core";
+import { TranslateService, TranslatePipe } from "@ngx-translate/core";
 import { MessageService } from "primeng/api";
 import { firstValueFrom, lastValueFrom, Subscription } from "rxjs";
 import { UserService } from "src/app/core/service/business/user.service";
@@ -10,10 +10,26 @@ import { DigitalServicesAiDataService } from "src/app/core/service/data/digital-
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
 import { AIFormsStore, AIParametersForm } from "src/app/core/store/ai-forms.store";
 import { DigitalServiceStoreService } from "src/app/core/store/digital-service.store";
+import { CardModule } from "primeng/card";
+import { DropdownModule } from "primeng/dropdown";
+import { NgIf } from "@angular/common";
+import { CheckboxModule } from "primeng/checkbox";
+import { InputNumberModule } from "primeng/inputnumber";
 
 @Component({
     selector: "app-digital-services-ai-parameters",
     templateUrl: "./digital-services-ai-parameters.component.html",
+    standalone: true,
+    imports: [
+        CardModule,
+        FormsModule,
+        ReactiveFormsModule,
+        DropdownModule,
+        NgIf,
+        CheckboxModule,
+        InputNumberModule,
+        TranslatePipe,
+    ],
 })
 export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
     terminalsForm!: FormGroup;

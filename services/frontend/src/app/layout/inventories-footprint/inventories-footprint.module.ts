@@ -17,27 +17,14 @@ import { ScrollPanelModule } from "primeng/scrollpanel";
 import { TabMenuModule } from "primeng/tabmenu";
 import { TabViewModule } from "primeng/tabview";
 import { ToastModule } from "primeng/toast";
+import { DecimalsPipe } from "src/app/core/pipes/decimal.pipe";
+import { IntegerPipe } from "src/app/core/pipes/integer.pipe";
 import { InventoryUtilService } from "src/app/core/service/business/inventory-util.service";
 import { SharedChartsModule } from "src/app/core/shared/common-chart-module";
 import { SharedModule } from "src/app/core/shared/shared.module";
-import { ImpactAggregateInfosComponent } from "src/app/layout/common/impact-aggregate-infos/impact-aggregate-infos.component";
-import { ConfigureViewFiltersComponent } from "../common/configure-view-filters/configure-view-filters.component";
-import { IndicatorSectionComponent } from "../common/indicator-section/indicator-section.component";
-import { ImpactButtonComponent } from "../digital-services-footprint/digital-services-footprint-dashboard/impact-button/impact-button.component";
-import { InventoriesCritereFootprintComponent } from "./critere/inventories-critere-footprint.component";
-import { DataCenterEquipmentStatsComponent } from "./datacenter-equipment-stats/datacenter-equipment-stats.component";
-import { InventoriesFootprintComponent } from "./inventories-footprint.component";
 import { inventoriesFootprintRouter } from "./inventories-footprint.router";
-import { InventoriesMultiCriteriaFootprintComponent } from "./multicriteria/inventories-multicriteria-footprint.component";
 
 @NgModule({
-    declarations: [
-        InventoriesFootprintComponent,
-        InventoriesMultiCriteriaFootprintComponent,
-        InventoriesCritereFootprintComponent,
-        DataCenterEquipmentStatsComponent,
-        ImpactAggregateInfosComponent,
-    ],
     imports: [
         SharedModule,
         SharedChartsModule,
@@ -52,20 +39,14 @@ import { InventoriesMultiCriteriaFootprintComponent } from "./multicriteria/inve
         ConfirmPopupModule,
         BadgeModule,
         NgxEchartsModule.forRoot({
-            echarts: () =>
-                import(
-                    /* webpackChunkName: "echarts" */
-                    /* webpackMode: "lazy" */
-                    "src/app/core/shared/echarts.module"
-                ).then((m) => m.default),
+            echarts: () => import(
+            /* webpackChunkName: "echarts" */
+            /* webpackMode: "lazy" */
+            "src/app/core/shared/echarts.module").then((m) => m.default),
         }),
         inventoriesFootprintRouter,
-        ConfigureViewFiltersComponent,
-        ImpactButtonComponent,
-        IndicatorSectionComponent,
     ],
-    providers: [InventoryUtilService],
-    exports: [InventoriesFootprintComponent],
+    providers: [InventoryUtilService, IntegerPipe, DecimalsPipe],
     schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
 })
 export class InventoriesFootprintModule {}

@@ -8,8 +8,8 @@ describe("DigitalServicesEcomindParametersComponent", () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [DigitalServicesEcomindParametersComponent],
-        }).compileComponents();
+    imports: [DigitalServicesEcomindParametersComponent],
+}).compileComponents();
 
         fixture = TestBed.createComponent(DigitalServicesEcomindParametersComponent);
         component = fixture.componentInstance;

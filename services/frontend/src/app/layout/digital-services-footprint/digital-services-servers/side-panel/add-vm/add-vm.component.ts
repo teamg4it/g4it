@@ -14,17 +14,35 @@ import {
     OnInit,
     Output,
 } from "@angular/core";
-import { FormBuilder, Validators } from "@angular/forms";
+import { FormBuilder, Validators, FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MessageService } from "primeng/api";
 import { xssFormGroupValidator } from "src/app/core/custom-validators/xss-validator";
 import { ServerVM } from "src/app/core/interfaces/digital-service.interfaces";
 import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServiceStoreService } from "src/app/core/store/digital-service.store";
+import { AutofocusDirective } from "../../../../../core/directives/auto-focus.directive";
+import { InputTextModule } from "primeng/inputtext";
+import { NgIf, AsyncPipe } from "@angular/common";
+import { InputNumberModule } from "primeng/inputnumber";
+import { Button } from "primeng/button";
+import { TranslatePipe } from "@ngx-translate/core";
 
 @Component({
     selector: "app-panel-add-vm",
     templateUrl: "./add-vm.component.html",
     providers: [MessageService],
+    standalone: true,
+    imports: [
+        AutofocusDirective,
+        FormsModule,
+        ReactiveFormsModule,
+        InputTextModule,
+        NgIf,
+        InputNumberModule,
+        Button,
+        AsyncPipe,
+        TranslatePipe,
+    ],
 })
 export class PanelAddVmComponent implements OnInit {
     private readonly digitalServiceStore = inject(DigitalServiceStoreService);

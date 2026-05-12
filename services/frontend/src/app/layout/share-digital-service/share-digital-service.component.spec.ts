@@ -81,23 +81,22 @@ describe("ShareDigitalServiceComponent", () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [ShareDigitalServiceComponent],
-            imports: [TranslateModule.forRoot()],
-            providers: [
-                { provide: ActivatedRoute, useValue: mockActivatedRoute },
-                {
-                    provide: DigitalServicesDataService,
-                    useValue: mockDigitalServicesDataService,
-                },
-                {
-                    provide: ShareDigitalServiceDataService,
-                    useValue: mockShareDigitalServiceDataService,
-                },
-                { provide: DigitalServiceStoreService, useValue: mockStore },
-                { provide: TranslateService, useValue: mockTranslate },
-                { provide: Router, useValue: mockRouter },
-            ],
-        }).compileComponents();
+    imports: [TranslateModule.forRoot(), ShareDigitalServiceComponent],
+    providers: [
+        { provide: ActivatedRoute, useValue: mockActivatedRoute },
+        {
+            provide: DigitalServicesDataService,
+            useValue: mockDigitalServicesDataService,
+        },
+        {
+            provide: ShareDigitalServiceDataService,
+            useValue: mockShareDigitalServiceDataService,
+        },
+        { provide: DigitalServiceStoreService, useValue: mockStore },
+        { provide: TranslateService, useValue: mockTranslate },
+        { provide: Router, useValue: mockRouter },
+    ],
+}).compileComponents();
 
         fixture = TestBed.createComponent(ShareDigitalServiceComponent);
         component = fixture.componentInstance;

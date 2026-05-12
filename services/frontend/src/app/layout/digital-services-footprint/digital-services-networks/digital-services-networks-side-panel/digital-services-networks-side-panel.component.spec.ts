@@ -25,26 +25,26 @@ describe("DigitalServicesNetworksSidePanelComponent", () => {
             ]),
         };
         await TestBed.configureTestingModule({
-            declarations: [DigitalServicesNetworksSidePanelComponent],
-            imports: [
-                SharedModule,
-                ReactiveFormsModule,
-                ButtonModule,
-                DropdownModule,
-                InputNumberModule,
-                InputTextModule,
-                HttpClientTestingModule,
-                TranslateModule.forRoot(),
-            ],
-            providers: [
-                {
-                    provide: DigitalServiceStoreService,
-                    useValue: mockDigitalServiceStore,
-                },
-                { provide: UserService, useValue: {} },
-                MessageService,
-            ],
-        }).compileComponents();
+    imports: [
+        SharedModule,
+        ReactiveFormsModule,
+        ButtonModule,
+        DropdownModule,
+        InputNumberModule,
+        InputTextModule,
+        HttpClientTestingModule,
+        TranslateModule.forRoot(),
+        DigitalServicesNetworksSidePanelComponent,
+    ],
+    providers: [
+        {
+            provide: DigitalServiceStoreService,
+            useValue: mockDigitalServiceStore,
+        },
+        { provide: UserService, useValue: {} },
+        MessageService,
+    ],
+}).compileComponents();
 
         fixture = TestBed.createComponent(DigitalServicesNetworksSidePanelComponent);
         component = fixture.componentInstance;

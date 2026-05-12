@@ -1,16 +1,32 @@
 import { Component, EventEmitter, inject, input, OnInit, Output } from "@angular/core";
-import { FormControl, FormGroup, Validators } from "@angular/forms";
-import { TranslateService } from "@ngx-translate/core";
+import { FormControl, FormGroup, Validators, FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { TranslateService, TranslatePipe } from "@ngx-translate/core";
 import { noWhitespaceValidator } from "src/app/core/custom-validators/no-white-space.validator";
 import { uniqueNameValidator } from "src/app/core/custom-validators/unique-name.validator";
 import { DigitalService } from "src/app/core/interfaces/digital-service.interfaces";
 import { CustomSidebarMenuForm } from "src/app/core/interfaces/sidebar-menu-form.interface";
 import { DigitalServiceBusinessService } from "src/app/core/service/business/digital-services.service";
+import { FormNavComponent } from "../../common/form-nav/form-nav.component";
+import { ScrollPanelModule } from "primeng/scrollpanel";
+import { Button } from "primeng/button";
+import { InputTextModule } from "primeng/inputtext";
+import { NgIf } from "@angular/common";
 
 @Component({
     selector: "app-create-digital-services-sidebar",
     templateUrl: "./create-digital-services-sidebar.component.html",
     styleUrls: ["./create-digital-services-sidebar.component.scss"],
+    standalone: true,
+    imports: [
+        FormNavComponent,
+        ScrollPanelModule,
+        FormsModule,
+        ReactiveFormsModule,
+        Button,
+        InputTextModule,
+        NgIf,
+        TranslatePipe,
+    ],
 })
 export class CreateDigitalServicesSidebarComponent implements OnInit {
     allDigitalServices = input<DigitalService[]>([]);

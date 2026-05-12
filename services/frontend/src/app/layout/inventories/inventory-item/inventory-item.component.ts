@@ -15,8 +15,8 @@ import {
     Output,
 } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { TranslateService } from "@ngx-translate/core";
-import { ConfirmationService, MessageService } from "primeng/api";
+import { TranslateService, TranslatePipe } from "@ngx-translate/core";
+import { ConfirmationService, MessageService, PrimeTemplate } from "primeng/api";
 import { lastValueFrom } from "rxjs";
 import {
     OrganizationCriteriaRest,
@@ -35,11 +35,37 @@ import { shouldShowExpiryMessage } from "src/app/core/service/mapper/renew-time"
 import { GlobalStoreService } from "src/app/core/store/global.store";
 import * as TimeUtils from "src/app/core/utils/time";
 import { Constants } from "src/constants";
+import { AccordionModule } from "primeng/accordion";
+import { NgIf, NgFor, AsyncPipe, UpperCasePipe } from "@angular/common";
+import { Button } from "primeng/button";
+import { EquipmentsCardComponent } from "../equipments-card/equipments-card.component";
+import { BatchStatusComponent } from "../batch-status/batch-status.component";
+import { ProgressBarModule } from "primeng/progressbar";
+import { ConfirmPopupModule } from "primeng/confirmpopup";
+import { CriteriaPopupComponent } from "../../common/criteria-popup/criteria-popup.component";
+import { MonthYearPipe } from "../../../core/pipes/monthyear.pipe";
 
 @Component({
     selector: "app-inventory-item",
     templateUrl: "./inventory-item.component.html",
     providers: [ConfirmationService, MessageService],
+    standalone: true,
+    imports: [
+        AccordionModule,
+        PrimeTemplate,
+        NgIf,
+        Button,
+        EquipmentsCardComponent,
+        NgFor,
+        BatchStatusComponent,
+        ProgressBarModule,
+        ConfirmPopupModule,
+        CriteriaPopupComponent,
+        MonthYearPipe,
+        AsyncPipe,
+        UpperCasePipe,
+        TranslatePipe,
+    ],
 })
 export class InventoryItemComponent implements OnInit {
     private readonly global = inject(GlobalStoreService);

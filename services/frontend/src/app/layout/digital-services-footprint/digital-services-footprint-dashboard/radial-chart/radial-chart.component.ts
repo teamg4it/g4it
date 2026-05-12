@@ -27,10 +27,14 @@ import {
 import { GlobalStoreService } from "src/app/core/store/global.store";
 import { AbstractDashboard } from "src/app/layout/inventories-footprint/abstract-dashboard";
 import { Constants } from "src/constants";
+import { StackBarChartComponent } from "../../../common/stack-bar-chart/stack-bar-chart.component";
+import { NgxEchartsDirective } from "ngx-echarts";
 
 @Component({
     selector: "app-radial-chart",
     templateUrl: "./radial-chart.component.html",
+    standalone: true,
+    imports: [StackBarChartComponent, NgxEchartsDirective],
 })
 export class RadialChartComponent extends AbstractDashboard implements OnChanges {
     @Input() globalVisionChartData: DigitalServiceFootprint[] | undefined;

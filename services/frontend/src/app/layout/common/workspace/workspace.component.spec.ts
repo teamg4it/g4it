@@ -28,23 +28,23 @@ describe("WorkspaceComponent", () => {
         mockUserService.getRoles.and.returnValue([]); // Ensure it returns a valid value
 
         await TestBed.configureTestingModule({
-            declarations: [WorkspaceComponent],
-            imports: [
-                ReactiveFormsModule,
-                CommonModule,
-                FormsModule,
-                DropdownModule,
-                ButtonModule,
-                TranslateModule.forRoot(),
-                HttpClientModule, // Add this module
-            ],
-            providers: [
-                { provide: WorkspaceService, useValue: mockWorkspaceService },
-                { provide: UserService, useValue: mockUserService },
-                MessageService,
-                TranslateService,
-            ],
-        }).compileComponents();
+    imports: [
+        ReactiveFormsModule,
+        CommonModule,
+        FormsModule,
+        DropdownModule,
+        ButtonModule,
+        TranslateModule.forRoot(),
+        HttpClientModule,
+        WorkspaceComponent,
+    ],
+    providers: [
+        { provide: WorkspaceService, useValue: mockWorkspaceService },
+        { provide: UserService, useValue: mockUserService },
+        MessageService,
+        TranslateService,
+    ],
+}).compileComponents();
 
         fixture = TestBed.createComponent(WorkspaceComponent);
         component = fixture.componentInstance;

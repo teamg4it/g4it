@@ -47,22 +47,21 @@ describe("DigitalServicesComponent", () => {
         };
 
         await TestBed.configureTestingModule({
-            imports: [TranslateModule.forRoot()],
-            declarations: [DigitalServicesComponent],
-            providers: [
-                { provide: Router, useValue: mockRouter },
-                { provide: ActivatedRoute, useValue: mockRoute },
-                {
-                    provide: DigitalServicesDataService,
-                    useValue: mockDigitalServicesData,
-                },
-                { provide: UserService, useValue: mockUserService },
-                { provide: GlobalStoreService, useValue: mockGlobalStore },
-                TranslateService,
-                MessageService,
-                ConfirmationService,
-            ],
-        }).compileComponents();
+    imports: [TranslateModule.forRoot(), DigitalServicesComponent],
+    providers: [
+        { provide: Router, useValue: mockRouter },
+        { provide: ActivatedRoute, useValue: mockRoute },
+        {
+            provide: DigitalServicesDataService,
+            useValue: mockDigitalServicesData,
+        },
+        { provide: UserService, useValue: mockUserService },
+        { provide: GlobalStoreService, useValue: mockGlobalStore },
+        TranslateService,
+        MessageService,
+        ConfirmationService,
+    ],
+}).compileComponents();
 
         fixture = TestBed.createComponent(DigitalServicesComponent);
         component = fixture.componentInstance;

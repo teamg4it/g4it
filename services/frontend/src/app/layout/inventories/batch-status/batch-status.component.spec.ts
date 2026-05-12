@@ -20,15 +20,14 @@ describe("BatchStatusComponent", () => {
     let fixture: ComponentFixture<BatchStatusComponent>;
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [BatchStatusComponent, MonthYearPipe],
-            imports: [HttpClientTestingModule, TooltipModule, TranslateModule.forRoot()],
-            providers: [
-                TranslatePipe,
-                TranslateService,
-                FileSystemDataService,
-                MessageService,
-            ],
-        }).compileComponents();
+    imports: [HttpClientTestingModule, TooltipModule, TranslateModule.forRoot(), BatchStatusComponent, MonthYearPipe],
+    providers: [
+        TranslatePipe,
+        TranslateService,
+        FileSystemDataService,
+        MessageService,
+    ],
+}).compileComponents();
 
         fixture = TestBed.createComponent(BatchStatusComponent);
         component = fixture.componentInstance;

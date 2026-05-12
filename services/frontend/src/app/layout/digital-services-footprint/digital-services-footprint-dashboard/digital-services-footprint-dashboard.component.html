@@ -56,7 +56,7 @@
                                 styleClass="color-tertiary font-semibold p-2"
                                 [text]="true"
                                 icon="pi pi-arrow-left"
-                                [aria-label]="
+                                [attr.aria-label]="
                                     getCriteriaTranslation(selectedCriteria) +
                                     ' / ' +
                                     getTNSTranslation(selectedParam)
@@ -73,7 +73,9 @@
                                 styleClass="color-tertiary font-semibold p-2"
                                 [text]="true"
                                 icon="pi pi-arrow-left"
-                                [aria-label]="getCriteriaTranslation(selectedCriteria)"
+                                [attr.aria-label]="
+                                    getCriteriaTranslation(selectedCriteria)
+                                "
                                 [label]="getCriteriaTranslation(selectedCriteria)"
                             />
                         }
@@ -88,7 +90,7 @@
                             styleClass="color-tertiary font-semibold p-2"
                             [text]="true"
                             icon="pi pi-arrow-left"
-                            [aria-label]="
+                            [attr.aria-label]="
                                 'criteria-title.global-vision.title' | translate
                             "
                             [label]="'criteria-title.global-vision.title' | translate"

@@ -23,11 +23,11 @@ import {
     ViewContainerRef,
 } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { TranslateService } from "@ngx-translate/core";
+import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { TranslateService, TranslatePipe } from "@ngx-translate/core";
 import saveAs from "file-saver";
 import { MessageService } from "primeng/api";
-import { RadioButton } from "primeng/radiobutton";
+import { RadioButton, RadioButtonModule } from "primeng/radiobutton";
 import { delay, Subject, switchMap, takeUntil, tap } from "rxjs";
 import {
     FileDescription,
@@ -42,10 +42,28 @@ import { TemplateFileService } from "src/app/core/service/data/template-file.ser
 import { WorkspaceReferenceDataService } from "src/app/core/service/data/workspace-reference-data.service";
 import { Constants } from "src/constants";
 import { SelectFileComponent } from "./select-file/select-file.component";
+import { NgIf, NgFor } from "@angular/common";
+import { AutofocusDirective } from "../../../core/directives/auto-focus.directive";
+import { CalendarModule } from "primeng/calendar";
+import { InputTextModule } from "primeng/inputtext";
+import { Button } from "primeng/button";
 
 @Component({
     selector: "app-file-panel",
     templateUrl: "./file-panel.component.html",
+    standalone: true,
+    imports: [
+        NgIf,
+        AutofocusDirective,
+        FormsModule,
+        RadioButtonModule,
+        CalendarModule,
+        ReactiveFormsModule,
+        InputTextModule,
+        Button,
+        NgFor,
+        TranslatePipe,
+    ],
 })
 export class FilePanelComponent implements OnInit, OnDestroy, AfterViewInit, OnChanges {
     private readonly userService = inject(UserService);

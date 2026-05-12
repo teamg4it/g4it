@@ -6,7 +6,7 @@ import {
     Output,
     SimpleChanges,
 } from "@angular/core";
-import { TranslateService } from "@ngx-translate/core";
+import { TranslateService, TranslatePipe } from "@ngx-translate/core";
 import {
     OrganizationCriteriaRest,
     WorkspaceCriteriaRest,
@@ -17,11 +17,27 @@ import { InventoryCriteriaRest } from "src/app/core/interfaces/inventory.interfa
 import { Organization } from "src/app/core/interfaces/user.interfaces";
 import { MonthYearPipe } from "src/app/core/pipes/monthyear.pipe";
 import { GlobalStoreService } from "src/app/core/store/global.store";
+import { DialogModule } from "primeng/dialog";
+import { CheckboxModule } from "primeng/checkbox";
+import { FormsModule } from "@angular/forms";
+import { NgFor } from "@angular/common";
+import { PrimeTemplate } from "primeng/api";
+import { Button } from "primeng/button";
 
 @Component({
     selector: "app-criteria-popup",
     templateUrl: "./criteria-popup.component.html",
     providers: [MonthYearPipe],
+    standalone: true,
+    imports: [
+        DialogModule,
+        CheckboxModule,
+        FormsModule,
+        NgFor,
+        PrimeTemplate,
+        Button,
+        TranslatePipe,
+    ],
 })
 export class CriteriaPopupComponent implements OnChanges {
     @Input() displayPopup: boolean = false;

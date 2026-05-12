@@ -7,7 +7,7 @@
  */
 import { Component, computed, inject, input, Input, Signal } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { TranslateService } from "@ngx-translate/core";
+import { TranslateService, TranslatePipe } from "@ngx-translate/core";
 import { EChartsOption } from "echarts";
 import {
     GraphDescriptionContent,
@@ -41,10 +41,30 @@ import { GlobalStoreService } from "src/app/core/store/global.store";
 import { Constants } from "src/constants";
 import { AbstractDashboard } from "../../abstract-dashboard";
 import { InventoriesApplicationFootprintComponent } from "../inventories-application-footprint.component";
+import { Button } from "primeng/button";
+import { DropdownModule } from "primeng/dropdown";
+import { FormsModule } from "@angular/forms";
+import { PrimeTemplate } from "primeng/api";
+import { NgIf } from "@angular/common";
+import { StackBarChartComponent } from "../../../common/stack-bar-chart/stack-bar-chart.component";
+import { NgxEchartsDirective } from "ngx-echarts";
+import { GraphDescriptionComponent } from "../../../digital-services-footprint/digital-services-footprint-dashboard/graph-description/graph-description.component";
 
 @Component({
     selector: "app-application-multicriteria-footprint",
     templateUrl: "./application-multicriteria-footprint.component.html",
+    standalone: true,
+    imports: [
+        Button,
+        DropdownModule,
+        FormsModule,
+        PrimeTemplate,
+        NgIf,
+        StackBarChartComponent,
+        NgxEchartsDirective,
+        GraphDescriptionComponent,
+        TranslatePipe,
+    ],
 })
 export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboard {
     @Input() footprint: ApplicationFootprint[] = [];

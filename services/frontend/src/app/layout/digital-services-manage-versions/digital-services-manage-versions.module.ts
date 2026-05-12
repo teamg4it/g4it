@@ -13,14 +13,12 @@ import { DigitalServiceManageVersionComponent } from "./digital-service-manage-v
 import { digitalServicesManageVersionsRouter } from "./digital-services-manage-versions.router";
 
 @NgModule({
-    declarations: [
-        DigitalServiceManageVersionComponent,
-        DigitalServiceManageVersionTableComponent,
-    ],
     imports: [
         SharedModule,
         digitalServicesManageVersionsRouter,
         CommonDigitalServicesSharedModule,
+        DigitalServiceManageVersionComponent,
+        DigitalServiceManageVersionTableComponent,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
 })

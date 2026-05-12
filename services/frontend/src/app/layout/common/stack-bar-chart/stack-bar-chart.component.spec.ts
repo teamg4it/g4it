@@ -14,9 +14,8 @@ describe("StackBarChartComponent", () => {
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            declarations: [StackBarChartComponent],
-            imports: [TranslateModule.forRoot(), SharedModule],
-        }).compileComponents();
+    imports: [TranslateModule.forRoot(), SharedModule, StackBarChartComponent],
+}).compileComponents();
 
         fixture = TestBed.createComponent(StackBarChartComponent);
         component = fixture.componentInstance;

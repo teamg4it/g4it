@@ -6,13 +6,25 @@
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
 import { Component, EventEmitter, Input, Output } from "@angular/core";
-import { TranslateService } from "@ngx-translate/core";
+import { TranslateService, TranslatePipe } from "@ngx-translate/core";
 import { FileType } from "src/app/core/interfaces/file-system.interfaces";
 import { FileEmitter } from "src/app/core/model/file-emitter.model";
+import { DropdownModule } from "primeng/dropdown";
+import { FormsModule } from "@angular/forms";
+import { FileUploadModule } from "primeng/fileupload";
+import { Button } from "primeng/button";
 
 @Component({
     selector: "app-select-file",
     templateUrl: "./select-file.component.html",
+    standalone: true,
+    imports: [
+        DropdownModule,
+        FormsModule,
+        FileUploadModule,
+        Button,
+        TranslatePipe,
+    ],
 })
 export class SelectFileComponent {
     @Input() fileTypes: FileType[] = [];

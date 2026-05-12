@@ -63,29 +63,28 @@ describe("FilePanelComponent", () => {
         );
 
         await TestBed.configureTestingModule({
-            declarations: [FilePanelComponent, SelectFileComponent],
-            imports: [
-                HttpClientTestingModule,
-                RouterTestingModule,
-                ReactiveFormsModule,
-                SharedModule,
-                TranslateModule.forRoot(),
-            ],
-
-            providers: [
-                FormBuilder,
-                TranslateService,
-                { provide: TemplateFileService, useValue: mockTemplateFileService },
-                { provide: LoadingDataService, useValue: mockLoadingService },
-                { provide: MessageService, useValue: mockMessageService },
-                { provide: InventoryDataService, useValue: mockInventoryService },
-                { provide: UserService, useValue: mockUserService },
-                {
-                    provide: WorkspaceReferenceDataService,
-                    useValue: mockWorkspaceReferenceDataService,
-                },
-            ],
-        }).compileComponents();
+    imports: [
+        HttpClientTestingModule,
+        RouterTestingModule,
+        ReactiveFormsModule,
+        SharedModule,
+        TranslateModule.forRoot(),
+        FilePanelComponent, SelectFileComponent,
+    ],
+    providers: [
+        FormBuilder,
+        TranslateService,
+        { provide: TemplateFileService, useValue: mockTemplateFileService },
+        { provide: LoadingDataService, useValue: mockLoadingService },
+        { provide: MessageService, useValue: mockMessageService },
+        { provide: InventoryDataService, useValue: mockInventoryService },
+        { provide: UserService, useValue: mockUserService },
+        {
+            provide: WorkspaceReferenceDataService,
+            useValue: mockWorkspaceReferenceDataService,
+        },
+    ],
+}).compileComponents();
 
         fixture = TestBed.createComponent(FilePanelComponent);
         component = fixture.componentInstance;

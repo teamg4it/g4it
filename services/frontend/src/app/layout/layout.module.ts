@@ -11,8 +11,6 @@ import { LayoutComponent } from "./layout.component";
 import { layoutRouter } from "./layout.router";
 
 @NgModule({
-    declarations: [LayoutComponent],
-
-    imports: [SharedModule, layoutRouter],
+    imports: [SharedModule, layoutRouter, LayoutComponent],
 })
 export class LayoutModule {}

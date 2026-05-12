@@ -40,35 +40,35 @@ describe("InventoryItemComponent", () => {
         };
 
         await TestBed.configureTestingModule({
-            declarations: [InventoryItemComponent],
-            providers: [
-                { provide: ConfirmationService, useValue: confirmationService },
-                { provide: InventoryService, useValue: inventoryService },
-                { provide: EvaluationDataService, useValue: evaluationService },
-                { provide: FootprintDataService, useValue: footprintService },
-                { provide: Router, useValue: router },
-                { provide: ActivatedRoute, useValue: {} },
-                {
-                    provide: TranslateService,
-                    useValue: { instant: (k: string) => k },
-                },
-                {
-                    provide: UserService,
-                    useValue: {
-                        currentOrganization$: of({ criteria: ["A"] }),
-                        currentWorkspace$: of({
-                            organizationId: 1,
-                            name: "WS",
-                            status: "ACTIVE",
-                            dataRetentionDays: 30,
-                            criteriaIs: ["B"],
-                            criteriaDs: ["C"],
-                        }),
-                    },
-                },
-                { provide: GlobalStoreService, useValue: globalStore },
-            ],
-        }).compileComponents();
+    imports: [InventoryItemComponent],
+    providers: [
+        { provide: ConfirmationService, useValue: confirmationService },
+        { provide: InventoryService, useValue: inventoryService },
+        { provide: EvaluationDataService, useValue: evaluationService },
+        { provide: FootprintDataService, useValue: footprintService },
+        { provide: Router, useValue: router },
+        { provide: ActivatedRoute, useValue: {} },
+        {
+            provide: TranslateService,
+            useValue: { instant: (k: string) => k },
+        },
+        {
+            provide: UserService,
+            useValue: {
+                currentOrganization$: of({ criteria: ["A"] }),
+                currentWorkspace$: of({
+                    organizationId: 1,
+                    name: "WS",
+                    status: "ACTIVE",
+                    dataRetentionDays: 30,
+                    criteriaIs: ["B"],
+                    criteriaDs: ["C"],
+                }),
+            },
+        },
+        { provide: GlobalStoreService, useValue: globalStore },
+    ],
+}).compileComponents();
 
         fixture = TestBed.createComponent(InventoryItemComponent);
         component = fixture.componentInstance;

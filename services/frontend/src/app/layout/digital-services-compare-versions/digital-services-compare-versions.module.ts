@@ -13,12 +13,12 @@ import { DigitalServicesCompareVersionsComponent } from "./digital-services-comp
 import { digitalServicesCompareVersionsRouter } from "./digital-services-compare-versions.router";
 
 @NgModule({
-    declarations: [DigitalServicesCompareVersionsComponent],
     imports: [
         SharedModule,
         digitalServicesCompareVersionsRouter,
         CommonDigitalServicesSharedModule,
         SharedChartsModule,
+        DigitalServicesCompareVersionsComponent,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
 })

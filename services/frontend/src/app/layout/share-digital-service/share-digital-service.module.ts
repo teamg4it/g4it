@@ -7,12 +7,12 @@ import { ShareDigitalServiceComponent } from "./share-digital-service.component"
 import { shareDsRoutes } from "./shared-digital-service.route";
 
 @NgModule({
-    declarations: [ShareDigitalServiceComponent],
     imports: [
         CommonModule,
         SharedModule,
         RouterModule.forChild(shareDsRoutes),
         CommonDigitalServicesSharedModule,
+        ShareDigitalServiceComponent,
     ],
     exports: [ShareDigitalServiceComponent],
 })
