@@ -12,7 +12,7 @@ import { AIFormsStore, AIParametersForm } from "src/app/core/store/ai-forms.stor
 import { DigitalServiceStoreService } from "src/app/core/store/digital-service.store";
 import { CardModule } from "primeng/card";
 import { DropdownModule } from "primeng/dropdown";
-import { NgIf } from "@angular/common";
+
 import { CheckboxModule } from "primeng/checkbox";
 import { InputNumberModule } from "primeng/inputnumber";
 
@@ -21,15 +21,14 @@ import { InputNumberModule } from "primeng/inputnumber";
     templateUrl: "./digital-services-ai-parameters.component.html",
     standalone: true,
     imports: [
-        CardModule,
-        FormsModule,
-        ReactiveFormsModule,
-        DropdownModule,
-        NgIf,
-        CheckboxModule,
-        InputNumberModule,
-        TranslatePipe,
-    ],
+    CardModule,
+    FormsModule,
+    ReactiveFormsModule,
+    DropdownModule,
+    CheckboxModule,
+    InputNumberModule,
+    TranslatePipe
+],
 })
 export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
     terminalsForm!: FormGroup;

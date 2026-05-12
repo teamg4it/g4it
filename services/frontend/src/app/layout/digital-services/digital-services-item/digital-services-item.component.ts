@@ -15,7 +15,7 @@ import { UserService } from "src/app/core/service/business/user.service";
 import { shouldShowExpiryMessage } from "src/app/core/service/mapper/renew-time";
 import { CardModule } from "primeng/card";
 import { Button } from "primeng/button";
-import { NgIf, AsyncPipe } from "@angular/common";
+import { AsyncPipe } from "@angular/common";
 import { ConfirmPopupModule } from "primeng/confirmpopup";
 
 @Component({
@@ -24,13 +24,12 @@ import { ConfirmPopupModule } from "primeng/confirmpopup";
     providers: [MessageService, ConfirmationService],
     standalone: true,
     imports: [
-        CardModule,
-        Button,
-        NgIf,
-        ConfirmPopupModule,
-        AsyncPipe,
-        TranslatePipe,
-    ],
+    CardModule,
+    Button,
+    ConfirmPopupModule,
+    AsyncPipe,
+    TranslatePipe
+],
 })
 export class DigitalServicesItemComponent implements OnInit {
     digitalService = input.required<DigitalService>({});

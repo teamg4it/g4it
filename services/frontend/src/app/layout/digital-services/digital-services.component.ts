@@ -21,7 +21,7 @@ import { DigitalServicesDataService } from "src/app/core/service/data/digital-se
 import { GlobalStoreService } from "src/app/core/store/global.store";
 import { environment } from "src/environments/environment";
 import { ToastModule } from "primeng/toast";
-import { NgIf, AsyncPipe } from "@angular/common";
+import { AsyncPipe } from "@angular/common";
 import { Button } from "primeng/button";
 import { ScrollPanelModule } from "primeng/scrollpanel";
 import { DigitalServicesItemComponent } from "./digital-services-item/digital-services-item.component";
@@ -35,19 +35,18 @@ import { RenewServicePopupComponent } from "../common/renew-service-popup/renew-
     providers: [MessageService, ConfirmationService],
     standalone: true,
     imports: [
-        ToastModule,
-        NgIf,
-        Button,
-        ScrollPanelModule,
-        DigitalServicesItemComponent,
-        PaginatorModule,
-        SidebarModule,
-        PrimeTemplate,
-        CreateDigitalServicesSidebarComponent,
-        RenewServicePopupComponent,
-        AsyncPipe,
-        TranslatePipe,
-    ],
+    ToastModule,
+    Button,
+    ScrollPanelModule,
+    DigitalServicesItemComponent,
+    PaginatorModule,
+    SidebarModule,
+    PrimeTemplate,
+    CreateDigitalServicesSidebarComponent,
+    RenewServicePopupComponent,
+    AsyncPipe,
+    TranslatePipe
+],
 })
 export class DigitalServicesComponent implements OnInit {
     private readonly global = inject(GlobalStoreService);

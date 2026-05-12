@@ -1,130 +1,133 @@
 <div class="px-4" [class]="styleClass">
-    <h2 class="side-panel-title" appAutofocus tabIndex="-1">
-        <i class="pi pi-clipboard text-2xl"></i>
-        {{ title }}
-    </h2>
+  <h2 class="side-panel-title" appAutofocus tabIndex="-1">
+    <i class="pi pi-clipboard text-2xl"></i>
+    {{ title }}
+  </h2>
 
-    <p-editor
-        #editor
-        required
-        (keydown)="$event.stopPropagation()"
-        [(ngModel)]="editorTextValue"
-        name="editorTextValue"
-        ngDefaultControl
-        class="pEditor"
-        [style]="{ height: '420px' }"
-        [readonly]="!showButtons || escape"
-        (keydown.escape)="escape = true"
-        (keydown.enter)="escape = false"
-        (click)="escape = false"
-        tabindex="0"
+  <p-editor
+    #editor
+    required
+    (keydown)="$event.stopPropagation()"
+    [(ngModel)]="editorTextValue"
+    name="editorTextValue"
+    ngDefaultControl
+    class="pEditor"
+    [style]="{ height: '420px' }"
+    [readonly]="!showButtons || escape"
+    (keydown.escape)="escape = true"
+    (keydown.enter)="escape = false"
+    (click)="escape = false"
+    tabindex="0"
     >
-        <p-header [hidden]="escape">
-            <span class="ql-formats">
-                <select
-                    class="ql-header"
-                    tabindex="-1"
-                    [attr.aria-label]="'common.ds-menu' | translate"
-                >
-                    <option value="1" tabindex="-1">
-                        {{ "common.heading" | translate }}
-                    </option>
-                    <option value="2" tabindex="-1">
-                        {{ "common.subheading" | translate }}
-                    </option>
-                    <option selected tabindex="-1">
-                        {{ "common.normal" | translate }}
-                    </option>
-                </select>
-            </span>
-            <span class="ql-formats">
-                <select
-                    title="Font Size"
-                    class="ql-size"
-                    [attr.aria-label]="'common.size-selectbox' | translate"
-                >
-                    <option value="normal">M</option>
-                    <option value="large">L</option>
-                    <option value="huge">XL</option>
-                </select>
-            </span>
-            <span class="ql-formats">
-                <button class="ql-bold" aria-label="Bold" tabindex="-1"></button>
-                <button class="ql-italic" aria-label="Italic" tabindex="-1"></button>
-                <button
-                    class="ql-underline"
-                    aria-label="Underline"
-                    tabindex="-1"
-                ></button>
-            </span>
-            <span class="ql-formats">
-                <button
-                    class="ql-list"
-                    value="ordered"
-                    aria-label="Ordered List"
-                    tabindex="-1"
-                ></button>
-                <button
-                    class="ql-list"
-                    value="bullet"
-                    aria-label="Unordered List"
-                    tabindex="-1"
-                ></button>
-                <select
-                    class="ql-align"
-                    tabindex="-1"
-                    [attr.aria-label]="'common.position-selectbox' | translate"
-                >
-                    <option selected tabindex="-1"></option>
-                    <option value="center" tabindex="-1"></option>
-                    <option value="right" tabindex="-1"></option>
-                    <option value="justify" tabindex="-1"></option>
-                </select>
-            </span>
-            <span class="ql-formats">
-                <button class="ql-link" aria-label="Insert Link" tabindex="-1"></button>
-                <button
-                    class="ql-code-block"
-                    aria-label="Insert Code Block"
-                    tabindex="-1"
-                ></button>
-            </span>
-            <span class="ql-formats">
-                <button
-                    class="ql-clean"
-                    aria-label="Remove Styles"
-                    tabindex="-1"
-                ></button>
-            </span>
-        </p-header>
-    </p-editor>
-    <br />
-    <p-toast #toast position="bottom-center">
-        <p-confirmPopup></p-confirmPopup>
-    </p-toast>
-    <div class="button-bottom-left" *ngIf="showButtons">
-        <p-button
-            styleClass="black-button"
-            class="disabled-text-black"
-            type="submit"
+    <p-header [hidden]="escape">
+      <span class="ql-formats">
+        <select
+          class="ql-header"
+          tabindex="-1"
+          [attr.aria-label]="'common.ds-menu' | translate"
+          >
+          <option value="1" tabindex="-1">
+            {{ "common.heading" | translate }}
+          </option>
+          <option value="2" tabindex="-1">
+            {{ "common.subheading" | translate }}
+          </option>
+          <option selected tabindex="-1">
+            {{ "common.normal" | translate }}
+          </option>
+        </select>
+      </span>
+      <span class="ql-formats">
+        <select
+          title="Font Size"
+          class="ql-size"
+          [attr.aria-label]="'common.size-selectbox' | translate"
+          >
+          <option value="normal">M</option>
+          <option value="large">L</option>
+          <option value="huge">XL</option>
+        </select>
+      </span>
+      <span class="ql-formats">
+        <button class="ql-bold" aria-label="Bold" tabindex="-1"></button>
+        <button class="ql-italic" aria-label="Italic" tabindex="-1"></button>
+        <button
+          class="ql-underline"
+          aria-label="Underline"
+          tabindex="-1"
+        ></button>
+      </span>
+      <span class="ql-formats">
+        <button
+          class="ql-list"
+          value="ordered"
+          aria-label="Ordered List"
+          tabindex="-1"
+        ></button>
+        <button
+          class="ql-list"
+          value="bullet"
+          aria-label="Unordered List"
+          tabindex="-1"
+        ></button>
+        <select
+          class="ql-align"
+          tabindex="-1"
+          [attr.aria-label]="'common.position-selectbox' | translate"
+          >
+          <option selected tabindex="-1"></option>
+          <option value="center" tabindex="-1"></option>
+          <option value="right" tabindex="-1"></option>
+          <option value="justify" tabindex="-1"></option>
+        </select>
+      </span>
+      <span class="ql-formats">
+        <button class="ql-link" aria-label="Insert Link" tabindex="-1"></button>
+        <button
+          class="ql-code-block"
+          aria-label="Insert Code Block"
+          tabindex="-1"
+        ></button>
+      </span>
+      <span class="ql-formats">
+        <button
+          class="ql-clean"
+          aria-label="Remove Styles"
+          tabindex="-1"
+        ></button>
+      </span>
+    </p-header>
+  </p-editor>
+  <br />
+  <p-toast #toast position="bottom-center">
+    <p-confirmPopup></p-confirmPopup>
+  </p-toast>
+  @if (showButtons) {
+    <div class="button-bottom-left">
+      <p-button
+        styleClass="black-button"
+        class="disabled-text-black"
+        type="submit"
             [disabled]="
                 editorTextValue !== '' && editorTextValue === editorTextValueUnmodified
             "
-            (onClick)="saveContent()"
-            id="save-note"
-            >{{ "common.save" | translate }}</p-button
+        (onClick)="saveContent()"
+        id="save-note"
+        >{{ "common.save" | translate }}</p-button
         >
         <p-button
-            styleClass="white-button"
-            (onClick)="cancelContent($event)"
-            id="cancel-button"
-            >{{ "common.cancel" | translate }}</p-button
-        >
-        <p-button
-            styleClass="white-button"
-            *ngIf="content"
-            (onClick)="deleteContent($event)"
-            >{{ "common.delete" | translate }}</p-button
-        >
-    </div>
-</div>
+          styleClass="white-button"
+          (onClick)="cancelContent($event)"
+          id="cancel-button"
+          >{{ "common.cancel" | translate }}</p-button
+          >
+          @if (content) {
+            <p-button
+              styleClass="white-button"
+              (onClick)="deleteContent($event)"
+              >{{ "common.delete" | translate }}</p-button
+              >
+            }
+          </div>
+        }
+      </div>

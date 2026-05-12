@@ -1,150 +1,152 @@
 <div
-    class="ml-auto block align-items-end lg:flex flex-row p-3"
+  class="ml-auto block align-items-end lg:flex flex-row p-3"
     [ngClass]="
         showDataConsistencyBtn && inventory()?.enableDataInconsistency
             ? 'justify-content-end'
             : 'justify-content-between'
     "
->
-    <div class="inline">
-        @if (showBackButton() && footprintStore.appGraphType() !== "global") {
-            <a
-                class="cursor-pointer m-0 text-xl color-tertiary"
-                tabindex="0"
-                (click)="onArrowClick()"
-                (keydown.enter)="onArrowClick()"
+  >
+  <div class="inline">
+    @if (showBackButton() && footprintStore.appGraphType() !== "global") {
+      <a
+        class="cursor-pointer m-0 text-xl color-tertiary"
+        tabindex="0"
+        (click)="onArrowClick()"
+        (keydown.enter)="onArrowClick()"
                 attr.aria-label="{{
                     'inventories-footprint.application.selected-infos' | translate
                 }}{{ footprintStore.appDomain() }}{{ footprintStore.appSubDomain() }}{{
                     footprintStore.appApplication()
                 }}"
-            >
-                <i class="pi pi-arrow-left mr-2"></i>
-                {{ "inventories-footprint.back-to" | translate }}
-                {{ "inventories-footprint.global.global-vision" | translate }}
-                {{
-                    footprintStore.appGraphType() === "domain"
-                        ? showDomainLabel()
-                            ? " / " + footprintStore.appDomain()
-                            : ""
-                        : footprintStore.appGraphType() === "subdomain"
-                          ? (showDomainLabel()
-                                ? " / " + footprintStore.appDomain()
-                                : "") +
-                            (showSubDomainLabel()
-                                ? " / " + footprintStore.appSubDomain()
-                                : "")
-                          : footprintStore.appGraphType() === "application"
-                            ? (showDomainLabel()
-                                  ? " / " + footprintStore.appDomain()
-                                  : "") +
-                              (showSubDomainLabel()
-                                  ? " / " + footprintStore.appSubDomain()
-                                  : "") +
-                              " / " +
-                              footprintStore.appApplication()
-                            : ""
-                }}
-            </a>
-        } @else {
-            @if (this.appComponent.allUnmodifiedFootprint.length !== 1) {
-                <a
-                    class="cursor-pointer m-0 text-xl color-tertiary"
-                    tabindex="0"
-                    (click)="moveToMultiCriteria()"
-                    (keydown.enter)="moveToMultiCriteria()"
+        >
+        <i class="pi pi-arrow-left mr-2"></i>
+        {{ "inventories-footprint.back-to" | translate }}
+        {{ "inventories-footprint.global.global-vision" | translate }}
+        {{
+        footprintStore.appGraphType() === "domain"
+        ? showDomainLabel()
+        ? " / " + footprintStore.appDomain()
+        : ""
+        : footprintStore.appGraphType() === "subdomain"
+        ? (showDomainLabel()
+        ? " / " + footprintStore.appDomain()
+        : "") +
+        (showSubDomainLabel()
+        ? " / " + footprintStore.appSubDomain()
+        : "")
+        : footprintStore.appGraphType() === "application"
+        ? (showDomainLabel()
+        ? " / " + footprintStore.appDomain()
+        : "") +
+        (showSubDomainLabel()
+        ? " / " + footprintStore.appSubDomain()
+        : "") +
+        " / " +
+        footprintStore.appApplication()
+        : ""
+        }}
+      </a>
+    } @else {
+      @if (this.appComponent.allUnmodifiedFootprint.length !== 1) {
+        <a
+          class="cursor-pointer m-0 text-xl color-tertiary"
+          tabindex="0"
+          (click)="moveToMultiCriteria()"
+          (keydown.enter)="moveToMultiCriteria()"
                     attr.aria-label="{{
                         'inventories-footprint.global.multi-criteria-view' | translate
                     }}"
-                >
-                    <i class="pi pi-arrow-left mr-2"></i>
-                    {{ "inventories-footprint.back-to" | translate }}
-                    {{ "inventories-footprint.global.multi-criteria-view" | translate }}
-                </a>
-            }
-        }
-    </div>
-
-    <ng-template [ngTemplateOutlet]="dataConsistencyRef"></ng-template>
-    @if (!showInconsitencyGraph) {
-        <p-dropdown
-            [options]="dimensions"
-            [ngModel]="selectedDimension()"
-            (ngModelChange)="footprintStore.setApplicationDimension($event)"
-            [placeholder]="'inventories-footprint.select-dimension' | translate"
-            styleClass="ml-auto"
-        >
-            <ng-template pTemplate="selectedItem">
-                <div *ngIf="selectedDimension()">
-                    {{
-                        "inventories-footprint.application-round-button." +
-                            selectedDimension() | translate
-                    }}
-                </div>
-            </ng-template>
-            <ng-template let-dimension pTemplate="item">
-                <div>
-                    {{
-                        "inventories-footprint.application-round-button." + dimension
-                            | translate
-                    }}
-                </div>
-            </ng-template>
-        </p-dropdown>
+          >
+          <i class="pi pi-arrow-left mr-2"></i>
+          {{ "inventories-footprint.back-to" | translate }}
+          {{ "inventories-footprint.global.multi-criteria-view" | translate }}
+        </a>
+      }
     }
+  </div>
+
+  <ng-template [ngTemplateOutlet]="dataConsistencyRef"></ng-template>
+  @if (!showInconsitencyGraph) {
+    <p-dropdown
+      [options]="dimensions"
+      [ngModel]="selectedDimension()"
+      (ngModelChange)="footprintStore.setApplicationDimension($event)"
+      [placeholder]="'inventories-footprint.select-dimension' | translate"
+      styleClass="ml-auto"
+      >
+      <ng-template pTemplate="selectedItem">
+        @if (selectedDimension()) {
+          <div>
+            {{
+            "inventories-footprint.application-round-button." +
+            selectedDimension() | translate
+            }}
+          </div>
+        }
+      </ng-template>
+      <ng-template let-dimension pTemplate="item">
+        <div>
+          {{
+          "inventories-footprint.application-round-button." + dimension
+          | translate
+          }}
+        </div>
+      </ng-template>
+    </p-dropdown>
+  }
 </div>
 @if (showInconsitencyGraph) {
-    @if (options().series && !noData()) {
-        <app-stack-bar-chart
-            [xAxisInput]="xAxisInput"
-            [statusCountMap]="criteriaMap"
-            (selectedStackBarClick)="selectedStackBarClick($event)"
-        />
-    } @else {
-        <div class="no-data-bar">
-            <p class="text-round-empty">{{ "common.no-data" | translate }}</p>
-        </div>
-    }
+  @if (options().series && !noData()) {
+    <app-stack-bar-chart
+      [xAxisInput]="xAxisInput"
+      [statusCountMap]="criteriaMap"
+      (selectedStackBarClick)="selectedStackBarClick($event)"
+      />
+  } @else {
+    <div class="no-data-bar">
+      <p class="text-round-empty">{{ "common.no-data" | translate }}</p>
+    </div>
+  }
 } @else {
-    @if (noData()) {
-        <div class="no-data-round">
-            <p tabindex="0" class="text-round-empty">
-                {{ "common.no-data" | translate }}
-            </p>
-        </div>
-    } @else {
-        <div
-            id="graph"
-            tabindex="0"
-            echarts
-            class="bar-stack m-0"
-            [options]="options()"
-            style="height: 53vh"
-            (chartClick)="onChartClick($event)"
-        ></div>
-    }
+  @if (noData()) {
+    <div class="no-data-round">
+      <p tabindex="0" class="text-round-empty">
+        {{ "common.no-data" | translate }}
+      </p>
+    </div>
+  } @else {
+    <div
+      id="graph"
+      tabindex="0"
+      echarts
+      class="bar-stack m-0"
+      [options]="options()"
+      style="height: 53vh"
+      (chartClick)="onChartClick($event)"
+    ></div>
+  }
 }
 <app-application-criteria-pie-chart
-    [footprint]="[footprint]"
+  [footprint]="[footprint]"
 ></app-application-criteria-pie-chart>
 <app-graph-description
-    [contentText]="getContentText()"
-    [textDescriptionImpacts]="textDescriptionImpacts"
-    (impactSelectedEvent)="handleImpactClick($event)"
-    [source]="true"
-    [sourceValue]="[]"
+  [contentText]="getContentText()"
+  [textDescriptionImpacts]="textDescriptionImpacts"
+  (impactSelectedEvent)="handleImpactClick($event)"
+  [source]="true"
+  [sourceValue]="[]"
 ></app-graph-description>
 
 <ng-template #dataConsistencyRef>
-    @if (showDataConsistencyBtn && inventory()?.enableDataInconsistency) {
-        <p-button
-            (onClick)="showInconsitencyGraph = !showInconsitencyGraph"
-            [rounded]="true"
-            [label]="'inventories-footprint.data-consistency' | translate"
-            [outlined]="!showInconsitencyGraph"
-            severity="danger"
-            class="ml-auto mt-3 mb-2 mr-2"
-            [ariaLabel]="'inventories-footprint.data-consistency' | translate"
-        />
-    }
+  @if (showDataConsistencyBtn && inventory()?.enableDataInconsistency) {
+    <p-button
+      (onClick)="showInconsitencyGraph = !showInconsitencyGraph"
+      [rounded]="true"
+      [label]="'inventories-footprint.data-consistency' | translate"
+      [outlined]="!showInconsitencyGraph"
+      severity="danger"
+      class="ml-auto mt-3 mb-2 mr-2"
+      [ariaLabel]="'inventories-footprint.data-consistency' | translate"
+      />
+  }
 </ng-template>

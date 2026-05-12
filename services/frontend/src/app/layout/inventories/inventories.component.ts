@@ -34,7 +34,7 @@ import { FilePanelComponent } from "./file-panel/file-panel.component";
 import { ToastModule } from "primeng/toast";
 import { SidebarModule } from "primeng/sidebar";
 import { CommonEditorComponent } from "../common/common-editor/common-editor.component";
-import { NgIf, NgFor, AsyncPipe } from "@angular/common";
+import { AsyncPipe } from "@angular/common";
 import { Button } from "primeng/button";
 import { ScrollPanelModule } from "primeng/scrollpanel";
 import { AccordionModule } from "primeng/accordion";
@@ -49,23 +49,21 @@ import { RenewServicePopupComponent } from "../common/renew-service-popup/renew-
     providers: [ConfirmationService, MessageService],
     standalone: true,
     imports: [
-        ToastModule,
-        SidebarModule,
-        FilePanelComponent,
-        CommonEditorComponent,
-        NgIf,
-        Button,
-        ScrollPanelModule,
-        AccordionModule,
-        NgFor,
-        InventoryItemComponent,
-        PrimeTemplate,
-        FormsModule,
-        InputTextModule,
-        RenewServicePopupComponent,
-        AsyncPipe,
-        TranslatePipe,
-    ],
+    ToastModule,
+    SidebarModule,
+    FilePanelComponent,
+    CommonEditorComponent,
+    Button,
+    ScrollPanelModule,
+    AccordionModule,
+    InventoryItemComponent,
+    PrimeTemplate,
+    FormsModule,
+    InputTextModule,
+    RenewServicePopupComponent,
+    AsyncPipe,
+    TranslatePipe
+],
 })
 export class InventoriesComponent implements OnInit, OnDestroy {
     private readonly destroyRef = inject(DestroyRef);

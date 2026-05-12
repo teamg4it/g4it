@@ -36,7 +36,7 @@ import { AbstractDashboard } from "src/app/layout/inventories-footprint/abstract
 import { Constants } from "src/constants";
 import { StackBarChartComponent } from "../../../common/stack-bar-chart/stack-bar-chart.component";
 import { NgxEchartsDirective } from "ngx-echarts";
-import { NgIf, NgFor } from "@angular/common";
+
 import { RadioButtonModule } from "primeng/radiobutton";
 import { FormsModule } from "@angular/forms";
 
@@ -45,13 +45,11 @@ import { FormsModule } from "@angular/forms";
     templateUrl: "./bar-chart.component.html",
     standalone: true,
     imports: [
-        StackBarChartComponent,
-        NgxEchartsDirective,
-        NgIf,
-        NgFor,
-        RadioButtonModule,
-        FormsModule,
-    ],
+    StackBarChartComponent,
+    NgxEchartsDirective,
+    RadioButtonModule,
+    FormsModule
+],
 })
 export class BarChartComponent extends AbstractDashboard implements OnChanges {
     @Input() barChartChild: boolean = false;

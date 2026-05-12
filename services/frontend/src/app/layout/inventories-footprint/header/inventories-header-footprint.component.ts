@@ -21,7 +21,7 @@ import { delay } from "src/app/core/utils/time";
 import { Constants } from "src/constants";
 import { ToastModule } from "primeng/toast";
 import { Button } from "primeng/button";
-import { NgIf, AsyncPipe } from "@angular/common";
+import { AsyncPipe } from "@angular/common";
 import { SidebarModule } from "primeng/sidebar";
 import { CommonEditorComponent } from "../../common/common-editor/common-editor.component";
 import { ConfirmPopupModule } from "primeng/confirmpopup";
@@ -33,17 +33,16 @@ import { MonthYearPipe } from "../../../core/pipes/monthyear.pipe";
     providers: [ConfirmationService, MessageService],
     standalone: true,
     imports: [
-        ToastModule,
-        Button,
-        RouterLink,
-        NgIf,
-        SidebarModule,
-        CommonEditorComponent,
-        ConfirmPopupModule,
-        AsyncPipe,
-        TranslatePipe,
-        MonthYearPipe,
-    ],
+    ToastModule,
+    Button,
+    RouterLink,
+    SidebarModule,
+    CommonEditorComponent,
+    ConfirmPopupModule,
+    AsyncPipe,
+    TranslatePipe,
+    MonthYearPipe
+],
 })
 export class InventoriesHeaderFootprintComponent implements OnInit, OnDestroy {
     @Input() inventory: Inventory = {} as Inventory;

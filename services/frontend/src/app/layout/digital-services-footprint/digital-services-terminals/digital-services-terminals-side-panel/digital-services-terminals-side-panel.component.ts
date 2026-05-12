@@ -21,7 +21,7 @@ import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
 import { AutofocusDirective } from "../../../../core/directives/auto-focus.directive";
 import { InputTextModule } from "primeng/inputtext";
-import { NgIf, AsyncPipe } from "@angular/common";
+import { AsyncPipe } from "@angular/common";
 import { DropdownModule } from "primeng/dropdown";
 import { InputNumberModule } from "primeng/inputnumber";
 import { Button } from "primeng/button";
@@ -33,17 +33,16 @@ import { TranslatePipe } from "@ngx-translate/core";
     providers: [MessageService],
     standalone: true,
     imports: [
-        AutofocusDirective,
-        FormsModule,
-        ReactiveFormsModule,
-        InputTextModule,
-        NgIf,
-        DropdownModule,
-        InputNumberModule,
-        Button,
-        AsyncPipe,
-        TranslatePipe,
-    ],
+    AutofocusDirective,
+    FormsModule,
+    ReactiveFormsModule,
+    InputTextModule,
+    DropdownModule,
+    InputNumberModule,
+    Button,
+    AsyncPipe,
+    TranslatePipe
+],
 })
 export class DigitalServicesTerminalsSidePanelComponent implements OnInit {
     private readonly digitalServicesBusiness = inject(DigitalServiceBusinessService);

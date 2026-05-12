@@ -22,7 +22,7 @@ import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServiceStoreService } from "src/app/core/store/digital-service.store";
 import { AutofocusDirective } from "../../../../../core/directives/auto-focus.directive";
 import { InputTextModule } from "primeng/inputtext";
-import { NgIf, AsyncPipe } from "@angular/common";
+import { AsyncPipe } from "@angular/common";
 import { InputNumberModule } from "primeng/inputnumber";
 import { Button } from "primeng/button";
 import { TranslatePipe } from "@ngx-translate/core";
@@ -33,16 +33,15 @@ import { TranslatePipe } from "@ngx-translate/core";
     providers: [MessageService],
     standalone: true,
     imports: [
-        AutofocusDirective,
-        FormsModule,
-        ReactiveFormsModule,
-        InputTextModule,
-        NgIf,
-        InputNumberModule,
-        Button,
-        AsyncPipe,
-        TranslatePipe,
-    ],
+    AutofocusDirective,
+    FormsModule,
+    ReactiveFormsModule,
+    InputTextModule,
+    InputNumberModule,
+    Button,
+    AsyncPipe,
+    TranslatePipe
+],
 })
 export class PanelAddVmComponent implements OnInit {
     private readonly digitalServiceStore = inject(DigitalServiceStoreService);

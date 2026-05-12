@@ -49,7 +49,7 @@ import { GlobalStoreService } from "src/app/core/store/global.store";
 import { Constants } from "src/constants";
 import { AbstractDashboard } from "../../abstract-dashboard";
 import { InventoriesApplicationFootprintComponent } from "../inventories-application-footprint.component";
-import { NgClass, NgTemplateOutlet, NgIf } from "@angular/common";
+import { NgClass, NgTemplateOutlet } from "@angular/common";
 import { DropdownModule } from "primeng/dropdown";
 import { FormsModule } from "@angular/forms";
 import { PrimeTemplate } from "primeng/api";
@@ -63,19 +63,18 @@ import { Button } from "primeng/button";
     templateUrl: "./application-criteria-footprint.component.html",
     standalone: true,
     imports: [
-        NgClass,
-        NgTemplateOutlet,
-        DropdownModule,
-        FormsModule,
-        PrimeTemplate,
-        NgIf,
-        StackBarChartComponent,
-        NgxEchartsDirective,
-        ApplicationCriteriaPieChartComponent,
-        GraphDescriptionComponent,
-        Button,
-        TranslatePipe,
-    ],
+    NgClass,
+    NgTemplateOutlet,
+    DropdownModule,
+    FormsModule,
+    PrimeTemplate,
+    StackBarChartComponent,
+    NgxEchartsDirective,
+    ApplicationCriteriaPieChartComponent,
+    GraphDescriptionComponent,
+    Button,
+    TranslatePipe
+],
 })
 export class ApplicationCriteriaFootprintComponent
     extends AbstractDashboard

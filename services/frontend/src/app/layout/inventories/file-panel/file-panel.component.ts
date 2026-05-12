@@ -42,7 +42,7 @@ import { TemplateFileService } from "src/app/core/service/data/template-file.ser
 import { WorkspaceReferenceDataService } from "src/app/core/service/data/workspace-reference-data.service";
 import { Constants } from "src/constants";
 import { SelectFileComponent } from "./select-file/select-file.component";
-import { NgIf, NgFor } from "@angular/common";
+
 import { AutofocusDirective } from "../../../core/directives/auto-focus.directive";
 import { CalendarModule } from "primeng/calendar";
 import { InputTextModule } from "primeng/inputtext";
@@ -53,17 +53,15 @@ import { Button } from "primeng/button";
     templateUrl: "./file-panel.component.html",
     standalone: true,
     imports: [
-        NgIf,
-        AutofocusDirective,
-        FormsModule,
-        RadioButtonModule,
-        CalendarModule,
-        ReactiveFormsModule,
-        InputTextModule,
-        Button,
-        NgFor,
-        TranslatePipe,
-    ],
+    AutofocusDirective,
+    FormsModule,
+    RadioButtonModule,
+    CalendarModule,
+    ReactiveFormsModule,
+    InputTextModule,
+    Button,
+    TranslatePipe
+],
 })
 export class FilePanelComponent implements OnInit, OnDestroy, AfterViewInit, OnChanges {
     private readonly userService = inject(UserService);

@@ -38,7 +38,7 @@ import { CommonEditorComponent } from "../../common/common-editor/common-editor.
 import { DigitalServicesImportComponent } from "../digital-services-import/digital-services-import.component";
 import { ConfirmPopupModule } from "primeng/confirmpopup";
 import { Button } from "primeng/button";
-import { NgClass, NgIf, AsyncPipe } from "@angular/common";
+import { NgClass, AsyncPipe } from "@angular/common";
 import { InplaceModule } from "primeng/inplace";
 import { FormsModule } from "@angular/forms";
 import { InputTextModule } from "primeng/inputtext";
@@ -54,26 +54,25 @@ import { RenewServicePopupComponent } from "../../common/renew-service-popup/ren
     providers: [MessageService, ConfirmationService],
     standalone: true,
     imports: [
-        ToastModule,
-        SidebarModule,
-        CommonEditorComponent,
-        PrimeTemplate,
-        DigitalServicesImportComponent,
-        ConfirmPopupModule,
-        Button,
-        NgClass,
-        NgIf,
-        InplaceModule,
-        FormsModule,
-        InputTextModule,
-        VersionTypeTagComponent,
-        TooltipModule,
-        LinkCreatePopupComponent,
-        PromoteVersionDialogComponent,
-        RenewServicePopupComponent,
-        AsyncPipe,
-        TranslatePipe,
-    ],
+    ToastModule,
+    SidebarModule,
+    CommonEditorComponent,
+    PrimeTemplate,
+    DigitalServicesImportComponent,
+    ConfirmPopupModule,
+    Button,
+    NgClass,
+    InplaceModule,
+    FormsModule,
+    InputTextModule,
+    VersionTypeTagComponent,
+    TooltipModule,
+    LinkCreatePopupComponent,
+    PromoteVersionDialogComponent,
+    RenewServicePopupComponent,
+    AsyncPipe,
+    TranslatePipe
+],
 })
 export class DigitalServicesFootprintHeaderComponent implements OnInit {
     protected readonly global = inject(GlobalStoreService);

@@ -10,7 +10,7 @@ import { FormNavComponent } from "../../common/form-nav/form-nav.component";
 import { ScrollPanelModule } from "primeng/scrollpanel";
 import { Button } from "primeng/button";
 import { InputTextModule } from "primeng/inputtext";
-import { NgIf } from "@angular/common";
+
 
 @Component({
     selector: "app-create-digital-services-sidebar",
@@ -18,15 +18,14 @@ import { NgIf } from "@angular/common";
     styleUrls: ["./create-digital-services-sidebar.component.scss"],
     standalone: true,
     imports: [
-        FormNavComponent,
-        ScrollPanelModule,
-        FormsModule,
-        ReactiveFormsModule,
-        Button,
-        InputTextModule,
-        NgIf,
-        TranslatePipe,
-    ],
+    FormNavComponent,
+    ScrollPanelModule,
+    FormsModule,
+    ReactiveFormsModule,
+    Button,
+    InputTextModule,
+    TranslatePipe
+],
 })
 export class CreateDigitalServicesSidebarComponent implements OnInit {
     allDigitalServices = input<DigitalService[]>([]);

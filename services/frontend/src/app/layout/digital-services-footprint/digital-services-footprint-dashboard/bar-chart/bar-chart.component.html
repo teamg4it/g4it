@@ -1,69 +1,78 @@
 @if (showInconsitency()) {
-    <app-stack-bar-chart
-        [xAxisInput]="xAxisInput"
-        [statusCountMap]="criteriaMap"
-        [cursor]="'default'"
+  <app-stack-bar-chart
+    [xAxisInput]="xAxisInput"
+    [statusCountMap]="criteriaMap"
+    [cursor]="'default'"
     />
 } @else {
-    <div
-        echarts
-        class="bar-stack m-0 mt-4 h-28rem"
-        [options]="options"
-        (chartClick)="onChartClick($event)"
-    ></div>
+  <div
+    echarts
+    class="bar-stack m-0 mt-4 h-28rem"
+    [options]="options"
+    (chartClick)="onChartClick($event)"
+  ></div>
 }
-<div
-    *ngIf="selectedParam == 'Terminal' && !barChartChild"
+@if (selectedParam == 'Terminal' && !barChartChild) {
+  <div
     class="flex justify-content-center"
->
-    <div *ngFor="let option of terminalsOptions">
+    >
+    @for (option of terminalsOptions; track option) {
+      <div>
         <p-radioButton
-            [inputId]="option.key"
-            name="option"
-            [value]="option.value"
-            [(ngModel)]="terminalsRadioButtonSelected"
-            (onClick)="changeTerminalsRadioButtonSelected()"
+          [inputId]="option.key"
+          name="option"
+          [value]="option.value"
+          [(ngModel)]="terminalsRadioButtonSelected"
+          (onClick)="changeTerminalsRadioButtonSelected()"
         ></p-radioButton>
         <label [for]="option.key" class="ml-2 mr-4 cursor-pointer">{{
-            option.name
+          option.name
         }}</label>
-    </div>
-</div>
-<div
-    *ngIf="selectedParam == 'CloudService' && !barChartChild"
+      </div>
+    }
+  </div>
+}
+@if (selectedParam == 'CloudService' && !barChartChild) {
+  <div
     class="flex justify-content-center"
->
-    <div *ngFor="let option of cloudOptions">
+    >
+    @for (option of cloudOptions; track option) {
+      <div>
         <p-radioButton
-            [inputId]="option.key"
-            name="option"
-            [value]="option.value"
-            [(ngModel)]="cloudRadioButtonSelected"
-            (onClick)="changeCloudsRadioButtonSelected()"
+          [inputId]="option.key"
+          name="option"
+          [value]="option.value"
+          [(ngModel)]="cloudRadioButtonSelected"
+          (onClick)="changeCloudsRadioButtonSelected()"
         ></p-radioButton>
         <label [for]="option.key" class="ml-2 mr-4 cursor-pointer">{{
-            option.name
+          option.name
         }}</label>
-    </div>
-</div>
-<div
-    *ngIf="
-        selectedParam == 'Server' &&
-        barChartChild &&
-        !selectedDetailParam.includes('Dedicated')
-    "
+      </div>
+    }
+  </div>
+}
+@if (
+  selectedParam == 'Server' &&
+  barChartChild &&
+  !selectedDetailParam.includes('Dedicated')
+  ) {
+  <div
     class="flex justify-content-center"
->
-    <div *ngFor="let option of serversOptions">
+    >
+    @for (option of serversOptions; track option) {
+      <div>
         <p-radioButton
-            [inputId]="option.key"
-            name="option"
-            [value]="option.value"
-            [(ngModel)]="serversRadioButtonSelected"
-            (onClick)="changeServersRadioButtonSelected()"
+          [inputId]="option.key"
+          name="option"
+          [value]="option.value"
+          [(ngModel)]="serversRadioButtonSelected"
+          (onClick)="changeServersRadioButtonSelected()"
         ></p-radioButton>
         <label [for]="option.key" class="ml-2 mr-4 cursor-pointer">{{
-            option.name
+          option.name
         }}</label>
-    </div>
-</div>
+      </div>
+    }
+  </div>
+}

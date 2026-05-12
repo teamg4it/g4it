@@ -15,7 +15,7 @@ import { PanelAddVmComponent } from "../add-vm/add-vm.component";
 import { AutofocusDirective } from "../../../../../core/directives/auto-focus.directive";
 import { DigitalServiceTableComponent } from "../../../../common/digital-service-table/digital-service-table.component";
 import { Button } from "primeng/button";
-import { NgIf, AsyncPipe } from "@angular/common";
+import { AsyncPipe } from "@angular/common";
 import { SidebarModule } from "primeng/sidebar";
 import { TranslatePipe } from "@ngx-translate/core";
 
@@ -24,15 +24,14 @@ import { TranslatePipe } from "@ngx-translate/core";
     templateUrl: "./list-vm.component.html",
     standalone: true,
     imports: [
-        AutofocusDirective,
-        DigitalServiceTableComponent,
-        Button,
-        NgIf,
-        SidebarModule,
-        PanelAddVmComponent,
-        AsyncPipe,
-        TranslatePipe,
-    ],
+    AutofocusDirective,
+    DigitalServiceTableComponent,
+    Button,
+    SidebarModule,
+    PanelAddVmComponent,
+    AsyncPipe,
+    TranslatePipe
+],
 })
 export class PanelListVmComponent {
     @ViewChild("vmSidePanel", { static: false })

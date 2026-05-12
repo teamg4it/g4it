@@ -1,4 +1,4 @@
-import { CommonModule } from "@angular/common";
+
 import {
     Component,
     DestroyRef,
@@ -29,15 +29,14 @@ import { SharedModule } from "src/app/core/shared/shared.module";
     templateUrl: "./renew-service-popup.component.html",
     standalone: true,
     imports: [
-        CommonModule,
-        FormsModule,
-        TranslateModule,
-        ClipboardModule,
-        ButtonModule,
-        DialogModule,
-        InputTextModule,
-        SharedModule,
-    ],
+    FormsModule,
+    TranslateModule,
+    ClipboardModule,
+    ButtonModule,
+    DialogModule,
+    InputTextModule,
+    SharedModule
+],
 })
 export class RenewServicePopupComponent implements OnInit {
     private readonly digitalServicesData = inject(DigitalServicesDataService);

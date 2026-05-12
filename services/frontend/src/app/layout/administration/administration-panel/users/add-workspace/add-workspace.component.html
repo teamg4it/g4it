@@ -1,140 +1,147 @@
 <div class="px-4" style="height: 100%">
-    <div
-        class="side-panel-title"
-        [attr.aria-label]="'new-inventory-choose' | translate"
-        appAutofocus
-        tabindex="-1"
+  <div
+    class="side-panel-title"
+    [attr.aria-label]="'new-inventory-choose' | translate"
+    appAutofocus
+    tabindex="-1"
     >
-        {{ "administration.user.accessAndRole" | translate }}
-    </div>
-    {{ workspace.organizationName }}
-    <br />
+    {{ "administration.user.accessAndRole" | translate }}
+  </div>
+  {{ workspace.organizationName }}
+  <br />
 
-    <div>
-        <input
-            *ngIf="userDetail"
-            class="w-full"
-            type="text"
-            [value]="userDetail.email"
-            name="email"
-            pInputText
-            readonly
-            aria-label="Email"
+  <div>
+    @if (userDetail) {
+      <input
+        class="w-full"
+        type="text"
+        [value]="userDetail.email"
+        name="email"
+        pInputText
+        readonly
+        aria-label="Email"
         />
-    </div>
+    }
+  </div>
+  <br />
+  <div>
+    {{ "administration.user.access" | translate }} <br />
+    <div
+      class="h-2rem border-top-2 border-primary p-0 mt-1"
+      style="color: lightgray"
+    ></div>
+    <label for="module-is-dropdown">
+      {{ "administration.user.is-module" | translate }}
+    </label>
+    <p-dropdown
+      appendTo="body"
+      [style]="{ width: '100%' }"
+      [(ngModel)]="isModule"
+      [options]="isModuleValues"
+      optionLabel="value"
+      placeholder="{{ 'administration.user.is-module' | translate }}"
+      [disabled]="isAdmin"
+      [showClear]="true"
+      id="module-is-dropdown"
+    ></p-dropdown>
     <br />
-    <div>
-        {{ "administration.user.access" | translate }} <br />
-        <div
-            class="h-2rem border-top-2 border-primary p-0 mt-1"
-            style="color: lightgray"
-        ></div>
-        <label for="module-is-dropdown">
-            {{ "administration.user.is-module" | translate }}
-        </label>
-        <p-dropdown
-            appendTo="body"
-            [style]="{ width: '100%' }"
-            [(ngModel)]="isModule"
-            [options]="isModuleValues"
-            optionLabel="value"
-            placeholder="{{ 'administration.user.is-module' | translate }}"
-            [disabled]="isAdmin"
-            [showClear]="true"
-            id="module-is-dropdown"
-        ></p-dropdown>
-        <br />
-        <br />
-        <label for="module-ds-dropdown">{{
-            "administration.user.ds-module" | translate
-        }}</label>
-        <p-dropdown
-            appendTo="body"
-            [style]="{ width: '100%' }"
-            [(ngModel)]="dsModule"
-            [options]="dsModuleValues"
-            optionLabel="value"
-            placeholder="{{ 'administration.user.ds-module' | translate }}"
-            [disabled]="isAdmin"
-            [showClear]="true"
-            id="module-ds-dropdown"
-        ></p-dropdown>
-        @if (isEcoMindModuleEnabled && userDetailEcoMind) {
-            <br />
-            <br />
-            <label for="module-ecomind-dropdown">{{
-                "administration.user.ecomind-module" | translate
-            }}</label>
-            <p-dropdown
-                appendTo="body"
-                [style]="{ width: '100%' }"
-                [(ngModel)]="ecomindModule"
-                [options]="ecomindModuleValues"
-                optionLabel="value"
-                placeholder="{{ 'administration.user.ecomind-module' | translate }}"
-                [disabled]="isAdmin"
-                [showClear]="true"
-                id="module-ecomind-dropdown"
-            ></p-dropdown>
-        }
-    </div>
     <br />
-    <div>
-        <label for="user-role-dropdown"
-            >{{ "administration.user.role" | translate }} </label
-        ><br />
-        <div
-            class="h-2rem border-top-2 border-primary p-0 mt-1"
-            style="color: lightgray"
-        ></div>
-        <p-dropdown
-            appendTo="body"
-            [style]="{ width: '100%' }"
-            [(ngModel)]="adminModule"
-            [options]="adminModuleValues"
-            optionLabel="value"
-            (onChange)="validateOnAdmin()"
-            [required]="true"
-            placeholder="{{ 'administration.user.role' | translate }}"
-            class="p-inputtext-sm type-dropdown"
-            id="user-role-dropdown"
-        ></p-dropdown>
-        <p class="error-text" *ngIf="!adminModule">
-            {{ "administration.user.role" | translate }}
-            {{ "common.mandatory" | translate }}
+    <label for="module-ds-dropdown">{{
+      "administration.user.ds-module" | translate
+    }}</label>
+    <p-dropdown
+      appendTo="body"
+      [style]="{ width: '100%' }"
+      [(ngModel)]="dsModule"
+      [options]="dsModuleValues"
+      optionLabel="value"
+      placeholder="{{ 'administration.user.ds-module' | translate }}"
+      [disabled]="isAdmin"
+      [showClear]="true"
+      id="module-ds-dropdown"
+    ></p-dropdown>
+    @if (isEcoMindModuleEnabled && userDetailEcoMind) {
+      <br />
+      <br />
+      <label for="module-ecomind-dropdown">{{
+        "administration.user.ecomind-module" | translate
+      }}</label>
+      <p-dropdown
+        appendTo="body"
+        [style]="{ width: '100%' }"
+        [(ngModel)]="ecomindModule"
+        [options]="ecomindModuleValues"
+        optionLabel="value"
+        placeholder="{{ 'administration.user.ecomind-module' | translate }}"
+        [disabled]="isAdmin"
+        [showClear]="true"
+        id="module-ecomind-dropdown"
+      ></p-dropdown>
+    }
+  </div>
+  <br />
+  <div>
+    <label for="user-role-dropdown"
+      >{{ "administration.user.role" | translate }} </label
+      ><br />
+      <div
+        class="h-2rem border-top-2 border-primary p-0 mt-1"
+        style="color: lightgray"
+      ></div>
+      <p-dropdown
+        appendTo="body"
+        [style]="{ width: '100%' }"
+        [(ngModel)]="adminModule"
+        [options]="adminModuleValues"
+        optionLabel="value"
+        (onChange)="validateOnAdmin()"
+        [required]="true"
+        placeholder="{{ 'administration.user.role' | translate }}"
+        class="p-inputtext-sm type-dropdown"
+        id="user-role-dropdown"
+      ></p-dropdown>
+      @if (!adminModule) {
+        <p class="error-text">
+          {{ "administration.user.role" | translate }}
+          {{ "common.mandatory" | translate }}
         </p>
-        <p *ngIf="isAdminRoleDisabled">
-            {{ "administration.user.unauthorized-domain" | translate }}
+      }
+      @if (isAdminRoleDisabled) {
+        <p>
+          {{ "administration.user.unauthorized-domain" | translate }}
         </p>
+      }
     </div>
     <div class="button-bottom-right">
-        <p-button
-            styleClass="white-button-sidebar"
-            class="pr-3 pl-3"
-            (onClick)="cancel()"
-            >{{ "common.cancel" | translate }}</p-button
+      <p-button
+        styleClass="white-button-sidebar"
+        class="pr-3 pl-3"
+        (onClick)="cancel()"
+        >{{ "common.cancel" | translate }}</p-button
         >
-        <p-button
+        @if (!updateOrganizationEnable) {
+          <p-button
             styleClass="black-button-sidebar"
             [disabled]="!adminModule"
             type="submit"
             (onClick)="addUpdateWorkspace()"
-            *ngIf="!updateOrganizationEnable"
             id="add-button"
-        >
+            >
             <span>{{ "common.add" | translate }}</span>
-        </p-button>
-        <p-button
+          </p-button>
+        }
+        @if (updateOrganizationEnable) {
+          <p-button
             styleClass="black-button-sidebar"
-            *ngIf="updateOrganizationEnable"
             [disabled]="!adminModule"
             type="submit"
             (onClick)="addUpdateWorkspace()"
             id="update-button"
-        >
+            >
             <span>{{ "common.save" | translate }}</span>
-        </p-button>
+          </p-button>
+        }
         <br />
         <br />
+      </div>
     </div>
-</div>

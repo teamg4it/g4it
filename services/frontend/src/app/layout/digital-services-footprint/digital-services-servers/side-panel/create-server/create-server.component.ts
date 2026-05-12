@@ -16,7 +16,7 @@ import { DigitalServiceServerConfig } from "src/app/core/interfaces/digital-serv
 import { DigitalServiceBusinessService } from "src/app/core/service/business/digital-services.service";
 import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServiceStoreService } from "src/app/core/store/digital-service.store";
-import { NgIf, AsyncPipe } from "@angular/common";
+import { AsyncPipe } from "@angular/common";
 import { AutofocusDirective } from "../../../../../core/directives/auto-focus.directive";
 import { InputTextModule } from "primeng/inputtext";
 import { RadioButtonModule } from "primeng/radiobutton";
@@ -30,17 +30,16 @@ import { TranslatePipe } from "@ngx-translate/core";
     providers: [MessageService],
     standalone: true,
     imports: [
-        NgIf,
-        AutofocusDirective,
-        FormsModule,
-        ReactiveFormsModule,
-        InputTextModule,
-        RadioButtonModule,
-        DividerModule,
-        Button,
-        AsyncPipe,
-        TranslatePipe,
-    ],
+    AutofocusDirective,
+    FormsModule,
+    ReactiveFormsModule,
+    InputTextModule,
+    RadioButtonModule,
+    DividerModule,
+    Button,
+    AsyncPipe,
+    TranslatePipe
+],
 })
 export class PanelCreateServerComponent implements OnInit {
     private readonly digitalServiceStore = inject(DigitalServiceStoreService);

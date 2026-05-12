@@ -1,58 +1,59 @@
 <p-card styleClass="digital-services-card" [attr.aria-label]="digitalService().name">
-    <div class="flex align-items-center justify-content-between">
-        <span class="w-full mr-2">
-            <p-button
-                styleClass="w-full font-bold text-xl text-left text-gray-900"
-                (onClick)="goToDigitalServiceFootprint(digitalService().activeDsvUid)"
-                [label]="digitalService().name"
-                [text]="true"
-                [plain]="true"
-                role="heading"
-                aria-level="2"
-            />
-        </span>
+  <div class="flex align-items-center justify-content-between">
+    <span class="w-full mr-2">
+      <p-button
+        styleClass="w-full font-bold text-xl text-left text-gray-900"
+        (onClick)="goToDigitalServiceFootprint(digitalService().activeDsvUid)"
+        [label]="digitalService().name"
+        [text]="true"
+        [plain]="true"
+        role="heading"
+        aria-level="2"
+        />
+    </span>
 
-        <!-- Renew Service code -->
-        @if (showExpiryMessage() && (userService.isAllowedDigitalServiceWrite$ | async)) {
-            <div class="expiry-card flex align-items-center px-3 py-2 border-round mx-3">
-                <i class="pi pi-exclamation-triangle mr-3 expiry-icon text-xl"></i>
+    <!-- Renew Service code -->
+    @if (showExpiryMessage() && (userService.isAllowedDigitalServiceWrite$ | async)) {
+      <div class="expiry-card flex align-items-center px-3 py-2 border-round mx-3">
+        <i class="pi pi-exclamation-triangle mr-3 expiry-icon text-xl"></i>
 
-                <div class="flex flex-column">
-                    <span class="expiry-title text-sm font-semibold">
-                        {{
-                            "digital-services.expiry-warning"
-                                | translate: { expiryDate: digitalService().expiryDate }
-                        }}
-                    </span>
+        <div class="flex flex-column">
+          <span class="expiry-title text-sm font-semibold">
+            {{
+            "digital-services.expiry-warning"
+            | translate: { expiryDate: digitalService().expiryDate }
+            }}
+          </span>
 
-                    <button
-                        class="expiry-link text-xs p-0 m-0 border-none text-left cursor-pointer underline"
+          <button
+            class="expiry-link text-xs p-0 m-0 border-none text-left cursor-pointer underline"
                         (click)="
                             $event.stopPropagation();
                             renewInventoryId.emit(digitalService().activeDsvUid)
                         "
-                    >
-                        {{ "digital-services.click-extend" | translate }}
-                    </button>
-                </div>
-            </div>
-        }
+            >
+            {{ "digital-services.click-extend" | translate }}
+          </button>
+        </div>
+      </div>
+    }
 
-        <p-button
-            styleClass="mx-1"
-            *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
-            [rounded]="true"
-            (onClick)="confirmDelete($event, digitalService())"
-            [text]="true"
-            [plain]="true"
-            icon="pi pi-trash"
-            id="delete-digital-service"
+    @if (userService.isAllowedDigitalServiceWrite$ | async) {
+      <p-button
+        styleClass="mx-1"
+        [rounded]="true"
+        (onClick)="confirmDelete($event, digitalService())"
+        [text]="true"
+        [plain]="true"
+        icon="pi pi-trash"
+        id="delete-digital-service"
             [ariaLabel]="
                 'digital-services.delete-criteria'
                     | translate: { digitalServiceName: digitalService().name }
             "
         />
+    }
 
-        <p-confirmPopup [style]="{ width: '450px' }"> </p-confirmPopup>
-    </div>
+    <p-confirmPopup [style]="{ width: '450px' }"> </p-confirmPopup>
+  </div>
 </p-card>

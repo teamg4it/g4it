@@ -20,7 +20,7 @@ import { GlobalStoreService } from "src/app/core/store/global.store";
 import { DialogModule } from "primeng/dialog";
 import { CheckboxModule } from "primeng/checkbox";
 import { FormsModule } from "@angular/forms";
-import { NgFor } from "@angular/common";
+
 import { PrimeTemplate } from "primeng/api";
 import { Button } from "primeng/button";
 
@@ -30,14 +30,13 @@ import { Button } from "primeng/button";
     providers: [MonthYearPipe],
     standalone: true,
     imports: [
-        DialogModule,
-        CheckboxModule,
-        FormsModule,
-        NgFor,
-        PrimeTemplate,
-        Button,
-        TranslatePipe,
-    ],
+    DialogModule,
+    CheckboxModule,
+    FormsModule,
+    PrimeTemplate,
+    Button,
+    TranslatePipe
+],
 })
 export class CriteriaPopupComponent implements OnChanges {
     @Input() displayPopup: boolean = false;

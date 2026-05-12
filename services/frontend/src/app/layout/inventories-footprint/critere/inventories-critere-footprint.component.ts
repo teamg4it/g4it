@@ -40,7 +40,7 @@ import { getLifeCycleList, getLifeCycleMap } from "src/app/core/utils/lifecycle"
 import { Constants } from "src/constants";
 import { AbstractDashboard } from "../abstract-dashboard";
 import { InventoriesFootprintComponent } from "../inventories-footprint.component";
-import { NgClass, NgIf } from "@angular/common";
+import { NgClass } from "@angular/common";
 import { Button } from "primeng/button";
 import { DropdownModule } from "primeng/dropdown";
 import { FormsModule } from "@angular/forms";
@@ -55,17 +55,16 @@ import { TranslatePipe } from "@ngx-translate/core";
     templateUrl: "./inventories-critere-footprint.component.html",
     standalone: true,
     imports: [
-        NgClass,
-        Button,
-        DropdownModule,
-        FormsModule,
-        PrimeTemplate,
-        NgIf,
-        StackBarChartComponent,
-        NgxEchartsDirective,
-        GraphDescriptionComponent,
-        TranslatePipe,
-    ],
+    NgClass,
+    Button,
+    DropdownModule,
+    FormsModule,
+    PrimeTemplate,
+    StackBarChartComponent,
+    NgxEchartsDirective,
+    GraphDescriptionComponent,
+    TranslatePipe
+],
 })
 export class InventoriesCritereFootprintComponent
     extends AbstractDashboard

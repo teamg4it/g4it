@@ -1,137 +1,150 @@
 <div class="lg-file-panel-margin">
+  @if (network.idFront) {
     <div
-        class="side-panel-title"
-        *ngIf="network.idFront; else new"
-        role="heading"
-        aria-level="2"
-        appAutofocus
-        tabindex="-1"
-    >
-        {{ "digital-services-networks.edit" | translate }}
+      class="side-panel-title"
+      role="heading"
+      aria-level="2"
+      appAutofocus
+      tabindex="-1"
+      >
+      {{ "digital-services-networks.edit" | translate }}
     </div>
-    <ng-template #new>
-        <div
-            class="side-panel-title"
-            role="heading"
-            aria-level="2"
-            appAutofocus
-            tabindex="-1"
-        >
-            {{ "digital-services-networks.new" | translate }}
-        </div>
-    </ng-template>
-    <form
-        [formGroup]="networksForm"
-        class="terminal-grid-form"
-        (ngSubmit)="submitFormData()"
+  } @else {
+    <div
+      class="side-panel-title"
+      role="heading"
+      aria-level="2"
+      appAutofocus
+      tabindex="-1"
+      >
+      {{ "digital-services-networks.new" | translate }}
+    </div>
+  }
+  <form
+    [formGroup]="networksForm"
+    class="terminal-grid-form"
+    (ngSubmit)="submitFormData()"
     >
-        <div class="label-input-div">
-            <label for="terminalName">{{
-                "digital-services-servers.name" | translate
-            }}</label>
-            <input
-                pInputText
-                formControlName="name"
-                [required]="true"
-                [(ngModel)]="network.name"
-                name="name"
-                ngDefaultControl
-                locale="fr-FR"
-                id="terminalName"
-            />
-            <p class="error-text" *ngIf="networksForm.get('name')?.hasError('required')">
-                {{ "digital-services-networks.network-name" | translate }}
-                {{ "common.mandatory" | translate }}
-            </p>
-            <p
-                class="error-text"
-                *ngIf="networksForm.get('name')?.hasError('uniqueName')"
-            >
-                {{ "digital-services-networks.error.network-already-exists" | translate }}
-            </p>
+    <div class="label-input-div">
+      <label for="terminalName">{{
+        "digital-services-servers.name" | translate
+      }}</label>
+      <input
+        pInputText
+        formControlName="name"
+        [required]="true"
+        [(ngModel)]="network.name"
+        name="name"
+        ngDefaultControl
+        locale="fr-FR"
+        id="terminalName"
+        />
+      @if (networksForm.get('name')?.hasError('required')) {
+        <p class="error-text">
+          {{ "digital-services-networks.network-name" | translate }}
+          {{ "common.mandatory" | translate }}
+        </p>
+      }
+      @if (networksForm.get('name')?.hasError('uniqueName')) {
+        <p
+          class="error-text"
+          >
+          {{ "digital-services-networks.error.network-already-exists" | translate }}
+        </p>
+      }
+    </div>
+    <div class="label-input-div">
+      <label for="type">{{ "digital-services-networks.type" | translate }}</label>
+      <p-dropdown
+        appendTo="body"
+        [options]="digitalServiceStore.networkTypes()"
+        optionLabel="value"
+        styleClass="dropdown-terminal"
+        formControlName="type"
+        [required]="true"
+        [(ngModel)]="network.type"
+        name="type"
+        inputId="type"
+        ngDefaultControl
+        lang="en"
+      ></p-dropdown>
+      @if (networksForm.get('type')?.hasError('required')) {
+        <p class="error-text">
+          {{ "digital-services-networks.type" | translate }}
+          {{ "common.mandatory" | translate }}
+        </p>
+      }
+    </div>
+    <div class="label-input-div">
+      <label for="yearlyQuantityOfGbExchanged">{{
+        "digital-services-networks.yearly-go" | translate
+      }}</label>
+      <p-inputNumber
+        formControlName="yearlyQuantityOfGbExchanged"
+        inputId="minmaxfraction"
+        mode="decimal"
+        [minFractionDigits]="1"
+        [maxFractionDigits]="6"
+        [required]="true"
+        [min]="0"
+        [(ngModel)]="network.yearlyQuantityOfGbExchanged"
+        name="yearlyQuantityOfGbExchanged"
+        ngDefaultControl
+        locale="fr-FR"
+        id="yearlyQuantityOfGbExchanged"
+        [ariaLabel]="'digital-services-networks.yearly-go' | translate"
+        />
+      @if (
+        networksForm.get('yearlyQuantityOfGbExchanged')?.hasError('required')
+        ) {
+        <p
+          class="error-text"
+          >
+          {{ "digital-services-networks.yearly-go" | translate }}
+          {{ "common.mandatory" | translate }}
+        </p>
+      }
+    </div>
+    <div class="button-bottom-right">
+      @if (networksForm.hasError('xssDetected') && networksForm.dirty) {
+        <div
+          class="error-text block"
+          >
+          {{ "digital-services.error.xss-detected" | translate }}
         </div>
-        <div class="label-input-div">
-            <label for="type">{{ "digital-services-networks.type" | translate }}</label>
-            <p-dropdown
-                appendTo="body"
-                [options]="digitalServiceStore.networkTypes()"
-                optionLabel="value"
-                styleClass="dropdown-terminal"
-                formControlName="type"
-                [required]="true"
-                [(ngModel)]="network.type"
-                name="type"
-                inputId="type"
-                ngDefaultControl
-                lang="en"
-            ></p-dropdown>
-            <p class="error-text" *ngIf="networksForm.get('type')?.hasError('required')">
-                {{ "digital-services-networks.type" | translate }}
-                {{ "common.mandatory" | translate }}
-            </p>
-        </div>
-        <div class="label-input-div">
-            <label for="yearlyQuantityOfGbExchanged">{{
-                "digital-services-networks.yearly-go" | translate
-            }}</label>
-            <p-inputNumber
-                formControlName="yearlyQuantityOfGbExchanged"
-                inputId="minmaxfraction"
-                mode="decimal"
-                [minFractionDigits]="1"
-                [maxFractionDigits]="6"
-                [required]="true"
-                [min]="0"
-                [(ngModel)]="network.yearlyQuantityOfGbExchanged"
-                name="yearlyQuantityOfGbExchanged"
-                ngDefaultControl
-                locale="fr-FR"
-                id="yearlyQuantityOfGbExchanged"
-                [ariaLabel]="'digital-services-networks.yearly-go' | translate"
-            />
-            <p
-                class="error-text"
-                *ngIf="
-                    networksForm.get('yearlyQuantityOfGbExchanged')?.hasError('required')
-                "
-            >
-                {{ "digital-services-networks.yearly-go" | translate }}
-                {{ "common.mandatory" | translate }}
-            </p>
-        </div>
-        <div class="button-bottom-right">
-            <div
-                class="error-text block"
-                *ngIf="networksForm.hasError('xssDetected') && networksForm.dirty"
-            >
-                {{ "digital-services.error.xss-detected" | translate }}
-            </div>
-            <p-button
-                *ngIf="
-                    network.idFront && (userService.isAllowedDigitalServiceWrite$ | async)
-                "
-                (onClick)="deleteNetwork()"
-                styleClass="grey-button"
-            >
-                {{ "common.delete" | translate }}
-            </p-button>
-            <p-button (onClick)="cancelNetwork()" styleClass="white-button">
-                {{ "common.cancel" | translate }}
-            </p-button>
-            <p-button
-                *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
-                styleClass="yellow-button"
-                [disabled]="networksForm.invalid"
-                type="submit"
-                id="submit-networks"
-            >
-                <span *ngIf="!network.idFront">
-                    {{ "common.add" | translate }}
-                </span>
-                <span *ngIf="network.idFront">
-                    {{ "common.save" | translate }}
-                </span>
-            </p-button>
-        </div>
-    </form>
+      }
+      @if (
+        network.idFront && (userService.isAllowedDigitalServiceWrite$ | async)
+        ) {
+        <p-button
+          (onClick)="deleteNetwork()"
+          styleClass="grey-button"
+          >
+          {{ "common.delete" | translate }}
+        </p-button>
+      }
+      <p-button (onClick)="cancelNetwork()" styleClass="white-button">
+        {{ "common.cancel" | translate }}
+      </p-button>
+      @if (userService.isAllowedDigitalServiceWrite$ | async) {
+        <p-button
+          styleClass="yellow-button"
+          [disabled]="networksForm.invalid"
+          type="submit"
+          id="submit-networks"
+          >
+          @if (!network.idFront) {
+            <span>
+              {{ "common.add" | translate }}
+            </span>
+          }
+          @if (network.idFront) {
+            <span>
+              {{ "common.save" | translate }}
+            </span>
+          }
+        </p-button>
+      }
+    </div>
+  </form>
 </div>

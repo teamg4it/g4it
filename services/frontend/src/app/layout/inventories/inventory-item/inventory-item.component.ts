@@ -36,7 +36,7 @@ import { GlobalStoreService } from "src/app/core/store/global.store";
 import * as TimeUtils from "src/app/core/utils/time";
 import { Constants } from "src/constants";
 import { AccordionModule } from "primeng/accordion";
-import { NgIf, NgFor, AsyncPipe, UpperCasePipe } from "@angular/common";
+import { AsyncPipe, UpperCasePipe } from "@angular/common";
 import { Button } from "primeng/button";
 import { EquipmentsCardComponent } from "../equipments-card/equipments-card.component";
 import { BatchStatusComponent } from "../batch-status/batch-status.component";
@@ -51,21 +51,19 @@ import { MonthYearPipe } from "../../../core/pipes/monthyear.pipe";
     providers: [ConfirmationService, MessageService],
     standalone: true,
     imports: [
-        AccordionModule,
-        PrimeTemplate,
-        NgIf,
-        Button,
-        EquipmentsCardComponent,
-        NgFor,
-        BatchStatusComponent,
-        ProgressBarModule,
-        ConfirmPopupModule,
-        CriteriaPopupComponent,
-        MonthYearPipe,
-        AsyncPipe,
-        UpperCasePipe,
-        TranslatePipe,
-    ],
+    AccordionModule,
+    PrimeTemplate,
+    Button,
+    EquipmentsCardComponent,
+    BatchStatusComponent,
+    ProgressBarModule,
+    ConfirmPopupModule,
+    CriteriaPopupComponent,
+    MonthYearPipe,
+    AsyncPipe,
+    UpperCasePipe,
+    TranslatePipe
+],
 })
 export class InventoryItemComponent implements OnInit {
     private readonly global = inject(GlobalStoreService);

@@ -27,7 +27,7 @@ import { environment } from "src/environments/environment";
 import { DropdownModule } from "primeng/dropdown";
 import { Button } from "primeng/button";
 import { CriteriaPopupComponent } from "../../../common/criteria-popup/criteria-popup.component";
-import { NgIf } from "@angular/common";
+
 import { InputTextModule } from "primeng/inputtext";
 import { ScrollPanelModule } from "primeng/scrollpanel";
 import { TableModule } from "primeng/table";
@@ -42,22 +42,21 @@ import { ConfirmDialogModule } from "primeng/confirmdialog";
     providers: [ConfirmationService, MessageService],
     standalone: true,
     imports: [
-        DropdownModule,
-        FormsModule,
-        Button,
-        CriteriaPopupComponent,
-        NgIf,
-        ReactiveFormsModule,
-        InputTextModule,
-        ScrollPanelModule,
-        TableModule,
-        PrimeTemplate,
-        SidebarModule,
-        AddWorkspaceComponent,
-        ToastModule,
-        ConfirmDialogModule,
-        TranslatePipe,
-    ],
+    DropdownModule,
+    FormsModule,
+    Button,
+    CriteriaPopupComponent,
+    ReactiveFormsModule,
+    InputTextModule,
+    ScrollPanelModule,
+    TableModule,
+    PrimeTemplate,
+    SidebarModule,
+    AddWorkspaceComponent,
+    ToastModule,
+    ConfirmDialogModule,
+    TranslatePipe
+],
 })
 export class UsersComponent implements OnInit {
     private readonly destroyRef = inject(DestroyRef);

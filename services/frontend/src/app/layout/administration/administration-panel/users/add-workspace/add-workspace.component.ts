@@ -29,7 +29,7 @@ import { UserDataService } from "src/app/core/service/data/user-data.service";
 import { Constants } from "src/constants";
 import { environment } from "src/environments/environment";
 import { AutofocusDirective } from "../../../../../core/directives/auto-focus.directive";
-import { NgIf } from "@angular/common";
+
 import { InputTextModule } from "primeng/inputtext";
 import { DropdownModule } from "primeng/dropdown";
 import { FormsModule } from "@angular/forms";
@@ -41,14 +41,13 @@ import { Button } from "primeng/button";
     providers: [ConfirmationService, MessageService],
     standalone: true,
     imports: [
-        AutofocusDirective,
-        NgIf,
-        InputTextModule,
-        DropdownModule,
-        FormsModule,
-        Button,
-        TranslatePipe,
-    ],
+    AutofocusDirective,
+    InputTextModule,
+    DropdownModule,
+    FormsModule,
+    Button,
+    TranslatePipe
+],
 })
 export class AddWorkspaceComponent implements OnInit, OnChanges {
     @Input() userDetail!: UserDetails;

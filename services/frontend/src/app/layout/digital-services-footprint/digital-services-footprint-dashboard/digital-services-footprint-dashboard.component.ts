@@ -60,7 +60,7 @@ import { GlobalStoreService } from "src/app/core/store/global.store";
 import { Constants } from "src/constants";
 import { AbstractDashboard } from "../../inventories-footprint/abstract-dashboard";
 import { BarChartComponent } from "./bar-chart/bar-chart.component";
-import { NgSwitch, NgSwitchCase, NgSwitchDefault, NgClass, NgTemplateOutlet, NgIf } from "@angular/common";
+import { NgClass, NgTemplateOutlet } from "@angular/common";
 import { Button } from "primeng/button";
 import { ImpactSidebarComponent } from "../../common/impact-sidebar/impact-sidebar.component";
 import { RadialChartComponent } from "./radial-chart/radial-chart.component";
@@ -77,24 +77,20 @@ import { ConfigureViewFiltersComponent } from "../../common/configure-view-filte
     styleUrls: ["./digital-services-footprint-dashboard.component.scss"],
     standalone: true,
     imports: [
-        NgSwitch,
-        NgSwitchCase,
-        NgSwitchDefault,
-        Button,
-        NgClass,
-        ImpactSidebarComponent,
-        NgTemplateOutlet,
-        NgIf,
-        RadialChartComponent,
-        PieChartComponent,
-        BarChartComponent,
-        GraphDescriptionComponent,
-        CriteriaPopupComponent,
-        SidebarModule,
-        PrimeTemplate,
-        ConfigureViewFiltersComponent,
-        TranslatePipe,
-    ],
+    Button,
+    NgClass,
+    ImpactSidebarComponent,
+    NgTemplateOutlet,
+    RadialChartComponent,
+    PieChartComponent,
+    BarChartComponent,
+    GraphDescriptionComponent,
+    CriteriaPopupComponent,
+    SidebarModule,
+    PrimeTemplate,
+    ConfigureViewFiltersComponent,
+    TranslatePipe
+],
 })
 export class DigitalServicesFootprintDashboardComponent
     extends AbstractDashboard

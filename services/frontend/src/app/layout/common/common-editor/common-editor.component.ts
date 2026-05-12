@@ -1,4 +1,4 @@
-import { NgIf } from "@angular/common";
+
 import {
     Component,
     EventEmitter,
@@ -24,15 +24,14 @@ import { AutofocusDirective } from "../../../core/directives/auto-focus.directiv
     providers: [ConfirmationService, MessageService],
     standalone: true,
     imports: [
-        AutofocusDirective,
-        EditorModule,
-        FormsModule,
-        ToastModule,
-        ConfirmPopupModule,
-        NgIf,
-        Button,
-        TranslatePipe,
-    ],
+    AutofocusDirective,
+    EditorModule,
+    FormsModule,
+    ToastModule,
+    ConfirmPopupModule,
+    Button,
+    TranslatePipe
+],
 })
 export class CommonEditorComponent implements OnChanges {
     @Input() styleClass = "";
