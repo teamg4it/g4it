@@ -13,9 +13,19 @@ paths:
   # ─────────────────────────────────────────────────────────────────────────────
   # Instantiated recommendations for a digital service version
   # ─────────────────────────────────────────────────────────────────────────────
-  /api/v1/evaluation/organisations/{organisationId}/versions/{digitalServiceVersionUid}/recommendations:
+  /organizations/{organization}/workspaces/{workspace}/versions/{digitalServiceVersionUid}/recommendations:
     parameters:
-      - $ref: '#/components/parameters/organisationIdPathParam'
+      - name: organization
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: workspace
+        in: path
+        required: true
+        schema:
+            type: integer
+            format: int64
       - $ref: '#/components/parameters/digitalServiceVersionUidPathParam'
     get:
       tags:
@@ -43,9 +53,19 @@ paths:
   # ─────────────────────────────────────────────────────────────
   # CRUD on recommendations for an organisation
   # ─────────────────────────────────────────────────────────────
-  /api/v1/evaluation/organisations/{organisationId}/recommendations:
+  /organizations/{organization}/workspaces/{workspace}/recommendations:
     parameters:
-      - $ref: '#/components/parameters/organisationIdPathParam'
+      - name: organization
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: workspace
+        in: path
+        required: true
+        schema:
+            type: integer
+            format: int64
     get:
       tags:
         - recommendation

@@ -25,7 +25,6 @@ export interface InstantiatedRecommendation {
 }
  
 
-const endpoint = Constants.ENDPOINTS.evaluation; 
 
 @Injectable({
   providedIn: "root",
@@ -37,10 +36,10 @@ export class RecommendationService {
    * Get all recommendations for an organisation (unsorted, no TOPSIS).
    */
 
-  getByOrganisation(organisationId: number): Observable<Recommendation[]> {
-    console.log("LOG: HTTP GET /recommendations orgId =", organisationId);
+  getByOrganisation(organization: string, workspace: number): Observable<Recommendation[]> {
+    console.log("LOG: HTTP GET /recommendations org =", organization);
     return this.http.get<Recommendation[]>(
-      `${endpoint}/organisations/${organisationId}/recommendations`
+      `organizations/${organization}/workspaces/${workspace}/recommendations`
     );
   }
 
@@ -49,11 +48,11 @@ export class RecommendationService {
    * Sorted by priority descending by the backend.
    */
   getInstantiatedRecommendations(
-    organisationId: number,
+    organization: string, workspace: number,
     digitalServiceVersionUid: string
   ): Observable<InstantiatedRecommendation[]> {
     return this.http.get<InstantiatedRecommendation[]>(
-      `${endpoint}/organisations/${organisationId}/versions/${digitalServiceVersionUid}/recommendations`
+      `organizations/${organization}/workspaces/${workspace}//versions/${digitalServiceVersionUid}/recommendations`
     );
   }
 }

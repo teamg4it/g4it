@@ -10,6 +10,7 @@ package com.soprasteria.g4it.backend.apirecommendationds.business;
 import com.soprasteria.g4it.backend.apirecommendationds.mapper.RecommendationMapper;
 import com.soprasteria.g4it.backend.apirecommendationds.modeldb.Recommendation;
 import com.soprasteria.g4it.backend.apirecommendationds.repository.RecommendationRepository;
+import com.soprasteria.g4it.backend.apiuser.repository.OrganizationRepository;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
 import com.soprasteria.g4it.backend.server.gen.api.dto.RecommendationDSRest;
 import lombok.AllArgsConstructor;
@@ -29,27 +30,38 @@ public class RecommendationService {
 
     private RecommendationRepository recommendationRepository;
     private RecommendationMapper recommendationMapper;
+    private final OrganizationRepository organizationRepository;
 
     /**
      * Get all recommendations for an organisation.
      *
-     * @param organisationId the organisation id
+     * @param organisation the organisation name
+     * @param workspace the workspace name
      * @return list of recommendations
      */
-    public List<RecommendationDSRest> getRecommendationsByOrganisation(Long organisationId) {
-        
-        List<Recommendation> general_recommendation = recommendationRepository.findByOrganisationIdIsNull();
-        List<Recommendation> organisation_recommendation = recommendationRepository.findByOrganisationId(organisationId);
-        List<Recommendation> all = new ArrayList<>();
-        all.addAll(general_recommendation);
-        all.addAll(organisation_recommendation);
-        List<RecommendationDSRest> result = recommendationMapper.toRestList(all);
+       public List<RecommendationDSRest> getRecommendations(String organization, Long workspace) {
+
+    Long organisationId = getOrganisationIdFromName(organization);
+
+    List<Recommendation> general = recommendationRepository.findByOrganisationIdIsNull();
+    List<Recommendation> specific = recommendationRepository.findByOrganisationId(organisationId);
+
+    List<Recommendation> all = new ArrayList<>();
+    all.addAll(general);
+    all.addAll(specific);
+
+      List<RecommendationDSRest> result = recommendationMapper.toRestList(all);
         if (result.isEmpty()) {
         log.warn("LOG: No recommendations found for organisationId={}", organisationId);
         } else {
             log.info("LOG: {} recommendations found", result.size());
         }
         return result;
+    }
+    private Long getOrganisationIdFromName(String name) {
+        return(organizationRepository.findByName(name)
+                .orElseThrow()
+                .getId());
     }
 
     /**
@@ -74,14 +86,15 @@ public class RecommendationService {
     /**
      * Create a new recommendation.
      *
-     * @param organisationId        the organisation id
+     *  @param organisation the organisation name
      * @param recommendationDSRest the recommendation to create
      * @return the created recommendation
      */
-    public RecommendationDSRest createRecommendation(final Long organisationId, final RecommendationDSRest recommendationDSRest) {
-        Recommendation toCreate = recommendationMapper.toEntity(recommendationDSRest);
-        toCreate.setOrganisationId(organisationId);
-        return recommendationMapper.toRest(recommendationRepository.save(toCreate));
+    public RecommendationDSRest createRecommendation(String organization, final RecommendationDSRest recommendationDSRest) {
+    Long organisationId =  getOrganisationIdFromName(organization);
+    Recommendation toCreate = recommendationMapper.toEntity(recommendationDSRest);
+    toCreate.setOrganisationId(organisationId);
+    return recommendationMapper.toRest(recommendationRepository.save(toCreate));
     }
 
     /**

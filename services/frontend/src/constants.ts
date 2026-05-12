@@ -82,9 +82,8 @@ export abstract class Constants {
         downloadReject: "download-reject",
         task: "task",
         sharedDs: "shared",
-        dsv: "dsv",
-        evaluation: "/api/v1/evaluation"
-    };
+        dsv: "dsv"
+        };
 
     static readonly ERRORS: any = {
         404: "not-found",

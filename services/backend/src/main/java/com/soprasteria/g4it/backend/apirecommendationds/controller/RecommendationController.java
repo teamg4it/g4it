@@ -38,42 +38,35 @@ public class RecommendationController implements RecommendationApiDelegate {
      */
     @Override
     public ResponseEntity<List<InstantiatedRecommendationRest>> getInstantiatedRecommendations(
-            final Long organisationId,
-            final String digitalServiceVersionUid) {
-        log.info("LOG: GET instantiated recommendations for organisationId={}, dsVersionUid={}",
-                organisationId, digitalServiceVersionUid);
+            String organization, Long workspace, final String digitalServiceVersionUid) {
+        log.info("LOG: GET instantiated recommendations for organization={}, dsVersionUid={}",
+                organization, digitalServiceVersionUid);
         return ResponseEntity.ok(
                 instantiatedRecommendationService.getInstantiatedRecommendations(
-                        digitalServiceVersionUid, organisationId)
+                        digitalServiceVersionUid, organization)
         );
     }
-    /**
+       /**
      * {@inheritDoc}
      */
-    @Override
-    public ResponseEntity<List<RecommendationDSRest>> getRecommendationsByOrganisation(
-            final Long organisationId) {
+   @Override
+        public ResponseEntity<List<RecommendationDSRest>> getRecommendationsByOrganisation(
+                String organization,
+                Long workspace) {
 
-             log.info("LOG: GET /recommendations called with organisationId={}", organisationId);
-
-            List<RecommendationDSRest> result =
-                    recommendationService.getRecommendationsByOrganisation(organisationId);
-
-            log.info("LOG: Returning {} recommendations", result.size());
-            log.debug("LOG: Data: {}", result);
-
-            return ResponseEntity.ok(result);
-    }
+        return ResponseEntity.ok(
+                recommendationService.getRecommendations(organization, workspace)
+        );
+        }
 
     /**
      * {@inheritDoc}
      */
     @Override
     public ResponseEntity<RecommendationDSRest> createRecommendation(
-            final Long organisationId,
-            final RecommendationDSRest recommendationDSRest) {
+        String organization, Long workspace , final RecommendationDSRest recommendationDSRest) {
         return new ResponseEntity<>(
-                recommendationService.createRecommendation(organisationId, recommendationDSRest),
+                recommendationService.createRecommendation(organization, recommendationDSRest),
                 HttpStatus.CREATED
         );
     }

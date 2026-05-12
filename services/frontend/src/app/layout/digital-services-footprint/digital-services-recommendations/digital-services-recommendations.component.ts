@@ -65,9 +65,9 @@ ngOnInit() {
       tap(([org, ds]) => console.log("LOG: Organisation valide, id =", org.id, "| dsVersionUid =", ds.uid)),
       switchMap(([org, ds]) => {
         console.log("LOG: Appel API instantiated recommendations avec orgId =", org.id, "dsVersionUid =", ds.uid);
-        return this.recommendationService.getInstantiatedRecommendations(org.id, ds.uid);
+        const workspace = org.workspaces?.[0]?.id;
+        return this.recommendationService.getInstantiatedRecommendations(org.name, workspace, ds.uid);
       }),
-      tap((data: InstantiatedRecommendation[]) => console.log("LOG: Données reçues du backend:", data))
     )
     .subscribe({
       next: (data: InstantiatedRecommendation[]) => {
