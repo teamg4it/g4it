@@ -28,7 +28,6 @@
                         "tsConfig": "tsconfig.app.json",
                         "assets": ["src/favicon.ico", "src/assets"],
                         "styles": [
-                            "node_modules/primeng/resources/primeng.min.css",
                             "node_modules/primeicons/primeicons.css",
                             "node_modules/primeflex/primeflex.css",
                             "src/assets/themes/primeng-theme.scss",

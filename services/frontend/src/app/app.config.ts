@@ -19,7 +19,7 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 
 import { TranslateLoader, TranslateModule, TranslateService } from "@ngx-translate/core";
 import { TranslateHttpLoader } from "@ngx-translate/http-loader";
-
+import Aura from "@primeuix/themes/aura";
 import { KeycloakAngularModule } from "keycloak-angular";
 
 import { MessageService } from "primeng/api";
@@ -33,6 +33,7 @@ import { ApiInterceptor } from "./core/interceptors/api-request.interceptor";
 import { HttpErrorInterceptor } from "./core/interceptors/http-error.interceptor";
 import { CustomAuthService } from "./core/service/business/custom-auth.service";
 
+import { providePrimeNG } from "primeng/config";
 import { Constants } from "src/constants";
 import { AppRoutingModule } from "./app-routing.module";
 import { DecimalsPipe } from "./core/pipes/decimal.pipe";
@@ -74,6 +75,9 @@ export function initializeLanguage(translate: TranslateService) {
 
 export const appConfig: ApplicationConfig = {
     providers: [
+         providePrimeNG({
+            theme: { preset: Aura, options: { darkModeSelector: false || "none" } },
+        }),
         provideHttpClient(withInterceptorsFromDi()),
         importProvidersFrom(
             BrowserAnimationsModule,
