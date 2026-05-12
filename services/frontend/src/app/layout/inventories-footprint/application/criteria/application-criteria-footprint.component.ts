@@ -5,6 +5,7 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
+import { NgClass, NgTemplateOutlet } from "@angular/common";
 import {
     Component,
     computed,
@@ -16,9 +17,14 @@ import {
     Signal,
     SimpleChanges,
 } from "@angular/core";
+import { FormsModule } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
-import { TranslateService, TranslatePipe } from "@ngx-translate/core";
+import { TranslatePipe, TranslateService } from "@ngx-translate/core";
 import { EChartsOption } from "echarts";
+import { NgxEchartsDirective } from "ngx-echarts";
+import { PrimeTemplate } from "primeng/api";
+import { Button } from "primeng/button";
+import { SelectModule } from "primeng/select";
 import { sortByProperty } from "sort-by-property";
 import {
     GraphDescriptionContent,
@@ -47,17 +53,11 @@ import {
 import { FootprintStoreService } from "src/app/core/store/footprint.store";
 import { GlobalStoreService } from "src/app/core/store/global.store";
 import { Constants } from "src/constants";
-import { AbstractDashboard } from "../../abstract-dashboard";
-import { InventoriesApplicationFootprintComponent } from "../inventories-application-footprint.component";
-import { NgClass, NgTemplateOutlet } from "@angular/common";
-import { DropdownModule } from "primeng/dropdown";
-import { FormsModule } from "@angular/forms";
-import { PrimeTemplate } from "primeng/api";
 import { StackBarChartComponent } from "../../../common/stack-bar-chart/stack-bar-chart.component";
-import { NgxEchartsDirective } from "ngx-echarts";
-import { ApplicationCriteriaPieChartComponent } from "../application-criteria-pie-chart/application-criteria-pie-chart.component";
 import { GraphDescriptionComponent } from "../../../digital-services-footprint/digital-services-footprint-dashboard/graph-description/graph-description.component";
-import { Button } from "primeng/button";
+import { AbstractDashboard } from "../../abstract-dashboard";
+import { ApplicationCriteriaPieChartComponent } from "../application-criteria-pie-chart/application-criteria-pie-chart.component";
+import { InventoriesApplicationFootprintComponent } from "../inventories-application-footprint.component";
 @Component({
     selector: "app-application-criteria-footprint",
     templateUrl: "./application-criteria-footprint.component.html",
@@ -65,7 +65,7 @@ import { Button } from "primeng/button";
     imports: [
     NgClass,
     NgTemplateOutlet,
-    DropdownModule,
+    SelectModule,
     FormsModule,
     PrimeTemplate,
     StackBarChartComponent,

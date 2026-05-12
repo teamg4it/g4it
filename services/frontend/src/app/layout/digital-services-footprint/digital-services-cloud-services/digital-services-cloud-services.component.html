@@ -14,10 +14,11 @@
 </div>
 
 @if (sidebarVisible) {
-    <p-sidebar
+    <p-drawer
         [(visible)]="sidebarVisible"
         position="right"
-        styleClass="p-sidebar-md"
+        styleClass="w-5"
+        [modal]="false"
         (onHide)="childSidePanel.close()"
         ariaCloseLabel="Close"
     >
@@ -31,5 +32,5 @@
             (deleteCloudServices)="deleteCloudServices($event)"
         >
         </app-digital-services-cloud-services-side-panel>
-    </p-sidebar>
+    </p-drawer>
 }

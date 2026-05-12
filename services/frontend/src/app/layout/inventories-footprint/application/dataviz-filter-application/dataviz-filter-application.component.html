@@ -18,7 +18,7 @@
     >
         <p-accordion [multiple]="true" styleClass="pl-0">
             @for (tab of tabs; track $index) {
-                <p-accordionTab
+                <p-accordionpanel
                     headerStyleClass="h-3rem bg-transparent font-bold mb-0"
                     contentStyleClass="bg-transparent p-2"
                 >
@@ -154,7 +154,7 @@
                             </li>
                         }
                     </ul>
-                </p-accordionTab>
+                </p-accordionpanel>
                 <hr class="section-hr" />
             }
         </p-accordion>

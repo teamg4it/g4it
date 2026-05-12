@@ -14,7 +14,7 @@
       class="block font-semibold text-color mb-2 text-base"
       >{{ "administration.uploadcsv.select-endpoint" | translate }}</label
       >
-      <p-dropdown
+      <p-select
         appendTo="body"
         [options]="csvEndpoints"
         optionLabel="apiEndpointName"
@@ -44,7 +44,7 @@
             <small class="text-base text-500 font-mono">{{ endpoint.url }}</small>
           </div>
         </ng-template>
-      </p-dropdown>
+      </p-select>
     </div>
 
     <div class="flex align-items-center gap-2">

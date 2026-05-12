@@ -7,10 +7,12 @@
  */
 import { Component, DestroyRef, effect, inject, OnInit } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
-import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
-import { TranslateService, TranslatePipe } from "@ngx-translate/core";
+import { TranslatePipe, TranslateService } from "@ngx-translate/core";
 import { ConfirmationService, MessageService, PrimeTemplate } from "primeng/api";
+import { Button } from "primeng/button";
+import { SelectModule } from "primeng/select";
 import { firstValueFrom, take } from "rxjs";
 import {
     WorkspaceCriteriaRest,
@@ -24,17 +26,15 @@ import { UserDataService } from "src/app/core/service/data/user-data.service";
 import { GlobalStoreService } from "src/app/core/store/global.store";
 import { Constants } from "src/constants";
 import { environment } from "src/environments/environment";
-import { DropdownModule } from "primeng/dropdown";
-import { Button } from "primeng/button";
 import { CriteriaPopupComponent } from "../../../common/criteria-popup/criteria-popup.component";
 
+import { ConfirmDialogModule } from "primeng/confirmdialog";
+import { DrawerModule } from "primeng/drawer";
 import { InputTextModule } from "primeng/inputtext";
 import { ScrollPanelModule } from "primeng/scrollpanel";
 import { TableModule } from "primeng/table";
-import { SidebarModule } from "primeng/sidebar";
-import { AddWorkspaceComponent } from "./add-workspace/add-workspace.component";
 import { ToastModule } from "primeng/toast";
-import { ConfirmDialogModule } from "primeng/confirmdialog";
+import { AddWorkspaceComponent } from "./add-workspace/add-workspace.component";
 
 @Component({
     selector: "app-users",
@@ -42,7 +42,7 @@ import { ConfirmDialogModule } from "primeng/confirmdialog";
     providers: [ConfirmationService, MessageService],
     standalone: true,
     imports: [
-    DropdownModule,
+    SelectModule,
     FormsModule,
     Button,
     CriteriaPopupComponent,
@@ -51,7 +51,7 @@ import { ConfirmDialogModule } from "primeng/confirmdialog";
     ScrollPanelModule,
     TableModule,
     PrimeTemplate,
-    SidebarModule,
+    DrawerModule,
     AddWorkspaceComponent,
     ToastModule,
     ConfirmDialogModule,

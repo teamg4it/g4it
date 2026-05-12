@@ -14,8 +14,7 @@ import { CheckboxModule } from "primeng/checkbox";
 import { ConfirmPopupModule } from "primeng/confirmpopup";
 import { OverlayModule } from "primeng/overlay";
 import { ScrollPanelModule } from "primeng/scrollpanel";
-import { TabMenuModule } from "primeng/tabmenu";
-import { TabViewModule } from "primeng/tabview";
+import { TabsModule } from "primeng/tabs";
 import { ToastModule } from "primeng/toast";
 import { DecimalsPipe } from "src/app/core/pipes/decimal.pipe";
 import { IntegerPipe } from "src/app/core/pipes/integer.pipe";
@@ -29,8 +28,7 @@ import { inventoriesFootprintRouter } from "./inventories-footprint.router";
         SharedModule,
         SharedChartsModule,
         ButtonModule,
-        TabMenuModule,
-        TabViewModule,
+        TabsModule,
         ToastModule,
         ScrollPanelModule,
         CardModule,

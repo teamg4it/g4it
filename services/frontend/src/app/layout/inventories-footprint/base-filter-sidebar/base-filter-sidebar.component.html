@@ -1,8 +1,8 @@
-<p-sidebar
+<p-drawer
     [(visible)]="visible"
     (visibleChange)="visibleChange.emit($event)"
     position="right"
-    styleClass="p-sidebar-md w-5"
+    styleClass=" w-5"
     (onHide)="closeFilterSidebar()"
 >
     <ng-template pTemplate="headless">
@@ -40,13 +40,9 @@
                         <ng-content></ng-content>
                     } @else {
                         <!-- Default Equipment checkbox list -->
-                        <p-accordion
-                            [multiple]="true"
-                            [activeIndex]="[]"
-                            styleClass="pl-0"
-                        >
+                        <p-accordion [multiple]="true" [value]="[]" styleClass="pl-0">
                             @for (tab of tabs; track $index) {
-                                <p-accordionTab
+                                <p-accordionpanel
                                     headerStyleClass="h-3rem bg-transparent font-bold mb-0"
                                     contentStyleClass="bg-transparent p-2"
                                 >
@@ -102,7 +98,7 @@
                                             </li>
                                         }
                                     </ul>
-                                </p-accordionTab>
+                                </p-accordionpanel>
                                 <hr class="section-hr" />
                             }
                         </p-accordion>
@@ -134,4 +130,4 @@
             </div>
         </div>
     </ng-template>
-</p-sidebar>
+</p-drawer>

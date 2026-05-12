@@ -27,12 +27,7 @@ import { TopHeaderComponent } from "../header/header-siderbar/top-header/top-hea
     selector: "app-landing-page",
     templateUrl: "./landing-page.component.html",
     standalone: true,
-    imports: [
-    RouterModule,
-    SharedModule,
-    TopHeaderComponent,
-    LeftSidebarComponent
-],
+    imports: [RouterModule, SharedModule, TopHeaderComponent, LeftSidebarComponent],
 })
 export class LandingPageComponent implements OnInit {
     private readonly globalStore = inject(GlobalStoreService);

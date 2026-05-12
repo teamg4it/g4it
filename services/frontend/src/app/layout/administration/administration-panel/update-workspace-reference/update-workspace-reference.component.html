@@ -1,7 +1,7 @@
 <p-scrollPanel [style]="{ width: '100%', height: 'calc(100vh - 230px)' }">
     <div class="pt-4">
         <div class="mb-3">
-            <p-dropdown
+            <p-select
                 appendTo="body"
                 [options]="workspacelist"
                 optionLabel="displayLabel"
@@ -42,7 +42,7 @@
             </h3>
 
             <div class="flex mb-3">
-                <p-dropdown
+                <p-select
                     appendTo="body"
                     [options]="csvEndpoints"
                     optionLabel="apiEndpointName"
@@ -81,7 +81,7 @@
                             }}</small>
                         </div>
                     </ng-template>
-                </p-dropdown>
+                </p-select>
 
                 <p-fileUpload
                     #fileUpload

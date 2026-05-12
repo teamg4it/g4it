@@ -9,7 +9,11 @@ import { Component, Input, Signal, computed, inject, input } from "@angular/core
 import { EChartsOption } from "echarts";
 import { Constants } from "src/constants";
 
+import { FormsModule } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
+import { PrimeTemplate } from "primeng/api";
+import { Button } from "primeng/button";
+import { SelectModule } from "primeng/select";
 import {
     GraphDescriptionContent,
     StatusCountMap,
@@ -33,15 +37,11 @@ import {
 } from "src/app/core/service/mapper/graphs-mapper";
 import { FootprintStoreService } from "src/app/core/store/footprint.store";
 import { AbstractDashboard } from "../abstract-dashboard";
-import { Button } from "primeng/button";
-import { DropdownModule } from "primeng/dropdown";
-import { FormsModule } from "@angular/forms";
-import { PrimeTemplate } from "primeng/api";
 
-import { StackBarChartComponent } from "../../common/stack-bar-chart/stack-bar-chart.component";
-import { NgxEchartsDirective } from "ngx-echarts";
-import { GraphDescriptionComponent } from "../../digital-services-footprint/digital-services-footprint-dashboard/graph-description/graph-description.component";
 import { TranslatePipe } from "@ngx-translate/core";
+import { NgxEchartsDirective } from "ngx-echarts";
+import { StackBarChartComponent } from "../../common/stack-bar-chart/stack-bar-chart.component";
+import { GraphDescriptionComponent } from "../../digital-services-footprint/digital-services-footprint-dashboard/graph-description/graph-description.component";
 
 @Component({
     selector: "app-inventories-multicriteria-footprint",
@@ -49,7 +49,7 @@ import { TranslatePipe } from "@ngx-translate/core";
     standalone: true,
     imports: [
     Button,
-    DropdownModule,
+    SelectModule,
     FormsModule,
     PrimeTemplate,
     StackBarChartComponent,

@@ -11,10 +11,10 @@ import { FormsModule } from "@angular/forms";
 import { TranslateModule } from "@ngx-translate/core";
 import { MessageService } from "primeng/api";
 import { ButtonModule } from "primeng/button";
-import { DropdownModule } from "primeng/dropdown";
 import { FileUpload, FileUploadModule } from "primeng/fileupload";
 import { ProgressBarModule } from "primeng/progressbar";
 import { ScrollPanelModule } from "primeng/scrollpanel";
+import { SelectModule } from "primeng/select";
 import {
     CsvImportDataService,
     CsvImportEndpoint,
@@ -28,7 +28,7 @@ import {
     FileUploadModule,
     ProgressBarModule,
     TranslateModule,
-    DropdownModule,
+    SelectModule,
     FormsModule,
     ScrollPanelModule
 ],

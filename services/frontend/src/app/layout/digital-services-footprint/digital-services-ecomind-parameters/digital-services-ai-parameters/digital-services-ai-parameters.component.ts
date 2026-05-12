@@ -1,17 +1,17 @@
 import { Component, DestroyRef, inject, OnDestroy, OnInit } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
-import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
-import { TranslateService, TranslatePipe } from "@ngx-translate/core";
+import { TranslatePipe, TranslateService } from "@ngx-translate/core";
 import { MessageService } from "primeng/api";
+import { CardModule } from "primeng/card";
+import { SelectModule } from "primeng/select";
 import { firstValueFrom, lastValueFrom, Subscription } from "rxjs";
 import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServicesAiDataService } from "src/app/core/service/data/digital-services-ai-data.service";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
 import { AIFormsStore, AIParametersForm } from "src/app/core/store/ai-forms.store";
 import { DigitalServiceStoreService } from "src/app/core/store/digital-service.store";
-import { CardModule } from "primeng/card";
-import { DropdownModule } from "primeng/dropdown";
 
 import { CheckboxModule } from "primeng/checkbox";
 import { InputNumberModule } from "primeng/inputnumber";
@@ -24,7 +24,7 @@ import { InputNumberModule } from "primeng/inputnumber";
     CardModule,
     FormsModule,
     ReactiveFormsModule,
-    DropdownModule,
+    SelectModule,
     CheckboxModule,
     InputNumberModule,
     TranslatePipe

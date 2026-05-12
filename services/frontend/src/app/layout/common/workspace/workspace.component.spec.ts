@@ -5,7 +5,7 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { TranslateModule, TranslateService } from "@ngx-translate/core";
 import { MessageService } from "primeng/api";
 import { ButtonModule } from "primeng/button";
-import { DropdownModule } from "primeng/dropdown";
+import { SelectModule } from "primeng/select";
 import { of } from "rxjs";
 import { UserService } from "src/app/core/service/business/user.service";
 import { WorkspaceService } from "src/app/core/service/business/workspace.service";
@@ -32,7 +32,7 @@ describe("WorkspaceComponent", () => {
         ReactiveFormsModule,
         CommonModule,
         FormsModule,
-        DropdownModule,
+        SelectModule,
         ButtonModule,
         TranslateModule.forRoot(),
         HttpClientModule,

@@ -5,6 +5,7 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
+import { AsyncPipe, UpperCasePipe } from "@angular/common";
 import {
     Component,
     computed,
@@ -15,8 +16,12 @@ import {
     Output,
 } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { TranslateService, TranslatePipe } from "@ngx-translate/core";
-import { ConfirmationService, MessageService, PrimeTemplate } from "primeng/api";
+import { TranslatePipe, TranslateService } from "@ngx-translate/core";
+import { AccordionModule } from "primeng/accordion";
+import { ConfirmationService, MessageService } from "primeng/api";
+import { Button } from "primeng/button";
+import { ConfirmPopupModule } from "primeng/confirmpopup";
+import { ProgressBarModule } from "primeng/progressbar";
 import { lastValueFrom } from "rxjs";
 import {
     OrganizationCriteriaRest,
@@ -35,15 +40,10 @@ import { shouldShowExpiryMessage } from "src/app/core/service/mapper/renew-time"
 import { GlobalStoreService } from "src/app/core/store/global.store";
 import * as TimeUtils from "src/app/core/utils/time";
 import { Constants } from "src/constants";
-import { AccordionModule } from "primeng/accordion";
-import { AsyncPipe, UpperCasePipe } from "@angular/common";
-import { Button } from "primeng/button";
-import { EquipmentsCardComponent } from "../equipments-card/equipments-card.component";
-import { BatchStatusComponent } from "../batch-status/batch-status.component";
-import { ProgressBarModule } from "primeng/progressbar";
-import { ConfirmPopupModule } from "primeng/confirmpopup";
-import { CriteriaPopupComponent } from "../../common/criteria-popup/criteria-popup.component";
 import { MonthYearPipe } from "../../../core/pipes/monthyear.pipe";
+import { CriteriaPopupComponent } from "../../common/criteria-popup/criteria-popup.component";
+import { BatchStatusComponent } from "../batch-status/batch-status.component";
+import { EquipmentsCardComponent } from "../equipments-card/equipments-card.component";
 
 @Component({
     selector: "app-inventory-item",
@@ -52,7 +52,6 @@ import { MonthYearPipe } from "../../../core/pipes/monthyear.pipe";
     standalone: true,
     imports: [
     AccordionModule,
-    PrimeTemplate,
     Button,
     EquipmentsCardComponent,
     BatchStatusComponent,

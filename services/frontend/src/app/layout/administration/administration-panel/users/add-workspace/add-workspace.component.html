@@ -33,7 +33,7 @@
     <label for="module-is-dropdown">
       {{ "administration.user.is-module" | translate }}
     </label>
-    <p-dropdown
+    <p-select
       appendTo="body"
       [style]="{ width: '100%' }"
       [(ngModel)]="isModule"
@@ -43,13 +43,13 @@
       [disabled]="isAdmin"
       [showClear]="true"
       id="module-is-dropdown"
-    ></p-dropdown>
+    ></p-select>
     <br />
     <br />
     <label for="module-ds-dropdown">{{
       "administration.user.ds-module" | translate
     }}</label>
-    <p-dropdown
+    <p-select
       appendTo="body"
       [style]="{ width: '100%' }"
       [(ngModel)]="dsModule"
@@ -59,14 +59,14 @@
       [disabled]="isAdmin"
       [showClear]="true"
       id="module-ds-dropdown"
-    ></p-dropdown>
+    ></p-select>
     @if (isEcoMindModuleEnabled && userDetailEcoMind) {
       <br />
       <br />
       <label for="module-ecomind-dropdown">{{
         "administration.user.ecomind-module" | translate
       }}</label>
-      <p-dropdown
+      <p-select
         appendTo="body"
         [style]="{ width: '100%' }"
         [(ngModel)]="ecomindModule"
@@ -76,7 +76,7 @@
         [disabled]="isAdmin"
         [showClear]="true"
         id="module-ecomind-dropdown"
-      ></p-dropdown>
+      ></p-select>
     }
   </div>
   <br />
@@ -88,7 +88,7 @@
         class="h-2rem border-top-2 border-primary p-0 mt-1"
         style="color: lightgray"
       ></div>
-      <p-dropdown
+      <p-select
         appendTo="body"
         [style]="{ width: '100%' }"
         [(ngModel)]="adminModule"
@@ -99,7 +99,7 @@
         placeholder="{{ 'administration.user.role' | translate }}"
         class="p-inputtext-sm type-dropdown"
         id="user-role-dropdown"
-      ></p-dropdown>
+      ></p-select>
       @if (!adminModule) {
         <p class="error-text">
           {{ "administration.user.role" | translate }}

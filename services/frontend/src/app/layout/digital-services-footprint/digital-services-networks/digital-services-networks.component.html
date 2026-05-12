@@ -13,10 +13,11 @@
     ></app-digital-service-table>
 </div>
 @if (sidebarVisible) {
-    <p-sidebar
+    <p-drawer
         [(visible)]="sidebarVisible"
         position="right"
-        styleClass="p-sidebar-lg"
+        styleClass="w-10"
+        [modal]="false"
         (onHide)="networkSidePanel.close()"
         ariaCloseLabel="Close"
     >
@@ -30,5 +31,5 @@
             (delete)="deleteItem($event); sidebarVisible = false"
             (outCancel)="actionNetwork('cancel', $event)"
         ></app-digital-services-networks-side-panel>
-    </p-sidebar>
+    </p-drawer>
 }

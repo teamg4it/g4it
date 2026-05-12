@@ -20,18 +20,17 @@ import { CheckboxModule } from "primeng/checkbox";
 import { ConfirmDialogModule } from "primeng/confirmdialog";
 import { ConfirmPopupModule } from "primeng/confirmpopup";
 import { DialogModule } from "primeng/dialog";
-import { DropdownModule } from "primeng/dropdown";
+import { DrawerModule } from "primeng/drawer";
 import { EditorModule } from "primeng/editor";
 import { FocusTrapModule } from "primeng/focustrap";
 import { InputTextModule } from "primeng/inputtext";
+import { MenubarModule } from "primeng/menubar";
 import { OverlayModule } from "primeng/overlay";
 import { PaginatorModule } from "primeng/paginator";
 import { RadioButtonModule } from "primeng/radiobutton";
 import { ScrollPanelModule } from "primeng/scrollpanel";
-import { SidebarModule } from "primeng/sidebar";
+import { SelectModule } from "primeng/select";
 import { TableModule } from "primeng/table";
-import { TabMenuModule } from "primeng/tabmenu";
-import { TabViewModule } from "primeng/tabview";
 import { ToastModule } from "primeng/toast";
 import { TooltipModule } from "primeng/tooltip";
 import { CommonEditorComponent } from "src/app/layout/common/common-editor/common-editor.component";
@@ -63,17 +62,16 @@ import { MonthYearPipe } from "../pipes/monthyear.pipe";
         ToastModule,
         CardModule,
         ScrollPanelModule,
-        SidebarModule,
+        DrawerModule,
         RadioButtonModule,
         ConfirmPopupModule,
         ButtonModule,
         CheckboxModule,
-        TabViewModule,
+        MenubarModule,
         OverlayModule,
         EditorModule,
-        DropdownModule,
+        SelectModule,
         ConfirmDialogModule,
-        TabMenuModule,
         PaginatorModule,
         AccordionModule,
         InputTextModule,
@@ -113,6 +111,7 @@ import { MonthYearPipe } from "../pipes/monthyear.pipe";
         TranslateModule,
         ToastModule,
         CardModule,
+        MenubarModule,
         ScrollPanelModule,
         InventoriesHeaderFootprintComponent,
         ConfirmPopupModule,
@@ -121,16 +120,14 @@ import { MonthYearPipe } from "../pipes/monthyear.pipe";
         DatavizFilterComponent,
         PaginatorModule,
         CheckboxModule,
-        TabViewModule,
         OverlayModule,
-        SidebarModule,
+        DrawerModule,
         RadioButtonModule,
         CommonEditorComponent,
         StatsComponent,
-        DropdownModule,
+        SelectModule,
         ConfirmDialogModule,
         TableModule,
-        TabMenuModule,
         AccordionModule,
         BusinessHoursRendererPipe,
         InputTextModule,

@@ -23,8 +23,8 @@ import {
     ViewContainerRef,
 } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
-import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { TranslateService, TranslatePipe } from "@ngx-translate/core";
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
+import { TranslatePipe, TranslateService } from "@ngx-translate/core";
 import saveAs from "file-saver";
 import { MessageService } from "primeng/api";
 import { RadioButton, RadioButtonModule } from "primeng/radiobutton";
@@ -43,10 +43,10 @@ import { WorkspaceReferenceDataService } from "src/app/core/service/data/workspa
 import { Constants } from "src/constants";
 import { SelectFileComponent } from "./select-file/select-file.component";
 
-import { AutofocusDirective } from "../../../core/directives/auto-focus.directive";
-import { CalendarModule } from "primeng/calendar";
-import { InputTextModule } from "primeng/inputtext";
 import { Button } from "primeng/button";
+import { DatePickerModule } from "primeng/datepicker";
+import { InputTextModule } from "primeng/inputtext";
+import { AutofocusDirective } from "../../../core/directives/auto-focus.directive";
 
 @Component({
     selector: "app-file-panel",
@@ -56,7 +56,7 @@ import { Button } from "primeng/button";
     AutofocusDirective,
     FormsModule,
     RadioButtonModule,
-    CalendarModule,
+    DatePickerModule,
     ReactiveFormsModule,
     InputTextModule,
     Button,

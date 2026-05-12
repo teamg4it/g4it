@@ -17,11 +17,11 @@ import { AccordionModule } from "primeng/accordion";
 import { MessageService } from "primeng/api";
 import { ButtonModule } from "primeng/button";
 import { ConfirmPopupModule } from "primeng/confirmpopup";
-import { DropdownModule } from "primeng/dropdown";
+import { DrawerModule } from "primeng/drawer";
 import { FileUploadModule } from "primeng/fileupload";
 import { ProgressSpinnerModule } from "primeng/progressspinner";
 import { ScrollPanelModule } from "primeng/scrollpanel";
-import { SidebarModule } from "primeng/sidebar";
+import { SelectModule } from "primeng/select";
 import { ToastModule } from "primeng/toast";
 import { Observable, from, of } from "rxjs";
 import { Inventory } from "src/app/core/interfaces/inventory.interfaces";
@@ -48,54 +48,56 @@ describe("InventoryComponent", () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-    imports: [
-        HttpClientTestingModule,
-        ToastModule,
-        ButtonModule,
-        AccordionModule,
-        SidebarModule,
-        ScrollPanelModule,
-        ProgressSpinnerModule,
-        ConfirmPopupModule,
-        DropdownModule,
-        BrowserAnimationsModule,
-        FileUploadModule,
-        TranslateModule.forRoot(),
-        InventoriesComponent, MonthYearPipe, FilePanelComponent,
-    ],
-    providers: [
-        TranslatePipe,
-        TranslateService,
-        MessageService,
-        UserService,
-        {
-            provide: InventoryDataService,
-            useClass: InventoryServiceMock,
-        },
-        LoadingDataService,
-        EvaluationDataService,
-        Location,
-        {
-            provide: ActivatedRoute,
-            useValue: {
-                params: from([{ inventoryDate: inventoryDate }]),
-                snapshot: {
-                    queryParamMap: {
-                        get: (key: string) => {
-                            const params: {
-                                [key: string]: any;
-                            } = {
-                                renew: "true",
-                                inventoryId: "1",
-                            };
-                            return params[key] || null;
+            imports: [
+                HttpClientTestingModule,
+                ToastModule,
+                ButtonModule,
+                AccordionModule,
+                DrawerModule,
+                ScrollPanelModule,
+                ProgressSpinnerModule,
+                ConfirmPopupModule,
+                SelectModule,
+                BrowserAnimationsModule,
+                FileUploadModule,
+                TranslateModule.forRoot(),
+                InventoriesComponent,
+                MonthYearPipe,
+                FilePanelComponent,
+            ],
+            providers: [
+                TranslatePipe,
+                TranslateService,
+                MessageService,
+                UserService,
+                {
+                    provide: InventoryDataService,
+                    useClass: InventoryServiceMock,
+                },
+                LoadingDataService,
+                EvaluationDataService,
+                Location,
+                {
+                    provide: ActivatedRoute,
+                    useValue: {
+                        params: from([{ inventoryDate: inventoryDate }]),
+                        snapshot: {
+                            queryParamMap: {
+                                get: (key: string) => {
+                                    const params: {
+                                        [key: string]: any;
+                                    } = {
+                                        renew: "true",
+                                        inventoryId: "1",
+                                    };
+                                    return params[key] || null;
+                                },
+                            },
                         },
                     },
                 },
-            },
-        },
-    ],
-}).compileComponents();
+            ],
+        }).compileComponents();
 
         fixture = TestBed.createComponent(InventoriesComponent);
         component = fixture.componentInstance;

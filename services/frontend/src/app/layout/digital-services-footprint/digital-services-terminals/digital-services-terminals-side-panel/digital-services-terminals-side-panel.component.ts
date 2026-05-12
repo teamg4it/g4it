@@ -5,9 +5,21 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
+import { AsyncPipe } from "@angular/common";
 import { Component, EventEmitter, inject, Input, OnInit, Output } from "@angular/core";
-import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from "@angular/forms";
+import {
+    FormBuilder,
+    FormGroup,
+    FormsModule,
+    ReactiveFormsModule,
+    Validators,
+} from "@angular/forms";
+import { TranslatePipe } from "@ngx-translate/core";
 import { MessageService } from "primeng/api";
+import { Button } from "primeng/button";
+import { InputNumberModule } from "primeng/inputnumber";
+import { InputTextModule } from "primeng/inputtext";
+import { SelectModule } from "primeng/select";
 import { lastValueFrom } from "rxjs";
 import { noWhitespaceValidator } from "src/app/core/custom-validators/no-white-space.validator";
 import { uniqueNameValidator } from "src/app/core/custom-validators/unique-name.validator";
@@ -20,12 +32,6 @@ import { DigitalServiceBusinessService } from "src/app/core/service/business/dig
 import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
 import { AutofocusDirective } from "../../../../core/directives/auto-focus.directive";
-import { InputTextModule } from "primeng/inputtext";
-import { AsyncPipe } from "@angular/common";
-import { DropdownModule } from "primeng/dropdown";
-import { InputNumberModule } from "primeng/inputnumber";
-import { Button } from "primeng/button";
-import { TranslatePipe } from "@ngx-translate/core";
 
 @Component({
     selector: "app-digital-services-terminals-side-panel",
@@ -33,16 +39,16 @@ import { TranslatePipe } from "@ngx-translate/core";
     providers: [MessageService],
     standalone: true,
     imports: [
-    AutofocusDirective,
-    FormsModule,
-    ReactiveFormsModule,
-    InputTextModule,
-    DropdownModule,
-    InputNumberModule,
-    Button,
-    AsyncPipe,
-    TranslatePipe
-],
+        AutofocusDirective,
+        FormsModule,
+        ReactiveFormsModule,
+        InputTextModule,
+        SelectModule,
+        InputNumberModule,
+        Button,
+        AsyncPipe,
+        TranslatePipe,
+    ],
 })
 export class DigitalServicesTerminalsSidePanelComponent implements OnInit {
     private readonly digitalServicesBusiness = inject(DigitalServiceBusinessService);

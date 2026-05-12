@@ -13,13 +13,14 @@
     ></app-digital-service-table>
 </div>
 @if (sidebarVisible) {
-    <p-sidebar
+    <p-drawer
         [(visible)]="sidebarVisible"
         position="right"
-        styleClass="p-sidebar-lg"
+        [modal]="false"
+        styleClass="w-5"
         (onHide)="closeSidebar()"
         ariaCloseLabel="Close"
     >
         <router-outlet></router-outlet>
-    </p-sidebar>
+    </p-drawer>
 }

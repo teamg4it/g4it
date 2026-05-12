@@ -9,13 +9,13 @@ import { CommonModule } from "@angular/common";
 import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA, NgModule } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { RouterModule } from "@angular/router";
-import { DropdownModule } from "primeng/dropdown";
+import { DrawerModule } from "primeng/drawer";
 import { InputNumberModule } from "primeng/inputnumber";
 import { InputTextModule } from "primeng/inputtext";
 import { RadioButtonModule } from "primeng/radiobutton";
-import { SidebarModule } from "primeng/sidebar";
+import { SelectModule } from "primeng/select";
 import { TableModule } from "primeng/table";
-import { TabMenuModule } from "primeng/tabmenu";
+import { TabsModule } from "primeng/tabs";
 import { TagModule } from "primeng/tag";
 
 import { NgxEchartsModule } from "ngx-echarts";
@@ -58,16 +58,16 @@ import { DigitalServicesTerminalsComponent } from "./digital-services-terminals/
         FormsModule,
         RouterModule,
         RadioButtonModule,
-        DropdownModule,
+        SelectModule,
         InputNumberModule,
         InputTextModule,
         SharedModule,
-        TabMenuModule,
+        TabsModule,
         TableModule,
         TagModule,
         CardModule,
         ScrollPanelModule,
-        SidebarModule,
+        DrawerModule,
         ConfirmPopupModule,
         NgxEchartsModule.forRoot({
             echarts: () => import("echarts"),

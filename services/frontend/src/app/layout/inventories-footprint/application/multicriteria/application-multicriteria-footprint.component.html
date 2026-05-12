@@ -11,7 +11,7 @@
       />
   }
   @if (!showInconsitencyGraph) {
-    <p-dropdown
+    <p-select
       [options]="dimensions"
       [ngModel]="selectedDimension()"
       (ngModelChange)="footprintStore.setApplicationDimension($event)"
@@ -36,7 +36,7 @@
           }}
         </div>
       </ng-template>
-    </p-dropdown>
+    </p-select>
   }
 </div>
 @if (showInconsitencyGraph) {

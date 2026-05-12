@@ -6,9 +6,13 @@
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
 import { Component, computed, inject, input, Input, Signal } from "@angular/core";
+import { FormsModule } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
-import { TranslateService, TranslatePipe } from "@ngx-translate/core";
+import { TranslatePipe, TranslateService } from "@ngx-translate/core";
 import { EChartsOption } from "echarts";
+import { PrimeTemplate } from "primeng/api";
+import { Button } from "primeng/button";
+import { SelectModule } from "primeng/select";
 import {
     GraphDescriptionContent,
     StatusCountMap,
@@ -41,13 +45,9 @@ import { GlobalStoreService } from "src/app/core/store/global.store";
 import { Constants } from "src/constants";
 import { AbstractDashboard } from "../../abstract-dashboard";
 import { InventoriesApplicationFootprintComponent } from "../inventories-application-footprint.component";
-import { Button } from "primeng/button";
-import { DropdownModule } from "primeng/dropdown";
-import { FormsModule } from "@angular/forms";
-import { PrimeTemplate } from "primeng/api";
 
-import { StackBarChartComponent } from "../../../common/stack-bar-chart/stack-bar-chart.component";
 import { NgxEchartsDirective } from "ngx-echarts";
+import { StackBarChartComponent } from "../../../common/stack-bar-chart/stack-bar-chart.component";
 import { GraphDescriptionComponent } from "../../../digital-services-footprint/digital-services-footprint-dashboard/graph-description/graph-description.component";
 
 @Component({
@@ -56,7 +56,7 @@ import { GraphDescriptionComponent } from "../../../digital-services-footprint/d
     standalone: true,
     imports: [
     Button,
-    DropdownModule,
+    SelectModule,
     FormsModule,
     PrimeTemplate,
     StackBarChartComponent,

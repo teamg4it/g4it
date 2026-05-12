@@ -6,6 +6,16 @@
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
 import { Component, computed, EventEmitter, Input, Output, signal } from "@angular/core";
+import { FormsModule } from "@angular/forms";
+import { TranslatePipe } from "@ngx-translate/core";
+import { AccordionModule } from "primeng/accordion";
+import { PrimeTemplate } from "primeng/api";
+import { BadgeModule } from "primeng/badge";
+import { Button } from "primeng/button";
+import { CheckboxModule } from "primeng/checkbox";
+import { DrawerModule } from "primeng/drawer";
+import { FocusTrapModule } from "primeng/focustrap";
+import { ScrollPanelModule } from "primeng/scrollpanel";
 import { Filter } from "src/app/core/interfaces/filter.interface";
 import { Constants } from "src/constants";
 import {
@@ -13,16 +23,6 @@ import {
     isFilterActive,
     mapFilterActiveStatus,
 } from "../filter-helpers";
-import { SidebarModule } from "primeng/sidebar";
-import { PrimeTemplate } from "primeng/api";
-import { FocusTrapModule } from "primeng/focustrap";
-import { Button } from "primeng/button";
-import { ScrollPanelModule } from "primeng/scrollpanel";
-import { BadgeModule } from "primeng/badge";
-import { AccordionModule } from "primeng/accordion";
-import { CheckboxModule } from "primeng/checkbox";
-import { FormsModule } from "@angular/forms";
-import { TranslatePipe } from "@ngx-translate/core";
 
 export type FilterTab = string | { field: string; children?: any[] };
 
@@ -32,7 +32,7 @@ export type FilterTab = string | { field: string; children?: any[] };
     styleUrls: ["./base-filter-sidebar.component.scss"],
     standalone: true,
     imports: [
-        SidebarModule,
+        DrawerModule,
         PrimeTemplate,
         FocusTrapModule,
         Button,

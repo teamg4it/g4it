@@ -13,13 +13,13 @@
         <label for="typeInput">{{
           "digital-services-ai-infrastructure.type" | translate
         }}</label>
-        <p-dropdown
+        <p-select
           appendTo="body"
           inputId="typeInput"
           formControlName="infrastructureType"
           optionLabel="value"
           [options]="typesOptions"
-        ></p-dropdown>
+        ></p-select>
         @if (
           infrastructureForm.get('infrastructureType')?.invalid &&
           infrastructureForm.get('infrastructureType')?.touched
@@ -190,14 +190,14 @@
         <label for="location">{{
           "digital-services-ai-infrastructure.location" | translate
         }}</label>
-        <p-dropdown
+        <p-select
           appendTo="body"
           inputId="location"
           formControlName="location"
           [options]="locationOptions()"
           optionLabel="label"
           optionValue="value"
-        ></p-dropdown>
+        ></p-select>
         @if (
           infrastructureForm.get('location')?.invalid &&
           infrastructureForm.get('location')?.touched

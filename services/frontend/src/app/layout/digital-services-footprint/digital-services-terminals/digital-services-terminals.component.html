@@ -13,11 +13,12 @@
     ></app-digital-service-table>
 </div>
 @if (sidebarVisible) {
-    <p-sidebar
+    <p-drawer
         [(visible)]="sidebarVisible"
         position="right"
-        styleClass="p-sidebar-lg"
-        (onHide)="childSidePanel.close()"
+        styleClass="w-7"
+        [modal]="false"
+        (onHide)="sidebarVisible = false"
         ariaCloseLabel="Close"
     >
         <app-digital-services-terminals-side-panel
@@ -30,5 +31,5 @@
             (deleteTerminals)="deleteItem($event)"
         >
         </app-digital-services-terminals-side-panel>
-    </p-sidebar>
+    </p-drawer>
 }

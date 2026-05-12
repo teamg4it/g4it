@@ -10,7 +10,7 @@ import { NgxEchartsModule } from "ngx-echarts";
 import { BadgeModule } from "primeng/badge";
 import { ImageModule } from "primeng/image";
 import { OverlayModule } from "primeng/overlay";
-import { TabMenuModule } from "primeng/tabmenu";
+import { TabsModule } from "primeng/tabs";
 import { TreeSelectModule } from "primeng/treeselect";
 import { SharedChartsModule } from "src/app/core/shared/common-chart-module";
 import { SharedModule } from "src/app/core/shared/shared.module";
@@ -19,7 +19,7 @@ import { inventoriesApplicationRouteur } from "./inventories-application-footpri
 @NgModule({
     imports: [
         SharedModule,
-        TabMenuModule,
+        TabsModule,
         OverlayModule,
         TreeSelectModule,
         ImageModule,
@@ -27,7 +27,7 @@ import { inventoriesApplicationRouteur } from "./inventories-application-footpri
             echarts: () => import("echarts"),
         }),
         inventoriesApplicationRouteur,
-        TabMenuModule,
+        TabsModule,
         BadgeModule,
         SharedChartsModule,
     ],
