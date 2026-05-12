@@ -78,14 +78,6 @@
                                                     [ariaLabel]="item?.toString()"
                                                     name="groupname"
                                                     [value]="item"
-                                                    label="{{
-                                                        item?.toString() === all
-                                                            ? ('common.all' | translate)
-                                                            : item?.toString() === empty
-                                                              ? ('common.empty'
-                                                                | translate)
-                                                              : item
-                                                    }}"
                                                     [(ngModel)]="
                                                         localFilters()[getTabField(tab)]
                                                     "
@@ -97,7 +89,16 @@
                                                         )
                                                     "
                                                     [id]="item"
-                                                ></p-checkbox>
+                                                >
+                                                    <label>{{
+                                                        item?.toString() === all
+                                                            ? ("common.all" | translate)
+                                                            : item?.toString() === empty
+                                                              ? ("common.empty"
+                                                                | translate)
+                                                              : item
+                                                    }}</label>
+                                                </p-checkbox>
                                             </li>
                                         }
                                     </ul>

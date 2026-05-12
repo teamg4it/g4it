@@ -43,13 +43,6 @@
                                         [ariaLabel]="item?.toString()"
                                         name="groupname"
                                         [value]="item"
-                                        label="{{
-                                            item?.toString() === all
-                                                ? ('common.all' | translate)
-                                                : item?.toString() === empty
-                                                  ? ('common.empty' | translate)
-                                                  : item
-                                        }}"
                                         [(ngModel)]="localFilters()[tab.field]"
                                         (ngModelChange)="
                                             onFilterSelected(
@@ -59,7 +52,14 @@
                                             )
                                         "
                                         [id]="item"
-                                    ></p-checkbox>
+                                        ><label>{{
+                                            item?.toString() === all
+                                                ? ("common.all" | translate)
+                                                : item?.toString() === empty
+                                                  ? ("common.empty" | translate)
+                                                  : item
+                                        }}</label></p-checkbox
+                                    >
                                 }
                             </li>
                         }
@@ -103,10 +103,12 @@
                                             <p-checkbox
                                                 [binary]="true"
                                                 [(ngModel)]="filter.checked"
-                                                [label]="filter.label"
                                                 (onChange)="onTreeChange($event, filter)"
                                                 class="mb-3"
-                                            ></p-checkbox>
+                                                ><label>{{
+                                                    filter.label
+                                                }}</label></p-checkbox
+                                            >
                                             <div
                                                 [ngClass]="
                                                     filter.collapsed ? 'hidden' : ''
@@ -128,7 +130,6 @@
                                                             @if (child.visible) {
                                                                 <p-checkbox
                                                                     [binary]="true"
-                                                                    [label]="child.label"
                                                                     [(ngModel)]="
                                                                         child.checked
                                                                     "
@@ -138,7 +139,10 @@
                                                                             filter
                                                                         )
                                                                     "
-                                                                ></p-checkbox>
+                                                                    ><label>{{
+                                                                        child.label
+                                                                    }}</label></p-checkbox
+                                                                >
                                                             }
                                                         </li>
                                                     }
