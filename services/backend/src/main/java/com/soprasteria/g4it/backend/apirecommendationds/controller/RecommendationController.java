@@ -38,16 +38,15 @@ public class RecommendationController  implements RecommendationApiDelegate{ // 
      */
     @Override
     public ResponseEntity<List<InstantiatedRecommendationRest>> getInstantiatedRecommendations(
-            final Long organisationId,
-            final String digitalServiceVersionUid) {
-        log.info("LOG: GET instantiated recommendations for organisationId={}, dsVersionUid={}",
-                organisationId, digitalServiceVersionUid);
+            String organization, Long workspace, final String digitalServiceVersionUid) {
+        log.info("LOG: GET instantiated recommendations for organization={}, dsVersionUid={}",
+                organization, digitalServiceVersionUid);
         return ResponseEntity.ok(
                 instantiatedRecommendationService.getInstantiatedRecommendations(
-                        digitalServiceVersionUid, organisationId)
+                        digitalServiceVersionUid, organization)
         );
     }
-    /**
+       /**
      * {@inheritDoc}
      */
    @Override

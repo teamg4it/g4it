@@ -17,6 +17,7 @@ import com.soprasteria.g4it.backend.apiinout.repository.InVirtualEquipmentReposi
 import com.soprasteria.g4it.backend.apiinout.business.OutPhysicalEquipmentService;
 import com.soprasteria.g4it.backend.apiinout.business.OutVirtualEquipmentService;
 import com.soprasteria.g4it.backend.apireferential.business.ReferentialService;
+import com.soprasteria.g4it.backend.apiuser.repository.OrganizationRepository;
 import com.soprasteria.g4it.backend.apirecommendationds.mapper.RecommendationMapper;
 import com.soprasteria.g4it.backend.apirecommendationds.modeldb.Recommendation;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InstantiatedRecommendationRest;
@@ -47,6 +48,7 @@ import java.util.stream.Collectors;
 public class InstantiatedRecommendationService {
 
     private final RecommendationService recommendationService;
+    private final OrganizationRepository organizationRepository;
     private final RecommendationMapper recommendationMapper;
     private final OutPhysicalEquipmentService outPhysicalEquipmentService;
     private final OutVirtualEquipmentService outVirtualEquipmentService;
@@ -91,8 +93,8 @@ public class InstantiatedRecommendationService {
      */
     public List<InstantiatedRecommendationRest> getInstantiatedRecommendations(
             final String digitalServiceVersionUid,
-            final Long organisationId) {
-
+             String organisation) {
+        Long organisationId = getOrganisationIdFromName(organisation);
         List<Recommendation> recommendations = getAllRecommendationsForOrganisation(organisationId);
 
         if (recommendations.isEmpty()) {
@@ -143,6 +145,11 @@ public class InstantiatedRecommendationService {
         log.info("TOPSIS: computed priorities for {} recommendations (dsVersionUid={})", n, digitalServiceVersionUid);
 
         return result;
+    }
+    private Long getOrganisationIdFromName(String name) {
+        return(organizationRepository.findByName(name)
+                .orElseThrow()
+                .getId());
     }
 
     // -------------------------------------------------------------------------

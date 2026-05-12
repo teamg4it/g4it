@@ -12,8 +12,8 @@ paths:
 
   # ─────────────────────────────────────────────────────────────────────────────
   # Instantiated recommendations for a digital service version
-  # ─────────────────────────────────────────────────────────────
-  /api/v1/organizations/{organization}/workspaces/{workspace}/evaluation/{digitalServiceVersionUid}/recommendations:
+  # ─────────────────────────────────────────────────────────────────────────────
+  /organizations/{organization}/workspaces/{workspace}/versions/{digitalServiceVersionUid}/recommendations:
     parameters:
       - name: organization
         in: path

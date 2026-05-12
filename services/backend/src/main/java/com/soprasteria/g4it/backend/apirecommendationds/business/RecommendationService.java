@@ -37,7 +37,8 @@ public class RecommendationService {
     /**
      * Get all recommendations for an organisation.
      *
-     * @param organisationId the organisation id
+     * @param organisation the organisation name
+     * @param workspace the workspace name
      * @return list of recommendations
      */
    public List<RecommendationDSRest> getRecommendations(String organization, Long workspace) {
@@ -87,7 +88,7 @@ private Long getOrganisationIdFromName(String name) {
     /**
      * Create a new recommendation.
      *
-     * @param organisationId        the organisation id
+     *  @param organisation the organisation name
      * @param recommendationDSRest the recommendation to create
      * @return the created recommendation
      */
