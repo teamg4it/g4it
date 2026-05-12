@@ -36,14 +36,14 @@
     "date-fns": "^4.1.0",
     "echarts": "^5.5.1",
     "file-saver": "^2.0.5",
-    "keycloak-angular": "^19.0.2",
+    "keycloak-angular": "^20.1.0",
     "keycloak-js": "^26.0.7",
     "loader-utils": "^3.3.1",
     "ngx-clipboard": "^16.0.0",
-    "ngx-echarts": "^19.0.0",
+    "ngx-echarts": "^20.0.2",
     "primeflex": "^3.3.1",
     "primeicons": "^7.0.0",
-    "primeng": "^19.1.4",
+    "primeng": "^20.4.0",
     "quill": "^2.0.3",
     "rxjs": "^7.8.1",
     "sort-by-property": "^1.3.0",
@@ -67,6 +67,6 @@
     "karma-jasmine-html-reporter": "^2.1.0",
     "karma-junit-reporter": "^2.0.1",
     "prettier": "^3.4.2",
-    "typescript": "5.9.3"
+    "typescript": "5.9"
   }
 }
