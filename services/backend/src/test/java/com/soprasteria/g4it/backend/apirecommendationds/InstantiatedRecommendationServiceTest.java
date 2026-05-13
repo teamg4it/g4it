@@ -11,7 +11,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.soprasteria.g4it.backend.apiinout.business.OutPhysicalEquipmentService;
 import com.soprasteria.g4it.backend.apiinout.business.OutVirtualEquipmentService;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InPhysicalEquipment;
-import com.soprasteria.g4it.backend.apiinout.modeldb.InVirtualEquipment;
 import com.soprasteria.g4it.backend.apiinout.repository.InDatacenterRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.InPhysicalEquipmentRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.InVirtualEquipmentRepository;
@@ -22,6 +21,7 @@ import com.soprasteria.g4it.backend.apirecommendationds.modeldb.Recommendation;
 import com.soprasteria.g4it.backend.apireferential.business.ReferentialService;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
 import com.soprasteria.g4it.backend.apiuser.repository.OrganizationRepository;
+import com.soprasteria.g4it.backend.apiuser.repository.WorkspaceRepository;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InstantiatedRecommendationRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.RecommendationDSRest;
 import org.junit.jupiter.api.Test;
@@ -36,6 +36,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -68,6 +69,9 @@ class InstantiatedRecommendationServiceTest {
     @Mock
     private ReferentialService referentialService;
 
+    @Mock
+    private WorkspaceRepository workspaceRepository;
+
     @Spy
     private ObjectMapper objectMapper = new ObjectMapper();
 
@@ -76,6 +80,7 @@ class InstantiatedRecommendationServiceTest {
 
     private static final String DS_VERSION_UID = "ds-version-uid-123";
     private static final Long ORG_ID = 1L;
+    private static final Long WORKSPACE_ID = 1L;
     private static final String ORGANIZATION = "my-org";
 
     private void mockOrganizationLookup() {
@@ -92,13 +97,17 @@ class InstantiatedRecommendationServiceTest {
     void shouldReturnEmptyList_whenNoRecommendationsFound() {
         mockOrganizationLookup();
 
-        when(recommendationService.findByOrganisationIdIsNull()).thenReturn(Collections.emptyList());
-        when(recommendationService.findByOrganisationId(ORG_ID)).thenReturn(Collections.emptyList());
+        when(recommendationService.findByOrganisationIdIsNull())
+                .thenReturn(Collections.emptyList());
+
+        when(recommendationService.findByOrganisationId(ORG_ID))
+                .thenReturn(Collections.emptyList());
 
         List<InstantiatedRecommendationRest> result =
                 instantiatedRecommendationService.getInstantiatedRecommendations(
                         DS_VERSION_UID,
-                        ORGANIZATION
+                        ORGANIZATION,
+                        WORKSPACE_ID
                 );
 
         assertThat(result).isEmpty();
@@ -120,8 +129,11 @@ class InstantiatedRecommendationServiceTest {
                 .heuristicRange("{\"1\":[0,100],\"2\":[101,500]}")
                 .build();
 
-        when(recommendationService.findByOrganisationIdIsNull()).thenReturn(List.of(rec));
-        when(recommendationService.findByOrganisationId(ORG_ID)).thenReturn(Collections.emptyList());
+        when(recommendationService.findByOrganisationIdIsNull())
+                .thenReturn(List.of(rec));
+
+        when(recommendationService.findByOrganisationId(ORG_ID))
+                .thenReturn(Collections.emptyList());
 
         InPhysicalEquipment terminal = InPhysicalEquipment.builder()
                 .type("Terminal")
@@ -151,7 +163,8 @@ class InstantiatedRecommendationServiceTest {
         List<InstantiatedRecommendationRest> result =
                 instantiatedRecommendationService.getInstantiatedRecommendations(
                         DS_VERSION_UID,
-                        ORGANIZATION
+                        ORGANIZATION,
+                        WORKSPACE_ID
                 );
 
         assertThat(result).hasSize(1);
@@ -172,8 +185,11 @@ class InstantiatedRecommendationServiceTest {
                 .affectedAttributes(null)
                 .build();
 
-        when(recommendationService.findByOrganisationIdIsNull()).thenReturn(List.of(rec));
-        when(recommendationService.findByOrganisationId(ORG_ID)).thenReturn(Collections.emptyList());
+        when(recommendationService.findByOrganisationIdIsNull())
+                .thenReturn(List.of(rec));
+
+        when(recommendationService.findByOrganisationId(ORG_ID))
+                .thenReturn(Collections.emptyList());
 
         when(inPhysicalEquipmentRepository.findByDigitalServiceVersionUid(DS_VERSION_UID))
                 .thenReturn(Collections.emptyList());
@@ -193,7 +209,8 @@ class InstantiatedRecommendationServiceTest {
         List<InstantiatedRecommendationRest> result =
                 instantiatedRecommendationService.getInstantiatedRecommendations(
                         DS_VERSION_UID,
-                        ORGANIZATION
+                        ORGANIZATION,
+                        WORKSPACE_ID
                 );
 
         assertThat(result).hasSize(1);
@@ -237,10 +254,12 @@ class InstantiatedRecommendationServiceTest {
         List<InstantiatedRecommendationRest> result =
                 instantiatedRecommendationService.getInstantiatedRecommendations(
                         DS_VERSION_UID,
-                        ORGANIZATION
+                        ORGANIZATION,
+                        WORKSPACE_ID
                 );
 
         assertThat(result).hasSize(2);
+
         assertThat(result.get(0).getPriority())
                 .isGreaterThanOrEqualTo(result.get(1).getPriority());
     }

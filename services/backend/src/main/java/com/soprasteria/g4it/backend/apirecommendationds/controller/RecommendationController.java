@@ -43,7 +43,9 @@ public class RecommendationController  implements RecommendationApiDelegate{ // 
                 organization, digitalServiceVersionUid);
         return ResponseEntity.ok(
                 instantiatedRecommendationService.getInstantiatedRecommendations(
-                        digitalServiceVersionUid, organization)
+        digitalServiceVersionUid,
+        organization,
+        workspace)
         );
     }
        /**

@@ -17,7 +17,9 @@ import com.soprasteria.g4it.backend.apiinout.repository.InVirtualEquipmentReposi
 import com.soprasteria.g4it.backend.apiinout.business.OutPhysicalEquipmentService;
 import com.soprasteria.g4it.backend.apiinout.business.OutVirtualEquipmentService;
 import com.soprasteria.g4it.backend.apireferential.business.ReferentialService;
+import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
 import com.soprasteria.g4it.backend.apiuser.repository.OrganizationRepository;
+import com.soprasteria.g4it.backend.apiuser.repository.WorkspaceRepository;
 import com.soprasteria.g4it.backend.apirecommendationds.mapper.RecommendationMapper;
 import com.soprasteria.g4it.backend.apirecommendationds.modeldb.Recommendation;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InstantiatedRecommendationRest;
@@ -27,6 +29,7 @@ import com.soprasteria.g4it.backend.server.gen.api.dto.RecommendationDSRest;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -57,6 +60,7 @@ public class InstantiatedRecommendationService {
     private final InVirtualEquipmentRepository inVirtualEquipmentRepository;
     private final ReferentialService referentialService;
     private final ObjectMapper objectMapper;
+    private final WorkspaceRepository workspaceRepository;
 
     // Criterion weights (must sum to 1.0)
     private static final double WEIGHT_PROPORTION = 0.40;
@@ -92,8 +96,9 @@ public class InstantiatedRecommendationService {
      * Returns recommendations sorted by descending TOPSIS priority score.
      */
     public List<InstantiatedRecommendationRest> getInstantiatedRecommendations(
-            final String digitalServiceVersionUid,
-             String organisation) {
+        final String digitalServiceVersionUid,
+        final String organisation,
+        final Long workspaceId)  {
         Long organisationId = getOrganisationIdFromName(organisation);
         List<Recommendation> recommendations = getAllRecommendationsForOrganisation(organisationId);
 
@@ -121,7 +126,7 @@ public class InstantiatedRecommendationService {
             impacts[i]      = r.getBaseImpact() != null ? r.getBaseImpact() : 0;
             difficulties[i] = mapDifficulty(r.getDifficulty());
             proportions[i]  = computeMaxProportion(r.getCategory(), categoryProportions);
-            heuristics[i]   = computeHeuristicScore(r, heuristicContext);
+            heuristics[i] = computeHeuristicScore(r, heuristicContext, workspaceId);
         }
 
         // Run TOPSIS
@@ -464,7 +469,7 @@ private String normalizeCloudLocation(String location) {
      * Score = 1   -> actual value is in the worst group (highly prioritize)
      * Score = 0.5 -> neutral (no affectedAttribute, or value unavailable)
      */
-    private double computeHeuristicScore(Recommendation recommendation, HeuristicContext ctx) {
+    private double computeHeuristicScore(Recommendation recommendation, HeuristicContext ctx, Long workspaceId) {
         String attribute = parseAffectedAttribute(recommendation.getAffectedAttributes());
 
         if (attribute == null) {
@@ -472,7 +477,7 @@ private String normalizeCloudLocation(String location) {
         }
 
         if ("location".equals(attribute)) {
-            return computeLocationHeuristic(ctx.locationWeights());
+            return computeLocationHeuristic(ctx.locationWeights(), workspaceId);
         }
 
         if (recommendation.getHeuristicRange() == null) {
@@ -546,11 +551,12 @@ private String normalizeCloudLocation(String location) {
      * Quartile 4 (worst mix) -> score 1.0 (highly prioritized)
      * Unknown locations are ignored; if none found -> neutral 0.5
      */
-    private double computeLocationHeuristic(Map<String, Double> locationWeights) {
+    private double computeLocationHeuristic(Map<String, Double> locationWeights, Long workspaceId) {
         if (locationWeights == null || locationWeights.isEmpty()) return 0.5;
 
         try {
-            Map<Pair<String, String>, Integer> quartiles = referentialService.getElectricityMixQuartiles();
+    Map<Pair<String, String>, Integer> quartiles =
+            referentialService.getElectricityMixQuartiles(workspaceId);
             
             double totalWeightedScore = 0.0;
             double totalQuantity = 0.0;
