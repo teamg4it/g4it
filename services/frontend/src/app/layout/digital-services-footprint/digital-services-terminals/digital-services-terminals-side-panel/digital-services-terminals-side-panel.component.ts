@@ -147,14 +147,19 @@ export class DigitalServicesTerminalsSidePanelComponent implements OnInit {
     close() {
         this.sidebarVisibleChange.emit(false);
     }
+    @Input() embedded = false;
 
     async submitFormData() {
         this.updateTerminals.emit(this.terminal);
-        this.close();
+        if (!this.embedded) {
+            this.close();
+        }
     }
 
     async deleteTerminal() {
         this.deleteTerminals.emit(this.terminal);
-        this.close();
+        if (!this.embedded) {
+            this.close();
+        }
     }
 }

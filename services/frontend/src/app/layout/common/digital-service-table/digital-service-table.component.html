@@ -2,34 +2,47 @@
     [value]="data"
     [tableStyle]="{ 'min-width': '50rem' }"
     [rows]="6"
-    [paginator]="true"
+    [paginator]="paginator"
     [sortField]="'name'"
     [sortOrder]="1"
 >
     <ng-template pTemplate="caption">
-        <div class="table-header">
-            <div class="table-head">
-                {{ translationPrefix + "." + titleText | translate }}
-            </div>
-            <p-button
-                *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
-                (onClick)="doResetItem(); sidebarVisible(true)"
-                styleClass="p-button-secondary-blue uppercase"
-                [id]="addButtonId"
-                icon="pi pi-plus-circle"
-                [label]="'common.add-button' | translate"
-                [ariaLabel]="
-                    'common.accessibility.add'
-                        | translate
-                            : {
-                                  type:
-                                      translationPrefix + '.' + accessibilityText
-                                      | translate,
-                              }
-                "
-            ></p-button>
-        </div>
+        <div class="table-header flex justify-content-between align-items-center">
+
+  <div class="table-head">
+    {{ translationPrefix + "." + titleText | translate }}
+  </div>
+
+  <div class="flex align-items-center gap-2">
+
+    <i
+  *ngIf="compareMode"
+  [pTooltip]="'recommendations.select_before_apply' | translate"
+  tooltipPosition="top"
+  class="pi pi-exclamation-circle text-2xl color-tertiary cursor-pointer"
+></i>
+
+    <p-button
+      *ngIf="compareMode || (userService.isAllowedDigitalServiceWrite$ | async)"
+      (onClick)="onMainButtonClick()"
+      styleClass="p-button-secondary-blue uppercase"
+      [id]="addButtonId"
+      [icon]="compareMode ? 'pi pi-sliders-h' : 'pi pi-plus-circle'"
+      [label]="
+          compareMode
+              ? ('common.compare' | translate)
+              : ('common.add-button' | translate)
+      "
+      [pTooltip]="getCompareTooltip() ?? ''"
+      tooltipPosition="top"
+      [disabled]="compareMode && !hasSelectedItems()"
+    ></p-button>
+
+  </div>
+
+</div>
     </ng-template>
+
     <ng-template pTemplate="header">
         <caption class="visually-hidden">
             {{
@@ -37,6 +50,7 @@
             }}
         </caption>
         <tr>
+            
             @if (showId && !isMobileView()) {
                 <th scope="col" id="id">
                     {{ "digital-services-terminals.id" | translate }}
@@ -56,10 +70,25 @@
                     {{ "common.button" | translate }}
                 </th>
             }
+             @if (selectable) {
+                <th scope="col" class="text-center" style="width: 3rem">
+                    @if (showSelectAll) {
+                    <p-checkbox
+                        binary="true"
+                        [(ngModel)]="selectAll"
+                        (onChange)="onSelectAllChange()"
+                        inputId="selectAllHeader"
+                    ></p-checkbox>
+                    }
+                </th>
+                }
         </tr>
     </ng-template>
     <ng-template pTemplate="body" let-data let-rowIndex="rowIndex">
         <tr>
+
+           
+
             @if (showId && !isMobileView()) {
                 <td class="grey-text">{{ rowIndex + 1 }}</td>
             }
@@ -70,13 +99,50 @@
                 ></ng-template>
             }
             @for (header of headerFields; track $index) {
-                <td>{{ data[header] | decimals }}</td>
+               <td>
+  <ng-container [ngSwitch]="header">
+
+    <!-- title / description -->
+    <ng-container *ngSwitchCase="'title'">
+      {{ translateOrFallback(data.title) }}
+    </ng-container>
+
+    <ng-container *ngSwitchCase="'description'">
+      {{ translateOrFallback(data.description) }}
+    </ng-container>
+
+    <!-- difficulty -->
+    <ng-container *ngSwitchCase="'implementationDifficulty'">
+      {{ data.implementationDifficulty | translate }}
+    </ng-container>
+
+    <!-- categories  -->
+    <ng-container *ngSwitchCase="'category'">
+     {{ translateCategories(data.category) }}
+    </ng-container>
+
+    <!-- default -->
+    <ng-container *ngSwitchDefault>
+      {{ data[header] }}
+    </ng-container>
+
+  </ng-container>
+</td>
             }
             @if (!isMobileView()) {
                 <ng-template
                     [ngTemplateOutlet]="dataConsistencyRef"
                     [ngTemplateOutletContext]="{ data: data, rowIndex: rowIndex }"
                 ></ng-template>
+            }
+            @if (selectable) {
+            <td class="text-center">
+                <p-checkbox
+                [(ngModel)]="data.selected"
+                binary="true"
+                (onChange)="updateSelectAllState()"
+                ></p-checkbox>
+            </td>
             }
         </tr>
     </ng-template>
@@ -86,7 +152,7 @@
             [ngStyle]="{ 'text-align': isMobileView() ? 'left' : 'right' }"
         >
             <div class="flex">
-                @if (userService.isAllowedDigitalServiceWrite$ | async) {
+                @if (!hideActions && userService.isAllowedDigitalServiceWrite$ ) {
                     <p-button
                         (onClick)="doSetItem(data, rowIndex + 1); sidebarVisible(true)"
                         styleClass="p-button-text mx-1 p-1 pt-2"

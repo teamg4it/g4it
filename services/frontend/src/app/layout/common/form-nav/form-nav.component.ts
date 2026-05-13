@@ -1,5 +1,7 @@
 import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { FormGroup } from "@angular/forms";
+import { TranslateService } from '@ngx-translate/core';
+
 
 @Component({
     selector: "app-form-nav",
@@ -14,6 +16,7 @@ export class FormNavComponent {
     selectTab(index: number): void {
         this.tabSelected.emit(index);
     }
+    constructor(private translate: TranslateService) {}
 
     handleKeydown(event: KeyboardEvent, index: number) {
         let nextIndex = index;
@@ -40,4 +43,11 @@ export class FormNavComponent {
             return menu.hidden !== true;
         });
     }
+    translateArray(values: string[] | undefined): string {
+  if (!values) return '';
+
+  return values
+    .map(v => this.translate.instant(v))
+    .join(', ');
+}
 }

@@ -15,6 +15,7 @@ import {
 } from "../interfaces/input.interface";
 import { InPhysicalEquipmentsService } from "../service/data/in-out/in-physical-equipments.service";
 import { InVirtualEquipmentsService } from "../service/data/in-out/in-virtual-equipments.service";
+import { TranslateService } from "@ngx-translate/core";
 
 interface DigitalServiceState {
     enableCalcul: boolean;
@@ -52,6 +53,7 @@ const initialState: DigitalServiceState = {
     providedIn: "root",
 })
 export class DigitalServiceStoreService {
+    public translate = inject(TranslateService);
     private readonly inPhysicalEquipmentsService = inject(InPhysicalEquipmentsService);
     private readonly inVirtualEquipmentsService = inject(InVirtualEquipmentsService);
     private readonly _store = signal(initialState);
@@ -138,4 +140,13 @@ export class DigitalServiceStoreService {
     setIsSharedDS(isSharedDs: boolean) {
         this._store.update((s) => ({ ...s, isSharedDs }));
     }
+    
+    addDatacenter(datacenter: InDatacenterRest) {
+    datacenter.displayLabel = `${datacenter.name.split("|")[0]} (${datacenter.location} - PUE = ${datacenter.pue})`;
+    
+    this._store.update(s => ({
+        ...s,
+        inDatacenters: [...s.inDatacenters, datacenter],
+    }));
+}
 }

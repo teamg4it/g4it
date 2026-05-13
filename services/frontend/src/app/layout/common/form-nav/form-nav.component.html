@@ -1,6 +1,6 @@
 @if (spaceDetails && spaceDetails["menu"] && (getValidMenu().length > 1 || onlyOneNav)) {
-    <ul class="space-menu w-18rem h-full">
-        @for (spaceMenu of spaceDetails["menu"]; track $index; let panelIndex = $index) {
+<ul class="space-menu h-full">
+            @for (spaceMenu of spaceDetails["menu"]; track $index; let panelIndex = $index) {
             @if (!spaceMenu["hidden"]) {
                 <li
                     [id]="'space-menu-item-' + panelIndex"
@@ -24,7 +24,7 @@
                     (keydown)="handleKeydown($event, panelIndex)"
                 >
                     <p class="space-menu-sub-title">{{ spaceMenu.subTitle }}</p>
-                    <p class="space-menu-title">{{ spaceMenu.title }}</p>
+                    <p class="space-menu-title">{{ spaceMenu.title | translate  }}</p>
                     <!-- Not valid field OR optional field with empty value -->
                     @if (!onlyOneNav) {
                         @if (

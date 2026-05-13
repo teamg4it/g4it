@@ -115,4 +115,123 @@ describe("DigitalServicesNetworksSidePanelComponent", () => {
         expect(component.outCancel.emit).toHaveBeenCalledWith(component.network);
         expect(component.sidebarVisible.emit).toHaveBeenCalledWith(false);
     });
+    // =============================
+// EXISTING NAMES (filter branch)
+// =============================
+it("should filter existing names when editing (not new)", () => {
+    component.networkData = [
+        { name: "A" },
+        { name: "B" }
+    ] as any;
+
+    component.network = { idFront: 1, name: "A" } as any;
+
+    component.ngOnInit();
+
+    // "A" doit être exclu car on édite A
+    expect(component.existingNames).toEqual(["B"]);
+});
+
+// =============================
+// PATCH VALUE (edit mode)
+// =============================
+it("should patch form when editing existing network", () => {
+    component.network = {
+        idFront: 1,
+        name: "Net1",
+        type: { code: "1" },
+        yearlyQuantityOfGbExchanged: 123
+    } as any;
+
+    component.ngOnInit();
+
+    expect(component.networksForm.value.name).toBe("Net1");
+    expect(component.networksForm.value.yearlyQuantityOfGbExchanged).toBe(123);
+});
+
+// =============================
+// ONLY QUANTITY EDITABLE
+// =============================
+it("should disable name and type when onlyQuantityEditable is true", () => {
+    component.onlyQuantityEditable = true;
+
+    component.ngOnInit();
+
+    expect(component.networksForm.get('name')?.disabled).toBeTrue();
+    expect(component.networksForm.get('type')?.disabled).toBeTrue();
+});
+
+// =============================
+// EDITABLE FIELDS (partial enable)
+// =============================
+it("should disable name and type when onlyQuantityEditable is true", () => {
+    component.onlyQuantityEditable = true;
+
+    component.ngOnInit();
+
+    expect(component.networksForm.get('name')?.disabled).toBeTrue();
+    expect(component.networksForm.get('type')?.disabled).toBeTrue();
+});
+
+// =============================
+// ngOnChanges (with existing form)
+// =============================
+it("should patch form on ngOnChanges", () => {
+    component.ngOnInit();
+
+    component.network = {
+        name: "Changed",
+        type: { code: "X" },
+        yearlyQuantityOfGbExchanged: 999
+    } as any;
+
+    component.ngOnChanges({
+        network: {
+            currentValue: component.network,
+            previousValue: null,
+            firstChange: false,
+            isFirstChange: () => false
+        }
+    });
+
+    expect(component.networksForm.value.name).toBe("Changed");
+    expect(component.networksForm.value.yearlyQuantityOfGbExchanged).toBe(999);
+});
+
+// =============================
+// ngOnChanges (without form → initForm)
+// =============================
+it("should init form if not existing in ngOnChanges", () => {
+    component.networksForm = undefined as any;
+
+    component.network = {
+        name: "Init",
+        type: { code: "Y" },
+        yearlyQuantityOfGbExchanged: 50
+    } as any;
+
+    component.ngOnChanges({
+        network: {
+            currentValue: component.network,
+            previousValue: null,
+            firstChange: false,
+            isFirstChange: () => false
+        }
+    });
+
+    expect(component.networksForm).toBeDefined();
+    expect(component.networksForm.value.name).toBe("Init");
+});
+
+// =============================
+// INIT FORM DIRECT
+// =============================
+it("should initialize form manually", () => {
+    component.networkData = [{ name: "A" }] as any;
+
+    component.initForm();
+
+    expect(component.networksForm).toBeDefined();
+    expect(component.networksForm.get('name')).toBeTruthy();
+});
 });

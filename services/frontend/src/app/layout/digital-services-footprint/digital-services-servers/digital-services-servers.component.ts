@@ -9,10 +9,14 @@ import {
     Component,
     computed,
     DestroyRef,
+    EventEmitter,
     inject,
+    Input,
     input,
     OnDestroy,
     OnInit,
+    Output,
+    Signal,
 } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { ActivatedRoute, Router } from "@angular/router";
@@ -25,6 +29,7 @@ import {
     ServerVM,
 } from "src/app/core/interfaces/digital-service.interfaces";
 import {
+    InDatacenterRest,
     InPhysicalEquipmentRest,
     InVirtualEquipmentRest,
 } from "src/app/core/interfaces/input.interface";
@@ -46,10 +51,12 @@ export class DigitalServicesServersComponent implements OnInit, OnDestroy {
     private readonly destroyRef = inject(DestroyRef);
 
     dsVersionUid = input("");
+    embedded = input(false);
 
     digitalService: DigitalService = {} as DigitalService;
     sidebarVisible: boolean = false;
     existingNames: string[] = [];
+    serverDataInput = input<Signal<DigitalServiceServerConfig[]> | DigitalServiceServerConfig[] | undefined>(undefined);
 
     headerFields = [
         "name",
@@ -59,48 +66,51 @@ export class DigitalServicesServersComponent implements OnInit, OnDestroy {
         "hostValue",
         "datacenterName",
     ];
+    
+serverData = computed(() => {
+    const input = this.serverDataInput();
 
-    serverData = computed(() => {
-        const serverTypes = this.digitalServiceStore.serverTypes();
-        const datacenters = this.digitalServiceStore.inDatacenters();
+    if (input) {
+        return typeof input === "function" ? input() : input;
+    }
 
-        if (datacenters.length === 0 || serverTypes.length === 0) return [];
 
-        const inVirtualEquipments = this.digitalServiceStore
-            .inVirtualEquipments()
-            .filter((ve) => ve.infrastructureType !== "CLOUD_SERVICES")
-            .reduce((acc: any, obj: any) => {
-                const key = obj.physicalEquipmentName;
-                if (!acc[key]) acc[key] = [];
-                acc[key].push(obj);
-                return acc;
-            }, {});
+    const serverTypes = this.digitalServiceStore.serverTypes();
+    const datacenters = this.digitalServiceStore.inDatacenters();
 
-        const inPhysicalEquipments = this.digitalServiceStore
-            .inPhysicalEquipments()
-            .filter((item) => item.type.endsWith(" Server"));
+    if (datacenters.length === 0 || serverTypes.length === 0) return [];
 
-        this.existingNames = inPhysicalEquipments.map((pe) => pe.name);
+    const inVirtualEquipments = this.digitalServiceStore
+        .inVirtualEquipments()
+        .filter((ve) => ve.infrastructureType !== "CLOUD_SERVICES")
+        .reduce((acc: any, obj: any) => {
+            const key = obj.physicalEquipmentName;
+            if (!acc[key]) acc[key] = [];
+            acc[key].push(obj);
+            return acc;
+        }, {});
 
-        return inPhysicalEquipments.map((item) => {
-            let serverType = serverTypes.find(
-                (server) => server.value === item.description,
-            );
+    const inPhysicalEquipments = this.digitalServiceStore
+        .inPhysicalEquipments()
+        .filter((item) => item.type.endsWith(" Server"));
 
-            if (serverType === undefined) {
-                serverType = serverTypes.find(
-                    (server) => server.reference === item.model,
-                );
-            }
+    this.existingNames = inPhysicalEquipments.map((pe) => pe.name);
+    
+    return inPhysicalEquipments.map((item) => {
+        let serverType = serverTypes.find(
+            (server) => server.value === item.description,
+        ) ?? serverTypes.find(
+            (server) => server.reference === item.model,
+        );
 
-            const quantity =
-                item.type === "Dedicated Server"
-                    ? item.quantity / (item.durationHour! / 8760)
-                    : 1;
+        const quantity =
+            item.type === "Dedicated Server"
+                ? item.quantity / (item.durationHour! / 8760)
+                : 1;
 
-            const datacenter = datacenters.find((dc) => dc.name === item.datacenterName);
-            const vms = inVirtualEquipments[item.name] || [];
-            const totalQuantityVms = vms.reduce(
+        const datacenter = datacenters.find((dc) => dc.name === item.datacenterName);
+        const vms = inVirtualEquipments[item.name] || [];
+                    const totalQuantityVms = vms.reduce(
                 (acc: number, vm: InVirtualEquipmentRest) => acc + vm.quantity,
                 0,
             );
@@ -136,8 +146,8 @@ export class DigitalServicesServersComponent implements OnInit, OnDestroy {
                     } as ServerVM;
                 }),
             } as DigitalServiceServerConfig;
-        });
     });
+});
 
     constructor(
         private readonly digitalServicesData: DigitalServicesDataService,
@@ -157,7 +167,7 @@ export class DigitalServicesServersComponent implements OnInit, OnDestroy {
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe((res) => {
                 this.sidebarVisible = res;
-                if (res === false && !this.router.url.endsWith("/resources")) {
+                if (!this.embedded() && res === false && !this.router.url.endsWith("/resources")) {
                     this.router.navigate(["../resources"], { relativeTo: this.route });
                 }
             });
@@ -194,9 +204,10 @@ export class DigitalServicesServersComponent implements OnInit, OnDestroy {
         );
         await this.digitalServiceStore.initInPhysicalEquipments(digitalServiceVersionUid);
         this.digitalServiceStore.setEnableCalcul(true);
-    }
+    } 
 
     addNewServer() {
+        if (this.embedded()) return;
         let newServer: DigitalServiceServerConfig = {
             uid: "",
             name: this.digitalServicesBusiness.getNextAvailableName(
@@ -222,10 +233,17 @@ export class DigitalServicesServersComponent implements OnInit, OnDestroy {
         this.digitalServicesBusiness.openPanel();
     }
 
+    @Output() editEmbedded = new EventEmitter<DigitalServiceServerConfig>();
     updateServer(server: DigitalServiceServerConfig) {
+
+        if (this.embedded()) {
+            this.digitalServiceStore.setServer(server);
+            this.editEmbedded.emit(server);
+            return;
+        }
+
         this.digitalServiceStore.setServer(server);
         this.router.navigate(["panel-parameters"], { relativeTo: this.route });
-
         this.digitalServicesBusiness.openPanel();
     }
 

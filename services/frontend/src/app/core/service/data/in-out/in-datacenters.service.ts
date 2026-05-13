@@ -54,4 +54,14 @@ export class InDatacentersService {
             `${endpoint}/${equipment.digitalServiceUid}/inputs/${this.API}/${equipment.id}`,
         );
     }
+    createForVersion(
+  versionUid: string,
+  dc: InDatacenterRest
+): Observable<InDatacenterRest> {
+  return this.http.post<InDatacenterRest>(
+    `${endpoint}/${versionUid}/inputs/datacenters`,
+    dc,
+    { headers: this.HEADERS }
+  );
+}
 }

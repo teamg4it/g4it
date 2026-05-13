@@ -5,14 +5,18 @@
         translationPrefix="digital-services-networks"
         [headerFields]="headerFields"
         [data]="networkData()"
+        [forceWrite]="embedded()"
+        [hideActions]="false"
         addButtonId="add-networks"
         (sidebar)="changeSidebar($event)"
         (resetItem)="resetNetwork()"
         (setItem)="setItem($event)"
         (deleteItem)="deleteItem($event)"
+        [paginator]="!embedded()"
     ></app-digital-service-table>
 </div>
-@if (sidebarVisible) {
+
+@if (!embedded() && sidebarVisible) {
     <p-sidebar
         [(visible)]="sidebarVisible"
         position="right"

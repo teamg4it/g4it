@@ -5,7 +5,7 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component, computed, inject, input, OnInit, signal } from "@angular/core";
+import { Component, computed, EventEmitter, inject, input, OnInit, Output, Signal, signal } from "@angular/core";
 import { Router } from "@angular/router";
 import { MessageService } from "primeng/api";
 import { firstValueFrom, lastValueFrom } from "rxjs";
@@ -26,6 +26,10 @@ export class DigitalServicesCloudServicesComponent implements OnInit {
     protected digitalServiceStore = inject(DigitalServiceStoreService);
 
     dsVersionUid = input("");
+    embedded = input(false);
+    @Output() editEmbedded = new EventEmitter<DigitalServiceCloudServiceConfig>();
+    @Output() updateEmbedded = new EventEmitter<DigitalServiceCloudServiceConfig>();
+    @Output() deleteEmbedded = new EventEmitter<DigitalServiceCloudServiceConfig>();
 
     sidebarVisible: boolean = false;
     sidebarPurpose: string = "";
@@ -33,18 +37,26 @@ export class DigitalServicesCloudServicesComponent implements OnInit {
     digitalServiceUid = "";
 
     virtualEquipments = signal<InVirtualEquipmentRest[]>([]);
+    cloudDataInput = input<
+        Signal<DigitalServiceCloudServiceConfig[]> | DigitalServiceCloudServiceConfig[] | undefined
+        >(undefined);
 
-    cloudServices = computed(() => {
-        return this.digitalServiceStore
-            .inVirtualEquipments()
-            .filter((server) => server.infrastructureType === "CLOUD_SERVICES")
-            .map((server: InVirtualEquipmentRest) =>
-                this.toDigitalServiceCloudServiceConfig(
-                    server,
-                    this.digitalServiceStore.countryMap(),
-                ),
-            );
-    });
+cloudServices = computed(() => {
+    const input = this.cloudDataInput();
+
+    if (input) {
+        return typeof input === "function" ? input() : input;
+    }
+    return this.digitalServiceStore
+        .inVirtualEquipments()
+        .filter((server) => server.infrastructureType === "CLOUD_SERVICES")
+        .map((server: InVirtualEquipmentRest) =>
+            this.toDigitalServiceCloudServiceConfig(
+                server,
+                this.digitalServiceStore.countryMap(),
+            ),
+        );
+});
 
     headerFields = [
         "name",
@@ -80,9 +92,18 @@ export class DigitalServicesCloudServicesComponent implements OnInit {
 
         this.cloud = { ...event };
         this.cloud.idFront = index;
+        this.editEmbedded.emit(this.cloud);
+        if(this.embedded()){
+            this.editEmbedded.emit(this.cloud);
+            return ; 
+        }
     }
 
     async deleteItem(event: DigitalServiceCloudServiceConfig) {
+            if (this.embedded()) {
+        this.deleteEmbedded.emit(event);
+        return;
+    }
         await firstValueFrom(
             this.inVirtualEquipmentsService.delete(event.id, this.dsVersionUid()),
         );
@@ -100,6 +121,10 @@ export class DigitalServicesCloudServicesComponent implements OnInit {
     }
 
     async updateCloudServices(cloud: DigitalServiceCloudServiceConfig) {
+    if (this.embedded()) {
+        this.updateEmbedded.emit(cloud);
+        return;
+    }
         if (cloud.id) {
             await firstValueFrom(
                 this.inVirtualEquipmentsService.update(

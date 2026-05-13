@@ -6,13 +6,16 @@
         addButtonId="add-servers"
         [headerFields]="headerFields"
         [data]="serverData()"
+        [forceWrite]="embedded()"
+        [hideActions]="false"
         (sidebar)="changeSidebar($event)"
         (resetItem)="addNewServer()"
         (setItem)="setItem($event)"
         (deleteItem)="deleteItem($event)"
+        [paginator]="!embedded()"
     ></app-digital-service-table>
 </div>
-@if (sidebarVisible) {
+@if (!embedded() && sidebarVisible) {
     <p-sidebar
         [(visible)]="sidebarVisible"
         position="right"

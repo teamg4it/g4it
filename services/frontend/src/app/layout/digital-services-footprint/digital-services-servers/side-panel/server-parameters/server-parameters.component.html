@@ -291,7 +291,7 @@
                 </div>
             </div>
         </div>
-        <div class="button-bottom-right">
+        <div class="button-bottom-right" *ngIf="!embedded">
             <div
                 class="error-text block"
                 *ngIf="serverForm.hasError('xssDetected') && serverForm.dirty"

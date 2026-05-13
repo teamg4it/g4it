@@ -1,0 +1,52 @@
+@startuml
+actor User
+
+package "Frontend Angular G4IT" {
+
+  package "Layout (Vues)" {
+    [Digital Services Footprint]
+    [Dashboard]
+    [Servers]
+    [Networks]
+    [Terminals]
+
+    [Recommendations]
+    [Common]
+  }
+  
+
+ 
+
+  package "Core" {
+    [Business Services]
+    [Data Services]
+    [Stores]
+    [Interceptors]
+  }
+}
+
+package "Backend G4IT" {
+  component "API REST" as Backend
+}
+
+User --> [Digital Services Footprint]
+[Digital Services Footprint] --> [Dashboard]
+[Digital Services Footprint] --> [Servers]
+[Digital Services Footprint] --> [Networks]
+[Digital Services Footprint] --> [Terminals]
+[Digital Services Footprint] --> [Recommendations]
+
+[Dashboard] --> [Stores]
+
+[Servers] --> [Stores]
+[Networks] --> [Stores]
+[Terminals] --> [Stores]
+[Recommendations] --> [Stores]
+
+[Business Services] --> [Stores]
+[Data Services] --> [Business Services]
+[Interceptors] --> [Data Services]
+
+[Data Services] --> Backend
+
+@enduml
