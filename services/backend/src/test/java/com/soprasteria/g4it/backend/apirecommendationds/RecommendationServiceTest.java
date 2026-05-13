@@ -51,8 +51,6 @@ class RecommendationServiceTest {
 
     @InjectMocks
     private RecommendationService recommendationService;
-    @Mock
-     private OrganizationRepository organizationRepository;
 
     private void mockOrganizationLookup() {
         Organization organization = Organization.builder()

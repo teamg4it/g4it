@@ -149,7 +149,7 @@ addDatacenter(newDc: ServerDC) {
 } 
   private translate = inject(TranslateService);
   private translateCategory(cat: string): string {
-    return this.digitalServiceStore.translate.instant(`${cat}`);
+    return this.translate.instant(`${cat}`);
   }
   buildImportDetails() {
    this.importDetails = {

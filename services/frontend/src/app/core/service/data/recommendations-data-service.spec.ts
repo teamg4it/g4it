@@ -12,17 +12,14 @@ import {
 } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 
-import { Recommendation } from './recommendations-data-service';
-import { RecommendationService } from './recommendations-data-service';
-import { Constants } from 'src/constants';
+import {
+  Recommendation,
+  RecommendationService,
+} from './recommendations-data-service';
 
 describe('RecommendationService', () => {
   let service: RecommendationService;
   let httpMock: HttpTestingController;
-
-  // ✅ Simule l'endpoint réel (pas besoin de /evaluation ici)
-  
-  const mockUrl = 'http://localhost:8080/api/v1'; 
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -60,35 +57,35 @@ describe('RecommendationService', () => {
       },
     ];
 
-    service.getByOrganisation(organization, workspace).subscribe((res: Recommendation[]) => {
+    service.getByOrganisation(organization, workspace).subscribe((res) => {
       expect(res.length).toBe(1);
       expect(res[0].idRecommendation).toBe(1);
     });
 
     const req = httpMock.expectOne(
-      `/organizations/${organization}/workspaces/${workspace}/recommendations`
+      `organizations/${organization}/workspaces/${workspace}/recommendations`
     );
 
     expect(req.request.method).toBe('GET');
     req.flush(mockResponse);
   });
-  it('should return empty array if backend returns empty', () => {
-  const organization = 'org-test';
-  const workspace = 2;
 
-  service.getByOrganisation(organization, workspace).subscribe((res: Recommendation[]) => {
-    expect(res).toEqual([]);
+  it('should return empty array if backend returns empty', () => {
+    const organization = 'org-test';
+    const workspace = 2;
+
+    service.getByOrganisation(organization, workspace).subscribe((res) => {
+      expect(res).toEqual([]);
+    });
+
+    const req = httpMock.expectOne(
+      `organizations/${organization}/workspaces/${workspace}/recommendations`
+    );
+
+    expect(req.request.method).toBe('GET');
+    req.flush([]);
   });
 
-  const req = httpMock.expectOne(
-    `/organizations/${organization}/workspaces/${workspace}/recommendations`
-  );
-
-  expect(req.request.method).toBe('GET');
-  req.flush([]);
-});
-
-  
   it('should handle HTTP error', () => {
     const organization = 'org-test';
     const workspace = 3;
@@ -101,7 +98,7 @@ describe('RecommendationService', () => {
     });
 
     const req = httpMock.expectOne(
-      `/organizations/${organization}/workspaces/${workspace}/recommendations`
+      `organizations/${organization}/workspaces/${workspace}/recommendations`
     );
 
     expect(req.request.method).toBe('GET');

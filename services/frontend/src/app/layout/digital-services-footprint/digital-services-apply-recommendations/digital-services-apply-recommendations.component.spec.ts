@@ -13,6 +13,8 @@ import { InPhysicalEquipmentsService } from 'src/app/core/service/data/in-out/in
 import { InVirtualEquipmentsService } from 'src/app/core/service/data/in-out/in-virtual-equipments.service';
 import { DigitalServiceVersionDataService } from 'src/app/core/service/data/digital-service-version-data-service';
 import { throwError } from 'rxjs';
+import { TranslateModule } from '@ngx-translate/core';
+
 
 describe('DigitalServicesApplyRecommendationsComponent', () => {
   let component: DigitalServicesApplyRecommendationsComponent;
@@ -66,7 +68,7 @@ describe('DigitalServicesApplyRecommendationsComponent', () => {
 
     await TestBed.configureTestingModule({
       declarations: [DigitalServicesApplyRecommendationsComponent],
-      imports: [HttpClientTestingModule, ReactiveFormsModule, FormsModule],
+      imports: [HttpClientTestingModule, ReactiveFormsModule, FormsModule, TranslateModule.forRoot()],
       providers: [
         { provide: DigitalServiceStoreService, useValue: mockStore },
         {
@@ -162,7 +164,6 @@ simulationModifiedSignal = createSignalMock(new Map());
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-
   it('should handle datacenter add', () => {
     const dc = { name: 'DC1', location: 'FR', pue: 1 } as any;
     component.addDatacenter(dc);
@@ -202,7 +203,6 @@ simulationModifiedSignal = createSignalMock(new Map());
     expect(simulationEquipmentsSignal.set).toHaveBeenCalled();
     expect(simulationModifiedSignal.set).toHaveBeenCalled();
   }));
-
   it('should handle server save', fakeAsync(() => {
     component.editingServer = {
       id: 1,
@@ -275,8 +275,7 @@ expect(versionService.duplicateVersion).toHaveBeenCalledWith('ds-uid');
     component.selectTab(1);
     expect((component as any).selectedMenuIndex).toEqual(1);
   });
-
-  it('should use store uid when dsVersionUid is missing', () => {
+   it('should use store uid when dsVersionUid is missing', () => {
   component.dsVersionUid = undefined as any;
 
   const store = TestBed.inject(DigitalServiceStoreService) as any;
@@ -394,7 +393,6 @@ it('should fallback to now when value is undefined', () => {
   expect(result).toBeGreaterThanOrEqual(before);
   expect(result).toBeLessThanOrEqual(after);
 });
-
 it('should fallback to now when date is invalid', () => {
   const before = Date.now();
   const result = (component as any).toTimestamp('not-a-date');
@@ -420,31 +418,6 @@ it('should divide by annualQuantityOfGo for fixed network', () => {
   });
   expect(result).toBe(2);
 });
-
-// it('should return 0 if fixed network has no annualQuantityOfGo', () => {
-//   const result = (component as any).calculateQuantity(200, {
-//     type: 'Fixed'
-//   });
-//   expect(result).toBe(0);
-// });
-// it('should emit close event', () => {
-//   spyOn(component.close, 'emit');
-
-//   component.closeSidebar();
-
-//   expect(component.close.emit).toHaveBeenCalled();
-// });
-// it('should handle createNewVersion error', fakeAsync(() => {
-//   const versionService = TestBed.inject(DigitalServiceVersionDataService) as any;
-//   versionService.duplicateVersion.and.returnValue(Promise.reject('error'));
-
-//   spyOn(console, 'error');
-
-//   component.createNewVersion();
-//   tick();
-
-//   expect(console.error).toHaveBeenCalled();
-// }));
 it('should emit close event', () => {
   spyOn(component.close, 'emit');
 
@@ -588,4 +561,4 @@ it('should handle createNewVersion error', fakeAsync(() => {
   expect(console.error).toHaveBeenCalled();
 }));
 
-});
+})
