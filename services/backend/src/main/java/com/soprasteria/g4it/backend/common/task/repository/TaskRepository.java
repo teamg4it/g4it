@@ -89,7 +89,7 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
 
     List<Task> findByTypeAndInventoryId(String type, Long inventoryId);
 
-    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Modifying
     @Transactional
     @Query("""
                 update Task t

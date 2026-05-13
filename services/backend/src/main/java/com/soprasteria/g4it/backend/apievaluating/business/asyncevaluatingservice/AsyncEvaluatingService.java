@@ -63,9 +63,6 @@ public class AsyncEvaluatingService implements ITaskExecute {
                 java.time.LocalDateTime.now(),
                 "0%"
         );
-        /*task.setDetails(details);
-        task.setStatus(TaskStatus.IN_PROGRESS.toString());
-        taskRepository.save(task);*/
         String finalStatus = TaskStatus.COMPLETED.toString();
         String finalProgress = "100%";
 
@@ -82,19 +79,16 @@ public class AsyncEvaluatingService implements ITaskExecute {
 
         } catch (AsyncTaskException e) {
             log.error("Async task with id '{}' failed for '{}' with error: ", taskId, context.log(), e);
-            //task.setStatus(TaskStatus.FAILED.toString());
             finalStatus = TaskStatus.FAILED.toString();
             finalProgress = "0%";
             details.add(LogUtils.error(e.getMessage()));
         } catch (RuntimeException e) {
             log.error("Task with id '{}' failed for '{}' with error: ", task.getId(), context.log(), e);
-           // task.setStatus(TaskStatus.FAILED.toString());
             finalStatus = TaskStatus.FAILED.toString();
             finalProgress = "0%";
             details.add(LogUtils.error(e.getMessage()));
         } catch (IOException e) {
             log.error("IO error for task with id '{}' failed for '{}': ", taskId, context.log(), e);
-            //task.setStatus(TaskStatus.FAILED.toString());
             finalStatus = TaskStatus.FAILED.toString();
             finalProgress = "0%";
             details.add(LogUtils.error(e.getMessage()));
@@ -108,8 +102,6 @@ public class AsyncEvaluatingService implements ITaskExecute {
                 finalProgress,
                 details
         );
-
-        /*taskRepository.save(task);*/
 
         long end = System.currentTimeMillis();
         log.info("End evaluating for {}/{}. Time taken: {}s {}ms", context.log(), taskId, (end - start) / 1000, (end - start) % 1000);

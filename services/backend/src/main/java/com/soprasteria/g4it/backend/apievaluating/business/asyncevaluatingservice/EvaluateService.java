@@ -340,17 +340,13 @@ public class EvaluateService {
 
                         evaluateReportBO.setNbPhysicalEquipmentLines(evaluateReportBO.getNbPhysicalEquipmentLines() + 1);
                     }
+                    // set progress percentage
                     processed++;
 
-                    if (processed % 10 == 0 || processed == totalEquipments) {
+                    if (processed % 20 == 0 || processed == totalEquipments) {
 
                         int progress =
-                                (int) ((processed * 100.0 * processFactor) / totalEquipments); // removed ceil because ceil() causes sticky duplicate values at low percentages
-
-                        log.info("Progress={}%, processed={}, total={}",
-                                progress,
-                                processed,
-                                totalEquipments);
+                                (int) ((processed * 100.0 * processFactor) / totalEquipments);
 
                         taskRepository.updateProgress(taskId,
                                 progress + "%",
@@ -366,7 +362,6 @@ public class EvaluateService {
                      * ------------------------------------------------------------------
                      */
                     if (!hasNonCloudVM) {
-                        log.info("Skipping VM calculation for physical equipment {} — contains no NON-cloud VMs", physicalEquipment.getName());
                         continue;
                     }
 
@@ -390,21 +385,6 @@ public class EvaluateService {
                 csvPhysicalEquipment.flush();
                 csvVirtualEquipment.flush();
                 csvApplication.flush();
-
-                // set progress percentage, 0% to 90% is for this process, 90% to 100% is for compressing exports
-                /*final long currentTotal = (long) Constants.BATCH_SIZE * pageNumber + physicalEquipments.size();
-                double processFactor = evaluateReportBO.isExport() ? 0.8 : 0.9;*/
-                /*taskRepository.updateProgress(
-                        taskId,
-                        (int) Math.ceil(currentTotal * 100L * processFactor / totalEquipments) + "%",
-                        LocalDateTime.now()
-                );*/
-
-
-                /*
-                task.setProgressPercentage((int) Math.ceil(currentTotal * 100L * processFactor / totalEquipments) + "%");
-                task.setLastUpdateDate(LocalDateTime.now());
-                taskRepository.save(task);*/
 
                 pageNumber++;
                 physicalEquipments.clear();
