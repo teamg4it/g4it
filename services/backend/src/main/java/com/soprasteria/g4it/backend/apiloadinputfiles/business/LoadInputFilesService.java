@@ -17,6 +17,7 @@ import com.soprasteria.g4it.backend.apiinout.repository.InVirtualEquipmentReposi
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
 import com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.AsyncLoadFilesService;
+import com.soprasteria.g4it.backend.apiloadinputfiles.util.ExcelValidatorUtils;
 import com.soprasteria.g4it.backend.apiuser.business.AuthService;
 import com.soprasteria.g4it.backend.apiuser.business.WorkspaceService;
 import com.soprasteria.g4it.backend.apiuser.modeldb.User;
@@ -96,6 +97,10 @@ public class LoadInputFilesService {
 
         final Map<FileType, List<MultipartFile>> allFiles = new EnumMap<>(FileType.class);
 
+        ExcelValidatorUtils.validateExcelFile(datacenters);
+        ExcelValidatorUtils.validateExcelFile(physicalEquipments);
+        ExcelValidatorUtils.validateExcelFile(virtualEquipments);
+        ExcelValidatorUtils.validateExcelFile(applications);
         if (datacenters != null) allFiles.put(FileType.DATACENTER, datacenters);
         if (physicalEquipments != null) allFiles.put(FileType.EQUIPEMENT_PHYSIQUE, physicalEquipments);
         if (virtualEquipments != null) allFiles.put(FileType.EQUIPEMENT_VIRTUEL, virtualEquipments);
@@ -173,6 +178,9 @@ public class LoadInputFilesService {
                                         final List<MultipartFile> virtualEquipments) {
 
         final Map<FileType, List<MultipartFile>> allFiles = new EnumMap<>(FileType.class);
+        ExcelValidatorUtils.validateExcelFile(datacenters);
+        ExcelValidatorUtils.validateExcelFile(physicalEquipments);
+        ExcelValidatorUtils.validateExcelFile(virtualEquipments);
         DigitalServiceVersion digitalServiceVersion = digitalServiceVersionRepository.findById(digitalServiceVersionUid).orElseThrow();
 
         if (datacenters != null) allFiles.put(FileType.DATACENTER, datacenters);
