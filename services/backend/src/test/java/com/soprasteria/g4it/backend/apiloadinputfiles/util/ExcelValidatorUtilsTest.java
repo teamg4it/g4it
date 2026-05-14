@@ -43,9 +43,11 @@ class ExcelValidatorUtilsTest {
                 workbookContent
         );
 
+        List<MultipartFile> files = List.of(file);
+
         BadRequestException exception = assertThrows(
                 BadRequestException.class,
-                () -> ExcelValidatorUtils.validateExcelFile(List.of(file))
+                () -> ExcelValidatorUtils.validateExcelFile(files)
         );
 
         assertEquals("file", exception.getField());
@@ -82,9 +84,11 @@ class ExcelValidatorUtilsTest {
                 workbookContent
         );
 
+        List<MultipartFile> files = List.of(file);
+
         BadRequestException exception = assertThrows(
                 BadRequestException.class,
-                () -> ExcelValidatorUtils.validateExcelFile(List.of(file))
+                () -> ExcelValidatorUtils.validateExcelFile(files)
         );
 
         assertEquals("file", exception.getField());
@@ -105,9 +109,11 @@ class ExcelValidatorUtilsTest {
                 "invalid-content".getBytes()
         );
 
+        List<MultipartFile> files = List.of(file);
+
         BadRequestException exception = assertThrows(
                 BadRequestException.class,
-                () -> ExcelValidatorUtils.validateExcelFile(List.of(file))
+                () -> ExcelValidatorUtils.validateExcelFile(files)
         );
 
         assertEquals("file", exception.getField());
