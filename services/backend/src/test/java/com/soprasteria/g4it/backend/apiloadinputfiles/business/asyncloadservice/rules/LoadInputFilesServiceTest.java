@@ -27,6 +27,9 @@ import com.soprasteria.g4it.backend.common.task.model.TaskStatus;
 import com.soprasteria.g4it.backend.common.task.model.TaskType;
 import com.soprasteria.g4it.backend.common.task.modeldb.Task;
 import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -35,6 +38,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -43,6 +48,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.*;
+import org.springframework.mock.web.MockMultipartFile;
 
 @ExtendWith(MockitoExtension.class)
 class LoadInputFilesServiceTest {
@@ -73,15 +79,38 @@ class LoadInputFilesServiceTest {
     @Mock
     private AuthService authService;
 
+    private MultipartFile createExcelFile() {
+        return new MockMultipartFile(
+                "file",
+                "test.xlsx",
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                createMinimalExcelContent()
+        );
+    }
+
+    private byte[] createMinimalExcelContent() {
+        try (Workbook workbook = new XSSFWorkbook();
+             ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
+
+            Sheet sheet = workbook.createSheet("Sheet1");
+            sheet.createRow(0).createCell(0).setCellValue("test");
+
+            workbook.write(bos);
+            return bos.toByteArray();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @Test
     void loadFiles_createsTaskAndExecutesAsyncTask_whenValidInputProvided() {
         String organization = "testOrganization";
         Long workspaceId = 1L;
         Long inventoryId = 1L;
-        List<MultipartFile> datacenters = List.of(mock(MultipartFile.class));
-        List<MultipartFile> physicalEquipments = List.of(mock(MultipartFile.class));
-        List<MultipartFile> virtualEquipments = List.of(mock(MultipartFile.class));
-        List<MultipartFile> applications = List.of(mock(MultipartFile.class));
+        List<MultipartFile> datacenters = List.of(createExcelFile());
+        List<MultipartFile> physicalEquipments = List.of(createExcelFile());
+        List<MultipartFile> virtualEquipments = List.of(createExcelFile());
+        List<MultipartFile> applications = List.of(createExcelFile());
 
         Inventory inventory = Inventory.builder()
                 .id(inventoryId)
@@ -116,9 +145,9 @@ class LoadInputFilesServiceTest {
         String organization = "testOrganization";
         Long workspaceId = 1L;
         String digitalServiceUid = "uid";
-        List<MultipartFile> datacenters = List.of(mock(MultipartFile.class));
-        List<MultipartFile> physicalEquipments = List.of(mock(MultipartFile.class));
-        List<MultipartFile> virtualEquipments = List.of(mock(MultipartFile.class));
+        List<MultipartFile> datacenters = List.of(createExcelFile());
+        List<MultipartFile> physicalEquipments = List.of(createExcelFile());
+        List<MultipartFile> virtualEquipments = List.of(createExcelFile());
 
         DigitalServiceVersion digitalServiceVersion = DigitalServiceVersion.builder()
                 .uid(digitalServiceUid)
