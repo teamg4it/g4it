@@ -4,20 +4,22 @@
         [(ngModel)]="type"
         [options]="fileTypes"
         optionLabel="text"
-        styleClass="w-16rem h-3rem"
+        class="h-3rem mr-3"
     ></p-select>
-    <p-fileUpload
-        #fileUpload
-        styleClass="bg-black text-2xs letter-spacing-2 w-15rem mx-2 h-3rem uppercase"
-        id="file{{ index }}"
+    <p-fileupload
         mode="basic"
-        chooseLabel="{{ fileUploadText }}"
-        [ariaLabel]="fileUploadText"
-        accept="{{ allowedFileExtensions.join(',') }}"
         [customUpload]="true"
+        [auto]="false"
+        [chooseIcon]="file?.name ? 'pi pi-upload' : 'pi pi-plus'"
+        [chooseLabel]="file?.name || fileUploadText"
+        [styleClass]="file?.name ? 'custom-file-upload has-file' : 'custom-file-upload'"
+        [accept]="allowedFileExtensions.join(',')"
         (onSelect)="onFileChange($event)"
+        [attr.title]="file?.name || fileUploadText"
+        class="mr-3"
     >
-    </p-fileUpload>
+    </p-fileupload>
+
     <p-button
         class="mt-1"
         icon="pi pi-times"

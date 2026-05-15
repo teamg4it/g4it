@@ -1882,3 +1882,123 @@ app-update-workspace-reference {
         background: rgba(232, 143, 22, 0.06);
     }
 }
+
+/* =========================================
+   PrimeNG 21 Custom File Upload
+   ========================================= */
+
+.custom-file-upload {
+    width: 240px !important;
+    min-width: 240px !important;
+    max-width: 240px !important;
+
+    display: inline-block;
+}
+
+/* Hide native browser text */
+.custom-file-upload input[type="file"] {
+    display: none !important;
+}
+
+/* Main upload button */
+.custom-file-upload .p-button {
+    width: 240px !important;
+    min-width: 240px !important;
+    max-width: 240px !important;
+
+    height: 48px;
+
+    background: #111713 !important;
+    border: 2px solid #111713 !important;
+    border-radius: 4px !important;
+
+    color: #ffffff !important;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0 1rem;
+
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-size: 10px;
+    font-weight: 600;
+
+    overflow: hidden;
+
+    transition:
+        background-color 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease;
+
+    box-shadow: none !important;
+}
+
+/* Hover */
+.custom-file-upload .p-button:hover {
+    background: #182019 !important;
+    border-color: #20a84b !important;
+}
+
+/* Focus */
+.custom-file-upload .p-button:focus,
+.custom-file-upload .p-button:focus-visible {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+/* Active */
+.custom-file-upload .p-button:active {
+    background: #0f1511 !important;
+}
+
+/* Disabled */
+.custom-file-upload .p-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Selected file state */
+.custom-file-upload.has-file .p-button {
+    border-color: #20a84b !important;
+}
+
+/* Upload icon */
+.custom-file-upload .p-button-icon {
+    color: #ffffff !important;
+
+    font-size: 1rem;
+
+    margin-right: 0.75rem;
+
+    flex-shrink: 0;
+}
+
+/* Filename / label */
+.custom-file-upload .p-button-label {
+    color: #ffffff !important;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    display: block;
+
+    max-width: 170px;
+}
+
+.p-fileupload-basic-content > span {
+    display: none;
+}
+
+/* Remove default shadows */
+.custom-file-upload .p-button.p-focus {
+    box-shadow: none !important;
+}
+
+app-select-file {
+    .p-select .p-select-label {
+        width: 16rem;
+    }
+}
