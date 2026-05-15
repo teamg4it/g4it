@@ -404,7 +404,7 @@ main {
     border: 2px solid white !important;
 }
 
-.p-radiobutton-box.p-focus {
+.p-radiobutton:has(input:focus) .p-radiobutton-box {
     border: none !important;
     background-color: var(--tertiary-color) !important;
 

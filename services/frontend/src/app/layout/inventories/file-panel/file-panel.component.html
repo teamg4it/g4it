@@ -36,13 +36,13 @@
                         <label for="information-system" class="mr-1 cursor-pointer">{{
                             "inventories.type.is-version" | translate
                         }}</label>
-                        <p-radioButton
+                        <p-radiobutton
                             #firstInputElement
                             name="inventoryType"
                             value="INFORMATION_SYSTEM"
                             [(ngModel)]="selectedType"
                             inputId="information-system"
-                        ></p-radioButton>
+                        ></p-radiobutton>
                     </div>
                     <div class="border-left-1"></div>
                     <div
@@ -54,13 +54,13 @@
                         <label for="simulation" class="mr-1 cursor-pointer">{{
                             "inventories.type.simulation" | translate
                         }}</label>
-                        <p-radioButton
+                        <p-radiobutton
                             name="inventoryType"
                             value="SIMULATION"
                             [(ngModel)]="selectedType"
                             inputId="simulation"
                             id="simulation-radio-button"
-                        ></p-radioButton>
+                        ></p-radiobutton>
                     </div>
                 </fieldset>
             }

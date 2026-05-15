@@ -189,14 +189,14 @@
                         #radioItem
                         [attr.data-id]="workspace.id"
                     >
-                        <p-radioButton
+                        <p-radiobutton
                             [inputId]="'work-' + workspace.id"
                             name="group1"
                             [value]="workspace.id.toString()"
                             [(ngModel)]="modelWorkspace"
                             (onClick)="selectCompany(workspace)"
                             [attr.aria-labelledby]="'work-' + workspace.id"
-                        ></p-radioButton>
+                        ></p-radiobutton>
                         <label
                             [for]="'work-' + workspace.id"
                             [id]="'work-' + workspace.id"
@@ -401,14 +401,14 @@
                     (keydown)="handleKeydownLanguage($event)"
                 >
                     <li class="inline-block">
-                        <p-radioButton
+                        <p-radiobutton
                             name="language"
                             value="en"
                             [(ngModel)]="selectedLanguage"
                             (onClick)="changeLanguage('en')"
                             aria-labelledby="enLabel"
                             inputId="en"
-                        ></p-radioButton>
+                        ></p-radiobutton>
                         <label
                             for="en"
                             id="enLabel"
@@ -419,14 +419,14 @@
                         </label>
                     </li>
                     <li class="inline-block ml-5">
-                        <p-radioButton
+                        <p-radiobutton
                             name="language"
                             value="fr"
                             [(ngModel)]="selectedLanguage"
                             (onClick)="changeLanguage('fr')"
                             aria-labelledby="frLabel"
                             inputId="fr"
-                        ></p-radioButton>
+                        ></p-radiobutton>
                         <label
                             for="fr"
                             id="frLabel"
