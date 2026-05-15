@@ -51,14 +51,19 @@
                                                 item.toString()
                                             )
                                         "
-                                        [id]="item"
-                                        ><label>{{
+                                        [inputId]="'app-filter-' + tab.field + '-' + item"
+                                    ></p-checkbox>
+                                    <label
+                                        [attr.for]="
+                                            'app-filter-' + tab.field + '-' + item
+                                        "
+                                        >{{
                                             item?.toString() === all
                                                 ? ("common.all" | translate)
                                                 : item?.toString() === empty
                                                   ? ("common.empty" | translate)
                                                   : item
-                                        }}</label></p-checkbox
+                                        }}</label
                                     >
                                 }
                             </li>
@@ -104,10 +109,12 @@
                                                 [binary]="true"
                                                 [(ngModel)]="filter.checked"
                                                 (onChange)="onTreeChange($event, filter)"
+                                                [inputId]="'tree-filter-' + filter.label"
                                                 class="mb-3"
-                                                ><label>{{
-                                                    filter.label
-                                                }}</label></p-checkbox
+                                            ></p-checkbox>
+                                            <label
+                                                [attr.for]="'tree-filter-' + filter.label"
+                                                >{{ filter.label }}</label
                                             >
                                             <div
                                                 [ngClass]="
@@ -139,9 +146,23 @@
                                                                             filter
                                                                         )
                                                                     "
-                                                                    ><label>{{
+                                                                    [inputId]="
+                                                                        'tree-filter-child-' +
+                                                                        filter.label +
+                                                                        '-' +
                                                                         child.label
-                                                                    }}</label></p-checkbox
+                                                                    "
+                                                                ></p-checkbox>
+                                                                <label
+                                                                    [attr.for]="
+                                                                        'tree-filter-child-' +
+                                                                        filter.label +
+                                                                        '-' +
+                                                                        child.label
+                                                                    "
+                                                                    >{{
+                                                                        child.label
+                                                                    }}</label
                                                                 >
                                                             }
                                                         </li>

@@ -84,17 +84,30 @@
                                                             item.toString()
                                                         )
                                                     "
-                                                    [id]="item"
+                                                    [inputId]="
+                                                        'filter-' +
+                                                        getTabField(tab) +
+                                                        '-' +
+                                                        item
+                                                    "
                                                 >
-                                                    <label>{{
+                                                </p-checkbox>
+                                                <label
+                                                    [attr.for]="
+                                                        'filter-' +
+                                                        getTabField(tab) +
+                                                        '-' +
+                                                        item
+                                                    "
+                                                    >{{
                                                         item?.toString() === all
                                                             ? ("common.all" | translate)
                                                             : item?.toString() === empty
                                                               ? ("common.empty"
                                                                 | translate)
                                                               : item
-                                                    }}</label>
-                                                </p-checkbox>
+                                                    }}</label
+                                                >
                                             </li>
                                         }
                                     </ul>

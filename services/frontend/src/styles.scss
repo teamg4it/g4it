@@ -455,7 +455,7 @@ main {
     padding-top: 0px;
 }
 
-.inventory-list .p-accordion .p-accordion-tab {
+.inventory-list .p-accordion .p-accordionpanel {
     margin-bottom: 20px;
 }
 
@@ -927,10 +927,29 @@ div.label-input-div-medium {
 
 app-inventories,
 app-inventory-item {
-    .p-accordion .p-accordion-tab .p-accordion-toggle-icon {
+    .p-accordion .p-accordionpanel .p-accordionheader-toggle-icon,
+    .p-accordion .p-accordionpanel svg {
         margin-left: inherit !important;
         transition: transform 0.2s;
         order: 0;
+    }
+
+    .p-accordionheader {
+        justify-content: unset;
+    }
+
+    // PrimeNG 21 styles
+    .p-accordion .p-accordion-header .p-accordion-header-link {
+        display: flex;
+        flex-direction: row;
+    }
+
+    .p-accordion .p-accordionheader .p-accordionheader-toggle-icon,
+    .p-accordion .p-accordionheader svg {
+        order: -1 !important;
+        margin-right: 0.5rem !important;
+        margin-left: 0 !important;
+        transition: transform 0.2s;
     }
 }
 .p-accordion p-accordion-panel:first-child .p-accordion-header .p-accordion-header-link {
@@ -947,6 +966,18 @@ app-inventory-item {
 
 .p-accordion {
     padding: 10px;
+}
+
+// Global styles to ensure toggle icon is on the left for all accordions
+.p-accordion .p-accordion-header .p-accordion-header-link {
+    display: flex !important;
+    flex-direction: row !important;
+}
+
+.p-accordion .p-accordion-header .p-accordion-toggle-icon {
+    order: -1 !important;
+    margin-right: 0.5rem !important;
+    margin-left: 0 !important;
 }
 
 .bg-transparent {
@@ -1329,8 +1360,9 @@ app-useful-information {
 
 .set-view-popup,
 .criteria-popup {
-    .p-dialog .p-dialog-header .p-dialog-header-icon:focus {
+    .p-dialog .p-dialog-header .p-dialog-close-button:focus {
         outline: 2px solid #28a745;
+        background: transparent;
     }
 }
 

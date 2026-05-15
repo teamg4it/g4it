@@ -1,157 +1,175 @@
 @if (criteriaList.length > 0) {
-  <div class="criteria-popup">
-    <p-dialog
-      [modal]="true"
-      [(visible)]="displayPopup"
-      [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
-      [style]="{ width: '50vw' }"
-      [draggable]="false"
-      (onHide)="closePopup()"
-      [dismissableMask]="true"
-      id="criteria"
-      [closeAriaLabel]="'common.accessibility.close-criteria-dialog' | translate"
-      [header]="getHeader()"
-      >
-      @if (type !== "workspace") {
-        <div class="ml-3 pb-2 pt-3">
-          <div class="field-checkbox">
-            <p-checkbox
+    <div class="criteria-popup">
+        <p-dialog
+            [modal]="true"
+            [(visible)]="displayPopup"
+            [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+            [style]="{ width: '50vw' }"
+            [draggable]="false"
+            (onHide)="closePopup()"
+            [dismissableMask]="true"
+            id="criteria"
+            [closeAriaLabel]="'common.accessibility.close-criteria-dialog' | translate"
+            [header]="getHeader()"
+        >
+            @if (type !== "workspace") {
+                <div class="ml-3 pb-2 pt-3">
+                    <div class="field-checkbox">
+                        <p-checkbox
+                            inputId="criteria-all-is"
                             [ngModel]="
                                 selectedCriteriaIS.length === criteriaList.length
                                     ? ['All']
                                     : []
                             "
-              (ngModelChange)="onAllSelectedChange($event, true)"
-              value="All"
-              [ariaLabel]="'common.all' | translate"
-              ><label>{{ "common.all" | translate }}</label></p-checkbox
-              >
-            </div>
-          </div>
-          <div class="flex gap-2 flex-wrap mx-3">
-            @for (criteria of criteriaList; track criteria) {
-              <div class="field-checkbox">
-                <p-checkbox
-                  [(ngModel)]="selectedCriteriaIS"
-                  [value]="criteria"
-                  (onChange)="onCriteriaChange()"
-                  [ariaLabel]="'criteria.' + criteria + '.title' | translate"
-                  ><label>{{
-                  "criteria." + criteria + ".title" | translate
-                }}</label></p-checkbox
-                >
-              </div>
-            }
-          </div>
-        } @else {
-          <div>
-            <h3>{{ "administration.user.is-header" | translate }}</h3>
-            <div class="ml-5">
-              <div class="field-checkbox">
-                <p-checkbox
+                            (ngModelChange)="onAllSelectedChange($event, true)"
+                            value="All"
+                            [ariaLabel]="'common.all' | translate"
+                        ></p-checkbox>
+                        <label for="criteria-all-is">{{
+                            "common.all" | translate
+                        }}</label>
+                    </div>
+                </div>
+                <div class="flex gap-2 flex-wrap mx-3">
+                    @for (criteria of criteriaList; track criteria) {
+                        <div class="field-checkbox">
+                            <p-checkbox
+                                [inputId]="'criteria-is-' + criteria"
+                                [(ngModel)]="selectedCriteriaIS"
+                                [value]="criteria"
+                                (onChange)="onCriteriaChange()"
+                                [ariaLabel]="
+                                    'criteria.' + criteria + '.title' | translate
+                                "
+                            ></p-checkbox>
+                            <label [attr.for]="'criteria-is-' + criteria">{{
+                                "criteria." + criteria + ".title" | translate
+                            }}</label>
+                        </div>
+                    }
+                </div>
+            } @else {
+                <div>
+                    <h3>{{ "administration.user.is-header" | translate }}</h3>
+                    <div class="ml-5">
+                        <div class="field-checkbox">
+                            <p-checkbox
+                                inputId="criteria-workspace-all-is"
                                 [ngModel]="
                                     selectedCriteriaIS.length === criteriaList.length
                                         ? ['All']
                                         : []
                                 "
-                  (ngModelChange)="onAllSelectedChange($event, true)"
-                  value="All"
-                  [ariaLabel]="'common.all' | translate"
-                  ><label>{{ "common.all" | translate }}</label></p-checkbox
-                  >
+                                (ngModelChange)="onAllSelectedChange($event, true)"
+                                value="All"
+                                [ariaLabel]="'common.all' | translate"
+                            ></p-checkbox>
+                            <label for="criteria-workspace-all-is">{{
+                                "common.all" | translate
+                            }}</label>
+                        </div>
+                    </div>
                 </div>
-              </div>
-            </div>
 
-            <div class="flex gap-2 flex-wrap m-5">
-              @for (criteria of criteriaList; track criteria) {
-                <div class="field-checkbox">
-                  <p-checkbox
-                    [(ngModel)]="selectedCriteriaIS"
-                    [value]="criteria"
-                    (onChange)="onCriteriaChange()"
-                    [ariaLabel]="'criteria.' + criteria + '.title' | translate"
-                    ><label>{{
-                    "criteria." + criteria + ".title" | translate
-                  }}</label></p-checkbox
-                  >
+                <div class="flex gap-2 flex-wrap m-5">
+                    @for (criteria of criteriaList; track criteria) {
+                        <div class="field-checkbox">
+                            <p-checkbox
+                                [inputId]="'criteria-workspace-is-' + criteria"
+                                [(ngModel)]="selectedCriteriaIS"
+                                [value]="criteria"
+                                (onChange)="onCriteriaChange()"
+                                [ariaLabel]="
+                                    'criteria.' + criteria + '.title' | translate
+                                "
+                            ></p-checkbox>
+                            <label [attr.for]="'criteria-workspace-is-' + criteria">{{
+                                "criteria." + criteria + ".title" | translate
+                            }}</label>
+                        </div>
+                    }
                 </div>
-              }
-            </div>
-            <div>
-              <h3>{{ "administration.user.ds-header" | translate }}</h3>
-              <div class="ml-5">
-                <div class="field-checkbox">
-                  <p-checkbox
+                <div>
+                    <h3>{{ "administration.user.ds-header" | translate }}</h3>
+                    <div class="ml-5">
+                        <div class="field-checkbox">
+                            <p-checkbox
+                                inputId="criteria-workspace-all-ds"
                                 [ngModel]="
                                     selectedCriteriaDS.length === criteriaList.length
                                         ? ['All']
                                         : []
                                 "
-                    (ngModelChange)="onAllSelectedChange($event, false)"
-                    value="All"
-                    [ariaLabel]="'common.all' | translate"
-                    ><label>{{ "common.all" | translate }}</label></p-checkbox
-                    >
-                  </div>
+                                (ngModelChange)="onAllSelectedChange($event, false)"
+                                value="All"
+                                [ariaLabel]="'common.all' | translate"
+                            ></p-checkbox>
+                            <label for="criteria-workspace-all-ds">{{
+                                "common.all" | translate
+                            }}</label>
+                        </div>
+                    </div>
                 </div>
-              </div>
 
-              <div class="flex gap-2 flex-wrap m-5">
-                @for (criteria of criteriaList; track criteria) {
-                  <div class="field-checkbox">
-                    <p-checkbox
-                      [(ngModel)]="selectedCriteriaDS"
-                      [value]="criteria"
-                      (onChange)="onCriteriaChange()"
-                      [ariaLabel]="'criteria.' + criteria + '.title' | translate"
-                      ><label>{{
-                      "criteria." + criteria + ".title" | translate
-                    }}</label></p-checkbox
-                    >
-                  </div>
-                }
-              </div>
+                <div class="flex gap-2 flex-wrap m-5">
+                    @for (criteria of criteriaList; track criteria) {
+                        <div class="field-checkbox">
+                            <p-checkbox
+                                inputId="criteria-{{ criteria }}"
+                                [(ngModel)]="selectedCriteriaDS"
+                                [value]="criteria"
+                                (onChange)="onCriteriaChange()"
+                                [ariaLabel]="
+                                    'criteria.' + criteria + '.title' | translate
+                                "
+                            ></p-checkbox>
+                            <label for="criteria-{{ criteria }}">{{
+                                "criteria." + criteria + ".title" | translate
+                            }}</label>
+                        </div>
+                    }
+                </div>
             }
 
             @if (
-              (type === "workspace" &&
-              (selectedCriteriaIS.length === 0 ||
-              selectedCriteriaDS.length === 0)) ||
-              (type !== "workspace" && selectedCriteriaIS.length === 0)
-              ) {
-              <p class="error-text">
-                {{ "administration.organization.error" | translate }}
-              </p>
+                (type === "workspace" &&
+                    (selectedCriteriaIS.length === 0 ||
+                        selectedCriteriaDS.length === 0)) ||
+                (type !== "workspace" && selectedCriteriaIS.length === 0)
+            ) {
+                <p class="error-text">
+                    {{ "administration.organization.error" | translate }}
+                </p>
             }
 
             <ng-template pTemplate="footer">
-              <div
-                class="block text-left sm:text-right sm:flex align-items-center justify-content-between"
+                <div
+                    class="block text-left sm:text-right sm:flex align-items-center justify-content-between"
                 >
-                <div class="flex justify-content-start mr-auto">
-                  <p-button
-                    styleClass="cancel-creation-button uppercase mb-2 sm:mb-0"
-                    (onClick)="closePopup()"
-                    aria-label="Cancel"
-                    id="criteria-cancel"
+                    <div class="flex justify-content-start mr-auto">
+                        <p-button
+                            styleClass="cancel-creation-button uppercase mb-2 sm:mb-0"
+                            (onClick)="closePopup()"
+                            aria-label="Cancel"
+                            id="criteria-cancel"
+                        >
+                            {{ "common.cancel" | translate }}
+                        </p-button>
+                    </div>
+                    <p-button
+                        styleClass="p-button-secondary-blue uppercase"
+                        (onClick)="resetToDefault()"
+                        aria-label="Reset"
+                        class="m-0"
                     >
-                    {{ "common.cancel" | translate }}
-                  </p-button>
-                </div>
-                <p-button
-                  styleClass="p-button-secondary-blue uppercase"
-                  (onClick)="resetToDefault()"
-                  aria-label="Reset"
-                  class="m-0"
-                  >
-                  <i class="pi pi-refresh icon mr-2"></i>
-                  {{ "common.reset" | translate }}
-                </p-button>
+                        <i class="pi pi-refresh icon mr-2"></i>
+                        {{ "common.reset" | translate }}
+                    </p-button>
 
-                <p-button
-                  styleClass="uppercase"
-                  (onClick)="saveChanges()"
+                    <p-button
+                        styleClass="uppercase"
+                        (onClick)="saveChanges()"
                         [disabled]="
                             (type === 'workspace' &&
                                 (selectedCriteriaIS.length === 0 ||
@@ -159,12 +177,12 @@
                             (type !== 'workspace' && selectedCriteriaIS.length === 0) ||
                             !hasChanged
                         "
-                  aria-label="Save"
-                  >
-                  {{ "common.save" | translate }}
-                </p-button>
-              </div>
+                        aria-label="Save"
+                    >
+                        {{ "common.save" | translate }}
+                    </p-button>
+                </div>
             </ng-template>
-          </p-dialog>
-        </div>
-      }
+        </p-dialog>
+    </div>
+}
