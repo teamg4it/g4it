@@ -131,10 +131,6 @@ main {
     background-color: var(--gray-100);
 }
 
-.bg-lightest-gray-color {
-    background-color: var(--lightest-gray-color);
-}
-
 .bg-black {
     background: var(--black-color);
 }
@@ -146,9 +142,6 @@ main {
 }
 .bg-warning {
     background: var(--warning-color);
-}
-.bg-blue {
-    background: var(--blue-color);
 }
 .border-primary {
     border-color: var(--primary-color);
@@ -395,6 +388,7 @@ main {
     outline: 2px solid #28a745;
 }
 
+.p-drawer,
 .p-sidebar {
     z-index: 1300;
 }
@@ -447,7 +441,7 @@ main {
 
 .input-loading-files div {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     margin-bottom: 8px;
 }
 
@@ -496,16 +490,20 @@ main {
     background: #e2e8f0;
 }
 
+.p-drawer .p-drawer-header-content .p-drawer-close-button:focus,
 .p-sidebar .p-sidebar-header .p-sidebar-close:focus,
 .p-sidebar .p-sidebar-header .p-sidebar-icon:focus {
     outline: 2px solid black !important;
 }
 
+#settings-sidebar .p-drawer .p-drawer-header-content .p-drawer-close-button,
+#settings-sidebar .p-drawer .p-drawer-header-content .p-drawer-close-button:enabled:hover,
 #settings-sidebar .p-sidebar .p-sidebar-header .p-sidebar-close,
 #settings-sidebar .p-sidebar .p-sidebar-header .p-sidebar-close:enabled:hover {
     color: white;
 }
 
+#settings-sidebar .p-drawer .p-drawer-header-content .p-drawer-close-button:focus,
 #settings-sidebar .p-sidebar .p-sidebar-header .p-sidebar-close:focus,
 #settings-sidebar .p-sidebar .p-sidebar-header .p-sidebar-icon:focus {
     outline: 2px solid white !important;
@@ -621,6 +619,33 @@ main {
 
 .text-no-data-global {
     font-size: 8px;
+}
+
+.side-data-title {
+    display: flex;
+    margin-bottom: 8px;
+}
+
+.side-data-title span {
+    font-size: 13px;
+    line-height: 22px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    display: inline-block;
+    position: relative;
+    margin-bottom: 14px;
+    padding-top: 10px;
+}
+
+.side-data-title span::after {
+    content: "";
+    position: absolute;
+    bottom: -4px;
+    transform: translateX(-142%);
+    width: 70%;
+    height: 2px;
+    background-color: var(--primary-color);
 }
 
 .rmv-padding-card .p-card-content,
@@ -908,8 +933,8 @@ app-inventory-item {
         order: 0;
     }
 }
-.p-accordion p-accordiontab:first-child .p-accordion-header .p-accordion-header-link {
-    height: 60px;
+.p-accordion p-accordion-panel:first-child .p-accordion-header .p-accordion-header-link {
+    height: 50px;
 }
 
 .p-accordion .p-accordion-tab:not(.p-accordion-tab-active) .p-accordion-toggle-icon {
@@ -928,7 +953,7 @@ app-inventory-item {
     background-color: transparent !important;
 }
 
-.transparentBackgound .p-accordion p-accordiontab:first-child .p-accordion-content {
+.transparentBackgound .p-accordion p-accordion-panel:first-child .p-accordion-content {
     background-color: transparent;
 }
 
@@ -1110,8 +1135,7 @@ app-inventory-item {
         }
 
         &:not(.disabled) {
-            .navigation-button:not(.disabled):hover,
-            .request-access-button:not(.disabled):hover {
+            .navigation-button:not(.disabled):hover {
                 color: var(--surface-0);
                 background: var(--blue-color);
             }
@@ -1216,6 +1240,28 @@ app-useful-information {
 
 .multi-file-import .p-fileupload .p-button-icon {
     display: none;
+}
+
+/* Fileupload button styling - black by default, green on hover */
+.p-fileupload .p-button.p-fileupload-choose:not(.p-disabled),
+.p-fileupload-choose:not(.p-disabled) {
+    background: var(--black-color) !important;
+    color: white !important;
+    border-color: transparent !important;
+}
+
+.p-fileupload .p-button.p-fileupload-choose:not(.p-disabled):hover,
+.p-fileupload-choose:not(.p-disabled):hover {
+    background: rgba(0, 186, 0, 0.92) !important;
+    color: white !important;
+    border-color: transparent !important;
+}
+
+.p-fileupload .p-button.p-fileupload-choose:not(.p-disabled):active,
+.p-fileupload-choose:not(.p-disabled):active {
+    background: rgba(0, 186, 0, 0.68) !important;
+    color: white !important;
+    border-color: transparent !important;
 }
 
 .import-digital {
