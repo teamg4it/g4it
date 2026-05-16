@@ -20,7 +20,7 @@ import {
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { ActivatedRoute, Router } from "@angular/router";
 import { TranslatePipe, TranslateService } from "@ngx-translate/core";
-import { MenuItem, PrimeTemplate } from "primeng/api";
+import { MenuItem } from "primeng/api";
 import { Button } from "primeng/button";
 import { DrawerModule } from "primeng/drawer";
 import { ScrollPanelModule } from "primeng/scrollpanel";
@@ -86,7 +86,6 @@ import { ApplicationMulticriteriaFootprintComponent } from "./multicriteria/appl
         ApplicationTableViewComponent,
         CriteriaPopupComponent,
         DrawerModule,
-        PrimeTemplate,
         ConfigureViewFiltersComponent,
         TranslatePipe,
     ],

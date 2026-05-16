@@ -102,10 +102,11 @@
     <p-drawer
         [(visible)]="filterSidebarVisible"
         position="right"
-        styleClass=" w-5"
+        styleClass="p-sidebar-md w-5"
+        [modal]="false"
         (onHide)="filterSidebarVisible = false"
     >
-        <ng-template pTemplate="headless">
+        <ng-template #headless>
             <app-configure-view-filters
                 (filtersApplied)="handleFilters($event)"
                 (sidebarVisibleChange)="filterSidebarVisible = $event"

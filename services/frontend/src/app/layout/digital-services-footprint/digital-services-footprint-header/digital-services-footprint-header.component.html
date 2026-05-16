@@ -29,11 +29,9 @@
         ariaCloseLabel="Close"
         [fullScreen]="isZoom125()"
     >
-        <ng-template pTemplate="headless">
-            <app-digital-services-import
-                (sidebarVisibleChange)="importSidebarVisible = $event"
-            />
-        </ng-template>
+        <app-digital-services-import
+            (sidebarVisibleChange)="importSidebarVisible = $event"
+        />
     </p-drawer>
 }
 

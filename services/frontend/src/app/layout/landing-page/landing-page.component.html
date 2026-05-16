@@ -33,11 +33,7 @@
                 ariaCloseLabel="Close"
                 [fullScreen]="isZoom125()"
             >
-                <ng-template pTemplate="headless">
-                    <app-workspace
-                        (sidebarVisibleChange)="spaceSidebarVisible = $event"
-                    />
-                </ng-template>
+                <app-workspace (sidebarVisibleChange)="spaceSidebarVisible = $event" />
             </p-drawer>
         }
     </div>

@@ -40,6 +40,7 @@
                             <li class="my-3">
                                 @if (!tab?.children?.length) {
                                     <p-checkbox
+                                        class="mb-1 mr-2"
                                         [ariaLabel]="item?.toString()"
                                         name="groupname"
                                         [value]="item"
@@ -110,7 +111,12 @@
                                                 [(ngModel)]="filter.checked"
                                                 (onChange)="onTreeChange($event, filter)"
                                                 [inputId]="'tree-filter-' + filter.label"
-                                                class="mb-3"
+                                                class="mr-2"
+                                                [ngClass]="
+                                                    !filter?.children?.length
+                                                        ? 'mb-1'
+                                                        : 'mb-3'
+                                                "
                                             ></p-checkbox>
                                             <label
                                                 [attr.for]="'tree-filter-' + filter.label"
@@ -136,6 +142,7 @@
                                                         >
                                                             @if (child.visible) {
                                                                 <p-checkbox
+                                                                    class="mb-1 mr-2"
                                                                     [binary]="true"
                                                                     [(ngModel)]="
                                                                         child.checked
@@ -176,7 +183,6 @@
                         }
                     </ul>
                 </p-accordionpanel>
-                <hr class="section-hr" />
             }
         </p-accordion>
     </app-base-filter-sidebar>

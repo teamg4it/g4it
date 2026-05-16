@@ -23,7 +23,6 @@ import { Title } from "@angular/platform-browser";
 import { ActivatedRoute, Router } from "@angular/router";
 import { TranslatePipe, TranslateService } from "@ngx-translate/core";
 import { EChartsOption } from "echarts";
-import { PrimeTemplate } from "primeng/api";
 import { Button } from "primeng/button";
 import { DrawerModule } from "primeng/drawer";
 import { firstValueFrom, lastValueFrom, Subscription } from "rxjs";
@@ -77,20 +76,19 @@ import { RadialChartComponent } from "./radial-chart/radial-chart.component";
     styleUrls: ["./digital-services-footprint-dashboard.component.scss"],
     standalone: true,
     imports: [
-    Button,
-    NgClass,
-    ImpactSidebarComponent,
-    NgTemplateOutlet,
-    RadialChartComponent,
-    PieChartComponent,
-    BarChartComponent,
-    GraphDescriptionComponent,
-    CriteriaPopupComponent,
-    DrawerModule,
-    PrimeTemplate,
-    ConfigureViewFiltersComponent,
-    TranslatePipe
-],
+        Button,
+        NgClass,
+        ImpactSidebarComponent,
+        NgTemplateOutlet,
+        RadialChartComponent,
+        PieChartComponent,
+        BarChartComponent,
+        GraphDescriptionComponent,
+        CriteriaPopupComponent,
+        DrawerModule,
+        ConfigureViewFiltersComponent,
+        TranslatePipe,
+    ],
 })
 export class DigitalServicesFootprintDashboardComponent
     extends AbstractDashboard

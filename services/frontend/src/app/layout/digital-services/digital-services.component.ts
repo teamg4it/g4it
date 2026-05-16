@@ -11,7 +11,7 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { Title } from "@angular/platform-browser";
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { TranslatePipe, TranslateService } from "@ngx-translate/core";
-import { ConfirmationService, MessageService, PrimeTemplate } from "primeng/api";
+import { ConfirmationService, MessageService } from "primeng/api";
 import { Button } from "primeng/button";
 import { DrawerModule } from "primeng/drawer";
 import { PaginatorModule, PaginatorState } from "primeng/paginator";
@@ -41,7 +41,6 @@ import { DigitalServicesItemComponent } from "./digital-services-item/digital-se
         DigitalServicesItemComponent,
         PaginatorModule,
         DrawerModule,
-        PrimeTemplate,
         CreateDigitalServicesSidebarComponent,
         RenewServicePopupComponent,
         AsyncPipe,
