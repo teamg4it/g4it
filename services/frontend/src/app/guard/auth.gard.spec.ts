@@ -10,7 +10,7 @@ describe("AuthGuard", () => {
     let mockRoute: ActivatedRouteSnapshot;
     let mockState: RouterStateSnapshot;
 
-    beforeEach(() => {
+    beforeEach(async () => {
         mockRouter = jasmine.createSpyObj("Router", ["navigate", "parseUrl"]);
         mockKeycloakService = jasmine.createSpyObj("KeycloakService", [
             "isLoggedIn",
@@ -19,13 +19,13 @@ describe("AuthGuard", () => {
             "getKeycloakInstance",
         ]);
 
-        TestBed.configureTestingModule({
+        await TestBed.configureTestingModule({
             providers: [
                 AuthGuard,
                 { provide: Router, useValue: mockRouter },
                 { provide: KeycloakService, useValue: mockKeycloakService },
             ],
-        });
+        }).compileComponents();
 
         guard = TestBed.inject(AuthGuard);
         mockRoute = {} as ActivatedRouteSnapshot;

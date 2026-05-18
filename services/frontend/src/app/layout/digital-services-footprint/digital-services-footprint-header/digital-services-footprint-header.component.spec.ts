@@ -19,6 +19,7 @@ import { of } from "rxjs";
 import { DigitalService } from "src/app/core/interfaces/digital-service.interfaces";
 import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
+import { InventoryDataService } from "src/app/core/service/data/inventory-data.service";
 import { SharedModule } from "src/app/core/shared/shared.module";
 import { DigitalServicesFootprintHeaderComponent } from "./digital-services-footprint-header.component";
 
@@ -46,57 +47,66 @@ describe("DigitalServicesFootprintHeaderComponent", () => {
         delete: () => of({}),
         getDuplicateDigitalServiceAndVersionName: () =>
             of({ dsNames: [], versionNames: [] }),
+        getServiceRenewalDetails: () => of(null),
     };
 
     beforeEach(async () => {
         TestBed.configureTestingModule({
-    imports: [
-        HttpClientTestingModule,
-        RouterTestingModule,
-        InplaceModule,
-        FormsModule,
-        InputTextModule,
-        SharedModule,
-        ConfirmPopupModule,
-        TranslateModule.forRoot(),
-        DigitalServicesFootprintHeaderComponent,
-    ],
-    providers: [
-        {
-            provide: DigitalServicesDataService,
-            useValue: digitalServiceDataMock,
-        },
-        TranslatePipe,
-        TranslateService,
-        UserService,
-        MessageService,
-        ConfirmationService,
-        {
-            provide: ActivatedRoute,
-            useValue: {
-                snapshot: {
-                    paramMap: convertToParamMap({
-                        digitalServiceVersionId: "12345",
-                    }),
-                    queryParamMap: {
-                        get: (key: string) => {
-                            const params: {
-                                [key: string]: any;
-                            } = {
-                                renew: "true",
-                                inventoryId: "1",
-                            };
-                            return params[key] || null;
-                        },
+            imports: [
+                HttpClientTestingModule,
+                RouterTestingModule,
+                InplaceModule,
+                FormsModule,
+                InputTextModule,
+                SharedModule,
+                ConfirmPopupModule,
+                TranslateModule.forRoot(),
+                DigitalServicesFootprintHeaderComponent,
+            ],
+            providers: [
+                {
+                    provide: DigitalServicesDataService,
+                    useValue: digitalServiceDataMock,
+                },
+                {
+                    provide: InventoryDataService,
+                    useValue: {
+                        getServiceRenewalDetails: () => of(null),
                     },
                 },
-                paramMap: of(convertToParamMap({
-                    digitalServiceVersionId: "12345",
-                })),
-            },
-        },
-    ],
-});
+                TranslatePipe,
+                TranslateService,
+                UserService,
+                MessageService,
+                ConfirmationService,
+                {
+                    provide: ActivatedRoute,
+                    useValue: {
+                        snapshot: {
+                            paramMap: convertToParamMap({
+                                digitalServiceVersionId: "12345",
+                            }),
+                            queryParamMap: {
+                                get: (key: string) => {
+                                    const params: {
+                                        [key: string]: any;
+                                    } = {
+                                        renew: "true",
+                                        inventoryId: "1",
+                                    };
+                                    return params[key] || null;
+                                },
+                            },
+                        },
+                        paramMap: of(
+                            convertToParamMap({
+                                digitalServiceVersionId: "12345",
+                            }),
+                        ),
+                    },
+                },
+            ],
+        });
         fixture = TestBed.createComponent(DigitalServicesFootprintHeaderComponent);
         component = fixture.componentInstance;
 
@@ -114,7 +124,7 @@ describe("DigitalServicesFootprintHeaderComponent", () => {
     });
 
     it("should emit event on digital service name change", () => {
-        const newDigitalServiceName = "New name";
+        const newDigitalServiceName = "Test Digital Service";
         spyOn(component.digitalServiceChange, "emit");
         component.onNameUpdate(newDigitalServiceName, true);
         fixture.detectChanges();

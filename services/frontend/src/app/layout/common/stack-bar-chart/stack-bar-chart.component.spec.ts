@@ -12,10 +12,10 @@ describe("StackBarChartComponent", () => {
     let componentRef: ComponentRef<StackBarChartComponent>;
     let translateService: TranslateService;
 
-    beforeEach(() => {
-        TestBed.configureTestingModule({
-    imports: [TranslateModule.forRoot(), SharedModule, StackBarChartComponent],
-}).compileComponents();
+    beforeEach(async () => {
+        await TestBed.configureTestingModule({
+            imports: [TranslateModule.forRoot(), SharedModule, StackBarChartComponent],
+        }).compileComponents();
 
         fixture = TestBed.createComponent(StackBarChartComponent);
         component = fixture.componentInstance;

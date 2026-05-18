@@ -2,6 +2,7 @@ import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
 import { TranslateModule } from "@ngx-translate/core";
+import { NGX_ECHARTS_CONFIG } from "ngx-echarts";
 import { DecimalsPipe } from "src/app/core/pipes/decimal.pipe";
 import { IntegerPipe } from "src/app/core/pipes/integer.pipe";
 import { FilterService } from "src/app/core/service/business/filter.service";
@@ -42,26 +43,34 @@ describe("ApplicationCriteriaFootprintComponent", () => {
         };
 
         await TestBed.configureTestingModule({
-    imports: [HttpClientTestingModule, TranslateModule.forRoot(), ApplicationCriteriaFootprintComponent],
-    providers: [
-        {
-            provide: InventoriesApplicationFootprintComponent,
-            useValue: {
-                formatLifecycleImpact: (x: any) => x,
-                allUnmodifiedFootprint: [],
-            },
-        },
-        { provide: IntegerPipe, useValue: { transform: (v: any) => v } },
-        { provide: DecimalsPipe, useValue: { transform: (v: any) => v } },
-        { provide: GlobalStoreService, useValue: {} },
-        { provide: FilterService, useValue: filterService },
-        { provide: FootprintStoreService, useValue: footprintStore },
-        {
-            provide: ActivatedRoute,
-            useValue: { snapshot: { paramMap: { get: () => "1" } } },
-        },
-    ],
-}).compileComponents();
+            imports: [
+                HttpClientTestingModule,
+                TranslateModule.forRoot(),
+                ApplicationCriteriaFootprintComponent,
+            ],
+            providers: [
+                {
+                    provide: InventoriesApplicationFootprintComponent,
+                    useValue: {
+                        formatLifecycleImpact: (x: any) => x,
+                        allUnmodifiedFootprint: [],
+                    },
+                },
+                { provide: IntegerPipe, useValue: { transform: (v: any) => v } },
+                { provide: DecimalsPipe, useValue: { transform: (v: any) => v } },
+                { provide: GlobalStoreService, useValue: {} },
+                { provide: FilterService, useValue: filterService },
+                { provide: FootprintStoreService, useValue: footprintStore },
+                {
+                    provide: ActivatedRoute,
+                    useValue: { snapshot: { paramMap: { get: () => "1" } } },
+                },
+                {
+                    provide: NGX_ECHARTS_CONFIG,
+                    useFactory: () => ({ echarts: () => import("echarts") }),
+                },
+            ],
+        }).compileComponents();
 
         fixture = TestBed.createComponent(ApplicationCriteriaFootprintComponent);
         component = fixture.componentInstance;

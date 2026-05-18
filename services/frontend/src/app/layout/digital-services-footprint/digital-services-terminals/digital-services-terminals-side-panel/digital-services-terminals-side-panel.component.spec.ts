@@ -24,33 +24,35 @@ describe("DigitalServicesTerminalsSidePanelComponent", () => {
     let component: DigitalServicesTerminalsSidePanelComponent;
     let fixture: ComponentFixture<DigitalServicesTerminalsSidePanelComponent>;
 
-    beforeEach(() => {
-        TestBed.configureTestingModule({
-    providers: [
-        {
-            provide: NG_VALUE_ACCESSOR,
-            useExisting: forwardRef(() => DigitalServicesTerminalsSidePanelComponent),
-            multi: true,
-        },
-        DigitalServicesDataService,
-        TranslatePipe,
-        TranslateService,
-        MessageService,
-        UserService,
-    ],
-    imports: [
-        SharedModule,
-        ReactiveFormsModule,
-        ButtonModule,
-        SelectModule,
-        InputNumberModule,
-        InputTextModule,
-        HttpClientTestingModule,
-        TranslateModule.forRoot(),
-        DigitalServicesTerminalsSidePanelComponent,
-    ],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA],
-});
+    beforeEach(async () => {
+        await TestBed.configureTestingModule({
+            providers: [
+                {
+                    provide: NG_VALUE_ACCESSOR,
+                    useExisting: forwardRef(
+                        () => DigitalServicesTerminalsSidePanelComponent,
+                    ),
+                    multi: true,
+                },
+                DigitalServicesDataService,
+                TranslatePipe,
+                TranslateService,
+                MessageService,
+                UserService,
+            ],
+            imports: [
+                SharedModule,
+                ReactiveFormsModule,
+                ButtonModule,
+                SelectModule,
+                InputNumberModule,
+                InputTextModule,
+                HttpClientTestingModule,
+                TranslateModule.forRoot(),
+                DigitalServicesTerminalsSidePanelComponent,
+            ],
+            schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        }).compileComponents();
         fixture = TestBed.createComponent(DigitalServicesTerminalsSidePanelComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();

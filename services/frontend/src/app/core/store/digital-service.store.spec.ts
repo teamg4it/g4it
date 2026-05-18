@@ -1,11 +1,7 @@
 import { TestBed } from "@angular/core/testing";
 import { of } from "rxjs";
-import { DigitalServiceStoreService } from "./digital-service.store";
-import { InPhysicalEquipmentsService } from "../service/data/in-out/in-physical-equipments.service";
-import { InVirtualEquipmentsService } from "../service/data/in-out/in-virtual-equipments.service";
 import {
     DigitalService,
-    DigitalServiceServerConfig,
     Host,
     NetworkType,
     TerminalsType,
@@ -15,30 +11,43 @@ import {
     InPhysicalEquipmentRest,
     InVirtualEquipmentRest,
 } from "../interfaces/input.interface";
+import { InPhysicalEquipmentsService } from "../service/data/in-out/in-physical-equipments.service";
+import { InVirtualEquipmentsService } from "../service/data/in-out/in-virtual-equipments.service";
+import { DigitalServiceStoreService } from "./digital-service.store";
 
 describe("DigitalServiceStoreService", () => {
     let service: DigitalServiceStoreService;
 
     const mockInPhysicalEquipmentsService = {
-        get: jasmine.createSpy("get").and.returnValue(
-            of([{ id: 1, label: "PE1" }] as unknown as InPhysicalEquipmentRest[]),
-        ),
+        get: jasmine
+            .createSpy("get")
+            .and.returnValue(
+                of([{ id: 1, label: "PE1" }] as unknown as InPhysicalEquipmentRest[]),
+            ),
     };
 
     const mockInVirtualEquipmentsService = {
         getByDigitalService: jasmine
             .createSpy("getByDigitalService")
-            .and.returnValue(of([{ id: 10, label: "VE1" }] as unknown as InVirtualEquipmentRest[])),
+            .and.returnValue(
+                of([{ id: 10, label: "VE1" }] as unknown as InVirtualEquipmentRest[]),
+            ),
     };
 
-    beforeEach(() => {
-        TestBed.configureTestingModule({
+    beforeEach(async () => {
+        await TestBed.configureTestingModule({
             providers: [
                 DigitalServiceStoreService,
-                { provide: InPhysicalEquipmentsService, useValue: mockInPhysicalEquipmentsService },
-                { provide: InVirtualEquipmentsService, useValue: mockInVirtualEquipmentsService },
+                {
+                    provide: InPhysicalEquipmentsService,
+                    useValue: mockInPhysicalEquipmentsService,
+                },
+                {
+                    provide: InVirtualEquipmentsService,
+                    useValue: mockInVirtualEquipmentsService,
+                },
             ],
-        });
+        }).compileComponents();
         service = TestBed.inject(DigitalServiceStoreService);
     });
 
@@ -69,7 +78,7 @@ describe("DigitalServiceStoreService", () => {
 
     it("setCountryMap should update countryMap signal", () => {
         service.setCountryMap({ FR: "France" });
-        expect(service.countryMap()['FR']).toBe("France");
+        expect(service.countryMap()["FR"]).toBe("France");
     });
 
     it("setNetworkTypes / setTerminalDeviceTypes / setServerTypes should update lists", () => {
@@ -80,7 +89,6 @@ describe("DigitalServiceStoreService", () => {
         expect(service.terminalDeviceTypes()[0].code).toBe("TT1");
         expect(service.serverTypes()[0].value).toBe("Server A");
     });
-
 
     it("setInDatacenters should add displayLabel", () => {
         const dcs = [
@@ -115,7 +123,9 @@ describe("DigitalServiceStoreService", () => {
 
     it("initInVirtualEquipments should fetch and set data", async () => {
         await service.initInVirtualEquipments("ds-2");
-        expect(mockInVirtualEquipmentsService.getByDigitalService).toHaveBeenCalledWith("ds-2");
+        expect(mockInVirtualEquipmentsService.getByDigitalService).toHaveBeenCalledWith(
+            "ds-2",
+        );
         expect(service.inVirtualEquipments().length).toBe(1);
     });
 

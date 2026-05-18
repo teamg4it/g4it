@@ -50,37 +50,38 @@ describe("DigitalServicesAiInfrastructureComponent", () => {
 
         mockTranslateService = {
             instant: jasmine.createSpy().and.callFake((key) => key),
+            get: jasmine.createSpy().and.callFake((key) => of(key)),
         };
 
         await TestBed.configureTestingModule({
-    imports: [
-        ReactiveFormsModule,
-        HttpClientTestingModule,
-        TranslateModule.forRoot(),
-        DigitalServicesAiInfrastructureComponent,
-    ],
-    providers: [
-        FormBuilder,
-        { provide: DigitalServicesAiDataService, useValue: mockAiDataService },
-        { provide: AIFormsStore, useValue: mockAiFormsStore },
-        { provide: UserService, useValue: mockUserService },
-        { provide: MessageService, useValue: mockMessageService },
-        { provide: TranslateService, useValue: mockTranslateService },
-        {
-            provide: ActivatedRoute,
-            useValue: {
-                pathFromRoot: [
-                    {
-                        snapshot: {
-                            paramMap: new Map([["digitalServiceId", "123"]]),
-                        },
+            imports: [
+                ReactiveFormsModule,
+                HttpClientTestingModule,
+                TranslateModule.forRoot(),
+                DigitalServicesAiInfrastructureComponent,
+            ],
+            providers: [
+                FormBuilder,
+                { provide: DigitalServicesAiDataService, useValue: mockAiDataService },
+                { provide: AIFormsStore, useValue: mockAiFormsStore },
+                { provide: UserService, useValue: mockUserService },
+                { provide: MessageService, useValue: mockMessageService },
+                { provide: TranslateService, useValue: mockTranslateService },
+                {
+                    provide: ActivatedRoute,
+                    useValue: {
+                        pathFromRoot: [
+                            {
+                                snapshot: {
+                                    paramMap: new Map([["digitalServiceId", "123"]]),
+                                },
+                            },
+                        ],
                     },
-                ],
-            },
-        },
-        { provide: DigitalServicesDataService, useValue: {} },
-    ],
-}).compileComponents();
+                },
+                { provide: DigitalServicesDataService, useValue: {} },
+            ],
+        }).compileComponents();
 
         fixture = TestBed.createComponent(DigitalServicesAiInfrastructureComponent);
         component = fixture.componentInstance;

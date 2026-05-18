@@ -4,10 +4,10 @@ import { FootprintStoreService } from "./footprint.store";
 describe("FootprintStoreService", () => {
     let service: FootprintStoreService;
 
-    beforeEach(() => {
-        TestBed.configureTestingModule({
+    beforeEach(async () => {
+        await TestBed.configureTestingModule({
             providers: [FootprintStoreService],
-        });
+        }).compileComponents();
         service = TestBed.inject(FootprintStoreService);
     });
 

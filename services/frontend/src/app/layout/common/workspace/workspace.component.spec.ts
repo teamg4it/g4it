@@ -24,27 +24,29 @@ describe("WorkspaceComponent", () => {
         ]);
         mockWorkspaceService.getDomainOrganizations.and.returnValue(of([])); // Ensure it returns an observable
 
-        mockUserService = jasmine.createSpyObj("UserService", ["getRoles"]);
+        mockUserService = jasmine.createSpyObj("UserService", ["getRoles"], {
+            user$: of({ email: "test@example.com" }),
+        });
         mockUserService.getRoles.and.returnValue([]); // Ensure it returns a valid value
 
         await TestBed.configureTestingModule({
-    imports: [
-        ReactiveFormsModule,
-        CommonModule,
-        FormsModule,
-        SelectModule,
-        ButtonModule,
-        TranslateModule.forRoot(),
-        HttpClientModule,
-        WorkspaceComponent,
-    ],
-    providers: [
-        { provide: WorkspaceService, useValue: mockWorkspaceService },
-        { provide: UserService, useValue: mockUserService },
-        MessageService,
-        TranslateService,
-    ],
-}).compileComponents();
+            imports: [
+                ReactiveFormsModule,
+                CommonModule,
+                FormsModule,
+                SelectModule,
+                ButtonModule,
+                TranslateModule.forRoot(),
+                HttpClientModule,
+                WorkspaceComponent,
+            ],
+            providers: [
+                { provide: WorkspaceService, useValue: mockWorkspaceService },
+                { provide: UserService, useValue: mockUserService },
+                MessageService,
+                TranslateService,
+            ],
+        }).compileComponents();
 
         fixture = TestBed.createComponent(WorkspaceComponent);
         component = fixture.componentInstance;
