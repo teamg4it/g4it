@@ -31,7 +31,7 @@
         "@ngneat/elf-persist-state": "^1.2.1",
         "@ngx-translate/core": "^16.0.3",
         "@ngx-translate/http-loader": "^16.0.0",
-        "@primeng/themes": "^21.0.4",
+        "@primeuix/themes": "^2.0.3",
         "@types/file-saver": "^2.0.7",
         "date-fns": "^4.1.0",
         "echarts": "^5.5.1",
