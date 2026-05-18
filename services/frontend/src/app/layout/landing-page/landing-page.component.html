@@ -29,11 +29,17 @@
             <p-drawer
                 [(visible)]="spaceSidebarVisible"
                 position="right"
-                styleClass="p-sidebar-lg"
+                styleClass="p-sidebar-lg w-10"
+                appendTo="body"
+                [modal]="false"
                 ariaCloseLabel="Close"
                 [fullScreen]="isZoom125()"
             >
-                <app-workspace (sidebarVisibleChange)="spaceSidebarVisible = $event" />
+                <ng-template #headless>
+                    <app-workspace
+                        (sidebarVisibleChange)="spaceSidebarVisible = $event"
+                    />
+                </ng-template>
             </p-drawer>
         }
     </div>

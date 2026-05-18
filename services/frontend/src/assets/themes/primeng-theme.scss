@@ -46,6 +46,8 @@
     --highlight-bg: rgba(0, 186, 0, 0.12);
     --highlight-text-color: var(--tertiary-color);
     color-scheme: light;
+    --p-accordion-header-color: #000000de;
+    --p-accordion-header-active-color: #000000de;
 }
 * {
     box-sizing: border-box;
@@ -828,10 +830,10 @@ p-chips.p-chips-clearable .p-chips-clear-icon {
 }
 
 .p-select:not(.p-disabled).p-focus {
-    outline: 0 none;
+    outline: 2px solid var(--tertiary-color);
     outline-offset: 0;
-    box-shadow: none;
     border-color: var(--tertiary-color);
+    box-shadow: none;
 }
 
 .p-select.p-select-clearable .p-select-label {

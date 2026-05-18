@@ -490,22 +490,37 @@ main {
     background: #e2e8f0;
 }
 
-.p-drawer .p-drawer-header-content .p-drawer-close-button:focus,
-.p-sidebar .p-sidebar-header .p-sidebar-close:focus,
-.p-sidebar .p-sidebar-header .p-sidebar-icon:focus {
+// drawer
+
+.p-drawer-header {
+    padding: 0;
+    background: transparent;
+}
+
+.p-drawer .p-drawer-header .p-drawer-close-button button:enabled:hover {
+    color: #0009;
+    border-color: transparent;
+    background: #0000000a;
+}
+
+.p-drawer .p-drawer-header .p-drawer-close-button button:enabled:focus {
+    outline: 2px solid black !important;
+    background: transparent;
+}
+
+.p-drawer .p-drawer-header-content .p-drawer-close-button:focus {
     outline: 2px solid black !important;
 }
 
 #settings-sidebar .p-drawer .p-drawer-header-content .p-drawer-close-button,
-#settings-sidebar .p-drawer .p-drawer-header-content .p-drawer-close-button:enabled:hover,
-#settings-sidebar .p-sidebar .p-sidebar-header .p-sidebar-close,
-#settings-sidebar .p-sidebar .p-sidebar-header .p-sidebar-close:enabled:hover {
+#settings-sidebar
+    .p-drawer
+    .p-drawer-header-content
+    .p-drawer-close-button:enabled:hover {
     color: white;
 }
 
-#settings-sidebar .p-drawer .p-drawer-header-content .p-drawer-close-button:focus,
-#settings-sidebar .p-sidebar .p-sidebar-header .p-sidebar-close:focus,
-#settings-sidebar .p-sidebar .p-sidebar-header .p-sidebar-icon:focus {
+#settings-sidebar .p-drawer .p-drawer-header-content .p-drawer-close-button:focus {
     outline: 2px solid white !important;
 }
 
@@ -1935,24 +1950,6 @@ app-update-workspace-reference {
     box-shadow: none !important;
 }
 
-/* Hover */
-.custom-file-upload .p-button:hover {
-    background: #182019 !important;
-    border-color: #20a84b !important;
-}
-
-/* Focus */
-.custom-file-upload .p-button:focus,
-.custom-file-upload .p-button:focus-visible {
-    outline: none !important;
-    box-shadow: none !important;
-}
-
-/* Active */
-.custom-file-upload .p-button:active {
-    background: #0f1511 !important;
-}
-
 /* Disabled */
 .custom-file-upload .p-button:disabled {
     opacity: 0.5;
@@ -1999,6 +1996,10 @@ app-update-workspace-reference {
 
 app-select-file {
     .p-select .p-select-label {
-        width: 16rem;
+        width: 12rem;
     }
+}
+
+.p-menu-item:not(.p-disabled) .p-menu-item-content:hover {
+    background: none;
 }

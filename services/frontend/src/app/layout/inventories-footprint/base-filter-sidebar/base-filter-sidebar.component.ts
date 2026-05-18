@@ -9,7 +9,6 @@ import { Component, computed, EventEmitter, Input, Output, signal } from "@angul
 import { FormsModule } from "@angular/forms";
 import { TranslatePipe } from "@ngx-translate/core";
 import { AccordionModule } from "primeng/accordion";
-import { PrimeTemplate } from "primeng/api";
 import { BadgeModule } from "primeng/badge";
 import { Button } from "primeng/button";
 import { CheckboxModule } from "primeng/checkbox";
@@ -33,7 +32,6 @@ export type FilterTab = string | { field: string; children?: any[] };
     standalone: true,
     imports: [
         DrawerModule,
-        PrimeTemplate,
         FocusTrapModule,
         Button,
         ScrollPanelModule,

@@ -216,14 +216,17 @@
         [(visible)]="filterSidebarVisible"
         position="right"
         styleClass="p-sidebar-md w-5"
+        appendTo="body"
         [modal]="false"
         (onHide)="filterSidebarVisible = false"
     >
-        <app-configure-view-filters
-            (filtersApplied)="handleFilters($event)"
-            (sidebarVisibleChange)="filterSidebarVisible = $event"
-            [enableDataInconsistency]="digitalService.enableDataInconsistency"
-            [selectedUnit]="selectedUnit"
-        ></app-configure-view-filters>
+        <ng-template #headless>
+            <app-configure-view-filters
+                (filtersApplied)="handleFilters($event)"
+                (sidebarVisibleChange)="filterSidebarVisible = $event"
+                [enableDataInconsistency]="digitalService.enableDataInconsistency"
+                [selectedUnit]="selectedUnit"
+            ></app-configure-view-filters>
+        </ng-template>
     </p-drawer>
 }

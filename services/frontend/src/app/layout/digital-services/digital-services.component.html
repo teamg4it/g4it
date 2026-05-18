@@ -56,17 +56,21 @@
     <p-drawer
         [(visible)]="newDsSidebarVisible"
         position="right"
-        styleClass="w-5"
+        styleClass="w-10"
         [showCloseIcon]="true"
+        appendTo="body"
+        [modal]="false"
         (onHide)="newDsSidebarVisible = false"
         ariaCloseLabel="Close"
     >
-        <app-create-digital-services-sidebar
-            [allDigitalServices]="allDigitalServices"
-            (sidebarVisibleChange)="newDsSidebarVisible = $event"
-            (submitCreateDsForm)="createNewDigitalServices($event)"
-            [isEcoMindAi]="isEcoMindAi"
-        />
+        <ng-template #headless>
+            <app-create-digital-services-sidebar
+                [allDigitalServices]="allDigitalServices"
+                (sidebarVisibleChange)="newDsSidebarVisible = $event"
+                (submitCreateDsForm)="createNewDigitalServices($event)"
+                [isEcoMindAi]="isEcoMindAi"
+            />
+        </ng-template>
     </p-drawer>
 }
 

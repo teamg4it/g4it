@@ -41,7 +41,7 @@
                     @if (!item.outsideLink) {
                         <div [ngClass]="isZoomedIn() ? 'p-1' : 'p-2'">
                             <a
-                                class="pl-0 flex align-items-center p-menuitem-link"
+                                class="pl-0 flex align-items-center p-menuitem-link cursor-pointer"
                                 [ngClass]="isZoomedIn() ? 'text-lg py-1' : 'text-2xl'"
                             >
                                 <span
@@ -70,7 +70,7 @@
                     } @else {
                         <div [ngClass]="isZoomedIn() ? 'p-1' : 'p-2'">
                             <div
-                                class="border border-left-1"
+                                class="border border-left-1 cursor-pointer"
                                 [ngClass]="item.borderClass"
                             >
                                 <a

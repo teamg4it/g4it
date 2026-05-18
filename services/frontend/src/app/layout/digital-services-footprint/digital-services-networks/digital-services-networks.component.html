@@ -16,8 +16,9 @@
     <p-drawer
         [(visible)]="sidebarVisible"
         position="right"
-        styleClass="w-10"
+        styleClass="w-6"
         [modal]="false"
+        appendTo="body"
         (onHide)="networkSidePanel.close()"
         ariaCloseLabel="Close"
     >

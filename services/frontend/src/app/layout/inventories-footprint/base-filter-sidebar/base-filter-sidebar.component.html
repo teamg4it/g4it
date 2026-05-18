@@ -48,11 +48,12 @@
                             <!-- Default Equipment checkbox list -->
                             <p-accordion [multiple]="true" [value]="[]" styleClass="pl-0">
                                 @for (tab of tabs; track $index) {
-                                    <p-accordionpanel
+                                    <p-accordion-panel
                                         headerStyleClass="h-3rem bg-transparent font-bold mb-0"
                                         contentStyleClass="bg-transparent p-2"
+                                        [value]="$index"
                                     >
-                                        <ng-template pTemplate="header">
+                                        <p-accordion-header>
                                             <div class="flex flex-column">
                                                 <h4 class="mb-0 ml-0 mt-2">
                                                     {{
@@ -69,62 +70,62 @@
                                                     }
                                                 </h4>
                                             </div>
-                                        </ng-template>
-
-                                        <ul class="m-0">
-                                            @for (
-                                                item of allFilters[getTabField(tab)];
-                                                track $index
-                                            ) {
-                                                <li class="my-3">
-                                                    <p-checkbox
-                                                        class="mb-1 mr-2"
-                                                        tabindex="0"
-                                                        [ariaLabel]="item?.toString()"
-                                                        name="groupname"
-                                                        [value]="item"
-                                                        [(ngModel)]="
-                                                            localFilters()[
-                                                                getTabField(tab)
-                                                            ]
-                                                        "
-                                                        (ngModelChange)="
-                                                            onCheckboxChange(
-                                                                $event,
-                                                                getTabField(tab),
-                                                                item.toString()
-                                                            )
-                                                        "
-                                                        [inputId]="
-                                                            'filter-' +
-                                                            getTabField(tab) +
-                                                            '-' +
-                                                            item
-                                                        "
-                                                    >
-                                                    </p-checkbox>
-                                                    <label
-                                                        [attr.for]="
-                                                            'filter-' +
-                                                            getTabField(tab) +
-                                                            '-' +
-                                                            item
-                                                        "
-                                                        >{{
-                                                            item?.toString() === all
-                                                                ? ("common.all"
-                                                                  | translate)
-                                                                : item?.toString() ===
-                                                                    empty
-                                                                  ? ("common.empty"
-                                                                    | translate)
-                                                                  : item
-                                                        }}</label
-                                                    >
-                                                </li>
-                                            }
-                                        </ul>
-                                    </p-accordionpanel>
+                                        </p-accordion-header>
+                                        <p-accordion-content>
+                                            <ul class="m-0">
+                                                @for (
+                                                    item of allFilters[getTabField(tab)];
+                                                    track $index
+                                                ) {
+                                                    <li class="my-3">
+                                                        <p-checkbox
+                                                            class="mb-1 mr-2"
+                                                            [ariaLabel]="item?.toString()"
+                                                            name="groupname"
+                                                            [value]="item"
+                                                            [(ngModel)]="
+                                                                localFilters()[
+                                                                    getTabField(tab)
+                                                                ]
+                                                            "
+                                                            (ngModelChange)="
+                                                                onCheckboxChange(
+                                                                    $event,
+                                                                    getTabField(tab),
+                                                                    item.toString()
+                                                                )
+                                                            "
+                                                            [inputId]="
+                                                                'filter-' +
+                                                                getTabField(tab) +
+                                                                '-' +
+                                                                item
+                                                            "
+                                                        >
+                                                        </p-checkbox>
+                                                        <label
+                                                            [attr.for]="
+                                                                'filter-' +
+                                                                getTabField(tab) +
+                                                                '-' +
+                                                                item
+                                                            "
+                                                            >{{
+                                                                item?.toString() === all
+                                                                    ? ("common.all"
+                                                                      | translate)
+                                                                    : item?.toString() ===
+                                                                        empty
+                                                                      ? ("common.empty"
+                                                                        | translate)
+                                                                      : item
+                                                            }}</label
+                                                        >
+                                                    </li>
+                                                }
+                                            </ul>
+                                        </p-accordion-content>
+                                    </p-accordion-panel>
                                 }
                             </p-accordion>
                         }
