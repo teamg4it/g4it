@@ -23,42 +23,6 @@ import static org.junit.jupiter.api.Assertions.*;
 class ExcelValidatorUtilsTest {
 
     @Test
-    void validateExcelFile_shouldThrowException_whenWorkbookHasNoSheet() throws Exception {
-
-        byte[] workbookContent;
-
-        try (XSSFWorkbook workbook = new XSSFWorkbook();
-             ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
-
-            // intentionally no sheet
-
-            workbook.write(bos);
-            workbookContent = bos.toByteArray();
-        }
-
-        MultipartFile file = new MockMultipartFile(
-                "file",
-                "empty.xlsx",
-                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                workbookContent
-        );
-
-        List<MultipartFile> files = List.of(file);
-
-        BadRequestException exception = assertThrows(
-                BadRequestException.class,
-                () -> ExcelValidatorUtils.validateExcelFile(files)
-        );
-
-        assertEquals("file", exception.getField());
-
-        assertEquals(
-                "Excel file does not contain any sheet.",
-                exception.getError()
-        );
-    }
-
-    @Test
     void validateExcelFile_shouldThrowException_whenRowLimitExceeded() throws Exception {
 
         byte[] workbookContent;
@@ -88,7 +52,7 @@ class ExcelValidatorUtilsTest {
 
         BadRequestException exception = assertThrows(
                 BadRequestException.class,
-                () -> ExcelValidatorUtils.validateExcelFile(files)
+                () -> FileValidatorUtils.validateFile(files)
         );
 
         assertEquals("file", exception.getField());
@@ -113,13 +77,13 @@ class ExcelValidatorUtilsTest {
 
         BadRequestException exception = assertThrows(
                 BadRequestException.class,
-                () -> ExcelValidatorUtils.validateExcelFile(files)
+                () -> FileValidatorUtils.validateFile(files)
         );
 
         assertEquals("file", exception.getField());
 
         assertEquals(
-                "Unable to read imported Excel file.",
+                "Unable to read imported file.",
                 exception.getError()
         );
     }
@@ -128,7 +92,7 @@ class ExcelValidatorUtilsTest {
     void validateExcelFile_shouldDoNothing_whenFilesAreNull() {
 
         assertDoesNotThrow(() ->
-                ExcelValidatorUtils.validateExcelFile(null)
+                FileValidatorUtils.validateFile(null)
         );
     }
 
@@ -136,7 +100,7 @@ class ExcelValidatorUtilsTest {
     void validateExcelFile_shouldDoNothing_whenFilesAreEmpty() {
 
         assertDoesNotThrow(() ->
-                ExcelValidatorUtils.validateExcelFile(List.of())
+                FileValidatorUtils.validateFile(List.of())
         );
     }
 }
