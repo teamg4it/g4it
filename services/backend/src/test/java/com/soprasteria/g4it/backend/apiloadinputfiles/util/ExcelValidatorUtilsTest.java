@@ -47,7 +47,7 @@ class ExcelValidatorUtilsTest {
 
         BadRequestException exception = assertThrows(
                 BadRequestException.class,
-                () -> ExcelValidatorUtils.validateExcelFile(files)
+                () -> FileValidatorUtils.validateFile(files)
         );
 
         assertEquals("file", exception.getField());
@@ -88,7 +88,7 @@ class ExcelValidatorUtilsTest {
 
         BadRequestException exception = assertThrows(
                 BadRequestException.class,
-                () -> ExcelValidatorUtils.validateExcelFile(files)
+                () -> FileValidatorUtils.validateFile(files)
         );
 
         assertEquals("file", exception.getField());
@@ -113,7 +113,7 @@ class ExcelValidatorUtilsTest {
 
         BadRequestException exception = assertThrows(
                 BadRequestException.class,
-                () -> ExcelValidatorUtils.validateExcelFile(files)
+                () -> FileValidatorUtils.validateFile(files)
         );
 
         assertEquals("file", exception.getField());
@@ -128,7 +128,7 @@ class ExcelValidatorUtilsTest {
     void validateExcelFile_shouldDoNothing_whenFilesAreNull() {
 
         assertDoesNotThrow(() ->
-                ExcelValidatorUtils.validateExcelFile(null)
+                FileValidatorUtils.validateFile(null)
         );
     }
 
@@ -136,7 +136,7 @@ class ExcelValidatorUtilsTest {
     void validateExcelFile_shouldDoNothing_whenFilesAreEmpty() {
 
         assertDoesNotThrow(() ->
-                ExcelValidatorUtils.validateExcelFile(List.of())
+                FileValidatorUtils.validateFile(List.of())
         );
     }
 }
