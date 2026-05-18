@@ -847,7 +847,7 @@ main {
     width: 400px;
 }
 
-.label-input-div .p-dropdown-label {
+.label-input-div .p-select-label {
     width: 360px;
 }
 
@@ -858,16 +858,6 @@ main {
 }
 
 /* Previous Next paginator css */
-
-.p-paginator .p-paginator-prev::after {
-    content: "<-";
-    padding: 5px;
-}
-
-.p-paginator .p-paginator-next::after {
-    content: "->";
-    padding: 5px;
-}
 
 .p-paginator .p-paginator-first,
 .p-paginator .p-paginator-last,
@@ -1186,6 +1176,21 @@ app-inventory-item {
                 background: var(--blue-color);
             }
         }
+    }
+}
+
+.drawer-lg {
+    width: 60rem;
+}
+
+.drawer-md {
+    width: 40rem;
+}
+
+@media screen and (max-width: 1024px) {
+    .drawer-lg,
+    .drawer-md {
+        width: 20rem;
     }
 }
 

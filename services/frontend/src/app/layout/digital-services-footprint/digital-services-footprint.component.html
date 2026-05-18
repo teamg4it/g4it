@@ -10,6 +10,7 @@
 @if (!isMobile()) {
     <p-menubar
         [model]="tabItems"
+        styleClass="top-nav-tabs"
         (activeItemChange)="onMenuTabChange($event)"
         [ariaLabel]="'common.ds-menu' | translate"
     ></p-menubar>

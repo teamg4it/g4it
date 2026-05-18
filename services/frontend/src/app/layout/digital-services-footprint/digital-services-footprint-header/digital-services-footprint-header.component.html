@@ -3,7 +3,7 @@
     <p-drawer
         [(visible)]="sidebarVisible"
         position="right"
-        styleClass="w-7"
+        styleClass="drawer-lg"
         [showCloseIcon]="true"
         (onHide)="sidebarVisible = false"
         ariaCloseLabel="Close"
@@ -28,6 +28,7 @@
         (onHide)="importSidebarVisible = false"
         ariaCloseLabel="Close"
         [fullScreen]="isZoom125()"
+        styleClass="drawer-lg"
     >
         <app-digital-services-import
             (sidebarVisibleChange)="importSidebarVisible = $event"

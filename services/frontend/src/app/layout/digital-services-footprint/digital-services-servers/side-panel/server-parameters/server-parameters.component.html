@@ -76,8 +76,11 @@
                     }
                     @if (addSidebarVisible) {
                         <p-drawer
+                            styleClass="drawer-lg"
                             [visible]="true"
                             position="right"
+                            appendTo="body"
+                            [modal]="false"
                             (onHide)="childSidePanel.close()"
                         >
                             <app-panel-datacenter

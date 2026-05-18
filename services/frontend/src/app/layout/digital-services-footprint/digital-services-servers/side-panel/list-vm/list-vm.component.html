@@ -45,7 +45,13 @@
     </div>
 </div>
 @if (addVMPanelVisible) {
-    <p-drawer [visible]="true" position="right" (onHide)="vmSidePanel.close()">
+    <p-drawer
+        [visible]="true"
+        styleClass="drawer-lg"
+        position="right"
+        [modal]="false"
+        (onHide)="vmSidePanel.close()"
+    >
         @if (addVMPanelVisible) {
             <app-panel-add-vm
                 #vmSidePanel
