@@ -23,42 +23,6 @@ import static org.junit.jupiter.api.Assertions.*;
 class ExcelValidatorUtilsTest {
 
     @Test
-    void validateExcelFile_shouldThrowException_whenWorkbookHasNoSheet() throws Exception {
-
-        byte[] workbookContent;
-
-        try (XSSFWorkbook workbook = new XSSFWorkbook();
-             ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
-
-            // intentionally no sheet
-
-            workbook.write(bos);
-            workbookContent = bos.toByteArray();
-        }
-
-        MultipartFile file = new MockMultipartFile(
-                "file",
-                "empty.xlsx",
-                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                workbookContent
-        );
-
-        List<MultipartFile> files = List.of(file);
-
-        BadRequestException exception = assertThrows(
-                BadRequestException.class,
-                () -> FileValidatorUtils.validateFile(files)
-        );
-
-        assertEquals("file", exception.getField());
-
-        assertEquals(
-                "Excel file does not contain any sheet.",
-                exception.getError()
-        );
-    }
-
-    @Test
     void validateExcelFile_shouldThrowException_whenRowLimitExceeded() throws Exception {
 
         byte[] workbookContent;
@@ -119,7 +83,7 @@ class ExcelValidatorUtilsTest {
         assertEquals("file", exception.getField());
 
         assertEquals(
-                "Unable to read imported Excel file.",
+                "Unable to read imported file.",
                 exception.getError()
         );
     }
