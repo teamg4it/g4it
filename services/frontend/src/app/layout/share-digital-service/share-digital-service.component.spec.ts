@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute, Router } from "@angular/router";
 import { TranslateModule, TranslateService } from "@ngx-translate/core";
+import { MessageService } from "primeng/api";
 import { of } from "rxjs";
 import { DigitalService } from "src/app/core/interfaces/digital-service.interfaces";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
@@ -81,22 +82,23 @@ describe("ShareDigitalServiceComponent", () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-    imports: [TranslateModule.forRoot(), ShareDigitalServiceComponent],
-    providers: [
-        { provide: ActivatedRoute, useValue: mockActivatedRoute },
-        {
-            provide: DigitalServicesDataService,
-            useValue: mockDigitalServicesDataService,
-        },
-        {
-            provide: ShareDigitalServiceDataService,
-            useValue: mockShareDigitalServiceDataService,
-        },
-        { provide: DigitalServiceStoreService, useValue: mockStore },
-        { provide: TranslateService, useValue: mockTranslate },
-        { provide: Router, useValue: mockRouter },
-    ],
-}).compileComponents();
+            imports: [TranslateModule.forRoot(), ShareDigitalServiceComponent],
+            providers: [
+                MessageService,
+                { provide: ActivatedRoute, useValue: mockActivatedRoute },
+                {
+                    provide: DigitalServicesDataService,
+                    useValue: mockDigitalServicesDataService,
+                },
+                {
+                    provide: ShareDigitalServiceDataService,
+                    useValue: mockShareDigitalServiceDataService,
+                },
+                { provide: DigitalServiceStoreService, useValue: mockStore },
+                { provide: TranslateService, useValue: mockTranslate },
+                { provide: Router, useValue: mockRouter },
+            ],
+        }).compileComponents();
 
         fixture = TestBed.createComponent(ShareDigitalServiceComponent);
         component = fixture.componentInstance;

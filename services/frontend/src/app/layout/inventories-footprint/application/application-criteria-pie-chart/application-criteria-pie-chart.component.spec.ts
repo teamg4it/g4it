@@ -11,6 +11,7 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { TranslateModule, TranslatePipe, TranslateService } from "@ngx-translate/core";
+import { NGX_ECHARTS_CONFIG } from "ngx-echarts";
 import { InventoriesApplicationFootprintComponent } from "../inventories-application-footprint.component";
 import { ApplicationCriteriaPieChartComponent } from "./application-criteria-pie-chart.component";
 
@@ -31,6 +32,10 @@ describe("ApplicationCriteriaPieChartComponent", () => {
                 TranslatePipe,
                 TranslateService,
                 InventoriesApplicationFootprintComponent,
+                {
+                    provide: NGX_ECHARTS_CONFIG,
+                    useFactory: () => ({ echarts: () => import("echarts") }),
+                },
                 {
                     provide: ActivatedRoute,
                     useValue: {

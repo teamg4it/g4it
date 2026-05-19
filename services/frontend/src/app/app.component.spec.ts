@@ -5,6 +5,7 @@ import { Title } from "@angular/platform-browser";
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { TranslateModule, TranslateService } from "@ngx-translate/core";
 import { KeycloakService } from "keycloak-angular";
+import { MessageService } from "primeng/api";
 import { of, Subject } from "rxjs";
 import { environment } from "src/environments/environment";
 import { AppComponent } from "./app.component";
@@ -63,19 +64,20 @@ describe("AppComponent", () => {
         };
 
         await TestBed.configureTestingModule({
-    imports: [HttpClientTestingModule, TranslateModule.forRoot(), AppComponent],
-    providers: [
-        { provide: KeycloakService, useValue: mockKeycloak },
-        { provide: UserDataService, useValue: mockUserService },
-        { provide: TranslateService, useValue: mockTranslate },
-        { provide: GlobalStoreService, useValue: mockGlobalStore },
-        { provide: Router, useValue: mockRouter },
-        { provide: ActivatedRoute, useValue: { firstChild: null } },
-        { provide: Title, useValue: mockTitle },
-        { provide: MatomoScriptService, useValue: mockMatomo },
-    ],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA],
-}).compileComponents();
+            imports: [HttpClientTestingModule, TranslateModule.forRoot(), AppComponent],
+            providers: [
+                MessageService,
+                { provide: KeycloakService, useValue: mockKeycloak },
+                { provide: UserDataService, useValue: mockUserService },
+                { provide: TranslateService, useValue: mockTranslate },
+                { provide: GlobalStoreService, useValue: mockGlobalStore },
+                { provide: Router, useValue: mockRouter },
+                { provide: ActivatedRoute, useValue: { firstChild: null } },
+                { provide: Title, useValue: mockTitle },
+                { provide: MatomoScriptService, useValue: mockMatomo },
+            ],
+            schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        }).compileComponents();
 
         fixture = TestBed.createComponent(AppComponent);
         component = fixture.componentInstance;

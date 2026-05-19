@@ -74,7 +74,6 @@ describe("WelcomePageComponent", () => {
         } as Organization;
         userServiceMock.currentOrganization$.next(organizationMock);
         tick();
-        fixture.detectChanges();
         expect(component.currentOrganization).toEqual(organizationMock);
     }));
 
