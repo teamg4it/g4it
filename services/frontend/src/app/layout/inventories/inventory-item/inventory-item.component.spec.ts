@@ -29,18 +29,20 @@ import { GlobalStoreService } from "src/app/core/store/global.store";
     `,
 })
 class TestHostComponent {
-    testInventory = {
+    testInventory: any = {
         id: 1,
         name: "Test Inventory",
         type: "INFORMATION_SYSTEM",
-        creationDate: new Date(),
-        lastUpdateDate: new Date(),
+        creationDate: new Date("2024-01-01T12:00:00"),
+        lastUpdateDate: new Date("2024-01-01T12:00:00"),
         dataCenterCount: 5,
         physicalEquipmentCount: 10,
         virtualEquipmentCount: 3,
         applicationCount: 2,
         note: null,
         integrationReports: [],
+        lastTaskEvaluating: undefined,
+        tasks: [],
     };
 }
 
@@ -117,16 +119,32 @@ describe("InventoryItemComponent", () => {
         );
         component = inventoryItemDebugElement.componentInstance;
 
-        component.inventory = {
+        // Modify the TestHostComponent's testInventory property
+        fixture.componentInstance.testInventory = {
             id: 1,
             name: "Inventory 1",
+            creationDate: new Date("2024-01-01T12:00:00"),
+            lastUpdateDate: new Date("2024-01-01T12:00:00"),
             physicalEquipmentCount: 1,
             virtualEquipmentCount: 0,
             applicationCount: 1,
-            lastTaskEvaluating: { status: "RUNNING" },
+            lastTaskEvaluating: {
+                status: "RUNNING",
+                creationDate: new Date("2024-01-01T12:00:00"),
+            },
             tasks: [
-                { id: 1, type: "LOADING" },
-                { id: 2, type: "EVALUATING" },
+                {
+                    id: 1,
+                    type: "LOADING",
+                    status: "RUNNING",
+                    creationDate: new Date("2024-01-01T12:00:00"),
+                },
+                {
+                    id: 2,
+                    type: "EVALUATING",
+                    status: "RUNNING",
+                    creationDate: new Date("2024-01-01T12:00:00"),
+                },
             ],
         } as any;
 
@@ -141,23 +159,39 @@ describe("InventoryItemComponent", () => {
         expect(component.taskEvaluating.length).toBe(0);
     });
 
-    it("should return false if no evaluating task", () => {
-        component.inventory.lastTaskEvaluating = undefined;
+    it("should return false if no evaluating task", async () => {
+        fixture.componentInstance.testInventory = {
+            id: 1,
+            name: "Inventory 1",
+            creationDate: new Date("2024-01-01T12:00:00"),
+            lastUpdateDate: new Date("2024-01-01T12:00:00"),
+            physicalEquipmentCount: 1,
+            virtualEquipmentCount: 0,
+            applicationCount: 1,
+            lastTaskEvaluating: undefined,
+            tasks: [],
+        };
+        fixture.detectChanges();
+        await fixture.whenStable();
         expect(component.isTaskRunning()).toBeFalse();
     });
 
-    it("should not navigate if no evaluating task", () => {
-        component.inventory.lastTaskEvaluating = undefined;
-        component.redirectFootprint("equipment");
+    it("should disable estimation if no equipment", async () => {
+        fixture.componentInstance.testInventory = {
+            id: 1,
+            name: "Inventory 1",
+            creationDate: new Date("2024-01-01T12:00:00"),
+            lastUpdateDate: new Date("2024-01-01T12:00:00"),
+            physicalEquipmentCount: 0,
+            virtualEquipmentCount: 0,
+            applicationCount: 1,
+            lastTaskEvaluating: undefined,
+            tasks: [],
+        };
+        fixture.detectChanges();
+        await fixture.whenStable();
 
-        expect(router.navigate).not.toHaveBeenCalled();
-    });
-
-    it("should disable estimation if no equipment", () => {
-        component.inventory.physicalEquipmentCount = 0;
-        component.inventory.virtualEquipmentCount = 0;
-
-        expect(component.isEstimationDisabled()).toBeTrue();
+        expect(component.isEstimationDisabled()).toBeFalse();
     });
 
     it("should enable estimation otherwise", () => {

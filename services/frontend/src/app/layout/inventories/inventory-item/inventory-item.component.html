@@ -1,12 +1,12 @@
-<p-accordion-panel [value]="inventory.id">
+<p-accordion-panel [value]="inventory().id">
     <!-- HEADER -->
     <p-accordion-header>
         <div
             class="flex flex-row justify-content-between w-full"
-            [attr.aria-label]="inventory.name"
+            [attr.aria-label]="inventory().name"
         >
             <div class="flex align-items-center text-lg">
-                {{ inventory.name | monthYear }}
+                {{ inventory().name | monthYear }}
             </div>
 
             <!-- Renew Service code -->
@@ -20,13 +20,13 @@
                         <span class="expiry-title text-sm font-semibold">
                             {{
                                 "digital-services.expiry-warning"
-                                    | translate: { expiryDate: inventory.expiryDate }
+                                    | translate: { expiryDate: inventory().expiryDate }
                             }}
                         </span>
 
                         <button
                             class="expiry-link text-xs p-0 m-0 border-none text-left cursor-pointer underline"
-                            (click)="$event.stopPropagation(); renewService(inventory)"
+                            (click)="$event.stopPropagation(); renewService(inventory())"
                         >
                             {{ "digital-services.click-extend" | translate }}
                         </button>
@@ -35,7 +35,9 @@
             }
 
             <div class="flex align-items-center">
-                @if (!inventory.note && (userService.isAllowedInventoryWrite$ | async)) {
+                @if (
+                    !inventory().note && (userService.isAllowedInventoryWrite$ | async)
+                ) {
                     <p-button
                         (onClick)="$event.stopPropagation(); openSidebarNote()"
                         (keydown.enter)="$event.stopPropagation(); openSidebarNote()"
@@ -46,7 +48,7 @@
                     />
                 }
 
-                @if (inventory.note) {
+                @if (inventory().note) {
                     <p-button
                         (onClick)="$event.stopPropagation(); openSidebarNote()"
                         (keydown.enter)="$event.stopPropagation(); openSidebarNote()"
@@ -109,21 +111,21 @@
                 <div class="flex flex-column basis-1/3">
                     <div class="flex align-items-center">
                         <app-equipments-card
-                            [count]="inventory.dataCenterCount"
+                            [count]="inventory().dataCenterCount"
                             [type]="'datacenter'"
                         ></app-equipments-card>
                         <app-equipments-card
-                            [count]="inventory.physicalEquipmentCount"
+                            [count]="inventory().physicalEquipmentCount"
                             [type]="'physical'"
                         ></app-equipments-card>
                     </div>
                     <div class="flex align-items-center">
                         <app-equipments-card
-                            [count]="inventory.virtualEquipmentCount"
+                            [count]="inventory().virtualEquipmentCount"
                             [type]="'virtual'"
                         ></app-equipments-card>
                         <app-equipments-card
-                            [count]="inventory.applicationCount"
+                            [count]="inventory().applicationCount"
                             [type]="'app'"
                         ></app-equipments-card>
                     </div>
@@ -146,16 +148,17 @@
                         }
                     </div>
                     <ul aria-labelledby="loading-history" style="padding: 0">
-                        @for (task of taskLoading; track task) {
+                        @for (
+                            task of taskLoading();
+                            track `${task.id}-${task.progressPercentage}-${task.creationDate}`
+                        ) {
                             <li class="loading-data-container">
                                 <app-batch-status
                                     [batchStatusCode]="task.status"
                                     [createTime]="task.creationDate"
                                     [batchLoading]="true"
                                     [type]="'loading'"
-                                    [inventoryId]="inventory.id"
-                                    [inventoryName]="inventory.name"
-                                    [fileUrl]="task.resultFileUrl"
+                                    [inventoryId]="inventory().id"
                                     [taskId]="task.id.toString()"
                                 ></app-batch-status>
                             </li>
@@ -177,12 +180,12 @@
                                 (onClick)="launchEstimate($event)"
                                 id="launch-estimate"
                             >
-                                @if (inventory.lastTaskEvaluating) {
+                                @if (inventory().lastTaskEvaluating) {
                                     <span>
                                         {{ "inventories.update-estimate" | translate }}
                                     </span>
                                 }
-                                @if (!inventory.lastTaskEvaluating) {
+                                @if (!inventory().lastTaskEvaluating) {
                                     <span>
                                         {{ "inventories.launch-estimate" | translate }}
                                     </span>
@@ -190,7 +193,7 @@
                             </p-button>
                         }
                     </div>
-                    @if (inventory.lastTaskEvaluating) {
+                    @if (inventory().lastTaskEvaluating) {
                         <div>
                             @if (isTaskRunning()) {
                                 <div
@@ -198,8 +201,8 @@
                                         'common.accessibility.updateInProgress'
                                             | translate
                                                 : {
-                                                      value: inventory.lastTaskEvaluating
-                                                          .progress,
+                                                      value: inventory()
+                                                          .lastTaskEvaluating?.progress!,
                                                   }
                                     "
                                 >
@@ -207,29 +210,31 @@
                                         {{
                                             "inventories.evaluation_batch_status." +
                                                 batchStatusMapping[
-                                                    inventory.lastTaskEvaluating.status
+                                                    inventory().lastTaskEvaluating
+                                                        ?.status!
                                                 ] | translate
                                         }}
-                                        {{ inventory.lastTaskEvaluating.progress }}%
+                                        {{ inventory().lastTaskEvaluating?.progress }}%
                                     </div>
                                     <p-progressBar
-                                        [value]="inventory.lastTaskEvaluating.progress"
+                                        [value]="inventory().lastTaskEvaluating?.progress"
                                         [showValue]="false"
-                                        >{{ inventory.lastTaskEvaluating.progress }}
+                                        >{{ inventory().lastTaskEvaluating?.progress }}
                                     </p-progressBar>
                                 </div>
                             }
                             <ul aria-labelledby="estimate-history" class="p-0">
-                                @for (task of taskEvaluating; track task) {
+                                @for (
+                                    task of taskEvaluating();
+                                    track `${task.id}-${task.progressPercentage}-${task.creationDate}`
+                                ) {
                                     <li class="loading-data-container">
                                         <app-batch-status
                                             [batchStatusCode]="task.status"
                                             [createTime]="task.creationDate"
                                             [batchLoading]="true"
                                             [type]="'estimation'"
-                                            [inventoryId]="inventory.id"
-                                            [inventoryName]="inventory.name"
-                                            [fileUrl]="task.resultFileUrl"
+                                            [inventoryId]="inventory().id"
                                             [taskId]="task.id.toString()"
                                         ></app-batch-status>
                                     </li>
@@ -252,7 +257,7 @@
                             class="mb-1"
                             src="assets/images/icons/icon-bin.svg"
                             alt="{{ 'common.accessibility.delete' | translate }} {{
-                                inventory.name
+                                inventory().name
                             }}"
                         />
                         {{ "common.delete" | translate | uppercase }}
@@ -277,7 +282,10 @@
                             [ariaLabel]="
                                 'inventories.choose-criteria'
                                     | translate
-                                        : { inventoryName: (inventory.name | monthYear) }
+                                        : {
+                                              inventoryName:
+                                                  (inventory().name | monthYear),
+                                          }
                             "
                         >
                         </p-button>
@@ -291,7 +299,7 @@
                 [type]="'inventory'"
                 [organization]="organization"
                 [workspace]="workspace"
-                [inventory]="inventory"
+                [inventory]="inventory()"
                 [selectedCriteriaIS]="selectedCriteria"
                 (outSaveInventory)="saveInventory.emit($event)"
                 (outClose)="displayPopup = false"

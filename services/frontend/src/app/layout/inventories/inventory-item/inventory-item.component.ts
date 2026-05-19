@@ -7,10 +7,12 @@
  */
 import { AsyncPipe, UpperCasePipe } from "@angular/common";
 import {
+    ChangeDetectorRef,
     Component,
     computed,
     EventEmitter,
     inject,
+    input,
     Input,
     OnInit,
     Output,
@@ -30,7 +32,6 @@ import {
 import {
     Inventory,
     InventoryCriteriaRest,
-    TaskRest,
 } from "src/app/core/interfaces/inventory.interfaces";
 import { InventoryService } from "src/app/core/service/business/inventory.service";
 import { UserService } from "src/app/core/service/business/user.service";
@@ -51,23 +52,24 @@ import { EquipmentsCardComponent } from "../equipments-card/equipments-card.comp
     providers: [ConfirmationService, MessageService],
     standalone: true,
     imports: [
-    AccordionModule,
-    Button,
-    EquipmentsCardComponent,
-    BatchStatusComponent,
-    ProgressBarModule,
-    ConfirmPopupModule,
-    CriteriaPopupComponent,
-    MonthYearPipe,
-    AsyncPipe,
-    UpperCasePipe,
-    TranslatePipe
-],
+        AccordionModule,
+        Button,
+        EquipmentsCardComponent,
+        BatchStatusComponent,
+        ProgressBarModule,
+        ConfirmPopupModule,
+        CriteriaPopupComponent,
+        MonthYearPipe,
+        AsyncPipe,
+        UpperCasePipe,
+        TranslatePipe,
+    ],
 })
 export class InventoryItemComponent implements OnInit {
     private readonly global = inject(GlobalStoreService);
+    private readonly cdr = inject(ChangeDetectorRef);
 
-    @Input() inventory: Inventory = {} as Inventory;
+    inventory = input<Inventory>({} as Inventory);
     @Input() open: boolean = false;
     @Output() reloadInventoriesAndLoop: EventEmitter<number> = new EventEmitter();
     @Output() reloadInventoryAndLoop: EventEmitter<number> = new EventEmitter();
@@ -79,7 +81,7 @@ export class InventoryItemComponent implements OnInit {
     @Output() renewInventoryId = new EventEmitter<number>();
 
     showExpiryMessage = computed(() =>
-        shouldShowExpiryMessage(this.inventory.expiryDate ?? ""),
+        shouldShowExpiryMessage(this.inventory().expiryDate ?? ""),
     );
 
     batchStatusMapping: any = Constants.EVALUATION_BATCH_STATUS_MAPPING;
@@ -95,8 +97,12 @@ export class InventoryItemComponent implements OnInit {
         criteriaDs: [],
     };
 
-    taskLoading: TaskRest[] = [];
-    taskEvaluating: TaskRest[] = [];
+    taskLoading = computed(
+        () => this.inventory()?.tasks?.filter((t) => t?.type === "LOADING") ?? [],
+    );
+    taskEvaluating = computed(
+        () => this.inventory()?.tasks?.filter((t) => t?.type === "EVALUATING") ?? [],
+    );
 
     constructor(
         private readonly inventoryService: InventoryService,
@@ -121,32 +127,27 @@ export class InventoryItemComponent implements OnInit {
             this.workspace.criteriaIs = workspace.criteriaIs!;
             this.workspace.criteriaDs = workspace.criteriaDs!;
         });
-
-        if (this.inventory.tasks) {
-            this.taskLoading = this.inventory.tasks.filter((t) => t.type === "LOADING");
-            this.taskEvaluating = this.inventory.tasks.filter(
-                (t) => t.type === "EVALUATING",
-            );
-        }
     }
 
     isTaskRunning() {
-        if (!this.inventory.lastTaskEvaluating) return false;
+        if (!this.inventory().lastTaskEvaluating) return false;
         return Constants.EVALUATION_BATCH_RUNNING_STATUSES.includes(
-            this.inventory.lastTaskEvaluating.status,
+            this.inventory()?.lastTaskEvaluating?.status!,
         );
     }
 
     showEquipment = () => {
         return (
-            this.inventory.lastTaskEvaluating &&
-            (this.inventory.physicalEquipmentCount > 0 ||
-                this.inventory.virtualEquipmentCount > 0)
+            this.inventory().lastTaskEvaluating &&
+            (this.inventory().physicalEquipmentCount > 0 ||
+                this.inventory().virtualEquipmentCount > 0)
         );
     };
 
     showApplication = () => {
-        return this.inventory.lastTaskEvaluating && this.inventory.applicationCount > 0;
+        return (
+            this.inventory().lastTaskEvaluating && this.inventory().applicationCount > 0
+        );
     };
 
     confirmDelete(event: Event) {
@@ -155,17 +156,17 @@ export class InventoryItemComponent implements OnInit {
             acceptLabel: this.translate.instant("common.yes"),
             rejectLabel: this.translate.instant("common.no"),
             message: `${this.translate.instant("inventories.popup.delete-question")} ${
-                this.inventory.name
+                this.inventory().name
             } ?
             ${this.translate.instant("inventories.popup.delete-text")}`,
             icon: "pi pi-exclamation-triangle",
             accept: async () => {
                 this.global.setLoading(true);
                 await lastValueFrom(
-                    this.footprintService.deleteIndicators(this.inventory.id),
+                    this.footprintService.deleteIndicators(this.inventory().id),
                 );
                 await lastValueFrom(
-                    this.inventoryService.deleteInventory(this.inventory.id),
+                    this.inventoryService.deleteInventory(this.inventory().id),
                 );
                 this.reloadInventoriesAndLoop.emit();
                 this.global.setLoading(false);
@@ -174,10 +175,10 @@ export class InventoryItemComponent implements OnInit {
     }
 
     redirectFootprint(redirectTo: string): void {
-        if (!this.inventory.lastTaskEvaluating) return;
+        if (!this.inventory().lastTaskEvaluating) return;
 
         const defaultCriteria = Object.keys(this.global?.criteriaList())?.slice(0, 5);
-        const criteria = this.inventory.lastTaskEvaluating?.criteria ?? defaultCriteria;
+        const criteria = this.inventory().lastTaskEvaluating?.criteria ?? defaultCriteria;
         const isSingleCriteria = criteria.length === 1;
         const criteriaUri = isSingleCriteria ? criteria[0] : Constants.MUTLI_CRITERIA;
 
@@ -186,14 +187,14 @@ export class InventoryItemComponent implements OnInit {
         switch (redirectTo) {
             case "equipment":
                 if (
-                    this.inventory.physicalEquipmentCount > 0 ||
-                    this.inventory.virtualEquipmentCount > 0
+                    this.inventory().physicalEquipmentCount > 0 ||
+                    this.inventory().virtualEquipmentCount > 0
                 ) {
                     uri = criteriaUri;
                 }
                 break;
             case "application":
-                if (this.inventory.applicationCount > 0) {
+                if (this.inventory().applicationCount > 0) {
                     uri = `application/${criteriaUri}`;
                 }
                 break;
@@ -201,7 +202,7 @@ export class InventoryItemComponent implements OnInit {
 
         if (uri === undefined) return;
 
-        this.router.navigate([`${this.inventory.id}/footprint/${uri}`], {
+        this.router.navigate([`${this.inventory().id}/footprint/${uri}`], {
             relativeTo: this.route,
         });
     }
@@ -215,11 +216,11 @@ export class InventoryItemComponent implements OnInit {
             icon: "pi pi-exclamation-triangle",
             accept: async () => {
                 await lastValueFrom(
-                    this.evaluationService.launchEvaluating(this.inventory.id),
+                    this.evaluationService.launchEvaluating(this.inventory().id),
                 );
 
                 await TimeUtils.delay(500);
-                this.reloadInventoryAndLoop.emit(this.inventory.id);
+                this.reloadInventoryAndLoop.emit(this.inventory().id);
             },
         });
     }
@@ -227,26 +228,26 @@ export class InventoryItemComponent implements OnInit {
     isEstimationDisabled() {
         // If there is no physical equipement and no virtual equipment, disable button
         if (
-            this.inventory.physicalEquipmentCount <= 0 &&
-            this.inventory.virtualEquipmentCount <= 0
+            this.inventory().physicalEquipmentCount <= 0 &&
+            this.inventory().virtualEquipmentCount <= 0
         )
             return true;
 
         // If there is already an loading running
-        if (this.inventory.lastTaskLoading) {
+        if (this.inventory().lastTaskLoading) {
             if (
                 Constants.EVALUATION_BATCH_RUNNING_STATUSES.includes(
-                    this.inventory.lastTaskLoading?.status,
+                    this.inventory().lastTaskLoading?.status!,
                 )
             )
                 return true;
         }
 
         // If there is already an evaluation running
-        if (this.inventory.lastTaskEvaluating) {
+        if (this.inventory().lastTaskEvaluating) {
             if (
                 Constants.EVALUATION_BATCH_RUNNING_STATUSES.includes(
-                    this.inventory.lastTaskEvaluating?.status,
+                    this.inventory().lastTaskEvaluating?.status!,
                 )
             )
                 return true;
@@ -257,11 +258,11 @@ export class InventoryItemComponent implements OnInit {
     }
 
     openSidebarUploadFile() {
-        this.openSidebarForUploadInventory.emit(this.inventory.id);
+        this.openSidebarForUploadInventory.emit(this.inventory().id);
     }
 
     openSidebarNote() {
-        this.openSidebarForNote.emit(this.inventory.id);
+        this.openSidebarForNote.emit(this.inventory().id);
     }
 
     async onSelectedChange(id: number, event: any) {
@@ -280,7 +281,7 @@ export class InventoryItemComponent implements OnInit {
     displayPopupFct() {
         const defaultCriteria = Object.keys(this.global.criteriaList()).slice(0, 5);
         this.selectedCriteria =
-            this.inventory.criteria ??
+            this.inventory().criteria ??
             this.workspace?.criteriaIs ??
             this.organization?.criteria ??
             defaultCriteria;
