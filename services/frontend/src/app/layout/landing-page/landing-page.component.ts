@@ -7,16 +7,19 @@
  */
 
 import {
+    AfterViewInit,
     Component,
     computed,
     DestroyRef,
     ElementRef,
     inject,
+    NgZone,
     OnInit,
     ViewChild,
 } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { RouterModule } from "@angular/router";
+import { take } from "rxjs";
 import { WorkspaceService } from "src/app/core/service/business/workspace.service";
 import { SharedModule } from "src/app/core/shared/shared.module";
 import { GlobalStoreService } from "src/app/core/store/global.store";
@@ -29,8 +32,9 @@ import { TopHeaderComponent } from "../header/header-siderbar/top-header/top-hea
     standalone: true,
     imports: [RouterModule, SharedModule, TopHeaderComponent, LeftSidebarComponent],
 })
-export class LandingPageComponent implements OnInit {
+export class LandingPageComponent implements OnInit, AfterViewInit {
     private readonly globalStore = inject(GlobalStoreService);
+    private readonly ngZone = inject(NgZone);
     private readonly destroyRef = inject(DestroyRef);
     private readonly workspaceService = inject(WorkspaceService);
     protected spaceSidebarVisible: boolean = false;
@@ -38,6 +42,7 @@ export class LandingPageComponent implements OnInit {
     isMobile = computed(() => this.globalStore.mobileView());
 
     @ViewChild("mainContent") mainContent!: ElementRef;
+    @ViewChild("skipButton") skipButton!: ElementRef<HTMLButtonElement>;
 
     ngOnInit() {
         this.workspaceService
@@ -46,6 +51,14 @@ export class LandingPageComponent implements OnInit {
             .subscribe((isOpen: boolean) => {
                 this.spaceSidebarVisible = isOpen;
             });
+    }
+
+    ngAfterViewInit(): void {
+        this.ngZone.onStable.pipe(take(1)).subscribe(() => {
+            requestAnimationFrame(() => {
+                this.skipButton?.nativeElement?.focus();
+            });
+        });
     }
 
     focusFirstElement() {
