@@ -49,6 +49,8 @@
     --p-accordion-header-color: #000000de;
     --p-accordion-header-active-color: #000000de;
     --p-button-label-font-weight: 700;
+    --p-accordion-content-padding: 1rem 1.5rem;
+    --p-button-label-font-weight: 800;
 }
 * {
     box-sizing: border-box;
@@ -815,6 +817,7 @@ p-chips.p-chips-clearable .p-chips-clear-icon {
 */
 
 .p-select {
+    display: flex;
     background: #fff;
     border: 1px solid rgba(0, 0, 0, 0.38);
     transition:
@@ -873,10 +876,6 @@ p-chips.p-chips-clearable .p-chips-clear-icon {
 .p-select .p-select-clear-icon {
     color: rgba(0, 0, 0, 0.6);
     right: 2.357rem;
-}
-
-.p-select .p-select-dropdown-icon.p-icon {
-    margin-top: 10px;
 }
 
 /* Overlay Panel */
@@ -2030,17 +2029,20 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
     background: rgba(0, 0, 0, 0.16);
     color: rgba(0, 0, 0, 0.6);
 }
-.p-button.p-button-text {
+.p-button.p-button-text,
+.p-confirmpopup-reject-button > .p-button {
     background-color: transparent;
     color: var(--tertiary-color);
     border-color: transparent;
 }
-.p-button.p-button-text:enabled:hover {
+.p-button.p-button-text:enabled:hover,
+.p-confirmpopup-reject-button > .p-button:enabled:hover {
     background: rgba(0, 186, 0, 0.1);
     color: var(--tertiary-color);
     border-color: transparent;
 }
-.p-button.p-button-text:enabled:active {
+.p-button.p-button-text:enabled:active,
+.p-confirmpopup-reject-button > .p-button:enabled:active {
     background: rgba(0, 186, 0, 0.16);
     color: var(--tertiary-color);
     border-color: transparent;
@@ -4980,7 +4982,6 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
     background: #fff;
     color: rgba(0, 0, 0, 0.87);
     padding: 1rem 1.5rem;
-    text-align: right;
     border-bottom-right-radius: 4px;
     border-bottom-left-radius: 4px;
 }
@@ -5642,7 +5643,7 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
 }
 // menubbar
 .p-menubar {
-    margin: 10px;
+    margin: 10px 0;
     padding: 0;
     background: transparent;
     color: rgba(0, 0, 0, 0.87);
@@ -9249,4 +9250,8 @@ app-impact-button {
     border-bottom: 3px solid #22c55e;
     color: #111827;
     font-weight: 500;
+}
+
+.item-impact.p-select .p-select-label-empty {
+    opacity: unset;
 }

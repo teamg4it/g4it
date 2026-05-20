@@ -75,7 +75,7 @@ p {
 }
 
 main {
-    padding: 1.5rem 3rem;
+    padding: 1.5rem 2rem;
     background-color: var(--light-grey-color);
     overflow-y: clip;
     height: calc(100vh - 70px);
@@ -1401,7 +1401,7 @@ app-useful-information {
 }
 
 .manage-version-table {
-    .p-checkbox.p-checkbox-disabled .p-checkbox-box {
+    .p-checkbox.p-disabled .p-checkbox-box {
         background-color: #e0e0e0;
         border-color: #bdbdbd;
         opacity: 0.75;

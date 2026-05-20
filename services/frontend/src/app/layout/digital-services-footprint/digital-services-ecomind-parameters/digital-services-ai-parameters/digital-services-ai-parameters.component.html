@@ -106,7 +106,7 @@
                         formControlName="isInference"
                         (onChange)="onCheckboxChange('isInference')"
                     ></p-checkbox>
-                    <label for="inference">{{
+                    <label for="inference" class="ml-2">{{
                         "digital-services-ai-parameter.inference" | translate
                     }}</label>
                 </div>
@@ -118,8 +118,9 @@
                         binary="true"
                         formControlName="isFinetuning"
                         (onChange)="onCheckboxChange('isFinetuning')"
+                        [disabled]="true"
                     ></p-checkbox>
-                    <label for="finetuning">{{
+                    <label for="finetuning" class="ml-2 p-disabled">{{
                         "digital-services-ai-parameter.fintuning" | translate
                     }}</label>
                 </div>

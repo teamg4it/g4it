@@ -49,6 +49,7 @@
                     name="endpointDropdown"
                     [(ngModel)]="selectedEndpoint"
                     styleClass="w-25rem h-3rem"
+                    class="item-impact"
                     placeholder="{{
                         'administration.uploadcsv.workspace-endpoint-placeholder'
                             | translate
@@ -85,13 +86,18 @@
 
                 <p-fileUpload
                     #fileUpload
-                    styleClass="bg-black text-2xs letter-spacing-2 w-18rem mx-2 h-3rem uppercase"
+                    class="mx-3"
+                    [styleClass]="
+                        file?.name ? 'custom-file-upload has-file' : 'custom-file-upload'
+                    "
+                    [chooseIcon]="file?.name ? 'pi pi-upload' : 'pi pi-plus'"
                     id="upload-file"
                     mode="basic"
-                    chooseLabel="{{ fileUploadText }}"
+                    [chooseLabel]="file?.name || fileUploadText"
                     [ariaLabel]="fileUploadText"
                     accept=".csv"
                     [customUpload]="true"
+                    [attr.title]="file?.name || fileUploadText"
                     (onSelect)="onSelect($event)"
                 >
                 </p-fileUpload>

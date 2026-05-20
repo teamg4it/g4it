@@ -30,9 +30,11 @@
         [fullScreen]="isZoom125()"
         styleClass="drawer-lg"
     >
-        <app-digital-services-import
-            (sidebarVisibleChange)="importSidebarVisible = $event"
-        />
+        <ng-template #headless>
+            <app-digital-services-import
+                (sidebarVisibleChange)="importSidebarVisible = $event"
+            />
+        </ng-template>
     </p-drawer>
 }
 
