@@ -13,7 +13,7 @@ const titleResolveObject = {
 export const shareDsRoutes: Routes = [
     {
         path: "",
-        loadChildren: () =>
+        loadComponent: () =>
             import("./share-digital-service.component").then(
                 (m) => m.ShareDigitalServiceComponent,
             ),
@@ -25,7 +25,7 @@ export const shareDsRoutes: Routes = [
             },
             {
                 path: "dashboard",
-                loadChildren: () =>
+                loadComponent: () =>
                     import(
                         "../digital-services-footprint/digital-services-footprint-dashboard/digital-services-footprint-dashboard.component"
                     ).then((m) => m.DigitalServicesFootprintDashboardComponent),
@@ -33,7 +33,7 @@ export const shareDsRoutes: Routes = [
             },
             {
                 path: "resources",
-                loadChildren: () =>
+                loadComponent: () =>
                     import(
                         "../digital-services-footprint/digital-services-resources/digital-services-resources.component"
                     ).then((m) => m.DigitalServicesResourcesComponent),

@@ -5,7 +5,7 @@ import { Constants } from "src/constants";
 export const appRoutes: Routes = [
     {
         path: "",
-        loadChildren: () =>
+        loadComponent: () =>
             import("./share-landing-page.component").then(
                 (m) => m.ShareLandingPageComponent,
             ),
