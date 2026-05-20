@@ -156,47 +156,28 @@
                         {{ "welcome-page.eco-mind-ai.description" | translate }}
                     </p>
                     <div class="p-card-footer p-0">
-                        @if (
-                            (userService.isAllowedEcoMindAiRead$ | async) &&
-                            isEcoMindEnabledForCurrentOrganization &&
-                            isEcoMindModuleEnabled
-                        ) {
-                            <p-button
-                                (onClick)="ecoMindAi()"
-                                icon="pi pi-arrow-circle-right"
-                                iconPos="left"
-                                [styleClass]="
-                                    'uppercase digital-service-button navigation-button mt-5 white-space-nowrap'
-                                "
-                                [label]="
-                                    'welcome-page.eco-mind-ai.go-to-service-button'
-                                        | translate
-                                        | uppercase
-                                "
-                                [ariaLabel]="
-                                    'welcome-page.eco-mind-ai.go-to-service-button'
-                                        | translate
-                                "
-                            ></p-button>
-                        } @else {
-                            <p-button
-                                (onClick)="requestAccessOfEcoMindAi()"
-                                icon="pi pi-arrow-circle-right"
-                                iconPos="left"
-                                [styleClass]="
-                                    'cancel-creation-button request-access-button uppercase mt-5 white-space-nowrap'
-                                "
-                                [label]="
-                                    'welcome-page.eco-mind-ai.request-access-button'
-                                        | translate
-                                        | uppercase
-                                "
-                                [ariaLabel]="
-                                    'welcome-page.eco-mind-ai.request-access-button'
-                                        | translate
-                                "
-                            ></p-button>
-                        }
+                        <p-button
+                            (onClick)="
+                                isAllowedEcoMindAi()
+                                    ? ecoMindAi()
+                                    : requestAccessOfEcoMindAi()
+                            "
+                            icon="pi pi-arrow-circle-right"
+                            iconPos="left"
+                            [styleClass]="
+                                isAllowedEcoMindAi()
+                                    ? 'uppercase digital-service-button navigation-button mt-5 white-space-nowrap'
+                                    : 'cancel-creation-button request-access-button uppercase mt-5 white-space-nowrap'
+                            "
+                            [label]="
+                                (isAllowedEcoMindAi()
+                                    ? 'welcome-page.eco-mind-ai.go-to-service-button'
+                                    : 'welcome-page.eco-mind-ai.request-access-button'
+                                )
+                                    | translate
+                                    | uppercase
+                            "
+                        ></p-button>
                     </div>
                 </p-card>
             </div>

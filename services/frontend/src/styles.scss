@@ -859,10 +859,22 @@ main {
 
 /* Previous Next paginator css */
 
+.p-paginator .p-paginator-prev:after {
+    content: "<-";
+    padding: 5px;
+    font-size: 1rem;
+}
+
+.p-paginator .p-paginator-next:after {
+    content: "->";
+    padding: 5px;
+    font-size: 1rem;
+}
+
 .p-paginator .p-paginator-first,
 .p-paginator .p-paginator-last,
-.p-paginator .p-paginator-prev .p-paginator-icon,
-.p-paginator .p-paginator-next .p-paginator-icon {
+.p-paginator .p-paginator-prev svg,
+.p-paginator .p-paginator-next svg {
     display: none;
 }
 
@@ -965,12 +977,16 @@ app-inventory-item {
     transform: rotate(-270deg);
 }
 
-.p-accordion .p-accordion-header:not(.p-disabled) .p-accordion-header-link:focus {
+.p-accordion .p-accordionheader:not(.p-disabled):focus {
     outline: 2px solid black;
 }
 
 .p-accordion {
     padding: 10px;
+}
+
+.p-accordionpanel {
+    margin: 5px;
 }
 
 // Global styles to ensure toggle icon is on the left for all accordions
@@ -2007,4 +2023,16 @@ app-select-file {
 
 .p-menu-item:not(.p-disabled) .p-menu-item-content:hover {
     background: none;
+}
+
+app-base-filter-sidebar,
+.p-drawer {
+    .p-accordionpanel .p-accordionheader,
+    .p-accordioncontent-content {
+        background: transparent;
+    }
+}
+
+p-sorticon {
+    margin-left: 5px;
 }

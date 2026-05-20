@@ -51,6 +51,8 @@
     --p-button-label-font-weight: 700;
     --p-accordion-content-padding: 1rem 1.5rem;
     --p-button-label-font-weight: 800;
+    --p-accordion-content-color: #000000de;
+    --p-datatable-sort-icon-size: 13px;
 }
 * {
     box-sizing: border-box;
@@ -77,10 +79,6 @@
 }
 .pi {
     font-size: 1rem;
-}
-.p-icon {
-    width: 1rem;
-    height: 1rem;
 }
 .p-link {
     font-size: 1rem;
@@ -2064,18 +2062,6 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
 .p-button .p-button-label {
     transition-duration: 0.2s;
 }
-.p-button .p-button-icon-left {
-    margin-right: 0.5rem;
-}
-.p-button .p-button-icon-right {
-    margin-left: 0.5rem;
-}
-.p-button .p-button-icon-bottom {
-    margin-top: 0.5rem;
-}
-.p-button .p-button-icon-top {
-    margin-bottom: 0.5rem;
-}
 .p-button .p-badge {
     margin-left: 0.5rem;
     min-width: 1rem;
@@ -3008,7 +2994,7 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
     border-width: 0 0 1px 0;
     border-radius: 0;
 }
-.p-datatable .p-paginator-bottom {
+.p-datatable .p-paginator {
     border-width: 0 0 1px 0;
     border-radius: 0 0 6px 6px;
     box-shadow:
@@ -4006,22 +3992,27 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
 }
 .p-paginator .p-paginator-pages .p-paginator-page {
     border: 0 none;
-    background: var(--light-green-color);
-    color: var(--lightest-gray-color);
+    background: transparent;
+    color: var(--grey-text-color);
     min-width: 2rem;
     height: 2rem;
     margin: 0.143rem;
     transition: none;
 }
+
+.p-paginator .p-paginator-pages .p-paginator-page.p-paginator-page-selected {
+    background: var(--light-green-color);
+    color: var(--lightest-gray-color);
+}
+.p-paginator .p-paginator-pages .p-paginator-page:not(.p-paginator-page-selected):hover {
+    background: #0000000a;
+    border-color: transparent;
+    color: #0009;
+}
 .p-paginator .p-paginator-pages .p-paginator-page.p-highlight,
 .p-paginator .p-paginator-element:focus.p-highlight {
     background: var(--tertiary-color);
     color: var(--lightest-gray-color);
-}
-.p-paginator .p-paginator-pages .p-paginator-page:not(.p-highlight):hover {
-    background: var(--tertiary-color);
-    border-color: transparent;
-    color: var(--light-grey-color);
 }
 .p-picklist .p-picklist-buttons {
     padding: 1rem;
@@ -5046,7 +5037,7 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
 .p-overlaypanel.p-overlaypanel-flipped:before {
     border-top-color: #fff;
 }
-.p-sidebar {
+.p-drawer {
     background: var(--light-grey-color);
     color: rgba(0, 0, 0, 0.87);
     border: 0 none;
