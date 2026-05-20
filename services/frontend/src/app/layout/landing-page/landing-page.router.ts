@@ -26,15 +26,17 @@ export const appRoutes: Routes = [
     {
         path: "administration",
         loadChildren: () =>
-            import("../administration/administration.module").then(
-                (modules) => modules.AdministrationModule,
+            import("../administration/administration.router").then(
+                (m) => m.ADMINISTRATION_ROUTES,
             ),
         canActivate,
     },
     {
         path: "organizations/:organization/workspaces/:workspace",
         loadChildren: () =>
-            import("../layout.module").then((modules) => modules.LayoutModule),
+            import("../layout.router").then(
+                (m) => m.LAYOUT_ROUTES,
+            ),
         canActivate,
     },
     {
