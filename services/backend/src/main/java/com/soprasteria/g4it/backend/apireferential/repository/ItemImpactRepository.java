@@ -74,7 +74,7 @@ public interface ItemImpactRepository extends JpaRepository<ItemImpact, Long> {
     @Query("""
             SELECT cf FROM #{#entityName} cf WHERE
             cf.criterion = ?1 AND
-                                                                                  cf.lifecycleStep = ?2 AND
+                                                                                 cf.lifecycleStep = ?2 AND
                                                                                   cf.name = ?3 AND
                                                                                   cf.category = ?4 AND
                                                                                   cf.location = ?5 AND
