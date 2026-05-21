@@ -345,6 +345,7 @@ public class EvaluatingService {
                     taskRepository.deleteTask(task.getId());
                     exportService.cleanExport(task.getId(), organization, String.valueOf(workspaceId));
                 });
+
     }
 
 
