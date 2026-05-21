@@ -205,22 +205,30 @@ public class ReferentialService {
 
     public List<ItemImpactRest> getItemImpactsForWorkspace(final String criterion, final String lifecycleStep, final String name,
                                                final String location, final String organization,Long workspaceId) {
-        List<ItemImpactRest> itemImpacts = new ArrayList<>(referentialGetService.getItemImpactsForWorkspace(criterion, lifecycleStep,
-                name, null, null, organization,workspaceId));
+        List<ItemImpactRest> itemImpacts = referentialGetService.getItemImpactsForWorkspace(
+                criterion, lifecycleStep, name, null, null, organization, workspaceId);
 
-        if (itemImpacts.isEmpty()) {
-            itemImpacts = new ArrayList<>(referentialGetService.getItemImpacts(criterion, lifecycleStep,
-                    name, null, null, null));
+        if (itemImpacts == null || itemImpacts.isEmpty()) {
+            itemImpacts = referentialGetService.getItemImpacts(
+                    criterion, lifecycleStep, name, null, null, null);
         }
 
-        List<ItemImpactRest> electricityMixImpact = new ArrayList<>(referentialGetService.getItemImpactsForWorkspace(criterion, null, null, location, "electricity-mix", organization,workspaceId));
-        if (electricityMixImpact.isEmpty()) {
-            electricityMixImpact = new ArrayList<>(referentialGetService.getItemImpacts(criterion, null, null, location, "electricity-mix", null));
+        List<ItemImpactRest> electricityMixImpact = referentialGetService.getItemImpactsForWorkspace(
+                criterion, null, null, location, "electricity-mix", organization, workspaceId);
+
+        if (electricityMixImpact == null || electricityMixImpact.isEmpty()) {
+            electricityMixImpact = referentialGetService.getItemImpacts(
+                    criterion, null, null, location, "electricity-mix", null);
         }
 
-        itemImpacts.addAll(electricityMixImpact);
+        if (electricityMixImpact != null && !electricityMixImpact.isEmpty()) {
+            if (itemImpacts == null) {
+                itemImpacts = new ArrayList<>();
+            }
+            itemImpacts.addAll(electricityMixImpact);
+        }
 
-        return itemImpacts;
+        return itemImpacts != null ? itemImpacts : List.of();
     }
 }
 

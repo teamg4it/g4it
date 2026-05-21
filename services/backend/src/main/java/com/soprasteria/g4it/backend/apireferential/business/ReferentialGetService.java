@@ -181,10 +181,6 @@ public class ReferentialGetService {
                                                String category, String organization,Long workspaceId) {
         List<ItemImpact> itemImpacts = itemImpactRepository.findByCriterionAndLifecycleStepAndNameAndCategoryAndLocationAndWorkspaceId(
                 StringUtils.kebabToSnakeCase(criterion), LifecycleStepUtils.get(lifecycleStep, lifecycleStep), name, category, location,workspaceId);
-        if(itemImpacts == null || itemImpacts.isEmpty()) {
-            itemImpacts = itemImpactRepository.findByCriterionAndLifecycleStepAndNameAndCategoryAndLocationAndOrganization(
-                    StringUtils.kebabToSnakeCase(criterion), LifecycleStepUtils.get(lifecycleStep, lifecycleStep), name, category, location, organization);
-        }
             return refRestMapper.toItemImpactRest(itemImpacts);
     }
 
