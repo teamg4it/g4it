@@ -12,6 +12,7 @@ import com.soprasteria.g4it.backend.apiindicator.utils.LifecycleStepUtils;
 import com.soprasteria.g4it.backend.apireferential.mapper.ReferentialMapper;
 import com.soprasteria.g4it.backend.apireferential.modeldb.ItemImpact;
 import com.soprasteria.g4it.backend.apireferential.modeldb.ItemType;
+import com.soprasteria.g4it.backend.apireferential.modeldb.MatchingItem;
 import com.soprasteria.g4it.backend.apireferential.repository.*;
 import com.soprasteria.g4it.backend.common.utils.StringUtils;
 import com.soprasteria.g4it.backend.server.gen.api.dto.*;
@@ -21,8 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * Referential get service
@@ -150,38 +150,139 @@ public class ReferentialGetService {
         return itemImpactRepository.findByCategoryAndWorkspaceId("electricity-mix",null);
     }
 
-    public List<ItemTypeRest> getItemTypesForWorkspace(String type, Long workspaceId, String organization) {
+    public List<ItemTypeRest> getItemTypesForWorkspace(String type, Long workspaceId, Map<String, List<ItemTypeRest>> itemTypeMap) {
 
         // get all itemTypes
         if (type == null) {
-            List<ItemType> items = itemTypeRepository.findByWorkspaceId(workspaceId);
-            if (items == null || items.isEmpty()) {
-                return refRestMapper.toItemTypeRest(itemTypeRepository.findByOrganization(organization));
-            } else {
-                return refRestMapper.toItemTypeRest(items);
-            }
+            return itemTypeMap.values().stream()
+                    .flatMap(Collection::stream)
+                    .toList();
         }else{
-            Optional<ItemType> itemType = itemTypeRepository.findByTypeAndWorkspaceId(type, workspaceId);
-            if(itemType.isPresent()){
-                return refRestMapper.toItemTypeRest(List.of(itemType.get()));
+            String key = buildTypeKey(type, workspaceId);
+            if (itemTypeMap != null && itemTypeMap.containsKey(key)) {
+                return itemTypeMap.get(key);
             }
-            return refRestMapper.toItemTypeRest(itemTypeRepository.findByTypeAndOrganizationAndWorkspaceId(type,organization,workspaceId).map(List::of).orElseGet(List::of));
+            return List.of();
         }
     }
 
-    public MatchingItemRest getMatchingItemForWorkspace(String model, String organization, Long workspaceId) {
-        return matchingItemRepository.findByItemSourceAndWorkspaceId(model, workspaceId)
-                .map(item -> refRestMapper.toMatchingItemRest(item))
-                .orElseGet(() -> matchingItemRepository.findByItemSourceAndOrganization(model, organization)
-                        .map(item -> refRestMapper.toMatchingItemRest(item)).orElse(null));
+    public MatchingItemRest getMatchingItemForWorkspace(String model, Long workspaceId,Map<String, MatchingItemRest> matchingItemMap) {
+        String key = buildModelKey(model, workspaceId);
+        if (matchingItemMap != null && matchingItemMap.containsKey(key)) {
+            return matchingItemMap.get(key);
+        }
+        return null;
     }
 
     public List<ItemImpactRest> getItemImpactsForWorkspace(String criterion, String lifecycleStep,
                                                String name, String location,
-                                               String category, String organization,Long workspaceId) {
-        List<ItemImpact> itemImpacts = itemImpactRepository.findByCriterionAndLifecycleStepAndNameAndCategoryAndLocationAndWorkspaceId(
-                StringUtils.kebabToSnakeCase(criterion), LifecycleStepUtils.get(lifecycleStep, lifecycleStep), name, category, location,workspaceId);
-            return refRestMapper.toItemImpactRest(itemImpacts);
+                                               String category, Long workspaceId,Map<String, List<ItemImpactRest>> itemImpactMap) {
+
+        String key = buildImpactKey(
+                StringUtils.kebabToSnakeCase(criterion),
+                LifecycleStepUtils.get(lifecycleStep, lifecycleStep),
+                name,
+                location,
+                category,
+                workspaceId
+        );
+        // Assuming you have a pre-fetched map of item impacts for the workspace
+         if (itemImpactMap != null && itemImpactMap.containsKey(key)) {
+             return itemImpactMap.get(key);
+         }
+        return List.of();
+    }
+
+    public Map<String, MatchingItemRest> bulkGetMatchingItemsForWorkspace(Set<String> models, Long workspaceId) {
+        List<MatchingItem> items = matchingItemRepository.findByItemSourceInAndWorkspaceId(models, workspaceId);
+        Map<String, MatchingItemRest> map = new HashMap<>();
+        for (MatchingItem item : items) {
+            String key = buildModelKey(item.getItemSource(), workspaceId);
+            map.put(key, refRestMapper.toMatchingItemRest(item));
+        }
+        return map;
+    }
+
+    public Map<String, List<ItemTypeRest>> bulkGetItemTypesForWorkspace(Set<String> types, Long workspaceId) {
+        List<ItemType> items = itemTypeRepository.findByTypeInAndWorkspaceId(types, workspaceId);
+        Map<String, List<ItemTypeRest>> map = new HashMap<>();
+        for (ItemType item : items) {
+            String key = buildTypeKey(item.getType(), workspaceId);
+            map.put(key, refRestMapper.toItemTypeRest(List.of(item)));
+        }
+        return map;
+    }
+
+    public Map<String, List<ItemImpactRest>> bulkGetAllItemImpactsForWorkspace(
+            Set<String> criteria,
+            Set<String> lifecycleSteps,
+            Set<String> locations,
+            Long workspaceId) {
+        Map<String, List<ItemImpactRest>> generalImpacts = bulkGetItemImpactsForWorkspace(criteria, lifecycleSteps, workspaceId);
+        Map<String, List<ItemImpactRest>> electricityMixImpacts = bulkGetItemImpactsElectricityMixForWorkspace(criteria, locations, workspaceId);
+
+        Map<String, List<ItemImpactRest>> result = new HashMap<>(generalImpacts);
+        for (Map.Entry<String, List<ItemImpactRest>> entry : electricityMixImpacts.entrySet()) {
+            result.merge(entry.getKey(), entry.getValue(), (list1, list2) -> {
+                List<ItemImpactRest> merged = new ArrayList<>(list1);
+                merged.addAll(list2);
+                return merged;
+            });
+        }
+        return result;
+    }
+
+    public Map<String, List<ItemImpactRest>> bulkGetItemImpactsForWorkspace(
+            Set<String> criteria,
+            Set<String> lifecycleSteps,
+            Long workspaceId) {
+        List<ItemImpact> itemImpactList = itemImpactRepository.findByCriterionInAndLifecycleStepInAndCategoryAndLocationInAndWorkspaceId(
+                criteria, lifecycleSteps, null, null, workspaceId);
+        Map<String, List<ItemImpactRest>> map = new HashMap<>();
+        for (ItemImpact impact : itemImpactList) {
+            String key = buildImpactKey(
+                    impact.getCriterion(),
+                    impact.getLifecycleStep(),
+                    impact.getName(),
+                    impact.getLocation(),
+                    impact.getCategory(),
+                    workspaceId
+            );
+            map.put(key, refRestMapper.toItemImpactRest(List.of(impact)));
+        }
+        return map;
+    }
+    public Map<String, List<ItemImpactRest>> bulkGetItemImpactsElectricityMixForWorkspace(
+            Set<String> criteria,
+            Set<String> locations,
+            Long workspaceId) {
+        List<ItemImpact> electricityMixImpact = itemImpactRepository.findByCriterionInAndLifecycleStepInAndCategoryAndLocationInAndWorkspaceId(
+                criteria, null, "electricity-mix", locations, workspaceId);
+        Map<String, List<ItemImpactRest>> map = new HashMap<>();
+        for (ItemImpact impact : electricityMixImpact) {
+            String key = buildImpactKey(
+                    impact.getCriterion(),
+                    impact.getLifecycleStep(),
+                    impact.getName(),
+                    impact.getLocation(),
+                    impact.getCategory(),
+                    workspaceId
+            );
+            map.put(key, refRestMapper.toItemImpactRest(List.of(impact)));
+        }
+        return map;
+    }
+
+
+
+    private String buildModelKey(String model, Long workspaceId) {
+        return model + "|" + workspaceId;
+    }
+    private String buildTypeKey(String type, Long workspaceId) {
+        return type + "|" + workspaceId;
+    }
+    private String buildImpactKey(String criterion, String lifecycleStep, String itemImpactName, String location,String category, Long workspaceId) {
+        return criterion + "|" + lifecycleStep + "|" + itemImpactName + "|" + location+ "|" + category + "|" + workspaceId;
     }
 
 }

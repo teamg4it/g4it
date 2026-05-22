@@ -252,7 +252,7 @@ class EvaluateNumEcoEvalServiceTest {
                         "ORG",
                         List.of(criterion),
                         List.of("USING"),
-                        Collections.emptyList(),1L
+                        Collections.emptyList(),1L,any(),any(),any()
                 );
 
         assertEquals(1, result.size());
@@ -295,7 +295,7 @@ class EvaluateNumEcoEvalServiceTest {
                 "ORG",
                 List.of(criterion),
                 List.of("MANUFACTURING"),
-                List.of(),1L
+                List.of(),1L,any(),any(),any()
         );
 
         // THEN
@@ -327,7 +327,7 @@ class EvaluateNumEcoEvalServiceTest {
                         "ORG",
                         List.of(criterion, criterion),
                         List.of("FABRICATION", "USING"),
-                        Collections.emptyList(),1L
+                        Collections.emptyList(),1L,any(),any(),any()
                 );
 
         assertEquals(4, result.size());
@@ -374,7 +374,7 @@ class EvaluateNumEcoEvalServiceTest {
                         "ORG",
                         List.of(criterion),
                         List.of("USING"),
-                        Collections.emptyList(),1L
+                        Collections.emptyList(),1L,any(),any(),any()
                 );
 
         // THEN
@@ -433,7 +433,7 @@ class EvaluateNumEcoEvalServiceTest {
                 "ORG",
                 List.of(criterion),
                 List.of("MANUFACTURING"),
-                List.of(),1L
+                List.of(),1L,any(),any(),any()
         );
 
         // THEN
@@ -467,7 +467,7 @@ class EvaluateNumEcoEvalServiceTest {
                         "ORG",
                         List.of(criterion),
                         List.of("FABRICATION"),
-                        Collections.emptyList(),1L
+                        Collections.emptyList(),1L,any(),any(),any()
                 )
         );
     }
@@ -557,7 +557,7 @@ class EvaluateNumEcoEvalServiceTest {
                 "ORG",
                 List.of(criterion),
                 List.of("USING"),
-                List.of(),1L
+                List.of(),1L,any(),any(),any()
         );
 
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
@@ -616,7 +616,7 @@ class EvaluateNumEcoEvalServiceTest {
                 "ORG",
                 List.of(criterion),
                 List.of(Constants.USING),
-                List.of(),1L
+                List.of(),1L,any(),any(),any()
         );
 
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);

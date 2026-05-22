@@ -80,20 +80,20 @@ class GenericRuleServiceTest {
     void testCheckType_EmptyType_Error() {
         when(messageSource.getMessage(eq("physical.equipment.must.have.type"), any(), eq(locale)))
                 .thenReturn("Type must be provided");
-        var actual = genericRuleService.checkType(locale, organization, filename, line, "", false,workspaceId);
+        var actual = genericRuleService.checkType(locale, organization, filename, line, "", false,workspaceId,null);
         assertTrue(actual.isPresent());
         assertEquals(new LineError(filename, line, "Type must be provided"), actual.get());
     }
 
     @Test
     void testCheckType_DigitalService_ValidSharedServer_Ok() {
-        var actual = genericRuleService.checkType(locale, organization, filename, line, "Shared Server", true,workspaceId);
+        var actual = genericRuleService.checkType(locale, organization, filename, line, "Shared Server", true,workspaceId,null);
         assertTrue(actual.isEmpty());
     }
 
     @Test
     void testCheckType_DigitalService_ValidDedicatedServer_Ok() {
-        var actual = genericRuleService.checkType(locale, organization, filename, line, "Dedicated Server", true,workspaceId);
+        var actual = genericRuleService.checkType(locale, organization, filename, line, "Dedicated Server", true,workspaceId,null);
         assertTrue(actual.isEmpty());
     }
     @Test
@@ -101,12 +101,12 @@ class GenericRuleServiceTest {
         ItemTypeRest typeItem = ItemTypeRest.builder().type("Printer").build();
         when(referentialGetService.getItemTypes("Printer", organization)).thenReturn(List.of(typeItem));
         when(referentialGetService.getItemTypes("Printer", null)).thenReturn(List.of());
-        when(referentialGetService.getItemTypesForWorkspace("Printer", workspaceId, organization)).thenReturn(List.of(typeItem));
+        when(referentialGetService.getItemTypesForWorkspace("Printer", workspaceId, null)).thenReturn(List.of(typeItem));
         when(referentialGetService.getItemTypesForWorkspace(any(), any(), any())).thenAnswer(invocation -> {
             System.out.println("getItemTypesForWorkspace called with: " + invocation.getArgument(0) + ", " + invocation.getArgument(1) + ", " + invocation.getArgument(2));
             return List.of(typeItem);
         });
-        var actual = genericRuleService.checkType(locale, organization, filename, line, "Printer", false,workspaceId);
+        var actual = genericRuleService.checkType(locale, organization, filename, line, "Printer", false,workspaceId,null);
         assertTrue(actual.isEmpty());
     }
 
@@ -117,9 +117,9 @@ class GenericRuleServiceTest {
                 .thenReturn(List.of());
         when(referentialGetService.getItemTypes("Scanner", null))
                 .thenReturn(List.of(typeItem));
-        when(referentialGetService.getItemTypesForWorkspace("Scanner", workspaceId, organization))
+        when(referentialGetService.getItemTypesForWorkspace("Scanner", workspaceId, null))
                 .thenReturn(List.of()); // Should be empty to test global only
-        var actual = genericRuleService.checkType(locale, organization, filename, line, "Scanner", false,workspaceId);
+        var actual = genericRuleService.checkType(locale, organization, filename, line, "Scanner", false,workspaceId,null);
         assertTrue(actual.isEmpty());
     }
 
@@ -129,7 +129,7 @@ class GenericRuleServiceTest {
         when(referentialGetService.getItemTypes("UnknownType", null)).thenReturn(List.of());
         when(messageSource.getMessage(eq("referential.type.not.exist"), any(), eq(locale)))
                 .thenReturn("Type does not exist");
-        var actual = genericRuleService.checkType(locale, organization, filename, line, "UnknownType", false,workspaceId);
+        var actual = genericRuleService.checkType(locale, organization, filename, line, "UnknownType", false,workspaceId,null);
         assertTrue(actual.isPresent());
         assertEquals(new LineError(filename, line, "Type does not exist"), actual.get());
     }
@@ -141,19 +141,19 @@ class GenericRuleServiceTest {
 
         when(referentialGetService.getItemTypes("Laptop", null)).thenReturn(List.of());
         when(referentialGetService.getItemTypes("Monitor", null)).thenReturn(List.of(globalType));
-        when(referentialGetService.getItemTypesForWorkspace("Laptop", workspaceId, organization)).thenReturn(List.of(organizationType));
-        when(referentialGetService.getItemTypesForWorkspace("Monitor", workspaceId, "organization")).thenReturn(List.of());
+        when(referentialGetService.getItemTypesForWorkspace("Laptop", workspaceId, null)).thenReturn(List.of(organizationType));
+        when(referentialGetService.getItemTypesForWorkspace("Monitor", workspaceId, null)).thenReturn(List.of());
 
         var actual = genericRuleService.checkType(
-                locale, organization, filename, line, "Laptop", false, workspaceId);
+                locale, organization, filename, line, "Laptop", false, workspaceId,null);
         assertTrue(actual.isEmpty());
 
         var actualGlobal = genericRuleService.checkType(
-                locale, "organization", filename, line, "Monitor", false, workspaceId);
+                locale, "organization", filename, line, "Monitor", false, workspaceId,null);
         assertTrue(actualGlobal.isEmpty());
 
-        verify(referentialGetService).getItemTypesForWorkspace("Laptop", workspaceId, organization);
-        verify(referentialGetService).getItemTypesForWorkspace("Monitor", workspaceId, "organization");
+        verify(referentialGetService).getItemTypesForWorkspace("Laptop", workspaceId, null);
+        verify(referentialGetService).getItemTypesForWorkspace("Monitor", workspaceId, null);
     }
 
     @Test

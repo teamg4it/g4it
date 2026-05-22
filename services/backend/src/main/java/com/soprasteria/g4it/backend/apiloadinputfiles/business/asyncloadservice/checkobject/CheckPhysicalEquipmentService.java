@@ -15,12 +15,14 @@ import com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.
 import com.soprasteria.g4it.backend.common.model.Context;
 import com.soprasteria.g4it.backend.common.model.LineError;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InPhysicalEquipmentRest;
+import com.soprasteria.g4it.backend.server.gen.api.dto.ItemTypeRest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 @Service
@@ -48,7 +50,7 @@ public class CheckPhysicalEquipmentService {
      * @param line              the line number
      * @return the list of errors
      */
-    public List<LineError> checkRules(final Context context, final InPhysicalEquipmentRest physicalEquipment, final String filename, final int line) {
+    public List<LineError> checkRules(final Context context, final InPhysicalEquipmentRest physicalEquipment, final String filename, final int line, Map<String, List<ItemTypeRest>> itemTypeMap) {
         List<LineError> errors = new ArrayList<>();
         final boolean isDigitalService = context.getDigitalServiceVersionUid() != null;
 
@@ -60,7 +62,7 @@ public class CheckPhysicalEquipmentService {
                 .ifPresent(errors::add);
 
         // check type is in itemTypes referential
-        genericRuleService.checkType(context.getLocale(), context.getOrganization(),filename, line, physicalEquipment.getType(), isDigitalService,context.getWorkspaceId())
+        genericRuleService.checkType(context.getLocale(), context.getOrganization(),filename, line, physicalEquipment.getType(), isDigitalService,context.getWorkspaceId(),itemTypeMap)
                 .ifPresent(errors::add);
 
 

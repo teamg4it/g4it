@@ -81,16 +81,19 @@ public class EvaluateNumEcoEvalService {
                                                                      final String organization,
                                                                      List<CriterionRest> criteria,
                                                                      List<String> lifecycleSteps,
-                                                                     List<HypothesisRest> hypotheses,Long workspaceId) {
+                                                                     List<HypothesisRest> hypotheses,Long workspaceId,
+                                                                     Map<String, MatchingItemRest> matchingItemMap,
+                                                                     Map<String, List<ItemTypeRest>> itemTypeMap,
+                                                                     Map<String, List<ItemImpactRest>> itemImpactMap) {
 
         MatchingItemRest matchingItem = null;
         boolean isModelMatched = true;
 
         if (physicalEquipment.getModel() != null) {
-            matchingItem = referentialService.getMatchingItemForWorkspace(physicalEquipment.getModel(), organization,workspaceId);
+            matchingItem = referentialService.getMatchingItemForWorkspace(physicalEquipment.getModel(),workspaceId, matchingItemMap);
         }
 
-        ItemTypeRest itemTypeRest = referentialService.getItemTypeForWorkspace(physicalEquipment.getType(), organization,workspaceId);
+        ItemTypeRest itemTypeRest = referentialService.getItemTypeForWorkspace(physicalEquipment.getType(),workspaceId,itemTypeMap);
 
         List<ImpactEquipementPhysique> result = new ArrayList<>(criteria.size() * lifecycleSteps.size());
         LocalDateTime now = LocalDateTime.now();
@@ -111,7 +114,7 @@ public class EvaluateNumEcoEvalService {
 
                 List<ItemImpactRest> itemImpacts = referentialService.getItemImpactsForWorkspace(
                         criterion.getCode(), lifecycleStep, itemImpactName,
-                        physicalEquipment.getLocation(), organization,workspaceId);
+                        physicalEquipment.getLocation(),workspaceId,itemImpactMap);
 
                 ItemImpactRest firstImpact = itemImpacts.stream().findFirst().orElse(null);
                 boolean hideValue = true;

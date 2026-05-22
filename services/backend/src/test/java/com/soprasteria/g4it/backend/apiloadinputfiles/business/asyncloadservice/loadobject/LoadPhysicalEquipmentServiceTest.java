@@ -12,6 +12,7 @@ import com.soprasteria.g4it.backend.apiinout.mapper.InPhysicalEquipmentMapper;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InPhysicalEquipment;
 import com.soprasteria.g4it.backend.apiinout.repository.InPhysicalEquipmentRepository;
 import com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.checkobject.CheckPhysicalEquipmentService;
+import com.soprasteria.g4it.backend.apireferential.business.ReferentialGetService;
 import com.soprasteria.g4it.backend.common.model.Context;
 import com.soprasteria.g4it.backend.common.model.FileToLoad;
 import com.soprasteria.g4it.backend.common.model.LineError;
@@ -44,6 +45,8 @@ class LoadPhysicalEquipmentServiceTest {
     private EntityManager entityManager;
     @InjectMocks
     private LoadPhysicalEquipmentService service;
+    @Mock
+    ReferentialGetService referentialGetService;
 
     @Test
     void testExecuteEmptyPhysicalEquipments() {
@@ -64,7 +67,7 @@ class LoadPhysicalEquipmentServiceTest {
         InPhysicalEquipmentRest peRest = mock(InPhysicalEquipmentRest.class);
         when(peRest.getName()).thenReturn("pe1");
         List<InPhysicalEquipmentRest> physicalEquipments = List.of(peRest);
-        when(checkPhysicalEquipmentService.checkRules(any(), any(), any(), anyInt())).thenReturn(Collections.emptyList());
+        when(checkPhysicalEquipmentService.checkRules(any(), any(), any(), anyInt(),any())).thenReturn(Collections.emptyList());
         InPhysicalEquipment peEntity = mock(InPhysicalEquipment.class);
         when(inPhysicalEquipmentMapper.toEntity(peRest)).thenReturn(peEntity);
         doNothing().when(inPhysicalEquipmentRepository).deleteByInventoryIdAndNameIn(anyLong(), any());
@@ -90,7 +93,7 @@ class LoadPhysicalEquipmentServiceTest {
         when(peRest.getName()).thenReturn("pe1");
         List<InPhysicalEquipmentRest> physicalEquipments = List.of(peRest);
         List<LineError> checkErrors = List.of(mock(LineError.class));
-        when(checkPhysicalEquipmentService.checkRules(any(), any(), any(), anyInt())).thenReturn(checkErrors);
+        when(checkPhysicalEquipmentService.checkRules(any(), any(), any(), anyInt(),any())).thenReturn(checkErrors);
         service.execute(context, fileToLoad, 0, physicalEquipments);
     }
 
@@ -105,7 +108,7 @@ class LoadPhysicalEquipmentServiceTest {
         InPhysicalEquipmentRest peRest = mock(InPhysicalEquipmentRest.class);
         when(peRest.getName()).thenReturn("pe1");
         List<InPhysicalEquipmentRest> physicalEquipments = List.of(peRest);
-        when(checkPhysicalEquipmentService.checkRules(any(), any(), any(), anyInt())).thenReturn(Collections.emptyList());
+        when(checkPhysicalEquipmentService.checkRules(any(), any(), any(), anyInt(),any())).thenReturn(Collections.emptyList());
         InPhysicalEquipment peEntity = mock(InPhysicalEquipment.class);
         when(inPhysicalEquipmentMapper.toEntity(peRest)).thenReturn(peEntity);
         doNothing().when(inPhysicalEquipmentRepository).deleteByDigitalServiceVersionUidAndNameIn(anyString(), any());

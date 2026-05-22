@@ -11,13 +11,16 @@ package com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice
 import com.soprasteria.g4it.backend.apireferential.business.ReferentialGetService;
 import com.soprasteria.g4it.backend.common.model.LineError;
 import com.soprasteria.g4it.backend.common.utils.ValidationUtils;
+import com.soprasteria.g4it.backend.server.gen.api.dto.ItemTypeRest;
 import jakarta.validation.Validator;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -59,7 +62,7 @@ public class GenericRuleService {
      * @param type       the location
      * @return error
      */
-   public Optional<LineError> checkType(Locale locale, String organization, String filename, int line, String type, boolean isDigitalService, Long workspaceId) {
+   public Optional<LineError> checkType(Locale locale, String organization, String filename, int line, String type, boolean isDigitalService, Long workspaceId, Map<String, List<ItemTypeRest>> itemTypeMap) {
 
         if (StringUtils.isEmpty(type)) {
             return Optional.of(new LineError(filename, line,
@@ -68,7 +71,7 @@ public class GenericRuleService {
                             locale)));
         }
         if (!isDigitalService) {
-            if (referentialGetService.getItemTypesForWorkspace(type, workspaceId,organization).isEmpty() &&
+            if (referentialGetService.getItemTypesForWorkspace(type, workspaceId,itemTypeMap).isEmpty() &&
                     referentialGetService.getItemTypes(type, null).isEmpty()) {
 
                 return Optional.of(new LineError(

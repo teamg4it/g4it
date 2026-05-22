@@ -19,6 +19,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public interface ItemImpactRepository extends JpaRepository<ItemImpact, Long> {
@@ -107,4 +108,15 @@ public interface ItemImpactRepository extends JpaRepository<ItemImpact, Long> {
                                                                                                  final String category,
                                                                                                  final String location,
                                                                                                  final String organization, final Long workspaceId);
+
+    List<ItemImpact> findByCriterionInAndLifecycleStepInAndWorkspaceId(
+            Set<String> criteria,
+            Set<String> lifecycleSteps,
+            Long workspaceId
+    );
+    List<ItemImpact> findByCriterionInAndLifecycleStepInAndCategoryAndLocationInAndWorkspaceId( Set<String> criteria,
+                                                                                                Set<String> lifecycleSteps,
+                                                                                                String category,
+                                                                                                Set<String> locations,
+                                                                                                Long workspaceId);
 }
