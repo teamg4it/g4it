@@ -1,4 +1,3 @@
-
 import {
     Component,
     EventEmitter,
@@ -24,14 +23,14 @@ import { AutofocusDirective } from "../../../core/directives/auto-focus.directiv
     providers: [ConfirmationService, MessageService],
     standalone: true,
     imports: [
-    AutofocusDirective,
-    EditorModule,
-    FormsModule,
-    ToastModule,
-    ConfirmPopupModule,
-    Button,
-    TranslatePipe
-],
+        AutofocusDirective,
+        EditorModule,
+        FormsModule,
+        ToastModule,
+        ConfirmPopupModule,
+        Button,
+        TranslatePipe,
+    ],
 })
 export class CommonEditorComponent implements OnChanges {
     @Input() styleClass = "";
@@ -112,7 +111,7 @@ export class CommonEditorComponent implements OnChanges {
             message: this.translate.instant("common.cancelConfirmMsgForEditor"),
             accept: () => {
                 this.editorTextValue = this.editorTextValueUnmodified;
-                this.outClose.emit();
+                this.outClose.emit(false);
             },
             reject: () => {},
         });
@@ -126,7 +125,7 @@ export class CommonEditorComponent implements OnChanges {
             message: this.translate.instant("common.confirmMessageForEditor"),
             accept: () => {
                 this.editorTextValue = "";
-                this.delete.emit();
+                this.delete.emit(false);
             },
             reject: () => {},
         });
