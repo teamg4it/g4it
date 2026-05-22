@@ -137,6 +137,9 @@ main {
 .bg-grey {
     background: var(--grey-text-color);
 }
+.bg-lightest-gray-color {
+    background-color: var(--lightest-gray-color);
+}
 .bg-dark-red {
     background: var(--dark-red-color);
 }
@@ -1944,11 +1947,11 @@ app-update-workspace-reference {
 
     height: 48px;
 
-    background: #111713 !important;
-    border: 2px solid #111713 !important;
-    border-radius: 4px !important;
+    background: #111713;
+    border: 2px solid #111713;
+    border-radius: 4px;
 
-    color: #ffffff !important;
+    color: #ffffff;
 
     display: flex;
     align-items: center;
@@ -1968,7 +1971,13 @@ app-update-workspace-reference {
         border-color 0.2s ease,
         color 0.2s ease;
 
-    box-shadow: none !important;
+    box-shadow: none;
+
+    gap: 12px;
+}
+.custom-file-upload .p-button:not(.p-disabled):hover {
+    background: #00ba00eb;
+    border-color: transparent;
 }
 
 /* Disabled */
@@ -1984,13 +1993,12 @@ app-update-workspace-reference {
 
 /* Upload icon */
 .custom-file-upload .p-button-icon {
+    position: absolute;
+    left: 16px;
     color: #ffffff !important;
-
     font-size: 1rem;
-
-    margin-right: 0.75rem;
-
     flex-shrink: 0;
+    margin-right: 0;
 }
 
 /* Filename / label */
@@ -2004,6 +2012,7 @@ app-update-workspace-reference {
     display: block;
 
     max-width: 170px;
+    margin-left: 16px;
 }
 
 .p-fileupload-basic-content > span {
