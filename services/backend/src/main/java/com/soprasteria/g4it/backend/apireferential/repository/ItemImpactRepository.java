@@ -107,4 +107,6 @@ public interface ItemImpactRepository extends JpaRepository<ItemImpact, Long> {
                                                                                                  final String category,
                                                                                                  final String location,
                                                                                                  final String organization, final Long workspaceId);
+
+    boolean existsByWorkspaceId(Long workspaceId);
 }

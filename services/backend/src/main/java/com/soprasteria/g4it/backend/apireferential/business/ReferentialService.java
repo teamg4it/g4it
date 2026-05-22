@@ -186,35 +186,36 @@ public class ReferentialService {
                 }));
     }
 
-    public MatchingItemRest getMatchingItemForWorkspace(String model, String organization, Long workspaceId) {
-        MatchingItemRest matchingItem = referentialGetService.getMatchingItemForWorkspace(model, organization,workspaceId);
-        if (matchingItem == null) {
-            matchingItem = referentialGetService.getMatchingItem(model, null);
+    public MatchingItemRest getMatchingItemForWorkspace(String model, String organization, Long workspaceId, boolean hasWorkspaceDataForMatchingItem) {
+
+        if (hasWorkspaceDataForMatchingItem) {
+            return referentialGetService.getMatchingItemForWorkspace(model, organization,workspaceId);
+        }else {
+            return referentialGetService.getMatchingItem(model, null);
         }
-        return matchingItem;
     }
 
-    public ItemTypeRest getItemTypeForWorkspace(String type, String organization,Long workspaceId) {
-        List<ItemTypeRest> itemTypeRestList = referentialGetService.getItemTypesForWorkspace(type, workspaceId,organization);
-        if (itemTypeRestList.isEmpty()) {
+    public ItemTypeRest getItemTypeForWorkspace(String type, String organization,Long workspaceId, boolean hasWorkspaceDataForItemType) {
+        List<ItemTypeRest> itemTypeRestList;
+        if (hasWorkspaceDataForItemType) {
+            itemTypeRestList = referentialGetService.getItemTypesForWorkspace(type, workspaceId,organization);
+        }else {
             itemTypeRestList = referentialGetService.getItemTypes(type, null);
         }
-
         return itemTypeRestList.getFirst();
     }
 
     public List<ItemImpactRest> getItemImpactsForWorkspace(final String criterion, final String lifecycleStep, final String name,
-                                               final String location, final String organization,Long workspaceId) {
-        List<ItemImpactRest> itemImpacts = new ArrayList<>(referentialGetService.getItemImpactsForWorkspace(criterion, lifecycleStep,
-                name, null, null, organization,workspaceId));
-
-        if (itemImpacts.isEmpty()) {
+                                               final String location, final String organization,Long workspaceId, boolean hasWorkspaceDataForItemImpact) {
+        List<ItemImpactRest> itemImpacts;
+        List<ItemImpactRest> electricityMixImpact;
+        if(hasWorkspaceDataForItemImpact){
+            itemImpacts = new ArrayList<>(referentialGetService.getItemImpactsForWorkspace(criterion, lifecycleStep,
+                    name, null, null, organization,workspaceId));
+            electricityMixImpact = new ArrayList<>(referentialGetService.getItemImpactsForWorkspace(criterion, null, null, location, "electricity-mix", organization,workspaceId));
+        }else{
             itemImpacts = new ArrayList<>(referentialGetService.getItemImpacts(criterion, lifecycleStep,
                     name, null, null, null));
-        }
-
-        List<ItemImpactRest> electricityMixImpact = new ArrayList<>(referentialGetService.getItemImpactsForWorkspace(criterion, null, null, location, "electricity-mix", organization,workspaceId));
-        if (electricityMixImpact.isEmpty()) {
             electricityMixImpact = new ArrayList<>(referentialGetService.getItemImpacts(criterion, null, null, location, "electricity-mix", null));
         }
 

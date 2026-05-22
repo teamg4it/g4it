@@ -40,4 +40,6 @@ public interface MatchingItemRepository extends JpaRepository<MatchingItem, Long
     Page<MatchingItem> findByWorkspaceId(Long workspaceId, Pageable pageable);
 
     Optional<MatchingItem> findByItemSourceAndOrganizationAndWorkspaceId(final String itemSource, final String organization,final Long workspaceId);
+
+    boolean existsByWorkspaceId(Long workspaceId);
 }

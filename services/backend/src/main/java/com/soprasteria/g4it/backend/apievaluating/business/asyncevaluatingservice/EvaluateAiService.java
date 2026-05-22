@@ -32,6 +32,9 @@ import com.soprasteria.g4it.backend.apirecomandation.mapper.RecommendationJsonMa
 import com.soprasteria.g4it.backend.apirecomandation.modeldb.OutAiReco;
 import com.soprasteria.g4it.backend.apirecomandation.repository.OutAiRecoRepository;
 import com.soprasteria.g4it.backend.apireferential.business.ReferentialService;
+import com.soprasteria.g4it.backend.apireferential.repository.ItemImpactRepository;
+import com.soprasteria.g4it.backend.apireferential.repository.ItemTypeRepository;
+import com.soprasteria.g4it.backend.apireferential.repository.MatchingItemRepository;
 import com.soprasteria.g4it.backend.apiuser.repository.OrganizationRepository;
 import com.soprasteria.g4it.backend.client.gen.connector.apiecomindv2.dto.InputEstimationLLMInference;
 import com.soprasteria.g4it.backend.client.gen.connector.apiecomindv2.dto.OutputEstimation;
@@ -109,6 +112,12 @@ public class EvaluateAiService {
     @Autowired
     ImpactToCsvRecord impactToCsvRecord;
 
+    @Autowired
+    ItemTypeRepository itemTypeRepository;
+    @Autowired
+    MatchingItemRepository matchingItemRepository;
+    @Autowired
+    ItemImpactRepository itemImpactRepository;
 
     @Value("${local.working.folder}")
     private String localWorkingFolder;
@@ -251,6 +260,9 @@ public class EvaluateAiService {
                     csvOutAiReco.printRecord((Object[]) aiRecoRecord);
                 }
             }
+            boolean hasWorkspaceDataForItemType = itemTypeRepository.existsByWorkspaceId(context.getWorkspaceId());
+            boolean hasWorkspaceDataForItemImpact = itemImpactRepository.existsByWorkspaceId(context.getWorkspaceId());
+            boolean hasWorkspaceDataForMatchingItem = matchingItemRepository.existsByWorkspaceId(context.getWorkspaceId());
 
             while (!physicalEquipments.isEmpty()) {
 
@@ -275,7 +287,8 @@ public class EvaluateAiService {
 
                     List<ImpactEquipementPhysique> impactEquipementPhysiqueList = evaluateNumEcoEvalService.calculatePhysicalEquipment(
                             inPhysicalEq, datacenters.getFirst(),
-                            organization, activeCriteria, lifecycleSteps, hypothesisRestList, context.getWorkspaceId());
+                            organization, activeCriteria, lifecycleSteps, hypothesisRestList, context.getWorkspaceId(),
+                            hasWorkspaceDataForItemImpact, hasWorkspaceDataForItemType, hasWorkspaceDataForMatchingItem);
 
                     if (evaluateReportBO.isExport()) {
                         csvInPhysicalEquipment.printRecord(inputToCsvRecord.toCsv(inPhysicalEq, datacenter));

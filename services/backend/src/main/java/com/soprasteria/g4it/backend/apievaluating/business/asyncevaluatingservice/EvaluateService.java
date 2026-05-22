@@ -29,6 +29,9 @@ import com.soprasteria.g4it.backend.apiinout.repository.*;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
 import com.soprasteria.g4it.backend.apireferential.business.ReferentialService;
+import com.soprasteria.g4it.backend.apireferential.repository.ItemImpactRepository;
+import com.soprasteria.g4it.backend.apireferential.repository.ItemTypeRepository;
+import com.soprasteria.g4it.backend.apireferential.repository.MatchingItemRepository;
 import com.soprasteria.g4it.backend.apiuser.repository.OrganizationRepository;
 import com.soprasteria.g4it.backend.common.filesystem.business.local.CsvFileService;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileType;
@@ -115,6 +118,12 @@ public class EvaluateService {
     BoaviztapiService boaviztapiService;
     @Autowired
     InventoryRepository inventoryRepository;
+    @Autowired
+    ItemTypeRepository itemTypeRepository;
+    @Autowired
+    MatchingItemRepository matchingItemRepository;
+    @Autowired
+    ItemImpactRepository itemImpactRepository;
     @Value("${local.working.folder}")
     private String localWorkingFolder;
     private Map<String, String> codeToCountryMapCache;
@@ -264,6 +273,10 @@ public class EvaluateService {
 
             int pageNumber = 0;
             final Sort sortByName = Sort.by("name");
+
+            boolean hasWorkspaceDataForItemType = itemTypeRepository.existsByWorkspaceId(context.getWorkspaceId());
+            boolean hasWorkspaceDataForItemImpact = itemImpactRepository.existsByWorkspaceId(context.getWorkspaceId());
+            boolean hasWorkspaceDataForMatchingItem = matchingItemRepository.existsByWorkspaceId(context.getWorkspaceId());
             while (true) {
                 Pageable page = PageRequest.of(pageNumber, Constants.BATCH_SIZE, sortByName);
                 final List<InPhysicalEquipment> physicalEquipments =
@@ -299,7 +312,8 @@ public class EvaluateService {
                     // Call external tools - lib calculs
                     List<ImpactEquipementPhysique> impactEquipementPhysiqueList = evaluateNumEcoEvalService.calculatePhysicalEquipment(
                             physicalEquipment, datacenter,
-                            organization, activeCriteria, lifecycleSteps, hypothesisRestList,context.getWorkspaceId());
+                            organization, activeCriteria, lifecycleSteps, hypothesisRestList,context.getWorkspaceId(),
+                            hasWorkspaceDataForItemImpact, hasWorkspaceDataForItemType, hasWorkspaceDataForMatchingItem);
 
 
                     // Identify NON-CLOUD VMs for this physical equipment
