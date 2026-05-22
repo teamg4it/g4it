@@ -18,6 +18,9 @@ import com.soprasteria.g4it.backend.apiparameterai.modeldb.InAiParameter;
 import com.soprasteria.g4it.backend.apiparameterai.repository.InAiParameterRepository;
 import com.soprasteria.g4it.backend.apirecomandation.repository.OutAiRecoRepository;
 import com.soprasteria.g4it.backend.apireferential.business.ReferentialService;
+import com.soprasteria.g4it.backend.apireferential.repository.ItemImpactRepository;
+import com.soprasteria.g4it.backend.apireferential.repository.ItemTypeRepository;
+import com.soprasteria.g4it.backend.apireferential.repository.MatchingItemRepository;
 import com.soprasteria.g4it.backend.apiuser.repository.OrganizationRepository;
 import com.soprasteria.g4it.backend.client.gen.connector.apiecomindv2.dto.OutputEstimation;
 import com.soprasteria.g4it.backend.client.gen.connector.apiecomindv2.dto.Recommendation;
@@ -86,6 +89,14 @@ class EvaluateAiServiceTest {
     private ImpactToCsvRecord impactToCsvRecord;
     @Mock
     private OrganizationRepository organizationRepository;
+    @Mock
+    private ItemTypeRepository itemTypeRepository;
+
+    @Mock
+    private MatchingItemRepository matchingItemRepository;
+
+    @Mock
+    private ItemImpactRepository itemImpactRepository;
 
     @Mock
     private AggregationToOutput aggregationToOutput;
@@ -103,6 +114,14 @@ class EvaluateAiServiceTest {
         MockitoAnnotations.openMocks(this);
         lenient().when(organizationRepository.findByName(anyString()))
                 .thenReturn(Optional.empty());
+        lenient().when(itemTypeRepository.existsByWorkspaceId(anyLong()))
+                .thenReturn(false);
+
+        lenient().when(matchingItemRepository.existsByWorkspaceId(anyLong()))
+                .thenReturn(false);
+
+        lenient().when(itemImpactRepository.existsByWorkspaceId(anyLong()))
+                .thenReturn(false);
     }
 
     private InAiParameter mockAiParameter() {
@@ -184,7 +203,18 @@ class EvaluateAiServiceTest {
         when(impact.getConsoElecMoyenne()).thenReturn(10.0);
         when(impact.getDureeDeVie()).thenReturn(5.0);
 
-        when(evaluateNumEcoEvalService.calculatePhysicalEquipment(any(), any(), any(), any(), any(), any(),any()))
+        when(evaluateNumEcoEvalService.calculatePhysicalEquipment(
+                any(),
+                any(),
+                anyString(),
+                anyList(),
+                anyList(),
+                anyList(),
+                anyLong(),
+                anyBoolean(),
+                anyBoolean(),
+                anyBoolean()
+        ))
                 .thenReturn(List.of(impact));
         when(aggregationToOutput.keyPhysicalEquipment(any(), any(), any(), any(), anyBoolean()))
                 .thenReturn(List.of("PHYSICAL_KEY"));
@@ -384,7 +414,18 @@ class EvaluateAiServiceTest {
         when(evaluateNumEcoEvalService.getTotalVcpuCoreNumber(any())).thenReturn(4.0);
         when(evaluateNumEcoEvalService.getTotalDiskSize(any())).thenReturn(100.0);
 
-        when(evaluateNumEcoEvalService.calculatePhysicalEquipment(any(), any(), any(), any(), any(), any(),any()))
+        when(evaluateNumEcoEvalService.calculatePhysicalEquipment(
+                any(),
+                any(),
+                anyString(),
+                anyList(),
+                anyList(),
+                anyList(),
+                anyLong(),
+                anyBoolean(),
+                anyBoolean(),
+                anyBoolean()
+        ))
                 .thenReturn(List.of(mock(ImpactEquipementPhysique.class)));
 
         when(evaluateNumEcoEvalService.calculateVirtualEquipment(any(), any(), anyInt(), any(), any(), any(), any()))
@@ -504,7 +545,18 @@ class EvaluateAiServiceTest {
         when(evaluateNumEcoEvalService.getTotalVcpuCoreNumber(any())).thenReturn(4.0);
         when(evaluateNumEcoEvalService.getTotalDiskSize(any())).thenReturn(100.0);
 
-        when(evaluateNumEcoEvalService.calculatePhysicalEquipment(any(), any(), any(), any(), any(), any(),any()))
+        when(evaluateNumEcoEvalService.calculatePhysicalEquipment(
+                any(),
+                any(),
+                anyString(),
+                anyList(),
+                anyList(),
+                anyList(),
+                anyLong(),
+                anyBoolean(),
+                anyBoolean(),
+                anyBoolean()
+        ))
                 .thenReturn(List.of(mock(ImpactEquipementPhysique.class)));
 
         when(evaluateNumEcoEvalService.calculateVirtualEquipment(any(), any(), anyInt(), any(), any(), any(), any()))
