@@ -206,15 +206,15 @@ public class ReferentialService {
     public List<ItemImpactRest> getItemImpactsForWorkspace(final String criterion, final String lifecycleStep, final String name,
                                                final String location,Long workspaceId,Map<String, List<ItemImpactRest>> itemImpactMap) {
         List<ItemImpactRest> itemImpacts = referentialGetService.getItemImpactsForWorkspace(
-                criterion, lifecycleStep, name, null, null, workspaceId,itemImpactMap);
+                criterion, lifecycleStep, name, workspaceId,itemImpactMap);
 
         if (itemImpacts == null || itemImpacts.isEmpty()) {
             itemImpacts = referentialGetService.getItemImpacts(
                     criterion, lifecycleStep, name, null, null, null);
         }
 
-        List<ItemImpactRest> electricityMixImpact = referentialGetService.getItemImpactsForWorkspace(
-                criterion, null, null, location, "electricity-mix", workspaceId,itemImpactMap);
+        List<ItemImpactRest> electricityMixImpact = referentialGetService.getItemImpactsELectricityMixForWorkspace(
+                criterion, location, workspaceId,itemImpactMap);
 
         if (electricityMixImpact == null || electricityMixImpact.isEmpty()) {
             electricityMixImpact = referentialGetService.getItemImpacts(

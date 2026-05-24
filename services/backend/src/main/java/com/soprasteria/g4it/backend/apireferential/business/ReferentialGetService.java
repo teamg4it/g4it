@@ -123,8 +123,8 @@ public class ReferentialGetService {
                                                String name, String location,
                                                String category, String organization) {
 
-        List<ItemImpact> itemImpacts = itemImpactRepository.findByCriterionAndLifecycleStepAndNameAndCategoryAndLocationAndOrganizationAndWorkspaceId(
-                StringUtils.kebabToSnakeCase(criterion), LifecycleStepUtils.get(lifecycleStep, lifecycleStep), name, category, location, organization,null);
+        List<ItemImpact> itemImpacts = itemImpactRepository.findByCriterionAndLifecycleStepAndNameAndCategoryAndLocationAndOrganization(
+                StringUtils.kebabToSnakeCase(criterion), LifecycleStepUtils.get(lifecycleStep, lifecycleStep), name, category, location, organization);
         return refRestMapper.toItemImpactRest(itemImpacts);
     }
 
@@ -175,21 +175,34 @@ public class ReferentialGetService {
     }
 
     public List<ItemImpactRest> getItemImpactsForWorkspace(String criterion, String lifecycleStep,
-                                               String name, String location,
-                                               String category, Long workspaceId,Map<String, List<ItemImpactRest>> itemImpactMap) {
+                                               String name, Long workspaceId,Map<String, List<ItemImpactRest>> itemImpactMap) {
 
         String key = buildImpactKey(
                 StringUtils.kebabToSnakeCase(criterion),
                 LifecycleStepUtils.get(lifecycleStep, lifecycleStep),
                 name,
-                location,
-                category,
                 workspaceId
         );
         // Assuming you have a pre-fetched map of item impacts for the workspace
          if (itemImpactMap != null && itemImpactMap.containsKey(key)) {
              return itemImpactMap.get(key);
          }
+        return List.of();
+    }
+
+    public List<ItemImpactRest> getItemImpactsELectricityMixForWorkspace(String criterion,String location,
+                                                           Long workspaceId,Map<String, List<ItemImpactRest>> itemImpactElectricityMap) {
+
+        String key = buildElectricityMixImpactKey(
+                StringUtils.kebabToSnakeCase(criterion),
+                "electricity-mix",
+                location,
+                workspaceId
+        );
+        // Assuming you have a pre-fetched map of item impacts for the workspace
+        if (itemImpactElectricityMap != null && itemImpactElectricityMap.containsKey(key)) {
+            return itemImpactElectricityMap.get(key);
+        }
         return List.of();
     }
 
@@ -236,19 +249,24 @@ public class ReferentialGetService {
             Set<String> criteria,
             Set<String> lifecycleSteps,
             Long workspaceId) {
-        List<ItemImpact> itemImpactList = itemImpactRepository.findByCriterionInAndLifecycleStepInAndCategoryAndLocationInAndWorkspaceId(
-                criteria, lifecycleSteps, null, null, workspaceId);
+
+        List<ItemImpact> itemImpactList =
+                itemImpactRepository.findByCriterionInAndLifecycleStepInAndWorkspaceId(
+                        criteria,
+                        lifecycleSteps,
+                        workspaceId
+                );
         Map<String, List<ItemImpactRest>> map = new HashMap<>();
         for (ItemImpact impact : itemImpactList) {
+
             String key = buildImpactKey(
                     impact.getCriterion(),
                     impact.getLifecycleStep(),
                     impact.getName(),
-                    impact.getLocation(),
-                    impact.getCategory(),
                     workspaceId
             );
-            map.put(key, refRestMapper.toItemImpactRest(List.of(impact)));
+            map.computeIfAbsent(key, k -> new ArrayList<>())
+                    .addAll(refRestMapper.toItemImpactRest(List.of(impact)));
         }
         return map;
     }
@@ -256,19 +274,18 @@ public class ReferentialGetService {
             Set<String> criteria,
             Set<String> locations,
             Long workspaceId) {
-        List<ItemImpact> electricityMixImpact = itemImpactRepository.findByCriterionInAndLifecycleStepInAndCategoryAndLocationInAndWorkspaceId(
-                criteria, null, "electricity-mix", locations, workspaceId);
+        List<ItemImpact> electricityMixImpact = itemImpactRepository.findByCriterionInAndCategoryAndLocationInAndWorkspaceId(
+                criteria, "electricity-mix", locations, workspaceId);
         Map<String, List<ItemImpactRest>> map = new HashMap<>();
         for (ItemImpact impact : electricityMixImpact) {
-            String key = buildImpactKey(
+            String key = buildElectricityMixImpactKey(
                     impact.getCriterion(),
-                    impact.getLifecycleStep(),
-                    impact.getName(),
-                    impact.getLocation(),
                     impact.getCategory(),
+                    impact.getLocation(),
                     workspaceId
             );
-            map.put(key, refRestMapper.toItemImpactRest(List.of(impact)));
+            map.computeIfAbsent(key, k -> new ArrayList<>())
+                    .addAll(refRestMapper.toItemImpactRest(List.of(impact)));
         }
         return map;
     }
@@ -281,8 +298,12 @@ public class ReferentialGetService {
     private String buildTypeKey(String type, Long workspaceId) {
         return type + "|" + workspaceId;
     }
-    private String buildImpactKey(String criterion, String lifecycleStep, String itemImpactName, String location,String category, Long workspaceId) {
-        return criterion + "|" + lifecycleStep + "|" + itemImpactName + "|" + location+ "|" + category + "|" + workspaceId;
+    private String buildImpactKey(String criterion, String lifecycleStep, String itemImpactName, Long workspaceId) {
+        return criterion + "|" + lifecycleStep + "|" + itemImpactName +"|" + workspaceId;
+    }
+
+    private String buildElectricityMixImpactKey(String criterion, String category,String location, Long workspaceId) {
+        return criterion + "|" + category + "|" + location +"|" + workspaceId;
     }
 
 }
