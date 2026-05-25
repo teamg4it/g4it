@@ -325,10 +325,11 @@ public class EvaluateService {
                     String equipmentLocation = datacenter != null ? datacenter.getLocation() : null;
 
                     // Call external tools - lib calculs
+                    final long startTIme = System.currentTimeMillis();
                     List<ImpactEquipementPhysique> impactEquipementPhysiqueList = evaluateNumEcoEvalService.calculatePhysicalEquipment(
                             physicalEquipment, datacenter,
                             organization, activeCriteria, lifecycleSteps, hypothesisRestList,context.getWorkspaceId(),matchingItemMap,itemTypeMap,itemImpactMap);
-
+                    log.info("numeco val evaulation time for physical equipment {} is {}s", physicalEquipment.getName(), (System.currentTimeMillis() - startTIme) / 1000);
 
                     // Identify NON-CLOUD VMs for this physical equipment
                     List<InVirtualEquipment> allVMs = vmsByPhysical.getOrDefault(physicalEquipment.getName(), List.of());
