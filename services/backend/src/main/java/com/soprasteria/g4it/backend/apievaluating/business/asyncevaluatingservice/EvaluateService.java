@@ -388,7 +388,7 @@ public class EvaluateService {
                     outApplicationSize += saveResult2.savedApplicationCount();
 
                     physicalSaveCounter++;
-                    if (physicalSaveCounter >= 10) {
+                    if (physicalSaveCounter >= 5) {
                         outPhysicalEquipmentSize += saveService.saveOutPhysicalEquipments(
                                 aggregationPhysicalEquipments, taskId, refShortcutBO);
                         aggregationPhysicalEquipments = new HashMap<>(INITIAL_MAP_CAPACITY);
@@ -572,7 +572,7 @@ public class EvaluateService {
 
                 virtualSaveCounter++;
 
-                if (virtualSaveCounter >= 10) {
+                if (virtualSaveCounter >= 5) {
                     savedVirtualCount += saveService.saveOutVirtualEquipments(
                             aggregationVirtualEquipments, evaluateReportBO.getTaskId(), refShortcutBO);
                     aggregationVirtualEquipments.clear();
@@ -654,7 +654,7 @@ public class EvaluateService {
 
             applicationSaveCounter++;
 
-            if (applicationSaveCounter >= 10) {
+            if (applicationSaveCounter >= 5) {
                 savedApplicationCount += saveService.saveOutApplications(
                         aggregationApplications,
                         evaluateReportBO.getTaskId(),
