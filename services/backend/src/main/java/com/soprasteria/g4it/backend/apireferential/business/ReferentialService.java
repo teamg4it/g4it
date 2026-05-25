@@ -187,38 +187,58 @@ public class ReferentialService {
     }
 
     public MatchingItemRest getMatchingItemForWorkspace(String model,  Long workspaceId,Map<String, MatchingItemRest> matchingItemMap) {
-        MatchingItemRest matchingItem = referentialGetService.getMatchingItemForWorkspace(model,workspaceId,matchingItemMap);
-        if (matchingItem == null) {
+        MatchingItemRest matchingItem = null;
+        if (matchingItemMap == null || matchingItemMap.isEmpty()) {
             matchingItem = referentialGetService.getMatchingItem(model, null);
+        }else{
+            matchingItem= referentialGetService.getMatchingItemForWorkspace(model,workspaceId,matchingItemMap);
+            if(matchingItem==null){
+                matchingItem = referentialGetService.getMatchingItem(model, null);
+            }
         }
         return matchingItem;
     }
 
     public ItemTypeRest getItemTypeForWorkspace(String type,Long workspaceId,Map<String, List<ItemTypeRest>> itemTypeMap) {
-        List<ItemTypeRest> itemTypeRestList = referentialGetService.getItemTypesForWorkspace(type, workspaceId,itemTypeMap);
-        if (itemTypeRestList==null || itemTypeRestList.isEmpty()) {
+        List<ItemTypeRest> itemTypeRestList = null;
+        if (itemTypeMap==null || itemTypeMap.isEmpty()) {
             itemTypeRestList = referentialGetService.getItemTypes(type, null);
+        }else{
+            itemTypeRestList=referentialGetService.getItemTypesForWorkspace(type, workspaceId,itemTypeMap);
+            if(itemTypeRestList==null || itemTypeRestList.isEmpty()){
+                itemTypeRestList = referentialGetService.getItemTypes(type, null);
+            }
         }
-
-        return itemTypeRestList.getFirst();
+        return itemTypeRestList!=null?itemTypeRestList.getFirst():null;
     }
 
     public List<ItemImpactRest> getItemImpactsForWorkspace(final String criterion, final String lifecycleStep, final String name,
                                                final String location,Long workspaceId,Map<String, List<ItemImpactRest>> itemImpactMap) {
-        List<ItemImpactRest> itemImpacts = referentialGetService.getItemImpactsForWorkspace(
-                criterion, lifecycleStep, name, workspaceId,itemImpactMap);
+        List<ItemImpactRest> itemImpacts = null;
 
-        if (itemImpacts == null || itemImpacts.isEmpty()) {
+        if (itemImpactMap == null || itemImpactMap.isEmpty()) {
             itemImpacts = referentialGetService.getItemImpacts(
                     criterion, lifecycleStep, name, null, null, null);
+        }else{
+            itemImpacts = referentialGetService.getItemImpactsForWorkspace(
+                    criterion, lifecycleStep, name, workspaceId,itemImpactMap);
+            if (itemImpacts == null || itemImpacts.isEmpty()) {
+                itemImpacts = referentialGetService.getItemImpacts(
+                        criterion, lifecycleStep, name, null, null, null);
+            }
         }
 
-        List<ItemImpactRest> electricityMixImpact = referentialGetService.getItemImpactsELectricityMixForWorkspace(
-                criterion, location, workspaceId,itemImpactMap);
-
-        if (electricityMixImpact == null || electricityMixImpact.isEmpty()) {
+        List<ItemImpactRest> electricityMixImpact = null;
+        if (itemImpactMap == null || itemImpactMap.isEmpty()) {
             electricityMixImpact = referentialGetService.getItemImpacts(
                     criterion, null, null, location, "electricity-mix", null);
+        }else{
+            electricityMixImpact = referentialGetService.getItemImpactsELectricityMixForWorkspace(
+                    criterion, location, workspaceId,itemImpactMap);
+            if (electricityMixImpact == null || electricityMixImpact.isEmpty()) {
+                electricityMixImpact = referentialGetService.getItemImpacts(
+                        criterion, null, null, location, "electricity-mix", null);
+            }
         }
 
         if (electricityMixImpact != null && !electricityMixImpact.isEmpty()) {
