@@ -88,12 +88,28 @@ public class EvaluateNumEcoEvalService {
 
         MatchingItemRest matchingItem = null;
         boolean isModelMatched = true;
+        ItemTypeRest itemTypeRest;
+        List<ItemImpactRest> itemImpacts=null;
 
         if (physicalEquipment.getModel() != null) {
-            matchingItem = referentialService.getMatchingItem(physicalEquipment.getModel(),organization);
+            if(matchingItemMap==null || matchingItemMap.isEmpty()) {
+                matchingItem = referentialService.getMatchingItem(physicalEquipment.getModel(), organization);
+            }else {
+                matchingItem = referentialService.getMatchingItemForWorkspace(physicalEquipment.getModel(),workspaceId, matchingItemMap);
+                if(matchingItem == null){
+                    matchingItem = referentialService.getMatchingItem(physicalEquipment.getModel(), organization);
+                }
+            }
         }
 
-        ItemTypeRest itemTypeRest = referentialService.getItemType(physicalEquipment.getType(),organization);
+        if(itemTypeMap==null || itemTypeMap.isEmpty()) {
+            itemTypeRest = referentialService.getItemType(physicalEquipment.getType(), organization);
+        }else{
+            itemTypeRest = referentialService.getItemTypeForWorkspace(physicalEquipment.getType(), workspaceId, itemTypeMap);
+            if(itemTypeRest == null){
+                itemTypeRest = referentialService.getItemType(physicalEquipment.getType(), organization);
+            }
+        }
 
         List<ImpactEquipementPhysique> result = new ArrayList<>(criteria.size() * lifecycleSteps.size());
         LocalDateTime now = LocalDateTime.now();
@@ -112,9 +128,20 @@ public class EvaluateNumEcoEvalService {
                     itemImpactName = matchingItem.getRefItemTarget();
                 }
 
-                List<ItemImpactRest> itemImpacts = referentialService.getItemImpacts(
-                        criterion.getCode(), lifecycleStep, itemImpactName,
-                        physicalEquipment.getLocation(),organization);
+                if(itemImpactMap==null || itemImpactMap.isEmpty()) {
+                    itemImpacts = referentialService.getItemImpacts(
+                            criterion.getCode(), lifecycleStep, itemImpactName,
+                            physicalEquipment.getLocation(), organization);
+                }else{
+                    itemImpacts = referentialService.getItemImpactsForWorkspace(
+                            criterion.getCode(), lifecycleStep, itemImpactName,
+                            physicalEquipment.getLocation(), workspaceId, itemImpactMap);
+                    if(itemImpacts == null || itemImpacts.isEmpty()){
+                        itemImpacts = referentialService.getItemImpacts(
+                                criterion.getCode(), lifecycleStep, itemImpactName,
+                                physicalEquipment.getLocation(), organization);
+                    }
+                }
 
                 ItemImpactRest firstImpact = itemImpacts.stream().findFirst().orElse(null);
                 boolean hideValue = true;
