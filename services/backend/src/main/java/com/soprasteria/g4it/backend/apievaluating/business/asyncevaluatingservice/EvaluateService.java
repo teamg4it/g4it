@@ -350,7 +350,7 @@ public class EvaluateService {
                                 impact.getQuantite(), impact.getConsoElecMoyenne(),
                                 impact.getImpactUnitaire(),
                                 sipValue,
-                                impact.getDureeDeVie(), null, null, false, impact.getSource());
+                                impact.getDureeDeVie(), null, null, false, null);
 
                         aggregationPhysicalEquipments
                                 .computeIfAbsent(aggregationToOutput.keyPhysicalEquipment(physicalEquipment, datacenter, impact, refShortcutBO, evaluateReportBO.isDigitalService()),
@@ -550,7 +550,7 @@ public class EvaluateService {
                             virtualEquipment.getQuantity(),
                             electricity, impact.getImpactUnitaire(),
                             sipValue,
-                            null, virtualEquipment.getDurationHour(), virtualEquipment.getWorkload(), isCloudService, impact.getSource());
+                            null, virtualEquipment.getDurationHour(), virtualEquipment.getWorkload(), isCloudService,null);
 
                     aggregationVirtualEquipments
                             .computeIfAbsent(aggregationToOutput.keyVirtualEquipment(physicalEquipment, virtualEquipment, impact, refShortcutBO, evaluateReportBO), k -> new AggValuesBO())

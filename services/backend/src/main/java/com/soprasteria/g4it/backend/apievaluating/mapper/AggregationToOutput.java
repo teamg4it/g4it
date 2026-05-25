@@ -59,7 +59,7 @@ public interface AggregationToOutput {
                 hostingEfficiency,
                 String.join(";", physicalEquipment.getCommonFilters() == null ? List.of("") : physicalEquipment.getCommonFilters()),
                 String.join(";", physicalEquipment.getFilters() == null ? List.of("") : physicalEquipment.getFilters()),
-                impact.getSource()
+                null
         );
     }
 
@@ -84,7 +84,7 @@ public interface AggregationToOutput {
                 .hostingEfficiency("null".equals(values[8]) ? null : values[8])
                 .commonFilters(Arrays.asList(values[9].split(";")))
                 .filters(Arrays.asList(values[10].split(";")))
-                .source(values[11])
+                .source(null)
                 .countValue(agg.getCountValue())
                 .quantity(agg.getQuantity())
                 .lifespan(agg.getLifespan())
@@ -127,7 +127,7 @@ public interface AggregationToOutput {
                 String.join(";", physicalEquipmentFilters),
                 String.join(";", commonFilters),
                 String.join(";", filters),
-                impact.getSource()
+                null
         );
     }
 
@@ -151,7 +151,7 @@ public interface AggregationToOutput {
                 .filtersPhysicalEquipment(Arrays.asList(values[11].split(";")))
                 .commonFilters(Arrays.asList(values[12].split(";")))
                 .filters(Arrays.asList(values[13].split(";")))
-                .source(values[14])
+                .source(null)
                 .countValue(agg.getCountValue())
                 .quantity(agg.getQuantity())
                 .electricityConsumption(agg.getElectricityConsumption())
