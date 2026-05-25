@@ -72,7 +72,7 @@ public class GenericRuleService {
         }
         if (!isDigitalService) {
             if (referentialGetService.getItemTypesForWorkspace(type, workspaceId,itemTypeMap).isEmpty() &&
-                    referentialGetService.getItemTypes(type, null).isEmpty()) {
+                    referentialGetService.getItemTypes(type, null,null).isEmpty()) {
 
                 return Optional.of(new LineError(
                         filename,

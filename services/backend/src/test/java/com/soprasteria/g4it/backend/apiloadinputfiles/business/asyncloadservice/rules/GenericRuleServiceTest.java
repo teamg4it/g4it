@@ -99,8 +99,8 @@ class GenericRuleServiceTest {
     @Test
     void testCheckType_NonDigitalService_TypeExistsForOrganization_Ok() {
         ItemTypeRest typeItem = ItemTypeRest.builder().type("Printer").build();
-        when(referentialGetService.getItemTypes("Printer", organization)).thenReturn(List.of(typeItem));
-        when(referentialGetService.getItemTypes("Printer", null)).thenReturn(List.of());
+        when(referentialGetService.getItemTypes("Printer", organization,workspaceId)).thenReturn(List.of(typeItem));
+        when(referentialGetService.getItemTypes("Printer", null,null)).thenReturn(List.of());
         when(referentialGetService.getItemTypesForWorkspace("Printer", workspaceId, null)).thenReturn(List.of(typeItem));
         when(referentialGetService.getItemTypesForWorkspace(any(), any(), any())).thenAnswer(invocation -> {
             System.out.println("getItemTypesForWorkspace called with: " + invocation.getArgument(0) + ", " + invocation.getArgument(1) + ", " + invocation.getArgument(2));
@@ -113,9 +113,9 @@ class GenericRuleServiceTest {
     @Test
     void testCheckType_NonDigitalService_TypeExistsGlobally_Ok() {
         ItemTypeRest typeItem = ItemTypeRest.builder().type("Scanner").build();
-        when(referentialGetService.getItemTypes("Scanner", organization))
+        when(referentialGetService.getItemTypes("Scanner", organization,workspaceId))
                 .thenReturn(List.of());
-        when(referentialGetService.getItemTypes("Scanner", null))
+        when(referentialGetService.getItemTypes("Scanner", null,null))
                 .thenReturn(List.of(typeItem));
         when(referentialGetService.getItemTypesForWorkspace("Scanner", workspaceId, null))
                 .thenReturn(List.of()); // Should be empty to test global only
@@ -125,8 +125,8 @@ class GenericRuleServiceTest {
 
     @Test
     void testCheckType_NonDigitalService_TypeNotExist_Error() {
-        when(referentialGetService.getItemTypes("UnknownType", organization)).thenReturn(List.of());
-        when(referentialGetService.getItemTypes("UnknownType", null)).thenReturn(List.of());
+        when(referentialGetService.getItemTypes("UnknownType", organization,workspaceId)).thenReturn(List.of());
+        when(referentialGetService.getItemTypes("UnknownType", null,null)).thenReturn(List.of());
         when(messageSource.getMessage(eq("referential.type.not.exist"), any(), eq(locale)))
                 .thenReturn("Type does not exist");
         var actual = genericRuleService.checkType(locale, organization, filename, line, "UnknownType", false,workspaceId,null);
@@ -139,8 +139,8 @@ class GenericRuleServiceTest {
         ItemTypeRest organizationType = ItemTypeRest.builder().type("Laptop").build();
         ItemTypeRest globalType = ItemTypeRest.builder().type("Monitor").build();
 
-        when(referentialGetService.getItemTypes("Laptop", null)).thenReturn(List.of());
-        when(referentialGetService.getItemTypes("Monitor", null)).thenReturn(List.of(globalType));
+        when(referentialGetService.getItemTypes("Laptop", null,null)).thenReturn(List.of());
+        when(referentialGetService.getItemTypes("Monitor", null,null)).thenReturn(List.of(globalType));
         when(referentialGetService.getItemTypesForWorkspace("Laptop", workspaceId, null)).thenReturn(List.of(organizationType));
         when(referentialGetService.getItemTypesForWorkspace("Monitor", workspaceId, null)).thenReturn(List.of());
 

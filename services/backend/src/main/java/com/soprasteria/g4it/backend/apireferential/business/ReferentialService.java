@@ -82,9 +82,9 @@ public class ReferentialService {
      * @return MatchingItemRest
      */
     public MatchingItemRest getMatchingItem(String model, String organization) {
-        MatchingItemRest matchingItem = referentialGetService.getMatchingItem(model, organization);
+        MatchingItemRest matchingItem = referentialGetService.getMatchingItem(model, organization,null);
         if (matchingItem == null) {
-            matchingItem = referentialGetService.getMatchingItem(model, null);
+            matchingItem = referentialGetService.getMatchingItem(model, null,null);
         }
         return matchingItem;
     }
@@ -94,9 +94,9 @@ public class ReferentialService {
      * @return ItemTypeRest
      */
     public ItemTypeRest getItemType(String type, String organization) {
-        List<ItemTypeRest> itemTypeRestList = referentialGetService.getItemTypes(type, organization);
+        List<ItemTypeRest> itemTypeRestList = referentialGetService.getItemTypes(type, organization,null);
         if (itemTypeRestList.isEmpty()) {
-            itemTypeRestList = referentialGetService.getItemTypes(type, null);
+            itemTypeRestList = referentialGetService.getItemTypes(type, null,null);
         }
 
         return itemTypeRestList.getFirst();
@@ -189,11 +189,11 @@ public class ReferentialService {
     public MatchingItemRest getMatchingItemForWorkspace(String model,  Long workspaceId,Map<String, MatchingItemRest> matchingItemMap) {
         MatchingItemRest matchingItem = null;
         if (matchingItemMap == null || matchingItemMap.isEmpty()) {
-            matchingItem = referentialGetService.getMatchingItem(model, null);
+            matchingItem = referentialGetService.getMatchingItem(model, null,null);
         }else{
             matchingItem= referentialGetService.getMatchingItemForWorkspace(model,workspaceId,matchingItemMap);
             if(matchingItem==null){
-                matchingItem = referentialGetService.getMatchingItem(model, null);
+                matchingItem = referentialGetService.getMatchingItem(model, null,null);
             }
         }
         return matchingItem;
@@ -202,11 +202,11 @@ public class ReferentialService {
     public ItemTypeRest getItemTypeForWorkspace(String type,Long workspaceId,Map<String, List<ItemTypeRest>> itemTypeMap) {
         List<ItemTypeRest> itemTypeRestList = null;
         if (itemTypeMap==null || itemTypeMap.isEmpty()) {
-            itemTypeRestList = referentialGetService.getItemTypes(type, null);
+            itemTypeRestList = referentialGetService.getItemTypes(type, null,null);
         }else{
             itemTypeRestList=referentialGetService.getItemTypesForWorkspace(type, workspaceId,itemTypeMap);
             if(itemTypeRestList==null || itemTypeRestList.isEmpty()){
-                itemTypeRestList = referentialGetService.getItemTypes(type, null);
+                itemTypeRestList = referentialGetService.getItemTypes(type, null,null);
             }
         }
         return itemTypeRestList!=null?itemTypeRestList.getFirst():null;

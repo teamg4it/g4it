@@ -87,14 +87,14 @@ public class ReferentialGetService {
      * @return the of itemTypes
      */
     @Cacheable("ref_getItemTypes")
-    public List<ItemTypeRest> getItemTypes(String type, String organization) {
+    public List<ItemTypeRest> getItemTypes(String type, String organization,Long workspaceId) {
 
         // get all itemTypes
         if (type == null) {
-            return refRestMapper.toItemTypeRest(itemTypeRepository.findByOrganizationAndWorkspaceId(organization,null));
+            return refRestMapper.toItemTypeRest(itemTypeRepository.findByOrganizationAndWorkspaceId(organization,workspaceId));
         }
 
-        Optional<ItemType> itemType = itemTypeRepository.findByTypeAndOrganizationAndWorkspaceId(type, organization,null);
+        Optional<ItemType> itemType = itemTypeRepository.findByTypeAndOrganizationAndWorkspaceId(type, organization,workspaceId);
 
         return refRestMapper.toItemTypeRest(itemType.map(List::of).orElseGet(List::of));
     }
@@ -106,8 +106,8 @@ public class ReferentialGetService {
      * @return matchingItem
      */
     @Cacheable("ref_getMatchingItem")
-    public MatchingItemRest getMatchingItem(String model, String organization) {
-        return matchingItemRepository.findByItemSourceAndOrganizationAndWorkspaceId(model, organization,null)
+    public MatchingItemRest getMatchingItem(String model, String organization, Long workspaceId) {
+        return matchingItemRepository.findByItemSourceAndOrganizationAndWorkspaceId(model, organization,workspaceId)
                 .map(item -> refRestMapper.toMatchingItemRest(item)).orElse(null);
     }
 
