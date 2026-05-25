@@ -261,6 +261,9 @@ public class EvaluateService {
             outVirtualEquipmentSize += saveResult.savedVirtualCount();
             outApplicationSize += saveResult.savedApplicationCount();
 
+            // to check weather workspace level data
+            long countItemImpactWorkspace= referentialGetService.countItemImpactsForWorkspace(context.getWorkspaceId());
+
             int pageNumber = 0;
             final Sort sortByName = Sort.by("name");
             while (true) {
@@ -276,26 +279,32 @@ public class EvaluateService {
 
                 log.info("Evaluating {} physical equipments, page {}/{}", physicalEquipments.size(), pageNumber + 1, (int) Math.ceil((double) totalPhysicalEquipments / Constants.BATCH_SIZE));
                 int physicalSaveCounter = 0;
-                Set<String> models = physicalEquipments.stream()
-                        .map(InPhysicalEquipment::getModel)
-                        .filter(Objects::nonNull)
-                        .collect(Collectors.toSet());
-                Set<String> types = physicalEquipments.stream()
-                        .map(InPhysicalEquipment::getType)
-                        .filter(Objects::nonNull)
-                        .collect(Collectors.toSet());
-                Set<String> locations = physicalEquipments.stream()
-                        .map(InPhysicalEquipment::getLocation)
-                        .filter(Objects::nonNull)
-                        .collect(Collectors.toSet());
-                Map<String, MatchingItemRest> matchingItemMap = referentialGetService.bulkGetMatchingItemsForWorkspace(models,context.getWorkspaceId());
-                Map<String, List<ItemTypeRest>> itemTypeMap = referentialGetService.bulkGetItemTypesForWorkspace(types, context.getWorkspaceId());
-                Map<String, List<ItemImpactRest>> itemImpactMap = referentialGetService.bulkGetAllItemImpactsForWorkspace(
-                        activeCriteria.stream().map(CriterionRest::getCode).collect(Collectors.toSet()),
-                        new HashSet<>(lifecycleSteps),
-                        locations,
-                        context.getWorkspaceId()
-                );
+                Map<String, MatchingItemRest> matchingItemMap = Collections.emptyMap();
+                Map<String, List<ItemTypeRest>> itemTypeMap = Collections.emptyMap();
+                Map<String, List<ItemImpactRest>> itemImpactMap = Collections.emptyMap();
+                if(countItemImpactWorkspace>0) {
+                    log.info("Loading referential data for workspace id {} with count {}", context.getWorkspaceId(), countItemImpactWorkspace);
+                    Set<String> models = physicalEquipments.stream()
+                            .map(InPhysicalEquipment::getModel)
+                            .filter(Objects::nonNull)
+                            .collect(Collectors.toSet());
+                    Set<String> types = physicalEquipments.stream()
+                            .map(InPhysicalEquipment::getType)
+                            .filter(Objects::nonNull)
+                            .collect(Collectors.toSet());
+                    Set<String> locations = physicalEquipments.stream()
+                            .map(InPhysicalEquipment::getLocation)
+                            .filter(Objects::nonNull)
+                            .collect(Collectors.toSet());
+                    matchingItemMap = referentialGetService.bulkGetMatchingItemsForWorkspace(models, context.getWorkspaceId());
+                    itemTypeMap = referentialGetService.bulkGetItemTypesForWorkspace(types, context.getWorkspaceId());
+                    itemImpactMap = referentialGetService.bulkGetAllItemImpactsForWorkspace(
+                            activeCriteria.stream().map(CriterionRest::getCode).collect(Collectors.toSet()),
+                            new HashSet<>(lifecycleSteps),
+                            locations,
+                            context.getWorkspaceId()
+                    );
+                }
                 for (InPhysicalEquipment physicalEquipment : physicalEquipments) {
 
                     if (aggregationPhysicalEquipments.size() > MAXIMUM_MAP_CAPACITY) {

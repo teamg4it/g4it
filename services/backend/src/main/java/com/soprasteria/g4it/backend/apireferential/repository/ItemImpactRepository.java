@@ -86,5 +86,5 @@ public interface ItemImpactRepository extends JpaRepository<ItemImpact, Long> {
                                                                                                 String category,
                                                                                                 Set<String> locations,
                                                                                                 Long workspaceId);
-
+    long countByWorkspaceId(Long workspaceId);
 }

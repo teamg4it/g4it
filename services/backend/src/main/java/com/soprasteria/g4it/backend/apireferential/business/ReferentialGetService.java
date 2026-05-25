@@ -159,7 +159,7 @@ public class ReferentialGetService {
                     .toList();
         }else{
             String key = buildTypeKey(type, workspaceId);
-            if (itemTypeMap != null && itemTypeMap.containsKey(key)) {
+            if (itemTypeMap != null && !itemTypeMap.isEmpty() && itemTypeMap.containsKey(key)) {
                 return itemTypeMap.get(key);
             }
             return List.of();
@@ -168,7 +168,7 @@ public class ReferentialGetService {
 
     public MatchingItemRest getMatchingItemForWorkspace(String model, Long workspaceId,Map<String, MatchingItemRest> matchingItemMap) {
         String key = buildModelKey(model, workspaceId);
-        if (matchingItemMap != null && matchingItemMap.containsKey(key)) {
+        if (matchingItemMap != null && !matchingItemMap.isEmpty() && matchingItemMap.containsKey(key)) {
             return matchingItemMap.get(key);
         }
         return null;
@@ -184,7 +184,7 @@ public class ReferentialGetService {
                 workspaceId
         );
         // Assuming you have a pre-fetched map of item impacts for the workspace
-         if (itemImpactMap != null && itemImpactMap.containsKey(key)) {
+         if (itemImpactMap != null && !itemImpactMap.isEmpty() && itemImpactMap.containsKey(key)) {
              return itemImpactMap.get(key);
          }
         return List.of();
@@ -288,6 +288,10 @@ public class ReferentialGetService {
                     .addAll(refRestMapper.toItemImpactRest(List.of(impact)));
         }
         return map;
+    }
+
+    public long countItemImpactsForWorkspace(Long workspaceId) {
+        return itemImpactRepository.countByWorkspaceId(workspaceId);
     }
 
 
