@@ -90,10 +90,10 @@ public class EvaluateNumEcoEvalService {
         boolean isModelMatched = true;
 
         if (physicalEquipment.getModel() != null) {
-            matchingItem = referentialService.getMatchingItemForWorkspace(physicalEquipment.getModel(),workspaceId, matchingItemMap);
+            matchingItem = referentialService.getMatchingItem(physicalEquipment.getModel(),organization);
         }
 
-        ItemTypeRest itemTypeRest = referentialService.getItemTypeForWorkspace(physicalEquipment.getType(),workspaceId,itemTypeMap);
+        ItemTypeRest itemTypeRest = referentialService.getItemType(physicalEquipment.getType(),organization);
 
         List<ImpactEquipementPhysique> result = new ArrayList<>(criteria.size() * lifecycleSteps.size());
         LocalDateTime now = LocalDateTime.now();
@@ -112,9 +112,9 @@ public class EvaluateNumEcoEvalService {
                     itemImpactName = matchingItem.getRefItemTarget();
                 }
 
-                List<ItemImpactRest> itemImpacts = referentialService.getItemImpactsForWorkspace(
+                List<ItemImpactRest> itemImpacts = referentialService.getItemImpacts(
                         criterion.getCode(), lifecycleStep, itemImpactName,
-                        physicalEquipment.getLocation(),workspaceId,itemImpactMap);
+                        physicalEquipment.getLocation(),organization);
 
                 ItemImpactRest firstImpact = itemImpacts.stream().findFirst().orElse(null);
                 boolean hideValue = true;

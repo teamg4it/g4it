@@ -252,12 +252,17 @@ class EvaluateNumEcoEvalServiceTest {
                         "ORG",
                         List.of(criterion),
                         List.of("USING"),
-                        Collections.emptyList(),1L,any(),any(),any()
+                        Collections.emptyList(),
+                        1L,
+                        null, // instead of any()
+                        null, // instead of any()
+                        null  // instead of any()
                 );
 
         assertEquals(1, result.size());
         verify(calculImpactEquipementPhysiqueService).calculerImpactEquipementPhysique(any());
     }
+
 
     @Test
     void calculatePhysicalEquipment_shouldMarkReferentialSourceAsType_whenNoModelMatch() {
@@ -277,6 +282,9 @@ class EvaluateNumEcoEvalServiceTest {
         when(referentialService.getItemTypeForWorkspace(any(), any(), any())).thenReturn(itemType);
         when(referentialService.getMatchingItemForWorkspace(any(), any(), any())).thenReturn(null);
         when(referentialService.getItemImpactsForWorkspace(any(), any(), any(), any(), any(), any())).thenReturn(List.of());
+        when(referentialService.getItemType(any(), any())).thenReturn(itemType);
+        when(referentialService.getMatchingItem(any(), any())).thenReturn(null);
+        when(referentialService.getItemImpacts(any(), any(), any(), any(), any())).thenReturn(List.of());
         when(internalToNumEcoEvalCalculs.map(any(CriterionRest.class)))
                 .thenReturn(new org.mte.numecoeval.calculs.domain.data.referentiel.ReferentielCritere());
 
@@ -288,6 +296,7 @@ class EvaluateNumEcoEvalServiceTest {
         when(calculImpactEquipementPhysiqueService.calculerImpactEquipementPhysique(any()))
                 .thenReturn(impact);
 
+
         // WHEN
         service.calculatePhysicalEquipment(
                 physical,
@@ -295,7 +304,11 @@ class EvaluateNumEcoEvalServiceTest {
                 "ORG",
                 List.of(criterion),
                 List.of("MANUFACTURING"),
-                List.of(),1L,any(),any(),any()
+                List.of(),
+                1L,
+                null, // instead of any()
+                null, // instead of any()
+                null  // instead of any()
         );
 
         // THEN
@@ -327,7 +340,11 @@ class EvaluateNumEcoEvalServiceTest {
                         "ORG",
                         List.of(criterion, criterion),
                         List.of("FABRICATION", "USING"),
-                        Collections.emptyList(),1L,any(),any(),any()
+                        Collections.emptyList(),
+                        1L,
+                        null, // instead of any()
+                        null, // instead of any()
+                        null  // instead of any()
                 );
 
         assertEquals(4, result.size());
@@ -339,8 +356,6 @@ class EvaluateNumEcoEvalServiceTest {
 
     @Test
     void calculatePhysicalEquipment_shouldRewriteElectricityTrace_forUsingLifecycle() throws Exception {
-
-        // GIVEN
         InPhysicalEquipment physical = new InPhysicalEquipment();
         physical.setType("SERVER");
         physical.setLocation("FR");
@@ -358,15 +373,14 @@ class EvaluateNumEcoEvalServiceTest {
         when(referentialService.getItemImpacts(any(), any(), any(), any(), any()))
                 .thenReturn(List.of(new ItemImpactRest()));
 
-        String initialTrace =
-                "{ \"consoElecAnMoyenne\": { \"valeur\": 100 } }";
+        String initialTrace = "{ \"consoElecAnMoyenne\": { \"valeur\": 100 } }";
 
         when(calculImpactEquipementPhysiqueService.calculerImpactEquipementPhysique(any()))
                 .thenReturn(ImpactEquipementPhysique.builder()
                         .trace(initialTrace)
                         .build());
 
-        // WHEN
+        // Use real values instead of any()
         List<ImpactEquipementPhysique> result =
                 service.calculatePhysicalEquipment(
                         physical,
@@ -374,10 +388,13 @@ class EvaluateNumEcoEvalServiceTest {
                         "ORG",
                         List.of(criterion),
                         List.of("USING"),
-                        Collections.emptyList(),1L,any(),any(),any()
+                        Collections.emptyList(),
+                        1L,
+                        null,
+                        null,
+                        null
                 );
 
-        // THEN
         assertEquals(1, result.size());
 
         ObjectMapper mapper = new ObjectMapper();
@@ -388,6 +405,7 @@ class EvaluateNumEcoEvalServiceTest {
         assertNotNull(conso);
         assertEquals("REELLE", conso.get("impact source"));
     }
+
 
     @Test
     void calculatePhysicalEquipment_shouldMarkReferentialSourceAsModel_whenMatched() {
@@ -413,6 +431,10 @@ class EvaluateNumEcoEvalServiceTest {
         when(referentialService.getItemImpacts(any(), any(), any(), any(), any()))
                 .thenReturn(List.of());
 
+        when(referentialService.getItemTypeForWorkspace(any(), any(), any()))
+                .thenReturn(new ItemTypeRest()); // or a properly initialized ItemTypeRest
+
+
         when(internalToNumEcoEvalCalculs.map(any(CriterionRest.class)))
                 .thenReturn(new org.mte.numecoeval.calculs.domain.data.referentiel.ReferentielCritere());
 
@@ -433,7 +455,11 @@ class EvaluateNumEcoEvalServiceTest {
                 "ORG",
                 List.of(criterion),
                 List.of("MANUFACTURING"),
-                List.of(),1L,any(),any(),any()
+                List.of(),
+                1L,
+                null, // instead of any()
+                null, // instead of any()
+                null  // instead of any()
         );
 
         // THEN
@@ -445,6 +471,7 @@ class EvaluateNumEcoEvalServiceTest {
         assertTrue(rewrittenTrace.contains("\"impact source\":\"MODELE\""));
     }
 
+
     @Test
     void calculatePhysicalEquipment_shouldNotFail_whenTraceIsInvalidJson() {
         InPhysicalEquipment physical = new InPhysicalEquipment();
@@ -453,10 +480,17 @@ class EvaluateNumEcoEvalServiceTest {
         CriterionRest criterion = new CriterionRest();
         criterion.setCode("CLIMATE_CHANGE");
 
-        when(referentialService.getItemTypeForWorkspace(any(), any(),any()))
+        MatchingItemRest matchingItem = new MatchingItemRest();
+        matchingItem.setRefItemTarget("REF_SERVER");
+
+        when(referentialService.getMatchingItem(any(), any()))
+                .thenReturn(matchingItem);
+
+        when(referentialService.getItemType(any(), any()))
                 .thenReturn(new ItemTypeRest());
-        when(referentialService.getItemImpactsForWorkspace(any(), any(), any(), any(), any(),any()))
-                .thenReturn(List.of(new ItemImpactRest()));
+
+        when(referentialService.getItemImpacts(any(), any(), any(), any(), any()))
+                .thenReturn(List.of());
         when(calculImpactEquipementPhysiqueService.calculerImpactEquipementPhysique(any()))
                 .thenReturn(ImpactEquipementPhysique.builder().trace("INVALID_JSON").build());
 
@@ -467,10 +501,15 @@ class EvaluateNumEcoEvalServiceTest {
                         "ORG",
                         List.of(criterion),
                         List.of("FABRICATION"),
-                        Collections.emptyList(),1L,any(),any(),any()
+                        Collections.emptyList(),
+                        1L,
+                        null, // instead of any()
+                        null, // instead of any()
+                        null  // instead of any()
                 )
         );
     }
+
 
     @Test
     void updateFormula_shouldReplacePattern_whenFormulaExists() throws Exception {
@@ -531,19 +570,19 @@ class EvaluateNumEcoEvalServiceTest {
 
         when(referentialService.getItemImpacts(any(), any(), any(), any(), any()))
                 .thenReturn(List.of(impactRest));
-        when(referentialService.getItemImpactsForWorkspace(any(), any(), any(), any(), any(),any()))
+        when(referentialService.getItemImpactsForWorkspace(any(), any(), any(), any(), any(), any()))
                 .thenReturn(List.of(impactRest));
         when(referentialService.getItemTypeForWorkspace(any(), any(), any()))
                 .thenReturn(new ItemTypeRest());
 
         String traceJson = """
-        {
-          "mixElectrique": {
-            "valeur": 1.5,
-            "valeurReferentielMixElectrique": 2.0
-          }
-        }
-        """;
+    {
+      "mixElectrique": {
+        "valeur": 1.5,
+        "valeurReferentielMixElectrique": 2.0
+      }
+    }
+    """;
 
         ImpactEquipementPhysique impact = mock(ImpactEquipementPhysique.class);
         when(impact.getTrace()).thenReturn(traceJson);
@@ -551,13 +590,18 @@ class EvaluateNumEcoEvalServiceTest {
         when(calculImpactEquipementPhysiqueService.calculerImpactEquipementPhysique(any()))
                 .thenReturn(impact);
 
+        // Use real values instead of any() for the last four arguments
         service.calculatePhysicalEquipment(
                 physical,
                 dc,
                 "ORG",
                 List.of(criterion),
                 List.of("USING"),
-                List.of(),1L,any(),any(),any()
+                List.of(),
+                1L,
+                null, // or appropriate value
+                null, // or appropriate value
+                null  // or appropriate value
         );
 
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
@@ -616,8 +660,13 @@ class EvaluateNumEcoEvalServiceTest {
                 "ORG",
                 List.of(criterion),
                 List.of(Constants.USING),
-                List.of(),1L,any(),any(),any()
+                List.of(),
+                1L,
+                null, // instead of any()
+                null, // instead of any()
+                null  // instead of any()
         );
+
 
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
         verify(impact).setTrace(captor.capture());
