@@ -67,7 +67,7 @@ class LoadPhysicalEquipmentServiceTest {
         InPhysicalEquipmentRest peRest = mock(InPhysicalEquipmentRest.class);
         when(peRest.getName()).thenReturn("pe1");
         List<InPhysicalEquipmentRest> physicalEquipments = List.of(peRest);
-        when(checkPhysicalEquipmentService.checkRules(any(), any(), any(), anyInt(),any())).thenReturn(Collections.emptyList());
+        when(checkPhysicalEquipmentService.checkRules(any(), any(), any(), anyInt())).thenReturn(Collections.emptyList());
         InPhysicalEquipment peEntity = mock(InPhysicalEquipment.class);
         when(inPhysicalEquipmentMapper.toEntity(peRest)).thenReturn(peEntity);
         doNothing().when(inPhysicalEquipmentRepository).deleteByInventoryIdAndNameIn(anyLong(), any());
@@ -93,7 +93,7 @@ class LoadPhysicalEquipmentServiceTest {
         when(peRest.getName()).thenReturn("pe1");
         List<InPhysicalEquipmentRest> physicalEquipments = List.of(peRest);
         List<LineError> checkErrors = List.of(mock(LineError.class));
-        when(checkPhysicalEquipmentService.checkRules(any(), any(), any(), anyInt(),any())).thenReturn(checkErrors);
+        when(checkPhysicalEquipmentService.checkRules(any(), any(), any(), anyInt())).thenReturn(checkErrors);
         service.execute(context, fileToLoad, 0, physicalEquipments);
     }
 
@@ -108,7 +108,7 @@ class LoadPhysicalEquipmentServiceTest {
         InPhysicalEquipmentRest peRest = mock(InPhysicalEquipmentRest.class);
         when(peRest.getName()).thenReturn("pe1");
         List<InPhysicalEquipmentRest> physicalEquipments = List.of(peRest);
-        when(checkPhysicalEquipmentService.checkRules(any(), any(), any(), anyInt(),any())).thenReturn(Collections.emptyList());
+        when(checkPhysicalEquipmentService.checkRules(any(), any(), any(), anyInt())).thenReturn(Collections.emptyList());
         InPhysicalEquipment peEntity = mock(InPhysicalEquipment.class);
         when(inPhysicalEquipmentMapper.toEntity(peRest)).thenReturn(peEntity);
         doNothing().when(inPhysicalEquipmentRepository).deleteByDigitalServiceVersionUidAndNameIn(anyString(), any());

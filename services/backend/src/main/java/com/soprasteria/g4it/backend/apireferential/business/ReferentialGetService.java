@@ -150,7 +150,7 @@ public class ReferentialGetService {
         return itemImpactRepository.findByCategoryAndWorkspaceId("electricity-mix",null);
     }
 
-    public List<ItemTypeRest> getItemTypesForWorkspace(String type, Long workspaceId, Map<String, List<ItemTypeRest>> itemTypeMap) {
+    /*public List<ItemTypeRest> getItemTypesForWorkspace(String type, Long workspaceId, Map<String, List<ItemTypeRest>> itemTypeMap) {
 
         // get all itemTypes
         if (type == null) {
@@ -164,17 +164,30 @@ public class ReferentialGetService {
             }
             return List.of();
         }
+    }*/
+    @Cacheable(value = "ref_getItemTypes", key = "#workspaceId")
+    public List<ItemTypeRest> getItemTypesForWorkspace(String type, Long workspaceId) {
+        if (type == null) {
+            return refRestMapper.toItemTypeRest(itemTypeRepository.findByOrganizationAndWorkspaceId(null,workspaceId));
+        }
+        Optional<ItemType> itemType = itemTypeRepository.findByTypeAndOrganizationAndWorkspaceId(type, null,workspaceId);
+        return refRestMapper.toItemTypeRest(itemType.map(List::of).orElseGet(List::of));
     }
 
-    public MatchingItemRest getMatchingItemForWorkspace(String model, Long workspaceId,Map<String, MatchingItemRest> matchingItemMap) {
+    /*public MatchingItemRest getMatchingItemForWorkspace(String model, Long workspaceId,Map<String, MatchingItemRest> matchingItemMap) {
         String key = buildModelKey(model, workspaceId);
         if (matchingItemMap != null && !matchingItemMap.isEmpty() && matchingItemMap.containsKey(key)) {
             return matchingItemMap.get(key);
         }
         return null;
+    }*/
+    @Cacheable(value = "ref_getMatchingItem", key = "#workspaceId")
+    public MatchingItemRest getMatchingItemForWorkspace(String model, Long workspaceId) {
+        return matchingItemRepository.findByItemSourceAndOrganizationAndWorkspaceId(model, null,workspaceId)
+                .map(item -> refRestMapper.toMatchingItemRest(item)).orElse(null);
     }
 
-    public List<ItemImpactRest> getItemImpactsForWorkspace(String criterion, String lifecycleStep,
+    /*public List<ItemImpactRest> getItemImpactsForWorkspace(String criterion, String lifecycleStep,
                                                String name, Long workspaceId,Map<String, List<ItemImpactRest>> itemImpactMap) {
 
         String key = buildImpactKey(
@@ -188,7 +201,16 @@ public class ReferentialGetService {
              return itemImpactMap.get(key);
          }
         return List.of();
+    }*/
+    @Cacheable(value = "ref_getItemImpacts", key = "#workspaceId")
+    public List<ItemImpactRest> getItemImpactsForWorkspace(String criterion, String lifecycleStep,
+                                                           String name, String location,
+                                                           String category, String organization, Long workspaceId) {
+        List<ItemImpact> itemImpacts = itemImpactRepository.findByCriterionAndLifecycleStepAndNameAndCategoryAndLocationAndOrganizationAndWorkspaceId(
+                StringUtils.kebabToSnakeCase(criterion), LifecycleStepUtils.get(lifecycleStep, lifecycleStep), name, category, location, organization, workspaceId);
+        return refRestMapper.toItemImpactRest(itemImpacts);
     }
+
 
     public List<ItemImpactRest> getItemImpactsELectricityMixForWorkspace(String criterion,String location,
                                                            Long workspaceId,Map<String, List<ItemImpactRest>> itemImpactElectricityMap) {

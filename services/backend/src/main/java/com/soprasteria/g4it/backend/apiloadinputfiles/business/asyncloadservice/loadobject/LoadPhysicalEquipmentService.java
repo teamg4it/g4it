@@ -57,11 +57,11 @@ public class LoadPhysicalEquipmentService {
         if (physicalEquipments.isEmpty()) return List.of();
 
         log.info("Load physical equipments for {}, size = {}", context.log(), physicalEquipments.size());
-        Set<String> types = physicalEquipments.stream()
+        /*Set<String> types = physicalEquipments.stream()
                 .map(InPhysicalEquipmentRest::getType)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toSet());
-        Map<String, List<ItemTypeRest>> itemTypeMap =referentialGetService.bulkGetItemTypesForWorkspace(types,context.getWorkspaceId());
+        Map<String, List<ItemTypeRest>> itemTypeMap =referentialGetService.bulkGetItemTypesForWorkspace(types,context.getWorkspaceId());*/
 
         List<LineError> errors = new ArrayList<>();
 
@@ -71,7 +71,7 @@ public class LoadPhysicalEquipmentService {
             int line = Constants.BATCH_SIZE * pageNumber + i + 2;
             List<LineError> coherenceErrorInLine =  fileToLoad.getCoherenceErrorByLineNumer().getOrDefault(line, List.of());
 
-            final List<LineError> checkErrors = checkPhysicalEquipmentService.checkRules(context, physicalEquipments.get(i),fileToLoad.getFilename(),  line, itemTypeMap);
+            final List<LineError> checkErrors = checkPhysicalEquipmentService.checkRules(context, physicalEquipments.get(i),fileToLoad.getFilename(),  line);
             if (checkErrors.isEmpty() && coherenceErrorInLine.isEmpty()) {
                 physicalEquipmentsToSave.add(inPhysicalEquipmentMapper.toEntity(physicalEquipments.get(i)));
             } else {

@@ -71,7 +71,7 @@ class EvaluateNumEcoEvalServiceTest {
                 .thenReturn(mappedDataCenter);
 
         // Prevent NPE in all tests
-        when(referentialService.getItemTypeForWorkspace(any(), any(), any()))
+        when(referentialService.getItemTypeForWorkspace(any(), any()))
                 .thenReturn(new ItemTypeRest());
     }
 
@@ -242,7 +242,7 @@ class EvaluateNumEcoEvalServiceTest {
                 .thenReturn(List.of(itemImpact));
         when(calculImpactEquipementPhysiqueService.calculerImpactEquipementPhysique(any()))
                 .thenReturn(ImpactEquipementPhysique.builder().trace("{}").build());
-        when(referentialService.getItemTypeForWorkspace(any(), any(), any()))
+        when(referentialService.getItemTypeForWorkspace(any(), any()))
                 .thenReturn(new ItemTypeRest());
 
         List<ImpactEquipementPhysique> result =
@@ -254,9 +254,7 @@ class EvaluateNumEcoEvalServiceTest {
                         List.of("USING"),
                         Collections.emptyList(),
                         1L,
-                        null, // instead of any()
-                        null, // instead of any()
-                        null  // instead of any()
+                        1
                 );
 
         assertEquals(1, result.size());
@@ -279,9 +277,9 @@ class EvaluateNumEcoEvalServiceTest {
         itemType.setRefDefaultItem("DEFAULT_SERVER");
 
         // Correct mocks for service logic
-        when(referentialService.getItemTypeForWorkspace(any(), any(), any())).thenReturn(itemType);
-        when(referentialService.getMatchingItemForWorkspace(any(), any(), any())).thenReturn(null);
-        when(referentialService.getItemImpactsForWorkspace(any(), any(), any(), any(), any(), any())).thenReturn(List.of());
+        when(referentialService.getItemTypeForWorkspace(any(), any())).thenReturn(itemType);
+        when(referentialService.getMatchingItemForWorkspace(any(), any())).thenReturn(null);
+        when(referentialService.getItemImpactsForWorkspace(any(), any(), any(), any(), any())).thenReturn(List.of());
         when(referentialService.getItemType(any(), any())).thenReturn(itemType);
         when(referentialService.getMatchingItem(any(), any())).thenReturn(null);
         when(referentialService.getItemImpacts(any(), any(), any(), any(), any())).thenReturn(List.of());
@@ -306,9 +304,7 @@ class EvaluateNumEcoEvalServiceTest {
                 List.of("MANUFACTURING"),
                 List.of(),
                 1L,
-                null, // instead of any()
-                null, // instead of any()
-                null  // instead of any()
+                1  // instead of any()
         );
 
         // THEN
@@ -342,9 +338,7 @@ class EvaluateNumEcoEvalServiceTest {
                         List.of("FABRICATION", "USING"),
                         Collections.emptyList(),
                         1L,
-                        null, // instead of any()
-                        null, // instead of any()
-                        null  // instead of any()
+                        1 // instead of any()
                 );
 
         assertEquals(4, result.size());
@@ -390,9 +384,7 @@ class EvaluateNumEcoEvalServiceTest {
                         List.of("USING"),
                         Collections.emptyList(),
                         1L,
-                        null,
-                        null,
-                        null
+                        1
                 );
 
         assertEquals(1, result.size());
@@ -431,7 +423,7 @@ class EvaluateNumEcoEvalServiceTest {
         when(referentialService.getItemImpacts(any(), any(), any(), any(), any()))
                 .thenReturn(List.of());
 
-        when(referentialService.getItemTypeForWorkspace(any(), any(), any()))
+        when(referentialService.getItemTypeForWorkspace(any(), any()))
                 .thenReturn(new ItemTypeRest()); // or a properly initialized ItemTypeRest
 
 
@@ -457,9 +449,7 @@ class EvaluateNumEcoEvalServiceTest {
                 List.of("MANUFACTURING"),
                 List.of(),
                 1L,
-                null, // instead of any()
-                null, // instead of any()
-                null  // instead of any()
+                1 // instead of any()
         );
 
         // THEN
@@ -503,9 +493,7 @@ class EvaluateNumEcoEvalServiceTest {
                         List.of("FABRICATION"),
                         Collections.emptyList(),
                         1L,
-                        null, // instead of any()
-                        null, // instead of any()
-                        null  // instead of any()
+                        1 // instead of any()
                 )
         );
     }
@@ -570,9 +558,9 @@ class EvaluateNumEcoEvalServiceTest {
 
         when(referentialService.getItemImpacts(any(), any(), any(), any(), any()))
                 .thenReturn(List.of(impactRest));
-        when(referentialService.getItemImpactsForWorkspace(any(), any(), any(), any(), any(), any()))
+        when(referentialService.getItemImpactsForWorkspace(any(), any(), any(), any(), any()))
                 .thenReturn(List.of(impactRest));
-        when(referentialService.getItemTypeForWorkspace(any(), any(), any()))
+        when(referentialService.getItemTypeForWorkspace(any(), any()))
                 .thenReturn(new ItemTypeRest());
 
         String traceJson = """
@@ -599,9 +587,8 @@ class EvaluateNumEcoEvalServiceTest {
                 List.of("USING"),
                 List.of(),
                 1L,
-                null, // or appropriate value
-                null, // or appropriate value
-                null  // or appropriate value
+                1// or appropriate value
+                // or appropriate value
         );
 
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
@@ -662,9 +649,7 @@ class EvaluateNumEcoEvalServiceTest {
                 List.of(Constants.USING),
                 List.of(),
                 1L,
-                null, // instead of any()
-                null, // instead of any()
-                null  // instead of any()
+                1 // instead of any()
         );
 
 

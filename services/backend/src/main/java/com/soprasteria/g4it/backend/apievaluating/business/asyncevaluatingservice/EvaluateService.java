@@ -279,7 +279,7 @@ public class EvaluateService {
 
                 log.info("Evaluating {} physical equipments, page {}/{}", physicalEquipments.size(), pageNumber + 1, (int) Math.ceil((double) totalPhysicalEquipments / Constants.BATCH_SIZE));
                 int physicalSaveCounter = 0;
-                Map<String, MatchingItemRest> matchingItemMap = Collections.emptyMap();
+                /*Map<String, MatchingItemRest> matchingItemMap = Collections.emptyMap();
                 Map<String, List<ItemTypeRest>> itemTypeMap = Collections.emptyMap();
                 Map<String, List<ItemImpactRest>> itemImpactMap = Collections.emptyMap();
                 if(countItemImpactWorkspace>0) {
@@ -304,7 +304,7 @@ public class EvaluateService {
                             locations,
                             context.getWorkspaceId()
                     );
-                }
+                }*/
                 for (InPhysicalEquipment physicalEquipment : physicalEquipments) {
 
                     if (aggregationPhysicalEquipments.size() > MAXIMUM_MAP_CAPACITY) {
@@ -327,7 +327,7 @@ public class EvaluateService {
                     // Call external tools - lib calculs
                     List<ImpactEquipementPhysique> impactEquipementPhysiqueList = evaluateNumEcoEvalService.calculatePhysicalEquipment(
                             physicalEquipment, datacenter,
-                            organization, activeCriteria, lifecycleSteps, hypothesisRestList,context.getWorkspaceId(),matchingItemMap,itemTypeMap,itemImpactMap);
+                            organization, activeCriteria, lifecycleSteps, hypothesisRestList,context.getWorkspaceId(),countItemImpactWorkspace);
 
 
                     // Identify NON-CLOUD VMs for this physical equipment
@@ -350,7 +350,7 @@ public class EvaluateService {
                                 impact.getQuantite(), impact.getConsoElecMoyenne(),
                                 impact.getImpactUnitaire(),
                                 sipValue,
-                                impact.getDureeDeVie(), null, null, false, null);
+                                impact.getDureeDeVie(), null, null, false, impact.getSource());
 
                         aggregationPhysicalEquipments
                                 .computeIfAbsent(aggregationToOutput.keyPhysicalEquipment(physicalEquipment, datacenter, impact, refShortcutBO, evaluateReportBO.isDigitalService()),
@@ -550,7 +550,7 @@ public class EvaluateService {
                             virtualEquipment.getQuantity(),
                             electricity, impact.getImpactUnitaire(),
                             sipValue,
-                            null, virtualEquipment.getDurationHour(), virtualEquipment.getWorkload(), isCloudService,null);
+                            null, virtualEquipment.getDurationHour(), virtualEquipment.getWorkload(), isCloudService,impact.getSource());
 
                     aggregationVirtualEquipments
                             .computeIfAbsent(aggregationToOutput.keyVirtualEquipment(physicalEquipment, virtualEquipment, impact, refShortcutBO, evaluateReportBO), k -> new AggValuesBO())

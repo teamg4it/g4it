@@ -251,10 +251,11 @@ public class EvaluateAiService {
                     csvOutAiReco.printRecord((Object[]) aiRecoRecord);
                 }
             }
+            long countItemImpactWorkspace= referentialGetService.countItemImpactsForWorkspace(context.getWorkspaceId());
 
             while (!physicalEquipments.isEmpty()) {
 
-                log.info("Evaluating {} physical equipments", physicalEquipments.size());
+                /*log.info("Evaluating {} physical equipments", physicalEquipments.size());
                 Set<String> models = physicalEquipments.stream()
                         .map(InPhysicalEquipment::getModel)
                         .filter(Objects::nonNull)
@@ -274,7 +275,7 @@ public class EvaluateAiService {
                         new HashSet<>(lifecycleSteps),
                         locations,
                         context.getWorkspaceId()
-                );
+                );*/
 
                 for (InPhysicalEquipment inPhysicalEq : physicalEquipments) {
                     if (aggregationPhysicalEquipments.size() > MAXIMUM_MAP_CAPICITY) {
@@ -295,7 +296,7 @@ public class EvaluateAiService {
 
                     List<ImpactEquipementPhysique> impactEquipementPhysiqueList = evaluateNumEcoEvalService.calculatePhysicalEquipment(
                             inPhysicalEq, datacenters.getFirst(),
-                            organization, activeCriteria, lifecycleSteps, hypothesisRestList, context.getWorkspaceId(),matchingItemMap,itemTypeMap,itemImpactMap);
+                            organization, activeCriteria, lifecycleSteps, hypothesisRestList, context.getWorkspaceId(),countItemImpactWorkspace);
 
                     if (evaluateReportBO.isExport()) {
                         csvInPhysicalEquipment.printRecord(inputToCsvRecord.toCsv(inPhysicalEq, datacenter));

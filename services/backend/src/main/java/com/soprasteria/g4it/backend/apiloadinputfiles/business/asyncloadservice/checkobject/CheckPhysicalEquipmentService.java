@@ -50,7 +50,7 @@ public class CheckPhysicalEquipmentService {
      * @param line              the line number
      * @return the list of errors
      */
-    public List<LineError> checkRules(final Context context, final InPhysicalEquipmentRest physicalEquipment, final String filename, final int line, Map<String, List<ItemTypeRest>> itemTypeMap) {
+    public List<LineError> checkRules(final Context context, final InPhysicalEquipmentRest physicalEquipment, final String filename, final int line) {
         List<LineError> errors = new ArrayList<>();
         final boolean isDigitalService = context.getDigitalServiceVersionUid() != null;
 
@@ -62,7 +62,7 @@ public class CheckPhysicalEquipmentService {
                 .ifPresent(errors::add);
 
         // check type is in itemTypes referential
-        genericRuleService.checkType(context.getLocale(), context.getOrganization(),filename, line, physicalEquipment.getType(), isDigitalService,context.getWorkspaceId(),itemTypeMap)
+        genericRuleService.checkType(context.getLocale(), context.getOrganization(),filename, line, physicalEquipment.getType(), isDigitalService,context.getWorkspaceId())
                 .ifPresent(errors::add);
 
 
