@@ -199,7 +199,7 @@ public class ReferentialService {
     }*/
     public ItemTypeRest getItemTypeForWorkspace(String type,Long workspaceId) {
         List<ItemTypeRest> itemTypeRestList=referentialGetService.getItemTypesForWorkspace(type, workspaceId);
-        return itemTypeRestList!=null?itemTypeRestList.getFirst():null;
+        return itemTypeRestList!=null && !itemTypeRestList.isEmpty()?itemTypeRestList.getFirst():null;
     }
 
     /*public List<ItemImpactRest> getItemImpactsForWorkspace(final String criterion, final String lifecycleStep, final String name,
