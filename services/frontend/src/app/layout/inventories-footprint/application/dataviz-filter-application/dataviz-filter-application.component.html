@@ -1,7 +1,7 @@
 <p-button
     (onClick)="openFilterSidebar()"
     styleClass="p-button-secondary-blue uppercase mr-3"
-    id="filter"
+    id="application-filter-button"
     [icon]="selectedFilterNames().length ? 'pi pi-filter-fill' : 'pi pi-filter'"
     [ariaLabel]="'inventories-footprint.filter-view' | translate"
 ></p-button>
@@ -22,6 +22,7 @@
                     headerStyleClass="h-3rem bg-transparent font-bold mb-0"
                     contentStyleClass="bg-transparent p-2"
                     [value]="$index"
+                    [id]="'app-inv-accordion-panel-' + $index"
                 >
                     <p-accordion-header>
                         <div class="flex flex-column">
@@ -39,7 +40,7 @@
                     <p-accordion-content>
                         <ul class="m-0">
                             @for (item of allUnusedFilters[tab.field]; track $index) {
-                                <li class="my-3">
+                                <li class="my-3" [id]="'app-inv-filter-li-' + $index">
                                     @if (!tab?.children?.length) {
                                         <p-checkbox
                                             class="mb-1 mr-2"

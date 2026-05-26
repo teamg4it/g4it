@@ -33,7 +33,6 @@ describe("Ecomind", () => {
         // fill ai parameters fields
         cy.then(() => setPage("AI Parameters page"));
         cy.log("### Fill AI Parameters Fields ###");
-        cy.get('[inputId="finetuning"]').click();
         cy.get("#nb-user-year").type("4");
         cy.get("#average-request").type("4");
         cy.get("#average-number-token").type("4");

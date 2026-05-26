@@ -49,20 +49,20 @@ import { InventoryItemComponent } from "./inventory-item/inventory-item.componen
     providers: [ConfirmationService, MessageService],
     standalone: true,
     imports: [
-    ToastModule,
-    DrawerModule,
-    FilePanelComponent,
-    CommonEditorComponent,
-    Button,
-    ScrollPanelModule,
-    AccordionModule,
-    InventoryItemComponent,
-    FormsModule,
-    InputTextModule,
-    RenewServicePopupComponent,
-    AsyncPipe,
-    TranslatePipe
-],
+        ToastModule,
+        DrawerModule,
+        FilePanelComponent,
+        CommonEditorComponent,
+        Button,
+        ScrollPanelModule,
+        AccordionModule,
+        InventoryItemComponent,
+        FormsModule,
+        InputTextModule,
+        RenewServicePopupComponent,
+        AsyncPipe,
+        TranslatePipe,
+    ],
 })
 export class InventoriesComponent implements OnInit, OnDestroy {
     private readonly destroyRef = inject(DestroyRef);
@@ -72,6 +72,8 @@ export class InventoriesComponent implements OnInit, OnDestroy {
     @ViewChild(FilePanelComponent) filePanelComponent: FilePanelComponent | undefined;
     sidebarVisible: boolean = false;
     sidebarPurpose: string = "";
+    array = Array;
+    String = String;
     sidebarType = "FILE"; // or NOTE
     id: number = 0;
     name: any = "";
@@ -125,7 +127,6 @@ export class InventoriesComponent implements OnInit, OnDestroy {
                           .map((v) => Number.parseInt(v)),
                   )
                 : new Set();
-
             if (localStorage.getItem("inventoryBlocksOpen") == null) {
                 this.inventoryBlocksOpen = new Set([
                     Constants.INVENTORY_TYPE.INFORMATION_SYSTEM,
@@ -375,12 +376,12 @@ export class InventoriesComponent implements OnInit, OnDestroy {
     }
 
     childOpenTab(event: any) {
-        this.inventoriesOpen.add(event);
+        this.inventoriesOpen.add(Number(event.index));
         this.updateLocalStorage();
     }
 
     childCloseTab(event: any) {
-        this.inventoriesOpen.delete(event);
+        this.inventoriesOpen.delete(Number(event.index));
         this.updateLocalStorage();
     }
 

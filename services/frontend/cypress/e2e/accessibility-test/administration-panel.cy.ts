@@ -22,13 +22,10 @@ describe("Administration panel", () => {
         cy.then(() => setPage("Organizations page"));
 
         // select subscriber
-        cy.get('p-dropdown[id="organizationName"]')
-            .find(".p-dropdown")
-            .click({ force: true })
-            .get("p-dropdownitem")
-            .children()
-            .first()
-            .click({ force: true });
+
+        cy.get("#organizationName").click();
+
+        cy.get("li.p-select-option").last().click();
         cy.wait(3000).checkA11y(undefined, undefined, reportA11yViolations, true);
 
         // edit subscriber
@@ -58,13 +55,10 @@ describe("Administration panel", () => {
 
         cy.get('[id="users-tab"]').click();
         // select an organization
-        cy.get('p-dropdown[id="workspaceName"]')
-            .find(".p-dropdown")
-            .click({ force: true })
-            .get("p-dropdownitem")
-            .children()
-            .last()
-            .click({ force: true });
+
+        cy.get("#workspaceName").click();
+
+        cy.get("li.p-select-option").last().click();
         // wait the dropdown was not visible to unchecked some error
         cy.wait(3000).checkA11y(undefined, undefined, reportA11yViolations, true);
 
@@ -87,24 +81,16 @@ describe("Administration panel", () => {
 
                     // edit user access & role and save changes
                     cy.then(() => setPage("User access and role management"));
-                    cy.get('p-dropdown[id="user-role-dropdown"]')
-                        .find(".p-dropdown")
-                        .click({ force: true })
-                        .get("p-dropdownitem")
-                        .children()
-                        .last()
-                        .click({ force: true });
+                    cy.get("#user-role-dropdown").click();
+
+                    cy.get("li.p-select-option").last().click();
                 } else if (el.find('[id="edit-button"]').length) {
                     cy.get('[id="edit-button"]').click();
                     // edit user access & role and save changes
                     cy.then(() => setPage("User access and role management"));
-                    cy.get('p-dropdown[id="user-role-dropdown"]')
-                        .find(".p-dropdown")
-                        .click({ force: true })
-                        .get("p-dropdownitem")
-                        .children()
-                        .last()
-                        .click({ force: true });
+                    cy.get("#user-role-dropdown").click();
+
+                    cy.get("li.p-select-option").last().click();
                 }
             });
 

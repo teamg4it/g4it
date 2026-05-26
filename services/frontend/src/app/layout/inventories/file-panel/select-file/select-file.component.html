@@ -8,6 +8,8 @@
     ></p-select>
     <p-fileupload
         mode="basic"
+        id="file{{ index }}"
+        #fileUpload
         [customUpload]="true"
         [auto]="false"
         [chooseIcon]="file?.name ? 'pi pi-upload' : 'pi pi-plus'"

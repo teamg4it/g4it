@@ -69,13 +69,9 @@ describe("Digital Service", () => {
         cy.get('[role="complementary"]').then((el) => {
             cy.checkA11y(el.get(0), undefined, reportA11yViolations, true);
         });
-        cy.get('p-dropdown[formControlName="host"]')
-            .find(".p-dropdown")
-            .click({ force: true })
-            .get("p-dropdownitem")
-            .children()
-            .first()
-            .click({ force: true });
+        cy.get('p-select[formControlName="host"]').click({ force: true });
+
+        cy.get(".p-select-overlay .p-select-option").first().click({ force: true });
         cy.get('[id="vcpu"]').type("1");
         cy.get('[inputId="minmaxfraction"]').type("1");
         cy.get('[id="submit-servers"]').click();

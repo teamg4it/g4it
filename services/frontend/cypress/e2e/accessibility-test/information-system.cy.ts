@@ -54,10 +54,10 @@ describe("Information System", () => {
         // access to equipment view
         cy.then(() => setPage("Equipment multicriteria page"));
         cy.wait(3000);
-        cy.get('[id="launch-estimate"]').click();
+        cy.get("#launch-estimate button").click();
         cy.contains("Yes").click();
         cy.wait(15000);
-        cy.get('[id="inventory-equipment-button"]').last().click();
+        cy.get("#inventory-equipment-button").last().click();
         cy.checkA11y(undefined, undefined, reportA11yViolations, true);
 
         // tabs navigation
@@ -67,7 +67,7 @@ describe("Information System", () => {
 
         // filter on country
         cy.then(() => setPage("Equipment filter page"));
-        cy.get('[id="filter-component"]').click();
+        cy.get("#filter-button button").click();
         cy.checkA11y(
             undefined,
             {
@@ -78,7 +78,8 @@ describe("Information System", () => {
             reportA11yViolations,
             true,
         );
-        cy.get('[id="All"]').first().click("left");
+        cy.get('[id="inv-accordion-panel-0"]').click();
+        cy.get("#inv-filter-li-0 .p-checkbox-box").first().click({ force: true });
         cy.checkA11y(
             undefined,
             {
@@ -89,6 +90,7 @@ describe("Information System", () => {
             reportA11yViolations,
             true,
         );
+        cy.get('[id="close-filter-sidebar-button"]').click();
 
         // return to my information system page
         cy.then(() => setPage("Default Page"));
@@ -105,8 +107,9 @@ describe("Information System", () => {
         cy.checkA11y(undefined, undefined, reportA11yViolations, true);
         // filter on domain
         cy.then(() => setPage("Application filter page"));
-        cy.get('[id="filter-component"]').click();
-        cy.get('[id="All"]').first().click("left");
+        cy.get("#application-filter-button button").click();
+        cy.get('[id="app-inv-accordion-panel-0"]').click();
+        cy.get("#app-inv-filter-li-0 .p-checkbox-box").first().click({ force: true });
         cy.checkA11y(
             undefined,
             {
@@ -117,9 +120,9 @@ describe("Information System", () => {
             reportA11yViolations,
             true,
         );
+        cy.get('[id="close-filter-sidebar-button"]').click();
 
         // export inventory
-        cy.get('[id="filter-component"]').click();
         cy.get('[id="export-inventory-button"]').click();
         cy.wait(2000).checkA11y(undefined, undefined, reportA11yViolations, true);
 

@@ -13,6 +13,7 @@
                 <div class="space-form">
                     <h2>{{ "inventories-footprint.filter-view" | translate }}</h2>
                     <p-button
+                        id="close-filter-sidebar-button"
                         (onClick)="closeFilterSidebar()"
                         [link]="true"
                         [rounded]="true"
@@ -51,6 +52,7 @@
                                         headerStyleClass="h-3rem bg-transparent font-bold mb-0"
                                         contentStyleClass="bg-transparent p-2"
                                         [value]="$index"
+                                        [id]="'inv-accordion-panel-' + $index"
                                     >
                                         <p-accordion-header>
                                             <div class="flex flex-column">
@@ -76,7 +78,10 @@
                                                     item of allFilters[getTabField(tab)];
                                                     track $index
                                                 ) {
-                                                    <li class="my-3">
+                                                    <li
+                                                        class="my-3"
+                                                        [id]="'inv-filter-li-' + $index"
+                                                    >
                                                         <p-checkbox
                                                             class="mb-1 mr-2"
                                                             [ariaLabel]="item?.toString()"

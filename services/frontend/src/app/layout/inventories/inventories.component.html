@@ -61,8 +61,13 @@
 </div>
 <p-scrollPanel [style]="{ width: '100%', height: '95%' }" tabindex="-1">
     <!-- ================= INFORMATION SYSTEM ================= -->
-    <p-accordion [multiple]="true" class="transparentBackgound">
-        <p-accordion-panel>
+    <p-accordion
+        class="transparentBackgound"
+        [value]="inventoryBlocksOpen.has('INFORMATION_SYSTEM') ? '0' : ''"
+        (onOpen)="openTab($event, 'INFORMATION_SYSTEM')"
+        (onClose)="closeTab($event, 'INFORMATION_SYSTEM')"
+    >
+        <p-accordion-panel value="0">
             <p-accordion-header
                 [pt]="{
                     root: {
@@ -87,7 +92,12 @@
             >
                 <div class="inventory-list mx-3">
                     <!-- CHILD ACCORDION -->
-                    <p-accordion [multiple]="true">
+                    <p-accordion
+                        [multiple]="true"
+                        [value]="array.from(inventoriesOpen, String)"
+                        (onClose)="childCloseTab($event)"
+                        (onOpen)="childOpenTab($event)"
+                    >
                         @for (
                             inventory of inventories.get("INFORMATION_SYSTEM");
                             track inventory.id
@@ -122,8 +132,13 @@
     </p-accordion>
 
     <!-- ================= SIMULATION ================= -->
-    <p-accordion [multiple]="true" class="transparentBackgound">
-        <p-accordion-panel>
+    <p-accordion
+        (onOpen)="openTab($event, 'SIMULATION')"
+        (onClose)="closeTab($event, 'SIMULATION')"
+        class="transparentBackgound"
+        [value]="inventoryBlocksOpen.has('SIMULATION') ? '1' : ''"
+    >
+        <p-accordion-panel value="1">
             <!-- HEADER -->
             <p-accordion-header
                 [pt]="{
@@ -175,7 +190,12 @@
                 style="max-height: 60vh"
             >
                 <div class="inventory-list mx-3">
-                    <p-accordion [multiple]="true">
+                    <p-accordion
+                        [multiple]="true"
+                        [value]="array.from(inventoriesOpen, String)"
+                        (onClose)="childCloseTab($event)"
+                        (onOpen)="childOpenTab($event)"
+                    >
                         @for (
                             inventory of inventories.get("SIMULATION");
                             track inventory.id

@@ -1,3 +1,4 @@
+import { DatePipe, NgClass, NgTemplateOutlet } from "@angular/common";
 import {
     Component,
     DestroyRef,
@@ -13,7 +14,12 @@ import {
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormControl, FormGroup } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
-import { TranslateService, TranslatePipe } from "@ngx-translate/core";
+import { TranslatePipe, TranslateService } from "@ngx-translate/core";
+import { PrimeTemplate } from "primeng/api";
+import { Button } from "primeng/button";
+import { ScrollPanelModule } from "primeng/scrollpanel";
+import { TableModule } from "primeng/table";
+import { TooltipModule } from "primeng/tooltip";
 import { firstValueFrom, lastValueFrom } from "rxjs";
 import { sortByProperty } from "sort-by-property";
 import {
@@ -31,13 +37,7 @@ import { TemplateFileService } from "src/app/core/service/data/template-file.ser
 import { DigitalServiceStoreService } from "src/app/core/store/digital-service.store";
 import { Constants } from "src/constants";
 import { FormNavComponent } from "../../common/form-nav/form-nav.component";
-import { ScrollPanelModule } from "primeng/scrollpanel";
-import { Button } from "primeng/button";
-import { NgTemplateOutlet, NgClass, DatePipe } from "@angular/common";
 import { MultiFileImportComponent } from "./multi-file-import/multi-file-import.component";
-import { TableModule } from "primeng/table";
-import { PrimeTemplate } from "primeng/api";
-import { TooltipModule } from "primeng/tooltip";
 
 @Component({
     selector: "app-digital-services-import",
@@ -198,7 +198,6 @@ export class DigitalServicesImportComponent implements OnInit, OnDestroy {
                         Constants.FILE_TYPES.indexOf(b.csvFileType ?? "")
                     );
                 });
-                console.log(this.templateFilesDescription);
                 this.dataModel = this.templateFilesDescription.find((file) =>
                     file.name?.toLowerCase()?.includes("datamodel"),
                 );
