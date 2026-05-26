@@ -21,6 +21,7 @@ import {
 
 import { APP_BASE_HREF, DatePipe } from "@angular/common";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { provideRouter, withRouterConfig } from "@angular/router";
 
 import { TranslateLoader, TranslateModule, TranslateService } from "@ngx-translate/core";
 import { TranslateHttpLoader } from "@ngx-translate/http-loader";
@@ -40,7 +41,7 @@ import { CustomAuthService } from "./core/service/business/custom-auth.service";
 import Aura from "@primeuix/themes/aura";
 import { providePrimeNG } from "primeng/config";
 import { Constants } from "src/constants";
-import { AppRoutingModule } from "./app-routing.module";
+import { appRoutes } from "./app-routing.module";
 import { DecimalsPipe } from "./core/pipes/decimal.pipe";
 import { IntegerPipe } from "./core/pipes/integer.pipe";
 
@@ -84,7 +85,7 @@ export const appConfig: ApplicationConfig = {
             theme: {
                 preset: Aura,
                 options: {
-                    darkModeSelector: false || "none",
+                    darkModeSelector: "none",
                     cssLayer: {
                         name: "primeng",
                         order: "tailwind-base, primeng, tailwind-utilities",
@@ -95,10 +96,10 @@ export const appConfig: ApplicationConfig = {
                 nonce: undefined,
             },
         }),
+        provideRouter(appRoutes, withRouterConfig({ onSameUrlNavigation: "reload" })),
         provideHttpClient(withInterceptorsFromDi()),
         importProvidersFrom(
             BrowserAnimationsModule,
-            AppRoutingModule,
             KeycloakAngularModule,
             ToastModule,
             ProgressBarModule,
