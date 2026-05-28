@@ -51,7 +51,7 @@ describe("authGuard", () => {
         customAuthServiceSpy.isPublicRoute.and.returnValue(false);
 
         environment.keycloak.enabled = "true";
-        keycloak.authenticated = true;
+        (keycloak as any).authenticated = true;
 
         const result = await TestBed.runInInjectionContext(() =>
             authGuard(mockRoute, mockState),
@@ -64,7 +64,7 @@ describe("authGuard", () => {
         customAuthServiceSpy.isPublicRoute.and.returnValue(false);
 
         environment.keycloak.enabled = "true";
-        keycloak.authenticated = false;
+        (keycloak as any).authenticated = false;
 
         localStorage.setItem("username", "testuser");
 
@@ -86,7 +86,7 @@ describe("authGuard", () => {
         customAuthServiceSpy.isPublicRoute.and.returnValue(false);
 
         environment.keycloak.enabled = "true";
-        keycloak.authenticated = false;
+        (keycloak as any).authenticated = false;
 
         const loginSpy = spyOn(keycloak, "login").and.returnValue(Promise.resolve());
 

@@ -29,7 +29,6 @@ describe("CustomAuthService", () => {
 
         TestBed.configureTestingModule({
             providers: [
-                CustomAuthService,
                 {
                     provide: Router,
                     useValue: routerMock,
