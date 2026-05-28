@@ -291,12 +291,19 @@ class FileSystemServiceTest {
         when(fileSystem.mount("org", "1")).thenReturn(fileStorage);
 
         // upload() will be called by uploadFile()
-        when(fileStorage.upload(
+        /*when(fileStorage.upload(
                 eq(FileFolder.INPUT),
                 eq("newname.csv"),
                 eq("file"),            // file.getName()
                 any(InputStream.class)
+        )).thenReturn("uploaded.csv");*/
+        when(fileStorage.upload(
+                eq(FileFolder.INPUT),
+                eq("newname.csv"),
+                anyString(), // Accept any original filename
+                any(InputStream.class)
         )).thenReturn("uploaded.csv");
+
 
         // Act
         List<String> result = fileSystemService.manageFilesAndRename(
@@ -315,7 +322,7 @@ class FileSystemServiceTest {
         verify(fileStorage).upload(
                 eq(FileFolder.INPUT),
                 eq("newname.csv"),
-                eq("file"),
+                eq("a.csv"),
                 any(InputStream.class)
         );
     }
