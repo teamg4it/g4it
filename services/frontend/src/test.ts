@@ -7,6 +7,19 @@
  */
 // This file is required by karma.conf.js and loads recursively all the .spec and framework files
 
+// Configure environment BEFORE any imports to prevent Keycloak initialization errors
+// This must run before keycloak instance is created in custom-auth.service.ts
+import { environment } from "./environments/environment";
+
+if (!environment.keycloak) {
+    (environment as any).keycloak = {
+        enabled: "false",
+        issuer: "http://test-issuer",
+        realm: "test-realm",
+        clientId: "test-client",
+    };
+}
+
 import { getTestBed } from "@angular/core/testing";
 import {
     BrowserDynamicTestingModule,
