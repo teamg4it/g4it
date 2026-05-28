@@ -203,45 +203,38 @@ public class FileSystemService {
      * @param fileStorage the fileStorage
      * @return the file path.
      */
-    private String uploadFile(final MultipartFile file, final FileStorage fileStorage, final String newFilename, Boolean isInventory){
-        /*final StringBuilder tempPath = Boolean.TRUE.equals(isInventory) ? new StringBuilder(localWorkingFolder).append(File.separator).append("input").append(File.separator).append("inventory").append(File.separator).append(UUID.randomUUID())
-                : new StringBuilder(localWorkingFolder).append(File.separator).append("input").append(File.separator).append("digital-service").append(File.separator).append(UUID.randomUUID());
-        File outputFile = new File(tempPath.toString());*/
-        // Detect file type by extension
+    private String uploadFile(final MultipartFile file, final FileStorage fileStorage, final String newFilename, Boolean isInventory) {
         String extension = StringUtils.getFilenameExtension(file.getOriginalFilename());
-        boolean isBinary = "xlsx".equalsIgnoreCase(extension)
-                || "ods".equalsIgnoreCase(extension);
-        try {
-            byte[] fileBytes = file.getBytes();
+        boolean isBinary = "xlsx".equalsIgnoreCase(extension) || "ods".equalsIgnoreCase(extension);
+        String filename = newFilename == null ? file.getOriginalFilename() : newFilename;
+
+        try (InputStream inputStream = file.getInputStream()) {
             InputStream uploadInputStream;
+
             if (isBinary) {
-                // Keep binary files unchanged
-                uploadInputStream =
-                        new ByteArrayInputStream(fileBytes);
+                // For binary files, stream directly
+                uploadInputStream = inputStream;
             } else {
-                // Convert text files to UTF-8
-                BufferedReader br =
-                        new BufferedReader(
-                                new InputStreamReader(
-                                        new ByteArrayInputStream(fileBytes),
-                                        StandardCharsets.UTF_8));
-                StringBuilder content = new StringBuilder();
-                String line;
-                while ((line = br.readLine()) != null) {
-                    content.append(line).append("\n");
+                // For text files, read and convert to UTF-8 in a single pass
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        baos.write(line.getBytes(StandardCharsets.UTF_8));
+                        baos.write('\n');
+                    }
                 }
-                uploadInputStream =
-                        new ByteArrayInputStream(
-                                content.toString()
-                                        .getBytes(StandardCharsets.UTF_8));
+                uploadInputStream = new ByteArrayInputStream(baos.toByteArray());
             }
-            var filename = newFilename == null ? file.getOriginalFilename() : newFilename;
-            try (InputStream inputStream = uploadInputStream) {
+
+            // Upload the file
+            try (InputStream uploadStream = uploadInputStream) {
                 return fileStorage.upload(
                         FileFolder.INPUT,
                         filename,
                         file.getOriginalFilename(),
-                        inputStream);
+                        uploadStream
+                );
             }
         } catch (final IOException e) {
             log.error("Upload failed for file {}", file.getOriginalFilename(), e);
