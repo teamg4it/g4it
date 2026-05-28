@@ -211,10 +211,10 @@ public class FileSystemService {
         // Detect file type by extension
         String extension = StringUtils.getFilenameExtension(file.getOriginalFilename());
 
-        boolean isBinary = "xlsx".equalsIgnoreCase(extension) || "ods".equalsIgnoreCase(extension);
+        boolean isBinary = extension.equalsIgnoreCase("xlsx") || extension.equalsIgnoreCase("ods");
 
         try {
-            /*if (isBinary) {
+            if (isBinary) {
                 // Direct binary copy for Excel/ODS files
                 try (InputStream in = file.getInputStream(); OutputStream out = new FileOutputStream(outputFile)) {
                     byte[] buffer = new byte[8192];
@@ -235,25 +235,6 @@ public class FileSystemService {
                         out.append(line).append("\n");
                     }
                 }
-            }*/
-
-            file.transferTo(outputFile);
-
-            if (!isBinary) {
-                // if the encoding was not utf8 for plain text,
-                // we open the file again with an encoding adapted to ANSI
-
-                BufferedReader br = new BufferedReader(
-                        new InputStreamReader(
-                                new FileInputStream(outputFile),
-                                StandardCharsets.UTF_8));
-                try (Writer out = new BufferedWriter(new OutputStreamWriter(
-                        new FileOutputStream(outputFile), StandardCharsets.UTF_8))) {
-                    String line;
-                    while ((line = br.readLine()) != null) {
-                        out.append(line).append("\n");
-                    }
-                }
             }
 
             InputStream tmpInputStream = new FileInputStream(outputFile);
@@ -263,11 +244,11 @@ public class FileSystemService {
             Files.delete(Path.of(tempPath.toString()));
             return result;
         } catch (final IOException e) {
-            log.error("IO error while uploading file {}", file.getOriginalFilename(), e);
+            log.error("Upload failed for file {}", file.getOriginalFilename(), e);
 
             throw new ResponseStatusException(
                     HttpStatus.INTERNAL_SERVER_ERROR,
-                    "Error occurred while uploading file: " + e.getMessage()
+                    "Error occurred while uploading file"
             );
         }
     }
