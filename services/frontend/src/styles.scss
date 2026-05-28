@@ -501,9 +501,9 @@ main {
 }
 
 .p-drawer .p-drawer-header .p-drawer-close-button button:enabled:hover {
-    color: #0009;
-    border-color: transparent;
-    background: #0000000a;
+    color: #1a1a1a;
+    background: #dcdcdc;
+    border-color: #dcdcdc;
 }
 
 .p-drawer .p-drawer-header .p-drawer-close-button button:enabled:focus {
@@ -1322,14 +1322,14 @@ app-useful-information {
 
 .p-fileupload .p-button.p-fileupload-choose:not(.p-disabled):hover,
 .p-fileupload-choose:not(.p-disabled):hover {
-    background: rgba(0, 186, 0, 0.92) !important;
+    background: #2e7d32 !important;
     color: white !important;
     border-color: transparent !important;
 }
 
 .p-fileupload .p-button.p-fileupload-choose:not(.p-disabled):active,
 .p-fileupload-choose:not(.p-disabled):active {
-    background: rgba(0, 186, 0, 0.68) !important;
+    background: #2e7d32 !important;
     color: white !important;
     border-color: transparent !important;
 }
