@@ -23,7 +23,6 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormsModule } from "@angular/forms";
 import { NavigationEnd, Router, RouterModule } from "@angular/router";
 import { TranslateModule, TranslateService } from "@ngx-translate/core";
-import { KeycloakService } from "keycloak-angular";
 import { MenuItem } from "primeng/api";
 import { ButtonModule } from "primeng/button";
 import { DialogModule } from "primeng/dialog";
@@ -36,6 +35,7 @@ import {
     UserInfo,
     Workspace,
 } from "src/app/core/interfaces/user.interfaces";
+import { keycloak } from "src/app/core/service/business/custom-auth.service";
 import { UserService } from "src/app/core/service/business/user.service";
 import { WorkspaceService } from "src/app/core/service/business/workspace.service";
 import { SharedModule } from "src/app/core/shared/shared.module";
@@ -65,7 +65,6 @@ export class TopHeaderComponent implements OnInit {
     isSharedDs = input<boolean>(false);
     private readonly translate = inject(TranslateService);
     private readonly router = inject(Router);
-    private readonly keycloak = inject(KeycloakService);
     private readonly userService = inject(UserService);
     private readonly destroyRef = inject(DestroyRef);
     private readonly globalStore = inject(GlobalStoreService);
@@ -421,7 +420,7 @@ export class TopHeaderComponent implements OnInit {
         localStorage.removeItem("currentOrganization");
         localStorage.removeItem("currentWorkspace");
         if (environment.keycloak.enabled === "true") {
-            await this.keycloak.logout();
+            await keycloak.logout();
         } else {
             console.error("keycloak is not enabled");
         }

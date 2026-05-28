@@ -1,10 +1,10 @@
 import { Routes } from "@angular/router";
-import { AuthGuard } from "src/app/guard/auth.gard";
+import { authGuard } from "src/app/guard/auth.gard";
 import { Constants } from "src/constants";
 import { environment } from "src/environments/environment";
 
 const canActivate = [];
-if (environment.keycloak.enabled === "true") canActivate.push(AuthGuard);
+if (environment.keycloak.enabled === "true") canActivate.push(authGuard);
 
 export const appRoutes: Routes = [
     {
@@ -33,10 +33,7 @@ export const appRoutes: Routes = [
     },
     {
         path: "organizations/:organization/workspaces/:workspace",
-        loadChildren: () =>
-            import("../layout.router").then(
-                (m) => m.LAYOUT_ROUTES,
-            ),
+        loadChildren: () => import("../layout.router").then((m) => m.LAYOUT_ROUTES),
         canActivate,
     },
     {

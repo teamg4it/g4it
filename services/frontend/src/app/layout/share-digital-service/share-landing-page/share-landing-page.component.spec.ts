@@ -4,7 +4,6 @@ import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { TranslateModule } from "@ngx-translate/core";
-import { KeycloakService } from "keycloak-angular";
 import { MessageService } from "primeng/api";
 import { UserService } from "src/app/core/service/business/user.service";
 import { ShareLandingPageComponent } from "./share-landing-page.component";
@@ -22,7 +21,6 @@ describe("ShareLandingPageComponent", () => {
                 RouterTestingModule,
             ],
             providers: [
-                KeycloakService,
                 { provide: ActivatedRoute, useValue: {} },
 
                 UserService,

@@ -9,11 +9,10 @@ import { Component, HostListener, inject, OnInit } from "@angular/core";
 import { Title } from "@angular/platform-browser";
 import { ActivatedRoute, NavigationEnd, Router, RouterOutlet } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
-import { KeycloakService } from "keycloak-angular";
 import { ToastModule } from "primeng/toast";
 import { delay, filter, firstValueFrom, map, of, Subject, switchMap } from "rxjs";
 import { environment } from "src/environments/environment";
-import { CustomAuthService } from "./core/service/business/custom-auth.service";
+import { CustomAuthService, keycloak } from "./core/service/business/custom-auth.service";
 import { MatomoScriptService } from "./core/service/business/matomo-script.service";
 import { UserDataService } from "./core/service/data/user-data.service";
 import { GlobalStoreService } from "./core/store/global.store";
@@ -26,19 +25,22 @@ import { GlobalStoreService } from "./core/store/global.store";
 })
 export class AppComponent implements OnInit {
     ngUnsubscribe = new Subject<void>();
-    selectedLang: string = this.translate.currentLang;
+    selectedLang: string = "";
     isZoomedIn = false;
     private readonly matomoScriptService = inject(MatomoScriptService);
     constructor(
         private readonly userService: UserDataService,
-        private readonly keycloak: KeycloakService,
         private readonly translate: TranslateService,
         private readonly globalStoreService: GlobalStoreService,
         public router: Router,
         private readonly activatedRoute: ActivatedRoute,
         private readonly titleService: Title,
         private readonly customAuthService: CustomAuthService,
-    ) {}
+    ) {
+        // Initialize selectedLang with a safe default
+        this.selectedLang =
+            this.translate.currentLang || this.translate.defaultLang || "en";
+    }
 
     ngOnInit(): void {
         this.initializeAsync();
@@ -49,10 +51,10 @@ export class AppComponent implements OnInit {
             globalThis.location.pathname,
         );
         if (environment.keycloak.enabled === "true" && !isPublicRoute) {
-            const token = await this.keycloak.getToken();
+            const token = keycloak.token;
             if (!token) {
                 const loginHint = localStorage.getItem("username") || "";
-                await this.keycloak.login({
+                await keycloak.login({
                     redirectUri: globalThis.location.href,
                     loginHint,
                 });
@@ -73,9 +75,26 @@ export class AppComponent implements OnInit {
         );
         localStorage.setItem("username", user.email);
 
-        this.globalStoreService.setcriteriaList(
-            this.translate.translations[this.selectedLang]["criteria"],
-        );
+        // Ensure selectedLang is set correctly
+        this.selectedLang =
+            this.translate.currentLang || this.translate.defaultLang || "en";
+
+        // Safely access translations with fallback
+        const currentTranslations = this.translate.translations?.[this.selectedLang];
+        if (currentTranslations?.["criteria"]) {
+            this.globalStoreService.setcriteriaList(currentTranslations["criteria"]);
+        } else {
+            // If translations aren't loaded yet, wait for them using translate.get
+            try {
+                const criteria = await firstValueFrom(this.translate.get("criteria"));
+                if (criteria && typeof criteria === "object") {
+                    this.globalStoreService.setcriteriaList(criteria);
+                }
+            } catch (error) {
+                console.warn("Failed to load criteria translations:", error);
+            }
+        }
+
         this.checkZoom();
         this.router.events
             .pipe(

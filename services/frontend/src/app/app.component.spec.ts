@@ -4,18 +4,17 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { Title } from "@angular/platform-browser";
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { TranslateModule, TranslateService } from "@ngx-translate/core";
-import { KeycloakService } from "keycloak-angular";
 import { MessageService } from "primeng/api";
 import { of, Subject } from "rxjs";
 import { environment } from "src/environments/environment";
 import { AppComponent } from "./app.component";
+import { keycloak } from "./core/service/business/custom-auth.service";
 import { MatomoScriptService } from "./core/service/business/matomo-script.service";
 import { UserDataService } from "./core/service/data/user-data.service";
 import { GlobalStoreService } from "./core/store/global.store";
 describe("AppComponent", () => {
     let component: AppComponent;
     let fixture: ComponentFixture<AppComponent>;
-    let mockKeycloak: any;
     let mockUserService: any;
     let mockTranslate: any;
     let mockGlobalStore: any;
@@ -24,10 +23,9 @@ describe("AppComponent", () => {
     let mockMatomo: any;
 
     beforeEach(async () => {
-        mockKeycloak = {
-            getToken: jasmine.createSpy().and.returnValue(Promise.resolve("mock-token")),
-            login: jasmine.createSpy(),
-        };
+        // Mock keycloak methods to prevent actual login attempts
+        spyOn(keycloak, "login" as any).and.returnValue(Promise.resolve());
+        (keycloak as any).token = "mock-token"; // Set token to prevent login call
 
         mockUserService = {
             fetchUserInfo: jasmine
@@ -67,7 +65,6 @@ describe("AppComponent", () => {
             imports: [HttpClientTestingModule, TranslateModule.forRoot(), AppComponent],
             providers: [
                 MessageService,
-                { provide: KeycloakService, useValue: mockKeycloak },
                 { provide: UserDataService, useValue: mockUserService },
                 { provide: TranslateService, useValue: mockTranslate },
                 { provide: GlobalStoreService, useValue: mockGlobalStore },

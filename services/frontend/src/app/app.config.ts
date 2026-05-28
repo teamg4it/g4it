@@ -12,19 +12,13 @@ import {
     provideAppInitializer,
 } from "@angular/core";
 
-import {
-    HTTP_INTERCEPTORS,
-    HttpClient,
-    provideHttpClient,
-    withInterceptorsFromDi,
-} from "@angular/common/http";
+import { HttpClient, provideHttpClient, withInterceptors } from "@angular/common/http";
 
 import { APP_BASE_HREF, DatePipe } from "@angular/common";
+import { provideAnimationsAsync } from "@angular/platform-browser/animations/async";
 import { provideRouter, withRouterConfig } from "@angular/router";
 import { TranslateLoader, TranslateModule, TranslateService } from "@ngx-translate/core";
 import { TranslateHttpLoader } from "@ngx-translate/http-loader";
-import { KeycloakAngularModule } from "keycloak-angular";
-
 import { MessageService } from "primeng/api";
 import { ProgressBarModule } from "primeng/progressbar";
 import { TableModule } from "primeng/table";
@@ -32,8 +26,8 @@ import { ToastModule } from "primeng/toast";
 
 import { environment } from "src/environments/environment";
 
-import { ApiInterceptor } from "./core/interceptors/api-request.interceptor";
-import { HttpErrorInterceptor } from "./core/interceptors/http-error.interceptor";
+import { apiInterceptor } from "./core/interceptors/api-request.interceptor";
+import { httpErrorInterceptor } from "./core/interceptors/http-error.interceptor";
 import { CustomAuthService } from "./core/service/business/custom-auth.service";
 
 import Aura from "@primeuix/themes/aura";
@@ -79,6 +73,7 @@ export function initializeLanguage(translate: TranslateService) {
 
 export const appConfig: ApplicationConfig = {
     providers: [
+        provideAnimationsAsync(),
         providePrimeNG({
             theme: {
                 preset: Aura,
@@ -95,9 +90,8 @@ export const appConfig: ApplicationConfig = {
             },
         }),
         provideRouter(appRoutes, withRouterConfig({ onSameUrlNavigation: "reload" })),
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withInterceptors([apiInterceptor, httpErrorInterceptor])),
         importProvidersFrom(
-            KeycloakAngularModule,
             ToastModule,
             ProgressBarModule,
             TableModule,
@@ -124,16 +118,6 @@ export const appConfig: ApplicationConfig = {
         {
             provide: APP_BASE_HREF,
             useFactory: baseHRefFactory,
-        },
-        {
-            provide: HTTP_INTERCEPTORS,
-            useClass: ApiInterceptor,
-            multi: true,
-        },
-        {
-            provide: HTTP_INTERCEPTORS,
-            useClass: HttpErrorInterceptor,
-            multi: true,
         },
     ],
 };

@@ -7,12 +7,12 @@
  */
 import { Routes } from "@angular/router";
 import { environment } from "src/environments/environment";
-import { AuthGuard } from "./guard/auth.gard";
+import { authGuard } from "./guard/auth.gard";
 import { ErrorComponent } from "./layout/common/error/error.component";
 import { LandingPageComponent } from "./layout/landing-page/landing-page.component";
 
 const canActivate = [];
-if (environment.keycloak.enabled === "true") canActivate.push(AuthGuard);
+if (environment.keycloak.enabled === "true") canActivate.push(authGuard);
 
 export const appRoutes: Routes = [
     {
