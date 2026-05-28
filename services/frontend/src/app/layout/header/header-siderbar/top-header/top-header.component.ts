@@ -419,7 +419,7 @@ export class TopHeaderComponent implements OnInit {
         localStorage.removeItem("username");
         localStorage.removeItem("currentOrganization");
         localStorage.removeItem("currentWorkspace");
-        if (environment.keycloak.enabled === "true") {
+        if (environment.keycloak?.enabled === "true") {
             await keycloak.logout();
         } else {
             console.error("keycloak is not enabled");

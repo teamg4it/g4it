@@ -12,7 +12,7 @@ import { ErrorComponent } from "./layout/common/error/error.component";
 import { LandingPageComponent } from "./layout/landing-page/landing-page.component";
 
 const canActivate = [];
-if (environment.keycloak.enabled === "true") canActivate.push(authGuard);
+if (environment.keycloak?.enabled === "true") canActivate.push(authGuard);
 
 export const appRoutes: Routes = [
     {

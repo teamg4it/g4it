@@ -7,9 +7,9 @@ import { environment } from "src/environments/environment";
 import { DigitalServiceStoreService } from "../../store/digital-service.store";
 
 export const keycloak = new Keycloak({
-    url: environment.keycloak.issuer,
-    realm: environment.keycloak.realm,
-    clientId: environment.keycloak.clientId,
+    url: environment.keycloak?.issuer || "http://localhost:8080",
+    realm: environment.keycloak?.realm || "test-realm",
+    clientId: environment.keycloak?.clientId || "test-client",
 });
 
 @Injectable({
@@ -29,7 +29,7 @@ export class CustomAuthService {
     init(): Promise<boolean> {
         const isPublic = this.isPublicRoute(globalThis.location.pathname);
         this.digitalServiceStore.setIsSharedDS(isPublic);
-        if (!isPublic && environment.keycloak.enabled === "true") {
+        if (!isPublic && environment.keycloak?.enabled === "true") {
             return keycloak.init({
                 onLoad: "check-sso",
                 flow: "standard",
@@ -46,7 +46,7 @@ export class CustomAuthService {
     }
 
     setupRouteGuard(): void {
-        if (environment.keycloak.enabled === "true") {
+        if (environment.keycloak?.enabled === "true") {
             this.router.events
                 .pipe(filter((event) => event instanceof NavigationEnd))
                 .subscribe((event: NavigationEnd) => {

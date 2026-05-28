@@ -29,7 +29,7 @@ export const authGuard: CanActivateFn = async (
     }
 
     // For protected routes, check Keycloak authentication
-    if (environment.keycloak.enabled === "true") {
+    if (environment.keycloak?.enabled === "true") {
         // Check if user is authenticated
         if (keycloak.authenticated) {
             return true;

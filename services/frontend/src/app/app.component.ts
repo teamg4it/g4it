@@ -50,7 +50,7 @@ export class AppComponent implements OnInit {
         const isPublicRoute = this.customAuthService.isPublicRoute(
             globalThis.location.pathname,
         );
-        if (environment.keycloak.enabled === "true" && !isPublicRoute) {
+        if (environment.keycloak?.enabled === "true" && !isPublicRoute) {
             const token = keycloak.token;
             if (!token) {
                 const loginHint = localStorage.getItem("username") || "";

@@ -24,21 +24,23 @@ describe("authGuard", () => {
     let customAuthService: CustomAuthService;
     let mockRoute: ActivatedRouteSnapshot;
     let mockState: RouterStateSnapshot;
-
-    // Mock dependencies
-    const mockRouter = {
-        events: {
-            pipe: jasmine
-                .createSpy("pipe")
-                .and.returnValue({ subscribe: jasmine.createSpy() }),
-        },
-    };
-
-    const mockDigitalServiceStore = {
-        setIsSharedDS: jasmine.createSpy("setIsSharedDS"),
-    };
+    let mockRouter: any;
+    let mockDigitalServiceStore: any;
 
     beforeEach(() => {
+        // Reset mocks before each test
+        mockRouter = {
+            events: {
+                pipe: jasmine
+                    .createSpy("pipe")
+                    .and.returnValue({ subscribe: jasmine.createSpy() }),
+            },
+        };
+
+        mockDigitalServiceStore = {
+            setIsSharedDS: jasmine.createSpy("setIsSharedDS"),
+        };
+
         TestBed.configureTestingModule({
             providers: [
                 CustomAuthService,
@@ -134,11 +136,8 @@ describe("authGuard", () => {
     });
 
     describe("Protected Routes - Keycloak Enabled", () => {
-        beforeEach(() => {
-            spyOn(customAuthService, "isPublicRoute").and.returnValue(false);
-        });
-
         it("should allow access when user is authenticated", async () => {
+            spyOn(customAuthService, "isPublicRoute").and.returnValue(false);
             const originalEnabled = environment.keycloak.enabled;
             environment.keycloak.enabled = "true";
 
@@ -157,6 +156,7 @@ describe("authGuard", () => {
         });
 
         it("should redirect to login when user is not authenticated", async () => {
+            spyOn(customAuthService, "isPublicRoute").and.returnValue(false);
             const originalEnabled = environment.keycloak.enabled;
             environment.keycloak.enabled = "true";
 
@@ -183,6 +183,7 @@ describe("authGuard", () => {
         });
 
         it("should use stored username as login hint when available", async () => {
+            spyOn(customAuthService, "isPublicRoute").and.returnValue(false);
             const originalEnabled = environment.keycloak.enabled;
             environment.keycloak.enabled = "true";
             localStorage.setItem("username", "test-user@example.com");
@@ -210,6 +211,7 @@ describe("authGuard", () => {
         });
 
         it("should preserve deep link URL in redirectUri", async () => {
+            spyOn(customAuthService, "isPublicRoute").and.returnValue(false);
             const originalEnabled = environment.keycloak.enabled;
             environment.keycloak.enabled = "true";
             mockState.url = "/inventories/123/equipment/456";
@@ -238,6 +240,7 @@ describe("authGuard", () => {
         });
 
         it("should preserve query parameters in redirectUri", async () => {
+            spyOn(customAuthService, "isPublicRoute").and.returnValue(false);
             const originalEnabled = environment.keycloak.enabled;
             environment.keycloak.enabled = "true";
             mockState.url = "/dashboard?tab=overview&filter=active";
