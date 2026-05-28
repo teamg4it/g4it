@@ -7,9 +7,9 @@ import { environment } from "src/environments/environment";
 import { DigitalServiceStoreService } from "../../store/digital-service.store";
 
 export const keycloak = new Keycloak({
-    url: environment.keycloak?.issuer,
-    realm: environment.keycloak?.realm,
-    clientId: environment.keycloak?.clientId,
+    url: environment.keycloak?.issuer || "http://localhost:8180/auth",
+    realm: environment.keycloak?.realm || "g4it",
+    clientId: environment.keycloak?.clientId || "g4it",
 });
 
 @Injectable({
