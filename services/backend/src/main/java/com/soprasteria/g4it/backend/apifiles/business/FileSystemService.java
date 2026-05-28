@@ -244,7 +244,12 @@ public class FileSystemService {
             Files.delete(Path.of(tempPath.toString()));
             return result;
         } catch (final IOException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error occurred while uploading file: " + e.getMessage());
+            log.error("IO error while uploading file {}", file.getOriginalFilename(), e);
+
+            throw new ResponseStatusException(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Error occurred while uploading file: " + e.getMessage()
+            );
         }
     }
 
