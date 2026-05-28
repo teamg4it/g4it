@@ -204,6 +204,56 @@ public class FileSystemService {
      * @return the file path.
      */
     private String uploadFile(final MultipartFile file, final FileStorage fileStorage, final String newFilename, Boolean isInventory) {
+        final StringBuilder tempPath = Boolean.TRUE.equals(isInventory) ? new StringBuilder(localWorkingFolder).append(File.separator).append("input").append(File.separator).append("inventory").append(File.separator).append(UUID.randomUUID())
+                : new StringBuilder(localWorkingFolder).append(File.separator).append("input").append(File.separator).append("digital-service").append(File.separator).append(UUID.randomUUID());
+        File outputFile = new File(tempPath.toString());
+
+        // Detect file type by extension
+        String extension = StringUtils.getFilenameExtension(file.getOriginalFilename());
+
+        boolean isBinary = extension.equalsIgnoreCase("xlsx") || extension.equalsIgnoreCase("ods");
+
+        try {
+            if (isBinary) {
+                // Direct binary copy for Excel/ODS files
+                try (InputStream in = file.getInputStream(); OutputStream out = new FileOutputStream(outputFile)) {
+                    byte[] buffer = new byte[8192];
+                    int bytesRead;
+                    while ((bytesRead = in.read(buffer)) != -1) {
+                        out.write(buffer, 0, bytesRead);
+                    }
+                }
+            } else {
+                // if the encoding was not utf8 for plain text,
+                // we open the file again with an encoding adapted to ANSI
+
+                BufferedReader br = getBufferedReader(file);
+                try (Writer out = new BufferedWriter(new OutputStreamWriter(
+                        new FileOutputStream(outputFile), StandardCharsets.UTF_8))) {
+                    String line;
+                    while ((line = br.readLine()) != null) {
+                        out.append(line).append("\n");
+                    }
+                }
+            }
+
+            InputStream tmpInputStream = new FileInputStream(outputFile);
+            var filename = newFilename == null ? file.getOriginalFilename() : newFilename;
+            var result = fileStorage.upload(FileFolder.INPUT, filename, file.getName(), tmpInputStream);
+            tmpInputStream.close();
+            Files.delete(Path.of(tempPath.toString()));
+            return result;
+        } catch (final IOException e) {
+            log.error("Upload failed for file {}", file.getOriginalFilename(), e);
+            throw new ResponseStatusException(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Error occurred while uploading file"
+            );
+        }
+    }
+
+
+    /*private String uploadFile(final MultipartFile file, final FileStorage fileStorage, final String newFilename, Boolean isInventory) {
         String extension = StringUtils.getFilenameExtension(file.getOriginalFilename());
         boolean isBinary = "xlsx".equalsIgnoreCase(extension) || "ods".equalsIgnoreCase(extension);
         String filename = newFilename == null ? file.getOriginalFilename() : newFilename;
@@ -212,14 +262,14 @@ public class FileSystemService {
             InputStream uploadInputStream;
 
             if (isBinary) {
-            // IMPORTANT:
-            // Load binary file fully into memory
-            // to avoid Tomcat temp file lifecycle issue
-            byte[] bytes = inputStream.readAllBytes();
-            uploadInputStream =
-                    new ByteArrayInputStream(bytes);
+                // IMPORTANT:
+                // Load binary file fully into memory
+                // to avoid Tomcat temp file lifecycle issue
+                byte[] bytes = inputStream.readAllBytes();
+                uploadInputStream =
+                        new ByteArrayInputStream(bytes);
 
-        } else {
+            } else {
                 // For text files, read and convert to UTF-8 in a single pass
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
@@ -234,28 +284,6 @@ public class FileSystemService {
 
             // Upload the file
             try (InputStream uploadStream = uploadInputStream) {
-                return fileStorage.upload(
-                        FileFolder.INPUT,
-                        filename,
-                        file.getOriginalFilename(),
-                        uploadStream
-                );
-            }
-        } catch (final IOException e) {
-            log.error("Upload failed for file {}", file.getOriginalFilename(), e);
-            throw new ResponseStatusException(
-                    HttpStatus.INTERNAL_SERVER_ERROR,
-                    "Error occurred while uploading file"
-            );
-        }
-    }
-    /*private String uploadFile(final MultipartFile file, final FileStorage fileStorage, final String newFilename, Boolean isInventory) {
-        String filename = newFilename == null ? file.getOriginalFilename() : newFilename;
-
-        try (InputStream inputStream = file.getInputStream()) {
-            // Read the entire file into memory
-            byte[] fileBytes = inputStream.readAllBytes();
-            try (InputStream uploadStream = new ByteArrayInputStream(fileBytes)) {
                 return fileStorage.upload(
                         FileFolder.INPUT,
                         filename,
