@@ -29,6 +29,25 @@ describe("CustomAuthService", () => {
         setIsSharedDS: jasmine.Spy;
     };
 
+    // Define keycloak properties once before all tests
+    beforeAll(() => {
+        // Only define properties if they don't exist or aren't configurable
+        const descriptor = Object.getOwnPropertyDescriptor(keycloak, "authenticated");
+        if (!descriptor || !descriptor.configurable) {
+            try {
+                delete (keycloak as any).authenticated;
+            } catch (e) {
+                // Can't delete, will try to redefine anyway
+            }
+        }
+        
+        Object.defineProperty(keycloak, "authenticated", {
+            value: false,
+            writable: true,
+            configurable: true,
+        });
+    });
+
     beforeEach(() => {
         routerMock = {
             events: new Subject(),
@@ -53,6 +72,9 @@ describe("CustomAuthService", () => {
         });
 
         service = TestBed.inject(CustomAuthService);
+
+        // Reset keycloak property value (not redefine)
+        (keycloak as any).authenticated = false;
     });
 
     afterEach(() => {
