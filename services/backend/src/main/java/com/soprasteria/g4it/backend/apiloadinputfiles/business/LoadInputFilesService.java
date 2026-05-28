@@ -122,7 +122,7 @@ public class LoadInputFilesService {
 
 
         // store files into file storage
-        List<String> filenames = Stream.of(FileType.DATACENTER, FileType.EQUIPEMENT_PHYSIQUE, FileType.EQUIPEMENT_VIRTUEL, FileType.APPLICATION)
+        /*List<String> filenames = Stream.of(FileType.DATACENTER, FileType.EQUIPEMENT_PHYSIQUE, FileType.EQUIPEMENT_VIRTUEL, FileType.APPLICATION)
                 .map(fileType -> {
                     List<MultipartFile> files = allFiles.get(fileType);
                     List<String> typeFileNames = newFilenames(files, fileType);
@@ -130,7 +130,30 @@ public class LoadInputFilesService {
                     return typeFileNames;
                 })
                 .flatMap(Collection::stream)
-                .toList();
+                .toList();*/
+
+        List<String> filenames = new ArrayList<>();
+
+        for (FileType fileType : List.of(
+                FileType.DATACENTER,
+                FileType.EQUIPEMENT_PHYSIQUE,
+                FileType.EQUIPEMENT_VIRTUEL,
+                FileType.APPLICATION)) {
+
+            List<MultipartFile> files = allFiles.get(fileType);
+
+            List<String> typeFileNames = newFilenames(files, fileType);
+
+            fileSystemService.manageFilesAndRename(
+                    context.getOrganization(),
+                    context.getWorkspaceId(),
+                    files,
+                    typeFileNames,
+                    context.getInventoryId() != null
+            );
+
+            filenames.addAll(typeFileNames);
+        }
 
         User user = userRepository.findById(authService.getUser().getId()).orElseThrow();
 
@@ -195,7 +218,7 @@ public class LoadInputFilesService {
                 .build();
 
         // store files into file storage
-        List<String> filenames = Stream.of(FileType.DATACENTER, FileType.EQUIPEMENT_PHYSIQUE, FileType.EQUIPEMENT_VIRTUEL)
+        /*List<String> filenames = Stream.of(FileType.DATACENTER, FileType.EQUIPEMENT_PHYSIQUE, FileType.EQUIPEMENT_VIRTUEL)
                 .map(fileType -> {
                     List<MultipartFile> files = allFiles.get(fileType);
                     List<String> typeFileNames = newFilenames(files, fileType);
@@ -203,7 +226,29 @@ public class LoadInputFilesService {
                     return typeFileNames;
                 })
                 .flatMap(Collection::stream)
-                .toList();
+                .toList();*/
+
+        List<String> filenames = new ArrayList<>();
+
+        for (FileType fileType : List.of(
+                FileType.DATACENTER,
+                FileType.EQUIPEMENT_PHYSIQUE,
+                FileType.EQUIPEMENT_VIRTUEL)) {
+
+            List<MultipartFile> files = allFiles.get(fileType);
+
+            List<String> typeFileNames = newFilenames(files, fileType);
+
+            fileSystemService.manageFilesAndRename(
+                    context.getOrganization(),
+                    context.getWorkspaceId(),
+                    files,
+                    typeFileNames,
+                    context.getInventoryId() != null
+            );
+
+            filenames.addAll(typeFileNames);
+        }
 
         User user = userRepository.findById(authService.getUser().getId()).orElseThrow();
 
