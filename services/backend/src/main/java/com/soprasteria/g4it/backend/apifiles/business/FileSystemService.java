@@ -211,10 +211,10 @@ public class FileSystemService {
         // Detect file type by extension
         String extension = StringUtils.getFilenameExtension(file.getOriginalFilename());
 
-        boolean isBinary = extension.equalsIgnoreCase("xlsx") || extension.equalsIgnoreCase("ods");
+        boolean isBinary = "xlsx".equalsIgnoreCase(extension) || "ods".equalsIgnoreCase(extension);
 
         try {
-            if (isBinary) {
+            /*if (isBinary) {
                 // Direct binary copy for Excel/ODS files
                 try (InputStream in = file.getInputStream(); OutputStream out = new FileOutputStream(outputFile)) {
                     byte[] buffer = new byte[8192];
@@ -228,6 +228,25 @@ public class FileSystemService {
                 // we open the file again with an encoding adapted to ANSI
 
                 BufferedReader br = getBufferedReader(file);
+                try (Writer out = new BufferedWriter(new OutputStreamWriter(
+                        new FileOutputStream(outputFile), StandardCharsets.UTF_8))) {
+                    String line;
+                    while ((line = br.readLine()) != null) {
+                        out.append(line).append("\n");
+                    }
+                }
+            }*/
+
+            file.transferTo(outputFile);
+
+            if (!isBinary) {
+                // if the encoding was not utf8 for plain text,
+                // we open the file again with an encoding adapted to ANSI
+
+                BufferedReader br = new BufferedReader(
+                        new InputStreamReader(
+                                new FileInputStream(outputFile),
+                                StandardCharsets.UTF_8));
                 try (Writer out = new BufferedWriter(new OutputStreamWriter(
                         new FileOutputStream(outputFile), StandardCharsets.UTF_8))) {
                     String line;
