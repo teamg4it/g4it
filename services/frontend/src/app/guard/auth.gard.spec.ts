@@ -1,5 +1,5 @@
 import { TestBed } from "@angular/core/testing";
-import { ActivatedRouteSnapshot, RouterStateSnapshot } from "@angular/router";
+import { ActivatedRouteSnapshot, Router, RouterStateSnapshot } from "@angular/router";
 
 import { environment } from "src/environments/environment";
 
@@ -17,6 +17,7 @@ import {
     CustomAuthService,
     keycloak,
 } from "../core/service/business/custom-auth.service";
+import { DigitalServiceStoreService } from "../core/store/digital-service.store";
 import { authGuard } from "./auth.gard";
 
 describe("authGuard", () => {
@@ -24,9 +25,29 @@ describe("authGuard", () => {
     let mockRoute: ActivatedRouteSnapshot;
     let mockState: RouterStateSnapshot;
 
+    // Mock dependencies
+    const mockRouter = {
+        events: {
+            pipe: jasmine
+                .createSpy("pipe")
+                .and.returnValue({ subscribe: jasmine.createSpy() }),
+        },
+    };
+
+    const mockDigitalServiceStore = {
+        setIsSharedDS: jasmine.createSpy("setIsSharedDS"),
+    };
+
     beforeEach(() => {
         TestBed.configureTestingModule({
-            providers: [CustomAuthService],
+            providers: [
+                CustomAuthService,
+                { provide: Router, useValue: mockRouter },
+                {
+                    provide: DigitalServiceStoreService,
+                    useValue: mockDigitalServiceStore,
+                },
+            ],
         });
 
         customAuthService = TestBed.inject(CustomAuthService);
