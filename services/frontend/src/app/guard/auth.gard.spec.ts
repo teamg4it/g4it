@@ -18,6 +18,19 @@ describe("authGuard", () => {
     } as RouterStateSnapshot;
 
     beforeEach(() => {
+        // Initialize keycloak mock properties
+        Object.defineProperty(keycloak, "authenticated", {
+            value: false,
+            writable: true,
+            configurable: true,
+        });
+
+        Object.defineProperty(keycloak, "token", {
+            value: null,
+            writable: true,
+            configurable: true,
+        });
+
         customAuthServiceSpy = jasmine.createSpyObj("CustomAuthService", [
             "isPublicRoute",
         ]);
@@ -34,6 +47,9 @@ describe("authGuard", () => {
 
     afterEach(() => {
         localStorage.clear();
+        // Clean up property descriptors
+        delete (keycloak as any).authenticated;
+        delete (keycloak as any).token;
     });
 
     it("should allow access for public routes", async () => {
@@ -51,7 +67,11 @@ describe("authGuard", () => {
         customAuthServiceSpy.isPublicRoute.and.returnValue(false);
 
         environment.keycloak.enabled = "true";
-        (keycloak as any).authenticated = true;
+        Object.defineProperty(keycloak, "authenticated", {
+            value: true,
+            writable: true,
+            configurable: true,
+        });
 
         const result = await TestBed.runInInjectionContext(() =>
             authGuard(mockRoute, mockState),
@@ -64,7 +84,11 @@ describe("authGuard", () => {
         customAuthServiceSpy.isPublicRoute.and.returnValue(false);
 
         environment.keycloak.enabled = "true";
-        (keycloak as any).authenticated = false;
+        Object.defineProperty(keycloak, "authenticated", {
+            value: false,
+            writable: true,
+            configurable: true,
+        });
 
         localStorage.setItem("username", "testuser");
 
@@ -86,7 +110,11 @@ describe("authGuard", () => {
         customAuthServiceSpy.isPublicRoute.and.returnValue(false);
 
         environment.keycloak.enabled = "true";
-        (keycloak as any).authenticated = false;
+        Object.defineProperty(keycloak, "authenticated", {
+            value: false,
+            writable: true,
+            configurable: true,
+        });
 
         const loginSpy = spyOn(keycloak, "login").and.returnValue(Promise.resolve());
 
