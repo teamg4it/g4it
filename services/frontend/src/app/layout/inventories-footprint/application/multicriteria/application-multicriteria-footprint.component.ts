@@ -55,15 +55,15 @@ import { GraphDescriptionComponent } from "../../../digital-services-footprint/d
     templateUrl: "./application-multicriteria-footprint.component.html",
     standalone: true,
     imports: [
-    Button,
-    SelectModule,
-    FormsModule,
-    PrimeTemplate,
-    StackBarChartComponent,
-    NgxEchartsDirective,
-    GraphDescriptionComponent,
-    TranslatePipe
-],
+        Button,
+        SelectModule,
+        FormsModule,
+        PrimeTemplate,
+        StackBarChartComponent,
+        NgxEchartsDirective,
+        GraphDescriptionComponent,
+        TranslatePipe,
+    ],
 })
 export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboard {
     @Input() footprint: ApplicationFootprint[] = [];

@@ -156,7 +156,7 @@ export class InventoriesFootprintComponent implements OnInit, OnDestroy {
         ] as StatGroup[];
     });
 
-    allUnmodifiedFootprint: WritableSignal<Criterias> = signal({} as Criterias);
+    allUnmodifiedFootprint: WritableSignal<Criterias> = signal({});
     allUnmodifiedFilters: Filter<string> = {};
     allUnmodifiedDatacenters: WritableSignal<Datacenter[]> = signal([] as Datacenter[]);
     allUnmodifiedEquipments: WritableSignal<

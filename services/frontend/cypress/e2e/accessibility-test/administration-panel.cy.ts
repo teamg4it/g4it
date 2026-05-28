@@ -65,9 +65,11 @@ describe("Administration panel", () => {
         // choose criteria for this organization
         cy.then(() => setPage("User criteria component"));
         cy.get('[id="criteria-button"]').click();
-        cy.get('[id="criteria"]').then((el) => {
-            cy.checkA11y(el.get(0), undefined, reportA11yViolations, true);
-        });
+        cy.wait(2000)
+            .get('[id="criteria"]')
+            .then((el) => {
+                cy.checkA11y(el.get(0), undefined, reportA11yViolations, true);
+            });
         cy.contains("Cancel").click();
 
         // search for a referenced user

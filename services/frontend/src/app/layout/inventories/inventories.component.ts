@@ -31,7 +31,6 @@ import {
     Inventory,
     InventoryCriteriaRest,
 } from "src/app/core/interfaces/inventory.interfaces";
-import { Note } from "src/app/core/interfaces/note.interface";
 import { Role } from "src/app/core/interfaces/roles.interfaces";
 import { Workspace } from "src/app/core/interfaces/user.interfaces";
 import { InventoryService } from "src/app/core/service/business/inventory.service";
@@ -304,7 +303,7 @@ export class InventoriesComponent implements OnInit, OnDestroy {
     noteSaveValue(event: any) {
         this.selectedInventory.note = {
             content: event,
-        } as Note;
+        };
 
         this.inventoryService
             .updateInventory(this.selectedInventory)

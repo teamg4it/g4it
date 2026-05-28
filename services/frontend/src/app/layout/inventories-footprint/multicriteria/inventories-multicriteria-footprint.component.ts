@@ -48,15 +48,15 @@ import { GraphDescriptionComponent } from "../../digital-services-footprint/digi
     templateUrl: "./inventories-multicriteria-footprint.component.html",
     standalone: true,
     imports: [
-    Button,
-    SelectModule,
-    FormsModule,
-    PrimeTemplate,
-    StackBarChartComponent,
-    NgxEchartsDirective,
-    GraphDescriptionComponent,
-    TranslatePipe
-],
+        Button,
+        SelectModule,
+        FormsModule,
+        PrimeTemplate,
+        StackBarChartComponent,
+        NgxEchartsDirective,
+        GraphDescriptionComponent,
+        TranslatePipe,
+    ],
 })
 export class InventoriesMultiCriteriaFootprintComponent extends AbstractDashboard {
     protected readonly store = inject(FootprintStoreService);
@@ -65,7 +65,7 @@ export class InventoriesMultiCriteriaFootprintComponent extends AbstractDashboar
     private readonly route = inject(ActivatedRoute);
     currentLang: string = this.translate.currentLang;
     criteriakeys = Object.keys(this.translate.translations[this.currentLang]["criteria"]);
-    @Input() footprint: Criterias = {} as Criterias;
+    @Input() footprint: Criterias = {};
     @Input() filterFields: string[] = [];
     @Input() datacenters: Datacenter[] = [];
     @Input() inVirtualEquipments: InVirtualEquipmentRest[] = [];

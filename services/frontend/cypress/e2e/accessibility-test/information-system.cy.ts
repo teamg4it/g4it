@@ -67,7 +67,7 @@ describe("Information System", () => {
 
         // filter on country
         cy.then(() => setPage("Equipment filter page"));
-        cy.get("#filter-button button").click();
+        cy.wait(5000).get("#filter-button button").click();
         cy.checkA11y(
             undefined,
             {
@@ -107,7 +107,7 @@ describe("Information System", () => {
         cy.checkA11y(undefined, undefined, reportA11yViolations, true);
         // filter on domain
         cy.then(() => setPage("Application filter page"));
-        cy.get("#application-filter-button button").click();
+        cy.wait(5000).get("#application-filter-button button").click();
         cy.get('[id="app-inv-accordion-panel-0"]').click();
         cy.get("#app-inv-filter-li-0 .p-checkbox-box").first().click({ force: true });
         cy.checkA11y(

@@ -33,7 +33,6 @@ import { TooltipModule } from "primeng/tooltip";
 import { finalize, lastValueFrom } from "rxjs";
 import { DigitalServiceVersionType } from "src/app/core/interfaces/digital-service-version.interface";
 import { DigitalService } from "src/app/core/interfaces/digital-service.interfaces";
-import { Note } from "src/app/core/interfaces/note.interface";
 import { Organization, Workspace } from "src/app/core/interfaces/user.interfaces";
 import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServiceVersionDataService } from "src/app/core/service/data/digital-service-version-data-service";
@@ -54,25 +53,25 @@ import { VersionTypeTagComponent } from "./version-type-tag/version-type-tag.com
     providers: [MessageService, ConfirmationService],
     standalone: true,
     imports: [
-    ToastModule,
-    DrawerModule,
-    CommonEditorComponent,
-    PrimeTemplate,
-    DigitalServicesImportComponent,
-    ConfirmPopupModule,
-    Button,
-    NgClass,
-    InplaceModule,
-    FormsModule,
-    InputTextModule,
-    VersionTypeTagComponent,
-    TooltipModule,
-    LinkCreatePopupComponent,
-    PromoteVersionDialogComponent,
-    RenewServicePopupComponent,
-    AsyncPipe,
-    TranslatePipe
-],
+        ToastModule,
+        DrawerModule,
+        CommonEditorComponent,
+        PrimeTemplate,
+        DigitalServicesImportComponent,
+        ConfirmPopupModule,
+        Button,
+        NgClass,
+        InplaceModule,
+        FormsModule,
+        InputTextModule,
+        VersionTypeTagComponent,
+        TooltipModule,
+        LinkCreatePopupComponent,
+        PromoteVersionDialogComponent,
+        RenewServicePopupComponent,
+        AsyncPipe,
+        TranslatePipe,
+    ],
 })
 export class DigitalServicesFootprintHeaderComponent implements OnInit {
     protected readonly global = inject(GlobalStoreService);
@@ -232,7 +231,7 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
     noteSaveValue(event: any) {
         this.digitalService.note = {
             content: event,
-        } as Note;
+        };
         this.digitalServicesData.update(this.digitalService).subscribe((res) => {
             this.sidebarVisible = false;
             this.messageService.add({

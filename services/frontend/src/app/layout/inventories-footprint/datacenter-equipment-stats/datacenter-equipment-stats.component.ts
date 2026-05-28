@@ -7,7 +7,7 @@
  */
 import { Component, Input, effect, inject, signal } from "@angular/core";
 
-import { TranslateService, TranslatePipe } from "@ngx-translate/core";
+import { TranslatePipe, TranslateService } from "@ngx-translate/core";
 import {
     Criterias,
     Datacenter,
@@ -22,8 +22,8 @@ import { IntegerPipe } from "src/app/core/pipes/integer.pipe";
 import { InventoryUtilService } from "src/app/core/service/business/inventory-util.service";
 import { FootprintStoreService } from "src/app/core/store/footprint.store";
 import { GlobalStoreService } from "src/app/core/store/global.store";
-import { AbstractDashboard } from "../abstract-dashboard";
 import { StatsComponent } from "../../common/stats/stats.component";
+import { AbstractDashboard } from "../abstract-dashboard";
 
 @Component({
     selector: "app-datacenter-equipment-stats",
@@ -34,7 +34,7 @@ import { StatsComponent } from "../../common/stats/stats.component";
 export class DataCenterEquipmentStatsComponent extends AbstractDashboard {
     private readonly store = inject(FootprintStoreService);
     private readonly inventoryUtilService = inject(InventoryUtilService);
-    @Input() footprint: Criterias = {} as Criterias;
+    @Input() footprint: Criterias = {};
     @Input() filterFields: string[] = [];
     @Input() datacenters: Datacenter[] = [];
     @Input() equipments: [

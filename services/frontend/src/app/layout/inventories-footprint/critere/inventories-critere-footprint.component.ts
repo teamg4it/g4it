@@ -55,16 +55,16 @@ import { InventoriesFootprintComponent } from "../inventories-footprint.componen
     templateUrl: "./inventories-critere-footprint.component.html",
     standalone: true,
     imports: [
-    NgClass,
-    Button,
-    SelectModule,
-    FormsModule,
-    PrimeTemplate,
-    StackBarChartComponent,
-    NgxEchartsDirective,
-    GraphDescriptionComponent,
-    TranslatePipe
-],
+        NgClass,
+        Button,
+        SelectModule,
+        FormsModule,
+        PrimeTemplate,
+        StackBarChartComponent,
+        NgxEchartsDirective,
+        GraphDescriptionComponent,
+        TranslatePipe,
+    ],
 })
 export class InventoriesCritereFootprintComponent
     extends AbstractDashboard
@@ -76,7 +76,7 @@ export class InventoriesCritereFootprintComponent
     private readonly router = inject(Router);
     private readonly route = inject(ActivatedRoute);
     sourceList = input<string[]>([]);
-    @Input() footprint: Criterias = {} as Criterias;
+    @Input() footprint: Criterias = {};
     @Input() criteriaFootprint: Criteria = {} as Criteria;
     @Input() filterFields: string[] = [];
     @Input() datacenters: Datacenter[] = [];

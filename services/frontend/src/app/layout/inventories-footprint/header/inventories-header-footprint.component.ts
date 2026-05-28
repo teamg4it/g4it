@@ -17,7 +17,6 @@ import { DrawerModule } from "primeng/drawer";
 import { ToastModule } from "primeng/toast";
 import { Subject, firstValueFrom, takeUntil } from "rxjs";
 import { Inventory } from "src/app/core/interfaces/inventory.interfaces";
-import { Note } from "src/app/core/interfaces/note.interface";
 import { Organization, Workspace } from "src/app/core/interfaces/user.interfaces";
 import { InventoryService } from "src/app/core/service/business/inventory.service";
 import { UserService } from "src/app/core/service/business/user.service";
@@ -116,7 +115,7 @@ export class InventoriesHeaderFootprintComponent implements OnInit, OnDestroy {
     noteSaveValue(event: any) {
         this.inventory.note = {
             content: event,
-        } as Note;
+        };
         this.inventoryService
             .updateInventory(this.inventory)
             .pipe(takeUntil(this.ngUnsubscribe))
