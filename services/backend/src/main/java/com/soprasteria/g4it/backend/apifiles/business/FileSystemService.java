@@ -203,7 +203,7 @@ public class FileSystemService {
      * @param fileStorage the fileStorage
      * @return the file path.
      */
-    private String uploadFile(final MultipartFile file, final FileStorage fileStorage, final String newFilename, Boolean isInventory) {
+    /*private String uploadFile(final MultipartFile file, final FileStorage fileStorage, final String newFilename, Boolean isInventory) {
         String extension = StringUtils.getFilenameExtension(file.getOriginalFilename());
         boolean isBinary = "xlsx".equalsIgnoreCase(extension) || "ods".equalsIgnoreCase(extension);
         String filename = newFilename == null ? file.getOriginalFilename() : newFilename;
@@ -243,7 +243,30 @@ public class FileSystemService {
                     "Error occurred while uploading file"
             );
         }
+    }*/
+    private String uploadFile(final MultipartFile file, final FileStorage fileStorage, final String newFilename, Boolean isInventory) {
+        String filename = newFilename == null ? file.getOriginalFilename() : newFilename;
+
+        try (InputStream inputStream = file.getInputStream()) {
+            // Read the entire file into memory
+            byte[] fileBytes = inputStream.readAllBytes();
+            try (InputStream uploadStream = new ByteArrayInputStream(fileBytes)) {
+                return fileStorage.upload(
+                        FileFolder.INPUT,
+                        filename,
+                        file.getOriginalFilename(),
+                        uploadStream
+                );
+            }
+        } catch (final IOException e) {
+            log.error("Upload failed for file {}", file.getOriginalFilename(), e);
+            throw new ResponseStatusException(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Error occurred while uploading file"
+            );
+        }
     }
+
 
     /**
      * Get the filename from url and nb slash (0 or 1)
