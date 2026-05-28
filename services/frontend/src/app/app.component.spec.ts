@@ -7,6 +7,17 @@ import { TranslateModule, TranslateService } from "@ngx-translate/core";
 import { MessageService } from "primeng/api";
 import { of, Subject } from "rxjs";
 import { environment } from "src/environments/environment";
+
+// Configure environment BEFORE importing services to prevent Keycloak initialization errors
+if (!environment.keycloak) {
+    (environment as any).keycloak = {
+        enabled: "false",
+        issuer: "http://test-issuer",
+        realm: "test-realm",
+        clientId: "test-client",
+    };
+}
+
 import { AppComponent } from "./app.component";
 import { keycloak } from "./core/service/business/custom-auth.service";
 import { MatomoScriptService } from "./core/service/business/matomo-script.service";

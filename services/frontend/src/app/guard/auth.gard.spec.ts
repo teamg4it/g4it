@@ -2,6 +2,17 @@ import { TestBed } from "@angular/core/testing";
 import { ActivatedRouteSnapshot, RouterStateSnapshot } from "@angular/router";
 
 import { environment } from "src/environments/environment";
+
+// Configure environment BEFORE importing the service to prevent Keycloak initialization errors
+if (!environment.keycloak) {
+    (environment as any).keycloak = {
+        enabled: "false",
+        issuer: "http://test-issuer",
+        realm: "test-realm",
+        clientId: "test-client",
+    };
+}
+
 import {
     CustomAuthService,
     keycloak,

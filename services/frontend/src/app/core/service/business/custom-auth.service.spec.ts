@@ -4,6 +4,17 @@ import { Subject } from "rxjs";
 
 import { Constants } from "src/constants";
 import { environment } from "src/environments/environment";
+
+// Configure environment BEFORE importing the service to prevent Keycloak initialization errors
+if (!environment.keycloak) {
+    (environment as any).keycloak = {
+        enabled: "false",
+        issuer: "http://test-issuer",
+        realm: "test-realm",
+        clientId: "test-client",
+    };
+}
+
 import { DigitalServiceStoreService } from "../../store/digital-service.store";
 import { CustomAuthService, keycloak } from "./custom-auth.service";
 
