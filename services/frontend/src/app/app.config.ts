@@ -20,9 +20,7 @@ import {
 } from "@angular/common/http";
 
 import { APP_BASE_HREF, DatePipe } from "@angular/common";
-import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { provideRouter, withRouterConfig } from "@angular/router";
-
 import { TranslateLoader, TranslateModule, TranslateService } from "@ngx-translate/core";
 import { TranslateHttpLoader } from "@ngx-translate/http-loader";
 import { KeycloakAngularModule } from "keycloak-angular";
@@ -99,7 +97,6 @@ export const appConfig: ApplicationConfig = {
         provideRouter(appRoutes, withRouterConfig({ onSameUrlNavigation: "reload" })),
         provideHttpClient(withInterceptorsFromDi()),
         importProvidersFrom(
-            BrowserAnimationsModule,
             KeycloakAngularModule,
             ToastModule,
             ProgressBarModule,
