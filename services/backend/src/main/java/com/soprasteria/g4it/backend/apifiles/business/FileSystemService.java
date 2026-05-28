@@ -203,7 +203,7 @@ public class FileSystemService {
      * @param fileStorage the fileStorage
      * @return the file path.
      */
-    /*private String uploadFile(final MultipartFile file, final FileStorage fileStorage, final String newFilename, Boolean isInventory) {
+    private String uploadFile(final MultipartFile file, final FileStorage fileStorage, final String newFilename, Boolean isInventory) {
         String extension = StringUtils.getFilenameExtension(file.getOriginalFilename());
         boolean isBinary = "xlsx".equalsIgnoreCase(extension) || "ods".equalsIgnoreCase(extension);
         String filename = newFilename == null ? file.getOriginalFilename() : newFilename;
@@ -212,9 +212,14 @@ public class FileSystemService {
             InputStream uploadInputStream;
 
             if (isBinary) {
-                // For binary files, stream directly
-                uploadInputStream = inputStream;
-            } else {
+            // IMPORTANT:
+            // Load binary file fully into memory
+            // to avoid Tomcat temp file lifecycle issue
+            byte[] bytes = inputStream.readAllBytes();
+            uploadInputStream =
+                    new ByteArrayInputStream(bytes);
+
+        } else {
                 // For text files, read and convert to UTF-8 in a single pass
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
@@ -243,8 +248,8 @@ public class FileSystemService {
                     "Error occurred while uploading file"
             );
         }
-    }*/
-    private String uploadFile(final MultipartFile file, final FileStorage fileStorage, final String newFilename, Boolean isInventory) {
+    }
+    /*private String uploadFile(final MultipartFile file, final FileStorage fileStorage, final String newFilename, Boolean isInventory) {
         String filename = newFilename == null ? file.getOriginalFilename() : newFilename;
 
         try (InputStream inputStream = file.getInputStream()) {
@@ -265,7 +270,7 @@ public class FileSystemService {
                     "Error occurred while uploading file"
             );
         }
-    }
+    }*/
 
 
     /**
