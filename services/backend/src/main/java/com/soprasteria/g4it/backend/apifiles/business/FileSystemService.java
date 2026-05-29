@@ -207,7 +207,10 @@ public class FileSystemService {
         final StringBuilder tempPath = Boolean.TRUE.equals(isInventory) ? new StringBuilder(localWorkingFolder).append(File.separator).append("input").append(File.separator).append("inventory").append(File.separator).append(UUID.randomUUID())
                 : new StringBuilder(localWorkingFolder).append(File.separator).append("input").append(File.separator).append("digital-service").append(File.separator).append(UUID.randomUUID());
         File outputFile = new File(tempPath.toString());
-
+        File parent = outputFile.getParentFile();
+        if (!parent.exists()) {
+            parent.mkdirs();
+        }
         // Detect file type by extension
         String extension = StringUtils.getFilenameExtension(file.getOriginalFilename());
 
