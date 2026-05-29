@@ -127,7 +127,7 @@ export class HttpErrorInterceptor implements HttpInterceptor {
                         `toast-errors.${"bad-request"}.title`,
                     ),
                     detail:
-                        error?.error?.field === "csv"
+                        error?.error?.field === "csv" || error?.error?.field === "file"
                             ? error?.error?.message
                             : this.translate.instant(
                                   `toast-errors.${"bad-request"}.text`,

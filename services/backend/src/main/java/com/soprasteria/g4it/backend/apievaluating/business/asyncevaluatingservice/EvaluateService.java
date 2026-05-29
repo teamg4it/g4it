@@ -112,6 +112,7 @@ public class EvaluateService {
     BoaviztapiService boaviztapiService;
     @Autowired
     InventoryRepository inventoryRepository;
+
     @Value("${local.working.folder}")
     private String localWorkingFolder;
     private Map<String, String> codeToCountryMapCache;
@@ -265,7 +266,9 @@ public class EvaluateService {
             long countItemImpactWorkspace= referentialGetService.countItemImpactsForWorkspace(context.getWorkspaceId());
 
             int pageNumber = 0;
+            long processed = 0;
             final Sort sortByName = Sort.by("name");
+            double processFactor = evaluateReportBO.isExport() ? 0.8 : 0.9;
             while (true) {
                 Pageable page = PageRequest.of(pageNumber, Constants.BATCH_SIZE, sortByName);
                 final List<InPhysicalEquipment> physicalEquipments =
@@ -339,7 +342,19 @@ public class EvaluateService {
 
                         evaluateReportBO.setNbPhysicalEquipmentLines(evaluateReportBO.getNbPhysicalEquipmentLines() + 1);
                     }
+                    // set progress percentage
+                    processed++;
 
+                    if (processed % 20 == 0 || processed == totalEquipments) {
+
+                        int progress =
+                                (int) ((processed * 100.0 * processFactor) / totalEquipments);
+
+                        taskRepository.updateProgress(taskId,
+                                progress + "%",
+                                LocalDateTime.now()
+                        );
+                    }
                     /**
                      * ------------------------------------------------------------------
                      * VM RULE:
@@ -349,7 +364,6 @@ public class EvaluateService {
                      * ------------------------------------------------------------------
                      */
                     if (!hasNonCloudVM) {
-                        log.info("Skipping VM calculation for physical equipment {} — contains no NON-cloud VMs", physicalEquipment.getName());
                         continue;
                     }
 
@@ -373,16 +387,6 @@ public class EvaluateService {
                 csvPhysicalEquipment.flush();
                 csvVirtualEquipment.flush();
                 csvApplication.flush();
-
-                final long currentTotal = (long) Constants.BATCH_SIZE * pageNumber + physicalEquipments.size();
-
-                // set progress percentage, 0% to 90% is for this process, 90% to 100% is for compressing exports
-                double processFactor = evaluateReportBO.isExport() ? 0.8 : 0.9;
-                taskRepository.updateProgress(
-                        taskId,
-                        (int) Math.ceil(currentTotal * 100L * processFactor / totalEquipments) + "%",
-                        LocalDateTime.now()
-                );
 
                 pageNumber++;
                 physicalEquipments.clear();

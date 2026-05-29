@@ -63,7 +63,6 @@ public class AsyncEvaluatingService implements ITaskExecute {
                 java.time.LocalDateTime.now(),
                 "0%"
         );
-
         String finalStatus = TaskStatus.COMPLETED.toString();
         String finalProgress = "100%";
 
