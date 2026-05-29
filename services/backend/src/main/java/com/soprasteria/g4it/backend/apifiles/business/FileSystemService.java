@@ -217,7 +217,7 @@ public class FileSystemService {
 
        // log.info(" temp path for file {} is {}", outputFile.getName(), tempPath);
         boolean isBinary = extension.equalsIgnoreCase("xlsx") || extension.equalsIgnoreCase("ods");
-        log.info(" isBinary for file extension {} is {}", extension, isBinary);
+        log.info(" isBinary for file extension {} is {}",  isBinary,extension);
         try {
             tempFile = Files.createTempFile(
                     workingDir,
@@ -234,6 +234,7 @@ public class FileSystemService {
                             StandardCopyOption.REPLACE_EXISTING
                     );
                 }
+                log.info("Temp file copied. Source: {}, Destination: {}", file.getOriginalFilename(), tempFile);
             } else {
                 // if the encoding was not utf8 for plain text,
                 // we open the file again with an encoding adapted to ANSI
