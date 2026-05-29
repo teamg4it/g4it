@@ -314,8 +314,10 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
     }
 
     duplicateDigitalServiceVersion(): void {
+        this.global.setLoading(true);
         this.digitalServiceVersionDataService
             .duplicateVersion(this.digitalService.uid)
+            .pipe(finalize(() => this.global.setLoading(false)))
             .subscribe((version) => {
                 let [_, _1, _2, _3, _4, moduleType] = this.router.url.split("/");
                 if (moduleType === "eco-mind-ai") {
