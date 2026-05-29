@@ -12,6 +12,7 @@ import com.soprasteria.g4it.backend.apiuser.business.WorkspaceService;
 import com.soprasteria.g4it.backend.common.filesystem.business.FileStorage;
 import com.soprasteria.g4it.backend.common.filesystem.business.FileSystem;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileFolder;
+import com.soprasteria.g4it.backend.common.filesystem.model.StoredFile;
 import com.soprasteria.g4it.backend.common.mapper.FileDescriptionRestMapper;
 import com.soprasteria.g4it.backend.common.utils.Constants;
 import com.soprasteria.g4it.backend.common.utils.SanitizeUrl;
@@ -30,7 +31,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -64,8 +66,8 @@ public class FileSystemService {
     @Value("${local.working.folder}")
     private String localWorkingFolder;
 
-    private static BufferedReader getBufferedReader(MultipartFile file) throws IOException {
-        var isr = new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8);
+    private static BufferedReader getBufferedReader(StoredFile file) throws IOException {
+        var isr = new InputStreamReader(Files.newInputStream(file.getPath()), StandardCharsets.UTF_8);
         boolean isOk = true;
         while (isr.ready()) {
             // if there is a character like this �, it means that the encoding was not utf-8
@@ -75,7 +77,7 @@ public class FileSystemService {
             }
         }
         String encoding = isOk ? StandardCharsets.UTF_8.toString() : "Cp1252";
-        return new BufferedReader(new InputStreamReader(file.getInputStream(), encoding));
+        return new BufferedReader(new InputStreamReader(Files.newInputStream(file.getPath()), encoding));
     }
 
     @PostConstruct
@@ -143,7 +145,7 @@ public class FileSystemService {
      * @return the fileName list uploaded
      */
     public List<String> manageFilesAndRename(final String organization, final Long workspaceId,
-                                             final List<MultipartFile> files, final List<String> filenames, Boolean isInventory) {
+                                             final List<StoredFile> files, final List<String> filenames, Boolean isInventory) {
         if (files == null) return List.of();
         checkFiles(files);
         FileStorage fileStorage = fetchStorage(organization, workspaceId.toString());
@@ -163,7 +165,7 @@ public class FileSystemService {
      * @param files the input files
      * @throws BadRequestException when one type is wrong
      */
-    private void checkFiles(final List<MultipartFile> files) {
+    private void checkFiles(final List<StoredFile> files) {
         if (files == null) return;
 
         files.stream()
@@ -202,21 +204,17 @@ public class FileSystemService {
      * @param fileStorage the fileStorage
      * @return the file path.
      */
-
-    private String uploadFile(final MultipartFile file, final FileStorage fileStorage, final String newFilename, Boolean isInventory) {
+    private String uploadFile(final StoredFile file, final FileStorage fileStorage, final String newFilename, Boolean isInventory) {
         final StringBuilder tempPath = Boolean.TRUE.equals(isInventory) ? new StringBuilder(localWorkingFolder).append(File.separator).append("input").append(File.separator).append("inventory").append(File.separator).append(UUID.randomUUID())
                 : new StringBuilder(localWorkingFolder).append(File.separator).append("input").append(File.separator).append("digital-service").append(File.separator).append(UUID.randomUUID());
         File outputFile = new File(tempPath.toString());
-
         // Detect file type by extension
         String extension = StringUtils.getFilenameExtension(file.getOriginalFilename());
-
         boolean isBinary = extension.equalsIgnoreCase("xlsx") || extension.equalsIgnoreCase("ods");
-
         try {
             if (isBinary) {
                 // Direct binary copy for Excel/ODS files
-                try (InputStream in = file.getInputStream(); OutputStream out = new FileOutputStream(outputFile)) {
+                try (InputStream in = Files.newInputStream(file.getPath()); OutputStream out = new FileOutputStream(outputFile)) {
                     byte[] buffer = new byte[8192];
                     int bytesRead;
                     while ((bytesRead = in.read(buffer)) != -1) {
@@ -226,7 +224,6 @@ public class FileSystemService {
             } else {
                 // if the encoding was not utf8 for plain text,
                 // we open the file again with an encoding adapted to ANSI
-
                 BufferedReader br = getBufferedReader(file);
                 try (Writer out = new BufferedWriter(new OutputStreamWriter(
                         new FileOutputStream(outputFile), StandardCharsets.UTF_8))) {
@@ -239,7 +236,7 @@ public class FileSystemService {
 
             InputStream tmpInputStream = new FileInputStream(outputFile);
             var filename = newFilename == null ? file.getOriginalFilename() : newFilename;
-            var result = fileStorage.upload(FileFolder.INPUT, filename, file.getName(), tmpInputStream);
+            var result = fileStorage.upload(FileFolder.INPUT, filename, file.getOriginalFilename(), tmpInputStream);
             tmpInputStream.close();
             Files.delete(Path.of(tempPath.toString()));
             return result;
@@ -251,54 +248,6 @@ public class FileSystemService {
             );
         }
     }
-
-
-    /*private String uploadFile(final MultipartFile file, final FileStorage fileStorage, final String newFilename, Boolean isInventory) {
-        String extension = StringUtils.getFilenameExtension(file.getOriginalFilename());
-        boolean isBinary = "xlsx".equalsIgnoreCase(extension) || "ods".equalsIgnoreCase(extension);
-        String filename = newFilename == null ? file.getOriginalFilename() : newFilename;
-
-        try (InputStream inputStream = file.getInputStream()) {
-            InputStream uploadInputStream;
-
-            if (isBinary) {
-                // IMPORTANT:
-                // Load binary file fully into memory
-                // to avoid Tomcat temp file lifecycle issue
-                byte[] bytes = inputStream.readAllBytes();
-                uploadInputStream =
-                        new ByteArrayInputStream(bytes);
-
-            } else {
-                // For text files, read and convert to UTF-8 in a single pass
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
-                    String line;
-                    while ((line = reader.readLine()) != null) {
-                        baos.write(line.getBytes(StandardCharsets.UTF_8));
-                        baos.write('\n');
-                    }
-                }
-                uploadInputStream = new ByteArrayInputStream(baos.toByteArray());
-            }
-
-            // Upload the file
-            try (InputStream uploadStream = uploadInputStream) {
-                return fileStorage.upload(
-                        FileFolder.INPUT,
-                        filename,
-                        file.getOriginalFilename(),
-                        uploadStream
-                );
-            }
-        } catch (final IOException e) {
-            log.error("Upload failed for file {}", file.getOriginalFilename(), e);
-            throw new ResponseStatusException(
-                    HttpStatus.INTERNAL_SERVER_ERROR,
-                    "Error occurred while uploading file"
-            );
-        }
-    }*/
 
 
     /**
