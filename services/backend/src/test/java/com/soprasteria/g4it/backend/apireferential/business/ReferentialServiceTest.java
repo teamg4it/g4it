@@ -91,16 +91,16 @@ class ReferentialServiceTest {
     @Test
     void testGetMatchingItem_OrgThenGlobal() {
         MatchingItemRest globalItem = mock(MatchingItemRest.class);
-        when(referentialGetService.getMatchingItem("model", "org")).thenReturn(null);
-        when(referentialGetService.getMatchingItem("model", null)).thenReturn(globalItem);
+        when(referentialGetService.getMatchingItem("model", "org",null)).thenReturn(null);
+        when(referentialGetService.getMatchingItem("model", null,null)).thenReturn(globalItem);
         assertEquals(globalItem, referentialService.getMatchingItem("model", "org"));
     }
 
     @Test
     void testGetItemType_OrgThenGlobal() {
         ItemTypeRest globalType = mock(ItemTypeRest.class);
-        when(referentialGetService.getItemTypes("type", "org")).thenReturn(List.of());
-        when(referentialGetService.getItemTypes("type", null)).thenReturn(List.of(globalType));
+        when(referentialGetService.getItemTypes("type", "org",null)).thenReturn(List.of());
+        when(referentialGetService.getItemTypes("type", null,null)).thenReturn(List.of(globalType));
         assertEquals(globalType, referentialService.getItemType("type", "org"));
     }
 

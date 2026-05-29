@@ -65,14 +65,16 @@ public class IndicatorService {
      * @return indicator by criteria.
      */
     public Map<String, EquipmentIndicatorBO> getEquipmentIndicators(final Long taskId) {
+        List<Object[]> results = outPhysicalEquipmentRepository.findCriterionAndEquipmentByTaskId(taskId);
+        Map<String, List<OutPhysicalEquipment>> grouped = results.stream()
+                .collect(Collectors.groupingBy(
+                        r -> (String) r[0],
+                        Collectors.mapping(r -> (OutPhysicalEquipment) r[1], Collectors.toList())
+                ));
 
-        final Map<String, List<OutPhysicalEquipment>> outPhysicalEquipmentMap = outPhysicalEquipmentRepository.findByTaskId(taskId).stream()
-                .collect(Collectors.groupingBy(OutPhysicalEquipment::getCriterion));
-
-        return outPhysicalEquipmentMap.entrySet().stream()
-                .collect(Collectors.toMap(
-                        map -> com.soprasteria.g4it.backend.common.utils.StringUtils.snakeToKebabCase(map.getKey()),
-                        map -> equipmentIndicatorMapper.outToDto(map.getValue())
+        return grouped.entrySet().stream().collect(Collectors.toMap(
+                e -> com.soprasteria.g4it.backend.common.utils.StringUtils.snakeToKebabCase(e.getKey()),
+                e -> equipmentIndicatorMapper.outToDto(e.getValue())
                 ));
     }
 

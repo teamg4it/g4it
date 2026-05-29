@@ -18,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Repository
 public interface ItemTypeRepository extends JpaRepository<ItemType, Long> {
@@ -32,13 +33,11 @@ public interface ItemTypeRepository extends JpaRepository<ItemType, Long> {
 
     List<ItemType> findByWorkspaceId(Long workspaceId);
 
-    Optional<ItemType> findByTypeAndWorkspaceId(String type, Long workspaceId);
 
     @Transactional
     @Modifying
     void deleteByWorkspaceId(Long workspaceId);
 
-    List<ItemType> findByWorkspaceIdOrWorkspaceIdIsNull(Long workspaceId);
 
     Page<ItemType> findByWorkspaceId(Long workspaceId, Pageable pageable);
 

@@ -28,6 +28,7 @@ import com.soprasteria.g4it.backend.apiinout.modeldb.InVirtualEquipment;
 import com.soprasteria.g4it.backend.apiinout.repository.*;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
+import com.soprasteria.g4it.backend.apireferential.business.ReferentialGetService;
 import com.soprasteria.g4it.backend.apireferential.business.ReferentialService;
 import com.soprasteria.g4it.backend.apiuser.repository.OrganizationRepository;
 import com.soprasteria.g4it.backend.common.filesystem.business.local.CsvFileService;
@@ -40,8 +41,7 @@ import com.soprasteria.g4it.backend.common.utils.StringUtils;
 import com.soprasteria.g4it.backend.exception.AsyncTaskException;
 import com.soprasteria.g4it.backend.external.boavizta.business.BoaviztapiService;
 import com.soprasteria.g4it.backend.external.boavizta.model.response.BoaResponseRest;
-import com.soprasteria.g4it.backend.server.gen.api.dto.CriterionRest;
-import com.soprasteria.g4it.backend.server.gen.api.dto.HypothesisRest;
+import com.soprasteria.g4it.backend.server.gen.api.dto.*;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVPrinter;
@@ -60,10 +60,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -120,6 +117,8 @@ public class EvaluateService {
     private Map<String, String> codeToCountryMapCache;
     private List<String> lifecycleStepsCache;
     private Map<Pair<String, String>, Integer> electricityMixQuartilesCache;
+    @Autowired
+    ReferentialGetService referentialGetService;
 
     @PostConstruct
     public void init() {
@@ -262,6 +261,9 @@ public class EvaluateService {
             outVirtualEquipmentSize += saveResult.savedVirtualCount();
             outApplicationSize += saveResult.savedApplicationCount();
 
+            // to check weather workspace level data
+            long countItemImpactWorkspace= referentialGetService.countItemImpactsForWorkspace(context.getWorkspaceId());
+
             int pageNumber = 0;
             final Sort sortByName = Sort.by("name");
             while (true) {
@@ -299,7 +301,7 @@ public class EvaluateService {
                     // Call external tools - lib calculs
                     List<ImpactEquipementPhysique> impactEquipementPhysiqueList = evaluateNumEcoEvalService.calculatePhysicalEquipment(
                             physicalEquipment, datacenter,
-                            organization, activeCriteria, lifecycleSteps, hypothesisRestList,context.getWorkspaceId());
+                            organization, activeCriteria, lifecycleSteps, hypothesisRestList,context.getWorkspaceId(),countItemImpactWorkspace);
 
 
                     // Identify NON-CLOUD VMs for this physical equipment

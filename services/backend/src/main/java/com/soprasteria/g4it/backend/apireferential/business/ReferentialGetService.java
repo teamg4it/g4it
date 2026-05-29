@@ -12,6 +12,7 @@ import com.soprasteria.g4it.backend.apiindicator.utils.LifecycleStepUtils;
 import com.soprasteria.g4it.backend.apireferential.mapper.ReferentialMapper;
 import com.soprasteria.g4it.backend.apireferential.modeldb.ItemImpact;
 import com.soprasteria.g4it.backend.apireferential.modeldb.ItemType;
+import com.soprasteria.g4it.backend.apireferential.modeldb.MatchingItem;
 import com.soprasteria.g4it.backend.apireferential.repository.*;
 import com.soprasteria.g4it.backend.common.utils.StringUtils;
 import com.soprasteria.g4it.backend.server.gen.api.dto.*;
@@ -21,8 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * Referential get service
@@ -87,14 +87,14 @@ public class ReferentialGetService {
      * @return the of itemTypes
      */
     @Cacheable("ref_getItemTypes")
-    public List<ItemTypeRest> getItemTypes(String type, String organization) {
+    public List<ItemTypeRest> getItemTypes(String type, String organization,Long workspaceId) {
 
         // get all itemTypes
         if (type == null) {
-            return refRestMapper.toItemTypeRest(itemTypeRepository.findByOrganizationAndWorkspaceId(organization,null));
+            return refRestMapper.toItemTypeRest(itemTypeRepository.findByOrganizationAndWorkspaceId(organization,workspaceId));
         }
 
-        Optional<ItemType> itemType = itemTypeRepository.findByTypeAndOrganizationAndWorkspaceId(type, organization,null);
+        Optional<ItemType> itemType = itemTypeRepository.findByTypeAndOrganizationAndWorkspaceId(type, organization,workspaceId);
 
         return refRestMapper.toItemTypeRest(itemType.map(List::of).orElseGet(List::of));
     }
@@ -106,8 +106,8 @@ public class ReferentialGetService {
      * @return matchingItem
      */
     @Cacheable("ref_getMatchingItem")
-    public MatchingItemRest getMatchingItem(String model, String organization) {
-        return matchingItemRepository.findByItemSourceAndOrganizationAndWorkspaceId(model, organization,null)
+    public MatchingItemRest getMatchingItem(String model, String organization, Long workspaceId) {
+        return matchingItemRepository.findByItemSourceAndOrganizationAndWorkspaceId(model, organization,workspaceId)
                 .map(item -> refRestMapper.toMatchingItemRest(item)).orElse(null);
     }
 
@@ -123,8 +123,8 @@ public class ReferentialGetService {
                                                String name, String location,
                                                String category, String organization) {
 
-        List<ItemImpact> itemImpacts = itemImpactRepository.findByCriterionAndLifecycleStepAndNameAndCategoryAndLocationAndOrganizationAndWorkspaceId(
-                StringUtils.kebabToSnakeCase(criterion), LifecycleStepUtils.get(lifecycleStep, lifecycleStep), name, category, location, organization,null);
+        List<ItemImpact> itemImpacts = itemImpactRepository.findByCriterionAndLifecycleStepAndNameAndCategoryAndLocationAndOrganization(
+                StringUtils.kebabToSnakeCase(criterion), LifecycleStepUtils.get(lifecycleStep, lifecycleStep), name, category, location, organization);
         return refRestMapper.toItemImpactRest(itemImpacts);
     }
 
@@ -150,42 +150,33 @@ public class ReferentialGetService {
         return itemImpactRepository.findByCategoryAndWorkspaceId("electricity-mix",null);
     }
 
-    public List<ItemTypeRest> getItemTypesForWorkspace(String type, Long workspaceId, String organization) {
-
-        // get all itemTypes
+    @Cacheable(value = "ref_getItemTypes", key = "#type + '|' + #workspaceId")
+    public List<ItemTypeRest> getItemTypesForWorkspace(String type, Long workspaceId) {
         if (type == null) {
-            List<ItemType> items = itemTypeRepository.findByWorkspaceId(workspaceId);
-            if (items == null || items.isEmpty()) {
-                return refRestMapper.toItemTypeRest(itemTypeRepository.findByOrganization(organization));
-            } else {
-                return refRestMapper.toItemTypeRest(items);
-            }
-        }else{
-            Optional<ItemType> itemType = itemTypeRepository.findByTypeAndWorkspaceId(type, workspaceId);
-            if(itemType.isPresent()){
-                return refRestMapper.toItemTypeRest(List.of(itemType.get()));
-            }
-            return refRestMapper.toItemTypeRest(itemTypeRepository.findByTypeAndOrganizationAndWorkspaceId(type,organization,workspaceId).map(List::of).orElseGet(List::of));
+            return refRestMapper.toItemTypeRest(itemTypeRepository.findByOrganizationAndWorkspaceId(null,workspaceId));
         }
+        Optional<ItemType> itemType = itemTypeRepository.findByTypeAndOrganizationAndWorkspaceId(type, null,workspaceId);
+        return refRestMapper.toItemTypeRest(itemType.map(List::of).orElseGet(List::of));
     }
 
-    public MatchingItemRest getMatchingItemForWorkspace(String model, String organization, Long workspaceId) {
-        return matchingItemRepository.findByItemSourceAndWorkspaceId(model, workspaceId)
-                .map(item -> refRestMapper.toMatchingItemRest(item))
-                .orElseGet(() -> matchingItemRepository.findByItemSourceAndOrganization(model, organization)
-                        .map(item -> refRestMapper.toMatchingItemRest(item)).orElse(null));
+    @Cacheable(value = "ref_getMatchingItem", key = "#model + '|' + #workspaceId")
+    public MatchingItemRest getMatchingItemForWorkspace(String model, Long workspaceId) {
+        return matchingItemRepository.findByItemSourceAndOrganizationAndWorkspaceId(model, null,workspaceId)
+                .map(item -> refRestMapper.toMatchingItemRest(item)).orElse(null);
     }
 
+
+    @Cacheable(value = "ref_getItemImpacts", key = "#criterion + '|' + #lifecycleStep + '|' + #name + '|' + #location + '|' + #category + '|' + #organization + '|' + #workspaceId")
     public List<ItemImpactRest> getItemImpactsForWorkspace(String criterion, String lifecycleStep,
-                                               String name, String location,
-                                               String category, String organization,Long workspaceId) {
-        List<ItemImpact> itemImpacts = itemImpactRepository.findByCriterionAndLifecycleStepAndNameAndCategoryAndLocationAndWorkspaceId(
-                StringUtils.kebabToSnakeCase(criterion), LifecycleStepUtils.get(lifecycleStep, lifecycleStep), name, category, location,workspaceId);
-        if(itemImpacts == null || itemImpacts.isEmpty()) {
-            itemImpacts = itemImpactRepository.findByCriterionAndLifecycleStepAndNameAndCategoryAndLocationAndOrganization(
-                    StringUtils.kebabToSnakeCase(criterion), LifecycleStepUtils.get(lifecycleStep, lifecycleStep), name, category, location, organization);
-        }
-            return refRestMapper.toItemImpactRest(itemImpacts);
+                                                           String name, String location,
+                                                           String category, String organization, Long workspaceId) {
+        List<ItemImpact> itemImpacts = itemImpactRepository.findByCriterionAndLifecycleStepAndNameAndCategoryAndLocationAndOrganizationAndWorkspaceId(
+                StringUtils.kebabToSnakeCase(criterion), LifecycleStepUtils.get(lifecycleStep, lifecycleStep), name, category, location, organization, workspaceId);
+        return refRestMapper.toItemImpactRest(itemImpacts);
+    }
+
+    public long countItemImpactsForWorkspace(Long workspaceId) {
+        return itemImpactRepository.countByWorkspaceId(workspaceId);
     }
 
 }

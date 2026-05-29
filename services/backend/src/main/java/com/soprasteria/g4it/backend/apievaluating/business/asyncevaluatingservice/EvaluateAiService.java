@@ -31,6 +31,7 @@ import com.soprasteria.g4it.backend.apiparameterai.repository.InAiParameterRepos
 import com.soprasteria.g4it.backend.apirecomandation.mapper.RecommendationJsonMapper;
 import com.soprasteria.g4it.backend.apirecomandation.modeldb.OutAiReco;
 import com.soprasteria.g4it.backend.apirecomandation.repository.OutAiRecoRepository;
+import com.soprasteria.g4it.backend.apireferential.business.ReferentialGetService;
 import com.soprasteria.g4it.backend.apireferential.business.ReferentialService;
 import com.soprasteria.g4it.backend.apiuser.repository.OrganizationRepository;
 import com.soprasteria.g4it.backend.client.gen.connector.apiecomindv2.dto.InputEstimationLLMInference;
@@ -112,6 +113,9 @@ public class EvaluateAiService {
 
     @Value("${local.working.folder}")
     private String localWorkingFolder;
+
+    @Autowired
+    ReferentialGetService referentialGetService;
 
     /**
      * Evaluate the digital service with ia parameter
@@ -252,6 +256,8 @@ public class EvaluateAiService {
                 }
             }
 
+            // to check weather workspace level data
+            long countItemImpactWorkspace= referentialGetService.countItemImpactsForWorkspace(context.getWorkspaceId());
             while (!physicalEquipments.isEmpty()) {
 
                 log.info("Evaluating {} physical equipments", physicalEquipments.size());
@@ -275,7 +281,7 @@ public class EvaluateAiService {
 
                     List<ImpactEquipementPhysique> impactEquipementPhysiqueList = evaluateNumEcoEvalService.calculatePhysicalEquipment(
                             inPhysicalEq, datacenters.getFirst(),
-                            organization, activeCriteria, lifecycleSteps, hypothesisRestList, context.getWorkspaceId());
+                            organization, activeCriteria, lifecycleSteps, hypothesisRestList, context.getWorkspaceId(),countItemImpactWorkspace);
 
                     if (evaluateReportBO.isExport()) {
                         csvInPhysicalEquipment.printRecord(inputToCsvRecord.toCsv(inPhysicalEq, datacenter));

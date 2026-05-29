@@ -68,8 +68,8 @@ public class GenericRuleService {
                             locale)));
         }
         if (!isDigitalService) {
-            if (referentialGetService.getItemTypesForWorkspace(type, workspaceId,organization).isEmpty() &&
-                    referentialGetService.getItemTypes(type, null).isEmpty()) {
+            if (referentialGetService.getItemTypesForWorkspace(type, workspaceId).isEmpty() &&
+                    referentialGetService.getItemTypes(type, null,null).isEmpty()) {
 
                 return Optional.of(new LineError(
                         filename,
