@@ -219,7 +219,6 @@ public class ReferentialService {
         }
 
         itemImpacts.addAll(electricityMixImpact);
-
         return itemImpacts;
     }
 }
