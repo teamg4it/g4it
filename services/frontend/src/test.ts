@@ -14,7 +14,7 @@ import { environment } from "./environments/environment";
 if (!environment.keycloak) {
     (environment as any).keycloak = {
         enabled: "false",
-        issuer: "http://test-issuer",
+        issuer: "https://test-issuer",
         realm: "test-realm",
         clientId: "test-client",
     };
