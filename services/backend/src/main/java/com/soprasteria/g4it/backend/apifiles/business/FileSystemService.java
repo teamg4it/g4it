@@ -32,6 +32,7 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -204,48 +205,80 @@ public class FileSystemService {
      * @return the file path.
      */
     private String uploadFile(final MultipartFile file, final FileStorage fileStorage, final String newFilename, Boolean isInventory) {
-        final StringBuilder tempPath = Boolean.TRUE.equals(isInventory) ? new StringBuilder(localWorkingFolder).append(File.separator).append("input").append(File.separator).append("inventory").append(File.separator).append(UUID.randomUUID())
+        /*final StringBuilder tempPath = Boolean.TRUE.equals(isInventory) ? new StringBuilder(localWorkingFolder).append(File.separator).append("input").append(File.separator).append("inventory").append(File.separator).append(UUID.randomUUID())
                 : new StringBuilder(localWorkingFolder).append(File.separator).append("input").append(File.separator).append("digital-service").append(File.separator).append(UUID.randomUUID());
-        File outputFile = new File(tempPath.toString());
-        log.info(" temp path for file {} is {}", outputFile.getName(), tempPath);
+        File outputFile = new File(tempPath.toString());*/
         // Detect file type by extension
         String extension = StringUtils.getFilenameExtension(file.getOriginalFilename());
+        final Path workingDir = Boolean.TRUE.equals(isInventory)
+                ? Path.of(localWorkingFolder, "input", "inventory")
+                : Path.of(localWorkingFolder, "input", "digital-service");
+        Path tempFile = null;
 
+       // log.info(" temp path for file {} is {}", outputFile.getName(), tempPath);
         boolean isBinary = extension.equalsIgnoreCase("xlsx") || extension.equalsIgnoreCase("ods");
-
+        log.info(" isBinary for file extension {} is {}", extension, isBinary);
         try {
+            tempFile = Files.createTempFile(
+                    workingDir,
+                    "upload-",
+                    extension != null ? "." + extension : ".tmp"
+            );
+            log.info("Temp file created: {} with working dir {}", tempFile,workingDir);
             if (isBinary) {
                 // Direct binary copy for Excel/ODS files
-                try (InputStream in = file.getInputStream(); OutputStream out = new FileOutputStream(outputFile)) {
-                    byte[] buffer = new byte[8192];
-                    int bytesRead;
-                    while ((bytesRead = in.read(buffer)) != -1) {
-                        out.write(buffer, 0, bytesRead);
-                    }
+                try (InputStream inputStream = file.getInputStream()) {
+                    Files.copy(
+                            inputStream,
+                            tempFile,
+                            StandardCopyOption.REPLACE_EXISTING
+                    );
                 }
             } else {
                 // if the encoding was not utf8 for plain text,
                 // we open the file again with an encoding adapted to ANSI
-
                 BufferedReader br = getBufferedReader(file);
                 try (Writer out = new BufferedWriter(new OutputStreamWriter(
-                        new FileOutputStream(outputFile), StandardCharsets.UTF_8))) {
+                        new FileOutputStream(tempFile.toFile()), StandardCharsets.UTF_8))) {
                     String line;
                     while ((line = br.readLine()) != null) {
                         out.append(line).append("\n");
                     }
                 }
             }
-
-            InputStream tmpInputStream = new FileInputStream(outputFile);
+            final String filename =
+                    newFilename == null
+                            ? file.getOriginalFilename()
+                            : newFilename;
+            try (InputStream uploadStream =
+                         Files.newInputStream(tempFile)) {
+                return fileStorage.upload(
+                        FileFolder.INPUT,
+                        filename,
+                        file.getName(),
+                        uploadStream
+                );
+            }
+            /*InputStream tmpInputStream = new FileInputStream(outputFile);
             var filename = newFilename == null ? file.getOriginalFilename() : newFilename;
             var result = fileStorage.upload(FileFolder.INPUT, filename, file.getName(), tmpInputStream);
             tmpInputStream.close();
             Files.delete(Path.of(tempPath.toString()));
-            return result;
+            return result;*/
         } catch (final IOException e) {
             log.error("Upload failed for file {}", file.getOriginalFilename(), e);
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error occurred while uploading file: " + e.getMessage());
+        }finally {
+            /*
+             * Always cleanup.
+             */
+            if (tempFile != null) {
+                try {
+                    Files.deleteIfExists(tempFile);
+                } catch (IOException e) {
+                    log.warn("Failed to delete temp file {}", tempFile, e);
+                }
+            }
         }
     }
 
