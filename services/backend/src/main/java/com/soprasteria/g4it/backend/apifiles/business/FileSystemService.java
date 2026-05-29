@@ -12,6 +12,7 @@ import com.soprasteria.g4it.backend.apiuser.business.WorkspaceService;
 import com.soprasteria.g4it.backend.common.filesystem.business.FileStorage;
 import com.soprasteria.g4it.backend.common.filesystem.business.FileSystem;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileFolder;
+import com.soprasteria.g4it.backend.common.filesystem.model.UploadedTempFile;
 import com.soprasteria.g4it.backend.common.mapper.FileDescriptionRestMapper;
 import com.soprasteria.g4it.backend.common.utils.Constants;
 import com.soprasteria.g4it.backend.common.utils.SanitizeUrl;
@@ -149,13 +150,48 @@ public class FileSystemService {
         if (files == null) return List.of();
         checkFiles(files);
         FileStorage fileStorage = fetchStorage(organization, workspaceId.toString());
-
+        final Path workingDir = Boolean.TRUE.equals(isInventory)
+                ? Path.of(localWorkingFolder, "input", "inventory")
+                : Path.of(localWorkingFolder, "input", "digital-service");
         final List<String> result = new ArrayList<>();
-
-        for (int i = 0; i < files.size(); i++) {
-            result.add(this.uploadFile(files.get(i), fileStorage, filenames.get(i), isInventory));
+        final List<Path> createdTempFiles = new ArrayList<>();
+        try {
+            for (int i = 0; i < files.size(); i++) {
+                MultipartFile multipartFile = files.get(i);
+                /*
+                 * CRITICAL FIX:
+                 * Immediately detach from Tomcat multipart temp storage.
+                 */
+                UploadedTempFile uploadedTempFile =
+                        detachMultipartFile(
+                                multipartFile,
+                                workingDir
+                        );
+                createdTempFiles.add(uploadedTempFile.getPath());
+                String uploadedFile = uploadFile(
+                        uploadedTempFile,
+                        fileStorage,
+                        filenames.get(i)
+                );
+                result.add(uploadedFile);
+            }
         }
-
+        finally {
+            /*
+             * Always cleanup temp files.
+             */
+            for (Path tempFile : createdTempFiles) {
+                try {
+                    Files.deleteIfExists(tempFile);
+                } catch (IOException e) {
+                    log.warn(
+                            "Failed to delete temp file {}",
+                            tempFile,
+                            e
+                    );
+                }
+            }
+    }
         return result;
     }
 
@@ -200,86 +236,40 @@ public class FileSystemService {
     /**
      * Puts file on file storage for an workspace.
      *
-     * @param file        the file to put.
+     * @param uploadedFile        the file to put.
      * @param fileStorage the fileStorage
      * @return the file path.
      */
-    private String uploadFile(final MultipartFile file, final FileStorage fileStorage, final String newFilename, Boolean isInventory) {
-        /*final StringBuilder tempPath = Boolean.TRUE.equals(isInventory) ? new StringBuilder(localWorkingFolder).append(File.separator).append("input").append(File.separator).append("inventory").append(File.separator).append(UUID.randomUUID())
-                : new StringBuilder(localWorkingFolder).append(File.separator).append("input").append(File.separator).append("digital-service").append(File.separator).append(UUID.randomUUID());
-        File outputFile = new File(tempPath.toString());*/
-        // Detect file type by extension
-        String extension = StringUtils.getFilenameExtension(file.getOriginalFilename());
-        final Path workingDir = Boolean.TRUE.equals(isInventory)
-                ? Path.of(localWorkingFolder, "input", "inventory")
-                : Path.of(localWorkingFolder, "input", "digital-service");
-        Path tempFile = null;
-
-       // log.info(" temp path for file {} is {}", outputFile.getName(), tempPath);
-        boolean isBinary = extension.equalsIgnoreCase("xlsx") || extension.equalsIgnoreCase("ods");
-        log.info(" isBinary for file extension {} is {}",  isBinary,extension);
+    private String uploadFile(final UploadedTempFile uploadedFile,
+                              final FileStorage fileStorage,
+                              final String newFilename) {
         try {
-            tempFile = Files.createTempFile(
-                    workingDir,
-                    "upload-",
-                    extension != null ? "." + extension : ".tmp"
-            );
-            log.info("Temp file created: {} with working dir {}", tempFile,workingDir);
-            if (isBinary) {
-                // Direct binary copy for Excel/ODS files
-                try (InputStream inputStream = file.getInputStream()) {
-                    Files.copy(
-                            inputStream,
-                            tempFile,
-                            StandardCopyOption.REPLACE_EXISTING
-                    );
-                }
-                log.info("Temp file copied. Source: {}, Destination: {}", file.getOriginalFilename(), tempFile);
-            } else {
-                // if the encoding was not utf8 for plain text,
-                // we open the file again with an encoding adapted to ANSI
-                BufferedReader br = getBufferedReader(file);
-                try (Writer out = new BufferedWriter(new OutputStreamWriter(
-                        new FileOutputStream(tempFile.toFile()), StandardCharsets.UTF_8))) {
-                    String line;
-                    while ((line = br.readLine()) != null) {
-                        out.append(line).append("\n");
-                    }
-                }
-            }
+
             final String filename =
                     newFilename == null
-                            ? file.getOriginalFilename()
+                            ? uploadedFile.getOriginalFilename()
                             : newFilename;
+
             try (InputStream uploadStream =
-                         Files.newInputStream(tempFile)) {
+                         Files.newInputStream(uploadedFile.getPath())) {
                 return fileStorage.upload(
                         FileFolder.INPUT,
                         filename,
-                        file.getName(),
+                        uploadedFile.getParameterName(),
                         uploadStream
                 );
             }
-            /*InputStream tmpInputStream = new FileInputStream(outputFile);
-            var filename = newFilename == null ? file.getOriginalFilename() : newFilename;
-            var result = fileStorage.upload(FileFolder.INPUT, filename, file.getName(), tmpInputStream);
-            tmpInputStream.close();
-            Files.delete(Path.of(tempPath.toString()));
-            return result;*/
-        } catch (final IOException e) {
-            log.error("Upload failed for file {}", file.getOriginalFilename(), e);
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error occurred while uploading file: " + e.getMessage());
-        }finally {
-            /*
-             * Always cleanup.
-             */
-            if (tempFile != null) {
-                try {
-                    Files.deleteIfExists(tempFile);
-                } catch (IOException e) {
-                    log.warn("Failed to delete temp file {}", tempFile, e);
-                }
-            }
+        } catch (IOException e) {
+            log.error(
+                    "Upload failed for file {}",
+                    uploadedFile.getOriginalFilename(),
+                    e
+            );
+            throw new ResponseStatusException(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Error occurred while uploading file: "
+                            + e.getMessage()
+            );
         }
     }
 
@@ -329,6 +319,66 @@ public class FileSystemService {
             log.error("An error occurred during deletion of file", e);
         }
         return deletedFilePath;
+    }
+
+    private UploadedTempFile detachMultipartFile(
+            final MultipartFile multipartFile,
+            final Path workingDir) {
+
+        try {
+
+            String extension = StringUtils.getFilenameExtension(
+                    multipartFile.getOriginalFilename()
+            );
+
+            Path tempFile = Files.createTempFile(
+                    workingDir,
+                    "upload-",
+                    extension != null
+                            ? "." + extension
+                            : ".tmp"
+            );
+
+            log.info(
+                    "Detaching multipart file {} to {}",
+                    multipartFile.getOriginalFilename(),
+                    tempFile
+            );
+
+            /*
+             * IMPORTANT:
+             * Read MultipartFile immediately.
+             */
+            try (InputStream inputStream =
+                         multipartFile.getInputStream()) {
+
+                Files.copy(
+                        inputStream,
+                        tempFile,
+                        StandardCopyOption.REPLACE_EXISTING
+                );
+            }
+
+            return new UploadedTempFile(
+                    tempFile,
+                    multipartFile.getOriginalFilename(),
+                    multipartFile.getName()
+            );
+
+        } catch (IOException e) {
+
+            log.error(
+                    "Failed to detach multipart file {}",
+                    multipartFile.getOriginalFilename(),
+                    e
+            );
+
+            throw new ResponseStatusException(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Failed to process uploaded file: "
+                            + multipartFile.getOriginalFilename()
+            );
+        }
     }
 
 }
