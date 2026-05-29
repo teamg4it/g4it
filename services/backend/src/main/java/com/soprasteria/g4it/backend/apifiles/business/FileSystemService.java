@@ -212,8 +212,7 @@ public class FileSystemService {
 
         boolean isBinary = extension.equalsIgnoreCase("xlsx") || extension.equalsIgnoreCase("ods");
         try {
-            if (isBinary && file.getInputStream()!=null) {
-                log.info("File {} is detected as binary, copying it directly without encoding conversion", file.getOriginalFilename());
+            if (isBinary){
                 // Direct binary copy for Excel/ODS files
                 try (InputStream in = file.getInputStream(); OutputStream out = new FileOutputStream(outputFile)) {
                     byte[] buffer = new byte[8192];
