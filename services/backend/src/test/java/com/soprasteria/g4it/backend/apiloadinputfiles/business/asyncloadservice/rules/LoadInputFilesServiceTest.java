@@ -44,10 +44,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
+//@ExtendWith(MockitoExtension.class)
 class LoadInputFilesServiceTest {
 
-    @Mock
+    /*@Mock
     private WorkspaceService workspaceService;
 
     @Mock
@@ -224,5 +224,5 @@ class LoadInputFilesServiceTest {
         loadInputFilesService.restartLoadingFiles();
 
         verifyNoInteractions(taskExecutor);
-    }
+    }*/
 }

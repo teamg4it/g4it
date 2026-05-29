@@ -12,6 +12,7 @@ import com.soprasteria.g4it.backend.apiuser.business.WorkspaceService;
 import com.soprasteria.g4it.backend.common.filesystem.business.FileStorage;
 import com.soprasteria.g4it.backend.common.filesystem.business.FileSystem;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileFolder;
+import com.soprasteria.g4it.backend.common.filesystem.model.StoredFile;
 import com.soprasteria.g4it.backend.common.filesystem.model.UploadedTempFile;
 import com.soprasteria.g4it.backend.common.mapper.FileDescriptionRestMapper;
 import com.soprasteria.g4it.backend.common.utils.Constants;
@@ -67,8 +68,8 @@ public class FileSystemService {
     @Value("${local.working.folder}")
     private String localWorkingFolder;
 
-    private static BufferedReader getBufferedReader(MultipartFile file) throws IOException {
-        var isr = new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8);
+    private static BufferedReader getBufferedReader(StoredFile file) throws IOException {
+        var isr = new InputStreamReader(Files.newInputStream(file.getPath()), StandardCharsets.UTF_8);
         boolean isOk = true;
         while (isr.ready()) {
             // if there is a character like this �, it means that the encoding was not utf-8
@@ -78,7 +79,7 @@ public class FileSystemService {
             }
         }
         String encoding = isOk ? StandardCharsets.UTF_8.toString() : "Cp1252";
-        return new BufferedReader(new InputStreamReader(file.getInputStream(), encoding));
+        return new BufferedReader(new InputStreamReader(Files.newInputStream(file.getPath()), encoding));
     }
 
     @PostConstruct
@@ -146,52 +147,17 @@ public class FileSystemService {
      * @return the fileName list uploaded
      */
     public List<String> manageFilesAndRename(final String organization, final Long workspaceId,
-                                             final List<MultipartFile> files, final List<String> filenames, Boolean isInventory) {
+                                             final List<StoredFile> files, final List<String> filenames, Boolean isInventory) {
         if (files == null) return List.of();
         checkFiles(files);
         FileStorage fileStorage = fetchStorage(organization, workspaceId.toString());
-        final Path workingDir = Boolean.TRUE.equals(isInventory)
-                ? Path.of(localWorkingFolder, "input", "inventory")
-                : Path.of(localWorkingFolder, "input", "digital-service");
+
         final List<String> result = new ArrayList<>();
-        final List<Path> createdTempFiles = new ArrayList<>();
-        try {
-            for (int i = 0; i < files.size(); i++) {
-                MultipartFile multipartFile = files.get(i);
-                /*
-                 * CRITICAL FIX:
-                 * Immediately detach from Tomcat multipart temp storage.
-                 */
-                UploadedTempFile uploadedTempFile =
-                        detachMultipartFile(
-                                multipartFile,
-                                workingDir
-                        );
-                createdTempFiles.add(uploadedTempFile.getPath());
-                String uploadedFile = uploadFile(
-                        uploadedTempFile,
-                        fileStorage,
-                        filenames.get(i)
-                );
-                result.add(uploadedFile);
-            }
+
+        for (int i = 0; i < files.size(); i++) {
+            result.add(this.uploadFile(files.get(i), fileStorage, filenames.get(i), isInventory));
         }
-        finally {
-            /*
-             * Always cleanup temp files.
-             */
-            for (Path tempFile : createdTempFiles) {
-                try {
-                    Files.deleteIfExists(tempFile);
-                } catch (IOException e) {
-                    log.warn(
-                            "Failed to delete temp file {}",
-                            tempFile,
-                            e
-                    );
-                }
-            }
-    }
+
         return result;
     }
 
@@ -201,7 +167,7 @@ public class FileSystemService {
      * @param files the input files
      * @throws BadRequestException when one type is wrong
      */
-    private void checkFiles(final List<MultipartFile> files) {
+    private void checkFiles(final List<StoredFile> files) {
         if (files == null) return;
 
         files.stream()
@@ -236,40 +202,52 @@ public class FileSystemService {
     /**
      * Puts file on file storage for an workspace.
      *
-     * @param uploadedFile        the file to put.
+     * @param file        the file to put.
      * @param fileStorage the fileStorage
      * @return the file path.
      */
-    private String uploadFile(final UploadedTempFile uploadedFile,
-                              final FileStorage fileStorage,
-                              final String newFilename) {
+    private String uploadFile(final StoredFile file, final FileStorage fileStorage, final String newFilename, Boolean isInventory) {
+        final StringBuilder tempPath = Boolean.TRUE.equals(isInventory) ? new StringBuilder(localWorkingFolder).append(File.separator).append("input").append(File.separator).append("inventory").append(File.separator).append(UUID.randomUUID())
+                : new StringBuilder(localWorkingFolder).append(File.separator).append("input").append(File.separator).append("digital-service").append(File.separator).append(UUID.randomUUID());
+        File outputFile = new File(tempPath.toString());
+
+        // Detect file type by extension
+        String extension = StringUtils.getFilenameExtension(file.getOriginalFilename());
+
+        boolean isBinary = extension.equalsIgnoreCase("xlsx") || extension.equalsIgnoreCase("ods");
+
         try {
+            if (isBinary) {
+                // Direct binary copy for Excel/ODS files
+                try (InputStream in = Files.newInputStream(file.getPath()); OutputStream out = new FileOutputStream(outputFile)) {
+                    byte[] buffer = new byte[8192];
+                    int bytesRead;
+                    while ((bytesRead = in.read(buffer)) != -1) {
+                        out.write(buffer, 0, bytesRead);
+                    }
+                }
+            } else {
+                // if the encoding was not utf8 for plain text,
+                // we open the file again with an encoding adapted to ANSI
 
-            final String filename =
-                    newFilename == null
-                            ? uploadedFile.getOriginalFilename()
-                            : newFilename;
-
-            try (InputStream uploadStream =
-                         Files.newInputStream(uploadedFile.getPath())) {
-                return fileStorage.upload(
-                        FileFolder.INPUT,
-                        filename,
-                        uploadedFile.getParameterName(),
-                        uploadStream
-                );
+                BufferedReader br = getBufferedReader(file);
+                try (Writer out = new BufferedWriter(new OutputStreamWriter(
+                        new FileOutputStream(outputFile), StandardCharsets.UTF_8))) {
+                    String line;
+                    while ((line = br.readLine()) != null) {
+                        out.append(line).append("\n");
+                    }
+                }
             }
-        } catch (IOException e) {
-            log.error(
-                    "Upload failed for file {}",
-                    uploadedFile.getOriginalFilename(),
-                    e
-            );
-            throw new ResponseStatusException(
-                    HttpStatus.INTERNAL_SERVER_ERROR,
-                    "Error occurred while uploading file: "
-                            + e.getMessage()
-            );
+
+            InputStream tmpInputStream = new FileInputStream(outputFile);
+            var filename = newFilename == null ? file.getOriginalFilename() : newFilename;
+            var result = fileStorage.upload(FileFolder.INPUT, filename, file.getParameterName(), tmpInputStream);
+            tmpInputStream.close();
+            Files.delete(Path.of(tempPath.toString()));
+            return result;
+        } catch (final IOException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error occurred while uploading file: " + e.getMessage());
         }
     }
 

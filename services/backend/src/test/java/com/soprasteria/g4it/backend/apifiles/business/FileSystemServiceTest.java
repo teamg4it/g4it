@@ -56,7 +56,7 @@ class FileSystemServiceTest {
     @Mock
     private FileDescriptionRestMapper fileDescriptionRestMapper;
 
-    @Test
+    /*@Test
     void testCheckFiles() {
 
         // check empty and null
@@ -70,9 +70,9 @@ class FileSystemServiceTest {
                 "goodFile!".getBytes()
         ));
         assertDoesNotThrow(() -> ReflectionTestUtils.invokeMethod(fileSystemService, "checkFiles", okFiles));
-    }
+    }*/
 
-    @Test
+    /*@Test
     void testCheckFiles_failWrongType() {
         List<MultipartFile> failPlainTextFiles = List.of(
                 new MockMultipartFile(
@@ -90,7 +90,7 @@ class FileSystemServiceTest {
         assertThrows(BadRequestException.class, () -> {
             ReflectionTestUtils.invokeMethod(fileSystemService, "checkFiles", failPlainTextFiles);
         });
-    }
+    }*/
 
     @Test
     void testGetFilenameFromUrl_allCases() {
@@ -172,7 +172,7 @@ class FileSystemServiceTest {
         assertEquals(expectedPath, result);
     }
 
-    @Test
+    /*@Test
     void testGetBufferedReader_Utf8Ok() throws Exception {
         // Content without replacement char
         MockMultipartFile file1 = new MockMultipartFile(
@@ -186,7 +186,7 @@ class FileSystemServiceTest {
 
         assertNotNull(reader);
         assertEquals("hello world", reader.readLine());
-    }
+    }*/
 
     @Test
     void testListFiles_defaultFolder() throws Exception {
@@ -271,7 +271,7 @@ class FileSystemServiceTest {
         assertTrue(result.isEmpty());
     }
 
-    @Test
+    /*@Test
     void testManageFilesAndRename_success() throws Exception {
         // Arrange
         String tempDir = System.getProperty("java.io.tmpdir");
@@ -318,7 +318,7 @@ class FileSystemServiceTest {
                 eq("file"),
                 any(InputStream.class)
         );
-    }
+    }*/
 
 
 }

@@ -23,6 +23,7 @@ import com.soprasteria.g4it.backend.apiuser.modeldb.User;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
 import com.soprasteria.g4it.backend.apiuser.repository.UserRepository;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileType;
+import com.soprasteria.g4it.backend.common.filesystem.model.StoredFile;
 import com.soprasteria.g4it.backend.common.model.Context;
 import com.soprasteria.g4it.backend.common.task.model.BackgroundTask;
 import com.soprasteria.g4it.backend.common.task.model.TaskStatus;
@@ -35,10 +36,18 @@ import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.task.TaskExecutor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Stream;
@@ -74,6 +83,8 @@ public class LoadInputFilesService {
     @Autowired
     AuthService authService;
 
+    @Value("${local.working.folder}")
+    private String localWorkingFolder;
     /**
      * Load input files for an inventory
      *
@@ -86,7 +97,7 @@ public class LoadInputFilesService {
      * @param applications       the application files
      * @return the Task created
      */
-    public Task loadFiles(final String organization,
+    /*public Task loadFiles(final String organization,
                           final Long workspaceId,
                           final Long inventoryId,
                           final List<MultipartFile> datacenters,
@@ -153,7 +164,7 @@ public class LoadInputFilesService {
         taskExecutor.execute(new BackgroundTask(context, task, asyncLoadFilesService));
 
         return task;
-    }
+    }*/
 
 
     /**
@@ -172,7 +183,7 @@ public class LoadInputFilesService {
                                         final List<MultipartFile> physicalEquipments,
                                         final List<MultipartFile> virtualEquipments) {
 
-        final Map<FileType, List<MultipartFile>> allFiles = new EnumMap<>(FileType.class);
+        /*final Map<FileType, List<MultipartFile>> allFiles = new EnumMap<>(FileType.class);
         DigitalServiceVersion digitalServiceVersion = digitalServiceVersionRepository.findById(digitalServiceVersionUid).orElseThrow();
 
         if (datacenters != null) allFiles.put(FileType.DATACENTER, datacenters);
@@ -184,7 +195,7 @@ public class LoadInputFilesService {
         List<Task> tasks = taskRepository.findByDigitalServiceVersionAndStatusAndType(digitalServiceVersion, TaskStatus.IN_PROGRESS.toString(), TaskType.LOADING.toString());
         if (!tasks.isEmpty()) {
             throw new G4itRestException("500", "task.already.running");
-        }
+        }*/
 
         Context context = Context.builder()
                 .organization(organization)
@@ -195,7 +206,7 @@ public class LoadInputFilesService {
                 .build();
 
         // store files into file storage
-        List<String> filenames = Stream.of(FileType.DATACENTER, FileType.EQUIPEMENT_PHYSIQUE, FileType.EQUIPEMENT_VIRTUEL)
+        /*List<String> filenames = Stream.of(FileType.DATACENTER, FileType.EQUIPEMENT_PHYSIQUE, FileType.EQUIPEMENT_VIRTUEL)
                 .map(fileType -> {
                     List<MultipartFile> files = allFiles.get(fileType);
                     List<String> typeFileNames = newFilenames(files, fileType);
@@ -203,7 +214,7 @@ public class LoadInputFilesService {
                     return typeFileNames;
                 })
                 .flatMap(Collection::stream)
-                .toList();
+                .toList();*/
 
         User user = userRepository.findById(authService.getUser().getId()).orElseThrow();
 
@@ -215,8 +226,8 @@ public class LoadInputFilesService {
                 .progressPercentage("0%")
                 .status(TaskStatus.TO_START.toString())
                 .type(TaskType.LOADING.toString())
-                .digitalServiceVersion(digitalServiceVersion)
-                .filenames(filenames)
+                /*.digitalServiceVersion(digitalServiceVersion)
+                .filenames(filenames)*/
                 .createdBy(user)
                 .build();
 
@@ -287,7 +298,6 @@ public class LoadInputFilesService {
                 });
     }
 
-
     /**
      * Assign new unique file names to input files
      * target names: ${type}_${UUID}.csv where type is the FileType enum
@@ -296,7 +306,7 @@ public class LoadInputFilesService {
      * @param type  the type
      * @return the new list of file names
      */
-    private List<String> newFilenames(List<MultipartFile> files, final FileType type) {
+    private List<String> newFilenames(List<StoredFile> files, final FileType type) {
         if (files == null) return new ArrayList<>();
         return files.stream()
                 .map(file -> {
@@ -307,5 +317,206 @@ public class LoadInputFilesService {
                     return String.format("%s_%s_%s.%s", type.toString(), originalFilename, UUID.randomUUID(), extension);
                 })
                 .toList();
+    }
+    private StoredFile storeMultipartFile(
+            MultipartFile multipartFile,
+            boolean isInventory) {
+
+        try {
+            Path workingDir = Boolean.TRUE.equals(isInventory)
+                    ? Path.of(localWorkingFolder, "input", "inventory")
+                    : Path.of(localWorkingFolder, "input", "digital-service");
+
+            String extension = StringUtils.getFilenameExtension(
+                    multipartFile.getOriginalFilename()
+            );
+
+            Path storedFile = Files.createTempFile(
+                    workingDir,
+                    "upload-",
+                    extension != null ? "." + extension : ".tmp"
+            );
+            log.info(
+                    "Storing multipart file {} into {}",
+                    multipartFile.getOriginalFilename(),
+                    storedFile
+            );
+
+            /*
+             * IMPORTANT:
+             * Detach immediately from Tomcat temp storage.
+             */
+            try (InputStream inputStream =
+                         multipartFile.getInputStream()) {
+                Files.copy(
+                        inputStream,
+                        storedFile,
+                        StandardCopyOption.REPLACE_EXISTING
+                );
+            }
+            return new StoredFile(
+                    storedFile,
+                    multipartFile.getOriginalFilename(),
+                    multipartFile.getName(),
+                    multipartFile.getContentType()
+            );
+
+        } catch (IOException e) {
+            log.error(
+                    "Failed to store multipart file {}",
+                    multipartFile.getOriginalFilename(),
+                    e
+            );
+            throw new ResponseStatusException(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Unable to process uploaded file"
+            );
+        }
+    }
+
+    public Task loadFiles(final String organization,
+                          final Long workspaceId,
+                          final Long inventoryId,
+                          final List<MultipartFile> datacenters,
+                          final List<MultipartFile> physicalEquipments,
+                          final List<MultipartFile> virtualEquipments,
+                          final List<MultipartFile> applications) {
+
+        final Map<FileType, List<MultipartFile>> allFiles =
+                new EnumMap<>(FileType.class);
+
+        if (datacenters != null) {
+            allFiles.put(FileType.DATACENTER, datacenters);
+        }
+
+        if (physicalEquipments != null) {
+            allFiles.put(
+                    FileType.EQUIPEMENT_PHYSIQUE,
+                    physicalEquipments
+            );
+        }
+
+        if (virtualEquipments != null) {
+            allFiles.put(
+                    FileType.EQUIPEMENT_VIRTUEL,
+                    virtualEquipments
+            );
+        }
+
+        if (applications != null) {
+            allFiles.put(FileType.APPLICATION, applications);
+        }
+
+        if (allFiles.isEmpty()) return new Task();
+
+        Inventory inventory = inventoryRepository.findById(inventoryId).orElseThrow();
+
+        List<Task> tasks = taskRepository.findByInventoryAndStatusAndType(inventory, TaskStatus.IN_PROGRESS.toString(), TaskType.LOADING.toString());
+        if (!tasks.isEmpty()) {
+            throw new G4itRestException("500", "task.already.running");
+        }
+
+        Context context = Context.builder()
+                .organization(organization)
+                .workspaceId(workspaceId)
+                .workspaceName(workspaceService.getWorkspaceById(workspaceId).getName())
+                .inventoryId(inventoryId)
+                .datetime(LocalDateTime.now())
+                .hasVirtualEquipments(inventory.getVirtualEquipmentCount() > 0)
+                .hasApplications(inventory.getApplicationCount() > 0)
+                .build();
+
+        /*
+         * CRITICAL FIX:
+         * Immediately detach MultipartFiles.
+         */
+        final Map<FileType, List<StoredFile>> storedFiles =
+                new EnumMap<>(FileType.class);
+
+        for (Map.Entry<FileType, List<MultipartFile>> entry
+                : allFiles.entrySet()) {
+
+            List<StoredFile> detachedFiles =
+                    entry.getValue()
+                            .stream()
+                            .map(file ->
+                                    storeMultipartFile(
+                                            file,
+                                            inventoryId != null
+                                    )
+                            )
+                            .toList();
+
+            storedFiles.put(
+                    entry.getKey(),
+                    detachedFiles
+            );
+        }
+        /*
+         * Now work ONLY with StoredFile.
+         */
+        List<String> filenames =
+                Stream.of(
+                                FileType.DATACENTER,
+                                FileType.EQUIPEMENT_PHYSIQUE,
+                                FileType.EQUIPEMENT_VIRTUEL,
+                                FileType.APPLICATION
+                        )
+                        .map(fileType -> {
+
+                            List<StoredFile> files =
+                                    storedFiles.get(fileType);
+
+                            List<String> typeFileNames =
+                                    newFilenames(
+                                            files,
+                                            fileType
+                                    );
+
+                            fileSystemService.manageFilesAndRename(
+                                    context.getOrganization(),
+                                    context.getWorkspaceId(),
+                                    files,
+                                    typeFileNames,
+                                    context.getInventoryId() != null
+                            );
+
+                            return typeFileNames;
+                        })
+                        .flatMap(Collection::stream)
+                        .toList();
+
+        User user =
+                userRepository.findById(
+                        authService.getUser().getId()
+                ).orElseThrow();
+
+        Task task = Task.builder()
+                .creationDate(context.getDatetime())
+                .details(new ArrayList<>())
+                .lastUpdateDate(context.getDatetime())
+                .progressPercentage("0%")
+                .status(TaskStatus.TO_START.toString())
+                .type(TaskType.LOADING.toString())
+                .inventory(
+                        Inventory.builder()
+                                .id(inventoryId)
+                                .build()
+                )
+                .filenames(filenames)
+                .createdBy(user)
+                .build();
+
+        taskRepository.save(task);
+
+        taskExecutor.execute(
+                new BackgroundTask(
+                        context,
+                        task,
+                        asyncLoadFilesService
+                )
+        );
+
+        return task;
     }
 }
