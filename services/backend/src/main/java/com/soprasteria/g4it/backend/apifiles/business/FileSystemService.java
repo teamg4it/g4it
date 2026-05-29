@@ -30,8 +30,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -199,11 +198,106 @@ public class FileSystemService {
     /**
      * Puts file on file storage for an workspace.
      *
-     * @param file        the file to put.
+     * @param multipartFile        the file to put.
      * @param fileStorage the fileStorage
      * @return the file path.
      */
-    private String uploadFile(final MultipartFile file, final FileStorage fileStorage, final String newFilename, Boolean isInventory) {
+    private String uploadFile(final MultipartFile multipartFile,
+                              final FileStorage fileStorage,
+                              final String newFilename,
+                              final Boolean isInventory) {
+
+        final Path workingDir = Boolean.TRUE.equals(isInventory)
+                ? Paths.get(localWorkingFolder, "input", "inventory")
+                : Paths.get(localWorkingFolder, "input", "digital-service");
+
+        final String extension = StringUtils.getFilenameExtension(
+                multipartFile.getOriginalFilename());
+
+        final boolean isBinary = extension != null &&
+                (extension.equalsIgnoreCase("xlsx")
+                        || extension.equalsIgnoreCase("ods"));
+
+        Path tempFile = null;
+
+        try {
+
+            // Ensure directory exists
+            Files.createDirectories(workingDir);
+
+            // Create application-managed temp file
+            tempFile = Files.createTempFile(
+                    workingDir,
+                    UUID.randomUUID().toString(),
+                    extension != null ? "." + extension : ".tmp"
+            );
+            /*
+             * IMPORTANT:
+             * Copy MultipartFile immediately so we are no longer dependent
+             * on Tomcat temp multipart file lifecycle.
+             */
+            try (InputStream inputStream = multipartFile.getInputStream()) {
+                if (isBinary) {
+                    // Fast binary copy
+                    Files.copy(
+                            inputStream,
+                            tempFile,
+                            StandardCopyOption.REPLACE_EXISTING
+                    );
+                } else {
+                    // Convert text files safely to UTF-8
+                    try (BufferedReader br = getBufferedReader(multipartFile);
+                         BufferedWriter writer = Files.newBufferedWriter(
+                                 tempFile,
+                                 StandardCharsets.UTF_8,
+                                 StandardOpenOption.TRUNCATE_EXISTING)) {
+
+                        String line;
+
+                        while ((line = br.readLine()) != null) {
+                            writer.write(line);
+                            writer.newLine();
+                        }
+                    }
+                }
+            }
+            final String filename =
+                    newFilename == null
+                            ? multipartFile.getOriginalFilename()
+                            : newFilename;
+
+            // Upload using application-managed file
+            try (InputStream uploadStream = Files.newInputStream(tempFile)) {
+                return fileStorage.upload(
+                        FileFolder.INPUT,
+                        filename,
+                        multipartFile.getName(),
+                        uploadStream
+                );
+            }
+        } catch (IOException e) {
+            log.error(
+                    "Upload failed for file {}",
+                    multipartFile.getOriginalFilename(),
+                    e
+            );
+            throw new ResponseStatusException(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Error occurred while uploading file"
+            );
+        } finally {
+            // Always cleanup
+            if (tempFile != null) {
+                try {
+                    Files.deleteIfExists(tempFile);
+                } catch (IOException e) {
+                    log.warn("Failed to delete temp file {}", tempFile, e);
+                }
+            }
+        }
+    }
+
+    /*private String uploadFile(final MultipartFile file, final FileStorage fileStorage, final String newFilename, Boolean isInventory) {
         final StringBuilder tempPath = Boolean.TRUE.equals(isInventory) ? new StringBuilder(localWorkingFolder).append(File.separator).append("input").append(File.separator).append("inventory").append(File.separator).append(UUID.randomUUID())
                 : new StringBuilder(localWorkingFolder).append(File.separator).append("input").append(File.separator).append("digital-service").append(File.separator).append(UUID.randomUUID());
         File outputFile = new File(tempPath.toString());
@@ -250,7 +344,7 @@ public class FileSystemService {
                     "Error occurred while uploading file"
             );
         }
-    }
+    }*/
 
 
     /*private String uploadFile(final MultipartFile file, final FileStorage fileStorage, final String newFilename, Boolean isInventory) {
