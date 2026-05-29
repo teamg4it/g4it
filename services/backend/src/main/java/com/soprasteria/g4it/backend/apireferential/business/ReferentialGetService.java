@@ -150,7 +150,7 @@ public class ReferentialGetService {
         return itemImpactRepository.findByCategoryAndWorkspaceId("electricity-mix",null);
     }
 
-    @Cacheable(value = "ref_getItemTypes", key = "#type + '|' + #workspaceId")
+    //@Cacheable(value = "ref_getItemTypes", key = "#type + '|' + #workspaceId")
     public List<ItemTypeRest> getItemTypesForWorkspace(String type, Long workspaceId) {
         if (type == null) {
             return refRestMapper.toItemTypeRest(itemTypeRepository.findByOrganizationAndWorkspaceId(null,workspaceId));
@@ -159,14 +159,14 @@ public class ReferentialGetService {
         return refRestMapper.toItemTypeRest(itemType.map(List::of).orElseGet(List::of));
     }
 
-    @Cacheable(value = "ref_getMatchingItem", key = "#model + '|' + #workspaceId")
+    //@Cacheable(value = "ref_getMatchingItem", key = "#model + '|' + #workspaceId")
     public MatchingItemRest getMatchingItemForWorkspace(String model, Long workspaceId) {
         return matchingItemRepository.findByItemSourceAndOrganizationAndWorkspaceId(model, null,workspaceId)
                 .map(item -> refRestMapper.toMatchingItemRest(item)).orElse(null);
     }
 
 
-    @Cacheable(value = "ref_getItemImpacts", key = "#criterion + '|' + #lifecycleStep + '|' + #name + '|' + #location + '|' + #category + '|' + #organization + '|' + #workspaceId")
+    //@Cacheable(value = "ref_getItemImpacts", key = "#criterion + '|' + #lifecycleStep + '|' + #name + '|' + #location + '|' + #category + '|' + #organization + '|' + #workspaceId")
     public List<ItemImpactRest> getItemImpactsForWorkspace(String criterion, String lifecycleStep,
                                                            String name, String location,
                                                            String category, String organization, Long workspaceId) {
