@@ -12,7 +12,6 @@ import com.soprasteria.g4it.backend.apiindicator.mapper.ApplicationIndicatorMapp
 import com.soprasteria.g4it.backend.apiindicator.mapper.EquipmentIndicatorMapper;
 import com.soprasteria.g4it.backend.apiindicator.model.*;
 import com.soprasteria.g4it.backend.apiinout.modeldb.OutApplication;
-import com.soprasteria.g4it.backend.apiinout.modeldb.OutPhysicalEquipment;
 import com.soprasteria.g4it.backend.apiinout.repository.OutApplicationRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.OutPhysicalEquipmentRepository;
 import org.junit.jupiter.api.Test;
@@ -21,9 +20,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -57,29 +54,6 @@ class IndicatorServiceTest {
 
     @Mock
     private VirtualEquipmentIndicatorService virtualEquipmentIndicatorService;
-
-   /* @Test
-    void getEquipmentIndicatorsReturnsMappedIndicatorsWhenTaskIdIsValid() {
-        Long taskId = 1L;
-        String criterion = "Resource_Group";
-        String kebabCriterion = "resource-group";
-
-        OutPhysicalEquipment equipment = OutPhysicalEquipment.builder().id(3L).criterion(criterion).build();
-        Object[] resultRow = new Object[]{criterion, equipment};
-        List<Object[]> results = Arrays.asList(resultRow);
-
-        List<OutPhysicalEquipment> equipmentList = List.of(equipment);
-        EquipmentIndicatorBO indicatorBO = EquipmentIndicatorBO.builder().build();
-
-        when(outPhysicalEquipmentRepository.findCriterionAndEquipmentByTaskId(taskId)).thenReturn(results);
-        when(equipmentIndicatorMapper.outToDto(equipmentList)).thenReturn(indicatorBO);
-
-        Map<String, EquipmentIndicatorBO> result = indicatorService.getEquipmentIndicators(taskId);
-
-        assertNotNull(result);
-        assertEquals(1, result.size());
-        assertEquals(indicatorBO, result.get(kebabCriterion));
-    }*/
 
 
     @Test
