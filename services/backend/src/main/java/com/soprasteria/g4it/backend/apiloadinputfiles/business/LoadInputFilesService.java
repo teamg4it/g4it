@@ -16,6 +16,7 @@ import com.soprasteria.g4it.backend.apiinout.repository.InVirtualEquipmentReposi
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
 import com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.AsyncLoadFilesService;
+import com.soprasteria.g4it.backend.apiloadinputfiles.util.FileValidatorUtils;
 import com.soprasteria.g4it.backend.apiuser.business.AuthService;
 import com.soprasteria.g4it.backend.apiuser.business.WorkspaceService;
 import com.soprasteria.g4it.backend.apiuser.modeldb.User;
