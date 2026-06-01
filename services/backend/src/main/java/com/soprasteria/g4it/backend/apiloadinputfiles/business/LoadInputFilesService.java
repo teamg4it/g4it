@@ -195,9 +195,6 @@ public class LoadInputFilesService {
                                         final List<MultipartFile> datacenters,
                                         final List<MultipartFile> physicalEquipments,
                                         final List<MultipartFile> virtualEquipments) {
-        FileValidatorUtils.validateFile(datacenters);
-        FileValidatorUtils.validateFile(physicalEquipments);
-        FileValidatorUtils.validateFile(virtualEquipments);
         final Map<FileType, List<MultipartFile>> allFiles = new EnumMap<>(FileType.class);
         if (datacenters != null) {
             allFiles.put(FileType.DATACENTER, datacenters);
