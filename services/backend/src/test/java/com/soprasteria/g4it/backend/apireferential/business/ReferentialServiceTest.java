@@ -145,4 +145,185 @@ class ReferentialServiceTest {
         assertTrue(result.containsKey(Pair.of("loc1", "crit")));
         assertTrue(result.containsKey(Pair.of("loc2", "crit")));
     }
+
+    @Test
+    void testGetItemImpactsForWorkspace_WithGeneralAndElectricityMix() {
+        ItemImpactRest impact1 = mock(ItemImpactRest.class);
+        ItemImpactRest impact2 = mock(ItemImpactRest.class);
+
+        when(referentialGetService.getItemImpactsForWorkspace(
+                "crit", "step", "name",
+                null, null, null, 1L))
+                .thenReturn(new ArrayList<>(List.of(impact1)));
+
+        when(referentialGetService.getItemImpactsForWorkspace(
+                "crit", null, null,
+                "FR", "electricity-mix", null, 1L))
+                .thenReturn(List.of(impact2));
+
+        List<ItemImpactRest> result =
+                referentialService.getItemImpactsForWorkspace(
+                        "crit", "step", "name", "FR", 1L);
+
+        assertEquals(2, result.size());
+        assertTrue(result.contains(impact1));
+        assertTrue(result.contains(impact2));
+    }
+
+    @Test
+    void testGetItemImpactsForWorkspace_WhenGeneralImpactsNull() {
+        ItemImpactRest electricityMix = mock(ItemImpactRest.class);
+
+        when(referentialGetService.getItemImpactsForWorkspace(
+                "crit", "step", "name",
+                null, null, null, 1L))
+                .thenReturn(null);
+
+        when(referentialGetService.getItemImpactsForWorkspace(
+                "crit", null, null,
+                "FR", "electricity-mix", null, 1L))
+                .thenReturn(List.of(electricityMix));
+
+        List<ItemImpactRest> result =
+                referentialService.getItemImpactsForWorkspace(
+                        "crit", "step", "name", "FR", 1L);
+
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        assertEquals(electricityMix, result.get(0));
+    }
+
+    @Test
+    void testGetItemImpactsForWorkspace_WhenNoElectricityMix() {
+        ItemImpactRest impact = mock(ItemImpactRest.class);
+
+        when(referentialGetService.getItemImpactsForWorkspace(
+                "crit", "step", "name",
+                null, null, null, 1L))
+                .thenReturn(List.of(impact));
+
+        when(referentialGetService.getItemImpactsForWorkspace(
+                "crit", null, null,
+                "FR", "electricity-mix", null, 1L))
+                .thenReturn(Collections.emptyList());
+
+        List<ItemImpactRest> result =
+                referentialService.getItemImpactsForWorkspace(
+                        "crit", "step", "name", "FR", 1L);
+
+        assertEquals(1, result.size());
+        assertEquals(impact, result.get(0));
+    }
+
+    @Test
+    void testGetItemTypeForWorkspace_ReturnsFirstItemType() {
+        ItemTypeRest itemType = mock(ItemTypeRest.class);
+
+        when(referentialGetService.getItemTypesForWorkspace("Laptop", 1L))
+                .thenReturn(List.of(itemType));
+
+        ItemTypeRest result =
+                referentialService.getItemTypeForWorkspace("Laptop", 1L);
+
+        assertEquals(itemType, result);
+    }
+
+    @Test
+    void testGetItemTypeForWorkspace_ReturnsNullWhenEmpty() {
+        when(referentialGetService.getItemTypesForWorkspace("Laptop", 1L))
+                .thenReturn(Collections.emptyList());
+
+        ItemTypeRest result =
+                referentialService.getItemTypeForWorkspace("Laptop", 1L);
+
+        assertNull(result);
+    }
+
+    @Test
+    void testGetItemTypeForWorkspace_ReturnsNullWhenListNull() {
+        when(referentialGetService.getItemTypesForWorkspace("Laptop", 1L))
+                .thenReturn(null);
+
+        ItemTypeRest result =
+                referentialService.getItemTypeForWorkspace("Laptop", 1L);
+
+        assertNull(result);
+    }
+
+    @Test
+    void testGetMatchingItemForWorkspace() {
+        MatchingItemRest matchingItem = mock(MatchingItemRest.class);
+
+        when(referentialGetService.getMatchingItemForWorkspace("model1", 1L))
+                .thenReturn(matchingItem);
+
+        MatchingItemRest result =
+                referentialService.getMatchingItemForWorkspace("model1", 1L);
+
+        assertEquals(matchingItem, result);
+    }
+
+    @Test
+    void testGetMatchingItemForWorkspace_ReturnsNull() {
+        when(referentialGetService.getMatchingItemForWorkspace("model1", 1L))
+                .thenReturn(null);
+
+        MatchingItemRest result =
+                referentialService.getMatchingItemForWorkspace("model1", 1L);
+
+        assertNull(result);
+    }
+
+    @Test
+    void testGetElectricityMixQuartiles_ForWorkspace() {
+        ItemImpact impact1 = mock(ItemImpact.class);
+        when(impact1.getCriterion()).thenReturn("criterion");
+        when(impact1.getLocation()).thenReturn("FR");
+        when(impact1.getValue()).thenReturn(10.0);
+
+        ItemImpact impact2 = mock(ItemImpact.class);
+        when(impact2.getCriterion()).thenReturn("criterion");
+        when(impact2.getLocation()).thenReturn("UK");
+        when(impact2.getValue()).thenReturn(20.0);
+
+        ItemImpact impact3 = mock(ItemImpact.class);
+        when(impact3.getCriterion()).thenReturn("criterion");
+        when(impact3.getLocation()).thenReturn("DE");
+        when(impact3.getValue()).thenReturn(30.0);
+
+        ItemImpact impact4 = mock(ItemImpact.class);
+        when(impact4.getCriterion()).thenReturn("criterion");
+        when(impact4.getLocation()).thenReturn("ES");
+        when(impact4.getValue()).thenReturn(40.0);
+
+        when(referentialGetService.getElectricityMix(1L))
+                .thenReturn(List.of(impact1, impact2, impact3, impact4));
+
+        Map<Pair<String, String>, Integer> result =
+                referentialService.getElectricityMixQuartiles(1L);
+
+        assertNotNull(result);
+        assertEquals(4, result.size());
+
+        assertTrue(result.containsKey(Pair.of("FR", "criterion")));
+        assertTrue(result.containsKey(Pair.of("UK", "criterion")));
+        assertTrue(result.containsKey(Pair.of("DE", "criterion")));
+        assertTrue(result.containsKey(Pair.of("ES", "criterion")));
+    }
+
+    @Test
+    void testGetElectricityMixQuartiles_FiltersNullValue() {
+        ItemImpact invalid = mock(ItemImpact.class);
+        when(invalid.getCriterion()).thenReturn("criterion");
+        when(invalid.getValue()).thenReturn(null);
+        when(invalid.getLocation()).thenReturn("FR");
+
+        when(referentialGetService.getElectricityMix(1L))
+                .thenReturn(List.of(invalid));
+
+        Map<Pair<String, String>, Integer> result =
+                referentialService.getElectricityMixQuartiles(1L);
+
+        assertTrue(result.isEmpty());
+    }
 }
