@@ -27,14 +27,19 @@ import com.soprasteria.g4it.backend.common.task.model.TaskStatus;
 import com.soprasteria.g4it.backend.common.task.model.TaskType;
 import com.soprasteria.g4it.backend.common.task.modeldb.Task;
 import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.task.TaskExecutor;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -73,21 +78,71 @@ class LoadInputFilesServiceTest {
     @Mock
     private AuthService authService;
 
+    @BeforeEach
+    void setup() throws Exception {
+
+        String tempDir = System.getProperty("java.io.tmpdir");
+
+        ReflectionTestUtils.setField(
+                loadInputFilesService,
+                "localWorkingFolder",
+                tempDir);
+
+        Files.createDirectories(
+                Path.of(tempDir, "input", "inventory"));
+
+        Files.createDirectories(
+                Path.of(tempDir, "input", "digital-service"));
+    }
+
     @Test
     void loadFiles_createsTaskAndExecutesAsyncTask_whenValidInputProvided() {
         String organization = "testOrganization";
         Long workspaceId = 1L;
         Long inventoryId = 1L;
-        List<MultipartFile> datacenters = List.of(mock(MultipartFile.class));
-        List<MultipartFile> physicalEquipments = List.of(mock(MultipartFile.class));
-        List<MultipartFile> virtualEquipments = List.of(mock(MultipartFile.class));
-        List<MultipartFile> applications = List.of(mock(MultipartFile.class));
+
+        List<MultipartFile> datacenters = List.of(
+                new MockMultipartFile(
+                        "datacenters",
+                        "datacenters.csv",
+                        "text/csv",
+                        "header1,header2\nvalue1,value2".getBytes()
+                ));
+
+        List<MultipartFile> physicalEquipments = List.of(
+                new MockMultipartFile(
+                        "physicalEquipments",
+                        "physical.csv",
+                        "text/csv",
+                        "header1,header2\nvalue1,value2".getBytes()
+                ));
+
+        List<MultipartFile> virtualEquipments = List.of(
+                new MockMultipartFile(
+                        "virtualEquipments",
+                        "virtual.csv",
+                        "text/csv",
+                        "header1,header2\nvalue1,value2".getBytes()
+                ));
+
+        List<MultipartFile> applications = List.of(
+                new MockMultipartFile(
+                        "applications",
+                        "applications.csv",
+                        "text/csv",
+                        "header1,header2\nvalue1,value2".getBytes()
+                ));
 
         Inventory inventory = Inventory.builder()
                 .id(inventoryId)
                 .virtualEquipmentCount(1L)
                 .applicationCount(1L)
-                .createdBy(User.builder().id(1L).firstName("test").lastName("user").email("test.user@gmail.com").build())
+                .createdBy(User.builder()
+                        .id(1L)
+                        .firstName("test")
+                        .lastName("user")
+                        .email("test.user@gmail.com")
+                        .build())
                 .build();
 
         Workspace workspace = Workspace.builder()
@@ -95,16 +150,39 @@ class LoadInputFilesServiceTest {
                 .name("Test Workspace")
                 .build();
 
-        UserBO userBO = UserBO.builder().email("testuser@soprasteria.com").domain("soprasteria.com").id(1L).firstName("fname").build();
-        User user = User.builder().email("testuser@soprasteria.com").domain("soprasteria.com").id(1L).firstName("fname").build();
+        UserBO userBO = UserBO.builder()
+                .email("testuser@soprasteria.com")
+                .domain("soprasteria.com")
+                .id(1L)
+                .firstName("fname")
+                .build();
 
-        when(inventoryRepository.findById(inventoryId)).thenReturn(Optional.of(inventory));
-        when(workspaceService.getWorkspaceById(workspaceId)).thenReturn(workspace);
-        when(taskRepository.findByInventoryAndStatusAndType(any(), any(), any())).thenReturn(Collections.emptyList());
-        when(authService.getUser()).thenReturn(userBO);
-        when(userRepository.findById(userBO.getId())).thenReturn(Optional.ofNullable(user));
+        User user = User.builder()
+                .email("testuser@soprasteria.com")
+                .domain("soprasteria.com")
+                .id(1L)
+                .firstName("fname")
+                .build();
 
-        Task result = loadInputFilesService.loadFiles(organization, workspaceId, inventoryId, datacenters, physicalEquipments, virtualEquipments, applications);
+        when(inventoryRepository.findById(inventoryId))
+                .thenReturn(Optional.of(inventory));
+        when(workspaceService.getWorkspaceById(workspaceId))
+                .thenReturn(workspace);
+        when(taskRepository.findByInventoryAndStatusAndType(any(), any(), any()))
+                .thenReturn(Collections.emptyList());
+        when(authService.getUser())
+                .thenReturn(userBO);
+        when(userRepository.findById(userBO.getId()))
+                .thenReturn(Optional.of(user));
+
+        Task result = loadInputFilesService.loadFiles(
+                organization,
+                workspaceId,
+                inventoryId,
+                datacenters,
+                physicalEquipments,
+                virtualEquipments,
+                applications);
 
         assertNotNull(result);
         verify(taskRepository).save(any(Task.class));
@@ -116,9 +194,30 @@ class LoadInputFilesServiceTest {
         String organization = "testOrganization";
         Long workspaceId = 1L;
         String digitalServiceUid = "uid";
-        List<MultipartFile> datacenters = List.of(mock(MultipartFile.class));
-        List<MultipartFile> physicalEquipments = List.of(mock(MultipartFile.class));
-        List<MultipartFile> virtualEquipments = List.of(mock(MultipartFile.class));
+
+        List<MultipartFile> datacenters = List.of(
+                new MockMultipartFile(
+                        "datacenters",
+                        "datacenters.csv",
+                        "text/csv",
+                        "header1,header2\nvalue1,value2".getBytes()
+                ));
+
+        List<MultipartFile> physicalEquipments = List.of(
+                new MockMultipartFile(
+                        "physicalEquipments",
+                        "physical.csv",
+                        "text/csv",
+                        "header1,header2\nvalue1,value2".getBytes()
+                ));
+
+        List<MultipartFile> virtualEquipments = List.of(
+                new MockMultipartFile(
+                        "virtualEquipments",
+                        "virtual.csv",
+                        "text/csv",
+                        "header1,header2\nvalue1,value2".getBytes()
+                ));
 
         DigitalServiceVersion digitalServiceVersion = DigitalServiceVersion.builder()
                 .uid(digitalServiceUid)
@@ -129,16 +228,38 @@ class LoadInputFilesServiceTest {
                 .name("Test Workspace")
                 .build();
 
-        UserBO userBO = UserBO.builder().email("testuser@soprasteria.com").domain("soprasteria.com").id(1L).firstName("fname").build();
-        User user = User.builder().email("testuser@soprasteria.com").domain("soprasteria.com").id(1L).firstName("fname").build();
+        UserBO userBO = UserBO.builder()
+                .email("testuser@soprasteria.com")
+                .domain("soprasteria.com")
+                .id(1L)
+                .firstName("fname")
+                .build();
 
-        when(digitalServiceVersionRepository.findById(digitalServiceUid)).thenReturn(Optional.of(digitalServiceVersion));
-        when(workspaceService.getWorkspaceById(workspaceId)).thenReturn(workspace);
-        when(taskRepository.findByDigitalServiceVersionAndStatusAndType(any(), any(), any())).thenReturn(Collections.emptyList());
-        when(authService.getUser()).thenReturn(userBO);
-        when(userRepository.findById(userBO.getId())).thenReturn(Optional.ofNullable(user));
+        User user = User.builder()
+                .email("testuser@soprasteria.com")
+                .domain("soprasteria.com")
+                .id(1L)
+                .firstName("fname")
+                .build();
 
-        Task result = loadInputFilesService.loadDigitalServiceFiles(organization, workspaceId, digitalServiceUid, datacenters, physicalEquipments, virtualEquipments);
+        when(digitalServiceVersionRepository.findById(digitalServiceUid))
+                .thenReturn(Optional.of(digitalServiceVersion));
+        when(workspaceService.getWorkspaceById(workspaceId))
+                .thenReturn(workspace);
+        when(taskRepository.findByDigitalServiceVersionAndStatusAndType(any(), any(), any()))
+                .thenReturn(Collections.emptyList());
+        when(authService.getUser())
+                .thenReturn(userBO);
+        when(userRepository.findById(userBO.getId()))
+                .thenReturn(Optional.of(user));
+
+        Task result = loadInputFilesService.loadDigitalServiceFiles(
+                organization,
+                workspaceId,
+                digitalServiceUid,
+                datacenters,
+                physicalEquipments,
+                virtualEquipments);
 
         assertNotNull(result);
         verify(taskRepository).save(any(Task.class));
