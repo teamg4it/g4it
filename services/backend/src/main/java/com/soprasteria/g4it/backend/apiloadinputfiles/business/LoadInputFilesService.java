@@ -10,13 +10,13 @@ package com.soprasteria.g4it.backend.apiloadinputfiles.business;
 
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceVersion;
-import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceVersionRepository;
 import com.soprasteria.g4it.backend.apifiles.business.FileSystemService;
 import com.soprasteria.g4it.backend.apiinout.repository.InVirtualEquipmentRepository;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
 import com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.AsyncLoadFilesService;
+import com.soprasteria.g4it.backend.apiloadinputfiles.util.FileValidatorUtils;
 import com.soprasteria.g4it.backend.apiuser.business.AuthService;
 import com.soprasteria.g4it.backend.apiuser.business.WorkspaceService;
 import com.soprasteria.g4it.backend.apiuser.modeldb.User;
@@ -155,68 +155,12 @@ public class LoadInputFilesService {
          * Immediately detach MultipartFiles.
          */
         final Map<FileType, List<StoredFile>> storedFiles =
-                new EnumMap<>(FileType.class);
-
-        for (Map.Entry<FileType, List<MultipartFile>> entry
-                : allFiles.entrySet()) {
-
-            List<StoredFile> detachedFiles =
-                    entry.getValue()
-                            .stream()
-                            .map(file ->
-                                    storeMultipartFile(
-                                            file,
-                                            inventoryId != null
-                                    )
-                            )
-                            .toList();
-
-            storedFiles.put(
-                    entry.getKey(),
-                    detachedFiles
-            );
-        }
+                detachFiles(allFiles, true);
         /*
          * Now work ONLY with StoredFile.
          */
-        List<String> filenames;
-        try {
-            filenames =Stream.of(
-                                FileType.DATACENTER,
-                                FileType.EQUIPEMENT_PHYSIQUE,
-                                FileType.EQUIPEMENT_VIRTUEL,
-                                FileType.APPLICATION
-                        )
-                        .map(fileType -> {
-
-                            List<StoredFile> files =
-                                    storedFiles.get(fileType);
-
-                            List<String> typeFileNames =
-                                    newFilenames(
-                                            files,
-                                            fileType
-                                    );
-
-                            fileSystemService.manageFilesAndRename(
-                                    context.getOrganization(),
-                                    context.getWorkspaceId(),
-                                    files,
-                                    typeFileNames,
-                                    context.getInventoryId() != null
-                            );
-
-                            return typeFileNames;
-                        })
-                        .flatMap(Collection::stream)
-                        .toList();
-            }finally {
-            cleanupStoredFiles(storedFiles);
-        }
-        User user =
-                userRepository.findById(
-                        authService.getUser().getId()
-                ).orElseThrow();
+        List<String> filenames=persistRenamedFiles(context,storedFiles);
+        User user = getAuthenticatedUser();
         Task task = Task.builder()
                 .creationDate(context.getDatetime())
                 .details(new ArrayList<>())
@@ -232,14 +176,7 @@ public class LoadInputFilesService {
                 .filenames(filenames)
                 .createdBy(user)
                 .build();
-        taskRepository.save(task);
-        taskExecutor.execute(
-                new BackgroundTask(
-                        context,
-                        task,
-                        asyncLoadFilesService
-                )
-        );
+        saveAndLaunchLoadingTask(context,task);
         return task;
     }
 
@@ -294,62 +231,9 @@ public class LoadInputFilesService {
                 .datetime(LocalDateTime.now())
                 .build();
         final Map<FileType, List<StoredFile>> storedFiles =
-                new EnumMap<>(FileType.class);
-
-        for (Map.Entry<FileType, List<MultipartFile>> entry
-                : allFiles.entrySet()) {
-
-            List<StoredFile> detachedFiles =
-                    entry.getValue()
-                            .stream()
-                            .map(file ->
-                                    storeMultipartFile(
-                                            file,
-                                            false
-                                    )
-                            )
-                            .toList();
-
-            storedFiles.put(
-                    entry.getKey(),
-                    detachedFiles
-            );
-        }
-        List<String> filenames;
-        try {
-            filenames =Stream.of(
-                            FileType.DATACENTER,
-                            FileType.EQUIPEMENT_PHYSIQUE,
-                            FileType.EQUIPEMENT_VIRTUEL,
-                            FileType.APPLICATION
-                    )
-                    .map(fileType -> {
-
-                        List<StoredFile> files =
-                                storedFiles.get(fileType);
-
-                        List<String> typeFileNames =
-                                newFilenames(
-                                        files,
-                                        fileType
-                                );
-
-                        fileSystemService.manageFilesAndRename(
-                                context.getOrganization(),
-                                context.getWorkspaceId(),
-                                files,
-                                typeFileNames,
-                                context.getInventoryId() != null
-                        );
-
-                        return typeFileNames;
-                    })
-                    .flatMap(Collection::stream)
-                    .toList();
-        }finally {
-            cleanupStoredFiles(storedFiles);
-        }
-        User user = userRepository.findById(authService.getUser().getId()).orElseThrow();
+                detachFiles(allFiles, false);
+        List<String> filenames=persistRenamedFiles(context,storedFiles);
+        User user = getAuthenticatedUser();
 
         // create task with type LOADING
         Task task = Task.builder()
@@ -364,11 +248,7 @@ public class LoadInputFilesService {
                 .createdBy(user)
                 .build();
 
-        taskRepository.save(task);
-
-        // run loading async task
-        taskExecutor.execute(new BackgroundTask(context, task, asyncLoadFilesService));
-
+        saveAndLaunchLoadingTask(context,task);
         return task;
     }
 
@@ -454,7 +334,7 @@ public class LoadInputFilesService {
             boolean isInventory) {
 
         try {
-            Path workingDir = Boolean.TRUE.equals(isInventory)
+            Path workingDir = isInventory
                     ? Path.of(localWorkingFolder, "input", "inventory")
                     : Path.of(localWorkingFolder, "input", "digital-service");
 
@@ -487,7 +367,7 @@ public class LoadInputFilesService {
                     multipartFile.getContentType()
             );
         } catch (IOException e) {
-            log.error("Failed to store multipart file {} : error {}",multipartFile.getOriginalFilename(),e);
+            log.error("Failed to store multipart file {} : ",multipartFile.getOriginalFilename(),e);
             throw new ResponseStatusException(
                     HttpStatus.INTERNAL_SERVER_ERROR,
                     "Unable to process uploaded file"
@@ -508,5 +388,60 @@ public class LoadInputFilesService {
                         log.warn("Failed to delete temp file {}",storedFile.getPath(),e);
                     }
                 });
+    }
+    // Common for inventory and digital service loading, but not perfect for both, so we can refactor later if needed
+    private Map<FileType, List<StoredFile>> detachFiles(
+            Map<FileType, List<MultipartFile>> allFiles,
+            boolean isInventory) {
+
+        Map<FileType, List<StoredFile>> storedFiles = new EnumMap<>(FileType.class);
+        for (Map.Entry<FileType, List<MultipartFile>> entry : allFiles.entrySet()) {
+            List<StoredFile> detached = entry.getValue()
+                    .stream()
+                    .map(file -> storeMultipartFile(file, isInventory))
+                    .toList();
+            storedFiles.put(entry.getKey(), detached);
+        }
+        return storedFiles;
+    }
+
+    // Common for inventory and digital service loading, but not perfect for both, so we can refactor later if needed
+    private List<String> persistRenamedFiles(
+            Context context,
+            Map<FileType, List<StoredFile>> storedFiles) {
+
+        try {
+            return Stream.of(
+                            FileType.DATACENTER,
+                            FileType.EQUIPEMENT_PHYSIQUE,
+                            FileType.EQUIPEMENT_VIRTUEL,
+                            FileType.APPLICATION )
+                    .map(fileType -> {
+                        List<StoredFile> files = storedFiles.get(fileType);
+                        List<String> typeFileNames = newFilenames(files, fileType);
+                        fileSystemService.manageFilesAndRename(
+                                context.getOrganization(),
+                                context.getWorkspaceId(),
+                                files,
+                                typeFileNames,
+                                context.getInventoryId() != null );
+                        return typeFileNames;
+                    })
+                    .flatMap(Collection::stream)
+                    .toList();
+        } finally {
+            cleanupStoredFiles(storedFiles);
+        }
+    }
+
+    // Get authenticated user from database to ensure we have all the needed info (like locale) for task execution
+    private User getAuthenticatedUser() {
+        return userRepository.findById(authService.getUser().getId()).orElseThrow();
+    }
+
+    // Common for inventory and digital service loading, but not perfect for both, so we can refactor later if needed
+    private void saveAndLaunchLoadingTask(Context context, Task task) {
+        taskRepository.save(task);
+        taskExecutor.execute(new BackgroundTask(context, task, asyncLoadFilesService));
     }
 }
