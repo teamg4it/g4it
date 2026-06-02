@@ -25,6 +25,7 @@
         "
         inputId="workspaceName"
         [ariaLabel]="'administration.user.select-org' | translate"
+        [ariaFilterLabel]="'administration.user.select-org' | translate"
         id="workspaceName"
     />
     @if (workspace.workspaceName) {
@@ -216,6 +217,7 @@
                                             <p-button
                                                 styleClass="p-button-text bg-white py-0 my-0"
                                                 (onClick)="
+                                                    isConfirmDialogVisible.set(true);
                                                     deleteUserDetails($event, user)
                                                 "
                                                 id="delete-button"
@@ -280,6 +282,11 @@
     }
     <div class="card flex justify-content-center gap-2">
         <p-toast></p-toast>
-        <p-confirmDialog [style]="{ width: '40vw' }"></p-confirmDialog>
+        @if (isConfirmDialogVisible()) {
+            <p-confirmdialog
+                [style]="{ width: '40vw' }"
+                (onHide)="isConfirmDialogVisible.set(false)"
+            ></p-confirmdialog>
+        }
     </div>
 </div>

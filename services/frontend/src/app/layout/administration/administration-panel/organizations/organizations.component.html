@@ -8,6 +8,7 @@
             class="inline-flex"
             [options]="organizationsDetails"
             placeholder="{{ 'administration.organization-placeholder' | translate }}"
+            [ariaLabel]="'administration.organization-placeholder' | translate"
             ngDefaultControl
             [(ngModel)]="organization"
             id="organizationName"
@@ -175,7 +176,10 @@
                                     'administration.accessibility.on-deletion' | translate
                                 "
                                 class="mx-1"
-                                (onClick)="confirmDelete($event, workspace)"
+                                (onClick)="
+                                    isConfirmDialogVisible.set(true);
+                                    confirmDelete($event, workspace)
+                                "
                                 id="delete-organization-button"
                             >
                                 <img
@@ -248,6 +252,12 @@
     </p-scrollPanel>
     <div class="card flex justify-content-center gap-2">
         <p-toast></p-toast>
-        <p-confirmDialog [style]="{ width: '40vw' }"></p-confirmDialog>
+
+        @if (isConfirmDialogVisible()) {
+            <p-confirmdialog
+                [style]="{ width: '40vw' }"
+                (onHide)="isConfirmDialogVisible.set(false)"
+            ></p-confirmdialog>
+        }
     </div>
 </div>

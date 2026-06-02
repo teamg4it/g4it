@@ -6,7 +6,7 @@
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
 import { DatePipe } from "@angular/common";
-import { Component, DestroyRef, inject, OnInit } from "@angular/core";
+import { Component, DestroyRef, inject, OnInit, signal } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormsModule } from "@angular/forms";
 import { TranslatePipe, TranslateService } from "@ngx-translate/core";
@@ -69,6 +69,7 @@ export class OrganizationsComponent implements OnInit {
     myDomain!: string;
     notOrganizationAdminInSome = false;
     domainOrganizations: DomainOrganizations[] = [];
+    isConfirmDialogVisible = signal(false);
     constructor(
         private readonly confirmationService: ConfirmationService,
         public administrationService: AdministrationService,
@@ -151,25 +152,28 @@ export class OrganizationsComponent implements OnInit {
     }
 
     confirmDelete(event: Event, workspace: Workspace) {
-        this.confirmationService.confirm({
-            target: event.target as EventTarget,
-            message: this.translate.instant("administration.delete-message"),
-            header: this.translate.instant("administration.delete-confirmation"),
-            icon: "pi pi-info-circle",
-            acceptLabel: this.translate.instant("administration.delete"),
-            acceptButtonStyleClass: "p-button-danger center",
-            rejectButtonStyleClass: Constants.CONSTANT_VALUE.NONE,
-            acceptIcon: Constants.CONSTANT_VALUE.NONE,
-            rejectIcon: Constants.CONSTANT_VALUE.NONE,
-            rejectVisible: false,
+        setTimeout(() => {
+            this.confirmationService.confirm({
+                target: event.target as EventTarget,
+                message: this.translate.instant("administration.delete-message"),
+                header: this.translate.instant("administration.delete-confirmation"),
+                icon: "pi pi-info-circle",
+                acceptLabel: this.translate.instant("administration.delete"),
+                acceptButtonStyleClass: "p-button-danger center",
+                rejectButtonStyleClass: Constants.CONSTANT_VALUE.NONE,
+                acceptIcon: Constants.CONSTANT_VALUE.NONE,
+                rejectIcon: Constants.CONSTANT_VALUE.NONE,
+                rejectVisible: false,
 
-            accept: () => {
-                this.updateWorkspace(workspace.id, {
-                    organizationId: this.organization.id,
-                    name: workspace.name.trim(),
-                    status: Constants.WORKSPACE_STATUSES.TO_BE_DELETED,
-                });
-            },
+                accept: () => {
+                    this.updateWorkspace(workspace.id, {
+                        organizationId: this.organization.id,
+                        name: workspace.name.trim(),
+                        status: Constants.WORKSPACE_STATUSES.TO_BE_DELETED,
+                    });
+                    this.isConfirmDialogVisible.set(false);
+                },
+            });
         });
     }
 

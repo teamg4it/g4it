@@ -5,9 +5,15 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component, DestroyRef, effect, inject, OnInit } from "@angular/core";
+import { Component, DestroyRef, effect, inject, OnInit, signal } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
+import {
+    FormBuilder,
+    FormGroup,
+    FormsModule,
+    ReactiveFormsModule,
+    Validators,
+} from "@angular/forms";
 import { Router } from "@angular/router";
 import { TranslatePipe, TranslateService } from "@ngx-translate/core";
 import { ConfirmationService, MessageService, PrimeTemplate } from "primeng/api";
@@ -42,21 +48,21 @@ import { AddWorkspaceComponent } from "./add-workspace/add-workspace.component";
     providers: [ConfirmationService, MessageService],
     standalone: true,
     imports: [
-    SelectModule,
-    FormsModule,
-    Button,
-    CriteriaPopupComponent,
-    ReactiveFormsModule,
-    InputTextModule,
-    ScrollPanelModule,
-    TableModule,
-    PrimeTemplate,
-    DrawerModule,
-    AddWorkspaceComponent,
-    ToastModule,
-    ConfirmDialogModule,
-    TranslatePipe
-],
+        SelectModule,
+        FormsModule,
+        Button,
+        CriteriaPopupComponent,
+        ReactiveFormsModule,
+        InputTextModule,
+        ScrollPanelModule,
+        TableModule,
+        PrimeTemplate,
+        DrawerModule,
+        AddWorkspaceComponent,
+        ToastModule,
+        ConfirmDialogModule,
+        TranslatePipe,
+    ],
 })
 export class UsersComponent implements OnInit {
     private readonly destroyRef = inject(DestroyRef);
@@ -91,6 +97,8 @@ export class UsersComponent implements OnInit {
 
     isEcoMindModuleEnabled: boolean = environment.isEcomindEnabled;
     isEcoMindEnabledForCurrentOrganizationSelected: boolean = false;
+
+    isConfirmDialogVisible = signal(false);
 
     constructor(
         private readonly administrationService: AdministrationService,
@@ -217,47 +225,52 @@ export class UsersComponent implements OnInit {
 
     async deleteUserDetails(event: Event, user: UserDetails) {
         const userId = (await firstValueFrom(this.userService.user$)).id;
-        this.confirmationService.confirm({
-            target: event.target as EventTarget,
-            message: this.translate.instant("administration.user.delete-message", {
-                FirstName: user.firstName,
-                LastName: user.lastName,
-            }),
-            header: this.translate.instant("administration.delete-confirmation"),
-            icon: "pi pi-info-circle",
-            acceptLabel: this.translate.instant("administration.delete"),
-            acceptButtonStyleClass: "p-button-danger center",
-            rejectButtonStyleClass: Constants.CONSTANT_VALUE.NONE,
-            acceptIcon: Constants.CONSTANT_VALUE.NONE,
-            rejectIcon: Constants.CONSTANT_VALUE.NONE,
-            rejectVisible: false,
+        setTimeout(() => {
+            this.confirmationService.confirm({
+                target: event.target as EventTarget,
+                message: this.translate.instant("administration.user.delete-message", {
+                    FirstName: user.firstName,
+                    LastName: user.lastName,
+                }),
+                header: this.translate.instant("administration.delete-confirmation"),
+                icon: "pi pi-info-circle",
+                acceptLabel: this.translate.instant("administration.delete"),
+                acceptButtonStyleClass: "p-button-danger center",
+                rejectButtonStyleClass: Constants.CONSTANT_VALUE.NONE,
+                acceptIcon: Constants.CONSTANT_VALUE.NONE,
+                rejectIcon: Constants.CONSTANT_VALUE.NONE,
+                rejectVisible: false,
 
-            accept: () => {
-                let body = {
-                    workspaceId: this.workspace.workspaceId,
-                    users: [
-                        {
-                            userId: user.id,
-                            roles: user?.roles,
-                        },
-                    ],
-                };
-                this.administrationService.deleteUserDetails(body).subscribe((res) => {
-                    const currentUserRoles = body.users.find(
-                        (u) => u.userId === userId,
-                    )?.roles;
-                    if (currentUserRoles?.includes(Role.WorkspaceAdmin)) {
-                        this.userDataService
-                            .fetchUserInfo()
-                            .pipe(take(1))
-                            .subscribe(() => {
-                                this.router.navigateByUrl(Constants.WELCOME_PAGE);
-                            });
-                    } else {
-                        this.searchList();
-                    }
-                });
-            },
+                accept: () => {
+                    let body = {
+                        workspaceId: this.workspace.workspaceId,
+                        users: [
+                            {
+                                userId: user.id,
+                                roles: user?.roles,
+                            },
+                        ],
+                    };
+                    this.administrationService
+                        .deleteUserDetails(body)
+                        .subscribe((res) => {
+                            const currentUserRoles = body.users.find(
+                                (u) => u.userId === userId,
+                            )?.roles;
+                            if (currentUserRoles?.includes(Role.WorkspaceAdmin)) {
+                                this.userDataService
+                                    .fetchUserInfo()
+                                    .pipe(take(1))
+                                    .subscribe(() => {
+                                        this.router.navigateByUrl(Constants.WELCOME_PAGE);
+                                    });
+                            } else {
+                                this.searchList();
+                            }
+                            this.isConfirmDialogVisible.set(false);
+                        });
+                },
+            });
         });
     }
 
