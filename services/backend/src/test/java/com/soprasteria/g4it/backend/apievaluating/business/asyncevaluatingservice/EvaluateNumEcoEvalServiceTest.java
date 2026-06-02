@@ -662,4 +662,147 @@ class EvaluateNumEcoEvalServiceTest {
         assertTrue(updated.contains("ConsoElecAnMoyenne"));
     }
 
+    @Test
+    void calculatePhysicalEquipment_shouldFallbackToOrganizationReferential_whenWorkspaceDataMissing() {
+
+        InPhysicalEquipment physical = new InPhysicalEquipment();
+        physical.setModel("MODEL");
+        physical.setType("SERVER");
+        physical.setLocation("FR");
+
+        CriterionRest criterion = new CriterionRest();
+        criterion.setCode("CLIMATE_CHANGE");
+
+        MatchingItemRest matching = new MatchingItemRest();
+        matching.setRefItemTarget("REF_MODEL");
+
+        ItemTypeRest itemType = new ItemTypeRest();
+
+        when(referentialService.getMatchingItemForWorkspace("MODEL", 1L))
+                .thenReturn(null);
+
+        when(referentialService.getMatchingItem("MODEL", "ORG"))
+                .thenReturn(matching);
+
+        when(referentialService.getItemTypeForWorkspace("SERVER", 1L))
+                .thenReturn(null);
+
+        when(referentialService.getItemType("SERVER", "ORG"))
+                .thenReturn(itemType);
+
+        when(referentialService.getItemImpactsForWorkspace(
+                any(), any(), any(), any(), any()))
+                .thenReturn(List.of());
+
+        when(referentialService.getItemImpacts(
+                any(), any(), any(), any(), any()))
+                .thenReturn(List.of(new ItemImpactRest()));
+
+        when(calculImpactEquipementPhysiqueService
+                .calculerImpactEquipementPhysique(any()))
+                .thenReturn(ImpactEquipementPhysique.builder()
+                        .trace("{}")
+                        .build());
+
+        service.calculatePhysicalEquipment(
+                physical,
+                null,
+                "ORG",
+                List.of(criterion),
+                List.of("USING"),
+                List.of(),
+                1L,
+                1
+        );
+
+        verify(referentialService).getMatchingItem("MODEL", "ORG");
+        verify(referentialService).getItemType("SERVER", "ORG");
+    }
+
+    @Test
+    void calculatePhysicalEquipment_shouldUseOrganizationReferential_whenWorkspaceCountZero() {
+
+        InPhysicalEquipment physical = new InPhysicalEquipment();
+        physical.setType("SERVER");
+
+        CriterionRest criterion = new CriterionRest();
+        criterion.setCode("CLIMATE_CHANGE");
+
+        when(referentialService.getItemType("SERVER", "ORG"))
+                .thenReturn(new ItemTypeRest());
+
+        when(referentialService.getItemImpacts(
+                any(), any(), any(), any(), any()))
+                .thenReturn(List.of(new ItemImpactRest()));
+
+        when(calculImpactEquipementPhysiqueService
+                .calculerImpactEquipementPhysique(any()))
+                .thenReturn(ImpactEquipementPhysique.builder()
+                        .trace("{}")
+                        .build());
+
+        service.calculatePhysicalEquipment(
+                physical,
+                null,
+                "ORG",
+                List.of(criterion),
+                List.of("USING"),
+                List.of(),
+                1L,
+                0
+        );
+
+        verify(referentialService, never())
+                .getItemTypeForWorkspace(any(), any());
+
+        verify(referentialService)
+                .getItemType("SERVER", "ORG");
+    }
+
+
+    @Test
+    void calculateVirtualEquipment_shouldCopySourceFromPhysicalImpact() {
+
+        ImpactEquipementPhysique physical = mock(ImpactEquipementPhysique.class);
+        ImpactEquipementVirtuel virtualImpact = mock(ImpactEquipementVirtuel.class);
+
+        when(physical.getSource()).thenReturn("ADEME");
+
+        when(calculImpactEquipementVirtuelService
+                .calculerImpactEquipementVirtuel(any()))
+                .thenReturn(virtualImpact);
+
+        service.calculateVirtualEquipment(
+                new InVirtualEquipment(),
+                List.of(physical),
+                1,
+                1.0,
+                1.0,
+                1.2,
+                "FR"
+        );
+
+        verify(virtualImpact).setSource("ADEME");
+    }
+
+    @Test
+    void getTotalVcpuCoreNumber_shouldReturnNull_whenValueIsZero() {
+
+        InVirtualEquipment vm = new InVirtualEquipment();
+        vm.setVcpuCoreNumber(0.0);
+
+        assertNull(service.getTotalVcpuCoreNumber(List.of(vm)));
+    }
+
+    @Test
+    void getTotalDiskSize_shouldReturnNull_whenValueIsZero() {
+
+        InVirtualEquipment vm = new InVirtualEquipment();
+        vm.setSizeDiskGb(0.0);
+
+        assertNull(service.getTotalDiskSize(List.of(vm)));
+    }
+
+
+
 }

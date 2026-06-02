@@ -13,6 +13,7 @@ import com.soprasteria.g4it.backend.apireferential.modeldb.ItemImpact;
 import com.soprasteria.g4it.backend.apireferential.modeldb.ItemType;
 import com.soprasteria.g4it.backend.apireferential.modeldb.MatchingItem;
 import com.soprasteria.g4it.backend.apireferential.repository.*;
+import com.soprasteria.g4it.backend.common.utils.StringUtils;
 import com.soprasteria.g4it.backend.server.gen.api.dto.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -339,4 +340,359 @@ class ReferentialGetServiceTest {
 
         assertEquals(123L, result);
     }
+
+    @Test
+    void getItemTypesForWorkspace_whenTypeNull_returnsAllTypes() {
+
+        Long workspaceId = 1L;
+
+        List<ItemType> itemTypes =
+                List.of(ItemType.builder().type("Laptop").build());
+
+        List<ItemTypeRest> expected =
+                List.of(new ItemTypeRest());
+
+        when(itemTypeRepository.findByOrganizationAndWorkspaceId(null, workspaceId))
+                .thenReturn(itemTypes);
+
+        when(refRestMapper.toItemTypeRest(itemTypes))
+                .thenReturn(expected);
+
+        List<ItemTypeRest> result =
+                referentialGetService.getItemTypesForWorkspace(null, workspaceId);
+
+        assertEquals(expected, result);
+    }
+
+    @Test
+    void getItemTypesForWorkspace_whenTypeExists() {
+
+        Long workspaceId = 1L;
+
+        ItemType itemType =
+                ItemType.builder()
+                        .type("Laptop")
+                        .build();
+
+        List<ItemTypeRest> expected =
+                List.of(new ItemTypeRest());
+
+        when(itemTypeRepository.findByTypeAndOrganizationAndWorkspaceId(
+                "Laptop",
+                null,
+                workspaceId))
+                .thenReturn(Optional.of(itemType));
+
+        when(refRestMapper.toItemTypeRest(anyList()))
+                .thenReturn(expected);
+
+        List<ItemTypeRest> result =
+                referentialGetService.getItemTypesForWorkspace(
+                        "Laptop",
+                        workspaceId);
+
+        assertEquals(expected, result);
+    }
+
+    @Test
+    void getMatchingItemForWorkspace_whenFound() {
+
+        Long workspaceId = 1L;
+
+        MatchingItem item =
+                MatchingItem.builder()
+                        .itemSource("Dell")
+                        .build();
+
+        MatchingItemRest expected =
+                new MatchingItemRest();
+
+        when(matchingItemRepository.findByItemSourceAndOrganizationAndWorkspaceId(
+                "Dell",
+                null,
+                workspaceId))
+                .thenReturn(Optional.of(item));
+
+        when(refRestMapper.toMatchingItemRest(item))
+                .thenReturn(expected);
+
+        MatchingItemRest result =
+                referentialGetService.getMatchingItemForWorkspace(
+                        "Dell",
+                        workspaceId);
+
+        assertEquals(expected, result);
+    }
+
+    @Test
+    void getMatchingItemForWorkspace_whenNotFound() {
+
+        when(matchingItemRepository.findByItemSourceAndOrganizationAndWorkspaceId(
+                anyString(),
+                isNull(),
+                anyLong()))
+                .thenReturn(Optional.empty());
+
+        MatchingItemRest result =
+                referentialGetService.getMatchingItemForWorkspace(
+                        "Dell",
+                        1L);
+
+        assertNull(result);
+    }
+
+    @Test
+    void getItemImpactsForWorkspace_returnsMappedImpacts() {
+
+        List<ItemImpact> impacts =
+                List.of(ItemImpact.builder().build());
+
+        List<ItemImpactRest> expected =
+                List.of(new ItemImpactRest());
+
+        when(itemImpactRepository
+                .findByCriterionAndLifecycleStepAndNameAndCategoryAndLocationAndOrganizationAndWorkspaceId(
+                        any(),
+                        any(),
+                        any(),
+                        any(),
+                        any(),
+                        any(),
+                        anyLong()))
+                .thenReturn(impacts);
+
+        when(refRestMapper.toItemImpactRest(impacts))
+                .thenReturn(expected);
+
+        List<ItemImpactRest> result =
+                referentialGetService.getItemImpactsForWorkspace(
+                        "climate-change",
+                        "manufacturing",
+                        "Laptop",
+                        "France",
+                        "IT",
+                        "ORG",
+                        1L);
+
+        assertEquals(expected, result);
+    }
+
+    @Test
+    void getItemImpactsELectricityMixForWorkspace_returnsValueFromMap() {
+
+        Long workspaceId = 1L;
+
+        List<ItemImpactRest> expected =
+                List.of(new ItemImpactRest());
+
+        String key =
+                StringUtils.kebabToSnakeCase("climate-change")
+                        + "|electricity-mix|France|"
+                        + workspaceId;
+
+        Map<String, List<ItemImpactRest>> map = new HashMap<>();
+        map.put(key, expected);
+
+        List<ItemImpactRest> result =
+                referentialGetService.getItemImpactsELectricityMixForWorkspace(
+                        "climate-change",
+                        "France",
+                        workspaceId,
+                        map);
+
+        assertSame(expected, result);
+    }
+
+    @Test
+    void getItemImpactsELectricityMixForWorkspace_returnsEmptyListWhenKeyMissing() {
+
+        List<ItemImpactRest> result =
+                referentialGetService.getItemImpactsELectricityMixForWorkspace(
+                        "climate-change",
+                        "France",
+                        1L,
+                        new HashMap<>());
+
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    void bulkGetMatchingItemsForWorkspace_returnsMap() {
+
+        Long workspaceId = 1L;
+
+        MatchingItem item =
+                MatchingItem.builder()
+                        .itemSource("Dell")
+                        .build();
+
+        MatchingItemRest rest =
+                new MatchingItemRest();
+
+        when(matchingItemRepository.findByItemSourceInAndWorkspaceId(
+                anySet(),
+                eq(workspaceId)))
+                .thenReturn(List.of(item));
+
+        when(refRestMapper.toMatchingItemRest(item))
+                .thenReturn(rest);
+
+        Map<String, MatchingItemRest> result =
+                referentialGetService.bulkGetMatchingItemsForWorkspace(
+                        Set.of("Dell"),
+                        workspaceId);
+
+        assertEquals(1, result.size());
+        assertEquals(rest, result.get("Dell|1"));
+    }
+
+    @Test
+    void bulkGetItemTypesForWorkspace_returnsMap() {
+
+        Long workspaceId = 1L;
+
+        ItemType item =
+                ItemType.builder()
+                        .type("Laptop")
+                        .build();
+
+        ItemTypeRest rest =
+                new ItemTypeRest();
+
+        when(itemTypeRepository.findByTypeInAndWorkspaceId(
+                anySet(),
+                eq(workspaceId)))
+                .thenReturn(List.of(item));
+
+        when(refRestMapper.toItemTypeRest(anyList()))
+                .thenReturn(List.of(rest));
+
+        Map<String, List<ItemTypeRest>> result =
+                referentialGetService.bulkGetItemTypesForWorkspace(
+                        Set.of("Laptop"),
+                        workspaceId);
+
+        assertEquals(1, result.size());
+        assertEquals(List.of(rest), result.get("Laptop|1"));
+    }
+
+    @Test
+    void bulkGetItemImpactsForWorkspace_returnsMap() {
+
+        Long workspaceId = 1L;
+
+        ItemImpact impact =
+                ItemImpact.builder()
+                        .criterion("criterion")
+                        .lifecycleStep("step")
+                        .name("Laptop")
+                        .build();
+
+        ItemImpactRest rest =
+                new ItemImpactRest();
+
+        when(itemImpactRepository
+                .findByCriterionInAndLifecycleStepInAndWorkspaceId(
+                        anySet(),
+                        anySet(),
+                        eq(workspaceId)))
+                .thenReturn(List.of(impact));
+
+        when(refRestMapper.toItemImpactRest(anyList()))
+                .thenReturn(List.of(rest));
+
+        Map<String, List<ItemImpactRest>> result =
+                referentialGetService.bulkGetItemImpactsForWorkspace(
+                        Set.of("criterion"),
+                        Set.of("step"),
+                        workspaceId);
+
+        assertEquals(1, result.size());
+        assertTrue(result.containsKey("criterion|step|Laptop|1"));
+    }
+
+    @Test
+    void bulkGetItemImpactsElectricityMixForWorkspace_returnsMap() {
+
+        Long workspaceId = 1L;
+
+        ItemImpact impact =
+                ItemImpact.builder()
+                        .criterion("criterion")
+                        .category("electricity-mix")
+                        .location("France")
+                        .build();
+
+        ItemImpactRest rest =
+                new ItemImpactRest();
+
+        when(itemImpactRepository
+                .findByCriterionInAndCategoryAndLocationInAndWorkspaceId(
+                        anySet(),
+                        eq("electricity-mix"),
+                        anySet(),
+                        eq(workspaceId)))
+                .thenReturn(List.of(impact));
+
+        when(refRestMapper.toItemImpactRest(anyList()))
+                .thenReturn(List.of(rest));
+
+        Map<String, List<ItemImpactRest>> result =
+                referentialGetService.bulkGetItemImpactsElectricityMixForWorkspace(
+                        Set.of("criterion"),
+                        Set.of("France"),
+                        workspaceId);
+
+        assertEquals(1, result.size());
+        assertTrue(result.containsKey(
+                "criterion|electricity-mix|France|1"));
+    }
+
+    @Test
+    void bulkGetAllItemImpactsForWorkspace_mergesMaps() {
+
+        ReferentialGetService spyService =
+                spy(referentialGetService);
+
+        ItemImpactRest general =
+                new ItemImpactRest();
+
+        ItemImpactRest electricity =
+                new ItemImpactRest();
+
+        Map<String, List<ItemImpactRest>> generalMap =
+                Map.of(
+                        "key",
+                        new ArrayList<>(List.of(general)));
+
+        Map<String, List<ItemImpactRest>> electricityMap =
+                Map.of(
+                        "key",
+                        new ArrayList<>(List.of(electricity)));
+
+        doReturn(generalMap)
+                .when(spyService)
+                .bulkGetItemImpactsForWorkspace(
+                        anySet(),
+                        anySet(),
+                        anyLong());
+
+        doReturn(electricityMap)
+                .when(spyService)
+                .bulkGetItemImpactsElectricityMixForWorkspace(
+                        anySet(),
+                        anySet(),
+                        anyLong());
+
+        Map<String, List<ItemImpactRest>> result =
+                spyService.bulkGetAllItemImpactsForWorkspace(
+                        Set.of("c"),
+                        Set.of("s"),
+                        Set.of("France"),
+                        1L);
+
+        assertEquals(2, result.get("key").size());
+    }
+
+
 }

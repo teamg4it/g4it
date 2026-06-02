@@ -54,7 +54,7 @@ class FileSystemServiceTest {
     private FileDescriptionRestMapper fileDescriptionRestMapper;
 
     @Test
-    void testCheckFiles() throws Exception {
+    void testCheckFiles() {
 
         ReflectionTestUtils.invokeMethod(fileSystemService, "checkFiles", List.of());
         ReflectionTestUtils.invokeMethod(fileSystemService, "checkFiles", (Object) null);
@@ -80,12 +80,14 @@ class FileSystemServiceTest {
         when(badFile.getContentType()).thenReturn(MediaType.TEXT_PLAIN_VALUE);
         when(badFile.getOriginalFilename()).thenReturn("badFile.txt");
 
+        List<StoredFile> files = List.of(goodFile, badFile);
+
         assertThrows(
                 BadRequestException.class,
                 () -> ReflectionTestUtils.invokeMethod(
                         fileSystemService,
                         "checkFiles",
-                        List.of(goodFile, badFile)
+                        files
                 )
         );
     }
