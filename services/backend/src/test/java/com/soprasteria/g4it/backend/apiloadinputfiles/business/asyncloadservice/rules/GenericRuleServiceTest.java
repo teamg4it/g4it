@@ -99,7 +99,6 @@ class GenericRuleServiceTest {
     @Test
     void testCheckType_NonDigitalService_TypeExistsForOrganization_Ok() {
         ItemTypeRest typeItem = ItemTypeRest.builder().type("Printer").build();
-        //when(referentialGetService.getItemTypes("Printer", organization,workspaceId)).thenReturn(List.of(typeItem));
         when(referentialGetService.getItemTypes("Printer", null,null)).thenReturn(List.of());
         when(referentialGetService.getItemTypesForWorkspace("Printer", workspaceId)).thenReturn(List.of(typeItem));
         var actual = genericRuleService.checkType(locale, organization, filename, line, "Printer", false,workspaceId);

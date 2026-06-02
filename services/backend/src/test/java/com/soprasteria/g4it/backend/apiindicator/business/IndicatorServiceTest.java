@@ -55,25 +55,6 @@ class IndicatorServiceTest {
     @Mock
     private VirtualEquipmentIndicatorService virtualEquipmentIndicatorService;
 
-    /*@Test
-    void getEquipmentIndicatorsReturnsMappedIndicatorsWhenTaskIdIsValid() {
-        Long taskId = 1L;
-        String criterion = "Resource_Group";
-        String expectedKey = "resource-group"; // Adjust if your service transforms the key
-
-        List<OutPhysicalEquipment> equipmentList = List.of(
-                OutPhysicalEquipment.builder().id(3L).criterion(criterion).build()
-        );
-        EquipmentIndicatorBO indicatorBO = EquipmentIndicatorBO.builder().build();
-
-        when(outPhysicalEquipmentRepository.findByTaskId(taskId)).thenReturn(equipmentList);
-        when(equipmentIndicatorMapper.outToDto(equipmentList)).thenReturn(indicatorBO);
-
-        Map<String, EquipmentIndicatorBO> result = indicatorService.getEquipmentIndicators(taskId);
-
-        assertNotNull(result);
-        assertEquals(1, result.size());
-    }*/
 
     @Test
     void getApplicationIndicatorsReturnsMappedIndicatorsWhenTaskIdIsValid() {
