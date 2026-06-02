@@ -25,10 +25,8 @@ import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class IndicatorServiceTest {
@@ -168,5 +166,143 @@ class IndicatorServiceTest {
 
         verify(virtualEquipmentIndicatorService)
                 .getVirtualEquipmentElecConsumption(taskId);
+    }
+
+    @Test
+    void getEquipmentIndicators_returnsGroupedAndMappedIndicators() {
+
+        Long taskId = 1L;
+
+        OutPhysicalEquipment equipment1 =
+                OutPhysicalEquipment.builder()
+                        .id(1L)
+                        .build();
+
+        OutPhysicalEquipment equipment2 =
+                OutPhysicalEquipment.builder()
+                        .id(2L)
+                        .build();
+
+        List<Object[]> repositoryResult = List.of(
+                new Object[]{"resource_group", equipment1},
+                new Object[]{"resource_group", equipment2}
+        );
+
+        EquipmentIndicatorBO indicatorBO =
+                EquipmentIndicatorBO.builder().build();
+
+        when(outPhysicalEquipmentRepository.findCriterionAndEquipmentByTaskId(taskId))
+                .thenReturn(repositoryResult);
+
+        when(equipmentIndicatorMapper.outToDto(List.of(equipment1, equipment2)))
+                .thenReturn(indicatorBO);
+
+        Map<String, EquipmentIndicatorBO> result =
+                indicatorService.getEquipmentIndicators(taskId);
+
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        assertTrue(result.containsKey("resource-group"));
+        assertEquals(indicatorBO, result.get("resource-group"));
+
+        verify(outPhysicalEquipmentRepository)
+                .findCriterionAndEquipmentByTaskId(taskId);
+
+        verify(equipmentIndicatorMapper)
+                .outToDto(List.of(equipment1, equipment2));
+    }
+
+    @Test
+    void getEquipmentIndicators_groupsByCriterion() {
+
+        Long taskId = 1L;
+
+        OutPhysicalEquipment equipment1 =
+                OutPhysicalEquipment.builder().id(1L).build();
+
+        OutPhysicalEquipment equipment2 =
+                OutPhysicalEquipment.builder().id(2L).build();
+
+        EquipmentIndicatorBO indicator1 =
+                EquipmentIndicatorBO.builder().build();
+
+        EquipmentIndicatorBO indicator2 =
+                EquipmentIndicatorBO.builder().build();
+
+        when(outPhysicalEquipmentRepository.findCriterionAndEquipmentByTaskId(taskId))
+                .thenReturn(List.of(
+                        new Object[]{"resource_group", equipment1},
+                        new Object[]{"climate_change", equipment2}
+                ));
+
+        when(equipmentIndicatorMapper.outToDto(List.of(equipment1)))
+                .thenReturn(indicator1);
+
+        when(equipmentIndicatorMapper.outToDto(List.of(equipment2)))
+                .thenReturn(indicator2);
+
+        Map<String, EquipmentIndicatorBO> result =
+                indicatorService.getEquipmentIndicators(taskId);
+
+        assertEquals(2, result.size());
+
+        assertEquals(
+                indicator1,
+                result.get("resource-group"));
+
+        assertEquals(
+                indicator2,
+                result.get("climate-change"));
+    }
+
+    @Test
+    void getEquipmentIndicators_returnsEmptyMap_whenNoDataFound() {
+
+        Long taskId = 1L;
+
+        when(outPhysicalEquipmentRepository.findCriterionAndEquipmentByTaskId(taskId))
+                .thenReturn(List.of());
+
+        Map<String, EquipmentIndicatorBO> result =
+                indicatorService.getEquipmentIndicators(taskId);
+
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+
+        verify(outPhysicalEquipmentRepository)
+                .findCriterionAndEquipmentByTaskId(taskId);
+
+        verifyNoInteractions(equipmentIndicatorMapper);
+    }
+
+    @Test
+    void shouldDelegateGetVirtualEquipmentsLowImpactToVirtualService() {
+
+        String organization = "ORG";
+        Long workspaceId = 1L;
+        Long inventoryId = 10L;
+
+        List<VirtualEquipmentLowImpactBO> expected =
+                List.of(new VirtualEquipmentLowImpactBO());
+
+        when(virtualEquipmentIndicatorService.getVirtualEquipmentsLowImpact(
+                organization,
+                workspaceId,
+                inventoryId))
+                .thenReturn(expected);
+
+        List<VirtualEquipmentLowImpactBO> result =
+                indicatorService.getVirtualEquipmentsLowImpact(
+                        organization,
+                        workspaceId,
+                        inventoryId);
+
+        assertEquals(expected, result);
+
+        verify(virtualEquipmentIndicatorService)
+                .getVirtualEquipmentsLowImpact(
+                        organization,
+                        workspaceId,
+                        inventoryId);
     }
 }
