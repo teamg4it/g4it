@@ -241,36 +241,34 @@ export class UsersComponent implements OnInit {
                 rejectIcon: Constants.CONSTANT_VALUE.NONE,
                 rejectVisible: false,
 
-                accept: () => {
-                    let body = {
-                        workspaceId: this.workspace.workspaceId,
-                        users: [
-                            {
-                                userId: user.id,
-                                roles: user?.roles,
-                            },
-                        ],
-                    };
-                    this.administrationService
-                        .deleteUserDetails(body)
-                        .subscribe((res) => {
-                            const currentUserRoles = body.users.find(
-                                (u) => u.userId === userId,
-                            )?.roles;
-                            if (currentUserRoles?.includes(Role.WorkspaceAdmin)) {
-                                this.userDataService
-                                    .fetchUserInfo()
-                                    .pipe(take(1))
-                                    .subscribe(() => {
-                                        this.router.navigateByUrl(Constants.WELCOME_PAGE);
-                                    });
-                            } else {
-                                this.searchList();
-                            }
-                            this.isConfirmDialogVisible.set(false);
-                        });
-                },
+                accept: () => this.handleAcceptEvent(user, userId),
             });
+        });
+    }
+
+    handleAcceptEvent(user: UserDetails, userId: number) {
+        let body = {
+            workspaceId: this.workspace.workspaceId,
+            users: [
+                {
+                    userId: user.id,
+                    roles: user?.roles,
+                },
+            ],
+        };
+        this.administrationService.deleteUserDetails(body).subscribe((res) => {
+            const currentUserRoles = body.users.find((u) => u.userId === userId)?.roles;
+            if (currentUserRoles?.includes(Role.WorkspaceAdmin)) {
+                this.userDataService
+                    .fetchUserInfo()
+                    .pipe(take(1))
+                    .subscribe(() => {
+                        this.router.navigateByUrl(Constants.WELCOME_PAGE);
+                    });
+            } else {
+                this.searchList();
+            }
+            this.isConfirmDialogVisible.set(false);
         });
     }
 
