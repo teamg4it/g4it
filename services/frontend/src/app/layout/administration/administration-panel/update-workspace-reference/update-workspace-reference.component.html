@@ -1,7 +1,7 @@
 <p-scrollPanel [style]="{ width: '100%', height: 'calc(100vh - 230px)' }">
-    <div class="pt-4">
+    <div class="pt-2">
         <div class="mb-3">
-            <p-dropdown
+            <p-select
                 appendTo="body"
                 [options]="workspacelist"
                 optionLabel="displayLabel"
@@ -42,13 +42,14 @@
             </h3>
 
             <div class="flex mb-3">
-                <p-dropdown
+                <p-select
                     appendTo="body"
                     [options]="csvEndpoints"
                     optionLabel="apiEndpointName"
                     name="endpointDropdown"
                     [(ngModel)]="selectedEndpoint"
                     styleClass="w-25rem h-3rem"
+                    class="item-impact"
                     placeholder="{{
                         'administration.uploadcsv.workspace-endpoint-placeholder'
                             | translate
@@ -81,17 +82,22 @@
                             }}</small>
                         </div>
                     </ng-template>
-                </p-dropdown>
+                </p-select>
 
                 <p-fileUpload
                     #fileUpload
-                    styleClass="bg-black text-2xs letter-spacing-2 w-18rem mx-2 h-3rem uppercase"
+                    class="mx-3"
+                    [styleClass]="
+                        file?.name ? 'custom-file-upload has-file' : 'custom-file-upload'
+                    "
+                    [chooseIcon]="file?.name ? 'pi pi-upload' : 'pi pi-plus'"
                     id="upload-file"
                     mode="basic"
-                    chooseLabel="{{ fileUploadText }}"
+                    [chooseLabel]="file?.name || fileUploadText"
                     [ariaLabel]="fileUploadText"
                     accept=".csv"
                     [customUpload]="true"
+                    [attr.title]="file?.name || fileUploadText"
                     (onSelect)="onSelect($event)"
                 >
                 </p-fileUpload>

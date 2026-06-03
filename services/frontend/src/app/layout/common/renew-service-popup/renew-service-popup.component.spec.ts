@@ -1,5 +1,5 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
-import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { ComponentFixture, fakeAsync, TestBed, tick } from "@angular/core/testing";
 import { TranslateModule } from "@ngx-translate/core";
 import { ClipboardService } from "ngx-clipboard";
 import { of, throwError } from "rxjs";
@@ -158,7 +158,7 @@ describe("RenewServicePopupComponent", () => {
         expect(component.isRenewButtonDisabled).toBe(false);
     });
 
-    it("should handle error when getServiceRenewalDetails fails for digital services", () => {
+    it("should handle error when getServiceRenewalDetails fails for digital services", fakeAsync(() => {
         mockDigitalServicesDataService.getServiceRenewalDetails.and.returnValue(
             throwError(() => new Error("Service error")),
         );
@@ -166,10 +166,13 @@ describe("RenewServicePopupComponent", () => {
         fixture.componentRef.setInput("serviceId", "123");
         fixture.componentRef.setInput("isInventory", false);
 
-        expect(() => fixture.detectChanges()).not.toThrow();
-    });
+        expect(() => {
+            fixture.detectChanges();
+            tick();
+        }).not.toThrow();
+    }));
 
-    it("should handle error when getServiceRenewalDetails fails for inventory", () => {
+    it("should handle error when getServiceRenewalDetails fails for inventory", fakeAsync(() => {
         mockInventoryDataService.getServiceRenewalDetails.and.returnValue(
             throwError(() => new Error("Service error")),
         );
@@ -177,8 +180,11 @@ describe("RenewServicePopupComponent", () => {
         fixture.componentRef.setInput("serviceId", "456");
         fixture.componentRef.setInput("isInventory", true);
 
-        expect(() => fixture.detectChanges()).not.toThrow();
-    });
+        expect(() => {
+            fixture.detectChanges();
+            tick();
+        }).not.toThrow();
+    }));
 
     it("should disable button during renewService call", () => {
         mockDigitalServicesDataService.renewService.and.returnValue(

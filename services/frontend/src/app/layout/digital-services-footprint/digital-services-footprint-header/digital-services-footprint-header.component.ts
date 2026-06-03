@@ -5,6 +5,7 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
+import { AsyncPipe, NgClass } from "@angular/common";
 import {
     Component,
     computed,
@@ -17,14 +18,21 @@ import {
     Output,
 } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { FormsModule } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
-import { TranslateService } from "@ngx-translate/core";
+import { TranslatePipe, TranslateService } from "@ngx-translate/core";
 import { saveAs } from "file-saver";
-import { ConfirmationService, MessageService } from "primeng/api";
+import { ConfirmationService, MessageService, PrimeTemplate } from "primeng/api";
+import { Button } from "primeng/button";
+import { ConfirmPopupModule } from "primeng/confirmpopup";
+import { DrawerModule } from "primeng/drawer";
+import { InplaceModule } from "primeng/inplace";
+import { InputTextModule } from "primeng/inputtext";
+import { ToastModule } from "primeng/toast";
+import { TooltipModule } from "primeng/tooltip";
 import { finalize, lastValueFrom } from "rxjs";
 import { DigitalServiceVersionType } from "src/app/core/interfaces/digital-service-version.interface";
 import { DigitalService } from "src/app/core/interfaces/digital-service.interfaces";
-import { Note } from "src/app/core/interfaces/note.interface";
 import { Organization, Workspace } from "src/app/core/interfaces/user.interfaces";
 import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServiceVersionDataService } from "src/app/core/service/data/digital-service-version-data-service";
@@ -32,11 +40,38 @@ import { DigitalServicesDataService } from "src/app/core/service/data/digital-se
 import { AIFormsStore } from "src/app/core/store/ai-forms.store";
 import { DigitalServiceStoreService } from "src/app/core/store/digital-service.store";
 import { GlobalStoreService } from "src/app/core/store/global.store";
+import { CommonEditorComponent } from "../../common/common-editor/common-editor.component";
+import { PromoteVersionDialogComponent } from "../../common/promote-version-dialog/promote-version-dialog.component";
+import { RenewServicePopupComponent } from "../../common/renew-service-popup/renew-service-popup.component";
+import { DigitalServicesImportComponent } from "../digital-services-import/digital-services-import.component";
+import { LinkCreatePopupComponent } from "./link-create-popup/link-create-popup.component";
+import { VersionTypeTagComponent } from "./version-type-tag/version-type-tag.component";
 
 @Component({
     selector: "app-digital-services-footprint-header",
     templateUrl: "./digital-services-footprint-header.component.html",
     providers: [MessageService, ConfirmationService],
+    standalone: true,
+    imports: [
+        ToastModule,
+        DrawerModule,
+        CommonEditorComponent,
+        PrimeTemplate,
+        DigitalServicesImportComponent,
+        ConfirmPopupModule,
+        Button,
+        NgClass,
+        InplaceModule,
+        FormsModule,
+        InputTextModule,
+        VersionTypeTagComponent,
+        TooltipModule,
+        LinkCreatePopupComponent,
+        PromoteVersionDialogComponent,
+        RenewServicePopupComponent,
+        AsyncPipe,
+        TranslatePipe,
+    ],
 })
 export class DigitalServicesFootprintHeaderComponent implements OnInit {
     protected readonly global = inject(GlobalStoreService);
@@ -196,7 +231,7 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
     noteSaveValue(event: any) {
         this.digitalService.note = {
             content: event,
-        } as Note;
+        };
         this.digitalServicesData.update(this.digitalService).subscribe((res) => {
             this.sidebarVisible = false;
             this.messageService.add({

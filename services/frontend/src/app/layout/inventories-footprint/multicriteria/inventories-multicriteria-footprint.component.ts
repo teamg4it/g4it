@@ -9,7 +9,11 @@ import { Component, Input, Signal, computed, inject, input } from "@angular/core
 import { EChartsOption } from "echarts";
 import { Constants } from "src/constants";
 
+import { FormsModule } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
+import { PrimeTemplate } from "primeng/api";
+import { Button } from "primeng/button";
+import { SelectModule } from "primeng/select";
 import {
     GraphDescriptionContent,
     StatusCountMap,
@@ -34,9 +38,25 @@ import {
 import { FootprintStoreService } from "src/app/core/store/footprint.store";
 import { AbstractDashboard } from "../abstract-dashboard";
 
+import { TranslatePipe } from "@ngx-translate/core";
+import { NgxEchartsDirective } from "ngx-echarts";
+import { StackBarChartComponent } from "../../common/stack-bar-chart/stack-bar-chart.component";
+import { GraphDescriptionComponent } from "../../digital-services-footprint/digital-services-footprint-dashboard/graph-description/graph-description.component";
+
 @Component({
     selector: "app-inventories-multicriteria-footprint",
     templateUrl: "./inventories-multicriteria-footprint.component.html",
+    standalone: true,
+    imports: [
+        Button,
+        SelectModule,
+        FormsModule,
+        PrimeTemplate,
+        StackBarChartComponent,
+        NgxEchartsDirective,
+        GraphDescriptionComponent,
+        TranslatePipe,
+    ],
 })
 export class InventoriesMultiCriteriaFootprintComponent extends AbstractDashboard {
     protected readonly store = inject(FootprintStoreService);
@@ -45,7 +65,7 @@ export class InventoriesMultiCriteriaFootprintComponent extends AbstractDashboar
     private readonly route = inject(ActivatedRoute);
     currentLang: string = this.translate.currentLang;
     criteriakeys = Object.keys(this.translate.translations[this.currentLang]["criteria"]);
-    @Input() footprint: Criterias = {} as Criterias;
+    @Input() footprint: Criterias = {};
     @Input() filterFields: string[] = [];
     @Input() datacenters: Datacenter[] = [];
     @Input() inVirtualEquipments: InVirtualEquipmentRest[] = [];

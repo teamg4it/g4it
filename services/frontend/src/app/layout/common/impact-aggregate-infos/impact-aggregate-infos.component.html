@@ -10,19 +10,17 @@
     </div>
     <div class="text-3xl line-height-2 font-medium my-1 align-items-center">
         <div>
-            <div *ngIf="(displayValue ?? 0) === 0; else valueNotNull">
+            @if (displayValue === 0) {
                 <p class="text-grey text-3xl">--</p>
-            </div>
-            <ng-template #valueNotNull>
-                <div *ngIf="unit === 'Peopleeq'; else elseBlock">
+            } @else {
+                @if (unit === "Peopleeq") {
                     {{ displayValue | integer }}
-                </div>
-                <ng-template #elseBlock>
+                } @else {
                     <div>
                         {{ displayValue | decimals }}
                     </div>
-                </ng-template>
-            </ng-template>
+                }
+            }
         </div>
     </div>
     <p-card>

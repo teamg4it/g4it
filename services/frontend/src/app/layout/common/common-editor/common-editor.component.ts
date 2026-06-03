@@ -7,14 +7,30 @@ import {
     SecurityContext,
     SimpleChanges,
 } from "@angular/core";
+import { FormsModule } from "@angular/forms";
 import { DomSanitizer } from "@angular/platform-browser";
-import { TranslateService } from "@ngx-translate/core";
+import { TranslatePipe, TranslateService } from "@ngx-translate/core";
 import { ConfirmationService, MessageService } from "primeng/api";
+import { Button } from "primeng/button";
+import { ConfirmPopupModule } from "primeng/confirmpopup";
+import { EditorModule } from "primeng/editor";
+import { ToastModule } from "primeng/toast";
+import { AutofocusDirective } from "../../../core/directives/auto-focus.directive";
 
 @Component({
     selector: "app-common-editor",
     templateUrl: "./common-editor.component.html",
     providers: [ConfirmationService, MessageService],
+    standalone: true,
+    imports: [
+        AutofocusDirective,
+        EditorModule,
+        FormsModule,
+        ToastModule,
+        ConfirmPopupModule,
+        Button,
+        TranslatePipe,
+    ],
 })
 export class CommonEditorComponent implements OnChanges {
     @Input() styleClass = "";
@@ -95,7 +111,7 @@ export class CommonEditorComponent implements OnChanges {
             message: this.translate.instant("common.cancelConfirmMsgForEditor"),
             accept: () => {
                 this.editorTextValue = this.editorTextValueUnmodified;
-                this.outClose.emit();
+                this.outClose.emit(false);
             },
             reject: () => {},
         });
@@ -109,7 +125,7 @@ export class CommonEditorComponent implements OnChanges {
             message: this.translate.instant("common.confirmMessageForEditor"),
             accept: () => {
                 this.editorTextValue = "";
-                this.delete.emit();
+                this.delete.emit(false);
             },
             reject: () => {},
         });

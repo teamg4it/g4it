@@ -10,7 +10,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { TranslateModule, TranslatePipe, TranslateService } from "@ngx-translate/core";
 import { MessageService } from "primeng/api";
-import { SidebarModule } from "primeng/sidebar";
+import { DrawerModule } from "primeng/drawer";
 import { TableModule } from "primeng/table";
 import { of } from "rxjs";
 import { DigitalService } from "src/app/core/interfaces/digital-service.interfaces";
@@ -40,12 +40,8 @@ describe("DigitalServicesTerminalsComponent", () => {
         } as DigitalService),
     };
 
-    beforeEach(() => {
-        TestBed.configureTestingModule({
-            declarations: [
-                DigitalServicesTerminalsComponent,
-                DigitalServicesTerminalsSidePanelComponent,
-            ],
+    beforeEach(async () => {
+        await TestBed.configureTestingModule({
             providers: [
                 TranslatePipe,
                 TranslateService,
@@ -59,9 +55,11 @@ describe("DigitalServicesTerminalsComponent", () => {
             imports: [
                 SharedModule,
                 TableModule,
-                SidebarModule,
+                DrawerModule,
                 HttpClientTestingModule,
                 TranslateModule.forRoot(),
+                DigitalServicesTerminalsComponent,
+                DigitalServicesTerminalsSidePanelComponent,
             ],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
         });

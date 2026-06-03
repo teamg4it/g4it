@@ -27,19 +27,19 @@ describe("MultiFileImportComponent", () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [MultiFileImportComponent],
-            imports: [
-                HttpClientTestingModule,
-                RouterTestingModule,
-                FormsModule,
-                SharedModule,
-                TranslateModule.forRoot(),
-            ],
-            providers: [
-                { provide: LoadingDataService, useValue: mockLoadingService },
-                { provide: ActivatedRoute, useValue: mockActivatedRoute },
-            ],
-        }).compileComponents();
+    imports: [
+        HttpClientTestingModule,
+        RouterTestingModule,
+        FormsModule,
+        SharedModule,
+        TranslateModule.forRoot(),
+        MultiFileImportComponent,
+    ],
+    providers: [
+        { provide: LoadingDataService, useValue: mockLoadingService },
+        { provide: ActivatedRoute, useValue: mockActivatedRoute },
+    ],
+}).compileComponents();
 
         fixture = TestBed.createComponent(MultiFileImportComponent);
         component = fixture.componentInstance;

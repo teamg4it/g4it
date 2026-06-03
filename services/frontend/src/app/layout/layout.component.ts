@@ -6,9 +6,12 @@
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
 import { Component } from "@angular/core";
+import { RouterOutlet } from "@angular/router";
 
 @Component({
     selector: "app-layout",
     templateUrl: "./layout.component.html",
+    standalone: true,
+    imports: [RouterOutlet],
 })
 export class LayoutComponent {}

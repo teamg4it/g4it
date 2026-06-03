@@ -6,11 +6,11 @@ describe("BusinessHoursRendererPipe", () => {
     let pipe: BusinessHoursRendererPipe;
     let translateService: TranslateService;
 
-    beforeEach(() => {
-        TestBed.configureTestingModule({
+    beforeEach(async () => {
+        await TestBed.configureTestingModule({
             imports: [TranslateModule.forRoot()],
             providers: [TranslateService, BusinessHoursRendererPipe],
-        });
+        }).compileComponents();
 
         translateService = TestBed.inject(TranslateService);
         pipe = TestBed.inject(BusinessHoursRendererPipe);

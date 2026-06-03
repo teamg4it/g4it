@@ -10,7 +10,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { TranslateModule, TranslatePipe, TranslateService } from "@ngx-translate/core";
 import { MessageService } from "primeng/api";
-import { SidebarModule } from "primeng/sidebar";
+import { DrawerModule } from "primeng/drawer";
 import { TableModule } from "primeng/table";
 import { of } from "rxjs";
 import { DigitalService } from "src/app/core/interfaces/digital-service.interfaces";
@@ -42,29 +42,27 @@ describe("DigitalServicesNetworksComponent", () => {
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            declarations: [
-                DigitalServicesNetworksComponent,
-                DigitalServicesNetworksSidePanelComponent,
-            ],
-            providers: [
-                TranslatePipe,
-                TranslateService,
-                MessageService,
-                UserService,
-                {
-                    provide: DigitalServicesDataService,
-                    useValue: digitalServiceDataMock,
-                },
-            ],
-            imports: [
-                SharedModule,
-                TableModule,
-                SidebarModule,
-                HttpClientTestingModule,
-                TranslateModule.forRoot(),
-            ],
-            schemas: [CUSTOM_ELEMENTS_SCHEMA],
-        });
+    providers: [
+        TranslatePipe,
+        TranslateService,
+        MessageService,
+        UserService,
+        {
+            provide: DigitalServicesDataService,
+            useValue: digitalServiceDataMock,
+        },
+    ],
+    imports: [
+        SharedModule,
+        TableModule,
+        DrawerModule,
+        HttpClientTestingModule,
+        TranslateModule.forRoot(),
+        DigitalServicesNetworksComponent,
+        DigitalServicesNetworksSidePanelComponent,
+    ],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
+});
         fixture = TestBed.createComponent(DigitalServicesNetworksComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();

@@ -5,16 +5,16 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { CommonModule } from "@angular/common";
+
 import { Component, OnInit, ViewChild } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { TranslateModule } from "@ngx-translate/core";
 import { MessageService } from "primeng/api";
 import { ButtonModule } from "primeng/button";
-import { DropdownModule } from "primeng/dropdown";
 import { FileUpload, FileUploadModule } from "primeng/fileupload";
 import { ProgressBarModule } from "primeng/progressbar";
 import { ScrollPanelModule } from "primeng/scrollpanel";
+import { SelectModule } from "primeng/select";
 import {
     CsvImportDataService,
     CsvImportEndpoint,
@@ -24,15 +24,14 @@ import {
     selector: "app-update-reference",
     standalone: true,
     imports: [
-        CommonModule,
-        ButtonModule,
-        FileUploadModule,
-        ProgressBarModule,
-        TranslateModule,
-        DropdownModule,
-        FormsModule,
-        ScrollPanelModule,
-    ],
+    ButtonModule,
+    FileUploadModule,
+    ProgressBarModule,
+    TranslateModule,
+    SelectModule,
+    FormsModule,
+    ScrollPanelModule
+],
     providers: [MessageService],
     templateUrl: "./update-reference.component.html",
 })

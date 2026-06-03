@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute, Router } from "@angular/router";
 import { TranslateModule, TranslateService } from "@ngx-translate/core";
+import { MessageService } from "primeng/api";
 import { of } from "rxjs";
 import { DigitalService } from "src/app/core/interfaces/digital-service.interfaces";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
@@ -81,9 +82,9 @@ describe("ShareDigitalServiceComponent", () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [ShareDigitalServiceComponent],
-            imports: [TranslateModule.forRoot()],
+            imports: [TranslateModule.forRoot(), ShareDigitalServiceComponent],
             providers: [
+                MessageService,
                 { provide: ActivatedRoute, useValue: mockActivatedRoute },
                 {
                     provide: DigitalServicesDataService,

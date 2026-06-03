@@ -6,7 +6,7 @@
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
 import { CommonModule } from "@angular/common";
-import { Component, DestroyRef, inject, OnInit } from "@angular/core";
+import { Component, DestroyRef, inject, OnInit, signal } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { Router, RouterModule } from "@angular/router";
 import { TranslateModule } from "@ngx-translate/core";
@@ -40,7 +40,7 @@ export class WelcomePageComponent implements OnInit {
     currentWorkspace: Workspace = {} as Workspace;
     isAllowedInventory: boolean = false;
     isAllowedDigitalService: boolean = false;
-    isAllowedEcoMindAi: boolean = false;
+    isAllowedEcoMindAi = signal(false);
     isEcoMindEnabledForCurrentOrganization: boolean = false;
     isEcoMindModuleEnabled: boolean = environment.isEcomindEnabled;
 
@@ -80,7 +80,7 @@ export class WelcomePageComponent implements OnInit {
         this.userService.isAllowedEcoMindAiRead$
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe((isAllowed: boolean) => {
-                this.isAllowedEcoMindAi = isAllowed;
+                this.isAllowedEcoMindAi.set(isAllowed);
             });
         this.userService.user$.pipe(take(1)).subscribe((userDetails) => {
             this.userName = userDetails?.firstName + " " + userDetails?.lastName;

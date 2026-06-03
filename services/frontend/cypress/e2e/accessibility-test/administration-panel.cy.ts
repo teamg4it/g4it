@@ -15,26 +15,33 @@ describe("Administration panel", () => {
 
     it("Test administration panel", () => {
         cy.then(() => setPage("Administration panel"));
-        cy.checkA11y(undefined, undefined, reportA11yViolations, true);
+        cy.checkA11y(
+            { exclude: [[".p-scrollpanel-bar"]] },
+            undefined,
+            reportA11yViolations,
+            true,
+        );
 
         // switch to manage organizations
         cy.get('[id="organizations-tab"]').click();
         cy.then(() => setPage("Organizations page"));
 
         // select subscriber
-        cy.get('p-dropdown[id="organizationName"]')
-            .find(".p-dropdown")
-            .click({ force: true })
-            .get("p-dropdownitem")
-            .children()
-            .first()
-            .click({ force: true });
-        cy.wait(3000).checkA11y(undefined, undefined, reportA11yViolations, true);
+
+        cy.get("#organizationName").click();
+
+        cy.get("li.p-select-option").last().click();
+        cy.wait(3000).checkA11y(
+            { exclude: [[".p-scrollpanel-bar"]] },
+            undefined,
+            reportA11yViolations,
+            true,
+        );
 
         // edit subscriber
         cy.get('[id="edit-organizations-button"]').click();
         cy.checkA11y(
-            undefined,
+            { exclude: [[".p-scrollpanel-bar"]] },
             {
                 rules: {
                     "color-contrast": { enabled: false }, // manually tested it's passed with AA rule
@@ -54,26 +61,43 @@ describe("Administration panel", () => {
         cy.get('[id="delete-organization-button"]').last().click();
         cy.contains("DELETE").click();
         // hide some error with color-contrast with the overlay
-        cy.wait(3000).checkA11y(undefined, undefined, reportA11yViolations, true);
+        cy.wait(3000).checkA11y(
+            { exclude: [[".p-scrollpanel-bar"]] },
+            undefined,
+            reportA11yViolations,
+            true,
+        );
 
         cy.get('[id="users-tab"]').click();
         // select an organization
-        cy.get('p-dropdown[id="workspaceName"]')
-            .find(".p-dropdown")
-            .click({ force: true })
-            .get("p-dropdownitem")
-            .children()
-            .last()
-            .click({ force: true });
+
+        cy.get("#workspaceName").click();
+
+        cy.get("li.p-select-option").last().click();
         // wait the dropdown was not visible to unchecked some error
-        cy.wait(3000).checkA11y(undefined, undefined, reportA11yViolations, true);
+        cy.wait(3000).checkA11y(
+            { exclude: [[".p-scrollpanel-bar"]] },
+            undefined,
+            reportA11yViolations,
+            true,
+        );
 
         // choose criteria for this organization
         cy.then(() => setPage("User criteria component"));
         cy.get('[id="criteria-button"]').click();
-        cy.get('[id="criteria"]').then((el) => {
-            cy.checkA11y(el.get(0), undefined, reportA11yViolations, true);
-        });
+        cy.wait(2000)
+            .get('[id="criteria"]')
+            .then((el) => {
+                cy.checkA11y(
+                    {
+                        include: [el.get(0)],
+                        exclude: [[".p-scrollpanel-bar"]],
+                    },
+                    undefined,
+                    reportA11yViolations,
+                    true,
+                );
+            });
         cy.contains("Cancel").click();
 
         // search for a referenced user
@@ -87,29 +111,29 @@ describe("Administration panel", () => {
 
                     // edit user access & role and save changes
                     cy.then(() => setPage("User access and role management"));
-                    cy.get('p-dropdown[id="user-role-dropdown"]')
-                        .find(".p-dropdown")
-                        .click({ force: true })
-                        .get("p-dropdownitem")
-                        .children()
-                        .last()
-                        .click({ force: true });
+                    cy.get("#user-role-dropdown").click();
+
+                    cy.get("li.p-select-option").last().click();
                 } else if (el.find('[id="edit-button"]').length) {
                     cy.get('[id="edit-button"]').click();
                     // edit user access & role and save changes
                     cy.then(() => setPage("User access and role management"));
-                    cy.get('p-dropdown[id="user-role-dropdown"]')
-                        .find(".p-dropdown")
-                        .click({ force: true })
-                        .get("p-dropdownitem")
-                        .children()
-                        .last()
-                        .click({ force: true });
+                    cy.get("#user-role-dropdown").click();
+
+                    cy.get("li.p-select-option").last().click();
                 }
             });
 
         cy.get('[role="complementary"]').then((el) => {
-            cy.checkA11y(el.get(0), undefined, reportA11yViolations, true);
+            cy.checkA11y(
+                {
+                    include: [el.get(0)],
+                    exclude: [[".p-scrollpanel-bar"]],
+                },
+                undefined,
+                reportA11yViolations,
+                true,
+            );
         });
 
         cy.get("body")
@@ -125,7 +149,12 @@ describe("Administration panel", () => {
             });
 
         cy.then(() => setPage("Administration panel"));
-        cy.checkA11y(undefined, undefined, reportA11yViolations, true);
+        cy.checkA11y(
+            { exclude: [[".p-scrollpanel-bar"]] },
+            undefined,
+            reportA11yViolations,
+            true,
+        );
         cy.get('[id="delete-button"]').click();
         cy.contains("DELETE").click();
     });

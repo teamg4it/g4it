@@ -4,7 +4,7 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute, Router } from "@angular/router";
 import { TranslateModule, TranslateService } from "@ngx-translate/core";
 import { ConfirmationService } from "primeng/api";
-import { of } from "rxjs";
+import { of, Subject } from "rxjs";
 import { DigitalServiceVersionResponse } from "src/app/core/interfaces/digital-service-version.interface";
 import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServiceVersionDataService } from "src/app/core/service/data/digital-service-version-data-service";
@@ -17,7 +17,7 @@ describe("DigitalServiceManageVersionTableComponent", () => {
     let fixture: ComponentFixture<DigitalServiceManageVersionTableComponent>;
     let dataServiceSpy: jasmine.SpyObj<DigitalServiceVersionDataService>;
     let digitalServicesDataServiceSpy: jasmine.SpyObj<DigitalServicesDataService>;
-    let userServiceSpy: jasmine.SpyObj<UserService>;
+    let userServiceSpy: any;
     let routerSpy: jasmine.SpyObj<Router>;
     let confirmationServiceSpy: jasmine.SpyObj<ConfirmationService>;
     let globalStoreSpy: jasmine.SpyObj<GlobalStoreService>;
@@ -60,9 +60,9 @@ describe("DigitalServiceManageVersionTableComponent", () => {
             ["deleteVersion"],
         );
 
-        userServiceSpy = jasmine.createSpyObj("UserService", [
-            "isAllowedDigitalServiceWrite$",
-        ]);
+        userServiceSpy = {
+            isAllowedDigitalServiceWrite$: of(true),
+        };
 
         routerSpy = jasmine.createSpyObj("Router", ["navigate"]);
         Object.defineProperty(routerSpy, "url", {
@@ -74,8 +74,21 @@ describe("DigitalServiceManageVersionTableComponent", () => {
 
         globalStoreSpy = jasmine.createSpyObj("GlobalStoreService", ["setLoading"]);
 
-        translateSpy = jasmine.createSpyObj("TranslateService", ["instant"]);
+        translateSpy = jasmine.createSpyObj("TranslateService", ["instant", "get"]);
         translateSpy.instant.and.returnValue("Translated text");
+        translateSpy.get.and.returnValue(of("Translated text"));
+        Object.defineProperty(translateSpy, "onLangChange", {
+            value: new Subject(),
+            writable: true,
+        });
+        Object.defineProperty(translateSpy, "onTranslationChange", {
+            value: new Subject(),
+            writable: true,
+        });
+        Object.defineProperty(translateSpy, "onDefaultLangChange", {
+            value: new Subject(),
+            writable: true,
+        });
 
         activatedRoute = {
             snapshot: {
@@ -92,8 +105,11 @@ describe("DigitalServiceManageVersionTableComponent", () => {
         };
 
         await TestBed.configureTestingModule({
-            declarations: [DigitalServiceManageVersionTableComponent],
-            imports: [TranslateModule.forRoot(), HttpClientTestingModule],
+            imports: [
+                TranslateModule.forRoot(),
+                HttpClientTestingModule,
+                DigitalServiceManageVersionTableComponent,
+            ],
             schemas: [NO_ERRORS_SCHEMA],
             providers: [
                 { provide: DigitalServiceVersionDataService, useValue: dataServiceSpy },

@@ -67,20 +67,21 @@
 
     <ng-template [ngTemplateOutlet]="dataConsistencyRef"></ng-template>
     @if (!showInconsitencyGraph) {
-        <p-dropdown
+        <p-select
             [options]="dimensions"
             [ngModel]="selectedDimension()"
             (ngModelChange)="footprintStore.setApplicationDimension($event)"
             [placeholder]="'inventories-footprint.select-dimension' | translate"
-            styleClass="ml-auto"
         >
             <ng-template pTemplate="selectedItem">
-                <div *ngIf="selectedDimension()">
-                    {{
-                        "inventories-footprint.application-round-button." +
-                            selectedDimension() | translate
-                    }}
-                </div>
+                @if (selectedDimension()) {
+                    <div>
+                        {{
+                            "inventories-footprint.application-round-button." +
+                                selectedDimension() | translate
+                        }}
+                    </div>
+                }
             </ng-template>
             <ng-template let-dimension pTemplate="item">
                 <div>
@@ -90,7 +91,7 @@
                     }}
                 </div>
             </ng-template>
-        </p-dropdown>
+        </p-select>
     }
 </div>
 @if (showInconsitencyGraph) {

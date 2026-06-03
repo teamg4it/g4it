@@ -16,8 +16,15 @@ import {
     SimpleChanges,
 } from "@angular/core";
 
+import { NgClass } from "@angular/common";
+import { FormsModule } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
+import { TranslatePipe } from "@ngx-translate/core";
 import { EChartsOption } from "echarts";
+import { NgxEchartsDirective } from "ngx-echarts";
+import { PrimeTemplate } from "primeng/api";
+import { Button } from "primeng/button";
+import { SelectModule } from "primeng/select";
 import {
     GraphDescriptionContent,
     StatusCountMap,
@@ -38,12 +45,26 @@ import { FootprintService } from "src/app/core/service/business/footprint.servic
 import { FootprintStoreService } from "src/app/core/store/footprint.store";
 import { getLifeCycleList, getLifeCycleMap } from "src/app/core/utils/lifecycle";
 import { Constants } from "src/constants";
+import { StackBarChartComponent } from "../../common/stack-bar-chart/stack-bar-chart.component";
+import { GraphDescriptionComponent } from "../../digital-services-footprint/digital-services-footprint-dashboard/graph-description/graph-description.component";
 import { AbstractDashboard } from "../abstract-dashboard";
 import { InventoriesFootprintComponent } from "../inventories-footprint.component";
 
 @Component({
     selector: "app-inventories-critere-footprint",
     templateUrl: "./inventories-critere-footprint.component.html",
+    standalone: true,
+    imports: [
+        NgClass,
+        Button,
+        SelectModule,
+        FormsModule,
+        PrimeTemplate,
+        StackBarChartComponent,
+        NgxEchartsDirective,
+        GraphDescriptionComponent,
+        TranslatePipe,
+    ],
 })
 export class InventoriesCritereFootprintComponent
     extends AbstractDashboard
@@ -55,7 +76,7 @@ export class InventoriesCritereFootprintComponent
     private readonly router = inject(Router);
     private readonly route = inject(ActivatedRoute);
     sourceList = input<string[]>([]);
-    @Input() footprint: Criterias = {} as Criterias;
+    @Input() footprint: Criterias = {};
     @Input() criteriaFootprint: Criteria = {} as Criteria;
     @Input() filterFields: string[] = [];
     @Input() datacenters: Datacenter[] = [];

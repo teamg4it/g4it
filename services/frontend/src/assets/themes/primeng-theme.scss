@@ -1,4 +1,4 @@
-@import "../../variables.scss";
+@use "../../variables.scss";
 
 :root {
     --surface-a: #ffffff;
@@ -46,6 +46,13 @@
     --highlight-bg: rgba(0, 186, 0, 0.12);
     --highlight-text-color: var(--tertiary-color);
     color-scheme: light;
+    --p-accordion-header-color: #000000de;
+    --p-accordion-header-active-color: #000000de;
+    --p-button-label-font-weight: 700;
+    --p-accordion-content-padding: 1rem 1.5rem;
+    --p-button-label-font-weight: 800;
+    --p-accordion-content-color: #000000de;
+    --p-datatable-sort-icon-size: 13px;
 }
 * {
     box-sizing: border-box;
@@ -72,10 +79,6 @@
 }
 .pi {
     font-size: 1rem;
-}
-.p-icon {
-    width: 1rem;
-    height: 1rem;
 }
 .p-link {
     font-size: 1rem;
@@ -331,6 +334,7 @@ p-autocomplete.p-autocomplete-clearable .p-autocomplete-dd .p-autocomplete-clear
 p-calendar.ng-dirty.ng-invalid > .p-calendar > .p-inputtext {
     border-color: #b00020;
 }
+// datepicker
 .p-datepicker {
     padding: 0.5rem;
     background: #fff;
@@ -340,11 +344,8 @@ p-calendar.ng-dirty.ng-invalid > .p-calendar > .p-inputtext {
 }
 .p-datepicker:not(.p-datepicker-inline) {
     background: #fff;
-    border: 0 none;
-    box-shadow:
-        0 5px 5px -3px rgba(0, 0, 0, 0.2),
-        0 8px 10px 1px rgba(0, 0, 0, 0.14),
-        0 3px 14px 2px rgba(0, 0, 0, 0.12);
+    border: 1px solid rgba(0, 0, 0, 0.38);
+    padding: 0;
 }
 .p-datepicker:not(.p-datepicker-inline) .p-datepicker-header {
     background: #fff;
@@ -359,31 +360,7 @@ p-calendar.ng-dirty.ng-invalid > .p-calendar > .p-inputtext {
     border-top-right-radius: 4px;
     border-top-left-radius: 4px;
 }
-.p-datepicker .p-datepicker-header .p-datepicker-prev,
-.p-datepicker .p-datepicker-header .p-datepicker-next {
-    width: 2.5rem;
-    height: 2.5rem;
-    color: rgba(0, 0, 0, 0.6);
-    border: 0 none;
-    background: transparent;
-    border-radius: 50%;
-    transition:
-        background-color 0.2s,
-        color 0.2s,
-        box-shadow 0.2s;
-}
-.p-datepicker .p-datepicker-header .p-datepicker-prev:enabled:hover,
-.p-datepicker .p-datepicker-header .p-datepicker-next:enabled:hover {
-    color: rgba(0, 0, 0, 0.6);
-    border-color: transparent;
-    background: rgba(0, 0, 0, 0.04);
-}
-.p-datepicker .p-datepicker-header .p-datepicker-prev:focus,
-.p-datepicker .p-datepicker-header .p-datepicker-next:focus {
-    outline: 0 none;
-    outline-offset: 0;
-    box-shadow: none;
-}
+
 .p-datepicker .p-datepicker-header .p-datepicker-title {
     line-height: 2.5rem;
 }
@@ -496,7 +473,7 @@ p-calendar.ng-dirty.ng-invalid > .p-calendar > .p-inputtext {
     transition: none;
     border-radius: 4px;
 }
-.p-datepicker .p-monthpicker .p-monthpicker-month.p-highlight {
+.p-datepicker .p-datepicker-month-view .p-datepicker-month.p-datepicker-month-selected {
     color: var(--tertiary-color);
     background: rgba(0, 186, 0, 0.12);
 }
@@ -508,7 +485,7 @@ p-calendar.ng-dirty.ng-invalid > .p-calendar > .p-inputtext {
     transition: none;
     border-radius: 4px;
 }
-.p-datepicker .p-yearpicker .p-yearpicker-year.p-highlight {
+.p-datepicker .p-datepicker-year-view .p-datepicker-year.p-datepicker-year-selected {
     color: var(--tertiary-color);
     background: rgba(0, 186, 0, 0.12);
 }
@@ -556,6 +533,7 @@ p-calendar.ng-dirty.ng-invalid > .p-calendar > .p-inputtext {
     outline-offset: 0;
     box-shadow: none;
 }
+//
 p-calendar.p-calendar-clearable .p-inputtext {
     padding-right: 3rem;
 }
@@ -724,23 +702,28 @@ p-cascadeselect.p-cascadeselect-clearable .p-cascadeselect-clear-icon {
     width: 14px;
     height: 14px;
 }
-.p-checkbox .p-checkbox-box.p-highlight {
+
+.p-checkbox.p-checkbox-checked .p-checkbox-box {
     border-color: var(--tertiary-color);
     background: var(--tertiary-color);
 }
-.p-checkbox:not(.p-checkbox-disabled) .p-checkbox-box:hover {
+.p-checkbox:not(.p-disabled) .p-checkbox-box:hover {
     border-color: rgba(0, 0, 0, 0.87);
 }
-.p-checkbox:not(.p-checkbox-disabled) .p-checkbox-box.p-focus {
+.p-checkbox:not(.p-disabled) .p-checkbox-box.p-focus {
     outline: 0 none;
     outline-offset: 0;
     box-shadow: none;
     border-color: var(--tertiary-color);
 }
-.p-checkbox:not(.p-checkbox-disabled) .p-checkbox-box.p-highlight:hover {
+.p-checkbox.p-checkbox-checked:not(.p-disabled) .p-checkbox-box:hover {
     border-color: var(--tertiary-color);
     background: var(--tertiary-color);
     color: #fff;
+}
+.p-checkbox:not(.p-disabled):has(.p-checkbox-input:focus-visible) .p-checkbox-box {
+    outline: var(--p-checkbox-focus-ring-width) var(--p-checkbox-focus-ring-style)
+        var(--tertiary-color);
 }
 p-checkbox.ng-dirty.ng-invalid > .p-checkbox > .p-checkbox-box {
     border-color: #b00020;
@@ -748,13 +731,15 @@ p-checkbox.ng-dirty.ng-invalid > .p-checkbox > .p-checkbox-box {
 .p-input-filled .p-checkbox .p-checkbox-box {
     background-color: #f5f5f5;
 }
-.p-input-filled .p-checkbox .p-checkbox-box.p-highlight {
+.p-input-filled .p-checkbox.p-checkbox-checked .p-checkbox-box {
     background: var(--tertiary-color);
 }
 .p-input-filled .p-checkbox:not(.p-checkbox-disabled) .p-checkbox-box:hover {
     background-color: #ececec;
 }
-.p-input-filled .p-checkbox:not(.p-checkbox-disabled) .p-checkbox-box.p-highlight:hover {
+.p-input-filled
+    .p-checkbox.p-checkbox-checked:not(.p-checkbox-disabled)
+    .p-checkbox-box:hover {
     background: var(--tertiary-color);
 }
 .p-checkbox-label {
@@ -821,7 +806,16 @@ p-chips.p-chips-clearable .p-chips-clear-icon {
         0 8px 10px 1px rgba(0, 0, 0, 0.14),
         0 3px 14px 2px rgba(0, 0, 0, 0.12);
 }
-.p-dropdown {
+
+// dropdown
+/* PrimeNG 21 - SelectModule styles */
+/* Replaced:
+   .p-dropdown        -> .p-select
+   .p-dropdown-panel  -> .p-select-overlay
+*/
+
+.p-select {
+    display: flex;
     background: #fff;
     border: 1px solid rgba(0, 0, 0, 0.38);
     transition:
@@ -832,41 +826,58 @@ p-chips.p-chips-clearable .p-chips-clear-icon {
         background-size 0.2s cubic-bezier(0.64, 0.09, 0.08, 1);
     border-radius: 4px;
 }
-.p-dropdown:not(.p-disabled):hover {
+
+.p-select:not(.p-disabled):hover {
     border-color: rgba(0, 0, 0, 0.87);
 }
-.p-dropdown:not(.p-disabled).p-focus {
-    outline: 0 none;
+
+.p-select:not(.p-disabled).p-focus {
+    outline: 2px solid var(--tertiary-color);
     outline-offset: 0;
-    box-shadow: none;
     border-color: var(--tertiary-color);
+    box-shadow: none;
 }
-.p-dropdown.p-dropdown-clearable .p-dropdown-label {
+
+.p-select.p-select-clearable .p-select-label {
     padding-right: 2rem;
 }
-.p-dropdown .p-dropdown-label {
+
+.p-select .p-select-label {
+    padding: 1rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+    color: rgba(0, 0, 0, 0.87);
+    background: #fff;
+    margin: 0;
+    border-top-right-radius: 4px;
+    border-top-left-radius: 4px;
     background: transparent;
     border: 0 none;
 }
-.p-dropdown .p-dropdown-label.p-placeholder {
+
+.p-select .p-select-label.p-placeholder {
     color: rgba(0, 0, 0, 0.6);
 }
-.p-dropdown .p-dropdown-label:enabled:focus {
+
+.p-select .p-select-label:enabled:focus {
     outline: 0 none;
     box-shadow: none;
 }
-.p-dropdown .p-dropdown-trigger {
+
+.p-select .p-select-dropdown {
     background: transparent;
     color: rgba(0, 0, 0, 0.6);
     width: 2.357rem;
     border-top-right-radius: 4px;
     border-bottom-right-radius: 4px;
 }
-.p-dropdown .p-dropdown-clear-icon {
+
+.p-select .p-select-clear-icon {
     color: rgba(0, 0, 0, 0.6);
     right: 2.357rem;
 }
-.p-dropdown-panel {
+
+/* Overlay Panel */
+.p-select-overlay {
     background: #fff;
     color: rgba(0, 0, 0, 0.87);
     border: 0 none;
@@ -876,63 +887,65 @@ p-chips.p-chips-clearable .p-chips-clear-icon {
         0 8px 10px 1px rgba(0, 0, 0, 0.14),
         0 3px 14px 2px rgba(0, 0, 0, 0.12);
 }
-.p-dropdown-panel .p-dropdown-header {
-    padding: 1rem;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
-    color: rgba(0, 0, 0, 0.87);
-    background: #fff;
-    margin: 0;
-    border-top-right-radius: 4px;
-    border-top-left-radius: 4px;
-}
-.p-dropdown-panel .p-dropdown-header .p-dropdown-filter {
+
+.p-select-overlay .p-select-header .p-select-filter {
     padding-right: 2rem;
     margin-right: -2rem;
 }
-.p-dropdown-panel .p-dropdown-header .p-dropdown-filter-icon {
+
+.p-select-overlay .p-select-header .p-select-filter-icon {
     right: 1rem;
     color: rgba(0, 0, 0, 0.6);
 }
-.p-dropdown-panel .p-dropdown-items-wrapper {
+
+.p-select-overlay .p-select-list-container {
     max-height: 400px !important;
 }
-.p-dropdown-panel .p-dropdown-items {
+
+.p-select-overlay .p-select-list {
     padding: 0;
 }
-.p-dropdown-panel .p-dropdown-items .p-dropdown-item {
+
+.p-select-overlay .p-select-option {
     margin: 0;
-    padding: 1rem 1rem;
+    padding: 1rem;
     border: 0 none;
     color: rgba(0, 0, 0, 0.87);
     background: transparent;
     transition: none;
     border-radius: 0;
 }
-.p-dropdown-panel .p-dropdown-items .p-dropdown-item.p-highlight {
+
+.p-select-overlay .p-select-option.p-select-option-selected {
     color: var(--tertiary-color);
     background: rgba(0, 186, 0, 0.12);
 }
-.p-dropdown-panel
-    .p-dropdown-items
-    .p-dropdown-item:not(.p-highlight):not(.p-disabled):hover {
+
+.p-select-overlay .p-select-option:not(.p-select-option-selected):not(.p-disabled):hover {
     color: rgba(0, 0, 0, 0.87);
     background: rgba(0, 0, 0, 0.04);
 }
-.p-dropdown-panel .p-dropdown-items .p-dropdown-empty-message {
-    padding: 1rem 1rem;
+
+.p-select-overlay .p-select-empty-message {
+    padding: 1rem;
     color: rgba(0, 0, 0, 0.87);
     background: transparent;
 }
-.p-dropdown-panel .p-dropdown-items .p-dropdown-item-group {
+
+.p-select-overlay .p-select-option-group {
     margin: 0;
     padding: 1rem;
     color: rgba(0, 0, 0, 0.6);
     background: #fff;
     font-weight: 400;
 }
-p-dropdown.ng-dirty.ng-invalid > .p-dropdown {
+
+/* Angular invalid state */
+p-select.ng-dirty.ng-invalid > .p-select {
     border-color: #b00020;
 }
+
+// input
 .p-input-filled .p-dropdown {
     background: #f5f5f5;
 }
@@ -1258,7 +1271,7 @@ p-inputswitch.ng-dirty.ng-invalid > .p-inputswitch {
 }
 .p-input-icon-left > .p-icon-wrapper.p-icon,
 .p-input-icon-left > i:first-of-type {
-    left: 1rem;
+    left: 2rem;
     color: rgba(0, 0, 0, 0.6);
 }
 .p-input-icon-left > .p-inputtext {
@@ -1583,6 +1596,7 @@ p-password.p-password-clearable.p-password-mask .p-password-clear-icon {
     height: 20px;
 }
 .p-radiobutton .p-radiobutton-box {
+    background-color: transparent;
     border: 2px solid var(--black-color);
     width: 20px;
     height: 20px;
@@ -2013,17 +2027,20 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
     background: rgba(0, 0, 0, 0.16);
     color: rgba(0, 0, 0, 0.6);
 }
-.p-button.p-button-text {
+.p-button.p-button-text,
+.p-confirmpopup-reject-button > .p-button {
     background-color: transparent;
     color: var(--tertiary-color);
     border-color: transparent;
 }
-.p-button.p-button-text:enabled:hover {
+.p-button.p-button-text:enabled:hover,
+.p-confirmpopup-reject-button > .p-button:enabled:hover {
     background: rgba(0, 186, 0, 0.1);
     color: var(--tertiary-color);
     border-color: transparent;
 }
-.p-button.p-button-text:enabled:active {
+.p-button.p-button-text:enabled:active,
+.p-confirmpopup-reject-button > .p-button:enabled:active {
     background: rgba(0, 186, 0, 0.16);
     color: var(--tertiary-color);
     border-color: transparent;
@@ -2044,18 +2061,6 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
 }
 .p-button .p-button-label {
     transition-duration: 0.2s;
-}
-.p-button .p-button-icon-left {
-    margin-right: 0.5rem;
-}
-.p-button .p-button-icon-right {
-    margin-left: 0.5rem;
-}
-.p-button .p-button-icon-bottom {
-    margin-top: 0.5rem;
-}
-.p-button .p-button-icon-top {
-    margin-bottom: 0.5rem;
 }
 .p-button .p-badge {
     margin-left: 0.5rem;
@@ -2989,7 +2994,7 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
     border-width: 0 0 1px 0;
     border-radius: 0;
 }
-.p-datatable .p-paginator-bottom {
+.p-datatable .p-paginator {
     border-width: 0 0 1px 0;
     border-radius: 0 0 6px 6px;
     box-shadow:
@@ -3931,6 +3936,7 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
     padding: 0.5rem 1rem;
     border-radius: 4px;
 }
+
 .p-paginator .p-paginator-first,
 .p-paginator .p-paginator-prev,
 .p-paginator .p-paginator-next,
@@ -3986,21 +3992,27 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
 }
 .p-paginator .p-paginator-pages .p-paginator-page {
     border: 0 none;
+    background: transparent;
     color: var(--grey-text-color);
     min-width: 2rem;
     height: 2rem;
     margin: 0.143rem;
     transition: none;
 }
+
+.p-paginator .p-paginator-pages .p-paginator-page.p-paginator-page-selected {
+    background: var(--light-green-color);
+    color: var(--lightest-gray-color);
+}
+.p-paginator .p-paginator-pages .p-paginator-page:not(.p-paginator-page-selected):hover {
+    background: #0000000a;
+    border-color: transparent;
+    color: #0009;
+}
 .p-paginator .p-paginator-pages .p-paginator-page.p-highlight,
 .p-paginator .p-paginator-element:focus.p-highlight {
-    background: var(--secondary-color);
-    color: var(--black-color);
-}
-.p-paginator .p-paginator-pages .p-paginator-page:not(.p-highlight):hover {
-    background: rgba(0, 0, 0, 0.04);
-    border-color: transparent;
-    color: rgba(0, 0, 0, 0.6);
+    background: var(--tertiary-color);
+    color: var(--lightest-gray-color);
 }
 .p-picklist .p-picklist-buttons {
     padding: 1rem;
@@ -4507,9 +4519,13 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
     font-weight: 400;
     border-radius: 4px;
     transition: none;
+    display: flex;
+    flex-direction: row;
 }
 .p-accordion .p-accordion-header .p-accordion-header-link .p-accordion-toggle-icon {
+    order: -1;
     margin-right: 0.5rem;
+    margin-left: 0;
 }
 .p-accordion .p-accordion-header:not(.p-disabled) .p-accordion-header-link:focus {
     outline: 0 none;
@@ -4917,7 +4933,7 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
     font-weight: 500;
     font-size: 1.25rem;
 }
-.p-dialog .p-dialog-header .p-dialog-header-icon {
+.p-dialog .p-dialog-header .p-dialog-close-button {
     width: 2.5rem;
     height: 2.5rem;
     color: rgba(0, 0, 0, 0.6);
@@ -4930,17 +4946,17 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
         box-shadow 0.2s;
     margin-right: 0.5rem;
 }
-.p-dialog .p-dialog-header .p-dialog-header-icon:enabled:hover {
+.p-dialog .p-dialog-header .p-dialog-close-button:enabled:hover {
     color: rgba(0, 0, 0, 0.6);
     border-color: transparent;
     background: rgba(0, 0, 0, 0.04);
 }
-.p-dialog .p-dialog-header .p-dialog-header-icon:focus {
+.p-dialog .p-dialog-header .p-dialog-close-button:focus {
     outline: 0 none;
     outline-offset: 0;
     box-shadow: none;
 }
-.p-dialog .p-dialog-header .p-dialog-header-icon:last-child {
+.p-dialog .p-dialog-header .p-dialog-close-button:last-child {
     margin-right: 0;
 }
 .p-dialog .p-dialog-content {
@@ -4957,7 +4973,6 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
     background: #fff;
     color: rgba(0, 0, 0, 0.87);
     padding: 1rem 1.5rem;
-    text-align: right;
     border-bottom-right-radius: 4px;
     border-bottom-left-radius: 4px;
 }
@@ -5022,7 +5037,7 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
 .p-overlaypanel.p-overlaypanel-flipped:before {
     border-top-color: #fff;
 }
-.p-sidebar {
+.p-drawer {
     background: var(--light-grey-color);
     color: rgba(0, 0, 0, 0.87);
     border: 0 none;
@@ -5035,8 +5050,7 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
     left: 80px !important;
     background-color: #353836;
 }
-.p-sidebar .p-sidebar-header .p-sidebar-close,
-.p-sidebar .p-sidebar-header .p-sidebar-icon {
+.p-drawer .p-drawer-header .p-drawer-close-button button {
     width: 2.5rem;
     height: 2.5rem;
     color: rgba(0, 0, 0, 0.6);
@@ -5048,6 +5062,11 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
         color 0.2s,
         box-shadow 0.2s;
 }
+
+.p-drawer .p-drawer-header .p-drawer-close-button {
+    margin-left: auto;
+}
+
 .p-sidebar .p-sidebar-header .p-sidebar-close:enabled:hover,
 .p-sidebar .p-sidebar-header .p-sidebar-icon:enabled:hover {
     color: rgba(0, 0, 0, 0.6);
@@ -5613,12 +5632,41 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
     padding-left: 0.5rem;
     padding-right: 0.5rem;
 }
+// menubbar
 .p-menubar {
-    padding: 1rem;
+    margin: 10px 0;
+    padding: 0;
     background: transparent;
     color: rgba(0, 0, 0, 0.87);
-    border: 1px solid #e5e5e5;
-    border-radius: 4px;
+    border: solid rgba(0, 0, 0, 0.12);
+    border-width: 0 0 1px 0;
+}
+
+.p-menubar-item-link {
+    color: #0009;
+}
+
+.p-menubar-item-link-active {
+    color: var(--black-color);
+    border-bottom: 2px solid var(--tertiary-color);
+}
+
+.p-menubar .p-menubar-item.p-focus:not(:has(.p-menubar-item-link-active)),
+.p-menubar .p-menubar-item:not(:has(.p-menubar-item-link-active)):hover {
+    border-bottom: 2px solid var(--tints-black-100);
+
+    .p-menubar-item-link {
+        color: var(--black-color);
+    }
+}
+
+.p-menubar-item:has(.p-menubar-item-link-active) {
+    border-bottom: 0;
+}
+
+.p-menubar-item.p-focus > .p-menubar-item-content,
+.p-menubar-item > .p-menubar-item-content:hover {
+    background: transparent;
 }
 .p-menubar .p-menuitem-link {
     padding: 1rem 1rem;
@@ -7488,7 +7536,13 @@ p-autocomplete.ng-dirty.ng-invalid
 .p-splitbutton.p-button-danger > .p-button.p-button-outlined .p-ink {
     background-color: rgba(211, 47, 47, 0.16);
 }
-.p-calendar-w-btn {
+//
+/* PrimeNG 21 - DatePicker */
+/* Replaced:
+   .p-calendar-w-btn -> .p-datepicker
+*/
+
+.p-datepicker {
     border: 1px solid rgba(0, 0, 0, 0.38);
     background: #fff;
     border-radius: 4px;
@@ -7499,35 +7553,44 @@ p-autocomplete.ng-dirty.ng-invalid
         box-shadow 0.2s,
         background-size 0.2s cubic-bezier(0.64, 0.09, 0.08, 1);
 }
-.p-calendar-w-btn .p-inputtext {
+
+.p-datepicker .p-inputtext {
     background-image: none;
     background-color: transparent;
     border: 0 none;
 }
-.p-calendar-w-btn .p-inputtext:enabled:focus {
+
+.p-datepicker .p-inputtext:enabled:focus {
     box-shadow: none;
 }
-.p-calendar-w-btn .p-datepicker-trigger.p-button {
+
+.p-datepicker .p-datepicker-trigger.p-button {
     background-color: transparent;
     border: 0 none;
 }
-.p-calendar-w-btn .p-datepicker-trigger.p-button span {
+
+.p-datepicker .p-datepicker-trigger.p-button .p-button-icon {
     color: rgba(0, 0, 0, 0.6);
 }
-.p-calendar-w-btn .p-datepicker-trigger.p-button:enabled:hover {
+
+.p-datepicker .p-datepicker-trigger.p-button:enabled:hover {
     background: rgba(0, 0, 0, 0.04);
 }
-.p-calendar-w-btn .p-datepicker-trigger.p-button:enabled:active,
-.p-calendar-w-btn .p-datepicker-trigger.p-button:focus {
+
+.p-datepicker .p-datepicker-trigger.p-button:enabled:active,
+.p-datepicker .p-datepicker-trigger.p-button:focus {
     background: rgba(0, 0, 0, 0.12);
 }
-.p-calendar-w-btn .p-datepicker-trigger.p-button:disabled {
+
+.p-datepicker .p-datepicker-trigger.p-button:disabled {
     background-color: transparent !important;
 }
-.p-calendar-w-btn:not(.p-calendar-disabled):hover {
+
+.p-datepicker:not(.p-disabled):hover {
     border-color: rgba(0, 0, 0, 0.87);
 }
-.p-calendar-w-btn:not(.p-calendar-disabled).p-focus {
+
+.p-datepicker:not(.p-disabled).p-focus {
     border-color: var(--tertiary-color);
     box-shadow:
         inset 0 0 0 1px var(--tertiary-color),
@@ -7535,12 +7598,20 @@ p-autocomplete.ng-dirty.ng-invalid
         inset 0 0 0 1px var(--tertiary-color),
         inset 0 0 0 1px var(--tertiary-color);
 }
-.p-calendar-w-btn.p-calendar-disabled {
+
+.p-datepicker.p-disabled {
     opacity: 0.38;
 }
-.p-calendar-w-btn.p-calendar-disabled .p-inputtext {
+
+.p-datepicker.p-disabled .p-inputtext {
     opacity: 1;
 }
+
+/* Angular invalid state */
+p-datepicker.ng-dirty.ng-invalid > .p-datepicker {
+    border-color: #b00020;
+}
+//
 .p-datepicker .p-datepicker-header {
     border-bottom: 0 none;
 }
@@ -7813,10 +7884,10 @@ p-cascadeselect.ng-dirty.ng-invalid .p-cascadeselect:not(.p-disabled).p-focus {
 .p-checkbox .p-checkbox-box:not(.p-disabled).p-focus {
     border-color: #757575;
 }
-.p-checkbox .p-checkbox-box.p-highlight:not(.p-disabled).p-focus {
+.p-checkbox.p-checkbox-checked .p-checkbox-box:not(.p-disabled).p-focus {
     border-color: var(--tertiary-color);
 }
-.p-checkbox .p-checkbox-box.p-highlight .p-checkbox-icon.pi-check:before {
+.p-checkbox.p-checkbox-checked .p-checkbox-box .p-checkbox-icon.pi-check:before {
     content: "";
     position: absolute;
     top: 6px;
@@ -9113,4 +9184,65 @@ app-impact-button {
 
 .border-bottom-gray {
     border-bottom: 2px solid var(--gray-300);
+}
+
+.p-datepicker .p-datepicker-calendar .p-datepicker-prev-button,
+.p-datepicker .p-datepicker-calendar .p-datepicker-next-button {
+    width: 2.5rem;
+    height: 2.5rem;
+    color: rgba(0, 0, 0, 0.6);
+    border: 0 none;
+    background: transparent;
+    border-radius: 50%;
+    transition:
+        background-color 0.2s,
+        color 0.2s,
+        box-shadow 0.2s;
+}
+.p-datepicker .p-datepicker-calendar .p-datepicker-prev-button:enabled:hover,
+.p-datepicker .p-datepicker-calendar .p-datepicker-next-button:enabled:hover {
+    color: rgba(0, 0, 0, 0.6);
+    border-color: transparent;
+    background: rgba(0, 0, 0, 0.04);
+}
+.p-datepicker .p-datepicker-calendar .p-datepicker-prev-button:focus,
+.p-datepicker .p-datepicker-calendar .p-datepicker-next-button:focus {
+    outline: 0 none;
+    outline-offset: 0;
+    box-shadow: none;
+}
+
+.custom-top-tabs {
+    border: none;
+    background: #f5f5f5;
+    padding: 0;
+}
+
+.custom-top-tabs .p-menubar-root-list {
+    display: flex;
+    gap: 0;
+}
+
+.custom-top-tabs .p-menuitem-link {
+    border-radius: 0;
+    padding: 1rem 1.5rem;
+    background: transparent;
+    border-bottom: 3px solid transparent;
+    color: #4b5563;
+    transition: all 0.2s ease;
+}
+
+.custom-top-tabs .p-menuitem-link:hover {
+    background: transparent;
+    color: #111827;
+}
+
+.custom-top-tabs .p-menuitem.p-highlight .p-menuitem-link {
+    border-bottom: 3px solid #22c55e;
+    color: #111827;
+    font-weight: 500;
+}
+
+.item-impact.p-select .p-select-label-empty {
+    opacity: unset;
 }

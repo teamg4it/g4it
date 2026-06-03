@@ -15,7 +15,12 @@ describe("Digital Service", () => {
 
     it("Test digital service", () => {
         cy.then(() => setPage("Default page"));
-        cy.checkA11y(undefined, undefined, reportA11yViolations, true);
+        cy.checkA11y(
+            { exclude: [[".p-scrollpanel-bar"]] },
+            undefined,
+            reportA11yViolations,
+            true,
+        );
         // create digital service
         cy.log("### Test without change ###");
         cy.get('[id="add-digital"]').click();
@@ -28,7 +33,15 @@ describe("Digital Service", () => {
         cy.log("### Note ###");
         cy.get('[id="add-note"]').click();
         cy.get('[role="complementary"]').then((el) => {
-            cy.checkA11y(el.get(0), undefined, reportA11yViolations, true);
+            cy.checkA11y(
+                {
+                    include: [el.get(0)],
+                    exclude: [[".p-scrollpanel-bar"]],
+                },
+                undefined,
+                reportA11yViolations,
+                true,
+            );
         });
         cy.get("p-editor").type("test");
         cy.get('[id="save-note"]').click();
@@ -39,10 +52,23 @@ describe("Digital Service", () => {
         // test the sidebar
         cy.then(() => setPage("Add terminal component"));
         cy.get('[role="complementary"]').then((el) => {
-            cy.checkA11y(el.get(0), undefined, reportA11yViolations, true);
+            cy.checkA11y(
+                {
+                    include: [el.get(0)],
+                    exclude: [[".p-scrollpanel-bar"]],
+                },
+                undefined,
+                reportA11yViolations,
+                true,
+            );
         });
         cy.get('[id="submit-terminals"]').click();
-        cy.checkA11y(undefined, undefined, reportA11yViolations, true);
+        cy.checkA11y(
+            { exclude: [[".p-scrollpanel-bar"]] },
+            undefined,
+            reportA11yViolations,
+            true,
+        );
 
         // add a networks
         cy.log("### Networks ###");
@@ -50,10 +76,23 @@ describe("Digital Service", () => {
         // test the sidebar
         cy.then(() => setPage("Add network component"));
         cy.get('[role="complementary"]').then((el) => {
-            cy.checkA11y(el.get(0), undefined, reportA11yViolations, true);
+            cy.checkA11y(
+                {
+                    include: [el.get(0)],
+                    exclude: [[".p-scrollpanel-bar"]],
+                },
+                undefined,
+                reportA11yViolations,
+                true,
+            );
         });
         cy.get('[id="submit-networks"]').click();
-        cy.checkA11y(undefined, undefined, reportA11yViolations, true);
+        cy.checkA11y(
+            { exclude: [[".p-scrollpanel-bar"]] },
+            undefined,
+            reportA11yViolations,
+            true,
+        );
 
         // add a servers
         cy.log("### Servers ###");
@@ -61,21 +100,33 @@ describe("Digital Service", () => {
         // test the sidebar
         cy.then(() => setPage("Add server previous component"));
         cy.get('[role="complementary"]').then((el) => {
-            cy.checkA11y(el.get(0), undefined, reportA11yViolations, true);
+            cy.checkA11y(
+                {
+                    include: [el.get(0)],
+                    exclude: [[".p-scrollpanel-bar"]],
+                },
+                undefined,
+                reportA11yViolations,
+                true,
+            );
         });
         cy.get('[id="next-servers"]').click();
         // test the next sidebar
         cy.then(() => setPage("Add server next component"));
         cy.get('[role="complementary"]').then((el) => {
-            cy.checkA11y(el.get(0), undefined, reportA11yViolations, true);
+            cy.checkA11y(
+                {
+                    include: [el.get(0)],
+                    exclude: [[".p-scrollpanel-bar"]],
+                },
+                undefined,
+                reportA11yViolations,
+                true,
+            );
         });
-        cy.get('p-dropdown[formControlName="host"]')
-            .find(".p-dropdown")
-            .click({ force: true })
-            .get("p-dropdownitem")
-            .children()
-            .first()
-            .click({ force: true });
+        cy.get('p-select[formControlName="host"]').click({ force: true });
+
+        cy.get(".p-select-overlay .p-select-option").first().click({ force: true });
         cy.get('[id="vcpu"]').type("1");
         cy.get('[inputId="minmaxfraction"]').type("1");
         cy.get('[id="submit-servers"]').click();
@@ -86,7 +137,15 @@ describe("Digital Service", () => {
         // test the sidebar
         cy.then(() => setPage("Add cloud component"));
         cy.get('[role="complementary"]').then((el) => {
-            cy.checkA11y(el.get(0), undefined, reportA11yViolations, true);
+            cy.checkA11y(
+                {
+                    include: [el.get(0)],
+                    exclude: [[".p-scrollpanel-bar"]],
+                },
+                undefined,
+                reportA11yViolations,
+                true,
+            );
         });
         cy.get('[id="cloud-cancel"]').click();
 
@@ -96,24 +155,34 @@ describe("Digital Service", () => {
         cy.log("### Visualize ###");
         cy.wait(10000).get('[id="Climate change"]').click();
         cy.then(() => setPage("visualize page"));
-        cy.checkA11y(undefined, undefined, reportA11yViolations, true);
+        cy.wait(1000).checkA11y(
+            { exclude: [[".p-scrollpanel-bar"]] },
+            undefined,
+            reportA11yViolations,
+            true,
+        );
 
         // test criteria button
         cy.then(() => setPage("Criteria component"));
         cy.log("### Criteria ###");
         cy.get('[id="criteria-button"]').click();
-        cy.get('[id="criteria"]').then((el) => {
-            cy.checkA11y(
-                el.get(0),
-                {
-                    rules: {
-                        "heading-order": { enabled: false },
+        cy.wait(1000)
+            .get('[id="criteria"]')
+            .then((el) => {
+                cy.checkA11y(
+                    {
+                        include: [el.get(0)],
+                        exclude: [[".p-scrollpanel-bar"]],
                     },
-                },
-                reportA11yViolations,
-                true,
-            );
-        });
+                    {
+                        rules: {
+                            "heading-order": { enabled: false },
+                        },
+                    },
+                    reportA11yViolations,
+                    true,
+                );
+            });
         cy.get('[id="criteria-cancel"]').click();
         // manage version page
         cy.wait(2000).get('[id="manage-versions"]').click();

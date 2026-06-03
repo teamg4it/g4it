@@ -6,10 +6,10 @@ import { TranslateModule, TranslateService } from "@ngx-translate/core";
 import { saveAs } from "file-saver";
 import { MessageService } from "primeng/api";
 import { ButtonModule } from "primeng/button";
-import { DropdownModule } from "primeng/dropdown";
 import { FileUpload, FileUploadModule } from "primeng/fileupload";
 import { ProgressBarModule } from "primeng/progressbar";
 import { ScrollPanelModule } from "primeng/scrollpanel";
+import { SelectModule } from "primeng/select";
 import { finalize } from "rxjs";
 import { WorkspaceWithOrganization } from "src/app/core/interfaces/administration.interfaces";
 import {
@@ -32,7 +32,7 @@ import { SharedModule } from "src/app/core/shared/shared.module";
         FileUploadModule,
         ProgressBarModule,
         TranslateModule,
-        DropdownModule,
+        SelectModule,
         FormsModule,
         ScrollPanelModule,
         SharedModule,

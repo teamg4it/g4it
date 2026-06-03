@@ -1,4 +1,4 @@
-<div class="pt-4">
+<div class="pt-2">
     <h2 for="upload-reference" class="inline m-0">
         {{ "administration.uploadcsv.description" | translate }}
     </h2>
@@ -14,11 +14,12 @@
             class="block font-semibold text-color mb-2 text-base"
             >{{ "administration.uploadcsv.select-endpoint" | translate }}</label
         >
-        <p-dropdown
+        <p-select
             appendTo="body"
             [options]="csvEndpoints"
             optionLabel="apiEndpointName"
             name="endpointDropdown"
+            class="item-impact"
             [(ngModel)]="selectedEndpoint"
             [style]="{ width: '35%' }"
             placeholder="{{
@@ -44,7 +45,7 @@
                     <small class="text-base text-500 font-mono">{{ endpoint.url }}</small>
                 </div>
             </ng-template>
-        </p-dropdown>
+        </p-select>
     </div>
 
     <div class="flex align-items-center gap-2">
@@ -177,18 +178,19 @@
                         <div
                             class="max-h-20rem overflow-y-auto border-bottom-1 border-red-300"
                         >
-                            <div
-                                class="flex align-items-start gap-3 px-4 py-3 border-bottom-1 border-red-200"
-                                *ngFor="let error of uploadErrors; let i = index"
-                            >
-                                <div class="flex-1">
-                                    <div
-                                        class="flex align-items-start gap-2 text-sm line-height-3 text-red-900 font-medium"
-                                    >
-                                        {{ error }}
+                            @for (error of uploadErrors; track error; let i = $index) {
+                                <div
+                                    class="flex align-items-start gap-3 px-4 py-3 border-bottom-1 border-red-200"
+                                >
+                                    <div class="flex-1">
+                                        <div
+                                            class="flex align-items-start gap-2 text-sm line-height-3 text-red-900 font-medium"
+                                        >
+                                            {{ error }}
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            }
                         </div>
                     </div>
                 </div>

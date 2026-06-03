@@ -13,7 +13,7 @@ describe("SuperAdminComponent", () => {
     let superAdminDataServiceMock: jasmine.SpyObj<SuperAdminDataService>;
     let userSubject: Subject<any>;
 
-    beforeEach(() => {
+    beforeEach(async () => {
         userSubject = new Subject();
 
         userServiceMock = jasmine.createSpyObj("UserService", ["user$"]);
@@ -25,7 +25,7 @@ describe("SuperAdminComponent", () => {
             "launchReleaseScript",
         ]);
 
-        TestBed.configureTestingModule({
+        await TestBed.configureTestingModule({
             providers: [
                 SuperAdminComponent,
                 { provide: UserService, useValue: userServiceMock },
@@ -33,7 +33,7 @@ describe("SuperAdminComponent", () => {
                 { provide: TranslateService, useValue: {} },
                 { provide: SuperAdminDataService, useValue: superAdminDataServiceMock },
             ],
-        });
+        }).compileComponents();
 
         component = TestBed.inject(SuperAdminComponent);
     });

@@ -6,13 +6,13 @@ import { RadialChartComponent } from "src/app/layout/digital-services-footprint/
 import { SharedModule } from "./shared.module";
 
 @NgModule({
-    declarations: [RadialChartComponent, PieChartComponent, GraphDescriptionComponent],
     exports: [RadialChartComponent, PieChartComponent, GraphDescriptionComponent],
     imports: [
         SharedModule,
         NgxEchartsModule.forRoot({
             echarts: () => import("echarts"),
         }),
+        RadialChartComponent, PieChartComponent, GraphDescriptionComponent,
     ],
 })
 export class SharedChartsModule {}

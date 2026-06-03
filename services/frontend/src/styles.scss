@@ -1,5 +1,5 @@
-@import "primeflex/primeflex.scss";
-@import "variables";
+@use "primeflex/primeflex.scss";
+@use "variables";
 
 /* General */
 
@@ -75,7 +75,7 @@ p {
 }
 
 main {
-    @include styleclass("py-4 px-5");
+    padding: 1.5rem 2rem;
     background-color: var(--light-grey-color);
     overflow-y: clip;
     height: calc(100vh - 70px);
@@ -131,24 +131,20 @@ main {
     background-color: var(--gray-100);
 }
 
-.bg-lightest-gray-color {
-    background-color: var(--lightest-gray-color);
-}
-
 .bg-black {
     background: var(--black-color);
 }
 .bg-grey {
     background: var(--grey-text-color);
 }
+.bg-lightest-gray-color {
+    background-color: var(--lightest-gray-color);
+}
 .bg-dark-red {
     background: var(--dark-red-color);
 }
 .bg-warning {
     background: var(--warning-color);
-}
-.bg-blue {
-    background: var(--blue-color);
 }
 .border-primary {
     border-color: var(--primary-color);
@@ -191,7 +187,10 @@ main {
 }
 
 .header-button {
-    @include styleclass("uppercase py-3 px-4 letter-spacing-2 mx-2");
+    text-transform: uppercase;
+    padding: 0.75rem 1rem;
+    letter-spacing: 2px;
+    margin: 0 0.5rem;
 }
 
 .footer-calculate-button {
@@ -392,6 +391,7 @@ main {
     outline: 2px solid #28a745;
 }
 
+.p-drawer,
 .p-sidebar {
     z-index: 1300;
 }
@@ -407,7 +407,7 @@ main {
     border: 2px solid white !important;
 }
 
-.p-radiobutton-box.p-focus {
+.p-radiobutton:has(input:focus) .p-radiobutton-box {
     border: none !important;
     background-color: var(--tertiary-color) !important;
 
@@ -431,7 +431,7 @@ main {
 }
 
 .footprint-data-application span {
-    @include styleclass("text-2xl");
+    font-size: 1.5rem;
 }
 
 /* Inventories page */
@@ -444,7 +444,7 @@ main {
 
 .input-loading-files div {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     margin-bottom: 8px;
 }
 
@@ -458,7 +458,7 @@ main {
     padding-top: 0px;
 }
 
-.inventory-list .p-accordion .p-accordion-tab {
+.inventory-list .p-accordion .p-accordionpanel {
     margin-bottom: 20px;
 }
 
@@ -493,18 +493,37 @@ main {
     background: #e2e8f0;
 }
 
-.p-sidebar .p-sidebar-header .p-sidebar-close:focus,
-.p-sidebar .p-sidebar-header .p-sidebar-icon:focus {
+// drawer
+
+.p-drawer-header {
+    padding: 0;
+    background: transparent;
+}
+
+.p-drawer .p-drawer-header .p-drawer-close-button button:enabled:hover {
+    color: #1a1a1a;
+    background: #dcdcdc;
+    border-color: #dcdcdc;
+}
+
+.p-drawer .p-drawer-header .p-drawer-close-button button:enabled:focus {
+    outline: 2px solid black !important;
+    background: transparent;
+}
+
+.p-drawer .p-drawer-header-content .p-drawer-close-button:focus {
     outline: 2px solid black !important;
 }
 
-#settings-sidebar .p-sidebar .p-sidebar-header .p-sidebar-close,
-#settings-sidebar .p-sidebar .p-sidebar-header .p-sidebar-close:enabled:hover {
+#settings-sidebar .p-drawer .p-drawer-header-content .p-drawer-close-button,
+#settings-sidebar
+    .p-drawer
+    .p-drawer-header-content
+    .p-drawer-close-button:enabled:hover {
     color: white;
 }
 
-#settings-sidebar .p-sidebar .p-sidebar-header .p-sidebar-close:focus,
-#settings-sidebar .p-sidebar .p-sidebar-header .p-sidebar-icon:focus {
+#settings-sidebar .p-drawer .p-drawer-header-content .p-drawer-close-button:focus {
     outline: 2px solid white !important;
 }
 
@@ -620,9 +639,36 @@ main {
     font-size: 8px;
 }
 
+.side-data-title {
+    display: flex;
+    margin-bottom: 8px;
+}
+
+.side-data-title span {
+    font-size: 13px;
+    line-height: 22px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    display: inline-block;
+    position: relative;
+    margin-bottom: 14px;
+    padding-top: 10px;
+}
+
+.side-data-title span::after {
+    content: "";
+    position: absolute;
+    bottom: -4px;
+    transform: translateX(-142%);
+    width: 70%;
+    height: 2px;
+    background-color: var(--primary-color);
+}
+
 .rmv-padding-card .p-card-content,
 .rmv-padding-card .p-card-body {
-    @include styleclass("p-0");
+    padding: 0;
 }
 
 .round-button-container {
@@ -804,7 +850,7 @@ main {
     width: 400px;
 }
 
-.label-input-div .p-dropdown-label {
+.label-input-div .p-select-label {
     width: 360px;
 }
 
@@ -816,20 +862,22 @@ main {
 
 /* Previous Next paginator css */
 
-.p-paginator .p-paginator-prev::after {
+.p-paginator .p-paginator-prev:after {
     content: "<-";
     padding: 5px;
+    font-size: 1rem;
 }
 
-.p-paginator .p-paginator-next::after {
+.p-paginator .p-paginator-next:after {
     content: "->";
     padding: 5px;
+    font-size: 1rem;
 }
 
 .p-paginator .p-paginator-first,
 .p-paginator .p-paginator-last,
-.p-paginator .p-paginator-prev .p-paginator-icon,
-.p-paginator .p-paginator-next .p-paginator-icon {
+.p-paginator .p-paginator-prev svg,
+.p-paginator .p-paginator-next svg {
     display: none;
 }
 
@@ -886,7 +934,7 @@ div.label-input-div-medium {
 .p-disabled,
 .p-component:disabled {
     opacity: 1;
-    color: gray !important;
+    color: #525252 !important;
 }
 
 .p-progressbar {
@@ -899,21 +947,40 @@ div.label-input-div-medium {
 
 app-inventories,
 app-inventory-item {
-    .p-accordion .p-accordion-tab .p-accordion-toggle-icon {
+    .p-accordion .p-accordionpanel .p-accordionheader-toggle-icon,
+    .p-accordion .p-accordionpanel svg {
         margin-left: inherit !important;
         transition: transform 0.2s;
         order: 0;
     }
+
+    .p-accordionheader {
+        justify-content: unset;
+    }
+
+    // PrimeNG 21 styles
+    .p-accordion .p-accordion-header .p-accordion-header-link {
+        display: flex;
+        flex-direction: row;
+    }
+
+    .p-accordion .p-accordionheader .p-accordionheader-toggle-icon,
+    .p-accordion .p-accordionheader svg {
+        order: -1 !important;
+        margin-right: 0.5rem !important;
+        margin-left: 0 !important;
+        transition: transform 0.2s;
+    }
 }
-.p-accordion p-accordiontab:first-child .p-accordion-header .p-accordion-header-link {
-    height: 60px;
+.p-accordion p-accordion-panel:first-child .p-accordion-header .p-accordion-header-link {
+    height: 50px;
 }
 
 .p-accordion .p-accordion-tab:not(.p-accordion-tab-active) .p-accordion-toggle-icon {
     transform: rotate(-270deg);
 }
 
-.p-accordion .p-accordion-header:not(.p-disabled) .p-accordion-header-link:focus {
+.p-accordion .p-accordionheader:not(.p-disabled):focus {
     outline: 2px solid black;
 }
 
@@ -921,11 +988,27 @@ app-inventory-item {
     padding: 10px;
 }
 
+.p-accordionpanel {
+    margin: 5px;
+}
+
+// Global styles to ensure toggle icon is on the left for all accordions
+.p-accordion .p-accordion-header .p-accordion-header-link {
+    display: flex !important;
+    flex-direction: row !important;
+}
+
+.p-accordion .p-accordion-header .p-accordion-toggle-icon {
+    order: -1 !important;
+    margin-right: 0.5rem !important;
+    margin-left: 0 !important;
+}
+
 .bg-transparent {
     background-color: transparent !important;
 }
 
-.transparentBackgound .p-accordion p-accordiontab:first-child .p-accordion-content {
+.transparentBackgound .p-accordion p-accordion-panel:first-child .p-accordion-content {
     background-color: transparent;
 }
 
@@ -1045,6 +1128,14 @@ app-inventory-item {
     color: var(--black-color);
     font-weight: 800;
 }
+.multifile-upload.cancel-creation-button .p-fileupload-choose-button {
+    border: none;
+    background-color: #f4f4f4;
+    color: var(--black-color);
+    font-weight: 800;
+    padding: 0.85rem 1rem;
+    text-transform: uppercase;
+}
 .app-workspace {
     .p-button {
         height: 43px;
@@ -1107,12 +1198,26 @@ app-inventory-item {
         }
 
         &:not(.disabled) {
-            .navigation-button:not(.disabled):hover,
-            .request-access-button:not(.disabled):hover {
+            .navigation-button:not(.disabled):hover {
                 color: var(--surface-0);
                 background: var(--blue-color);
             }
         }
+    }
+}
+
+.drawer-lg {
+    width: 60rem;
+}
+
+.drawer-md {
+    width: 40rem;
+}
+
+@media screen and (max-width: 1024px) {
+    .drawer-lg,
+    .drawer-md {
+        width: 20rem;
     }
 }
 
@@ -1215,6 +1320,28 @@ app-useful-information {
     display: none;
 }
 
+/* Fileupload button styling - black by default, green on hover */
+.p-fileupload .p-button.p-fileupload-choose:not(.p-disabled),
+.p-fileupload-choose:not(.p-disabled) {
+    background: var(--black-color) !important;
+    color: white !important;
+    border-color: transparent !important;
+}
+
+.p-fileupload .p-button.p-fileupload-choose:not(.p-disabled):hover,
+.p-fileupload-choose:not(.p-disabled):hover {
+    background: #2e7d32 !important;
+    color: white !important;
+    border-color: transparent !important;
+}
+
+.p-fileupload .p-button.p-fileupload-choose:not(.p-disabled):active,
+.p-fileupload-choose:not(.p-disabled):active {
+    background: #2e7d32 !important;
+    color: white !important;
+    border-color: transparent !important;
+}
+
 .import-digital {
     .finish-btn-padding {
         padding: 14px;
@@ -1280,8 +1407,9 @@ app-useful-information {
 
 .set-view-popup,
 .criteria-popup {
-    .p-dialog .p-dialog-header .p-dialog-header-icon:focus {
+    .p-dialog .p-dialog-header .p-dialog-close-button:focus {
         outline: 2px solid #28a745;
+        background: transparent;
     }
 }
 
@@ -1300,7 +1428,7 @@ app-useful-information {
 }
 
 .manage-version-table {
-    .p-checkbox.p-checkbox-disabled .p-checkbox-box {
+    .p-checkbox.p-disabled .p-checkbox-box {
         background-color: #e0e0e0;
         border-color: #bdbdbd;
         opacity: 0.75;
@@ -1800,4 +1928,128 @@ app-update-workspace-reference {
         border: 1px solid var(--warning-color);
         background: rgba(232, 143, 22, 0.06);
     }
+}
+
+/* =========================================
+   PrimeNG 21 Custom File Upload
+   ========================================= */
+
+.custom-file-upload {
+    width: 240px !important;
+    min-width: 240px !important;
+    max-width: 240px !important;
+
+    display: inline-block;
+}
+
+/* Hide native browser text */
+.custom-file-upload input[type="file"] {
+    display: none !important;
+}
+
+/* Main upload button */
+.custom-file-upload .p-button {
+    width: 240px !important;
+    min-width: 240px !important;
+    max-width: 240px !important;
+
+    height: 48px;
+
+    background: #111713;
+    border: 2px solid #111713;
+    border-radius: 4px;
+
+    color: #ffffff;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0 1rem;
+
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-size: 10px;
+    font-weight: 600;
+
+    overflow: hidden;
+
+    transition:
+        background-color 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease;
+
+    box-shadow: none;
+
+    gap: 12px;
+}
+.custom-file-upload .p-button:not(.p-disabled):hover {
+    background: #00ba00eb;
+    border-color: transparent;
+}
+
+/* Disabled */
+.custom-file-upload .p-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Selected file state */
+.custom-file-upload.has-file .p-button {
+    border-color: #20a84b !important;
+}
+
+/* Upload icon */
+.custom-file-upload .p-button-icon {
+    position: absolute;
+    left: 16px;
+    color: #ffffff !important;
+    font-size: 1rem;
+    flex-shrink: 0;
+    margin-right: 0;
+}
+
+/* Filename / label */
+.custom-file-upload .p-button-label {
+    color: #ffffff !important;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    display: block;
+
+    max-width: 170px;
+    margin-left: 16px;
+}
+
+.p-fileupload-basic-content > span {
+    display: none;
+}
+
+/* Remove default shadows */
+.custom-file-upload .p-button.p-focus {
+    box-shadow: none !important;
+}
+
+app-select-file {
+    .p-select .p-select-label {
+        width: 12rem;
+    }
+}
+
+.p-menu-item:not(.p-disabled) .p-menu-item-content:hover {
+    background: none;
+}
+
+app-base-filter-sidebar,
+.p-drawer {
+    .p-accordionpanel .p-accordionheader,
+    .p-accordioncontent-content {
+        background: transparent;
+    }
+}
+
+p-sorticon {
+    margin-left: 5px;
 }

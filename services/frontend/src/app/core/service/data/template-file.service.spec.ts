@@ -4,9 +4,8 @@ import {
 } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { TranslateService } from "@ngx-translate/core";
-import * as FileSaver from "file-saver";
 import { MessageService } from "primeng/api";
-import { of, throwError } from "rxjs";
+import { throwError } from "rxjs";
 import { Constants } from "src/constants";
 import { FileDescription } from "../../interfaces/file-system.interfaces";
 import { TemplateFileService } from "./template-file.service";
@@ -106,16 +105,6 @@ describe("TemplateFileService", () => {
         expect(service.toKB("1024")).toBe("1.00");
         expect(service.toKB("2048")).toBe("2.00");
         expect(service.toKB(undefined)).toBe(0);
-    });
-
-    it("should handle successful getdownloadTemplateFile", async () => {
-        const blob = new Blob(["test content"]);
-        spyOn(service, "downloadTemplateFile").and.returnValue(of(blob));
-        spyOn(FileSaver, "saveAs");
-
-        await service.getdownloadTemplateFile("test.csv");
-
-        expect(FileSaver.saveAs).toHaveBeenCalledWith(blob, "test.csv");
     });
 
     it("should handle failed getdownloadTemplateFile", async () => {

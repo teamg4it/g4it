@@ -2,6 +2,7 @@
 <div class="flex h-screen w-screen">
     <!-- Skip to Main Content Button -->
     <button
+        #skipButton
         class="hidden-focus-button"
         (click)="focusFirstElement()"
         [attr.aria-label]="'common.skip-to-main-content' | translate"
@@ -16,7 +17,10 @@
     <div class="flex w-full">
         <!-- Sidebar -->
         @if (!isMobile()) {
-            <aside class="left-sidebar hidden lg:block">
+            <aside
+                class="left-sidebar hidden lg:block"
+                [attr.aria-label]="'common.main-navigation' | translate"
+            >
                 <app-left-sidebar />
             </aside>
         }
@@ -26,19 +30,20 @@
         </main>
         @if (spaceSidebarVisible) {
             <!-- Create workspace -->
-            <p-sidebar
+            <p-drawer
                 [(visible)]="spaceSidebarVisible"
                 position="right"
-                styleClass="p-sidebar-lg"
+                styleClass="drawer-lg"
+                appendTo="body"
                 ariaCloseLabel="Close"
                 [fullScreen]="isZoom125()"
             >
-                <ng-template pTemplate="headless">
+                <ng-template #headless>
                     <app-workspace
                         (sidebarVisibleChange)="spaceSidebarVisible = $event"
                     />
                 </ng-template>
-            </p-sidebar>
+            </p-drawer>
         }
     </div>
 </div>

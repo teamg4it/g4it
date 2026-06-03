@@ -46,16 +46,15 @@ describe("CreateDigitalServicesSidebarComponent", () => {
         const translateServiceSpy = jasmine.createSpyObj("TranslateService", ["instant"]);
 
         await TestBed.configureTestingModule({
-            declarations: [CreateDigitalServicesSidebarComponent],
-            imports: [ReactiveFormsModule, TranslateModule.forRoot()],
-            providers: [
-                {
-                    provide: DigitalServiceBusinessService,
-                    useValue: digitalServiceBusinessServiceSpy,
-                },
-                { provide: TranslateService, useValue: translateServiceSpy },
-            ],
-        }).compileComponents();
+    imports: [ReactiveFormsModule, TranslateModule.forRoot(), CreateDigitalServicesSidebarComponent],
+    providers: [
+        {
+            provide: DigitalServiceBusinessService,
+            useValue: digitalServiceBusinessServiceSpy,
+        },
+        { provide: TranslateService, useValue: translateServiceSpy },
+    ],
+}).compileComponents();
 
         fixture = TestBed.createComponent(CreateDigitalServicesSidebarComponent);
         component = fixture.componentInstance;

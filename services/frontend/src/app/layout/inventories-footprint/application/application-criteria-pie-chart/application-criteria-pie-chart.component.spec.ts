@@ -4,33 +4,38 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { TranslateModule, TranslatePipe, TranslateService } from "@ngx-translate/core";
+import { NGX_ECHARTS_CONFIG } from "ngx-echarts";
 import { InventoriesApplicationFootprintComponent } from "../inventories-application-footprint.component";
 import { ApplicationCriteriaPieChartComponent } from "./application-criteria-pie-chart.component";
-import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from "@angular/core";
 
 describe("ApplicationCriteriaPieChartComponent", () => {
     let component: ApplicationCriteriaPieChartComponent;
     let fixture: ComponentFixture<ApplicationCriteriaPieChartComponent>;
-    let inventoryDate: "05-2023";
+    let inventoryDate = "05-2023";
 
-    beforeEach(() => {
-        TestBed.configureTestingModule({
-            declarations: [ApplicationCriteriaPieChartComponent],
+    beforeEach(async () => {
+        await TestBed.configureTestingModule({
             imports: [
                 TranslateModule.forRoot(),
                 RouterTestingModule,
                 HttpClientTestingModule,
+                ApplicationCriteriaPieChartComponent,
             ],
             providers: [
                 TranslatePipe,
                 TranslateService,
                 InventoriesApplicationFootprintComponent,
+                {
+                    provide: NGX_ECHARTS_CONFIG,
+                    useFactory: () => ({ echarts: () => import("echarts") }),
+                },
                 {
                     provide: ActivatedRoute,
                     useValue: {
@@ -43,7 +48,7 @@ describe("ApplicationCriteriaPieChartComponent", () => {
                 },
             ],
             schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
-        });
+        }).compileComponents();
         fixture = TestBed.createComponent(ApplicationCriteriaPieChartComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();

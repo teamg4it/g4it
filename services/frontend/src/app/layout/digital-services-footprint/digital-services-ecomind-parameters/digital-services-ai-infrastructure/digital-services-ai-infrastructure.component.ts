@@ -1,3 +1,4 @@
+import { NgStyle } from "@angular/common";
 import {
     Component,
     computed,
@@ -7,10 +8,13 @@ import {
     OnInit,
     Signal,
 } from "@angular/core";
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
-import { TranslateService } from "@ngx-translate/core";
+import { TranslatePipe, TranslateService } from "@ngx-translate/core";
 import { MessageService } from "primeng/api";
+import { CardModule } from "primeng/card";
+import { InputNumberModule } from "primeng/inputnumber";
+import { SelectModule } from "primeng/select";
 import { lastValueFrom, Subscription, take } from "rxjs";
 import {
     DigitalService,
@@ -25,6 +29,16 @@ import { DigitalServiceStoreService } from "src/app/core/store/digital-service.s
 @Component({
     selector: "app-digital-services-ai-infrastructure",
     templateUrl: "./digital-services-ai-infrastructure.component.html",
+    standalone: true,
+    imports: [
+    CardModule,
+    FormsModule,
+    ReactiveFormsModule,
+    SelectModule,
+    InputNumberModule,
+    NgStyle,
+    TranslatePipe
+],
 })
 export class DigitalServicesAiInfrastructureComponent implements OnInit, OnDestroy {
     infrastructureForm!: FormGroup;

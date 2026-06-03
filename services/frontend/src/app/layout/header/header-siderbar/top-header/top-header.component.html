@@ -41,7 +41,7 @@
                     @if (!item.outsideLink) {
                         <div [ngClass]="isZoomedIn() ? 'p-1' : 'p-2'">
                             <a
-                                class="pl-0 flex align-items-center p-menuitem-link"
+                                class="pl-0 flex align-items-center p-menuitem-link cursor-pointer"
                                 [ngClass]="isZoomedIn() ? 'text-lg py-1' : 'text-2xl'"
                             >
                                 <span
@@ -70,7 +70,7 @@
                     } @else {
                         <div [ngClass]="isZoomedIn() ? 'p-1' : 'p-2'">
                             <div
-                                class="border border-left-1"
+                                class="border border-left-1 cursor-pointer"
                                 [ngClass]="item.borderClass"
                             >
                                 <a
@@ -144,7 +144,7 @@
                 }"
             >
                 <span class="p-input-icon-left pr-2">
-                    <i class="pi pi-search"></i>
+                    <i class="pi pi-search relative left-3rem"></i>
                     <input
                         type="text"
                         pInputText
@@ -182,34 +182,36 @@
                 tabindex="0"
                 #radioGroupContainer
             >
-                <div
-                    *ngFor="let workspace of filteredWorkspaces; let i = index"
-                    class="field-radiobutton"
-                    [attr.data-index]="i"
-                    #radioItem
-                    [attr.data-id]="workspace.id"
-                >
-                    <p-radioButton
-                        [inputId]="'work-' + workspace.id"
-                        name="group1"
-                        [value]="workspace.id.toString()"
-                        [(ngModel)]="modelWorkspace"
-                        (onClick)="selectCompany(workspace)"
-                        [attr.aria-labelledby]="'work-' + workspace.id"
-                    ></p-radioButton>
-
-                    <label
-                        [for]="'work-' + workspace.id"
-                        [id]="'work-' + workspace.id"
-                        class="ml-2"
-                        [attr.aria-label]="
-                            ('common.workspace-name' | translate) + ' ' + workspace.name
-                        "
+                @for (workspace of filteredWorkspaces; track workspace; let i = $index) {
+                    <div
+                        class="field-radiobutton"
+                        [attr.data-index]="i"
+                        #radioItem
+                        [attr.data-id]="workspace.id"
                     >
-                        {{ "common.workspace-name" | translate }}
-                        {{ workspace.name }} ({{ workspace.organization!.name }})
-                    </label>
-                </div>
+                        <p-radiobutton
+                            [inputId]="'work-' + workspace.id"
+                            name="group1"
+                            [value]="workspace.id.toString()"
+                            [(ngModel)]="modelWorkspace"
+                            (onClick)="selectCompany(workspace)"
+                            [attr.aria-labelledby]="'work-' + workspace.id"
+                        ></p-radiobutton>
+                        <label
+                            [for]="'work-' + workspace.id"
+                            [id]="'work-' + workspace.id"
+                            class="ml-2"
+                            [attr.aria-label]="
+                                ('common.workspace-name' | translate) +
+                                ' ' +
+                                workspace.name
+                            "
+                        >
+                            {{ "common.workspace-name" | translate }}
+                            {{ workspace.name }} ({{ workspace.organization!.name }})
+                        </label>
+                    </div>
+                }
             </div>
             <p-button
                 (onClick)="openWorkspaceSidebar(); isOrgMenuVisible = false"
@@ -399,14 +401,14 @@
                     (keydown)="handleKeydownLanguage($event)"
                 >
                     <li class="inline-block">
-                        <p-radioButton
+                        <p-radiobutton
                             name="language"
                             value="en"
                             [(ngModel)]="selectedLanguage"
                             (onClick)="changeLanguage('en')"
                             aria-labelledby="enLabel"
                             inputId="en"
-                        ></p-radioButton>
+                        ></p-radiobutton>
                         <label
                             for="en"
                             id="enLabel"
@@ -417,14 +419,14 @@
                         </label>
                     </li>
                     <li class="inline-block ml-5">
-                        <p-radioButton
+                        <p-radiobutton
                             name="language"
                             value="fr"
                             [(ngModel)]="selectedLanguage"
                             (onClick)="changeLanguage('fr')"
                             aria-labelledby="frLabel"
                             inputId="fr"
-                        ></p-radioButton>
+                        ></p-radiobutton>
                         <label
                             for="fr"
                             id="frLabel"

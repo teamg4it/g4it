@@ -26,174 +26,161 @@
         <h3 class="font-normal text-2xl ml-0 mt-5">
             {{ "welcome-page.modules-access" | translate }}
         </h3>
-        <div class="flex flex-column lg:flex-row">
+        <div class="flex flex-column lg:flex-row align-items-stretch">
             <!-- Inventories -->
-            <p-card
-                class="selection-card-container col md:col-12 lg:col-4"
-                [ngClass]="{
-                    disabled: !(userService.isAllowedInventoryRead$ | async),
-                }"
-                styleClass="selection-card flex h-full flex-column sm:flex-row lg:flex-column xl:flex-row"
-            >
-                <ng-template pTemplate="header">
-                    <div class="py-4 sm:pl-5">
-                        <div class="custom-icon custom-globe-icon"></div>
-                    </div>
-                </ng-template>
-                <div class="p-card-title font-normal line-height-1">
-                    {{ "welcome-page.inventories.title" | translate }}
-                </div>
-                <p class="selection-card-content text-lg mt-3">
-                    {{ "welcome-page.inventories.description" | translate }}
-                </p>
-                <div class="p-card-footer p-0">
-                    <p-button
-                        (onClick)="inventories()"
-                        icon="pi pi-arrow-circle-right"
-                        [styleClass]="
-                            'uppercase inventories-button navigation-button mt-5 white-space-nowrap' +
-                            ((userService.isAllowedInventoryRead$ | async)
-                                ? ''
-                                : ' disabled')
-                        "
-                        iconPos="left"
-                        [label]="
-                            (userService.isAllowedInventoryRead$ | async)
-                                ? ('welcome-page.inventories.button'
-                                  | translate
-                                  | uppercase)
-                                : ('welcome-page.inventories.button-disabled'
-                                  | translate
-                                  | uppercase)
-                        "
-                        [ariaLabel]="
-                            (userService.isAllowedInventoryRead$ | async)
-                                ? ('welcome-page.inventories.button' | translate)
-                                : ('welcome-page.inventories.button-disabled' | translate)
-                        "
-                    ></p-button>
-                </div>
-            </p-card>
-            <!-- Digital Services -->
-            <p-card
-                class="selection-card-container col md:col-12 lg:col-4"
-                [ngClass]="{
-                    disabled: !(userService.isAllowedDigitalServiceRead$ | async),
-                }"
-                styleClass="selection-card flex h-full flex-column sm:flex-row lg:flex-column xl:flex-row"
-            >
-                <ng-template pTemplate="header">
-                    <div class="py-4 sm:pl-5">
-                        <div class="custom-icon custom-at-symbol-icon"></div>
-                    </div>
-                </ng-template>
-                <div class="p-card-title font-normal line-height-1">
-                    {{ "welcome-page.digital-service.title" | translate }}
-                </div>
-                <p class="selection-card-content text-lg mt-3">
-                    {{ "welcome-page.digital-service.description" | translate }}
-                </p>
-                <div class="p-card-footer p-0">
-                    <p-button
-                        (onClick)="digitalServices()"
-                        icon="pi pi-arrow-circle-right"
-                        [styleClass]="
-                            'uppercase digital-service-button navigation-button mt-5 white-space-nowrap' +
-                            ((userService.isAllowedDigitalServiceRead$ | async)
-                                ? ''
-                                : ' disabled')
-                        "
-                        iconPos="left"
-                        [label]="
-                            (userService.isAllowedDigitalServiceRead$ | async)
-                                ? ('welcome-page.digital-service.button'
-                                  | translate
-                                  | uppercase)
-                                : ('welcome-page.digital-service.button-disabled'
-                                  | translate
-                                  | uppercase)
-                        "
-                        [ariaLabel]="
-                            (userService.isAllowedDigitalServiceRead$ | async)
-                                ? ('welcome-page.digital-service.button' | translate)
-                                : ('welcome-page.digital-service.button-disabled'
-                                  | translate)
-                        "
-                    ></p-button>
-                </div>
-            </p-card>
-            <!-- EcoMinAi -->
-
-            <p-card
-                class="selection-card-container col md:col-12 lg:col-4"
-                styleClass="selection-card flex h-full flex-column sm:flex-row lg:flex-column xl:flex-row"
-            >
-                <ng-template pTemplate="header">
-                    <div class="relative">
-                        <div class="w-4 absolute badge-div">
-                            <span
-                                class="beta-badge flex text-xs font-semibold border-round-sm gap-1 justify-content-center align-items-center p-1"
-                                ><i class="pi pi-sparkles text-xs p-0"></i>
-                                {{ "welcome-page.eco-mind-ai.beta" | translate }}
-                            </span>
-                        </div>
+            <div class="col-12 lg:col-4 flex">
+                <p-card
+                    class="selection-card-container w-full"
+                    [ngClass]="{
+                        disabled: !(userService.isAllowedInventoryRead$ | async),
+                    }"
+                    styleClass="selection-card flex h-full flex-column sm:flex-row lg:flex-column xl:flex-row"
+                >
+                    <ng-template pTemplate="header">
                         <div class="py-4 sm:pl-5">
-                            <div
-                                class="custom-icon custom-ecomind-icon custom-at-ecomind-icon"
-                            ></div>
+                            <div class="custom-icon custom-globe-icon"></div>
                         </div>
+                    </ng-template>
+                    <div class="p-card-title font-normal line-height-1">
+                        {{ "welcome-page.inventories.title" | translate }}
                     </div>
-                </ng-template>
-                <div class="p-card-title font-normal line-height-1">
-                    {{ "welcome-page.eco-mind-ai.title" | translate }}
-                </div>
-                <p class="selection-card-content text-lg mt-3">
-                    {{ "welcome-page.eco-mind-ai.description" | translate }}
-                </p>
-                <div class="p-card-footer p-0">
-                    @if (
-                        (userService.isAllowedEcoMindAiRead$ | async) &&
-                        isEcoMindEnabledForCurrentOrganization &&
-                        isEcoMindModuleEnabled
-                    ) {
+                    <p class="selection-card-content text-lg mt-3">
+                        {{ "welcome-page.inventories.description" | translate }}
+                    </p>
+                    <div class="p-card-footer p-0">
                         <p-button
-                            (onClick)="ecoMindAi()"
+                            (onClick)="inventories()"
+                            icon="pi pi-arrow-circle-right"
+                            [styleClass]="
+                                'uppercase inventories-button navigation-button mt-5 white-space-nowrap' +
+                                ((userService.isAllowedInventoryRead$ | async)
+                                    ? ''
+                                    : ' disabled')
+                            "
+                            iconPos="left"
+                            [label]="
+                                (userService.isAllowedInventoryRead$ | async)
+                                    ? ('welcome-page.inventories.button'
+                                      | translate
+                                      | uppercase)
+                                    : ('welcome-page.inventories.button-disabled'
+                                      | translate
+                                      | uppercase)
+                            "
+                            [ariaLabel]="
+                                (userService.isAllowedInventoryRead$ | async)
+                                    ? ('welcome-page.inventories.button' | translate)
+                                    : ('welcome-page.inventories.button-disabled'
+                                      | translate)
+                            "
+                        ></p-button>
+                    </div>
+                </p-card>
+            </div>
+            <!-- Digital Services -->
+            <div class="col-12 lg:col-4 flex">
+                <p-card
+                    class="selection-card-container w-full"
+                    [ngClass]="{
+                        disabled: !(userService.isAllowedDigitalServiceRead$ | async),
+                    }"
+                    styleClass="selection-card flex h-full flex-column sm:flex-row lg:flex-column xl:flex-row"
+                >
+                    <ng-template pTemplate="header">
+                        <div class="py-4 sm:pl-5">
+                            <div class="custom-icon custom-at-symbol-icon"></div>
+                        </div>
+                    </ng-template>
+                    <div class="p-card-title font-normal line-height-1">
+                        {{ "welcome-page.digital-service.title" | translate }}
+                    </div>
+                    <p class="selection-card-content text-lg mt-3">
+                        {{ "welcome-page.digital-service.description" | translate }}
+                    </p>
+                    <div class="p-card-footer p-0">
+                        <p-button
+                            (onClick)="digitalServices()"
+                            icon="pi pi-arrow-circle-right"
+                            [styleClass]="
+                                'uppercase digital-service-button navigation-button mt-5 white-space-nowrap' +
+                                ((userService.isAllowedDigitalServiceRead$ | async)
+                                    ? ''
+                                    : ' disabled')
+                            "
+                            iconPos="left"
+                            [label]="
+                                (userService.isAllowedDigitalServiceRead$ | async)
+                                    ? ('welcome-page.digital-service.button'
+                                      | translate
+                                      | uppercase)
+                                    : ('welcome-page.digital-service.button-disabled'
+                                      | translate
+                                      | uppercase)
+                            "
+                            [ariaLabel]="
+                                (userService.isAllowedDigitalServiceRead$ | async)
+                                    ? ('welcome-page.digital-service.button' | translate)
+                                    : ('welcome-page.digital-service.button-disabled'
+                                      | translate)
+                            "
+                        ></p-button>
+                    </div>
+                </p-card>
+            </div>
+            <!-- EcoMinAi -->
+            <div class="col-12 lg:col-4 flex">
+                <p-card
+                    class="selection-card-container w-full"
+                    styleClass="selection-card flex h-full flex-column sm:flex-row lg:flex-column xl:flex-row"
+                >
+                    <ng-template pTemplate="header">
+                        <div class="relative">
+                            <div class="w-4 absolute badge-div">
+                                <span
+                                    class="beta-badge flex text-xs font-semibold border-round-sm gap-1 justify-content-center align-items-center p-1"
+                                    ><i class="pi pi-sparkles text-xs p-0"></i>
+                                    {{ "welcome-page.eco-mind-ai.beta" | translate }}
+                                </span>
+                            </div>
+                            <div class="py-4 sm:pl-5">
+                                <div
+                                    class="custom-icon custom-ecomind-icon custom-at-ecomind-icon"
+                                ></div>
+                            </div>
+                        </div>
+                    </ng-template>
+                    <div class="p-card-title font-normal line-height-1">
+                        {{ "welcome-page.eco-mind-ai.title" | translate }}
+                    </div>
+                    <p class="selection-card-content text-lg mt-3">
+                        {{ "welcome-page.eco-mind-ai.description" | translate }}
+                    </p>
+                    <div class="p-card-footer p-0">
+                        <p-button
+                            (onClick)="
+                                isAllowedEcoMindAi()
+                                    ? ecoMindAi()
+                                    : requestAccessOfEcoMindAi()
+                            "
                             icon="pi pi-arrow-circle-right"
                             iconPos="left"
                             [styleClass]="
-                                'uppercase digital-service-button navigation-button mt-5 white-space-nowrap'
+                                isAllowedEcoMindAi()
+                                    ? 'uppercase digital-service-button navigation-button mt-5 white-space-nowrap'
+                                    : 'cancel-creation-button request-access-button uppercase mt-5 white-space-nowrap'
                             "
                             [label]="
-                                'welcome-page.eco-mind-ai.go-to-service-button'
+                                (isAllowedEcoMindAi()
+                                    ? 'welcome-page.eco-mind-ai.go-to-service-button'
+                                    : 'welcome-page.eco-mind-ai.request-access-button'
+                                )
                                     | translate
                                     | uppercase
                             "
-                            [ariaLabel]="
-                                'welcome-page.eco-mind-ai.go-to-service-button'
-                                    | translate
-                            "
                         ></p-button>
-                    } @else {
-                        <p-button
-                            (onClick)="requestAccessOfEcoMindAi()"
-                            icon="pi pi-arrow-circle-right"
-                            iconPos="left"
-                            [styleClass]="
-                                'cancel-creation-button request-access-button uppercase mt-5 white-space-nowrap'
-                            "
-                            [label]="
-                                'welcome-page.eco-mind-ai.request-access-button'
-                                    | translate
-                                    | uppercase
-                            "
-                            [ariaLabel]="
-                                'welcome-page.eco-mind-ai.request-access-button'
-                                    | translate
-                            "
-                        ></p-button>
-                    }
-                </div>
-            </p-card>
+                    </div>
+                </p-card>
+            </div>
         </div>
         <!-- Footer -->
         <footer>
@@ -259,22 +246,24 @@
                             {{ "common.help-center" | translate }}</span
                         >
 
-                        <div *ngFor="let linkObj of externalLinks" class="p-1 relative">
-                            <div class="border border-left-1 border-light-grey-color">
-                                <a
-                                    [href]="linkObj.href"
-                                    target="_blank"
-                                    role="link"
-                                    class="ml-2 py-1 pl-0 flex align-items-center p-menuitem-link text-base white-space-nowrap"
-                                    tabindex="0"
-                                >
-                                    <span class="mr-3"
-                                        ><u>{{ linkObj.label | translate }}</u></span
+                        @for (linkObj of externalLinks; track linkObj) {
+                            <div class="p-1 relative">
+                                <div class="border border-left-1 border-light-grey-color">
+                                    <a
+                                        [href]="linkObj.href"
+                                        target="_blank"
+                                        role="link"
+                                        class="ml-2 py-1 pl-0 flex align-items-center p-menuitem-link text-base white-space-nowrap"
+                                        tabindex="0"
                                     >
-                                    <span [class]="linkObj.iconClass"></span>
-                                </a>
+                                        <span class="mr-3"
+                                            ><u>{{ linkObj.label | translate }}</u></span
+                                        >
+                                        <span [class]="linkObj.iconClass"></span>
+                                    </a>
+                                </div>
                             </div>
-                        </div>
+                        }
                     </div>
                 </div>
             </div>

@@ -9,13 +9,29 @@ import { Component, computed, inject, ViewChild } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { UserService } from "src/app/core/service/business/user.service";
 
+import { AsyncPipe } from "@angular/common";
+import { TranslatePipe } from "@ngx-translate/core";
+import { Button } from "primeng/button";
+import { DrawerModule } from "primeng/drawer";
 import { DigitalServiceBusinessService } from "src/app/core/service/business/digital-services.service";
 import { DigitalServiceStoreService } from "src/app/core/store/digital-service.store";
+import { AutofocusDirective } from "../../../../../core/directives/auto-focus.directive";
+import { DigitalServiceTableComponent } from "../../../../common/digital-service-table/digital-service-table.component";
 import { PanelAddVmComponent } from "../add-vm/add-vm.component";
 
 @Component({
     selector: "app-panel-list-vm",
     templateUrl: "./list-vm.component.html",
+    standalone: true,
+    imports: [
+        AutofocusDirective,
+        DigitalServiceTableComponent,
+        Button,
+        DrawerModule,
+        PanelAddVmComponent,
+        AsyncPipe,
+        TranslatePipe,
+    ],
 })
 export class PanelListVmComponent {
     @ViewChild("vmSidePanel", { static: false })

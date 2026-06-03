@@ -15,12 +15,11 @@ describe("PromoteVersionDialogComponent", () => {
         ]);
 
         await TestBed.configureTestingModule({
-            declarations: [PromoteVersionDialogComponent],
-            providers: [
-                { provide: DigitalServiceVersionDataService, useValue: serviceSpy },
-            ],
-            imports: [TranslateModule.forRoot()],
-        }).compileComponents();
+    providers: [
+        { provide: DigitalServiceVersionDataService, useValue: serviceSpy },
+    ],
+    imports: [TranslateModule.forRoot(), PromoteVersionDialogComponent],
+}).compileComponents();
 
         fixture = TestBed.createComponent(PromoteVersionDialogComponent);
         component = fixture.componentInstance;

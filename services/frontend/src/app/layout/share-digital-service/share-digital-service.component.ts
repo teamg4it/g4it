@@ -1,16 +1,31 @@
 import { Component, inject, OnInit, signal } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
-import { TranslateService } from "@ngx-translate/core";
+import { FormsModule } from "@angular/forms";
+import { ActivatedRoute, Router, RouterOutlet } from "@angular/router";
+import { TranslatePipe, TranslateService } from "@ngx-translate/core";
 import { MenuItem } from "primeng/api";
+import { MenubarModule } from "primeng/menubar";
+import { ScrollPanelModule } from "primeng/scrollpanel";
+import { SelectModule } from "primeng/select";
 import { firstValueFrom, lastValueFrom } from "rxjs";
 import { DigitalService } from "src/app/core/interfaces/digital-service.interfaces";
 import { MapString } from "src/app/core/interfaces/generic.interfaces";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
 import { ShareDigitalServiceDataService } from "src/app/core/service/data/share-digital-service-data.service";
 import { DigitalServiceStoreService } from "src/app/core/store/digital-service.store";
+import { DigitalServicesFootprintHeaderComponent } from "../digital-services-footprint/digital-services-footprint-header/digital-services-footprint-header.component";
 @Component({
     selector: "app-share-digital-service",
     templateUrl: "./share-digital-service.component.html",
+    standalone: true,
+    imports: [
+        DigitalServicesFootprintHeaderComponent,
+        ScrollPanelModule,
+        MenubarModule,
+        SelectModule,
+        FormsModule,
+        RouterOutlet,
+        TranslatePipe,
+    ],
 })
 export class ShareDigitalServiceComponent implements OnInit {
     private readonly route = inject(ActivatedRoute);

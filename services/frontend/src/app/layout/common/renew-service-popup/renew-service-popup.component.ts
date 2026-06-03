@@ -1,4 +1,3 @@
-import { CommonModule } from "@angular/common";
 import {
     Component,
     DestroyRef,
@@ -29,7 +28,6 @@ import { SharedModule } from "src/app/core/shared/shared.module";
     templateUrl: "./renew-service-popup.component.html",
     standalone: true,
     imports: [
-        CommonModule,
         FormsModule,
         TranslateModule,
         ClipboardModule,
@@ -63,11 +61,14 @@ export class RenewServicePopupComponent implements OnInit {
                 ? this.inventoryDataService.getServiceRenewalDetails(this.serviceId())
                 : this.digitalServicesData.getServiceRenewalDetails(this.serviceId());
 
-            serviceRenewalDetails$
-                .pipe(takeUntilDestroyed(this.destroyRef))
-                .subscribe((res) => {
+            serviceRenewalDetails$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+                next: (res) => {
                     this.renewServiceParams = res;
-                });
+                },
+                error: (error) => {
+                    console.error("Error fetching service renewal details:", error);
+                },
+            });
         }
     }
 
@@ -87,12 +88,16 @@ export class RenewServicePopupComponent implements OnInit {
                 ? this.inventoryDataService.renewService(payload, this.serviceId())
                 : this.digitalServicesData.renewService(payload, this.serviceId());
 
-            renewService$
-                .pipe(takeUntilDestroyed(this.destroyRef))
-                .subscribe((res: RenewServiceUpdateResp) => {
+            renewService$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+                next: (res: RenewServiceUpdateResp) => {
                     this.isExtended = res.isRenewed;
                     this.outExtended.emit(true);
-                });
+                },
+                error: (error) => {
+                    console.error("Error renewing service:", error);
+                    this.isRenewButtonDisabled = false;
+                },
+            });
         }
     }
 

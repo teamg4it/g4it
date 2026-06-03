@@ -2,6 +2,7 @@ import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
 import { TranslateModule } from "@ngx-translate/core";
+import { NGX_ECHARTS_CONFIG } from "ngx-echarts";
 import { DecimalsPipe } from "src/app/core/pipes/decimal.pipe";
 import { IntegerPipe } from "src/app/core/pipes/integer.pipe";
 import { FilterService } from "src/app/core/service/business/filter.service";
@@ -42,8 +43,11 @@ describe("ApplicationCriteriaFootprintComponent", () => {
         };
 
         await TestBed.configureTestingModule({
-            declarations: [ApplicationCriteriaFootprintComponent],
-            imports: [HttpClientTestingModule, TranslateModule.forRoot()],
+            imports: [
+                HttpClientTestingModule,
+                TranslateModule.forRoot(),
+                ApplicationCriteriaFootprintComponent,
+            ],
             providers: [
                 {
                     provide: InventoriesApplicationFootprintComponent,
@@ -60,6 +64,10 @@ describe("ApplicationCriteriaFootprintComponent", () => {
                 {
                     provide: ActivatedRoute,
                     useValue: { snapshot: { paramMap: { get: () => "1" } } },
+                },
+                {
+                    provide: NGX_ECHARTS_CONFIG,
+                    useFactory: () => ({ echarts: () => import("echarts") }),
                 },
             ],
         }).compileComponents();

@@ -5,10 +5,10 @@
     </h1>
     <!-- Side Panel -->
     @if (sidebarType === "FILE" && sidebarVisible) {
-        <p-sidebar
+        <p-drawer
             [(visible)]="sidebarVisible"
             position="right"
-            styleClass="p-sidebar-md"
+            styleClass="drawer-md"
             (onHide)="filePanel.close()"
             ariaCloseLabel="Close"
         >
@@ -23,13 +23,13 @@
                 (sidebarVisibleChange)="sidebarVisible = $event"
                 (reloadInventoriesAndLoop)="reloadInventoriesAndLoop($event)"
             ></app-file-panel>
-        </p-sidebar>
+        </p-drawer>
     }
     @if (sidebarType === "NOTE" && sidebarVisible) {
-        <p-sidebar
+        <p-drawer
             [(visible)]="sidebarVisible"
             position="right"
-            styleClass="p-sidebar-md w-7"
+            styleClass=" w-7"
             (onHide)="sidebarVisible = false"
             ariaCloseLabel="Close"
         >
@@ -43,133 +43,193 @@
                 styleClass="mx-7"
             >
             </app-common-editor>
-        </p-sidebar>
+        </p-drawer>
     }
-    <p-button
-        *ngIf="userService.isAllowedInventoryWrite$ | async"
-        styleClass="black-button"
-        (onClick)="
-            name = ''; sidebarPurpose = 'new'; sidebarType = 'FILE'; sidebarVisible = true
-        "
-        id="new-inventory"
-        >{{ "inventories.add" | translate }}</p-button
-    >
+    @if (userService.isAllowedInventoryWrite$ | async) {
+        <p-button
+            styleClass="black-button"
+            (onClick)="
+                name = '';
+                sidebarPurpose = 'new';
+                sidebarType = 'FILE';
+                sidebarVisible = true
+            "
+            id="new-inventory"
+            >{{ "inventories.add" | translate }}</p-button
+        >
+    }
 </div>
 <p-scrollPanel [style]="{ width: '100%', height: '95%' }" tabindex="-1">
+    <!-- ================= INFORMATION SYSTEM ================= -->
     <p-accordion
         class="transparentBackgound"
-        [multiple]="true"
+        [value]="inventoryBlocksOpen.has('INFORMATION_SYSTEM') ? '0' : ''"
         (onOpen)="openTab($event, 'INFORMATION_SYSTEM')"
         (onClose)="closeTab($event, 'INFORMATION_SYSTEM')"
     >
-        <p-accordionTab
-            [header]="'inventories.headerForIS' | translate"
-            headerStyleClass="font-bold bg-transparent"
-            tabStyleClass="shadow-none"
-            [selected]="inventoryBlocksOpen.has('INFORMATION_SYSTEM')"
-            id="is-accordion"
-        >
-            <p-accordion
-                [multiple]="true"
-                class="inventory-list"
-                [style]="{ 'max-height': '60vh', 'overflow-y': 'auto' }"
+        <p-accordion-panel value="0">
+            <p-accordion-header
+                [pt]="{
+                    root: {
+                        class: 'bg-transparent border-none',
+                    },
+                }"
             >
-                <div *ngFor="let inventory of inventories.get('INFORMATION_SYSTEM')">
-                    <app-inventory-item
-                        [inventory]="inventory"
-                        (reloadInventoriesAndLoop)="reloadInventoriesAndLoop($event)"
-                        (reloadInventoryAndLoop)="reloadInventoryAndLoop($event)"
-                        (openSidebarForUploadInventory)="
-                            openSidebarForUploadInventory($event)
-                        "
-                        (openSidebarForNote)="openSidebarForNote($event)"
-                        (saveInventory)="
-                            handleSaveInventory($event, 'INFORMATION_SYSTEM')
-                        "
-                        (openTab)="childOpenTab($event)"
-                        (closeTab)="childCloseTab($event)"
-                        [open]="inventoriesOpen.has(inventory.id)"
-                        (renewInventoryId)="
-                            renewInventoryId = $event; inventoryRenewServicePopup = true
-                        "
+                <h2 class="text-lg m-0 font-semibold line-height-2">
+                    {{ "inventories.headerForIS" | translate }}
+                </h2>
+            </p-accordion-header>
+
+            <p-accordion-content
+                [pt]="{
+                    root: {
+                        class: 'bg-transparent border-none',
+                    },
+                    content: {
+                        class: 'bg-transparent',
+                    },
+                }"
+                class="overflow-y-auto"
+                style="max-height: 60vh"
+            >
+                <div class="inventory-list mx-3">
+                    <!-- CHILD ACCORDION -->
+                    <p-accordion
+                        [multiple]="true"
+                        [value]="array.from(inventoriesOpen, String)"
+                        (onClose)="childCloseTab($event)"
+                        (onOpen)="childOpenTab($event)"
                     >
-                    </app-inventory-item>
+                        @for (
+                            inventory of inventories.get("INFORMATION_SYSTEM");
+                            track inventory.id
+                        ) {
+                            <app-inventory-item
+                                [inventory]="inventory"
+                                (reloadInventoriesAndLoop)="
+                                    reloadInventoriesAndLoop($event)
+                                "
+                                (reloadInventoryAndLoop)="reloadInventoryAndLoop($event)"
+                                (openSidebarForUploadInventory)="
+                                    openSidebarForUploadInventory($event)
+                                "
+                                (openSidebarForNote)="openSidebarForNote($event)"
+                                (saveInventory)="
+                                    handleSaveInventory($event, 'INFORMATION_SYSTEM')
+                                "
+                                (openTab)="childOpenTab($event)"
+                                (closeTab)="childCloseTab($event)"
+                                [open]="inventoriesOpen.has(inventory.id)"
+                                (renewInventoryId)="
+                                    renewInventoryId = $event;
+                                    inventoryRenewServicePopup = true
+                                "
+                            >
+                            </app-inventory-item>
+                        }
+                    </p-accordion>
                 </div>
-            </p-accordion>
-        </p-accordionTab>
+            </p-accordion-content>
+        </p-accordion-panel>
     </p-accordion>
+
+    <!-- ================= SIMULATION ================= -->
     <p-accordion
-        class="transparentBackgound"
-        [multiple]="true"
         (onOpen)="openTab($event, 'SIMULATION')"
         (onClose)="closeTab($event, 'SIMULATION')"
+        class="transparentBackgound"
+        [value]="inventoryBlocksOpen.has('SIMULATION') ? '1' : ''"
     >
-        <p-accordionTab
-            headerStyleClass="font-bold bg-transparent"
-            tabStyleClass="shadow-none"
-            [selected]="inventoryBlocksOpen.has('SIMULATION')"
-        >
-            <ng-template pTemplate="header">
-                <div class="flex flex-row justify-content-between w-full">
-                    <div class="flex align-items-center">
-                        {{ "inventories.headerForSimulation" | translate }}
-                    </div>
-                    <div class="flex align-items-center">
-                        <span
-                            class="p-input-icon-left pr-3"
-                            *ngIf="
-                                inventoryBlocksOpen.has('SIMULATION') &&
-                                inventoriesForSimulationsAll.length > 0
-                            "
-                        >
-                            <i class="pi pi-search"></i>
-                            <input
-                                type="text"
-                                pInputText
-                                class="p-inputtext-sm"
-                                style="width: 18vw; min-width: 180px; font-size: medium"
-                                (keyup)="searchList()"
-                                (click)="onClick($event)"
-                                name="filterMode"
-                                placeholder="{{
-                                    'inventories.searchSimulator' | translate
-                                }}"
-                                [attr.aria-label]="
-                                    'inventories.searchSimulator' | translate
-                                "
-                                [(ngModel)]="filterMode"
-                                id="filterMode"
-                            />
-                        </span>
-                    </div>
-                </div>
-            </ng-template>
-            <p-accordion
-                [multiple]="true"
-                class="inventory-list"
-                [style]="{ 'max-height': '60vh', 'overflow-y': 'auto' }"
+        <p-accordion-panel value="1">
+            <!-- HEADER -->
+            <p-accordion-header
+                [pt]="{
+                    root: {
+                        class: 'bg-transparent border-none',
+                    },
+                }"
             >
-                <div *ngFor="let inventory of inventories.get('SIMULATION')">
-                    <app-inventory-item
-                        [inventory]="inventory"
-                        (reloadInventoriesAndLoop)="reloadInventoriesAndLoop($event)"
-                        (reloadInventoryAndLoop)="reloadInventoryAndLoop($event)"
-                        (openSidebarForUploadInventory)="
-                            openSidebarForUploadInventory($event)
-                        "
-                        (openSidebarForNote)="openSidebarForNote($event)"
-                        (saveInventory)="handleSaveInventory($event, 'SIMULATION')"
-                        (openTab)="childOpenTab($event)"
-                        (closeTab)="childCloseTab($event)"
-                        [open]="inventoriesOpen.has(inventory.id)"
-                        (renewInventoryId)="
-                            renewInventoryId = $event; inventoryRenewServicePopup = true
-                        "
-                    >
-                    </app-inventory-item>
+                <div class="flex justify-content-between w-full align-items-center">
+                    <h2 class="text-lg m-0 font-semibold line-height-2">
+                        {{ "inventories.headerForSimulation" | translate }}
+                    </h2>
+
+                    <div class="flex align-items-center">
+                        @if (
+                            inventoryBlocksOpen.has("SIMULATION") &&
+                            inventoriesForSimulationsAll.length > 0
+                        ) {
+                            <span class="p-input-icon-left">
+                                <i class="pi pi-search relative"></i>
+                                <input
+                                    type="text"
+                                    pInputText
+                                    class="p-inputtext-sm"
+                                    style="width: 18vw; min-width: 180px"
+                                    (keyup)="searchList()"
+                                    (click)="onClick($event)"
+                                    [(ngModel)]="filterMode"
+                                    placeholder="{{
+                                        'inventories.searchSimulator' | translate
+                                    }}"
+                                />
+                            </span>
+                        }
+                    </div>
                 </div>
-            </p-accordion>
-        </p-accordionTab>
+            </p-accordion-header>
+
+            <!-- CONTENT -->
+            <p-accordion-content
+                [pt]="{
+                    root: {
+                        class: 'bg-transparent border-none',
+                    },
+                    content: {
+                        class: 'bg-transparent',
+                    },
+                }"
+                class="overflow-y-auto"
+                style="max-height: 60vh"
+            >
+                <div class="inventory-list mx-3">
+                    <p-accordion
+                        [multiple]="true"
+                        [value]="array.from(inventoriesOpen, String)"
+                        (onClose)="childCloseTab($event)"
+                        (onOpen)="childOpenTab($event)"
+                    >
+                        @for (
+                            inventory of inventories.get("SIMULATION");
+                            track inventory.id
+                        ) {
+                            <app-inventory-item
+                                [inventory]="inventory"
+                                (reloadInventoriesAndLoop)="
+                                    reloadInventoriesAndLoop($event)
+                                "
+                                (reloadInventoryAndLoop)="reloadInventoryAndLoop($event)"
+                                (openSidebarForUploadInventory)="
+                                    openSidebarForUploadInventory($event)
+                                "
+                                (openSidebarForNote)="openSidebarForNote($event)"
+                                (saveInventory)="
+                                    handleSaveInventory($event, 'SIMULATION')
+                                "
+                                (openTab)="childOpenTab($event)"
+                                (closeTab)="childCloseTab($event)"
+                                [open]="inventoriesOpen.has(inventory.id)"
+                                (renewInventoryId)="
+                                    renewInventoryId = $event;
+                                    inventoryRenewServicePopup = true
+                                "
+                            >
+                            </app-inventory-item>
+                        }
+                    </p-accordion>
+                </div>
+            </p-accordion-content>
+        </p-accordion-panel>
     </p-accordion>
 </p-scrollPanel>
 

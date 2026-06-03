@@ -27,15 +27,14 @@ describe("DigitalServiceTableComponent", () => {
         ]);
 
         await TestBed.configureTestingModule({
-            declarations: [DigitalServiceTableComponent],
-            imports: [TranslateModule.forRoot()],
-            providers: [
-                { provide: UserService, useValue: userServiceSpy },
-                { provide: TranslateService, useValue: translateServiceSpy },
-                { provide: ConfirmationService, useValue: confirmationServiceSpy },
-                GlobalStoreService,
-            ],
-        }).compileComponents();
+    imports: [TranslateModule.forRoot(), DigitalServiceTableComponent],
+    providers: [
+        { provide: UserService, useValue: userServiceSpy },
+        { provide: TranslateService, useValue: translateServiceSpy },
+        { provide: ConfirmationService, useValue: confirmationServiceSpy },
+        GlobalStoreService,
+    ],
+}).compileComponents();
 
         fixture = TestBed.createComponent(DigitalServiceTableComponent);
         component = fixture.componentInstance;
