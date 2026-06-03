@@ -96,10 +96,6 @@ public class LoadInputFilesService {
 
         final Map<FileType, List<MultipartFile>> allFiles = new EnumMap<>(FileType.class);
 
-        FileValidatorUtils.validateFile(datacenters);
-        FileValidatorUtils.validateFile(physicalEquipments);
-        FileValidatorUtils.validateFile(virtualEquipments);
-        FileValidatorUtils.validateFile(applications);
         if (datacenters != null) allFiles.put(FileType.DATACENTER, datacenters);
         if (physicalEquipments != null) allFiles.put(FileType.EQUIPEMENT_PHYSIQUE, physicalEquipments);
         if (virtualEquipments != null) allFiles.put(FileType.EQUIPEMENT_VIRTUEL, virtualEquipments);
@@ -177,9 +173,6 @@ public class LoadInputFilesService {
                                         final List<MultipartFile> virtualEquipments) {
 
         final Map<FileType, List<MultipartFile>> allFiles = new EnumMap<>(FileType.class);
-        FileValidatorUtils.validateFile(datacenters);
-        FileValidatorUtils.validateFile(physicalEquipments);
-        FileValidatorUtils.validateFile(virtualEquipments);
         DigitalServiceVersion digitalServiceVersion = digitalServiceVersionRepository.findById(digitalServiceVersionUid).orElseThrow();
 
         if (datacenters != null) allFiles.put(FileType.DATACENTER, datacenters);
