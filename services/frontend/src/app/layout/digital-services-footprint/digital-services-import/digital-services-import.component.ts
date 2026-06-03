@@ -240,6 +240,8 @@ export class DigitalServicesImportComponent implements OnInit, OnDestroy {
             );
         if (!this.toReloadDigitalService) {
             this.callInputApis();
+            // to update ds in store to run enableCalcul signal - fix calculate button issue for update and calculate date
+            this.digitalServiceStore.setDigitalService(ds);
         }
     }
 

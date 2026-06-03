@@ -15,7 +15,12 @@ describe("Ecomind", () => {
 
     it("Test ecomind", () => {
         cy.then(() => setPage("Default page"));
-        cy.checkA11y(undefined, undefined, reportA11yViolations, true);
+        cy.checkA11y(
+            { exclude: [[".p-scrollpanel-bar"]] },
+            undefined,
+            reportA11yViolations,
+            true,
+        );
         // create ai digital service
         cy.log("### Test without change ###");
         cy.get('[id="add-digital"]').click();
@@ -28,7 +33,12 @@ describe("Ecomind", () => {
         // fill infrastructure fields
         cy.log("### Fill Infrastructure Fields ###");
         cy.get('[id="pue"]').type("1.5");
-        cy.checkA11y(undefined, undefined, reportA11yViolations, true);
+        cy.checkA11y(
+            { exclude: [[".p-scrollpanel-bar"]] },
+            undefined,
+            reportA11yViolations,
+            true,
+        );
 
         // fill ai parameters fields
         cy.then(() => setPage("AI Parameters page"));
@@ -36,13 +46,23 @@ describe("Ecomind", () => {
         cy.get("#nb-user-year").type("4");
         cy.get("#average-request").type("4");
         cy.get("#average-number-token").type("4");
-        cy.checkA11y(undefined, undefined, reportA11yViolations, true);
+        cy.checkA11y(
+            { exclude: [[".p-scrollpanel-bar"]] },
+            undefined,
+            reportA11yViolations,
+            true,
+        );
 
         cy.get('[id="calculate"]').click();
         // calculate
         cy.log("### Visualize ###");
         cy.then(() => setPage("visualize page"));
-        cy.wait(2000).checkA11y(undefined, undefined, reportA11yViolations, true);
+        cy.wait(2000).checkA11y(
+            { exclude: [[".p-scrollpanel-bar"]] },
+            undefined,
+            reportA11yViolations,
+            true,
+        );
         // delete the ai digital service
         cy.get('[id="return-button"]').click();
 

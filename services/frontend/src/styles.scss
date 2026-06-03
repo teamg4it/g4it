@@ -934,7 +934,7 @@ div.label-input-div-medium {
 .p-disabled,
 .p-component:disabled {
     opacity: 1;
-    color: gray !important;
+    color: #525252 !important;
 }
 
 .p-progressbar {
@@ -1127,6 +1127,14 @@ app-inventory-item {
     background-color: #f4f4f4;
     color: var(--black-color);
     font-weight: 800;
+}
+.multifile-upload.cancel-creation-button .p-fileupload-choose-button {
+    border: none;
+    background-color: #f4f4f4;
+    color: var(--black-color);
+    font-weight: 800;
+    padding: 0.85rem 1rem;
+    text-transform: uppercase;
 }
 .app-workspace {
     .p-button {

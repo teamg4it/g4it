@@ -217,14 +217,13 @@ public class EvaluatingService {
                 LocalDateTime.now(),
                 "0%"
         );
-
+        digitalServiceVersionService.updateLastUpdateDate(digitalServiceVersionUid);
         digitalService.setLastCalculationDate(LocalDateTime.now());
         digitalServiceRepository.save(digitalService);
 
         digitalServiceVersion.setLastCalculationDate(LocalDateTime.now());
         digitalServiceVersionRepository.save(digitalServiceVersion);
 
-        digitalServiceVersionService.updateLastUpdateDate(digitalServiceVersionUid);
         // run evaluation task
         Long taskId = task.getId();
         asyncEvaluatingService.execute(

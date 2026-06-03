@@ -5,9 +5,9 @@
             class="flex flex-row justify-content-between w-full"
             [attr.aria-label]="inventory().name"
         >
-            <div class="flex align-items-center text-lg">
+            <h3 class="flex align-items-center text-lg m-0 font-semibold">
                 {{ inventory().name | monthYear }}
-            </div>
+            </h3>
 
             <!-- Renew Service code -->
             @if (showExpiryMessage() && (userService.isAllowedInventoryWrite$ | async)) {

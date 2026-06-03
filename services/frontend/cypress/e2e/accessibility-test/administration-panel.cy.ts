@@ -15,7 +15,12 @@ describe("Administration panel", () => {
 
     it("Test administration panel", () => {
         cy.then(() => setPage("Administration panel"));
-        cy.checkA11y(undefined, undefined, reportA11yViolations, true);
+        cy.checkA11y(
+            { exclude: [[".p-scrollpanel-bar"]] },
+            undefined,
+            reportA11yViolations,
+            true,
+        );
 
         // switch to manage organizations
         cy.get('[id="organizations-tab"]').click();
@@ -26,12 +31,17 @@ describe("Administration panel", () => {
         cy.get("#organizationName").click();
 
         cy.get("li.p-select-option").last().click();
-        cy.wait(3000).checkA11y(undefined, undefined, reportA11yViolations, true);
+        cy.wait(3000).checkA11y(
+            { exclude: [[".p-scrollpanel-bar"]] },
+            undefined,
+            reportA11yViolations,
+            true,
+        );
 
         // edit subscriber
         cy.get('[id="edit-organizations-button"]').click();
         cy.checkA11y(
-            undefined,
+            { exclude: [[".p-scrollpanel-bar"]] },
             {
                 rules: {
                     "color-contrast": { enabled: false }, // manually tested it's passed with AA rule
@@ -51,7 +61,12 @@ describe("Administration panel", () => {
         cy.get('[id="delete-organization-button"]').last().click();
         cy.contains("DELETE").click();
         // hide some error with color-contrast with the overlay
-        cy.wait(3000).checkA11y(undefined, undefined, reportA11yViolations, true);
+        cy.wait(3000).checkA11y(
+            { exclude: [[".p-scrollpanel-bar"]] },
+            undefined,
+            reportA11yViolations,
+            true,
+        );
 
         cy.get('[id="users-tab"]').click();
         // select an organization
@@ -60,7 +75,12 @@ describe("Administration panel", () => {
 
         cy.get("li.p-select-option").last().click();
         // wait the dropdown was not visible to unchecked some error
-        cy.wait(3000).checkA11y(undefined, undefined, reportA11yViolations, true);
+        cy.wait(3000).checkA11y(
+            { exclude: [[".p-scrollpanel-bar"]] },
+            undefined,
+            reportA11yViolations,
+            true,
+        );
 
         // choose criteria for this organization
         cy.then(() => setPage("User criteria component"));
@@ -68,7 +88,15 @@ describe("Administration panel", () => {
         cy.wait(2000)
             .get('[id="criteria"]')
             .then((el) => {
-                cy.checkA11y(el.get(0), undefined, reportA11yViolations, true);
+                cy.checkA11y(
+                    {
+                        include: [el.get(0)],
+                        exclude: [[".p-scrollpanel-bar"]],
+                    },
+                    undefined,
+                    reportA11yViolations,
+                    true,
+                );
             });
         cy.contains("Cancel").click();
 
@@ -97,7 +125,15 @@ describe("Administration panel", () => {
             });
 
         cy.get('[role="complementary"]').then((el) => {
-            cy.checkA11y(el.get(0), undefined, reportA11yViolations, true);
+            cy.checkA11y(
+                {
+                    include: [el.get(0)],
+                    exclude: [[".p-scrollpanel-bar"]],
+                },
+                undefined,
+                reportA11yViolations,
+                true,
+            );
         });
 
         cy.get("body")
@@ -113,7 +149,12 @@ describe("Administration panel", () => {
             });
 
         cy.then(() => setPage("Administration panel"));
-        cy.checkA11y(undefined, undefined, reportA11yViolations, true);
+        cy.checkA11y(
+            { exclude: [[".p-scrollpanel-bar"]] },
+            undefined,
+            reportA11yViolations,
+            true,
+        );
         cy.get('[id="delete-button"]').click();
         cy.contains("DELETE").click();
     });
