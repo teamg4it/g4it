@@ -75,7 +75,9 @@
                     },
                 }"
             >
-                {{ "inventories.headerForIS" | translate }}
+                <h2 class="text-lg m-0 font-semibold line-height-2">
+                    {{ "inventories.headerForIS" | translate }}
+                </h2>
             </p-accordion-header>
 
             <p-accordion-content
@@ -148,9 +150,10 @@
                 }"
             >
                 <div class="flex justify-content-between w-full align-items-center">
-                    <div>
+                    <h2 class="text-lg m-0 font-semibold line-height-2">
                         {{ "inventories.headerForSimulation" | translate }}
-                    </div>
+                    </h2>
+
                     <div class="flex align-items-center">
                         @if (
                             inventoryBlocksOpen.has("SIMULATION") &&
