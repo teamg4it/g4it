@@ -30,6 +30,11 @@ public interface OutPhysicalEquipmentRepository extends JpaRepository<OutPhysica
     @Modifying
     void deleteByTaskId(Long taskId);
 
+    // In OutPhysicalEquipmentRepository
+    @Query("SELECT o.criterion, o FROM OutPhysicalEquipment o WHERE o.taskId = :taskId")
+    List<Object[]> findCriterionAndEquipmentByTaskId(@Param("taskId") Long taskId);
+
+
     @Query("""
     SELECT DISTINCT o.source
         FROM OutPhysicalEquipment o

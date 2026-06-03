@@ -28,6 +28,7 @@ import com.soprasteria.g4it.backend.apiinout.modeldb.InVirtualEquipment;
 import com.soprasteria.g4it.backend.apiinout.repository.*;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
+import com.soprasteria.g4it.backend.apireferential.business.ReferentialGetService;
 import com.soprasteria.g4it.backend.apireferential.business.ReferentialService;
 import com.soprasteria.g4it.backend.apiuser.repository.OrganizationRepository;
 import com.soprasteria.g4it.backend.common.filesystem.business.local.CsvFileService;
@@ -40,8 +41,7 @@ import com.soprasteria.g4it.backend.common.utils.StringUtils;
 import com.soprasteria.g4it.backend.exception.AsyncTaskException;
 import com.soprasteria.g4it.backend.external.boavizta.business.BoaviztapiService;
 import com.soprasteria.g4it.backend.external.boavizta.model.response.BoaResponseRest;
-import com.soprasteria.g4it.backend.server.gen.api.dto.CriterionRest;
-import com.soprasteria.g4it.backend.server.gen.api.dto.HypothesisRest;
+import com.soprasteria.g4it.backend.server.gen.api.dto.*;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVPrinter;
@@ -60,10 +60,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -121,6 +118,8 @@ public class EvaluateService {
     private Map<String, String> codeToCountryMapCache;
     private List<String> lifecycleStepsCache;
     private Map<Pair<String, String>, Integer> electricityMixQuartilesCache;
+    @Autowired
+    ReferentialGetService referentialGetService;
 
     @PostConstruct
     public void init() {
@@ -263,6 +262,9 @@ public class EvaluateService {
             outVirtualEquipmentSize += saveResult.savedVirtualCount();
             outApplicationSize += saveResult.savedApplicationCount();
 
+            // to check weather workspace level data
+            long countItemImpactWorkspace= referentialGetService.countItemImpactsForWorkspace(context.getWorkspaceId());
+
             int pageNumber = 0;
             long processed = 0;
             final Sort sortByName = Sort.by("name");
@@ -280,6 +282,32 @@ public class EvaluateService {
 
                 log.info("Evaluating {} physical equipments, page {}/{}", physicalEquipments.size(), pageNumber + 1, (int) Math.ceil((double) totalPhysicalEquipments / Constants.BATCH_SIZE));
                 int physicalSaveCounter = 0;
+                /*Map<String, MatchingItemRest> matchingItemMap = Collections.emptyMap();
+                Map<String, List<ItemTypeRest>> itemTypeMap = Collections.emptyMap();
+                Map<String, List<ItemImpactRest>> itemImpactMap = Collections.emptyMap();
+                if(countItemImpactWorkspace>0) {
+                    log.info("Loading referential data for workspace id {} with count {}", context.getWorkspaceId(), countItemImpactWorkspace);
+                    Set<String> models = physicalEquipments.stream()
+                            .map(InPhysicalEquipment::getModel)
+                            .filter(Objects::nonNull)
+                            .collect(Collectors.toSet());
+                    Set<String> types = physicalEquipments.stream()
+                            .map(InPhysicalEquipment::getType)
+                            .filter(Objects::nonNull)
+                            .collect(Collectors.toSet());
+                    Set<String> locations = physicalEquipments.stream()
+                            .map(InPhysicalEquipment::getLocation)
+                            .filter(Objects::nonNull)
+                            .collect(Collectors.toSet());
+                    matchingItemMap = referentialGetService.bulkGetMatchingItemsForWorkspace(models, context.getWorkspaceId());
+                    itemTypeMap = referentialGetService.bulkGetItemTypesForWorkspace(types, context.getWorkspaceId());
+                    itemImpactMap = referentialGetService.bulkGetAllItemImpactsForWorkspace(
+                            activeCriteria.stream().map(CriterionRest::getCode).collect(Collectors.toSet()),
+                            new HashSet<>(lifecycleSteps),
+                            locations,
+                            context.getWorkspaceId()
+                    );
+                }*/
                 for (InPhysicalEquipment physicalEquipment : physicalEquipments) {
 
                     if (aggregationPhysicalEquipments.size() > MAXIMUM_MAP_CAPACITY) {
@@ -302,7 +330,7 @@ public class EvaluateService {
                     // Call external tools - lib calculs
                     List<ImpactEquipementPhysique> impactEquipementPhysiqueList = evaluateNumEcoEvalService.calculatePhysicalEquipment(
                             physicalEquipment, datacenter,
-                            organization, activeCriteria, lifecycleSteps, hypothesisRestList,context.getWorkspaceId());
+                            organization, activeCriteria, lifecycleSteps, hypothesisRestList,context.getWorkspaceId(),countItemImpactWorkspace);
 
 
                     // Identify NON-CLOUD VMs for this physical equipment
@@ -526,7 +554,7 @@ public class EvaluateService {
                             virtualEquipment.getQuantity(),
                             electricity, impact.getImpactUnitaire(),
                             sipValue,
-                            null, virtualEquipment.getDurationHour(), virtualEquipment.getWorkload(), isCloudService, impact.getSource());
+                            null, virtualEquipment.getDurationHour(), virtualEquipment.getWorkload(), isCloudService,impact.getSource());
 
                     aggregationVirtualEquipments
                             .computeIfAbsent(aggregationToOutput.keyVirtualEquipment(physicalEquipment, virtualEquipment, impact, refShortcutBO, evaluateReportBO), k -> new AggValuesBO())

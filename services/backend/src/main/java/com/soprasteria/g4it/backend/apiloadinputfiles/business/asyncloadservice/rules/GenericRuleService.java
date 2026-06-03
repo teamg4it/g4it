@@ -11,13 +11,16 @@ package com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice
 import com.soprasteria.g4it.backend.apireferential.business.ReferentialGetService;
 import com.soprasteria.g4it.backend.common.model.LineError;
 import com.soprasteria.g4it.backend.common.utils.ValidationUtils;
+import com.soprasteria.g4it.backend.server.gen.api.dto.ItemTypeRest;
 import jakarta.validation.Validator;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -67,10 +70,8 @@ public class GenericRuleService {
                             new String[]{},
                             locale)));
         }
-        if (!isDigitalService) {
-            if (referentialGetService.getItemTypesForWorkspace(type, workspaceId,organization).isEmpty() &&
-                    referentialGetService.getItemTypes(type, null).isEmpty()) {
-
+        if (!isDigitalService && referentialGetService.getItemTypes(type, null,null).isEmpty()) {
+            if (referentialGetService.getItemTypesForWorkspace(type, workspaceId).isEmpty()) {
                 return Optional.of(new LineError(
                         filename,
                         line,

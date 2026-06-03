@@ -12,6 +12,7 @@ import com.soprasteria.g4it.backend.apiinout.mapper.InPhysicalEquipmentMapper;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InPhysicalEquipment;
 import com.soprasteria.g4it.backend.apiinout.repository.InPhysicalEquipmentRepository;
 import com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.checkobject.CheckPhysicalEquipmentService;
+import com.soprasteria.g4it.backend.apireferential.business.ReferentialGetService;
 import com.soprasteria.g4it.backend.common.model.Context;
 import com.soprasteria.g4it.backend.common.model.FileToLoad;
 import com.soprasteria.g4it.backend.common.model.LineError;
@@ -44,6 +45,8 @@ class LoadPhysicalEquipmentServiceTest {
     private EntityManager entityManager;
     @InjectMocks
     private LoadPhysicalEquipmentService service;
+    @Mock
+    ReferentialGetService referentialGetService;
 
     @Test
     void testExecuteEmptyPhysicalEquipments() {

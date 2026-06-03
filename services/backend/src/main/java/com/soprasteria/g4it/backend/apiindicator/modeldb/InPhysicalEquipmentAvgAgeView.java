@@ -32,24 +32,41 @@ import java.io.Serializable;
 
 @NamedNativeQuery(name = "InPhysicalEquipmentAvgAgeView.findPhysicalEquipmentAvgAgeIndicators",
         resultSetMapping = "InPhysicalEquipmentAvgAgeIndicatorsMapping", query = """
-        SELECT
-          ROW_NUMBER() OVER ()          AS id,
-          "location"                    AS country,
-          equipment_type                AS type,
-          common_filters[1]             AS nom_entite,
-          filters[1]                    AS statut,
-          sum(quantity)                 AS poids,
-          sum(lifespan) / sum(quantity) AS age_moyen
-        FROM out_physical_equipment ope
-        WHERE task_id = :taskId
-        AND criterion = 'CLIMATE_CHANGE'
-        AND lifecycle_step = 'USING'
-        AND status_indicator = 'OK'
-        GROUP BY
-            ope.location,
-            ope.equipment_type,
-            ope.common_filters,
-            ope.filters;
+        WITH equipment_lifespan AS (
+                            SELECT
+                                reference,
+                                location,
+                                equipment_type,
+                                common_filters,
+                                filters,
+                                MAX(quantity) AS quantity,
+                                MAX(lifespan) AS lifespan
+                            FROM out_physical_equipment
+                            WHERE task_id = :taskId
+                              AND status_indicator = 'OK'
+                              AND lifespan IS NOT NULL
+                              AND lifespan > 0
+                            GROUP BY
+                                reference,
+                                location,
+                                equipment_type,
+                                common_filters,
+                                filters
+                        )
+                        SELECT
+                            ROW_NUMBER() OVER ()          AS id,
+                            location                      AS country,
+                            equipment_type                AS type,
+                            common_filters[1]             AS nom_entite,
+                            filters[1]                    AS statut,
+                            SUM(quantity)                 AS poids,
+                            SUM(lifespan) / SUM(quantity) AS age_moyen
+                        FROM equipment_lifespan
+                        GROUP BY
+                            location,
+                            equipment_type,
+                            common_filters,
+                            filters;
         """)
 @Data
 @Entity
