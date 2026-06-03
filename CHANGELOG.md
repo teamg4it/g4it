@@ -1,5 +1,15 @@
 # G4IT
 
+## 3.12.1
+
+### Major Changes
+
+- 2181 | Severe performance degradation and blocking during impact calculation after introduction of workspace-specific referential
+
+### Minor Changes
+
+- 2205 | Average lifespan calculation fix
+
 ## 3.12.0
 
 ## Major changes

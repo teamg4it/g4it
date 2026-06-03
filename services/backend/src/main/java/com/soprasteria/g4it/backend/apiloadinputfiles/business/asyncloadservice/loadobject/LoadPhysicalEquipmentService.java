@@ -13,11 +13,13 @@ import com.soprasteria.g4it.backend.apiinout.modeldb.InPhysicalEquipment;
 import com.soprasteria.g4it.backend.apiinout.repository.InPhysicalEquipmentRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.InVirtualEquipmentRepository;
 import com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.checkobject.CheckPhysicalEquipmentService;
+import com.soprasteria.g4it.backend.apireferential.business.ReferentialGetService;
 import com.soprasteria.g4it.backend.common.model.Context;
 import com.soprasteria.g4it.backend.common.model.FileToLoad;
 import com.soprasteria.g4it.backend.common.model.LineError;
 import com.soprasteria.g4it.backend.common.utils.Constants;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InPhysicalEquipmentRest;
+import com.soprasteria.g4it.backend.server.gen.api.dto.ItemTypeRest;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
@@ -25,9 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -49,11 +49,19 @@ public class LoadPhysicalEquipmentService {
     @PersistenceContext
     private EntityManager entityManager;
 
+    @Autowired
+    ReferentialGetService referentialGetService;
+
     @Transactional
     public List<LineError> execute(final Context context, final FileToLoad fileToLoad, final int pageNumber, List<InPhysicalEquipmentRest> physicalEquipments) {
         if (physicalEquipments.isEmpty()) return List.of();
 
         log.info("Load physical equipments for {}, size = {}", context.log(), physicalEquipments.size());
+        /*Set<String> types = physicalEquipments.stream()
+                .map(InPhysicalEquipmentRest::getType)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+        Map<String, List<ItemTypeRest>> itemTypeMap =referentialGetService.bulkGetItemTypesForWorkspace(types,context.getWorkspaceId());*/
 
         List<LineError> errors = new ArrayList<>();
 

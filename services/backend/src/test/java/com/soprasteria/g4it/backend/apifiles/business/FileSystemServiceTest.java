@@ -23,10 +23,9 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.util.ReflectionTestUtils;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
+import com.soprasteria.g4it.backend.common.filesystem.model.StoredFile;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -48,8 +47,6 @@ class FileSystemServiceTest {
     @InjectMocks
     FileSystemService fileSystemService;
     @Mock
-    MultipartFile file;
-    @Mock
     private FileSystem fileSystem;
     @Mock
     private FileStorage fileStorage;
@@ -59,37 +56,40 @@ class FileSystemServiceTest {
     @Test
     void testCheckFiles() {
 
-        // check empty and null
         ReflectionTestUtils.invokeMethod(fileSystemService, "checkFiles", List.of());
         ReflectionTestUtils.invokeMethod(fileSystemService, "checkFiles", (Object) null);
 
-        List<MultipartFile> okFiles = List.of(new MockMultipartFile(
-                "goodFile",
-                "goodFile.txt",
-                "text/csv",
-                "goodFile!".getBytes()
-        ));
-        assertDoesNotThrow(() -> ReflectionTestUtils.invokeMethod(fileSystemService, "checkFiles", okFiles));
+        StoredFile file = mock(StoredFile.class);
+        when(file.getContentType()).thenReturn("text/csv");
+
+        assertDoesNotThrow(() ->
+                ReflectionTestUtils.invokeMethod(
+                        fileSystemService,
+                        "checkFiles",
+                        List.of(file)
+                ));
     }
 
     @Test
     void testCheckFiles_failWrongType() {
-        List<MultipartFile> failPlainTextFiles = List.of(
-                new MockMultipartFile(
-                        "goodFile",
-                        "goodFile.txt",
-                        "text/csv",
-                        "goodFile!".getBytes()
-                ),
-                new MockMultipartFile(
-                        "badFile",
-                        "badFile.txt",
-                        MediaType.TEXT_PLAIN_VALUE,
-                        "badFile!".getBytes()
-                ));
-        assertThrows(BadRequestException.class, () -> {
-            ReflectionTestUtils.invokeMethod(fileSystemService, "checkFiles", failPlainTextFiles);
-        });
+
+        StoredFile goodFile = mock(StoredFile.class);
+        when(goodFile.getContentType()).thenReturn("text/csv");
+
+        StoredFile badFile = mock(StoredFile.class);
+        when(badFile.getContentType()).thenReturn(MediaType.TEXT_PLAIN_VALUE);
+        when(badFile.getOriginalFilename()).thenReturn("badFile.txt");
+
+        List<StoredFile> files = List.of(goodFile, badFile);
+
+        assertThrows(
+                BadRequestException.class,
+                () -> ReflectionTestUtils.invokeMethod(
+                        fileSystemService,
+                        "checkFiles",
+                        files
+                )
+        );
     }
 
     @Test
@@ -174,18 +174,23 @@ class FileSystemServiceTest {
 
     @Test
     void testGetBufferedReader_Utf8Ok() throws Exception {
-        // Content without replacement char
-        MockMultipartFile file1 = new MockMultipartFile(
-                "file",
-                "test.txt",
-                "text/plain",
-                "hello world".getBytes(StandardCharsets.UTF_8));
 
-        BufferedReader reader = ReflectionTestUtils.invokeMethod(FileSystemService.class,
-                "getBufferedReader", file1);
+        Path tempFile = Files.createTempFile("utf8", ".csv");
+        Files.writeString(tempFile, "hello world", StandardCharsets.UTF_8);
+
+        StoredFile storedFile = mock(StoredFile.class);
+        when(storedFile.getPath()).thenReturn(tempFile);
+
+        BufferedReader reader =
+                ReflectionTestUtils.invokeMethod(
+                        FileSystemService.class,
+                        "getBufferedReader",
+                        storedFile);
 
         assertNotNull(reader);
         assertEquals("hello world", reader.readLine());
+
+        Files.deleteIfExists(tempFile);
     }
 
     @Test
@@ -273,51 +278,106 @@ class FileSystemServiceTest {
 
     @Test
     void testManageFilesAndRename_success() throws Exception {
-        // Arrange
+
         String tempDir = System.getProperty("java.io.tmpdir");
-        ReflectionTestUtils.setField(fileSystemService, "localWorkingFolder", tempDir);
 
-        // Make sure the inventory folder exists (for isInventory = true)
-        Files.createDirectories(Path.of(tempDir, "input", "inventory"));
+        ReflectionTestUtils.setField(
+                fileSystemService,
+                "localWorkingFolder",
+                tempDir);
 
-        MultipartFile file1 = new MockMultipartFile(
-                "file",                 // field name
-                "a.csv",                // original filename
-                "text/csv",             // content type (allowed by checkFiles)
-                "col1,col2\nv1,v2".getBytes(StandardCharsets.UTF_8)
-        );
+        Files.createDirectories(
+                Path.of(tempDir, "input", "inventory"));
 
-        // FileSystem -> FileStorage
-        when(fileSystem.mount("org", "1")).thenReturn(fileStorage);
+        Path csvFile = Files.createTempFile("inventory", ".csv");
 
-        // upload() will be called by uploadFile()
+        Files.writeString(
+                csvFile,
+                "col1,col2\nv1,v2",
+                StandardCharsets.UTF_8);
+
+        StoredFile storedFile = mock(StoredFile.class);
+
+        when(storedFile.getOriginalFilename()).thenReturn("a.csv");
+        when(storedFile.getContentType()).thenReturn("text/csv");
+        when(storedFile.getPath()).thenReturn(csvFile);
+
+        when(fileSystem.mount("org", "1"))
+                .thenReturn(fileStorage);
+
         when(fileStorage.upload(
                 eq(FileFolder.INPUT),
                 eq("newname.csv"),
-                eq("file"),            // file.getName()
+                eq("a.csv"),
                 any(InputStream.class)
         )).thenReturn("uploaded.csv");
 
-        // Act
-        List<String> result = fileSystemService.manageFilesAndRename(
-                "org",
-                1L,
-                List.of(file1),
-                List.of("newname.csv"),
-                true        // isInventory
-        );
+        List<String> result =
+                fileSystemService.manageFilesAndRename(
+                        "org",
+                        1L,
+                        List.of(storedFile),
+                        List.of("newname.csv"),
+                        true);
 
-        // Assert
         assertEquals(1, result.size());
         assertEquals("uploaded.csv", result.get(0));
 
-        verify(fileSystem).mount("org", "1");
         verify(fileStorage).upload(
                 eq(FileFolder.INPUT),
                 eq("newname.csv"),
-                eq("file"),
+                eq("a.csv"),
                 any(InputStream.class)
         );
+
+        Files.deleteIfExists(csvFile);
+    }
+
+    @Test
+    void testManageFilesAndRename_xlsx() throws Exception {
+
+        String tempDir = System.getProperty("java.io.tmpdir");
+
+        ReflectionTestUtils.setField(
+                fileSystemService,
+                "localWorkingFolder",
+                tempDir);
+
+        Files.createDirectories(
+                Path.of(tempDir, "input", "inventory"));
+
+        Path xlsxFile = Files.createTempFile("inventory", ".xlsx");
+
+        Files.write(xlsxFile, "dummy".getBytes());
+
+        StoredFile storedFile = mock(StoredFile.class);
+
+        when(storedFile.getOriginalFilename()).thenReturn("test.xlsx");
+        when(storedFile.getContentType()).thenReturn(
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        when(storedFile.getPath()).thenReturn(xlsxFile);
+
+        when(fileSystem.mount("org", "1"))
+                .thenReturn(fileStorage);
+
+        when(fileStorage.upload(
+                eq(FileFolder.INPUT),
+                eq("renamed.xlsx"),
+                eq("test.xlsx"),
+                any(InputStream.class)
+        )).thenReturn("uploaded.xlsx");
+
+        List<String> result =
+                fileSystemService.manageFilesAndRename(
+                        "org",
+                        1L,
+                        List.of(storedFile),
+                        List.of("renamed.xlsx"),
+                        true);
+
+        assertEquals(List.of("uploaded.xlsx"), result);
+
+        Files.deleteIfExists(xlsxFile);
     }
 
 

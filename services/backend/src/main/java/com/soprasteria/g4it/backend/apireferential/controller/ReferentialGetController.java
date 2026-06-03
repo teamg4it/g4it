@@ -62,7 +62,7 @@ public class ReferentialGetController implements ReferentialGetApiDelegate {
      */
     @Override
     public ResponseEntity<List<ItemTypeRest>> getItemTypes(String type, String organization) {
-        List<ItemTypeRest> itemTypes = referentialGetService.getItemTypes(type, organization);
+        List<ItemTypeRest> itemTypes = referentialGetService.getItemTypes(type, organization,null);
         return new ResponseEntity<>(itemTypes, HttpStatus.OK);
     }
 
@@ -83,7 +83,7 @@ public class ReferentialGetController implements ReferentialGetApiDelegate {
      */
     @Override
     public ResponseEntity<MatchingItemRest> getMatchingItem(String model, String organization) {
-        MatchingItemRest matchingItem = referentialGetService.getMatchingItem(model, organization);
+        MatchingItemRest matchingItem = referentialGetService.getMatchingItem(model, organization,null);
         if (matchingItem == null) throw new G4itRestException("404", "Matching item not found");
 
         return new ResponseEntity<>(matchingItem, HttpStatus.OK);
