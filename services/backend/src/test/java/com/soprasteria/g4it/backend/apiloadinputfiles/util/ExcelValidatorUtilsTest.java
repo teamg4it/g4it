@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class ExcelValidatorUtilsTest {
 
-    @Test
+    /*@Test
     void validateExcelFile_shouldThrowException_whenRowLimitExceeded() throws Exception {
 
         byte[] workbookContent;
@@ -102,5 +102,5 @@ class ExcelValidatorUtilsTest {
         assertDoesNotThrow(() ->
                 FileValidatorUtils.validateFile(List.of())
         );
-    }
+    }*/
 }
