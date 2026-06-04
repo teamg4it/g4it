@@ -12,9 +12,9 @@ import { NG_VALUE_ACCESSOR, ReactiveFormsModule } from "@angular/forms";
 import { TranslateModule, TranslatePipe, TranslateService } from "@ngx-translate/core";
 import { MessageService, SharedModule } from "primeng/api";
 import { ButtonModule } from "primeng/button";
-import { DropdownModule } from "primeng/dropdown";
 import { InputNumberModule } from "primeng/inputnumber";
 import { InputTextModule } from "primeng/inputtext";
+import { SelectModule } from "primeng/select";
 import { DigitalServiceTerminalConfig } from "src/app/core/interfaces/digital-service.interfaces";
 import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
@@ -24,9 +24,8 @@ describe("DigitalServicesTerminalsSidePanelComponent", () => {
     let component: DigitalServicesTerminalsSidePanelComponent;
     let fixture: ComponentFixture<DigitalServicesTerminalsSidePanelComponent>;
 
-    beforeEach(() => {
-        TestBed.configureTestingModule({
-            declarations: [DigitalServicesTerminalsSidePanelComponent],
+    beforeEach(async () => {
+        await TestBed.configureTestingModule({
             providers: [
                 {
                     provide: NG_VALUE_ACCESSOR,
@@ -45,14 +44,15 @@ describe("DigitalServicesTerminalsSidePanelComponent", () => {
                 SharedModule,
                 ReactiveFormsModule,
                 ButtonModule,
-                DropdownModule,
+                SelectModule,
                 InputNumberModule,
                 InputTextModule,
                 HttpClientTestingModule,
                 TranslateModule.forRoot(),
+                DigitalServicesTerminalsSidePanelComponent,
             ],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
-        });
+        }).compileComponents();
         fixture = TestBed.createComponent(DigitalServicesTerminalsSidePanelComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();

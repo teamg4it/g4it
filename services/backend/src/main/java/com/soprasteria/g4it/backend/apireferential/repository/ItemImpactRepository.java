@@ -19,6 +19,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public interface ItemImpactRepository extends JpaRepository<ItemImpact, Long> {
@@ -30,7 +31,8 @@ public interface ItemImpactRepository extends JpaRepository<ItemImpact, Long> {
             ((?3 IS NULL) OR (?3 IS NOT NULL AND cf.name = ?3)) AND
             ((?4 IS NULL) OR (?4 IS NOT NULL AND cf.category = ?4)) AND
             ((?5 IS NULL) OR (?5 IS NOT NULL AND cf.location = ?5)) AND
-            ((?6 IS NULL) OR (?6 IS NOT NULL AND cf.organization = ?6))
+            ((?6 IS NULL) OR (?6 IS NOT NULL AND cf.organization = ?6)) AND
+            cf.workspaceId is null
             """)
     List<ItemImpact> findByCriterionAndLifecycleStepAndNameAndCategoryAndLocationAndOrganization(final String criterion,
                                                                                                  final String lifecycleStep,
@@ -71,6 +73,21 @@ public interface ItemImpactRepository extends JpaRepository<ItemImpact, Long> {
 
     List<ItemImpact> findByWorkspaceIdOrWorkspaceIdIsNull(Long workspaceId);
 
+    Page<ItemImpact> findByWorkspaceId(Long workspaceId, Pageable pageable);
+
+    List<ItemImpact> findByCategoryAndWorkspaceId(final String category, final Long workspaceId);
+
+    List<ItemImpact> findByCriterionInAndLifecycleStepInAndWorkspaceId(
+            Set<String> criteria,
+            Set<String> lifecycleSteps,
+            Long workspaceId
+    );
+    List<ItemImpact> findByCriterionInAndCategoryAndLocationInAndWorkspaceId( Set<String> criteria,
+                                                                                                String category,
+                                                                                                Set<String> locations,
+                                                                                                Long workspaceId);
+    long countByWorkspaceId(Long workspaceId);
+
     @Query("""
             SELECT cf FROM #{#entityName} cf WHERE
             ((?1 IS NULL) OR (?1 IS NOT NULL AND cf.criterion = ?1)) AND
@@ -78,16 +95,13 @@ public interface ItemImpactRepository extends JpaRepository<ItemImpact, Long> {
             ((?3 IS NULL) OR (?3 IS NOT NULL AND cf.name = ?3)) AND
             ((?4 IS NULL) OR (?4 IS NOT NULL AND cf.category = ?4)) AND
             ((?5 IS NULL) OR (?5 IS NOT NULL AND cf.location = ?5)) AND
-            ((?6 IS NULL) OR (?6 IS NOT NULL AND cf.workspaceId = ?6))
+            ((?6 IS NULL) OR (?6 IS NOT NULL AND cf.organization = ?6)) AND
+            cf.workspaceId = ?7
             """)
-    List<ItemImpact> findByCriterionAndLifecycleStepAndNameAndCategoryAndLocationAndWorkspaceId(final String criterion,
+    List<ItemImpact> findByCriterionAndLifecycleStepAndNameAndCategoryAndLocationAndOrganizationAndWorkspaceId(final String criterion,
                                                                                                  final String lifecycleStep,
                                                                                                  final String name,
                                                                                                  final String category,
                                                                                                  final String location,
-                                                                                                 final Long workspaceId);
-
-    Page<ItemImpact> findByWorkspaceId(Long workspaceId, Pageable pageable);
-
-    List<ItemImpact> findByCategoryAndWorkspaceId(final String category, final Long workspaceId);
+                                                                                                 final String organization, final Long workspaceId);
 }

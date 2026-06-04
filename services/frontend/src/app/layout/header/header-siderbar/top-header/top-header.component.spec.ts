@@ -2,7 +2,6 @@ import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { ComponentFixture, fakeAsync, TestBed, tick } from "@angular/core/testing";
 import { NavigationEnd, Router } from "@angular/router";
 import { TranslateModule } from "@ngx-translate/core";
-import { KeycloakService } from "keycloak-angular";
 import { of } from "rxjs";
 import { OrganizationData } from "src/app/core/interfaces/user.interfaces";
 import { UserService } from "src/app/core/service/business/user.service";
@@ -19,7 +18,6 @@ describe("TopHeaderComponent", () => {
     let mockTranslateService: any;
     let mockUserService: any;
     let mockWorkspaceService: any;
-    let mockKeycloakService: any;
     let mockGlobalStore: any;
     const org: OrganizationData = {
         id: 1,
@@ -80,10 +78,6 @@ describe("TopHeaderComponent", () => {
             checkAndRedirect: jasmine.createSpy("checkAndRedirect"),
         };
 
-        mockKeycloakService = {
-            logout: jasmine.createSpy("logout").and.returnValue(Promise.resolve()),
-        };
-
         mockWorkspaceService = {
             setOpen: jasmine.createSpy("setOpen"),
         };
@@ -97,7 +91,6 @@ describe("TopHeaderComponent", () => {
             imports: [TopHeaderComponent, SharedModule, TranslateModule.forRoot()],
             providers: [
                 { provide: Router, useValue: mockRouter },
-                { provide: KeycloakService, useValue: mockKeycloakService },
                 { provide: UserService, useValue: mockUserService },
                 { provide: WorkspaceService, useValue: mockWorkspaceService },
                 { provide: GlobalStoreService, useValue: mockGlobalStore },

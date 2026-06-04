@@ -7,10 +7,14 @@
  */
 import { Component, Input } from "@angular/core";
 import { Stat } from "src/app/core/interfaces/footprint.interface";
+import { CardModule } from "primeng/card";
+import { TooltipModule } from "primeng/tooltip";
 
 @Component({
     selector: "app-stats",
     templateUrl: "./stats.component.html",
+    standalone: true,
+    imports: [CardModule, TooltipModule],
 })
 export class StatsComponent {
     @Input() stats: Stat[] = [];

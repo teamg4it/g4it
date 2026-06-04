@@ -6,9 +6,13 @@
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
 import { Component, computed, inject, input, Input, Signal } from "@angular/core";
+import { FormsModule } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
-import { TranslateService } from "@ngx-translate/core";
+import { TranslatePipe, TranslateService } from "@ngx-translate/core";
 import { EChartsOption } from "echarts";
+import { PrimeTemplate } from "primeng/api";
+import { Button } from "primeng/button";
+import { SelectModule } from "primeng/select";
 import {
     GraphDescriptionContent,
     StatusCountMap,
@@ -42,9 +46,24 @@ import { Constants } from "src/constants";
 import { AbstractDashboard } from "../../abstract-dashboard";
 import { InventoriesApplicationFootprintComponent } from "../inventories-application-footprint.component";
 
+import { NgxEchartsDirective } from "ngx-echarts";
+import { StackBarChartComponent } from "../../../common/stack-bar-chart/stack-bar-chart.component";
+import { GraphDescriptionComponent } from "../../../digital-services-footprint/digital-services-footprint-dashboard/graph-description/graph-description.component";
+
 @Component({
     selector: "app-application-multicriteria-footprint",
     templateUrl: "./application-multicriteria-footprint.component.html",
+    standalone: true,
+    imports: [
+        Button,
+        SelectModule,
+        FormsModule,
+        PrimeTemplate,
+        StackBarChartComponent,
+        NgxEchartsDirective,
+        GraphDescriptionComponent,
+        TranslatePipe,
+    ],
 })
 export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboard {
     @Input() footprint: ApplicationFootprint[] = [];

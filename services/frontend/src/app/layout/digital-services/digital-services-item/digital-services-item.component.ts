@@ -1,18 +1,38 @@
-import { Component, computed, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import {
+    Component,
+    computed,
+    EventEmitter,
+    input,
+    Input,
+    OnInit,
+    Output,
+} from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { TranslateService } from "@ngx-translate/core";
+import { TranslateService, TranslatePipe } from "@ngx-translate/core";
 import { ConfirmationService, MessageService } from "primeng/api";
 import { DigitalService } from "src/app/core/interfaces/digital-service.interfaces";
 import { UserService } from "src/app/core/service/business/user.service";
 import { shouldShowExpiryMessage } from "src/app/core/service/mapper/renew-time";
+import { CardModule } from "primeng/card";
+import { Button } from "primeng/button";
+import { AsyncPipe } from "@angular/common";
+import { ConfirmPopupModule } from "primeng/confirmpopup";
 
 @Component({
     selector: "app-digital-services-item",
     templateUrl: "./digital-services-item.component.html",
     providers: [MessageService, ConfirmationService],
+    standalone: true,
+    imports: [
+    CardModule,
+    Button,
+    ConfirmPopupModule,
+    AsyncPipe,
+    TranslatePipe
+],
 })
 export class DigitalServicesItemComponent implements OnInit {
-    @Input() digitalService: DigitalService = {} as DigitalService;
+    digitalService = input.required<DigitalService>({});
     @Input() isAi: boolean = false;
 
     @Output() deleteUid: EventEmitter<string> = new EventEmitter();
@@ -22,7 +42,7 @@ export class DigitalServicesItemComponent implements OnInit {
     firstFootprintTab = "resources";
 
     showExpiryMessage = computed(() =>
-        shouldShowExpiryMessage(this.digitalService.expiryDate ?? ""),
+        shouldShowExpiryMessage(this.digitalService().expiryDate ?? ""),
     );
 
     constructor(

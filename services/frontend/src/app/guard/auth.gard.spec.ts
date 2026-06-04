@@ -1,389 +1,370 @@
 import { TestBed } from "@angular/core/testing";
-import { ActivatedRouteSnapshot, Router, RouterStateSnapshot } from "@angular/router";
-import { KeycloakService } from "keycloak-angular";
-import { AuthGuard } from "./auth.gard";
+import { ActivatedRouteSnapshot, RouterStateSnapshot } from "@angular/router";
 
-describe("AuthGuard", () => {
-    let guard: AuthGuard;
-    let mockRouter: jasmine.SpyObj<Router>;
-    let mockKeycloakService: jasmine.SpyObj<KeycloakService>;
+import { environment } from "src/environments/environment";
+
+// Configure environment BEFORE importing the service to prevent Keycloak initialization errors
+if (!environment.keycloak) {
+    (environment as any).keycloak = {
+        enabled: "false",
+        issuer: "http://test-issuer",
+        realm: "test-realm",
+        clientId: "test-client",
+    };
+}
+
+import {
+    CustomAuthService,
+    keycloak,
+} from "../core/service/business/custom-auth.service";
+import { authGuard } from "./auth.gard";
+
+describe("authGuard", () => {
+    let customAuthService: CustomAuthService;
     let mockRoute: ActivatedRouteSnapshot;
     let mockState: RouterStateSnapshot;
 
     beforeEach(() => {
-        mockRouter = jasmine.createSpyObj("Router", ["navigate", "parseUrl"]);
-        mockKeycloakService = jasmine.createSpyObj("KeycloakService", [
-            "isLoggedIn",
-            "login",
-            "logout",
-            "getKeycloakInstance",
-        ]);
-
         TestBed.configureTestingModule({
-            providers: [
-                AuthGuard,
-                { provide: Router, useValue: mockRouter },
-                { provide: KeycloakService, useValue: mockKeycloakService },
-            ],
+            providers: [CustomAuthService],
         });
 
-        guard = TestBed.inject(AuthGuard);
+        customAuthService = TestBed.inject(CustomAuthService);
+
+        // Create mock route and state
         mockRoute = {} as ActivatedRouteSnapshot;
-        mockState = { url: "/test-url" } as RouterStateSnapshot;
+        mockState = {
+            url: "/dashboard",
+        } as RouterStateSnapshot;
+
+        // Reset keycloak properties before each test
+        Object.defineProperty(keycloak, "authenticated", {
+            value: false,
+            writable: true,
+            configurable: true,
+        });
+
+        Object.defineProperty(keycloak, "token", {
+            value: null,
+            writable: true,
+            configurable: true,
+        });
+
+        // Clear localStorage
+        localStorage.clear();
     });
 
-    it("should be created", () => {
-        expect(guard).toBeTruthy();
+    afterEach(() => {
+        // Clean up keycloak properties
+        delete (keycloak as any).authenticated;
+        delete (keycloak as any).token;
     });
 
-    it("should extend KeycloakAuthGuard", () => {
-        expect(guard).toBeDefined();
-        expect(guard.isAccessAllowed).toBeDefined();
-    });
+    describe("Public Routes", () => {
+        it("should allow access to public routes regardless of authentication", async () => {
+            spyOn(customAuthService, "isPublicRoute").and.returnValue(true);
 
-    it("should inject Router", () => {
-        expect(guard["router"]).toBe(mockRouter);
-    });
+            const result = await TestBed.runInInjectionContext(() =>
+                authGuard(mockRoute, mockState),
+            );
 
-    it("should inject KeycloakService", () => {
-        expect(guard["keycloak"]).toBe(mockKeycloakService);
-    });
+            expect(result).toBe(true);
+            expect(customAuthService.isPublicRoute).toHaveBeenCalledWith("/dashboard");
+        });
 
-    describe("isAccessAllowed", () => {
-        it("should return true when user is authenticated", async () => {
-            Object.defineProperty(guard, "authenticated", {
-                get: () => true,
-                configurable: true,
-            });
+        it("should allow access to public routes when Keycloak is enabled", async () => {
+            spyOn(customAuthService, "isPublicRoute").and.returnValue(true);
+            const originalEnabled = environment.keycloak.enabled;
+            environment.keycloak.enabled = "true";
 
-            const result = await guard.isAccessAllowed(mockRoute, mockState);
+            const result = await TestBed.runInInjectionContext(() =>
+                authGuard(mockRoute, mockState),
+            );
+
+            expect(result).toBe(true);
+            environment.keycloak.enabled = originalEnabled;
+        });
+
+        it("should allow access to share landing page route", async () => {
+            mockState.url = "/share/123-456-789";
+            spyOn(customAuthService, "isPublicRoute").and.returnValue(true);
+
+            const result = await TestBed.runInInjectionContext(() =>
+                authGuard(mockRoute, mockState),
+            );
 
             expect(result).toBe(true);
         });
+    });
 
-        it("should return false when user is not authenticated", async () => {
-            Object.defineProperty(guard, "authenticated", {
-                get: () => false,
+    describe("Protected Routes - Keycloak Disabled", () => {
+        it("should allow access when Keycloak is disabled", async () => {
+            spyOn(customAuthService, "isPublicRoute").and.returnValue(false);
+            const originalEnabled = environment.keycloak.enabled;
+            environment.keycloak.enabled = "false";
+
+            const result = await TestBed.runInInjectionContext(() =>
+                authGuard(mockRoute, mockState),
+            );
+
+            expect(result).toBe(true);
+            environment.keycloak.enabled = originalEnabled;
+        });
+    });
+
+    describe("Protected Routes - Keycloak Enabled", () => {
+        beforeEach(() => {
+            spyOn(customAuthService, "isPublicRoute").and.returnValue(false);
+        });
+
+        it("should allow access when user is authenticated", async () => {
+            const originalEnabled = environment.keycloak.enabled;
+            environment.keycloak.enabled = "true";
+
+            Object.defineProperty(keycloak, "authenticated", {
+                value: true,
+                writable: true,
                 configurable: true,
             });
 
-            const result = await guard.isAccessAllowed(mockRoute, mockState);
+            const result = await TestBed.runInInjectionContext(() =>
+                authGuard(mockRoute, mockState),
+            );
 
+            expect(result).toBe(true);
+            environment.keycloak.enabled = originalEnabled;
+        });
+
+        it("should redirect to login when user is not authenticated", async () => {
+            const originalEnabled = environment.keycloak.enabled;
+            environment.keycloak.enabled = "true";
+
+            Object.defineProperty(keycloak, "authenticated", {
+                value: false,
+                writable: true,
+                configurable: true,
+            });
+
+            const loginSpy = spyOn(keycloak, "login" as any).and.returnValue(
+                Promise.resolve(),
+            );
+
+            const result = await TestBed.runInInjectionContext(() =>
+                authGuard(mockRoute, mockState),
+            );
+
+            expect(loginSpy).toHaveBeenCalledWith({
+                redirectUri: globalThis.location.origin + "/dashboard",
+                loginHint: "",
+            });
             expect(result).toBe(false);
+            environment.keycloak.enabled = originalEnabled;
         });
 
-        it("should be called with ActivatedRouteSnapshot", async () => {
-            Object.defineProperty(guard, "authenticated", {
-                get: () => true,
+        it("should use stored username as login hint when available", async () => {
+            const originalEnabled = environment.keycloak.enabled;
+            environment.keycloak.enabled = "true";
+            localStorage.setItem("username", "test-user@example.com");
+
+            Object.defineProperty(keycloak, "authenticated", {
+                value: false,
+                writable: true,
                 configurable: true,
             });
 
-            const testRoute = {
-                params: { id: "123" },
-                queryParams: { query: "test" },
-            } as any;
+            const loginSpy = spyOn(keycloak, "login" as any).and.returnValue(
+                Promise.resolve(),
+            );
 
-            const result = await guard.isAccessAllowed(testRoute, mockState);
+            const result = await TestBed.runInInjectionContext(() =>
+                authGuard(mockRoute, mockState),
+            );
 
-            expect(result).toBe(true);
-        });
-
-        it("should be called with RouterStateSnapshot", async () => {
-            Object.defineProperty(guard, "authenticated", {
-                get: () => true,
-                configurable: true,
+            expect(loginSpy).toHaveBeenCalledWith({
+                redirectUri: globalThis.location.origin + "/dashboard",
+                loginHint: "test-user@example.com",
             });
-
-            const testState = {
-                url: "/dashboard",
-                root: {} as any,
-            } as RouterStateSnapshot;
-
-            const result = await guard.isAccessAllowed(mockRoute, testState);
-
-            expect(result).toBe(true);
-        });
-
-        it("should handle different route configurations", async () => {
-            Object.defineProperty(guard, "authenticated", {
-                get: () => true,
-                configurable: true,
-            });
-
-            const routes: ActivatedRouteSnapshot[] = [
-                { data: { roles: ["admin"] } } as any,
-                { data: { roles: ["user"] } } as any,
-                { data: {} } as any,
-                {} as any,
-            ];
-
-            for (const route of routes) {
-                const result = await guard.isAccessAllowed(route, mockState);
-                expect(result).toBe(true);
-            }
-        });
-
-        it("should handle different state URLs", async () => {
-            Object.defineProperty(guard, "authenticated", {
-                get: () => true,
-                configurable: true,
-            });
-
-            const states: RouterStateSnapshot[] = [
-                { url: "/" } as any,
-                { url: "/home" } as any,
-                { url: "/admin/users" } as any,
-                { url: "/dashboard?id=123" } as any,
-            ];
-
-            for (const state of states) {
-                const result = await guard.isAccessAllowed(mockRoute, state);
-                expect(result).toBe(true);
-            }
-        });
-
-        it("should return boolean or UrlTree type", async () => {
-            Object.defineProperty(guard, "authenticated", {
-                get: () => true,
-                configurable: true,
-            });
-
-            const result = await guard.isAccessAllowed(mockRoute, mockState);
-
-            expect(typeof result === "boolean" || result instanceof Object).toBe(true);
-        });
-
-        it("should handle async authentication check", async () => {
-            let authValue = false;
-            Object.defineProperty(guard, "authenticated", {
-                get: () => authValue,
-                configurable: true,
-            });
-
-            const result1 = await guard.isAccessAllowed(mockRoute, mockState);
-            expect(result1).toBe(false);
-
-            authValue = true;
-            const result2 = await guard.isAccessAllowed(mockRoute, mockState);
-            expect(result2).toBe(true);
-        });
-
-        it("should return promise that resolves to boolean", async () => {
-            Object.defineProperty(guard, "authenticated", {
-                get: () => true,
-                configurable: true,
-            });
-
-            const promise = guard.isAccessAllowed(mockRoute, mockState);
-
-            expect(promise).toBeInstanceOf(Promise);
-            const result = await promise;
-            expect(typeof result).toBe("boolean");
-        });
-
-        it("should check authenticated property for access decision", async () => {
-            const authenticatedSpy = jasmine.createSpy("authenticated");
-            Object.defineProperty(guard, "authenticated", {
-                get: authenticatedSpy.and.returnValue(true),
-                configurable: true,
-            });
-
-            await guard.isAccessAllowed(mockRoute, mockState);
-
-            expect(authenticatedSpy).toHaveBeenCalled();
-        });
-    });
-
-    describe("Constructor", () => {
-        it("should call super constructor with router and keycloak", () => {
-            const newGuard = new AuthGuard(mockRouter, mockKeycloakService);
-            expect(newGuard).toBeTruthy();
-            expect(newGuard["router"]).toBe(mockRouter);
-            expect(newGuard["keycloak"]).toBe(mockKeycloakService);
-        });
-
-        it("should be injectable", () => {
-            const injectedGuard = TestBed.inject(AuthGuard);
-            expect(injectedGuard).toBeTruthy();
-            expect(injectedGuard).toBeInstanceOf(AuthGuard);
-        });
-
-        it("should be provided in root", () => {
-            const guard1 = TestBed.inject(AuthGuard);
-            const guard2 = TestBed.inject(AuthGuard);
-            expect(guard1).toBe(guard2);
-        });
-    });
-
-    describe("Integration scenarios", () => {
-        it("should deny access when not authenticated", async () => {
-            Object.defineProperty(guard, "authenticated", {
-                get: () => false,
-                configurable: true,
-            });
-
-            const protectedRoute = {
-                data: { requiresAuth: true },
-            } as any;
-            const state = { url: "/protected" } as any;
-
-            const result = await guard.isAccessAllowed(protectedRoute, state);
-
             expect(result).toBe(false);
+            environment.keycloak.enabled = originalEnabled;
         });
 
-        it("should allow access when authenticated", async () => {
-            Object.defineProperty(guard, "authenticated", {
-                get: () => true,
+        it("should preserve deep link URL in redirectUri", async () => {
+            const originalEnabled = environment.keycloak.enabled;
+            environment.keycloak.enabled = "true";
+            mockState.url = "/inventories/123/equipment/456";
+
+            Object.defineProperty(keycloak, "authenticated", {
+                value: false,
+                writable: true,
                 configurable: true,
             });
 
-            const protectedRoute = {
-                data: { requiresAuth: true },
-            } as any;
-            const state = { url: "/protected" } as any;
+            const loginSpy = spyOn(keycloak, "login" as any).and.returnValue(
+                Promise.resolve(),
+            );
 
-            const result = await guard.isAccessAllowed(protectedRoute, state);
+            const result = await TestBed.runInInjectionContext(() =>
+                authGuard(mockRoute, mockState),
+            );
+
+            expect(loginSpy).toHaveBeenCalledWith({
+                redirectUri:
+                    globalThis.location.origin + "/inventories/123/equipment/456",
+                loginHint: "",
+            });
+            expect(result).toBe(false);
+            environment.keycloak.enabled = originalEnabled;
+        });
+
+        it("should preserve query parameters in redirectUri", async () => {
+            const originalEnabled = environment.keycloak.enabled;
+            environment.keycloak.enabled = "true";
+            mockState.url = "/dashboard?tab=overview&filter=active";
+
+            Object.defineProperty(keycloak, "authenticated", {
+                value: false,
+                writable: true,
+                configurable: true,
+            });
+
+            const loginSpy = spyOn(keycloak, "login" as any).and.returnValue(
+                Promise.resolve(),
+            );
+
+            const result = await TestBed.runInInjectionContext(() =>
+                authGuard(mockRoute, mockState),
+            );
+
+            expect(loginSpy).toHaveBeenCalledWith({
+                redirectUri:
+                    globalThis.location.origin + "/dashboard?tab=overview&filter=active",
+                loginHint: "",
+            });
+            expect(result).toBe(false);
+            environment.keycloak.enabled = originalEnabled;
+        });
+    });
+
+    describe("Edge Cases", () => {
+        it("should handle root path correctly", async () => {
+            spyOn(customAuthService, "isPublicRoute").and.returnValue(false);
+            mockState.url = "/";
+
+            const originalEnabled = environment.keycloak.enabled;
+            environment.keycloak.enabled = "true";
+
+            Object.defineProperty(keycloak, "authenticated", {
+                value: true,
+                writable: true,
+                configurable: true,
+            });
+
+            const result = await TestBed.runInInjectionContext(() =>
+                authGuard(mockRoute, mockState),
+            );
 
             expect(result).toBe(true);
+            environment.keycloak.enabled = originalEnabled;
         });
 
-        it("should handle multiple consecutive access checks", async () => {
-            Object.defineProperty(guard, "authenticated", {
-                get: () => true,
+        it("should handle empty string as loginHint when username is empty", async () => {
+            const originalEnabled = environment.keycloak.enabled;
+            environment.keycloak.enabled = "true";
+            localStorage.setItem("username", "");
+
+            spyOn(customAuthService, "isPublicRoute").and.returnValue(false);
+
+            Object.defineProperty(keycloak, "authenticated", {
+                value: false,
+                writable: true,
                 configurable: true,
             });
 
-            const result1 = await guard.isAccessAllowed(mockRoute, mockState);
-            const result2 = await guard.isAccessAllowed(mockRoute, mockState);
-            const result3 = await guard.isAccessAllowed(mockRoute, mockState);
+            const loginSpy = spyOn(keycloak, "login" as any).and.returnValue(
+                Promise.resolve(),
+            );
+
+            const result = await TestBed.runInInjectionContext(() =>
+                authGuard(mockRoute, mockState),
+            );
+
+            expect(loginSpy).toHaveBeenCalledWith({
+                redirectUri: globalThis.location.origin + "/dashboard",
+                loginHint: "",
+            });
+            environment.keycloak.enabled = originalEnabled;
+        });
+
+        it("should check isPublicRoute for every guard invocation", async () => {
+            const isPublicSpy = spyOn(customAuthService, "isPublicRoute").and.returnValue(
+                true,
+            );
+
+            await TestBed.runInInjectionContext(() => authGuard(mockRoute, mockState));
+
+            expect(isPublicSpy).toHaveBeenCalledTimes(1);
+            expect(isPublicSpy).toHaveBeenCalledWith("/dashboard");
+        });
+    });
+
+    describe("Integration Scenarios", () => {
+        it("should work correctly when transitioning from authenticated to unauthenticated", async () => {
+            spyOn(customAuthService, "isPublicRoute").and.returnValue(false);
+            const originalEnabled = environment.keycloak.enabled;
+            environment.keycloak.enabled = "true";
+
+            // First call - authenticated
+            Object.defineProperty(keycloak, "authenticated", {
+                value: true,
+                writable: true,
+                configurable: true,
+            });
+
+            const result1 = await TestBed.runInInjectionContext(() =>
+                authGuard(mockRoute, mockState),
+            );
 
             expect(result1).toBe(true);
-            expect(result2).toBe(true);
-            expect(result3).toBe(true);
-        });
 
-        it("should handle authentication state changes", async () => {
-            let isAuthenticated = true;
-            Object.defineProperty(guard, "authenticated", {
-                get: () => isAuthenticated,
+            // Second call - not authenticated (session expired)
+            Object.defineProperty(keycloak, "authenticated", {
+                value: false,
+                writable: true,
                 configurable: true,
             });
 
-            const result1 = await guard.isAccessAllowed(mockRoute, mockState);
-            expect(result1).toBe(true);
+            const loginSpy = spyOn(keycloak, "login" as any).and.returnValue(
+                Promise.resolve(),
+            );
 
-            isAuthenticated = false;
-            const result2 = await guard.isAccessAllowed(mockRoute, mockState);
+            const result2 = await TestBed.runInInjectionContext(() =>
+                authGuard(mockRoute, mockState),
+            );
+
             expect(result2).toBe(false);
+            expect(loginSpy).toHaveBeenCalled();
 
-            isAuthenticated = true;
-            const result3 = await guard.isAccessAllowed(mockRoute, mockState);
-            expect(result3).toBe(true);
-        });
-    });
-
-    describe("Edge cases", () => {
-        it("should handle null route snapshot", async () => {
-            Object.defineProperty(guard, "authenticated", {
-                get: () => true,
-                configurable: true,
-            });
-
-            const result = await guard.isAccessAllowed(null as any, mockState);
-
-            expect(result).toBe(true);
+            environment.keycloak.enabled = originalEnabled;
         });
 
-        it("should handle null state snapshot", async () => {
-            Object.defineProperty(guard, "authenticated", {
-                get: () => true,
-                configurable: true,
-            });
+        it("should allow multiple public routes without calling Keycloak", async () => {
+            const isPublicSpy = spyOn(customAuthService, "isPublicRoute").and.returnValue(
+                true,
+            );
+            const loginSpy = spyOn(keycloak, "login" as any);
 
-            const result = await guard.isAccessAllowed(mockRoute, null as any);
+            const publicRoutes = ["/share/123", "/share/456", "/share/789"];
 
-            expect(result).toBe(true);
-        });
+            for (const route of publicRoutes) {
+                mockState.url = route;
+                const result = await TestBed.runInInjectionContext(() =>
+                    authGuard(mockRoute, mockState),
+                );
+                expect(result).toBe(true);
+            }
 
-        it("should handle empty route data", async () => {
-            Object.defineProperty(guard, "authenticated", {
-                get: () => true,
-                configurable: true,
-            });
-
-            const emptyRoute = { data: {} } as any;
-
-            const result = await guard.isAccessAllowed(emptyRoute, mockState);
-
-            expect(result).toBe(true);
-        });
-
-        it("should handle complex route hierarchies", async () => {
-            Object.defineProperty(guard, "authenticated", {
-                get: () => true,
-                configurable: true,
-            });
-
-            const complexRoute = {
-                parent: {
-                    parent: {
-                        data: { auth: true },
-                    },
-                    data: { roles: ["admin"] },
-                },
-                data: { specific: "value" },
-            } as any;
-
-            const result = await guard.isAccessAllowed(complexRoute, mockState);
-
-            expect(result).toBe(true);
-        });
-
-        it("should handle routes with query parameters", async () => {
-            Object.defineProperty(guard, "authenticated", {
-                get: () => true,
-                configurable: true,
-            });
-
-            const routeWithQuery = {
-                queryParams: { redirect: "/home", id: "123" },
-            } as any;
-
-            const result = await guard.isAccessAllowed(routeWithQuery, mockState);
-
-            expect(result).toBe(true);
-        });
-
-        it("should handle routes with path parameters", async () => {
-            Object.defineProperty(guard, "authenticated", {
-                get: () => true,
-                configurable: true,
-            });
-
-            const routeWithParams = {
-                params: { userId: "456", orgId: "789" },
-            } as any;
-
-            const result = await guard.isAccessAllowed(routeWithParams, mockState);
-
-            expect(result).toBe(true);
-        });
-
-        it("should handle state with fragments", async () => {
-            Object.defineProperty(guard, "authenticated", {
-                get: () => true,
-                configurable: true,
-            });
-
-            const stateWithFragment = {
-                url: "/page#section",
-                root: {} as any,
-            } as RouterStateSnapshot;
-
-            const result = await guard.isAccessAllowed(mockRoute, stateWithFragment);
-
-            expect(result).toBe(true);
+            expect(isPublicSpy).toHaveBeenCalledTimes(3);
+            expect(loginSpy).not.toHaveBeenCalled();
         });
     });
 });

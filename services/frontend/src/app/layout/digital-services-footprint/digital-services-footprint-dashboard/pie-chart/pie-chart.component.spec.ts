@@ -25,22 +25,22 @@ describe("PieChartComponent", () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [PieChartComponent],
-            imports: [
-                ButtonModule,
-                SharedModule,
-                NgxEchartsModule,
-                TranslateModule.forRoot(),
-            ],
-            providers: [
-                TranslatePipe,
-                TranslateService,
-                {
-                    provide: NGX_ECHARTS_CONFIG,
-                    useFactory: () => ({ echarts: () => import("echarts") }),
-                },
-            ],
-        }).compileComponents();
+    imports: [
+        ButtonModule,
+        SharedModule,
+        NgxEchartsModule,
+        TranslateModule.forRoot(),
+        PieChartComponent,
+    ],
+    providers: [
+        TranslatePipe,
+        TranslateService,
+        {
+            provide: NGX_ECHARTS_CONFIG,
+            useFactory: () => ({ echarts: () => import("echarts") }),
+        },
+    ],
+}).compileComponents();
     });
 
     beforeEach(async () => {

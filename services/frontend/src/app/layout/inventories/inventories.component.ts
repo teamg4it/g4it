@@ -5,6 +5,7 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
+import { AsyncPipe } from "@angular/common";
 import {
     Component,
     DestroyRef,
@@ -14,28 +15,53 @@ import {
     ViewChild,
 } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { FormsModule } from "@angular/forms";
 import { ActivatedRoute, Event, NavigationEnd, Router } from "@angular/router";
-import { TranslateService } from "@ngx-translate/core";
+import { TranslatePipe, TranslateService } from "@ngx-translate/core";
+import { AccordionModule } from "primeng/accordion";
 import { ConfirmationService, MessageService } from "primeng/api";
+import { Button } from "primeng/button";
+import { DrawerModule } from "primeng/drawer";
+import { InputTextModule } from "primeng/inputtext";
+import { ScrollPanelModule } from "primeng/scrollpanel";
+import { ToastModule } from "primeng/toast";
 import { Subject, takeUntil } from "rxjs";
 import { sortByProperty } from "sort-by-property";
 import {
     Inventory,
     InventoryCriteriaRest,
 } from "src/app/core/interfaces/inventory.interfaces";
-import { Note } from "src/app/core/interfaces/note.interface";
 import { Role } from "src/app/core/interfaces/roles.interfaces";
 import { Workspace } from "src/app/core/interfaces/user.interfaces";
 import { InventoryService } from "src/app/core/service/business/inventory.service";
 import { UserService } from "src/app/core/service/business/user.service";
 import { GlobalStoreService } from "src/app/core/store/global.store";
 import { Constants } from "src/constants";
+import { CommonEditorComponent } from "../common/common-editor/common-editor.component";
+import { RenewServicePopupComponent } from "../common/renew-service-popup/renew-service-popup.component";
 import { FilePanelComponent } from "./file-panel/file-panel.component";
+import { InventoryItemComponent } from "./inventory-item/inventory-item.component";
 
 @Component({
     selector: "app-inventories",
     templateUrl: "./inventories.component.html",
     providers: [ConfirmationService, MessageService],
+    standalone: true,
+    imports: [
+        ToastModule,
+        DrawerModule,
+        FilePanelComponent,
+        CommonEditorComponent,
+        Button,
+        ScrollPanelModule,
+        AccordionModule,
+        InventoryItemComponent,
+        FormsModule,
+        InputTextModule,
+        RenewServicePopupComponent,
+        AsyncPipe,
+        TranslatePipe,
+    ],
 })
 export class InventoriesComponent implements OnInit, OnDestroy {
     private readonly destroyRef = inject(DestroyRef);
@@ -45,6 +71,8 @@ export class InventoriesComponent implements OnInit, OnDestroy {
     @ViewChild(FilePanelComponent) filePanelComponent: FilePanelComponent | undefined;
     sidebarVisible: boolean = false;
     sidebarPurpose: string = "";
+    array = Array;
+    String = String;
     sidebarType = "FILE"; // or NOTE
     id: number = 0;
     name: any = "";
@@ -98,7 +126,6 @@ export class InventoriesComponent implements OnInit, OnDestroy {
                           .map((v) => Number.parseInt(v)),
                   )
                 : new Set();
-
             if (localStorage.getItem("inventoryBlocksOpen") == null) {
                 this.inventoryBlocksOpen = new Set([
                     Constants.INVENTORY_TYPE.INFORMATION_SYSTEM,
@@ -276,7 +303,7 @@ export class InventoriesComponent implements OnInit, OnDestroy {
     noteSaveValue(event: any) {
         this.selectedInventory.note = {
             content: event,
-        } as Note;
+        };
 
         this.inventoryService
             .updateInventory(this.selectedInventory)
@@ -348,12 +375,12 @@ export class InventoriesComponent implements OnInit, OnDestroy {
     }
 
     childOpenTab(event: any) {
-        this.inventoriesOpen.add(event);
+        this.inventoriesOpen.add(Number(event.index));
         this.updateLocalStorage();
     }
 
     childCloseTab(event: any) {
-        this.inventoriesOpen.delete(event);
+        this.inventoriesOpen.delete(Number(event.index));
         this.updateLocalStorage();
     }
 

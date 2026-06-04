@@ -14,18 +14,33 @@ import {
     signal,
     SimpleChanges,
 } from "@angular/core";
-import { TranslateService } from "@ngx-translate/core";
-import { CheckboxChangeEvent } from "primeng/checkbox";
+import { TranslatePipe, TranslateService } from "@ngx-translate/core";
+import { CheckboxChangeEvent, CheckboxModule } from "primeng/checkbox";
 import { Filter, TransformedDomain } from "src/app/core/interfaces/filter.interface";
 import { FilterService } from "src/app/core/service/business/filter.service";
 
+import { NgClass } from "@angular/common";
+import { FormsModule } from "@angular/forms";
+import { AccordionModule } from "primeng/accordion";
+import { Button } from "primeng/button";
 import { FootprintStoreService } from "src/app/core/store/footprint.store";
 import { Constants } from "src/constants";
+import { BaseFilterSidebarComponent } from "../../base-filter-sidebar/base-filter-sidebar.component";
 
 @Component({
     selector: "dataviz-filter-application",
     templateUrl: "./dataviz-filter-application.component.html",
     styleUrl: "./dataviz-filter-application.component.scss",
+    standalone: true,
+    imports: [
+        Button,
+        BaseFilterSidebarComponent,
+        AccordionModule,
+        CheckboxModule,
+        FormsModule,
+        NgClass,
+        TranslatePipe,
+    ],
 })
 export class DatavizFilterApplicationComponent implements OnChanges {
     @Input() allFilters: Filter<string | TransformedDomain> = {};
@@ -65,6 +80,7 @@ export class DatavizFilterApplicationComponent implements OnChanges {
     }
 
     selectedFilters() {
+        // Initialize with all available filters when data changes
         this.allUnusedFilters = structuredClone(
             this.allFilters,
         ) as Filter<TransformedDomain>;
@@ -150,14 +166,53 @@ export class DatavizFilterApplicationComponent implements OnChanges {
     }
 
     openFilterSidebar(): void {
-        // Create a deep copy of current filters from store
-        const currentFilters = this.footprintStore.applicationSelectedFilters();
-        this.localFilters.set(structuredClone(currentFilters));
-        // Use current filter state (with checked values), not raw allFilters
+        // Start with ALL available filters
         this.allUnusedFilters = structuredClone(
-            currentFilters,
+            this.allFilters,
         ) as Filter<TransformedDomain>;
+
+        // Get current selection state from store
+        const currentFilters = this.footprintStore.applicationSelectedFilters();
+
+        // For tree-based filters (domain), merge the checked state
+        if (this.allUnusedFilters["domain"] && currentFilters["domain"]) {
+            this.allUnusedFilters["domain"] = this.mergeFilterState(
+                this.allUnusedFilters["domain"],
+                currentFilters["domain"] as TransformedDomain[],
+            );
+        }
+
+        // Set local filters to current selection state
+        this.localFilters.set(structuredClone(currentFilters));
         this.filterSidebarVisible = true;
+    }
+
+    private mergeFilterState(
+        allFilters: TransformedDomain[],
+        selectedFilters: TransformedDomain[],
+    ): TransformedDomain[] {
+        return allFilters.map((domain) => {
+            const selected = selectedFilters.find((s) => s.label === domain.label);
+            if (selected) {
+                const mergedChildren =
+                    domain.children?.map((child) => {
+                        const selectedChild = selected.children?.find(
+                            (sc) => sc.label === child.label,
+                        );
+                        return {
+                            ...child,
+                            checked: selectedChild?.checked ?? true,
+                        };
+                    }) ?? [];
+
+                return {
+                    ...domain,
+                    checked: selected.checked ?? true,
+                    children: mergedChildren,
+                };
+            }
+            return domain;
+        });
     }
 
     closeFilterSidebar(): void {

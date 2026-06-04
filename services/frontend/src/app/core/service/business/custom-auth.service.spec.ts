@@ -1,130 +1,205 @@
 import { TestBed } from "@angular/core/testing";
 import { NavigationEnd, Router } from "@angular/router";
-import { KeycloakService } from "keycloak-angular";
 import { Subject } from "rxjs";
+
 import { Constants } from "src/constants";
 import { environment } from "src/environments/environment";
+
+// Configure environment BEFORE importing the service to prevent Keycloak initialization errors
+if (!environment.keycloak) {
+    (environment as any).keycloak = {
+        enabled: "false",
+        issuer: "http://test-issuer",
+        realm: "test-realm",
+        clientId: "test-client",
+    };
+}
+
 import { DigitalServiceStoreService } from "../../store/digital-service.store";
-import { CustomAuthService } from "./custom-auth.service";
-
-// Simple mock store
-const mockStore = {
-    setIsSharedDS: jasmine.createSpy("setIsSharedDS"),
-};
-
-// Router events subject
-const routerEvents$ = new Subject<any>();
-const mockRouter = {
-    events: routerEvents$.asObservable(),
-};
-
-// Keycloak mock
-const mockKeycloak = {
-    init: jasmine.createSpy("init").and.returnValue(Promise.resolve(true)),
-    isLoggedIn: jasmine.createSpy("isLoggedIn"),
-};
+import { CustomAuthService, keycloak } from "./custom-auth.service";
 
 describe("CustomAuthService", () => {
     let service: CustomAuthService;
 
+    let routerMock: {
+        events: Subject<any>;
+    };
+
+    let digitalServiceStoreMock: {
+        setIsSharedDS: jasmine.Spy;
+    };
+
+    // Define keycloak properties once before all tests
+    beforeAll(() => {
+        // Only define properties if they don't exist or aren't configurable
+        const descriptor = Object.getOwnPropertyDescriptor(keycloak, "authenticated");
+        if (!descriptor || !descriptor.configurable) {
+            try {
+                delete (keycloak as any).authenticated;
+            } catch (e) {
+                // Can't delete, will try to redefine anyway
+            }
+        }
+        
+        Object.defineProperty(keycloak, "authenticated", {
+            value: false,
+            writable: true,
+            configurable: true,
+        });
+    });
+
     beforeEach(() => {
-        // Ensure keycloak feature enabled for tests needing it
-        (environment as any).keycloak = {
-            ...(environment.keycloak || {}),
-            enabled: "true",
-            issuer: "http://issuer",
-            realm: "realm",
-            clientId: "clientId",
+        routerMock = {
+            events: new Subject(),
+        };
+
+        digitalServiceStoreMock = {
+            setIsSharedDS: jasmine.createSpy("setIsSharedDS"),
         };
 
         TestBed.configureTestingModule({
             providers: [
                 CustomAuthService,
-                { provide: Router, useValue: mockRouter },
-                { provide: KeycloakService, useValue: mockKeycloak },
-                { provide: DigitalServiceStoreService, useValue: mockStore },
+                {
+                    provide: Router,
+                    useValue: routerMock,
+                },
+                {
+                    provide: DigitalServiceStoreService,
+                    useValue: digitalServiceStoreMock,
+                },
             ],
         });
 
         service = TestBed.inject(CustomAuthService);
-        mockStore.setIsSharedDS.calls.reset();
-        mockKeycloak.init.calls.reset();
-        mockKeycloak.isLoggedIn.calls.reset();
+
+        // Reset keycloak property value (not redefine)
+        (keycloak as any).authenticated = false;
     });
 
-    function setPath(path: string) {
-        // Use history API to change pathname (works in Karma browser)
-        window.history.pushState({}, "", path);
-    }
-
-    it("isPublicRoute should return true for any path containing a public endpoint fragment", () => {
-        const publicPath = `/some/${Constants.ENDPOINTS.sharedDs}/foo`;
-        expect(service.isPublicRoute(publicPath)).toBeTrue();
+    afterEach(() => {
+        jasmine.clock().uninstall();
     });
 
-    it("isPublicRoute should return false for protected path", () => {
-        expect(service.isPublicRoute("/secure/dashboard")).toBeFalse();
+    describe("isPublicRoute", () => {
+        it("should return true for sharedDs route", () => {
+            const result = service.isPublicRoute(`/test/${Constants.ENDPOINTS.sharedDs}`);
+
+            expect(result).toBeTrue();
+        });
+
+        it("should return true for dsv route", () => {
+            const result = service.isPublicRoute(`/test/${Constants.ENDPOINTS.dsv}`);
+
+            expect(result).toBeTrue();
+        });
+
+        it("should return false for protected route", () => {
+            const result = service.isPublicRoute("/dashboard");
+
+            expect(result).toBeFalse();
+        });
     });
 
-    it("init should set shared flag true and skip keycloak.init on public route", async () => {
-        setPath(`/${Constants.ENDPOINTS.sharedDs}/abc`);
-        await service.init();
-        expect(mockStore.setIsSharedDS).toHaveBeenCalledWith(true);
-        expect(mockKeycloak.init).not.toHaveBeenCalled();
+    describe("init", () => {
+        it("should not initialize keycloak for public routes", async () => {
+            spyOn(service, "isPublicRoute").and.returnValue(true);
+
+            const keycloakSpy = spyOn(keycloak, "init");
+
+            const result = await service.init();
+
+            expect(result).toBeTrue();
+            expect(digitalServiceStoreMock.setIsSharedDS).toHaveBeenCalledWith(true);
+
+            expect(keycloakSpy).not.toHaveBeenCalled();
+        });
+
+        it("should initialize keycloak for protected routes when enabled", async () => {
+            spyOn(service, "isPublicRoute").and.returnValue(false);
+
+            environment.keycloak.enabled = "true";
+
+            const keycloakInitSpy = spyOn(keycloak, "init").and.returnValue(
+                Promise.resolve(true),
+            );
+
+            const result = await service.init();
+
+            expect(result).toBeTrue();
+
+            expect(digitalServiceStoreMock.setIsSharedDS).toHaveBeenCalledWith(false);
+
+            expect(keycloakInitSpy).toHaveBeenCalledWith({
+                onLoad: "check-sso",
+                flow: "standard",
+                checkLoginIframe: false,
+            });
+        });
+
+        it("should not initialize keycloak when disabled", async () => {
+            spyOn(service, "isPublicRoute").and.returnValue(false);
+
+            environment.keycloak.enabled = "false";
+
+            const keycloakInitSpy = spyOn(keycloak, "init");
+
+            const result = await service.init();
+
+            expect(result).toBeTrue();
+            expect(keycloakInitSpy).not.toHaveBeenCalled();
+        });
     });
 
-    it("init should set shared flag false and call keycloak.init on protected route", async () => {
-        setPath("/protected/area");
-        await service.init();
-        expect(mockStore.setIsSharedDS).toHaveBeenCalledWith(false);
-        expect(mockKeycloak.init).toHaveBeenCalledWith(
-            jasmine.objectContaining({
-                config: jasmine.any(Object),
-                initOptions: jasmine.objectContaining({ onLoad: "check-sso" }),
-            }),
-        );
-    });
+    describe("setupRouteGuard", () => {
+        beforeEach(() => {
+            environment.keycloak.enabled = "true";
+        });
 
-    it("setupRouteGuard should call init when navigating to protected route and not logged in", async () => {
-        setPath("/protected/start");
-        mockKeycloak.isLoggedIn.and.returnValue(false);
-        service.setupRouteGuard();
+        it("should call init when navigating to protected route and user not authenticated", () => {
+            spyOn(service, "isPublicRoute").and.returnValue(false);
 
-        routerEvents$.next(new NavigationEnd(1, "/protected/start", "/protected/start"));
+            spyOn(service, "init").and.returnValue(Promise.resolve(true));
 
-        // init called (indirectly) => keycloak.init invoked
-        await Promise.resolve();
-        expect(mockKeycloak.isLoggedIn).toHaveBeenCalled();
-        expect(mockKeycloak.init).toHaveBeenCalled();
-    });
+            Object.defineProperty(keycloak, "authenticated", {
+                value: false,
+                writable: true,
+            });
 
-    it("setupRouteGuard should NOT call init when navigating to protected route and already logged in", async () => {
-        setPath("/protected/start");
-        mockKeycloak.isLoggedIn.and.returnValue(true);
-        service.setupRouteGuard();
+            service.setupRouteGuard();
 
-        routerEvents$.next(new NavigationEnd(1, "/protected/start", "/protected/start"));
-        await Promise.resolve();
+            routerMock.events.next(new NavigationEnd(1, "/protected", "/protected"));
 
-        expect(mockKeycloak.isLoggedIn).toHaveBeenCalled();
-        expect(mockKeycloak.init).not.toHaveBeenCalled();
-    });
+            expect(service.init).toHaveBeenCalled();
+        });
 
-    it("setupRouteGuard should NOT call init on public route navigation", async () => {
-        setPath(`/${Constants.ENDPOINTS.dsv}/xyz`);
-        mockKeycloak.isLoggedIn.and.returnValue(false);
-        service.setupRouteGuard();
+        it("should not call init for public routes", () => {
+            spyOn(service, "isPublicRoute").and.returnValue(true);
 
-        routerEvents$.next(
-            new NavigationEnd(
-                1,
-                `/${Constants.ENDPOINTS.dsv}/xyz`,
-                `/${Constants.ENDPOINTS.dsv}/xyz`,
-            ),
-        );
-        await Promise.resolve();
+            spyOn(service, "init");
 
-        expect(mockKeycloak.isLoggedIn).not.toHaveBeenCalled();
-        expect(mockKeycloak.init).not.toHaveBeenCalled();
+            service.setupRouteGuard();
+
+            routerMock.events.next(new NavigationEnd(1, "/public", "/public"));
+
+            expect(service.init).not.toHaveBeenCalled();
+        });
+
+        it("should not call init when user is already authenticated", () => {
+            spyOn(service, "isPublicRoute").and.returnValue(false);
+
+            spyOn(service, "init");
+
+            Object.defineProperty(keycloak, "authenticated", {
+                value: true,
+                writable: true,
+            });
+
+            service.setupRouteGuard();
+
+            routerMock.events.next(new NavigationEnd(1, "/dashboard", "/dashboard"));
+
+            expect(service.init).not.toHaveBeenCalled();
+        });
     });
 });

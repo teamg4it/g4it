@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Repository
 public interface MatchingItemRepository extends JpaRepository<MatchingItem, Long> {
@@ -38,4 +39,11 @@ public interface MatchingItemRepository extends JpaRepository<MatchingItem, Long
     Optional<MatchingItem> findByItemSourceAndWorkspaceId(final String itemSource, final Long workspaceId);
 
     Page<MatchingItem> findByWorkspaceId(Long workspaceId, Pageable pageable);
+
+    Optional<MatchingItem> findByItemSourceAndOrganizationAndWorkspaceId(final String itemSource, final String organization,final Long workspaceId);
+
+    List<MatchingItem> findByItemSourceInAndWorkspaceId(
+            Set<String> itemSources,
+            Long workspaceId
+    );
 }

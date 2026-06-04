@@ -10,7 +10,6 @@ module.exports = function (config) {
             require("karma-chrome-launcher"),
             require("karma-jasmine-html-reporter"),
             require("karma-coverage"),
-            require("@angular-devkit/build-angular/plugins/karma"),
             require("karma-junit-reporter"),
         ],
         client: {
@@ -28,11 +27,7 @@ module.exports = function (config) {
         coverageReporter: {
             dir: require("path").join(__dirname, "./coverage/frontend"),
             subdir: ".",
-            reporters: [
-                { type: "html" },
-                { type: "text-summary" },
-                { type: "lcov" },
-            ],
+            reporters: [{ type: "html" }, { type: "text-summary" }, { type: "lcov" }],
         },
         reporters: ["progress", "kjhtml", "junit"],
         junitReporter: {

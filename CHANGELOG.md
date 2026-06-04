@@ -1,5 +1,26 @@
 # G4IT
 
+## 3.13.0
+
+### Major Changes
+
+- 2180 | Angular Upgrade to version 21
+
+### Minor Changes
+
+- 2188 | Digital Service version duplication button show loader till duplicated version is created
+
+
+## 3.12.1
+
+### Major Changes
+
+- 2181 | Severe performance degradation and blocking during impact calculation after introduction of workspace-specific referential
+
+### Minor Changes
+
+- 2205 | Average lifespan calculation fix
+
 ## 3.12.0
 
 ## Major changes
@@ -11,6 +32,8 @@
 
 ### Minor Changes
 - 2129 | Fix for Unit change - Unauthorized error remove in Digital Service
+- 2140 | Inventories - Application View Review Set Graph view as default, Additional elements of analysis section added
+- 2142 | Retain repartition dropdown list selection in the navigation on the inventory results page.
 
 
 ## 3.11.0

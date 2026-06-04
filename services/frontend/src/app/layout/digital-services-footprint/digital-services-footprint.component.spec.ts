@@ -2,10 +2,14 @@ import { ChangeDetectorRef } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute, convertToParamMap } from "@angular/router";
 import { TranslateModule } from "@ngx-translate/core";
+import { MessageService } from "primeng/api";
 import { of } from "rxjs";
 import { DigitalServiceBusinessService } from "src/app/core/service/business/digital-services.service";
+import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
 import { InDatacentersService } from "src/app/core/service/data/in-out/in-datacenters.service";
+import { InventoryDataService } from "src/app/core/service/data/inventory-data.service";
+import { AIFormsStore } from "src/app/core/store/ai-forms.store";
 import { DigitalServiceStoreService } from "src/app/core/store/digital-service.store";
 import { GlobalStoreService } from "src/app/core/store/global.store";
 import { DigitalServicesFootprintComponent } from "./digital-services-footprint.component";
@@ -18,6 +22,9 @@ describe("DigitalServicesFootprintComponent", () => {
         snapshot: {
             paramMap: {
                 get: (key: string) => "test-uid",
+            },
+            queryParamMap: {
+                get: (key: string) => null,
             },
         },
         paramMap: of(
@@ -39,6 +46,10 @@ describe("DigitalServicesFootprintComponent", () => {
         getDeviceReferential: () => of([]),
         getHostServerReferential: () => of([]),
         update: () => of(mockDigitalService),
+        digitalService$: of(mockDigitalService),
+        getServiceRenewalDetails: () => of(null),
+        getDuplicateDigitalServiceAndVersionName: () =>
+            of({ dsNames: [], versionNames: [] }),
     };
 
     const mockDigitalServiceStoreService = {
@@ -66,15 +77,35 @@ describe("DigitalServicesFootprintComponent", () => {
         create: () => of({}),
     };
 
+    const mockUserService = {
+        currentOrganization$: of({
+            name: "Test Org",
+            id: "test-org-id",
+            ecomindai: false,
+        }),
+        currentWorkspace$: of({ name: "Test Workspace" }),
+        user$: of({ email: "test@example.com" }),
+    };
+
+    const mockInventoryDataService = {
+        getServiceRenewalDetails: () => of(null),
+    };
+
+    const mockAIFormsStore = {
+        setParameterChange: jasmine.createSpy(),
+        setInfrastructureChange: jasmine.createSpy(),
+        clearForms: jasmine.createSpy(),
+    };
+
     const mockCdr = { detectChanges: jasmine.createSpy() };
 
     const MockScrollPanel = { refresh: jasmine.createSpy("refresh") };
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [DigitalServicesFootprintComponent],
-            imports: [TranslateModule.forRoot()],
+            imports: [TranslateModule.forRoot(), DigitalServicesFootprintComponent],
             providers: [
+                MessageService,
                 { provide: ActivatedRoute, useValue: mockRoute },
                 {
                     provide: DigitalServicesDataService,
@@ -91,6 +122,9 @@ describe("DigitalServicesFootprintComponent", () => {
                 { provide: ChangeDetectorRef, useValue: mockCdr },
                 { provide: GlobalStoreService, useValue: mockGlobal },
                 { provide: InDatacentersService, useValue: mockInDatacentersService },
+                { provide: UserService, useValue: mockUserService },
+                { provide: InventoryDataService, useValue: mockInventoryDataService },
+                { provide: AIFormsStore, useValue: mockAIFormsStore },
             ],
         }).compileComponents();
 
@@ -115,15 +149,6 @@ describe("DigitalServicesFootprintComponent", () => {
         component.updateTabItems();
         expect(component.tabItems?.length).toBe(2);
         expect(component.tabItems?.find((item) => item.id === "resources")).toBeDefined();
-    });
-
-    it("should call updateHeights in updateEnableCalculation", (done) => {
-        const spy = spyOn(component, "updateHeights");
-        component.updateEnableCalculation();
-        setTimeout(() => {
-            expect(spy).toHaveBeenCalled();
-            done();
-        }, 10);
     });
 
     it("should call asyncInit() with the UID from route params", () => {

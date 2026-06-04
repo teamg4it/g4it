@@ -1,10 +1,14 @@
 import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { FormGroup } from "@angular/forms";
+import { NgClass } from "@angular/common";
+import { TranslatePipe } from "@ngx-translate/core";
 
 @Component({
     selector: "app-form-nav",
     templateUrl: "./form-nav.component.html",
     styleUrl: "./form-nav.component.scss",
+    standalone: true,
+    imports: [NgClass, TranslatePipe],
 })
 export class FormNavComponent {
     @Input() spaceDetails: any;

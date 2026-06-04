@@ -11,27 +11,28 @@
         />
     }
     @if (!showInconsitencyGraph) {
-        <p-dropdown
+        <p-select
             [options]="dimensions"
             [ngModel]="store.dimension()"
             (ngModelChange)="store.setDimension($event)"
             [placeholder]="'inventories-footprint.select-dimension' | translate"
-            styleClass="ml-auto"
         >
             <ng-template pTemplate="selectedItem">
-                <div *ngIf="store.dimension()">
-                    {{
-                        "inventories-footprint.round-button." + store.dimension()
-                            | translate
-                    }}
-                </div>
+                @if (store.dimension()) {
+                    <div>
+                        {{
+                            "inventories-footprint.round-button." + store.dimension()
+                                | translate
+                        }}
+                    </div>
+                }
             </ng-template>
             <ng-template let-dimension pTemplate="item">
                 <div>
                     {{ "inventories-footprint.round-button." + dimension | translate }}
                 </div>
             </ng-template>
-        </p-dropdown>
+        </p-select>
     }
 </div>
 @if (showInconsitencyGraph) {

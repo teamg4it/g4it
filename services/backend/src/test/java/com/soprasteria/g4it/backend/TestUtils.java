@@ -57,7 +57,6 @@ public class TestUtils {
             .enable(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS)
             .enable(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY)
             .enable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
-            .serializationInclusion(JsonInclude.Include.NON_NULL)
             .addModule(new JavaTimeModule()
                     .addDeserializer(LocalDate.class, new LocalDateDeserializer(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
                     .addSerializer(LocalDate.class, new LocalDateSerializer(DateTimeFormatter.ofPattern("yyyy-MM-dd"))))

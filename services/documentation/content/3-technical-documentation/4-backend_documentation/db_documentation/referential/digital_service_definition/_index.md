@@ -27,6 +27,7 @@ erDiagram
     varchar ref_default_item
     varchar subscriber UK
     varchar version
+    int8 workspace_id
   }
   ref_network_type {
     int8 id PK
@@ -104,6 +105,7 @@ erDiagram
 |ref_default_item|varchar||
 |subscriber|varchar||
 |version|varchar||
+|workspace_id|int8||
 
 #### Primary Key 
 

@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 
 import { ActivatedRoute, convertToParamMap } from "@angular/router";
+import { TranslateModule } from "@ngx-translate/core";
+import { MessageService } from "primeng/api";
 import { of } from "rxjs";
 import { DigitalServicesResourcesComponent } from "./digital-services-resources.component";
 
@@ -10,8 +12,9 @@ describe("DigitalServicesResourcesComponent", () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [DigitalServicesResourcesComponent],
+            imports: [DigitalServicesResourcesComponent, TranslateModule.forRoot()],
             providers: [
+                MessageService,
                 {
                     provide: ActivatedRoute,
                     useValue: {
