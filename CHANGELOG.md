@@ -1,5 +1,16 @@
 # G4IT
 
+## 3.13.0
+
+### Major Changes
+
+- 2180 | Angular Upgrade to version 21
+
+### Minor Changes
+
+- 2188 | Digital Service version duplication button show loader till duplicated version is created
+
+
 ## 3.12.1
 
 ### Major Changes
