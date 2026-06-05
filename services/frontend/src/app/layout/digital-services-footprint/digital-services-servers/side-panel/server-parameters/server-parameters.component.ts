@@ -82,7 +82,7 @@ export class PanelServerParametersComponent {
         },
     );
 
-    datacenterOptions = computed(() => {
+    datacenterOptions = computed<ServerDC[]>(() => {
         return this.digitalServiceStore.inDatacenters().map((datacenter) => {
             return {
                 location: datacenter.location,
@@ -90,7 +90,7 @@ export class PanelServerParametersComponent {
                 pue: datacenter.pue,
                 displayLabel: datacenter.displayLabel,
                 uid: "",
-            } as ServerDC;
+            };
         });
     });
     indexDatacenter: number = 0;
