@@ -6,4 +6,6 @@ COPY --chown=keycloak:keycloak extensions/ /opt/keycloak/providers/
 COPY --chown=keycloak:keycloak themes/ /opt/keycloak/themes/
 COPY --chown=keycloak:keycloak imports/ /opt/keycloak/data/import/
 
+RUN /opt/keycloak/bin/kc.sh build
+
 USER keycloak
