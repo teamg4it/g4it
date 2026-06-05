@@ -500,23 +500,33 @@ describe("InDatacentersService", () => {
             req.error(new ErrorEvent("error", { message: "Network error" }));
         });
 
-        describe("with different IDs", () => {
-            it("should delete datacenters with different IDs", () => {
-                const datacenter1 = { ...mockDatacenter, id: 1 };
-                const datacenter2 = { ...mockDatacenter, id: 2 };
+        it("should delete datacenters with different IDs", () => {
+            const datacenter1 = { ...mockDatacenter, id: 1 };
+            const datacenter2 = { ...mockDatacenter, id: 2 };
 
-                service.delete(datacenter1).subscribe();
-                const req1 = httpMock.expectOne(
-                    `${Constants.ENDPOINTS.digitalServicesVersions}/${datacenter1.digitalServiceUid}/inputs/datacenters/${datacenter1.id}`,
-                );
-                req1.flush(datacenter1);
-
-                service.delete(datacenter2).subscribe();
-                const req2 = httpMock.expectOne(
-                    `${Constants.ENDPOINTS.digitalServicesVersions}/${datacenter2.digitalServiceUid}/inputs/datacenters/${datacenter2.id}`,
-                );
-                req2.flush(datacenter2);
+            service.delete(datacenter1).subscribe((response) => {
+                expect(response).toEqual(datacenter1);
             });
+
+            const req1 = httpMock.expectOne(
+                `${Constants.ENDPOINTS.digitalServicesVersions}/${datacenter1.digitalServiceUid}/inputs/datacenters/${datacenter1.id}`,
+            );
+
+            expect(req1.request.method).toBe("DELETE");
+
+            req1.flush(datacenter1);
+
+            service.delete(datacenter2).subscribe((response) => {
+                expect(response).toEqual(datacenter2);
+            });
+
+            const req2 = httpMock.expectOne(
+                `${Constants.ENDPOINTS.digitalServicesVersions}/${datacenter2.digitalServiceUid}/inputs/datacenters/${datacenter2.id}`,
+            );
+
+            expect(req2.request.method).toBe("DELETE");
+
+            req2.flush(datacenter2);
         });
 
         it("should handle forbidden errors on delete", () => {
@@ -532,16 +542,20 @@ describe("InDatacentersService", () => {
             req.flush("Forbidden", { status: 403, statusText: "Forbidden" });
         });
 
-        describe("with undefined id", () => {
-            it("should handle deletion with undefined id gracefully", () => {
-                const datacenterWithoutId = { ...mockDatacenter, id: undefined };
+        it("should handle deletion with undefined id gracefully", () => {
+            const datacenterWithoutId = { ...mockDatacenter, id: undefined };
 
-                service.delete(datacenterWithoutId).subscribe();
-
-                const expectedUrl = `${Constants.ENDPOINTS.digitalServicesVersions}/${datacenterWithoutId.digitalServiceUid}/inputs/datacenters/${datacenterWithoutId.id}`;
-                const req = httpMock.expectOne(expectedUrl);
-                req.flush(datacenterWithoutId);
+            service.delete(datacenterWithoutId).subscribe((response) => {
+                expect(response).toEqual(datacenterWithoutId);
             });
+
+            const expectedUrl = `${Constants.ENDPOINTS.digitalServicesVersions}/${datacenterWithoutId.digitalServiceUid}/inputs/datacenters/${datacenterWithoutId.id}`;
+
+            const req = httpMock.expectOne(expectedUrl);
+
+            expect(req.request.method).toBe("DELETE");
+
+            req.flush(datacenterWithoutId);
         });
 
         it("should handle conflict errors when datacenter is in use", () => {
@@ -622,30 +636,44 @@ describe("InDatacentersService", () => {
             req2.flush([mockDatacenter, { ...mockDatacenter, id: 2, name: "DC-London" }]);
             req3.flush([]);
         });
-        describe("with mixed operations", () => {
-            it("should handle mixed CRUD operations", () => {
-                const digitalServiceUid = "ds-mixed";
-                const newDatacenter = {
-                    ...mockDatacenter,
-                    id: undefined,
-                    name: "DC-New",
-                };
+        it("should handle mixed CRUD operations", () => {
+            const digitalServiceUid = "ds-mixed";
+            const newDatacenter = {
+                ...mockDatacenter,
+                id: undefined,
+                name: "DC-New",
+            };
 
-                service.get(digitalServiceUid).subscribe();
-                service.create(newDatacenter).subscribe();
-                service.update(mockDatacenter).subscribe();
-                service.delete(mockDatacenter).subscribe();
-
-                const reqGet = httpMock.expectOne((req) => req.method === "GET");
-                const reqCreate = httpMock.expectOne((req) => req.method === "POST");
-                const reqUpdate = httpMock.expectOne((req) => req.method === "PUT");
-                const reqDelete = httpMock.expectOne((req) => req.method === "DELETE");
-
-                reqGet.flush([mockDatacenter]);
-                reqCreate.flush({ ...newDatacenter, id: 100 });
-                reqUpdate.flush(mockDatacenter);
-                reqDelete.flush(mockDatacenter);
+            service.get(digitalServiceUid).subscribe((response) => {
+                expect(response).toEqual([mockDatacenter]);
             });
+
+            service.create(newDatacenter).subscribe((response) => {
+                expect(response.id).toBe(100);
+            });
+
+            service.update(mockDatacenter).subscribe((response) => {
+                expect(response).toEqual(mockDatacenter);
+            });
+
+            service.delete(mockDatacenter).subscribe((response) => {
+                expect(response).toEqual(mockDatacenter);
+            });
+
+            const reqGet = httpMock.expectOne((req) => req.method === "GET");
+            const reqCreate = httpMock.expectOne((req) => req.method === "POST");
+            const reqUpdate = httpMock.expectOne((req) => req.method === "PUT");
+            const reqDelete = httpMock.expectOne((req) => req.method === "DELETE");
+
+            expect(reqGet.request.method).toBe("GET");
+            expect(reqCreate.request.method).toBe("POST");
+            expect(reqUpdate.request.method).toBe("PUT");
+            expect(reqDelete.request.method).toBe("DELETE");
+
+            reqGet.flush([mockDatacenter]);
+            reqCreate.flush({ ...newDatacenter, id: 100 });
+            reqUpdate.flush(mockDatacenter);
+            reqDelete.flush(mockDatacenter);
         });
     });
 
@@ -666,9 +694,10 @@ describe("InDatacentersService", () => {
             const digitalServiceUid = "complete-test-uid";
 
             service.get(digitalServiceUid).subscribe({
-                next: () => {},
+                next: (response) => {
+                    expect(response).toEqual([mockDatacenter]);
+                },
                 complete: () => {
-                    expect(true).toBe(true);
                     done();
                 },
             });
