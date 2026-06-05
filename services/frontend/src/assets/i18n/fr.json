@@ -818,12 +818,12 @@
     },
     "toast-errors": {
         "unknown": {
-            "title": "Erreur inconnue",
-            "text": "Merci de contacter le support pour avoir de l'aide"
+            "title": "Quelque chose s'est mal passé...",
+            "text": "Une erreur est survenue. En cas de blocage, merci de contacter le support G4IT (support.g4it@soprasteria.com)."
         },
         "backend-unreachable": {
             "title": "Les APIs Backend ne sont pas accessibles",
-            "text": "Please contact the support for help"
+            "text": "Une erreur est survenue. En cas de blocage, merci de contacter le support G4IT (support.g4it@soprasteria.com)."
         },
         "payload-too-large": {
             "title": "La taille maximum d'un fichier est dépassées",
