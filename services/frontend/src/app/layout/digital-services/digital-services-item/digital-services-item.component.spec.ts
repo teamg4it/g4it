@@ -42,7 +42,7 @@ describe("DigitalServicesItemComponent", () => {
     beforeEach(() => {
         fixture = TestBed.createComponent(DigitalServicesItemComponent);
         component = fixture.componentInstance;
-        component.digitalService = { uid: "123", name: "Test Service" } as any;
+        fixture.componentRef.setInput('digitalService', { uid: "123", name: "Test Service", activeDsvUid: "123" } as any);
         fixture.detectChanges();
     });
 
@@ -77,6 +77,7 @@ describe("DigitalServicesItemComponent", () => {
         // Recreate component to trigger constructor logic
         fixture = TestBed.createComponent(DigitalServicesItemComponent);
         component = fixture.componentInstance;
+        fixture.componentRef.setInput('digitalService', { uid: "123", name: "Test Service", activeDsvUid: "123" } as any);
         expect(component.firstFootprintTab).toBe("resources");
     });
 
@@ -84,6 +85,7 @@ describe("DigitalServicesItemComponent", () => {
         // Recreate component to trigger constructor logic
         fixture = TestBed.createComponent(DigitalServicesItemComponent);
         component = fixture.componentInstance;
+        fixture.componentRef.setInput('digitalService', { uid: "123", name: "Test Service", activeDsvUid: "123" } as any);
         component.isAi = true;
         expect(component.firstFootprintTab).toBe("resources");
     });

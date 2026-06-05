@@ -1,10 +1,10 @@
-<p-card styleClass="digital-services-card" [attr.aria-label]="digitalService.name">
+<p-card styleClass="digital-services-card" [attr.aria-label]="digitalService().name">
     <div class="flex align-items-center justify-content-between">
         <span class="w-full mr-2">
             <p-button
                 styleClass="w-full font-bold text-xl text-left text-gray-900"
-                (onClick)="goToDigitalServiceFootprint(digitalService.activeDsvUid)"
-                [label]="digitalService.name"
+                (onClick)="goToDigitalServiceFootprint(digitalService().activeDsvUid)"
+                [label]="digitalService().name"
                 [text]="true"
                 [plain]="true"
                 role="heading"
@@ -21,7 +21,7 @@
                     <span class="expiry-title text-sm font-semibold">
                         {{
                             "digital-services.expiry-warning"
-                                | translate: { expiryDate: digitalService.expiryDate }
+                                | translate: { expiryDate: digitalService().expiryDate }
                         }}
                     </span>
 
@@ -29,7 +29,7 @@
                         class="expiry-link text-xs p-0 m-0 border-none text-left cursor-pointer underline"
                         (click)="
                             $event.stopPropagation();
-                            renewInventoryId.emit(digitalService.activeDsvUid)
+                            renewInventoryId.emit(digitalService().activeDsvUid)
                         "
                     >
                         {{ "digital-services.click-extend" | translate }}
@@ -42,14 +42,14 @@
             styleClass="mx-1"
             *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
             [rounded]="true"
-            (onClick)="confirmDelete($event, digitalService)"
+            (onClick)="confirmDelete($event, digitalService())"
             [text]="true"
             [plain]="true"
             icon="pi pi-trash"
             id="delete-digital-service"
             [ariaLabel]="
                 'digital-services.delete-criteria'
-                    | translate: { digitalServiceName: digitalService.name }
+                    | translate: { digitalServiceName: digitalService().name }
             "
         />
 
