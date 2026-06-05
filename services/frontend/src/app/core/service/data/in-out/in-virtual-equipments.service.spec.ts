@@ -179,16 +179,28 @@ describe("InVirtualEquipmentsService", () => {
             const inventoryId1 = 100;
             const inventoryId2 = 200;
 
-            service.getByInventory(inventoryId1).subscribe();
+            service.getByInventory(inventoryId1).subscribe((response) => {
+                expect(response).toEqual([mockVirtualEquipment]);
+            });
+
             const req1 = httpMock.expectOne(
                 `${Constants.ENDPOINTS.inventories}/${inventoryId1}/inputs/virtual-equipments`,
             );
+
+            expect(req1.request.method).toBe("GET");
+
             req1.flush([mockVirtualEquipment]);
 
-            service.getByInventory(inventoryId2).subscribe();
+            service.getByInventory(inventoryId2).subscribe((response) => {
+                expect(response).toEqual([]);
+            });
+
             const req2 = httpMock.expectOne(
                 `${Constants.ENDPOINTS.inventories}/${inventoryId2}/inputs/virtual-equipments`,
             );
+
+            expect(req2.request.method).toBe("GET");
+
             req2.flush([]);
         });
     });
@@ -503,16 +515,28 @@ describe("InVirtualEquipmentsService", () => {
             const id2 = 2;
             const digitalServiceVersionUid = "dsv-123";
 
-            service.delete(id1, digitalServiceVersionUid).subscribe();
+            service.delete(id1, digitalServiceVersionUid).subscribe((response) => {
+                expect(response).toEqual(mockVirtualEquipment);
+            });
+
             const req1 = httpMock.expectOne(
                 `${Constants.ENDPOINTS.digitalServicesVersions}/${digitalServiceVersionUid}/inputs/virtual-equipments/${id1}`,
             );
+
+            expect(req1.request.method).toBe("DELETE");
+
             req1.flush(mockVirtualEquipment);
 
-            service.delete(id2, digitalServiceVersionUid).subscribe();
+            service.delete(id2, digitalServiceVersionUid).subscribe((response) => {
+                expect(response).toEqual(mockVirtualEquipment);
+            });
+
             const req2 = httpMock.expectOne(
                 `${Constants.ENDPOINTS.digitalServicesVersions}/${digitalServiceVersionUid}/inputs/virtual-equipments/${id2}`,
             );
+
+            expect(req2.request.method).toBe("DELETE");
+
             req2.flush(mockVirtualEquipment);
         });
 
@@ -570,8 +594,13 @@ describe("InVirtualEquipmentsService", () => {
             const uid1 = "ds-1";
             const uid2 = "ds-2";
 
-            service.getByDigitalService(uid1).subscribe();
-            service.getByDigitalService(uid2).subscribe();
+            service.getByDigitalService(uid1).subscribe((response) => {
+                expect(response).toEqual([mockVirtualEquipment]);
+            });
+
+            service.getByDigitalService(uid2).subscribe((response) => {
+                expect(response).toEqual([]);
+            });
 
             const req1 = httpMock.expectOne(
                 `${Constants.ENDPOINTS.digitalServicesVersions}/${uid1}/inputs/virtual-equipments`,
@@ -579,6 +608,9 @@ describe("InVirtualEquipmentsService", () => {
             const req2 = httpMock.expectOne(
                 `${Constants.ENDPOINTS.digitalServicesVersions}/${uid2}/inputs/virtual-equipments`,
             );
+
+            expect(req1.request.method).toBe("GET");
+            expect(req2.request.method).toBe("GET");
 
             req1.flush([mockVirtualEquipment]);
             req2.flush([]);
@@ -588,9 +620,17 @@ describe("InVirtualEquipmentsService", () => {
             const digitalServiceUid = "ds-mixed";
             const newEquipment = { ...mockVirtualEquipment, id: 0, name: "New VM" };
 
-            service.getByDigitalService(digitalServiceUid).subscribe();
-            service.create(newEquipment).subscribe();
-            service.update(mockVirtualEquipment).subscribe();
+            service.getByDigitalService(digitalServiceUid).subscribe((response) => {
+                expect(response).toEqual([mockVirtualEquipment]);
+            });
+
+            service.create(newEquipment).subscribe((response) => {
+                expect(response).toEqual(newEquipment);
+            });
+
+            service.update(mockVirtualEquipment).subscribe((response) => {
+                expect(response).toEqual(mockVirtualEquipment);
+            });
 
             const reqGet = httpMock.expectOne(
                 (req) => req.method === "GET" && req.url.includes(digitalServiceUid),
@@ -601,6 +641,10 @@ describe("InVirtualEquipmentsService", () => {
                     req.method === "PUT" &&
                     req.url.includes(mockVirtualEquipment.id.toString()),
             );
+
+            expect(reqGet.request.method).toBe("GET");
+            expect(reqCreate.request.method).toBe("POST");
+            expect(reqUpdate.request.method).toBe("PUT");
 
             reqGet.flush([mockVirtualEquipment]);
             reqCreate.flush(newEquipment);

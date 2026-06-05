@@ -372,19 +372,18 @@ const getImpactsForTerminal = (data: OutPhysicalEquipmentRest[], projection: str
     }, {});
     const impactCountry = Object.entries(impactCountryTmp).map(
         ([location, terminalNamesObj]) => {
-            const terminalsData = Object.entries(terminalNamesObj).map(
-                ([terminalName, impacts]) =>
-                    ({
-                        name: terminalName,
-                        avgUsageTime:
-                            sumByProperty(impacts, "avgUsageTime") /
-                            sumByProperty(impacts, "totalNbUsers"),
-                        totalNbUsers: sumByProperty(impacts, "totalNbUsers") / 4,
-                        totalSipValue: sumByProperty(impacts, "sipValue"),
-                        rawValue: sumByProperty(impacts, "rawValue"),
-                        unit: impacts[0].unit,
-                        impact: impacts,
-                    }) as TerminalsImpact,
+            const terminalsData: TerminalsImpact[] = Object.entries(terminalNamesObj).map(
+                ([terminalName, impacts]) => ({
+                    name: terminalName,
+                    avgUsageTime:
+                        sumByProperty(impacts, "avgUsageTime") /
+                        sumByProperty(impacts, "totalNbUsers"),
+                    totalNbUsers: sumByProperty(impacts, "totalNbUsers") / 4,
+                    totalSipValue: sumByProperty(impacts, "sipValue"),
+                    rawValue: sumByProperty(impacts, "rawValue"),
+                    unit: impacts[0].unit,
+                    impact: impacts,
+                }),
             );
 
             const filteredImpacts = data.filter(
@@ -445,64 +444,66 @@ const getImpactsForCloud = (
         });
         return acc;
     }, {});
-    const results = Object.entries(impactTmp).map(([name, impactTmpName]) => {
-        const cloudNameArray = Object.entries(impactTmpName).map(
-            ([cloudName, impacts]) => {
-                const unit = impacts.find((i: any) => i.unit !== "null");
-                const totalQuantity = sumByProperty(impacts, "quantity");
-                return {
-                    name: cloudName,
-                    totalAvgUsage:
-                        sumByProperty(impacts, "usageDuration") / totalQuantity,
-                    totalAvgWorkLoad: (sumByProperty(impacts, "workload") * 100) / 4,
-                    totalQuantity,
-                    totalSipValue: sumByProperty(impacts, "peopleEqImpact"),
-                    rawValue: sumByProperty(impacts, "unitImpact"),
-                    unit: unit?.unit ?? "",
-                    impact: aggregateImpacts(impacts, [
-                        "lifecycleStep",
-                        "unit",
-                        "statusIndicator",
-                    ]).map((item) => ({
-                        acvStep: item.lifecycleStep,
-                        unit: item.unit,
-                        status: item.statusIndicator,
-                        rawValue: item.unitImpact,
-                        sipValue: item.peopleEqImpact,
-                        statusCount: item.statusCount,
-                    })),
-                } as CloudsImpact;
-            },
-        );
+    const results: CloudImpactTypeLocation[] = Object.entries(impactTmp).map(
+        ([name, impactTmpName]) => {
+            const cloudNameArray: CloudsImpact[] = Object.entries(impactTmpName).map(
+                ([cloudName, impacts]) => {
+                    const unit = impacts.find((i: any) => i.unit !== "null");
+                    const totalQuantity = sumByProperty(impacts, "quantity");
+                    return {
+                        name: cloudName,
+                        totalAvgUsage:
+                            sumByProperty(impacts, "usageDuration") / totalQuantity,
+                        totalAvgWorkLoad: (sumByProperty(impacts, "workload") * 100) / 4,
+                        totalQuantity,
+                        totalSipValue: sumByProperty(impacts, "peopleEqImpact"),
+                        rawValue: sumByProperty(impacts, "unitImpact"),
+                        unit: unit?.unit ?? "",
+                        impact: aggregateImpacts(impacts, [
+                            "lifecycleStep",
+                            "unit",
+                            "statusIndicator",
+                        ]).map((item) => ({
+                            acvStep: item.lifecycleStep,
+                            unit: item.unit,
+                            status: item.statusIndicator,
+                            rawValue: item.unitImpact,
+                            sipValue: item.peopleEqImpact,
+                            statusCount: item.statusCount,
+                        })),
+                    };
+                },
+            );
 
-        const filteredImpacts = data.filter(
-            (d) => d[projection as keyof OutVirtualEquipmentRest] === name,
-        );
+            const filteredImpacts = data.filter(
+                (d) => d[projection as keyof OutVirtualEquipmentRest] === name,
+            );
 
-        const status = filteredImpacts.reduce(
-            (acc, i) => {
-                const isOk = i.statusIndicator === Constants.DATA_QUALITY_STATUS.ok;
-                return {
-                    ok: acc.ok + (isOk ? i.countValue : 0),
-                    error: acc.error + (isOk ? 0 : i.countValue),
-                    total: acc.total + (i.countValue ?? 0),
-                };
-            },
-            { ok: 0, error: 0, total: 0 },
-        );
+            const status = filteredImpacts.reduce(
+                (acc, i) => {
+                    const isOk = i.statusIndicator === Constants.DATA_QUALITY_STATUS.ok;
+                    return {
+                        ok: acc.ok + (isOk ? i.countValue : 0),
+                        error: acc.error + (isOk ? 0 : i.countValue),
+                        total: acc.total + (i.countValue ?? 0),
+                    };
+                },
+                { ok: 0, error: 0, total: 0 },
+            );
 
-        const impactWithProvider = Object.values(impactTmpName)
-            .flat()
-            .find((i: any) => i.provider);
+            const impactWithProvider = Object.values(impactTmpName)
+                .flat()
+                .find((i: any) => i.provider);
 
-        return {
-            name:
-                countryMap[name] ||
-                `${impactWithProvider!?.provider?.toUpperCase()}-${name}`,
-            clouds: cloudNameArray,
-            status,
-        } as CloudImpactTypeLocation;
-    });
+            return {
+                name:
+                    countryMap[name] ||
+                    `${impactWithProvider!?.provider?.toUpperCase()}-${name}`,
+                clouds: cloudNameArray,
+                status,
+            };
+        },
+    );
 
     results.sort((a, b) => a?.name?.localeCompare(b?.name));
     return results;

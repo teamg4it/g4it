@@ -450,16 +450,28 @@ describe("InPhysicalEquipmentsService", () => {
             const equipment1 = { ...mockPhysicalEquipment, id: 1 };
             const equipment2 = { ...mockPhysicalEquipment, id: 2 };
 
-            service.delete(equipment1).subscribe();
+            service.delete(equipment1).subscribe((response) => {
+                expect(response).toEqual(equipment1);
+            });
+
             const req1 = httpMock.expectOne(
                 `${Constants.ENDPOINTS.digitalServicesVersions}/${equipment1.digitalServiceVersionUid}/inputs/physical-equipments/${equipment1.id}`,
             );
+
+            expect(req1.request.method).toBe("DELETE");
+
             req1.flush(equipment1);
 
-            service.delete(equipment2).subscribe();
+            service.delete(equipment2).subscribe((response) => {
+                expect(response).toEqual(equipment2);
+            });
+
             const req2 = httpMock.expectOne(
                 `${Constants.ENDPOINTS.digitalServicesVersions}/${equipment2.digitalServiceVersionUid}/inputs/physical-equipments/${equipment2.id}`,
             );
+
+            expect(req2.request.method).toBe("DELETE");
+
             req2.flush(equipment2);
         });
 
@@ -479,10 +491,16 @@ describe("InPhysicalEquipmentsService", () => {
         it("should handle deletion with undefined id gracefully", () => {
             const equipmentWithoutId = { ...mockPhysicalEquipment, id: undefined };
 
-            service.delete(equipmentWithoutId).subscribe();
+            service.delete(equipmentWithoutId).subscribe((response) => {
+                expect(response).toEqual(equipmentWithoutId);
+            });
 
             const expectedUrl = `${Constants.ENDPOINTS.digitalServicesVersions}/${equipmentWithoutId.digitalServiceVersionUid}/inputs/physical-equipments/${equipmentWithoutId.id}`;
+
             const req = httpMock.expectOne(expectedUrl);
+
+            expect(req.request.method).toBe("DELETE");
+
             req.flush(equipmentWithoutId);
         });
     });
@@ -560,15 +578,31 @@ describe("InPhysicalEquipmentsService", () => {
                 name: "New Server",
             };
 
-            service.get(digitalServiceUid).subscribe();
-            service.create(newEquipment).subscribe();
-            service.update(mockPhysicalEquipment).subscribe();
-            service.delete(mockPhysicalEquipment).subscribe();
+            service.get(digitalServiceUid).subscribe((response) => {
+                expect(response).toEqual([mockPhysicalEquipment]);
+            });
+
+            service.create(newEquipment).subscribe((response) => {
+                expect(response.id).toBe(100);
+            });
+
+            service.update(mockPhysicalEquipment).subscribe((response) => {
+                expect(response).toEqual(mockPhysicalEquipment);
+            });
+
+            service.delete(mockPhysicalEquipment).subscribe((response) => {
+                expect(response).toEqual(mockPhysicalEquipment);
+            });
 
             const reqGet = httpMock.expectOne((req) => req.method === "GET");
             const reqCreate = httpMock.expectOne((req) => req.method === "POST");
             const reqUpdate = httpMock.expectOne((req) => req.method === "PUT");
             const reqDelete = httpMock.expectOne((req) => req.method === "DELETE");
+
+            expect(reqGet.request.method).toBe("GET");
+            expect(reqCreate.request.method).toBe("POST");
+            expect(reqUpdate.request.method).toBe("PUT");
+            expect(reqDelete.request.method).toBe("DELETE");
 
             reqGet.flush([mockPhysicalEquipment]);
             reqCreate.flush({ ...newEquipment, id: 100 });
@@ -594,9 +628,10 @@ describe("InPhysicalEquipmentsService", () => {
             const digitalServiceUid = "complete-test-uid";
 
             service.get(digitalServiceUid).subscribe({
-                next: () => {},
+                next: (response) => {
+                    expect(response).toEqual([mockPhysicalEquipment]);
+                },
                 complete: () => {
-                    expect(true).toBe(true);
                     done();
                 },
             });

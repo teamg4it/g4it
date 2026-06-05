@@ -9,6 +9,7 @@
 ### Minor Changes
 
 - 2188 | Digital Service version duplication button show loader till duplicated version is created
+- 2203 | Display User Friendly Alert message for internal server error
 
 
 ## 3.12.1
