@@ -113,11 +113,18 @@ public class InventoryController implements InventoryApiDelegate {
     /**
      * {@inheritDoc}
      */
-    @Override
+   /* @Override
     public ResponseEntity<InventoryRest> updateInventory(final String organization,
                                                          final Long workspace,
                                                          final InventoryUpdateRest inventoryUpdateRest) {
         return new ResponseEntity<>(inventoryRestMapper.toDto(this.inventoryService.updateInventory(organization, workspace, inventoryUpdateRest, authService.getUser())), HttpStatus.OK);
+    }*/
+
+    @Override
+    public ResponseEntity<InventoryRest> updateInventory(final String organization,
+                                                         final Long workspace,
+                                                         final InventoryUpdateRest inventoryUpdateRest) {
+        throw new RuntimeException("Test 500 Internal Server Error");
     }
 
     /**
