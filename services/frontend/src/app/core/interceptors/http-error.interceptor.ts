@@ -17,6 +17,7 @@ import { MessageService } from "primeng/api";
 import { throwError, timer } from "rxjs";
 import { catchError, retry } from "rxjs/operators";
 import { Constants } from "src/constants";
+import { MatomoScriptService } from "../service/business/matomo-script.service";
 import { UserService } from "../service/business/user.service";
 
 const handledErrorStatus = new Set([
@@ -78,11 +79,20 @@ function handleErrorPageNavigation(
     router: Router,
     messageService: MessageService,
     translate: TranslateService,
+    matomoService: MatomoScriptService,
 ) {
     if (handledErrorStatus.has(error.status)) {
         if (error.status === HttpStatusCode.InternalServerError) {
             let errorKey = error.error.message || "unknown";
             console.error(error.error.message);
+
+            // Track internal server error in Matomo
+            matomoService.trackEvent(
+                "HTTP Error",
+                "Internal Server Error",
+                `${error.status}: ${errorKey}`,
+                error.status,
+            );
 
             const errorKeys = Object.keys(translate.instant(`toast-errors`));
             if (!errorKeys.includes(errorKey)) {
@@ -133,6 +143,7 @@ export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
     const messageService = inject(MessageService);
     const userService = inject(UserService);
     const translate = inject(TranslateService);
+    const matomoService = inject(MatomoScriptService);
 
     return next(req).pipe(
         retry({
@@ -145,8 +156,16 @@ export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
                 throw error; // don't retry
             },
         }),
+        // catchError is called only after all retry attempts are exhausted
+        // This ensures Matomo tracking happens only once per error
         catchError((returnedError) => {
-            handleErrorPageNavigation(returnedError, router, messageService, translate);
+            handleErrorPageNavigation(
+                returnedError,
+                router,
+                messageService,
+                translate,
+                matomoService,
+            );
             return throwError(
                 () =>
                     new Error(
