@@ -37,6 +37,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -101,7 +102,7 @@ public class TestUtils {
         return Workspace.builder()
                 .name(WORKSPACE)
                 .status(status)
-                .deletionDate(LocalDateTime.now())
+                .deletionDate(LocalDateTime.of(2024, Month.JANUARY, 15, 10, 0))
                 .organization(Organization.builder()
                         .name(ORGANIZATION)
                         .build())
@@ -135,12 +136,12 @@ public class TestUtils {
 
     public static DigitalService createDigitalService() {
         final String digitalServiceUid = "80651485-3f8b-49dd-a7be-753e4fe1fd36";
-        return DigitalService.builder().uid(digitalServiceUid).name("name").lastUpdateDate(LocalDateTime.now()).build();
+        return DigitalService.builder().uid(digitalServiceUid).name("name").lastUpdateDate(LocalDateTime.of(2024, Month.JANUARY, 15, 10, 0)).build();
     }
 
     public static DigitalServiceBO createDigitalServiceBO() {
         final String digitalServiceUid = "80651485-3f8b-49dd-a7be-753e4fe1fd36";
-        return DigitalServiceBO.builder().uid(digitalServiceUid).name("name").lastUpdateDate(LocalDateTime.now()).build();
+        return DigitalServiceBO.builder().uid(digitalServiceUid).name("name").lastUpdateDate(LocalDateTime.of(2024, Month.JANUARY, 15, 10, 0)).build();
     }
 
     public static User createUserWithRoleOnOrg(Long organizationId, List<Role> roles) {
