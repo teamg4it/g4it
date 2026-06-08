@@ -426,7 +426,7 @@ export class FootprintService {
     ): void {
         for (const criteria of footprint) {
             for (const impact of criteria.impacts) {
-                const criteriaImpact = impact as any;
+                const criteriaImpact = impact;
                 if (isEquipment) {
                     this.addEquipmentValues(
                         criteriaImpact,
