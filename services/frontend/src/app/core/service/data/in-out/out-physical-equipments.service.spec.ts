@@ -516,21 +516,19 @@ describe("OutPhysicalEquipmentsService", () => {
             req.flush([]);
         });
 
-        it("should complete the observable after receiving response", (done) => {
-            const digitalServiceUid = "complete-test-uid";
-
-            service.get(digitalServiceUid).subscribe({
-                next: () => {},
-                complete: () => {
-                    expect(true).toBe(true);
-                    done();
+        it("should emit data and complete", (done) => {
+            service.get("complete-test-uid").subscribe({
+                next: (data) => {
+                    expect(data).toEqual([mockPhysicalEquipment]);
                 },
+                complete: done,
             });
 
-            const req = httpMock.expectOne(
-                `${Constants.ENDPOINTS.digitalServicesVersions}/${digitalServiceUid}/outputs/physical-equipments`,
-            );
-            req.flush([mockPhysicalEquipment]);
+            httpMock
+                .expectOne(
+                    `${Constants.ENDPOINTS.digitalServicesVersions}/complete-test-uid/outputs/physical-equipments`,
+                )
+                .flush([mockPhysicalEquipment]);
         });
     });
 });

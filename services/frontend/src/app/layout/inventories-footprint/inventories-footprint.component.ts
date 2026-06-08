@@ -449,7 +449,6 @@ export class InventoriesFootprintComponent implements OnInit, OnDestroy {
             Constants.EQUIPMENT_FILTERS,
             true,
         );
-
         for (const field of Constants.EQUIPMENT_FILTERS) {
             this.allUnmodifiedFilters[field] = [
                 Constants.ALL,

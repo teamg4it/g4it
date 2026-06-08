@@ -63,18 +63,18 @@ import { InventoriesApplicationFootprintComponent } from "../inventories-applica
     templateUrl: "./application-criteria-footprint.component.html",
     standalone: true,
     imports: [
-    NgClass,
-    NgTemplateOutlet,
-    SelectModule,
-    FormsModule,
-    PrimeTemplate,
-    StackBarChartComponent,
-    NgxEchartsDirective,
-    ApplicationCriteriaPieChartComponent,
-    GraphDescriptionComponent,
-    Button,
-    TranslatePipe
-],
+        NgClass,
+        NgTemplateOutlet,
+        SelectModule,
+        FormsModule,
+        PrimeTemplate,
+        StackBarChartComponent,
+        NgxEchartsDirective,
+        ApplicationCriteriaPieChartComponent,
+        GraphDescriptionComponent,
+        Button,
+        TranslatePipe,
+    ],
 })
 export class ApplicationCriteriaFootprintComponent
     extends AbstractDashboard
@@ -261,67 +261,101 @@ export class ApplicationCriteriaFootprintComponent
         selectedCriteria: string,
         selectedDimension: string,
     ) {
-        let result: any = {};
+        this.processBarChartData(
+            barChartData,
+            selectedFilters,
+            selectedCriteria,
+            selectedDimension,
+        );
+        return this.initGraphData(this.impactOrder);
+    }
+
+    private processBarChartData(
+        barChartData: ApplicationFootprint[],
+        selectedFilters: Filter,
+        selectedCriteria: string,
+        selectedDimension: string,
+    ): void {
         for (const data of barChartData) {
             if (data.criteria === selectedCriteria) {
-                for (const impact of data.impacts) {
-                    if (!impact.impact) {
-                        impact.impact = 0;
-                        impact.sip = 0;
-                    }
-                    if (this.filterService.getFilterincludes(selectedFilters, impact)) {
-                        switch (this.footprintStore.appGraphType()) {
-                            case "global":
-                                this.computeImpactOrder(
-                                    impact,
-                                    impact.domain,
-                                    selectedDimension,
-                                );
-                                break;
-                            case "domain":
-                                if (impact.domain === this.footprintStore.appDomain()) {
-                                    this.computeImpactOrder(
-                                        impact,
-                                        impact.subDomain,
-                                        selectedDimension,
-                                    );
-                                }
-                                break;
-                            case "subdomain":
-                                if (
-                                    impact.domain === this.footprintStore.appDomain() &&
-                                    impact.subDomain ===
-                                        this.footprintStore.appSubDomain()
-                                ) {
-                                    this.computeImpactOrder(
-                                        impact,
-                                        impact.applicationName,
-                                        selectedDimension,
-                                    );
-                                }
-                                break;
-                            case "application":
-                                if (
-                                    impact.domain === this.footprintStore.appDomain() &&
-                                    impact.subDomain ===
-                                        this.footprintStore.appSubDomain() &&
-                                    impact.applicationName ===
-                                        this.footprintStore.appApplication()
-                                ) {
-                                    this.computeImpactOrder(
-                                        impact,
-                                        impact.virtualEquipmentName,
-                                        selectedDimension,
-                                    );
-                                }
-                                break;
-                        }
-                    }
-                }
+                this.processImpacts(data.impacts, selectedFilters, selectedDimension);
             }
         }
-        result = this.initGraphData(this.impactOrder);
-        return result;
+    }
+
+    private processImpacts(
+        impacts: ApplicationImpact[],
+        selectedFilters: Filter,
+        selectedDimension: string,
+    ): void {
+        for (const impact of impacts) {
+            this.normalizeImpactValues(impact);
+            if (this.filterService.getFilterincludes(selectedFilters, impact)) {
+                this.handleImpactByGraphType(impact, selectedDimension);
+            }
+        }
+    }
+
+    private normalizeImpactValues(impact: ApplicationImpact): void {
+        if (!impact.impact) {
+            impact.impact = 0;
+            impact.sip = 0;
+        }
+    }
+
+    private handleImpactByGraphType(
+        impact: ApplicationImpact,
+        selectedDimension: string,
+    ): void {
+        const graphType = this.footprintStore.appGraphType();
+
+        if (graphType === "global") {
+            this.computeImpactOrder(impact, impact.domain, selectedDimension);
+        } else if (graphType === "domain") {
+            this.processDomainImpact(impact, selectedDimension);
+        } else if (graphType === "subdomain") {
+            this.processSubdomainImpact(impact, selectedDimension);
+        } else if (graphType === "application") {
+            this.processApplicationImpact(impact, selectedDimension);
+        }
+    }
+
+    private processDomainImpact(
+        impact: ApplicationImpact,
+        selectedDimension: string,
+    ): void {
+        if (impact.domain === this.footprintStore.appDomain()) {
+            this.computeImpactOrder(impact, impact.subDomain, selectedDimension);
+        }
+    }
+
+    private processSubdomainImpact(
+        impact: ApplicationImpact,
+        selectedDimension: string,
+    ): void {
+        if (
+            impact.domain === this.footprintStore.appDomain() &&
+            impact.subDomain === this.footprintStore.appSubDomain()
+        ) {
+            this.computeImpactOrder(impact, impact.applicationName, selectedDimension);
+        }
+    }
+
+    private processApplicationImpact(
+        impact: ApplicationImpact,
+        selectedDimension: string,
+    ): void {
+        if (
+            impact.domain === this.footprintStore.appDomain() &&
+            impact.subDomain === this.footprintStore.appSubDomain() &&
+            impact.applicationName === this.footprintStore.appApplication()
+        ) {
+            this.computeImpactOrder(
+                impact,
+                impact.virtualEquipmentName,
+                selectedDimension,
+            );
+        }
     }
 
     computeImpactOrder(
@@ -440,162 +474,140 @@ export class ApplicationCriteriaFootprintComponent
 
     initGraphData(impactOrder: any[]): any {
         impactOrder.sort(sortByProperty("sipImpact", "desc"));
-        const xAxis: string[] = [];
-        const yAxis: any[] = [];
-        const unitImpact: number[] = [];
-        const subdomainCount: number[] = [];
-        const appCount: number[] = [];
-        const equipmentList: string[] = [];
-        const environmentList: string[] = [];
-        const clusterList: string[] = [];
-        const status: StatusCountMap = {};
+        const result = {
+            xAxis: [] as string[],
+            yAxis: [] as any[],
+            unitImpact: [] as number[],
+            subdomainCount: [] as number[],
+            appCount: [] as number[],
+            equipmentList: [] as string[],
+            environmentList: [] as string[],
+            clusterList: [] as string[],
+            status: {} as StatusCountMap,
+        };
+
         for (const impact of impactOrder) {
-            let subdomainList: string[] = [];
-            let appList: string[] = [];
-
             const repartitionEntries = Object.entries(impact.repartYaxis ?? {});
-            switch (this.footprintStore.appGraphType()) {
-                case "global": {
-                    xAxis.push(impact.domain);
-                    for (const [key, value] of repartitionEntries) {
-                        const { raw, sip, apps, subDomain } =
-                            value as RepartitionYAxisKeys;
-                        const data = [impact.domain, raw, sip, apps, subDomain];
+            this.processImpactByGraphType(impact, repartitionEntries, result);
+        }
 
-                        yAxis.push({
-                            name: key,
-                            data: [data],
-                            type: "bar",
-                            stack: "Ad",
-                            emphasis: {
-                                focus: "series",
-                            },
-                            itemStyle: {
-                                color: getUniqueColorFromText(key),
-                            },
-                        });
-                    }
-                    unitImpact.push(impact.unitImpact);
-                    status[impact.domain] = { status: impact.status };
-                    subdomainCount.push(new Set(impact.subdomains).size);
-                    appCount.push(new Set(impact.apps).size);
-                    break;
-                }
-                case "domain":
-                    xAxis.push(impact.subdomain);
-                    //////
-                    for (const [key, value] of repartitionEntries) {
-                        const { raw, sip, apps, subDomain } =
-                            value as RepartitionYAxisKeys;
-                        const data = [impact.subdomain, raw, sip, apps, subDomain];
-                        yAxis.push({
-                            name: key,
-                            data: [data],
-                            type: "bar",
-                            stack: "Ad",
-                            emphasis: {
-                                focus: "series",
-                            },
-                            itemStyle: {
-                                color: getUniqueColorFromText(key),
-                            },
-                        });
-                    }
-                    //////
-                    unitImpact.push(impact.unitImpact);
-                    status[impact.subdomain] = { status: impact.status };
-                    for (const app of impact.apps) {
-                        if (!appList.includes(app)) {
-                            appList.push(app);
-                        }
-                    }
-                    appCount.push(appList.length);
-                    break;
-                case "subdomain":
-                    xAxis.push(impact.app);
-                    /////
-                    for (const [key, value] of repartitionEntries) {
-                        const { raw, sip, apps, subDomain } =
-                            value as RepartitionYAxisKeys;
-                        const data = [impact.app, raw, sip, apps, subDomain];
+        result.yAxis.sort((a, b) => b.name.localeCompare(a.name));
+        return result;
+    }
 
-                        yAxis.push({
-                            name: key,
-                            data: [data],
-                            type: "bar",
-                            stack: "Ad",
-                            emphasis: {
-                                focus: "series",
-                            },
-                            itemStyle: {
-                                color: getUniqueColorFromText(key),
-                            },
-                        });
-                    }
-                    /////
+    private processImpactByGraphType(
+        impact: any,
+        repartitionEntries: [string, any][],
+        result: any,
+    ): void {
+        const graphType = this.footprintStore.appGraphType();
 
-                    unitImpact.push(impact.unitImpact);
-                    status[impact.app] = { status: impact.status };
-                    break;
-                case "application":
-                    xAxis.push(impact.virtualEquipmentName);
-                    //////
-                    for (const [key, value] of repartitionEntries) {
-                        const {
-                            raw,
-                            sip,
-                            apps,
-                            subDomain,
-                            cluster,
-                            environment,
-                            equipment,
-                        } = value as RepartitionYAxisKeys;
-                        const data = [
-                            impact.virtualEquipmentName,
-                            raw,
-                            sip,
-                            apps,
-                            subDomain,
-                            cluster,
-                            environment,
-                            equipment,
-                        ];
+        if (graphType === "global") {
+            this.processGlobalGraph(impact, repartitionEntries, result);
+        } else if (graphType === "domain") {
+            this.processDomainGraph(impact, repartitionEntries, result);
+        } else if (graphType === "subdomain") {
+            this.processSubdomainGraph(impact, repartitionEntries, result);
+        } else if (graphType === "application") {
+            this.processApplicationGraph(impact, repartitionEntries, result);
+        }
+    }
 
-                        yAxis.push({
-                            name: key,
-                            data: [data],
-                            type: "bar",
-                            stack: "Ad",
-                            emphasis: {
-                                focus: "series",
-                            },
-                            itemStyle: {
-                                color: getUniqueColorFromText(key),
-                            },
-                        });
-                    }
-                    ///////
-                    unitImpact.push(impact.unitImpact);
-                    equipmentList.push(impact.equipment);
-                    environmentList.push(impact.environment);
-                    clusterList.push(impact.cluster);
-                    status[impact.virtualEquipmentName] = { status: impact.status };
-                    break;
+    private addYAxisEntry(yAxis: any[], key: string, data: any[]): void {
+        yAxis.push({
+            name: key,
+            data: [data],
+            type: "bar",
+            stack: "Ad",
+            emphasis: {
+                focus: "series",
+            },
+            itemStyle: {
+                color: getUniqueColorFromText(key),
+            },
+        });
+    }
+
+    private processGlobalGraph(
+        impact: any,
+        repartitionEntries: [string, any][],
+        result: any,
+    ): void {
+        result.xAxis.push(impact.domain);
+        for (const [key, value] of repartitionEntries) {
+            const { raw, sip, apps, subDomain } = value as RepartitionYAxisKeys;
+            const data = [impact.domain, raw, sip, apps, subDomain];
+            this.addYAxisEntry(result.yAxis, key, data);
+        }
+        result.unitImpact.push(impact.unitImpact);
+        result.status[impact.domain] = { status: impact.status };
+        result.subdomainCount.push(new Set(impact.subdomains).size);
+        result.appCount.push(new Set(impact.apps).size);
+    }
+
+    private processDomainGraph(
+        impact: any,
+        repartitionEntries: [string, any][],
+        result: any,
+    ): void {
+        result.xAxis.push(impact.subdomain);
+        for (const [key, value] of repartitionEntries) {
+            const { raw, sip, apps, subDomain } = value as RepartitionYAxisKeys;
+            const data = [impact.subdomain, raw, sip, apps, subDomain];
+            this.addYAxisEntry(result.yAxis, key, data);
+        }
+        result.unitImpact.push(impact.unitImpact);
+        result.status[impact.subdomain] = { status: impact.status };
+        const appList: string[] = [];
+        for (const app of impact.apps) {
+            if (!appList.includes(app)) {
+                appList.push(app);
             }
         }
-        // sort repartition in yAxis by name descending
-        yAxis.sort((a, b) => b.name.localeCompare(a.name));
-        return {
-            xAxis,
-            yAxis,
-            unitImpact,
-            subdomainCount,
-            appCount,
-            equipmentList,
-            environmentList,
-            clusterList,
-            status,
-        };
+        result.appCount.push(appList.length);
+    }
+
+    private processSubdomainGraph(
+        impact: any,
+        repartitionEntries: [string, any][],
+        result: any,
+    ): void {
+        result.xAxis.push(impact.app);
+        for (const [key, value] of repartitionEntries) {
+            const { raw, sip, apps, subDomain } = value as RepartitionYAxisKeys;
+            const data = [impact.app, raw, sip, apps, subDomain];
+            this.addYAxisEntry(result.yAxis, key, data);
+        }
+        result.unitImpact.push(impact.unitImpact);
+        result.status[impact.app] = { status: impact.status };
+    }
+
+    private processApplicationGraph(
+        impact: any,
+        repartitionEntries: [string, any][],
+        result: any,
+    ): void {
+        result.xAxis.push(impact.virtualEquipmentName);
+        for (const [key, value] of repartitionEntries) {
+            const { raw, sip, apps, subDomain, cluster, environment, equipment } =
+                value as RepartitionYAxisKeys;
+            const data = [
+                impact.virtualEquipmentName,
+                raw,
+                sip,
+                apps,
+                subDomain,
+                cluster,
+                environment,
+                equipment,
+            ];
+            this.addYAxisEntry(result.yAxis, key, data);
+        }
+        result.unitImpact.push(impact.unitImpact);
+        result.equipmentList.push(impact.equipment);
+        result.environmentList.push(impact.environment);
+        result.clusterList.push(impact.cluster);
+        result.status[impact.virtualEquipmentName] = { status: impact.status };
     }
 
     loadBarChartOption(
