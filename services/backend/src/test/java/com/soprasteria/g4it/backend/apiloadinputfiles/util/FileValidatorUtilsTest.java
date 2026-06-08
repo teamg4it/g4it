@@ -112,10 +112,12 @@ class FileValidatorUtilsTest {
                 "text/csv"
         );
 
+        Map<String, List<StoredFile>> files =
+                Map.of("files", List.of(file));
+
         assertThrows(
                 BadRequestException.class,
-                () -> FileValidatorUtils.validateFiles(
-                        Map.of("files", List.of(file)))
+                () -> FileValidatorUtils.validateFiles(files)
         );
     }
 
@@ -130,10 +132,12 @@ class FileValidatorUtilsTest {
                 "text/csv"
         );
 
+        Map<String, List<StoredFile>> files =
+                Map.of("files", List.of(file));
+
         assertThrows(
                 BadRequestException.class,
-                () -> FileValidatorUtils.validateFiles(
-                        Map.of("files", List.of(file)))
+                () -> FileValidatorUtils.validateFiles(files)
         );
     }
 
@@ -182,10 +186,12 @@ class FileValidatorUtilsTest {
                 "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         );
 
+        Map<String, List<StoredFile>> files =
+                Map.of("files", List.of(file));
+
         assertThrows(
                 BadRequestException.class,
-                () -> FileValidatorUtils.validateFiles(
-                        Map.of("files", List.of(file)))
+                () -> FileValidatorUtils.validateFiles(files)
         );
     }
 
