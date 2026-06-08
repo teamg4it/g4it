@@ -90,12 +90,8 @@ export class DigitalServicesServersComponent implements OnInit, OnDestroy {
             let serverType = serverTypes.find(
                 (server) => server.value === item.description,
             );
-
-            if (serverType === undefined) {
-                serverType = serverTypes.find(
-                    (server) => server.reference === item.model,
-                );
-            }
+            // trigger if serverType is null or undefined
+            serverType ??= serverTypes?.find((server) => server.reference === item.model);
 
             const quantity =
                 item.type === "Dedicated Server"

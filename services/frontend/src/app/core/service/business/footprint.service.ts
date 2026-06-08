@@ -377,10 +377,22 @@ export class FootprintService {
         appConstant: ConstantApplicationFilter[] | string[],
         isEquipment: boolean,
     ) {
-        const uniqueValues: { [key: string]: Set<string> } = {};
-        let equipmentFootprint: any = [];
+        const uniqueValues = this.initializeUniqueSets(appConstant, isEquipment);
+        const normalizedFootprint = this.prepareFootprint(footprint, isEquipment);
+        this.collectUniqueValues(
+            normalizedFootprint,
+            appConstant,
+            uniqueValues,
+            isEquipment,
+        );
+        return this.convertSetsToArrays(uniqueValues);
+    }
 
-        // Initialize sets for each field
+    private initializeUniqueSets(
+        appConstant: ConstantApplicationFilter[] | string[],
+        isEquipment: boolean,
+    ): { [key: string]: Set<string> } {
+        const uniqueValues: { [key: string]: Set<string> } = {};
         if (isEquipment) {
             for (const fieldObj of appConstant as string[]) {
                 uniqueValues[fieldObj] = new Set<string>();
@@ -390,30 +402,71 @@ export class FootprintService {
                 uniqueValues[fieldObj.field] = new Set<string>();
             }
         }
-        if (isEquipment) {
-            equipmentFootprint = Object.keys(footprint as Criterias).map((key) => ({
-                criteria: key,
-                ...(footprint as Criterias)[key],
-            }));
+        return uniqueValues;
+    }
+
+    private prepareFootprint(
+        footprint: ApplicationFootprint[] | Criterias,
+        isEquipment: boolean,
+    ): any[] {
+        if (!isEquipment) {
+            return footprint as ApplicationFootprint[];
         }
-        // Populate sets with unique values
-        for (const criteria of (isEquipment
-            ? equipmentFootprint
-            : footprint) as ApplicationFootprint[]) {
+        return Object.keys(footprint as Criterias).map((key) => ({
+            criteria: key,
+            ...(footprint as Criterias)[key],
+        }));
+    }
+
+    private collectUniqueValues(
+        footprint: any[],
+        appConstant: ConstantApplicationFilter[] | string[],
+        uniqueValues: { [key: string]: Set<string> },
+        isEquipment: boolean,
+    ): void {
+        for (const criteria of footprint) {
             for (const impact of criteria.impacts) {
-                const criteriaImpact = impact as any;
+                const criteriaImpact = impact;
                 if (isEquipment) {
-                    for (const fieldObj of appConstant as string[]) {
-                        uniqueValues[fieldObj].add(criteriaImpact[fieldObj] ?? "");
-                    }
+                    this.addEquipmentValues(
+                        criteriaImpact,
+                        appConstant as string[],
+                        uniqueValues,
+                    );
                 } else {
-                    for (const fieldObj of appConstant as ConstantApplicationFilter[]) {
-                        this.populateSets(uniqueValues, fieldObj, criteriaImpact);
-                    }
+                    this.addApplicationValues(
+                        criteriaImpact,
+                        appConstant as ConstantApplicationFilter[],
+                        uniqueValues,
+                    );
                 }
             }
         }
-        // Convert sets to arrays
+    }
+
+    private addEquipmentValues(
+        impact: any,
+        fields: string[],
+        uniqueValues: { [key: string]: Set<string> },
+    ): void {
+        for (const field of fields) {
+            uniqueValues[field].add(impact[field] ?? "");
+        }
+    }
+
+    private addApplicationValues(
+        impact: any,
+        fields: ConstantApplicationFilter[],
+        uniqueValues: { [key: string]: Set<string> },
+    ): void {
+        for (const fieldObj of fields) {
+            this.populateSets(uniqueValues, fieldObj, impact);
+        }
+    }
+
+    private convertSetsToArrays(uniqueValues: { [key: string]: Set<string> }): {
+        [key: string]: string[] | TransformedDomain[];
+    } {
         const result: { [key: string]: string[] | TransformedDomain[] } = {};
         for (const key in uniqueValues) {
             if (key === "domain") {
@@ -422,7 +475,6 @@ export class FootprintService {
                 result[key] = Array.from(uniqueValues[key]);
             }
         }
-
         return result;
     }
 
