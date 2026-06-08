@@ -821,12 +821,12 @@
     },
     "toast-errors": {
         "unknown": {
-            "title": "Unknown error",
-            "text": "Please contact the support for help"
+            "title": "Something went wrong...",
+            "text": "An error has occurred. If you encounter a problem, please contact G4IT support (support.g4it@soprasteria.com)."
         },
         "backend-unreachable": {
             "title": "Backend APIs are not reachable",
-            "text": "Please contact the support for help"
+            "text": "An error has occurred. If you encounter a problem, please contact G4IT support (support.g4it@soprasteria.com)."
         },
         "payload-too-large": {
             "title": "Maximum file size exceeded",

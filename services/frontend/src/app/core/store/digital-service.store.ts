@@ -36,7 +36,7 @@ const initialState: DigitalServiceState = {
     enableCalcul: false,
     ecomindEnableCalcul: false,
     digitalService: {} as DigitalService,
-    countryMap: {} as MapString,
+    countryMap: {},
     networkTypes: [] as NetworkType[],
     terminalDeviceTypes: [] as TerminalsType[],
     serverTypes: [] as Host[],

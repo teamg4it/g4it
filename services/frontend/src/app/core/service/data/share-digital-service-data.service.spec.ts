@@ -116,11 +116,16 @@ describe("ShareDigitalServiceDataService", () => {
     });
 
     it("getSharedPhysicalEquipments should handle null uid", () => {
-        service.getSharedPhysicalEquipments(null, token).subscribe();
-        httpMock
-            .expectOne(
-                `${sharedEndpoint}/${token}/${dsSegment}/null/inputs/physical-equipments`,
-            )
-            .flush([]);
+        service.getSharedPhysicalEquipments(null, token).subscribe((response) => {
+            expect(response).toEqual([]);
+        });
+
+        const req = httpMock.expectOne(
+            `${sharedEndpoint}/${token}/${dsSegment}/null/inputs/physical-equipments`,
+        );
+
+        expect(req.request.method).toBe("GET");
+
+        req.flush([]);
     });
 });
