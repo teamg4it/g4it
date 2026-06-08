@@ -2,6 +2,7 @@ package com.soprasteria.g4it.backend.apiloadinputfiles.util;
 
 import com.soprasteria.g4it.backend.common.filesystem.model.StoredFile;
 import com.soprasteria.g4it.backend.exception.BadRequestException;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.openxml4j.opc.PackageAccess;
@@ -23,7 +24,7 @@ import java.util.Map;
 @Slf4j
 public final class FileValidatorUtils {
 
-    private static final int MAX_ROWS = 100_000;
+
 
     private FileValidatorUtils() {
     }
@@ -65,7 +66,7 @@ public final class FileValidatorUtils {
 
             long rowCount = reader.lines().count();
 
-            if (rowCount > MAX_ROWS) {
+            if (rowCount > Constants.MAX_ROWS) {
                 throwMaxRowsException(storedFile.getOriginalFilename());
             }
 
@@ -73,14 +74,14 @@ public final class FileValidatorUtils {
             throw e;
         } catch (Exception e) {
             log.error(
-                    "Unable to validate CSV file {}",
+                    Constants.VALIDATION_IMPORT_CSV_ERROR + "{}",
                     storedFile.getOriginalFilename(),
                     e
             );
 
             throw new BadRequestException(
                     "file",
-                    "Unable to read imported CSV file."
+                    Constants.READ_CSV_ERROR
             );
         }
     }
@@ -109,7 +110,7 @@ public final class FileValidatorUtils {
                 if (!sheets.hasNext()) {
                     throw new BadRequestException(
                             "file",
-                            "Excel file does not contain any sheet."
+                            Constants.BLANK_EXCEL_MSG
                     );
                 }
 
@@ -124,7 +125,7 @@ public final class FileValidatorUtils {
                         parser.parse(new InputSource(sheet));
                     }
 
-                    if (handler.getRowCount() > MAX_ROWS) {
+                    if (handler.getRowCount() > Constants.MAX_ROWS) {
                         throwMaxRowsException(
                                 storedFile.getOriginalFilename()
                         );
@@ -137,14 +138,14 @@ public final class FileValidatorUtils {
         } catch (Exception e) {
 
             log.error(
-                    "Unable to validate Excel file {}",
+                    Constants.VALIDATION_IMPORT_EXCEL_ERROR + "{}",
                     storedFile.getOriginalFilename(),
                     e
             );
 
             throw new BadRequestException(
                     "file",
-                    "Unable to read imported Excel file."
+                    Constants.READ_EXCEL_ERROR
             );
         }
     }
@@ -154,15 +155,14 @@ public final class FileValidatorUtils {
         throw new BadRequestException(
                 "file",
                 String.format(
-                        "The imported file '%s' exceeds the number of rows that the calculation system can process in a single import (100,000 rows). Please perform your import in multiple files.",
-                        filename,
-                        MAX_ROWS
+                        "%s" + Constants.VALIDATION_MSG,
+                        filename
                 )
         );
     }
 
-    private static class RowCounterHandler
-            extends DefaultHandler {
+    @Getter
+    private static class RowCounterHandler extends DefaultHandler {
 
         private int rowCount;
 
@@ -176,10 +176,6 @@ public final class FileValidatorUtils {
             if ("row".equals(qName)) {
                 rowCount++;
             }
-        }
-
-        public int getRowCount() {
-            return rowCount;
         }
     }
 }
