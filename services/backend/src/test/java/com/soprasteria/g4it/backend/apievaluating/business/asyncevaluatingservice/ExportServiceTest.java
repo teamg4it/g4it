@@ -36,7 +36,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class ExportServiceTest {
+class ExportServiceTest {
 
     @Mock
     private LocalFileService localFileService;
@@ -54,7 +54,7 @@ public class ExportServiceTest {
     Path tempDir;
 
     @BeforeEach
-    void setUp() throws Exception {
+    void setUp() {
         ReflectionTestUtils.setField(
                 exportService,
                 "localWorkingFolder",
@@ -70,7 +70,7 @@ public class ExportServiceTest {
     }
 
     @Test
-    void shouldUploadExportZip() throws Exception {
+    void shouldUploadExportZip() throws IOException  {
         Long taskId = 123L;
         String organization = "ORG";
         String workspaceId = "WS";
@@ -96,9 +96,9 @@ public class ExportServiceTest {
 
         verify(fileStorage)
                 .upload(
-                        eq(zipFile.getAbsolutePath()),
-                        eq(FileFolder.EXPORT),
-                        eq(taskId + Constants.ZIP));
+                        zipFile.getAbsolutePath(),
+                        FileFolder.EXPORT,
+                        taskId + Constants.ZIP);
     }
 
     @Test

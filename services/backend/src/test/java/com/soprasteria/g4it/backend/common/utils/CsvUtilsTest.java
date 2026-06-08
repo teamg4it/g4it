@@ -17,6 +17,7 @@ import java.io.StringReader;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDate;
+import java.time.Month;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -30,14 +31,14 @@ class CsvUtilsTest {
                 .builder()
                 .setHeader()
                 .setSkipHeaderRecord(true)
-                .build()
+                .get()
                 .parse(new StringReader(csv));
 
-        List<CSVRecord> records = parser.getRecords();
+        List<CSVRecord> recordsCsv = parser.getRecords();
 
-        assertFalse(records.isEmpty(), "No CSV record created");
+        assertFalse(recordsCsv.isEmpty(), "No CSV record created");
 
-        return records.getFirst();
+        return recordsCsv.getFirst();
     }
 
     @Test
@@ -59,161 +60,161 @@ class CsvUtilsTest {
 
     @Test
     void readShouldReturnValue() throws Exception {
-        CSVRecord record = buildRecord("""
+        CSVRecord recordCsv = buildRecord("""
                 name
                 John
                 """);
 
-        assertEquals("John", CsvUtils.read(record, "name"));
+        assertEquals("John", CsvUtils.read(recordCsv, "name"));
     }
 
     @Test
     void readShouldReturnNullWhenFieldNotMapped() throws Exception {
-        CSVRecord record = buildRecord("""
+        CSVRecord recordCsv = buildRecord("""
                 name
                 John
                 """);
 
-        assertNull(CsvUtils.read(record, "unknown"));
+        assertNull(CsvUtils.read(recordCsv, "unknown"));
     }
 
     @Test
     void readShouldReturnNullWhenValueEmpty() {
-        CSVRecord record = mock(CSVRecord.class);
+        CSVRecord recordCsv = mock(CSVRecord.class);
 
-        when(record.isMapped("name")).thenReturn(true);
-        when(record.get("name")).thenReturn("");
+        when(recordCsv.isMapped("name")).thenReturn(true);
+        when(recordCsv.get("name")).thenReturn("");
 
-        assertNull(CsvUtils.read(record, "name"));
+        assertNull(CsvUtils.read(recordCsv, "name"));
     }
 
     @Test
     void readWithDefaultShouldReturnValue() throws Exception {
-        CSVRecord record = buildRecord("""
+        CSVRecord recordCsv = buildRecord("""
                 name
                 John
                 """);
 
-        assertEquals("John", CsvUtils.read(record, "name", "default"));
+        assertEquals("John", CsvUtils.read(recordCsv, "name", "default"));
     }
 
     @Test
     void readWithDefaultShouldReturnDefaultWhenFieldNotMapped() throws Exception {
-        CSVRecord record = buildRecord("""
+        CSVRecord recordCsv = buildRecord("""
                 name
                 John
                 """);
 
         assertEquals("default",
-                CsvUtils.read(record, "unknown", "default"));
+                CsvUtils.read(recordCsv, "unknown", "default"));
     }
 
     @Test
     void readWithDefaultShouldReturnDefaultWhenValueEmpty() {
-        CSVRecord record = mock(CSVRecord.class);
+        CSVRecord recordCsv = mock(CSVRecord.class);
 
-        when(record.isMapped("name")).thenReturn(true);
-        when(record.get("name")).thenReturn("");
+        when(recordCsv.isMapped("name")).thenReturn(true);
+        when(recordCsv.get("name")).thenReturn("");
 
         assertEquals("default",
-                CsvUtils.read(record, "name", "default"));
+                CsvUtils.read(recordCsv, "name", "default"));
     }
 
     @Test
     void readDoubleShouldReturnDouble() throws Exception {
-        CSVRecord record = buildRecord("""
+        CSVRecord recordCsv = buildRecord("""
                 amount
                 12.5
                 """);
 
         assertEquals(12.5,
-                CsvUtils.readDouble(record, "amount"));
+                CsvUtils.readDouble(recordCsv, "amount"));
     }
 
     @Test
     void readDoubleShouldReturnNullWhenMissing() {
-        CSVRecord record = mock(CSVRecord.class);
+        CSVRecord recordCsv = mock(CSVRecord.class);
 
-        when(record.isMapped("amount")).thenReturn(true);
-        when(record.get("amount")).thenReturn("");
+        when(recordCsv.isMapped("amount")).thenReturn(true);
+        when(recordCsv.get("amount")).thenReturn("");
 
-        assertNull(CsvUtils.readDouble(record, "amount"));
+        assertNull(CsvUtils.readDouble(recordCsv, "amount"));
     }
 
     @Test
     void readDoubleWithDefaultShouldReturnValue() throws Exception {
-        CSVRecord record = buildRecord("""
+        CSVRecord recordCsv = buildRecord("""
                 amount
                 10.5
                 """);
 
         assertEquals(10.5,
-                CsvUtils.readDouble(record, "amount", 1.0));
+                CsvUtils.readDouble(recordCsv, "amount", 1.0));
     }
 
     @Test
     void readDoubleWithDefaultShouldReturnDefault() {
-        CSVRecord record = mock(CSVRecord.class);
+        CSVRecord recordCsv = mock(CSVRecord.class);
 
-        when(record.isMapped("amount")).thenReturn(true);
-        when(record.get("amount")).thenReturn("");
+        when(recordCsv.isMapped("amount")).thenReturn(true);
+        when(recordCsv.get("amount")).thenReturn("");
 
         assertEquals(1.0,
-                CsvUtils.readDouble(record, "amount", 1.0));
+                CsvUtils.readDouble(recordCsv, "amount", 1.0));
     }
 
     @Test
     void readBooleanShouldReturnTrue() throws Exception {
-        CSVRecord record = buildRecord("""
+        CSVRecord recordCsv = buildRecord("""
                 active
                 true
                 """);
 
-        assertTrue(CsvUtils.readBoolean(record, "active"));
+        assertTrue(CsvUtils.readBoolean(recordCsv, "active"));
     }
 
     @Test
     void readBooleanShouldReturnFalseWhenMissing() {
-        CSVRecord record = mock(CSVRecord.class);
+        CSVRecord recordCsv = mock(CSVRecord.class);
 
-        when(record.isMapped("active")).thenReturn(true);
-        when(record.get("active")).thenReturn("");
+        when(recordCsv.isMapped("active")).thenReturn(true);
+        when(recordCsv.get("active")).thenReturn("");
 
-        assertFalse(CsvUtils.readBoolean(record, "active"));
+        assertFalse(CsvUtils.readBoolean(recordCsv, "active"));
     }
 
     @Test
     void readLocalDateShouldParseValidDate() throws Exception {
-        CSVRecord record = buildRecord("""
+        CSVRecord recordCsv = buildRecord("""
                 date
                 2024-01-15
                 """);
 
-        LocalDate result = CsvUtils.readLocalDate(record, "date");
+        LocalDate result = CsvUtils.readLocalDate(recordCsv, "date");
 
-        assertEquals(LocalDate.of(2024, 1, 15), result);
+        assertEquals(LocalDate.of(2024, Month.JANUARY, 15), result);
     }
 
     @Test
     void readLocalDateShouldReturnNullWhenMissing() {
-        CSVRecord record = mock(CSVRecord.class);
+        CSVRecord recordCsv = mock(CSVRecord.class);
 
-        when(record.isMapped("date")).thenReturn(true);
-        when(record.get("date")).thenReturn("");
+        when(recordCsv.isMapped("date")).thenReturn(true);
+        when(recordCsv.get("date")).thenReturn("");
 
-        assertNull(CsvUtils.readLocalDate(record, "date"));
+        assertNull(CsvUtils.readLocalDate(recordCsv, "date"));
     }
 
     @Test
     void readLocalDateShouldReturnErrorDateForInvalidFormat() throws Exception {
-        CSVRecord record = buildRecord("""
+        CSVRecord recordCsv = buildRecord("""
                 date
                 invalid-date
                 """);
 
         assertEquals(
                 Constants.ERROR_DATE_FORMAT,
-                CsvUtils.readLocalDate(record, "date"));
+                CsvUtils.readLocalDate(recordCsv, "date"));
     }
 
     @Test
@@ -238,7 +239,7 @@ class CsvUtilsTest {
 
     @Test
     void printLocalDateShouldReturnValue() {
-        LocalDate date = LocalDate.of(2024, 1, 15);
+        LocalDate date = LocalDate.of(2024, Month.JANUARY, 15);
 
         assertEquals("2024-01-15", CsvUtils.print(date));
     }
