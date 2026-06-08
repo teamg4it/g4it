@@ -1,6 +1,7 @@
 import { Component, inject, OnInit, signal } from "@angular/core";
 import { ActivatedRoute, RouterLink } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
+import { ScrollPanelModule } from "primeng/scrollpanel";
 import { lastValueFrom } from "rxjs";
 import { CompareVersion } from "src/app/core/interfaces/digital-service-version.interface";
 import {
@@ -13,11 +14,10 @@ import { IntegerPipe } from "src/app/core/pipes/integer.pipe";
 import { DigitalServiceVersionDataService } from "src/app/core/service/data/digital-service-version-data-service";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
 import { convertToGlobalVision } from "src/app/core/service/mapper/digital-service";
-import { DigitalServicesFootprintHeaderComponent } from "../digital-services-footprint/digital-services-footprint-header/digital-services-footprint-header.component";
-import { ScrollPanelModule } from "primeng/scrollpanel";
-import { RadialChartComponent } from "../digital-services-footprint/digital-services-footprint-dashboard/radial-chart/radial-chart.component";
-import { PieChartComponent } from "../digital-services-footprint/digital-services-footprint-dashboard/pie-chart/pie-chart.component";
 import { GraphDescriptionComponent } from "../digital-services-footprint/digital-services-footprint-dashboard/graph-description/graph-description.component";
+import { PieChartComponent } from "../digital-services-footprint/digital-services-footprint-dashboard/pie-chart/pie-chart.component";
+import { RadialChartComponent } from "../digital-services-footprint/digital-services-footprint-dashboard/radial-chart/radial-chart.component";
+import { DigitalServicesFootprintHeaderComponent } from "../digital-services-footprint/digital-services-footprint-header/digital-services-footprint-header.component";
 
 @Component({
     selector: "app-digital-services-compare-versions",
@@ -78,6 +78,17 @@ export class DigitalServicesCompareVersionsComponent implements OnInit {
     }
 
     transformVersionData(): void {
+        this.enhanceVersionsWithChartData();
+        const twoCriteriaCalculated = this.hasTwoCriteriaCalculated();
+        const maxUnitValue = this.processAllVersions(twoCriteriaCalculated);
+
+        if (maxUnitValue) {
+            this.maxSipUnitValue = this.roundSmallNumber(maxUnitValue);
+        }
+        this.getTableDescription();
+    }
+
+    private enhanceVersionsWithChartData(): void {
         this.compareApi = this.compareApi.map((version) => ({
             ...version,
             convertToChartData: convertToGlobalVision(
@@ -85,56 +96,115 @@ export class DigitalServicesCompareVersionsComponent implements OnInit {
                 version.virtualEquipment,
             ),
         }));
-        let maxUnitValue = 0;
-        const twoCriteriaCalculated =
+    }
+
+    private hasTwoCriteriaCalculated(): boolean {
+        return (
             (this.compareApi[0]?.convertToChartData?.[0]?.impacts?.length ?? 0) > 1 &&
-            (this.compareApi[1]?.convertToChartData?.[0]?.impacts?.length ?? 0) > 1;
+            (this.compareApi[1]?.convertToChartData?.[0]?.impacts?.length ?? 0) > 1
+        );
+    }
 
-        for (let version of this.compareApi) {
-            // Ensure version bucket exists
-            if (!this.transformedVersionDataObj[version.versionName]) {
-                this.transformedVersionDataObj[version.versionName] = {};
-            }
+    private processAllVersions(twoCriteriaCalculated: boolean): number {
+        let maxUnitValue = 0;
 
-            for (let chartData of version.convertToChartData ?? []) {
-                for (let impact of chartData.impacts ?? []) {
-                    const existing =
-                        this.transformedVersionDataObj[version.versionName][
-                            impact.criteria
-                        ];
+        for (const version of this.compareApi) {
+            this.ensureVersionBucket(version.versionName);
+            maxUnitValue = this.processVersionChartData(
+                version,
+                twoCriteriaCalculated,
+                maxUnitValue,
+            );
+        }
 
-                    if (existing) {
-                        // If exists → accumulate
-                        existing.unitValue += impact.unitValue;
-                        existing.sipValue += impact.sipValue;
-                        existing.unit = this.translate.instant(
-                            `criteria.${impact.criteria.toLowerCase()}.unite`,
-                        );
-                        if (existing?.sipValue > maxUnitValue && twoCriteriaCalculated) {
-                            maxUnitValue = existing?.sipValue;
-                        }
-                    } else {
-                        // If not exists → create entry
-                        this.transformedVersionDataObj[version.versionName][
-                            impact.criteria
-                        ] = {
-                            unitValue: impact.unitValue,
-                            sipValue: impact.sipValue,
-                            unit: this.translate.instant(
-                                `criteria.${impact.criteria.toLowerCase()}.unite`,
-                            ),
-                        };
-                        if (impact?.sipValue > maxUnitValue && twoCriteriaCalculated) {
-                            maxUnitValue = impact?.sipValue;
-                        }
-                    }
-                }
+        return maxUnitValue;
+    }
+
+    private ensureVersionBucket(versionName: string): void {
+        if (!this.transformedVersionDataObj[versionName]) {
+            this.transformedVersionDataObj[versionName] = {};
+        }
+    }
+
+    private processVersionChartData(
+        version: CompareVersion,
+        twoCriteriaCalculated: boolean,
+        maxUnitValue: number,
+    ): number {
+        for (const chartData of version.convertToChartData ?? []) {
+            for (const impact of chartData.impacts ?? []) {
+                maxUnitValue = this.processImpact(
+                    version.versionName,
+                    impact,
+                    twoCriteriaCalculated,
+                    maxUnitValue,
+                );
             }
         }
-        if (maxUnitValue) {
-            this.maxSipUnitValue = this.roundSmallNumber(maxUnitValue);
+        return maxUnitValue;
+    }
+
+    private processImpact(
+        versionName: string,
+        impact: any,
+        twoCriteriaCalculated: boolean,
+        maxUnitValue: number,
+    ): number {
+        const existing = this.transformedVersionDataObj[versionName][impact.criteria];
+
+        if (existing) {
+            return this.updateExistingCriteria(
+                existing,
+                impact,
+                twoCriteriaCalculated,
+                maxUnitValue,
+            );
+        } else {
+            return this.createNewCriteria(
+                versionName,
+                impact,
+                twoCriteriaCalculated,
+                maxUnitValue,
+            );
         }
-        this.getTableDescription();
+    }
+
+    private updateExistingCriteria(
+        existing: any,
+        impact: any,
+        twoCriteriaCalculated: boolean,
+        maxUnitValue: number,
+    ): number {
+        existing.unitValue += impact.unitValue;
+        existing.sipValue += impact.sipValue;
+        existing.unit = this.translate.instant(
+            `criteria.${impact.criteria.toLowerCase()}.unite`,
+        );
+
+        if (existing?.sipValue > maxUnitValue && twoCriteriaCalculated) {
+            return existing.sipValue;
+        }
+        return maxUnitValue;
+    }
+
+    private createNewCriteria(
+        versionName: string,
+        impact: any,
+        twoCriteriaCalculated: boolean,
+        maxUnitValue: number,
+    ): number {
+        this.transformedVersionDataObj[versionName][impact.criteria] = {
+            unitValue: impact.unitValue,
+            sipValue: impact.sipValue,
+            unit: this.translate.instant(
+                `criteria.${impact.criteria.toLowerCase()}.unite`,
+            ),
+        };
+
+        if (impact?.sipValue > maxUnitValue && twoCriteriaCalculated) {
+            return impact.sipValue;
+        }
+        return maxUnitValue;
     }
 
     roundSmallNumber(value: number): number {
