@@ -89,8 +89,8 @@ function handleErrorPageNavigation(
             // Track internal server error in Matomo
             matomoService.trackEvent(
                 "HTTP Error",
-                "Internal Server Error",
-                `Error Code: ${error.status}}`,
+                `${error.url} - ${error.error.message || "Internal Server Error"}`,
+                `Error Code: ${error.status}`,
             );
 
             const errorKeys = Object.keys(translate.instant(`toast-errors`));
