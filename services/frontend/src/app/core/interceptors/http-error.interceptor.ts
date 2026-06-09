@@ -90,8 +90,7 @@ function handleErrorPageNavigation(
             matomoService.trackEvent(
                 "HTTP Error",
                 "Internal Server Error",
-                `${error.status}: ${errorKey}`,
-                error.status,
+                `Error Code: ${error.status}}`,
             );
 
             const errorKeys = Object.keys(translate.instant(`toast-errors`));

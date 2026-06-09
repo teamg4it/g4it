@@ -39,18 +39,18 @@ export class MatomoScriptService {
         this.renderer.appendChild(document.head, script); // Appends to <head> of index.html
     }
 
-    trackEvent(category: string, action: string, name?: string, value?: number): void {
+    trackEvent(category: string, action: string, name?: string): void {
         if (globalThis.window === undefined) {
             console.warn("[Matomo] Window object not available");
             return;
         }
 
         if ((globalThis as any)._paq) {
-            (globalThis as any)._paq.push(["trackEvent", category, action, name, value]);
+            (globalThis as any)._paq.push(["trackEvent", category, action, name]);
         } else {
             console.warn(
                 "[Matomo] Cannot track event - Direct tracker (_paq) not initialized",
-                { category, action, name, value },
+                { category, action, name },
             );
         }
     }
