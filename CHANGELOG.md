@@ -5,12 +5,12 @@
 ### Major Changes
 
 - 2180 | Angular Upgrade to version 21
+- 2168 | Secure Keycloak deployment by migrating from the Bitnami Helm chart to a standard & maintained chart
 
 ### Minor Changes
 
 - 2188 | Digital Service version duplication button show loader till duplicated version is created
 - 2203 | Display User Friendly Alert message for internal server error
-
 
 ## 3.12.1
 
@@ -25,6 +25,7 @@
 ## 3.12.0
 
 ## Major changes
+
 - 2001 | Inventory module filter the view moves from overlay to side panel
 - 2017 | keep the data for 2 more years - GUI Impact
 - 1983 | Update Reference Data at Workspace level
@@ -32,10 +33,10 @@
 - 2081 | Sources used for calculation below the graphs
 
 ### Minor Changes
+
 - 2129 | Fix for Unit change - Unauthorized error remove in Digital Service
 - 2140 | Inventories - Application View Review Set Graph view as default, Additional elements of analysis section added
 - 2142 | Retain repartition dropdown list selection in the navigation on the inventory results page.
-
 
 ## 3.11.0
 
@@ -47,6 +48,7 @@
 - 1991 | EcoMindAI - Beta
 
 ### Minor Changes
+
 - 1989 | Update Reference data in Super Admin mode
 - 2070 | fix for set default host value settings in server
 - 2069 | Fix for unable to add a datacenter
