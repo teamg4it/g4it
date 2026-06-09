@@ -7,7 +7,7 @@
  */
 import { AsyncPipe } from "@angular/common";
 import { Component, Input, OnDestroy, OnInit } from "@angular/core";
-import { Router, RouterLink } from "@angular/router";
+import { Router } from "@angular/router";
 import { TranslatePipe, TranslateService } from "@ngx-translate/core";
 import { saveAs } from "file-saver";
 import { ConfirmationService, MessageService } from "primeng/api";
@@ -34,7 +34,6 @@ import { CommonEditorComponent } from "../../common/common-editor/common-editor.
     imports: [
         ToastModule,
         Button,
-        RouterLink,
         DrawerModule,
         CommonEditorComponent,
         ConfirmPopupModule,
@@ -81,6 +80,10 @@ export class InventoriesHeaderFootprintComponent implements OnInit, OnDestroy {
             .subscribe((workspace: Workspace) => {
                 this.selectedWorkspace = workspace.name;
             });
+    }
+
+    backButton() {
+        this.router.navigateByUrl(this.changePageToInventories());
     }
 
     changePageToInventories() {
