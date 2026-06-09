@@ -80,6 +80,7 @@ function handleErrorPageNavigation(
     messageService: MessageService,
     translate: TranslateService,
     matomoService: MatomoScriptService,
+    method: string,
 ) {
     if (handledErrorStatus.has(error.status)) {
         if (error.status === HttpStatusCode.InternalServerError) {
@@ -89,8 +90,8 @@ function handleErrorPageNavigation(
             // Track internal server error in Matomo
             matomoService.trackEvent(
                 "HTTP Error",
-                `${error.url} - ${error?.error?.message || error?.message || "Internal Server Error"}`,
-                `Error Code: ${error.status}`,
+                `${method} ${error?.url} - ${error?.error?.message || error?.message || "Internal Server Error"}`,
+                `Error Code: ${error?.status}`,
             );
 
             const errorKeys = Object.keys(translate.instant(`toast-errors`));
@@ -164,6 +165,7 @@ export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
                 messageService,
                 translate,
                 matomoService,
+                req?.method,
             );
             return throwError(
                 () =>
