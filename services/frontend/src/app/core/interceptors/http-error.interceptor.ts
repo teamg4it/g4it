@@ -89,7 +89,7 @@ function handleErrorPageNavigation(
             // Track internal server error in Matomo
             matomoService.trackEvent(
                 "HTTP Error",
-                `${error.url} - ${error.error.message || "Internal Server Error"}`,
+                `${error.url} - ${error?.error?.message || error?.message || "Internal Server Error"}`,
                 `Error Code: ${error.status}`,
             );
 
