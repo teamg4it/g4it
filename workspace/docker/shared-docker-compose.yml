@@ -28,29 +28,32 @@ services:
           memory: 300M
 
   keycloak:
-    image: bitnamilegacy/keycloak:26.0.7
+    image: quay.io/keycloak/keycloak:26.0.7
     container_name: keycloak
     ports:
-      - "8180:8180"
+      - "8180:8080"
     depends_on:
       - postgresdb
     environment:
-      KEYCLOAK_BIND_ADDRESS: 0.0.0.0
-      KEYCLOAK_DATABASE_HOST: postgresdb
-      KEYCLOAK_DATABASE_PORT: 5432
-      KEYCLOAK_DATABASE_NAME: keycloak
-      KEYCLOAK_DATABASE_PASSWORD: ${POSTGRES_PASSWORD}
-      KEYCLOAK_DATABASE_USER: ${POSTGRES_USER}
-      KEYCLOAK_HTTP_RELATIVE_PATH: /auth/
-      KEYCLOAK_HTTP_PORT: 8180
+      KC_DB: postgres
+      KC_DB_URL_HOST: postgresdb
+      KC_DB_URL_PORT: 5432
+      KC_DB_URL_DATABASE: keycloak
+      KC_DB_USERNAME: ${POSTGRES_USER}
+      KC_DB_PASSWORD: ${POSTGRES_PASSWORD}
+
+      KC_HTTP_RELATIVE_PATH: /auth
+      KC_HTTP_ENABLED: true
+
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: password
-      KEYCLOAK_EXTRA_ARGS: --import-realm --spi-theme-static-max-age=-1 --spi-theme-cache-themes=false --spi-theme-cache-templates=false
-      JAVA_OPTS_APPEND: -Xms200m -Xmx200m
+
+    command: start-dev --import-realm
+
     volumes:
-      - ../../services/keycloak/imports:/opt/bitnami/keycloak/data/import
-      - ../../services/keycloak/extensions:/opt/bitnami/keycloak/providers
-      - ../../services/keycloak/themes:/opt/bitnami/keycloak/themes
+      - ../../services/keycloak/imports:/opt/keycloak/data/import
+      - ../../services/keycloak/extensions:/opt/keycloak/providers
+      - ../../services/keycloak/themes:/opt/keycloak/themes
     networks:
       - numecoeval
     deploy:
