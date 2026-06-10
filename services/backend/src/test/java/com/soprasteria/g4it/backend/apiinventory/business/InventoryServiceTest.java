@@ -37,11 +37,9 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.util.ReflectionTestUtils;
-
-import java.time.Clock;
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -58,7 +56,7 @@ class InventoryServiceTest {
     private static final Long WORKSPACE_ID = 1L;
     private static final Long INVENTORY_ID = 2L;
     private static final LocalDateTime FIXED_TIME =
-            LocalDateTime.of(2025, 1, 1, 12, 0);
+            LocalDateTime.of(2025, Month.JANUARY, 1, 12, 0);
 
     @InjectMocks
     private InventoryService inventoryService;

@@ -37,10 +37,7 @@ import org.mockito.quality.Strictness;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.time.Clock;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
+import java.time.*;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -60,7 +57,7 @@ class EvaluatingServiceTest {
     static final Long INVENTORY_ID = 2L;
     static final String DIGITAL_SERVICE_VERSION_UID = "90651485-3f8b-49dd-a7be-753e4fe1fd36";
     static final LocalDateTime FIXED_TIME =
-            LocalDateTime.of(2025, 1, 1, 10, 30);
+            LocalDateTime.of(2025, Month.JANUARY, 1, 10, 30);
     @InjectMocks
     private EvaluatingService evaluatingService;
 
@@ -187,7 +184,7 @@ class EvaluatingServiceTest {
     void restartEvaluating_shouldSkip_whenLastUpdateIsRecent() {
         Task task = mock(Task.class);
         Inventory inventory = mock(Inventory.class);
-        LocalDateTime fixedNow = LocalDateTime.of(2025, 1, 1, 12, 0);
+        LocalDateTime fixedNow = LocalDateTime.of(2025, Month.JANUARY, 1, 12, 0);
 
         when(clock.instant()).thenReturn(
                 fixedNow.atZone(ZoneId.systemDefault()).toInstant()
@@ -212,7 +209,7 @@ class EvaluatingServiceTest {
         Inventory inventory = mock(Inventory.class);
         Workspace workspace = mock(Workspace.class);
         Organization org = mock(Organization.class);
-        LocalDateTime fixedNow = LocalDateTime.of(2025, 1, 1, 12, 0);
+        LocalDateTime fixedNow = LocalDateTime.of(2025, Month.JANUARY, 1, 12, 0);
         when(clock.instant()).thenReturn(
                 fixedNow.toInstant(ZoneOffset.UTC));
         when(clock.getZone()).thenReturn(ZoneOffset.UTC);

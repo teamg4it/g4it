@@ -29,6 +29,7 @@ import org.springframework.context.MessageSource;
 
 import java.time.Clock;
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.time.ZoneOffset;
 import java.util.Collections;
 import java.util.List;
@@ -41,7 +42,7 @@ import static org.mockito.Mockito.*;
 
 class DataDeletionServiceTest {
     private static final LocalDateTime FIXED_DATE_TIME =
-            LocalDateTime.of(2025, 1, 1, 12, 0);
+            LocalDateTime.of(2025, Month.JANUARY, 1, 12, 0);
     @Mock
     private WorkspaceRepository workspaceRepository;
     @Mock

@@ -42,10 +42,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.Clock;
-import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.time.ZoneOffset;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -71,7 +70,7 @@ class DigitalServiceVersionServiceTest {
     private static final String VERSION_NAME = "version 1";
     private static final String VERSION_TYPE = "draft";
     private static final LocalDateTime FIXED_TIME =
-            LocalDateTime.of(2025, 1, 1, 10, 30);
+            LocalDateTime.of(2025, Month.JANUARY, 1, 10, 30);
     @Mock
     private DigitalServiceRepository digitalServiceRepository;
     @Mock
@@ -618,7 +617,7 @@ class DigitalServiceVersionServiceTest {
     void shouldUpdateLastUpdateDate() {
 
         LocalDateTime fixedTime =
-                LocalDateTime.of(2025, 1, 1, 10, 30);
+                LocalDateTime.of(2025, Month.JANUARY, 1, 10, 30);
 
         when(clock.instant()).thenReturn(
                 fixedTime.toInstant(ZoneOffset.UTC));

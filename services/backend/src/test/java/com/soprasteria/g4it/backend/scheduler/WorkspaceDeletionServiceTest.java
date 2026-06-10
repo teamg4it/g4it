@@ -27,6 +27,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.Clock;
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Optional;
@@ -37,7 +38,7 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class WorkspaceDeletionServiceTest {
     private static final LocalDateTime FIXED_DATE_TIME =
-            LocalDateTime.of(2025, 1, 1, 12, 0);
+            LocalDateTime.of(2025, Month.JANUARY, 1, 12, 0);
     @InjectMocks
     WorkspaceDeletionService workspaceDeletionService;
     @Mock

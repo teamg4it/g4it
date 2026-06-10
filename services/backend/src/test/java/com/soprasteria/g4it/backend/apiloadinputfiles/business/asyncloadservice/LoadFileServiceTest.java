@@ -41,6 +41,7 @@ import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -55,7 +56,7 @@ import static org.mockito.Mockito.when;
 class LoadFileServiceTest {
 
     private static final LocalDateTime FIXED_TIME =
-            LocalDateTime.of(2025, 1, 1, 12, 0);
+            LocalDateTime.of(2025, Month.JANUARY, 1, 12, 0);
 
     @Mock
     CsvFileMapperInfo csvFileMapperInfo;

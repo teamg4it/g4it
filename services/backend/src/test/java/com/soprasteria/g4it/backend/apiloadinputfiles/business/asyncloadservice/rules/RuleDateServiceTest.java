@@ -20,6 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.MessageSource;
 
 import java.time.LocalDate;
+import java.time.Month;
 import java.util.Locale;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -35,7 +36,7 @@ class RuleDateServiceTest {
     private final Locale locale = Locale.getDefault();
     private final String filename = "filename";
     private final int line = 1;
-    private static final LocalDate TODAY = LocalDate.of(2025, 1, 1);
+    private static final LocalDate TODAY = LocalDate.of(2025, Month.JANUARY, 1);
     private static final LocalDate TOMORROW = TODAY.plusDays(1);
 
 

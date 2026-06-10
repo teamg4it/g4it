@@ -36,6 +36,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.Clock;
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Optional;
@@ -64,7 +65,7 @@ class WorkspaceServiceTest {
     public static final Long ORGANIZATION_ID = 1L;
     public static final Long WORKSPACE_ID = 1L;
     private static final LocalDateTime FIXED_DATE_TIME =
-            LocalDateTime.of(2025, 1, 1, 12, 0);
+            LocalDateTime.of(2025, Month.JANUARY, 1, 12, 0);
     @Mock
     private final FileSystem fileSystem = new LocalFileSystem(LOCAL_FILESYSTEM_PATH);
     @Mock
