@@ -764,14 +764,22 @@ class DigitalServiceVersionServiceTest {
         when(clock.instant()).thenReturn(
                 FIXED_TIME.toInstant(ZoneOffset.UTC));
         when(clock.getZone()).thenReturn(ZoneOffset.UTC);
-        final Workspace linkedWorkspace = Workspace.builder().id(WORKSPACE_ID).build();
-        final User user = User.builder().id(USER_ID).build();
 
-        InDigitalServiceVersionRest inDigitalServiceVersionRest = InDigitalServiceVersionRest.builder()
-                .dsName(DIGITAL_SERVICE_NAME)
-                .versionName(VERSION_NAME)
-                .isAi(IS_AI)
+        final Workspace linkedWorkspace = Workspace.builder()
+                .id(WORKSPACE_ID)
                 .build();
+
+        final User user = User.builder()
+                .id(USER_ID)
+                .build();
+
+        InDigitalServiceVersionRest inDigitalServiceVersionRest =
+                InDigitalServiceVersionRest.builder()
+                        .dsName(DIGITAL_SERVICE_NAME)
+                        .versionName(VERSION_NAME)
+                        .isAi(IS_AI)
+                        .build();
+
         DigitalService digitalServiceSaved = DigitalService.builder()
                 .uid(DIGITAL_SERVICE_UID)
                 .name(inDigitalServiceVersionRest.getDsName())
@@ -780,17 +788,19 @@ class DigitalServiceVersionServiceTest {
                 .isAi(inDigitalServiceVersionRest.getIsAi())
                 .build();
 
-        final DigitalServiceVersion digitalServiceVersion = DigitalServiceVersion.builder()
+        DigitalServiceVersion digitalServiceVersion = DigitalServiceVersion.builder()
                 .uid(DIGITAL_SERVICE_VERSION_UID)
                 .description(inDigitalServiceVersionRest.getVersionName())
-                .digitalService(DigitalService.builder().uid(digitalServiceSaved.getUid()).build())
-                .versionType(DigitalServiceVersionStatus.ACTIVE.name()) // Initial version type
-                .createdBy(digitalServiceSaved.getUser().getId())
+                .digitalService(
+                        DigitalService.builder()
+                                .uid(digitalServiceSaved.getUid())
+                                .build())
+                .versionType(DigitalServiceVersionStatus.ACTIVE.name())
+                .createdBy(user.getId())
                 .creationDate(FIXED_TIME)
                 .lastUpdateDate(FIXED_TIME)
                 .lastCalculationDate(FIXED_TIME)
                 .build();
-
 
         DigitalServiceVersionBO expectedBO = DigitalServiceVersionBO.builder()
                 .uid(DIGITAL_SERVICE_VERSION_UID)
@@ -798,23 +808,35 @@ class DigitalServiceVersionServiceTest {
                 .versionType(VERSION_TYPE)
                 .build();
 
-        when(workspaceService.getWorkspaceById(WORKSPACE_ID)).thenReturn(linkedWorkspace);
-        when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
-        when(digitalServiceRepository.save(any())).thenReturn(digitalServiceSaved);
-        when(digitalServiceVersionRepository.save(any())).thenReturn(digitalServiceVersion);
-        when(digitalServiceVersionMapper.toBusinessObject(digitalServiceVersion, digitalServiceSaved)).thenReturn(expectedBO);
+        when(workspaceService.getWorkspaceById(WORKSPACE_ID))
+                .thenReturn(linkedWorkspace);
+        when(userRepository.findById(USER_ID))
+                .thenReturn(Optional.of(user));
+        when(digitalServiceRepository.save(any(DigitalService.class)))
+                .thenReturn(digitalServiceSaved);
+        when(digitalServiceVersionRepository.save(any(DigitalServiceVersion.class)))
+                .thenReturn(digitalServiceVersion);
+        when(digitalServiceVersionMapper.toBusinessObject(
+                digitalServiceVersion,
+                digitalServiceSaved))
+                .thenReturn(expectedBO);
 
-        final DigitalServiceVersionBO result = digitalServiceVersionService.createDigitalServiceVersion(WORKSPACE_ID, USER_ID, inDigitalServiceVersionRest);
+        // When
+        DigitalServiceVersionBO result =
+                digitalServiceVersionService.createDigitalServiceVersion(
+                        WORKSPACE_ID,
+                        USER_ID,
+                        inDigitalServiceVersionRest);
 
-        assertThat(result).isNotNull();
+        // Then
         assertThat(result).isEqualTo(expectedBO);
 
-        verify(workspaceService, times(1)).getWorkspaceById(WORKSPACE_ID);
-        verify(userRepository, times(1)).findById(USER_ID);
-        verify(digitalServiceRepository, times(1)).save(any());
-        verify(digitalServiceVersionRepository, times(1)).save(any());
-        verify(digitalServiceVersionMapper, times(1)).toBusinessObject(digitalServiceVersion, digitalServiceSaved);
-
+        verify(workspaceService).getWorkspaceById(WORKSPACE_ID);
+        verify(userRepository).findById(USER_ID);
+        verify(digitalServiceRepository).save(any(DigitalService.class));
+        verify(digitalServiceVersionRepository).save(any(DigitalServiceVersion.class));
+        verify(digitalServiceVersionMapper)
+                .toBusinessObject(digitalServiceVersion, digitalServiceSaved);
     }
 
     @Test
