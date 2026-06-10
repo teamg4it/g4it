@@ -24,6 +24,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.MessageSource;
 
 import java.time.LocalDate;
+import java.time.Month;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -55,8 +56,8 @@ class NetworkDigitalServiceRuleTest {
         physicalEquipment.setType(DigitalServiceType.NETWORK.getValue());
         physicalEquipment.setModel("ValidModel");
         // Dates will always be overwritten by the rule anyway
-        physicalEquipment.setDatePurchase(LocalDate.of(2000, 1, 1));
-        physicalEquipment.setDateWithdrawal(LocalDate.of(2000, 1, 1));
+        physicalEquipment.setDatePurchase(LocalDate.of(2000, Month.JANUARY, 1));
+        physicalEquipment.setDateWithdrawal(LocalDate.of(2000, Month.JANUARY, 1));
     }
 
     @Test

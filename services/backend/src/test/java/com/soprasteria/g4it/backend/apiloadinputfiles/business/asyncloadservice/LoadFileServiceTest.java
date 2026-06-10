@@ -41,6 +41,7 @@ import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -88,6 +89,8 @@ class LoadFileServiceTest {
     Path tempDir;
 
     private Path tempCsv;
+    private static final LocalDateTime referenceTime =
+            LocalDateTime.of(2025, Month.JANUARY, 1, 12, 0);
 
     @BeforeEach
     void setUp() throws Exception {
@@ -96,7 +99,7 @@ class LoadFileServiceTest {
         // make common stubbings lenient to avoid UnnecessaryStubbingException
         lenient().when(fileToLoad.getOriginalFileName()).thenReturn("original.csv");
         lenient().when(context.getInventoryId()).thenReturn(123L);
-        lenient().when(context.getDatetime()).thenReturn(LocalDateTime.now());
+        lenient().when(context.getDatetime()).thenReturn(referenceTime);
         lenient().when(context.log()).thenReturn("CTX");
         lenient().when(context.getLocale()).thenReturn(Locale.ENGLISH);
         lenient().when(context.getFilesToLoad()).thenReturn(List.of(fileToLoad));

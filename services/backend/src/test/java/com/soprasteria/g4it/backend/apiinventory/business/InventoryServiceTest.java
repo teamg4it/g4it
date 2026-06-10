@@ -40,6 +40,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -55,7 +56,8 @@ class InventoryServiceTest {
     private static final String ORGANIZATION = "ORGANIZATION";
     private static final Long WORKSPACE_ID = 1L;
     private static final Long INVENTORY_ID = 2L;
-
+    private static final LocalDateTime referenceTime =
+            LocalDateTime.of(2025, Month.JANUARY, 1, 12, 0);
     @InjectMocks
     private InventoryService inventoryService;
 
@@ -170,7 +172,7 @@ class InventoryServiceTest {
         final InventoryBO inventory1 = InventoryBO.builder().build();
         final List<InventoryBO> expectedInventoryList = List.of(inventory1);
 
-        final Inventory inventoryEntity1 = Inventory.builder().id(1L).name("03-2023").lastUpdateDate(LocalDateTime.now()).build();
+        final Inventory inventoryEntity1 = Inventory.builder().id(1L).name("03-2023").lastUpdateDate(referenceTime).build();
         var inventoryOptional = Optional.of(inventoryEntity1);
 
 
@@ -724,7 +726,7 @@ class InventoryServiceTest {
 
         Inventory inventory = Inventory.builder()
                 .id(1L)
-                .lastUpdateDate(LocalDateTime.now())
+                .lastUpdateDate(referenceTime)
                 .build();
 
         when(workspaceService.getWorkspaceById(WORKSPACE_ID)).thenReturn(workspace);
@@ -744,7 +746,7 @@ class InventoryServiceTest {
 
         Inventory inventory = Inventory.builder()
                 .id(1L)
-                .lastUpdateDate(LocalDateTime.now())
+                .lastUpdateDate(referenceTime)
                 .build();
 
         when(workspaceService.getWorkspaceById(WORKSPACE_ID)).thenReturn(workspace);

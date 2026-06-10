@@ -26,8 +26,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.context.MessageSource;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -60,6 +62,8 @@ class DataDeletionServiceTest {
     private UserRoleWorkspaceRepository userRoleWorkspaceRepository;
     @Mock
     DigitalServiceVersionRepository digitalServiceVersionRepository;
+    private static final LocalDateTime referenceTime =
+            LocalDateTime.of(2025, Month.JANUARY, 1, 12, 0);
     @BeforeEach
     void setUp() {
         try {
@@ -74,6 +78,9 @@ class DataDeletionServiceTest {
             if (mocks != null) {
                 mocks.close();
             }
+            ReflectionTestUtils.setField(dataDeletionService, "dataRetentiondDay", 90);
+            ReflectionTestUtils.setField(dataDeletionService, "firstReminderDay", 30);
+            ReflectionTestUtils.setField(dataDeletionService, "secondReminderDay", 2);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

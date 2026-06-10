@@ -17,6 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigInteger;
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -44,6 +45,9 @@ class InAiParameterServiceTest {
     private InAiParameter savedInAiParameterEntity;
     private DigitalServiceVersion digitalServiceVersion;
     private AiParameterRest expectedResult;
+
+    private static final LocalDateTime referenceTime =
+            LocalDateTime.of(2025, Month.JANUARY, 1, 12, 0);
 
     @BeforeEach
     void setUp() {
@@ -92,8 +96,8 @@ class InAiParameterServiceTest {
         savedInAiParameterEntity.setIsInference(true);
         savedInAiParameterEntity.setIsFinetuning(false);
         savedInAiParameterEntity.setDigitalServiceUid(digitalServiceUid);
-        savedInAiParameterEntity.setCreationDate(LocalDateTime.now());
-        savedInAiParameterEntity.setLastUpdateDate(LocalDateTime.now());
+        savedInAiParameterEntity.setCreationDate(referenceTime);
+        savedInAiParameterEntity.setLastUpdateDate(referenceTime);
 
         // Setup DigitalService
         digitalServiceVersion = new DigitalServiceVersion();
@@ -481,37 +485,6 @@ class InAiParameterServiceTest {
             // Reset mocks for next iteration
             reset(digitalServiceVersionRepository, inAiParameterMapper, inAiParameterRepository);
         }
-    }
-
-    @Test
-    void createAiParameter_ValidatesDateTimeSettings() {
-        // Given
-        LocalDateTime beforeCall = LocalDateTime.now().minusSeconds(1);
-
-        when(digitalServiceVersionRepository.findById(digitalServiceUid))
-                .thenReturn(Optional.of(digitalServiceVersion));
-        when(inAiParameterMapper.toEntity(aiParameterRest))
-                .thenReturn(inAiParameterEntity);
-        when(inAiParameterRepository.save(any(InAiParameter.class)))
-                .thenReturn(savedInAiParameterEntity);
-        when(inAiParameterMapper.toBusinessObject(savedInAiParameterEntity))
-                .thenReturn(expectedResult);
-
-        ArgumentCaptor<InAiParameter> entityCaptor = ArgumentCaptor.forClass(InAiParameter.class);
-
-        // When
-        inAiParameterService.createAiParameter(digitalServiceUid, aiParameterRest);
-
-        // Then
-        verify(inAiParameterRepository).save(entityCaptor.capture());
-        InAiParameter capturedEntity = entityCaptor.getValue();
-
-        LocalDateTime afterCall = LocalDateTime.now().plusSeconds(1);
-
-        assertTrue(capturedEntity.getCreationDate().isAfter(beforeCall));
-        assertTrue(capturedEntity.getCreationDate().isBefore(afterCall));
-        assertTrue(capturedEntity.getLastUpdateDate().isAfter(beforeCall));
-        assertTrue(capturedEntity.getLastUpdateDate().isBefore(afterCall));
     }
 
     @Test

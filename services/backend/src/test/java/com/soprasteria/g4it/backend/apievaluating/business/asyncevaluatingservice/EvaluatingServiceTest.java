@@ -36,6 +36,7 @@ import org.mockito.quality.Strictness;
 import org.springframework.core.task.TaskExecutor;
 
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -54,7 +55,8 @@ class EvaluatingServiceTest {
     static final Long WORKSPACE_ID = 1L;
     static final Long INVENTORY_ID = 2L;
     static final String DIGITAL_SERVICE_VERSION_UID = "90651485-3f8b-49dd-a7be-753e4fe1fd36";
-
+    static final LocalDateTime referenceTime =
+            LocalDateTime.of(2025, Month.JANUARY, 1, 12, 0);
     @InjectMocks
     private EvaluatingService evaluatingService;
 
@@ -160,16 +162,20 @@ class EvaluatingServiceTest {
         Task task = mock(Task.class);
         Inventory inventory = mock(Inventory.class);
 
-        when(taskRepository.findByStatusAndType(TaskStatus.IN_PROGRESS.toString(), TaskType.EVALUATING.toString()))
+        when(taskRepository.findByStatusAndType(
+                TaskStatus.IN_PROGRESS.toString(),
+                TaskType.EVALUATING.toString()))
                 .thenReturn(List.of(task));
 
         when(task.getInventory()).thenReturn(inventory);
-        when(task.getLastUpdateDate()).thenReturn(LocalDateTime.now().minusMinutes(5)); // NOT eligible
+        when(task.getLastUpdateDate())
+                .thenReturn(LocalDateTime.now().minusMinutes(5));
 
         evaluatingService.restartEvaluating();
 
         verify(taskExecutor, never()).execute(any());
-        verify(taskRepository, never()).updateTaskStateWithDetails(anyLong(), any(), any(), any(), anyList());
+        verify(taskRepository, never())
+                .updateTaskStateWithDetails(anyLong(), any(), any(), any(), anyList());
     }
 
     @Test
@@ -183,7 +189,7 @@ class EvaluatingServiceTest {
                 .thenReturn(List.of(task));
 
         when(task.getInventory()).thenReturn(inventory);
-        when(task.getLastUpdateDate()).thenReturn(LocalDateTime.now().minusMinutes(20));
+        when(task.getLastUpdateDate()).thenReturn(referenceTime.minusMinutes(20));
         when(inventory.getWorkspace()).thenReturn(workspace);
         when(workspace.getOrganization()).thenReturn(org);
         when(org.getName()).thenReturn(ORGANIZATION);
@@ -212,7 +218,7 @@ class EvaluatingServiceTest {
                 .thenReturn(List.of(task));
 
         when(task.getInventory()).thenReturn(inventory);
-        when(task.getLastUpdateDate()).thenReturn(LocalDateTime.now().minusMinutes(20));
+        when(task.getLastUpdateDate()).thenReturn(referenceTime.minusMinutes(20));
 
         // Exception happens inside manageInventoryTasks()
         when(taskRepository.findByInventoryAndStatusAndType(any(), any(), any()))
@@ -423,7 +429,7 @@ class EvaluatingServiceTest {
         when(task.getId()).thenReturn(101L);
         when(task.getInventory()).thenReturn(inventory);
 
-        when(task.getLastUpdateDate()).thenReturn(LocalDateTime.now().minusMinutes(20));
+        when(task.getLastUpdateDate()).thenReturn(referenceTime.minusMinutes(20));
 
         when(inventory.getWorkspace()).thenReturn(workspace);
         when(workspace.getOrganization()).thenReturn(org);
