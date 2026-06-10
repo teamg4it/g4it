@@ -35,6 +35,7 @@ import org.springframework.cache.CacheManager;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.List;
 import java.util.Optional;
 
@@ -55,6 +56,8 @@ class WorkspaceServiceTest {
     private static final String LOCAL_FILESYSTEM_PATH = "target/local-filestorage-test/";
     public static final Long ORGANIZATION_ID = 1L;
     public static final Long WORKSPACE_ID = 1L;
+    private static final LocalDateTime referenceTime =
+            LocalDateTime.of(2025, Month.JANUARY, 1, 12, 0);
     @Mock
     private final FileSystem fileSystem = new LocalFileSystem(LOCAL_FILESYSTEM_PATH);
     @Mock
@@ -100,7 +103,6 @@ class WorkspaceServiceTest {
         Long organizationId = 1L;
         long workspaceId = 1L;
         long dataRetentionDay = 7L;
-        LocalDateTime now = LocalDateTime.now();
         String workspaceName = "WORKSPACE";
         String currentStatus = WorkspaceStatus.ACTIVE.name();
         String updatedStatus = WorkspaceStatus.TO_BE_DELETED.name();
@@ -108,7 +110,7 @@ class WorkspaceServiceTest {
 
         User user = TestUtils.createUserWithRoleOnOrg(organizationId, organizationAdminRole);
         Optional<Workspace> workspaceEntity = Optional.of(Workspace.builder().id(workspaceId).name(workspaceName).status(currentStatus)
-                .deletionDate(now.plusDays(dataRetentionDay))
+                .deletionDate(referenceTime.plusDays(dataRetentionDay))
                 .organization(Organization.builder().id(ORGANIZATION_ID).build())
                 .build());
         WorkspaceUpsertRest workspaceUpsertRest = TestUtils.createWorkspaceUpsert(ORGANIZATION_ID, workspaceName

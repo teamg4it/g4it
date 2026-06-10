@@ -26,6 +26,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.context.MessageSource;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -74,6 +75,9 @@ class DataDeletionServiceTest {
             if (mocks != null) {
                 mocks.close();
             }
+            ReflectionTestUtils.setField(dataDeletionService, "dataRetentiondDay", 90);
+            ReflectionTestUtils.setField(dataDeletionService, "firstReminderDay", 30);
+            ReflectionTestUtils.setField(dataDeletionService, "secondReminderDay", 2);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

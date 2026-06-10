@@ -41,6 +41,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -48,7 +49,6 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.*;
-import org.springframework.mock.web.MockMultipartFile;
 
 @ExtendWith(MockitoExtension.class)
 class LoadInputFilesServiceTest {
@@ -78,6 +78,9 @@ class LoadInputFilesServiceTest {
 
     @Mock
     private AuthService authService;
+
+    private static final LocalDateTime referenceTime =
+            LocalDateTime.of(2025, Month.JANUARY, 1, 12, 0);
 
     @BeforeEach
     void setup() throws Exception {
@@ -284,7 +287,7 @@ class LoadInputFilesServiceTest {
     void restartInventory_LoadingFiles_restartsTasks_whenTasksAreStale() {
         Task staleTask = Task.builder()
                 .id(1L)
-                .lastUpdateDate(LocalDateTime.now().minusMinutes(20))
+                .lastUpdateDate(referenceTime.minusMinutes(20))
                 .status(TaskStatus.IN_PROGRESS.toString())
                 .type(TaskType.LOADING.toString())
                 .inventory(Inventory.builder()
@@ -323,7 +326,7 @@ class LoadInputFilesServiceTest {
                 .digitalService(digitalService).build();
         Task staleTask = Task.builder()
                 .id(1L)
-                .lastUpdateDate(LocalDateTime.now().minusMinutes(20))
+                .lastUpdateDate(referenceTime.minusMinutes(20))
                 .status(TaskStatus.IN_PROGRESS.toString())
                 .type(TaskType.LOADING.toString())
                 .digitalServiceVersion(digitalServiceVersion)
