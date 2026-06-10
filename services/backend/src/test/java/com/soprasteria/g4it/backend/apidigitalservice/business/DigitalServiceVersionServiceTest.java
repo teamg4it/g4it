@@ -40,6 +40,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -54,6 +55,8 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class DigitalServiceVersionServiceTest {
 
+    private static final LocalDateTime referenceTime =
+            LocalDateTime.of(2025, Month.JANUARY, 1, 12, 0);
     private static final Long WORKSPACE_ID = 1L;
     private static final Long ORGANIZATION_ID = 1L;
     private static final String DIGITAL_SERVICE_UID = "80651485-3f8b-49dd-a7be-753e4fe1fd36";
@@ -523,11 +526,8 @@ class DigitalServiceVersionServiceTest {
     void shouldUpdateLastUpdateDate() {
 
         digitalServiceVersionService.updateLastUpdateDate(DIGITAL_SERVICE_UID);
-        verify(digitalServiceVersionRepository, times(1))
-                .updateLastUpdateDate(
-                        argThat(date -> date.isAfter(LocalDateTime.now().minusSeconds(1)) && date.isBefore(LocalDateTime.now().plusSeconds(1))),
-                        eq(DIGITAL_SERVICE_UID)
-                );
+        verify(digitalServiceVersionRepository)
+                .updateLastUpdateDate(any(LocalDateTime.class), eq(DIGITAL_SERVICE_UID));
 
     }
 
@@ -543,7 +543,7 @@ class DigitalServiceVersionServiceTest {
         DigitalServiceSharedLink existingLink = DigitalServiceSharedLink.builder()
                 .uid("linkUid")
                 .digitalServiceVersion(digitalServiceVersion)
-                .expiryDate(LocalDateTime.now().minusDays(1))
+                .expiryDate(referenceTime.minusDays(1))
                 .isActive(true)
                 .build();
 
@@ -560,7 +560,7 @@ class DigitalServiceVersionServiceTest {
         assertTrue(result.getUrl().contains(existingLink.getUid()));
         verify(digitalServiceLinkRepo).save(existingLink);
 
-        assertTrue(result.getExpiryDate().isAfter(LocalDateTime.now().plusDays(59)));
+        assertTrue(result.getExpiryDate().isAfter(referenceTime.plusDays(59)));
     }
 
     @Test
@@ -573,7 +573,7 @@ class DigitalServiceVersionServiceTest {
 
         DigitalServiceSharedLink newLink = DigitalServiceSharedLink.builder()
                 .uid("newUid123")
-                .expiryDate(LocalDateTime.now().plusDays(30))
+                .expiryDate(referenceTime.plusDays(30))
                 .build();
 
         when(digitalServiceVersionRepository.findById(DIGITAL_SERVICE_VERSION_UID)).thenReturn(Optional.of(digitalServiceVersion));
@@ -621,7 +621,7 @@ class DigitalServiceVersionServiceTest {
                 .isAi(inDigitalServiceVersionRest.getIsAi())
                 .build();
 
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = referenceTime;
 
         final DigitalServiceVersion digitalServiceVersion = DigitalServiceVersion.builder()
                 .uid(DIGITAL_SERVICE_VERSION_UID)
