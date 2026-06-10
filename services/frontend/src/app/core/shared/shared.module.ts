@@ -40,7 +40,6 @@ import { ImpactSidebarComponent } from "src/app/layout/common/impact-sidebar/imp
 import { PromoteVersionDialogComponent } from "src/app/layout/common/promote-version-dialog/promote-version-dialog.component";
 import { SpinnerComponent } from "src/app/layout/common/spinner/spinner.component";
 import { StackBarChartComponent } from "src/app/layout/common/stack-bar-chart/stack-bar-chart.component";
-import { StatsComponent } from "src/app/layout/common/stats/stats.component";
 import { WorkspaceComponent } from "src/app/layout/common/workspace/workspace.component";
 import { BaseFilterSidebarComponent } from "src/app/layout/inventories-footprint/base-filter-sidebar/base-filter-sidebar.component";
 import { DatavizFilterComponent } from "src/app/layout/inventories-footprint/dataviz-filter/dataviz-filter.component";
@@ -92,7 +91,6 @@ import { MonthYearPipe } from "../pipes/monthyear.pipe";
         DatavizFilterComponent,
         CommonEditorComponent,
         BusinessHoursRendererPipe,
-        StatsComponent,
         CriteriaPopupComponent,
         PromoteVersionDialogComponent,
         AutofocusDirective,
@@ -124,7 +122,6 @@ import { MonthYearPipe } from "../pipes/monthyear.pipe";
         DrawerModule,
         RadioButtonModule,
         CommonEditorComponent,
-        StatsComponent,
         SelectModule,
         ConfirmDialogModule,
         TableModule,
