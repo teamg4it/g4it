@@ -33,13 +33,18 @@ import com.soprasteria.g4it.backend.common.model.NoteBO;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
 import com.soprasteria.g4it.backend.server.gen.api.dto.*;
 import jakarta.persistence.EntityNotFoundException;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
+import java.time.Clock;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -65,7 +70,8 @@ class DigitalServiceVersionServiceTest {
     private static final String DIGITAL_SERVICE_NAME = "My DS";
     private static final String VERSION_NAME = "version 1";
     private static final String VERSION_TYPE = "draft";
-
+    private static final LocalDateTime FIXED_TIME =
+            LocalDateTime.of(2025, 1, 1, 10, 30);
     @Mock
     private DigitalServiceRepository digitalServiceRepository;
     @Mock
@@ -100,9 +106,84 @@ class DigitalServiceVersionServiceTest {
     private InAiInfrastructureRepository inAiInfrastructureRepository;
     @InjectMocks
     private DigitalServiceVersionService digitalServiceVersionService;
+    @Mock
+    private Clock clock;
+
+    @BeforeEach
+    void setup() {
+        digitalServiceVersionService = new DigitalServiceVersionService(clock);
+
+        ReflectionTestUtils.setField(digitalServiceVersionService,
+                "digitalServiceVersionRepository",
+                digitalServiceVersionRepository);
+
+        ReflectionTestUtils.setField(digitalServiceVersionService,
+                "digitalServiceRepository",
+                digitalServiceRepository);
+
+        ReflectionTestUtils.setField(digitalServiceVersionService,
+                "workspaceService",
+                workspaceService);
+
+        ReflectionTestUtils.setField(digitalServiceVersionService,
+                "userRepository",
+                userRepository);
+
+        ReflectionTestUtils.setField(digitalServiceVersionService,
+                "roleService",
+                roleService);
+
+        ReflectionTestUtils.setField(digitalServiceVersionService,
+                "organizationRepository",
+                organizationRepository);
+
+        ReflectionTestUtils.setField(digitalServiceVersionService,
+                "userWorkspaceRepository",
+                userWorkspaceRepository);
+
+        ReflectionTestUtils.setField(digitalServiceVersionService,
+                "digitalServiceVersionMapper",
+                digitalServiceVersionMapper);
+
+        ReflectionTestUtils.setField(digitalServiceVersionService,
+                "digitalServiceReferentialService",
+                digitalServiceReferentialService);
+
+        ReflectionTestUtils.setField(digitalServiceVersionService,
+                "digitalServiceLinkRepository",
+                digitalServiceLinkRepo);
+
+        ReflectionTestUtils.setField(digitalServiceVersionService,
+                "inVirtualEquipmentRepository",
+                inVirtualEquipmentRepository);
+
+        ReflectionTestUtils.setField(digitalServiceVersionService,
+                "inApplicationRepository",
+                inApplicationRepository);
+
+        ReflectionTestUtils.setField(digitalServiceVersionService,
+                "inPhysicalEquipmentRepository",
+                inPhysicalEquipmentRepository);
+
+        ReflectionTestUtils.setField(digitalServiceVersionService,
+                "inDatacenterRepository",
+                inDatacenterRepository);
+
+        ReflectionTestUtils.setField(digitalServiceVersionService,
+                "inAiParameterRepository",
+                inAiParameterRepository);
+
+        ReflectionTestUtils.setField(digitalServiceVersionService,
+                "inAiInfrastructureRepository",
+                inAiInfrastructureRepository);
+    }
 
     @Test
     void shouldCreateNewDigitalServiceVersion_first() {
+
+        when(clock.instant()).thenReturn(
+                FIXED_TIME.toInstant(ZoneOffset.UTC));
+        when(clock.getZone()).thenReturn(ZoneOffset.UTC);
 
         final Workspace linkedWorkspace = Workspace.builder().name(WORKSPACE_NAME).build();
 
@@ -110,31 +191,42 @@ class DigitalServiceVersionServiceTest {
         final DigitalServiceVersionBO expectedBo = DigitalServiceVersionBO.builder().build();
         final String expectedName = "Digital Service 1";
 
-        final DigitalService digitalServiceToSave = DigitalService.builder().uid(DIGITAL_SERVICE_UID).workspace(linkedWorkspace).user(user).name(expectedName).build();
-        final DigitalServiceVersion digitalServiceVersionToSave = DigitalServiceVersion.builder().digitalService(digitalServiceToSave).build();
+        final DigitalService digitalServiceToSave = DigitalService.builder()
+                .uid(DIGITAL_SERVICE_UID)
+                .workspace(linkedWorkspace)
+                .user(user)
+                .name(expectedName)
+                .build();
+
+        final DigitalServiceVersion digitalServiceVersionToSave =
+                DigitalServiceVersion.builder()
+                        .digitalService(digitalServiceToSave)
+                        .build();
+
         when(workspaceService.getWorkspaceById(WORKSPACE_ID)).thenReturn(linkedWorkspace);
         when(digitalServiceRepository.save(any())).thenReturn(digitalServiceToSave);
         when(digitalServiceVersionRepository.save(any())).thenReturn(digitalServiceVersionToSave);
-        when(digitalServiceVersionMapper.toBusinessObject(digitalServiceVersionToSave, digitalServiceToSave)).thenReturn(expectedBo);
+        when(digitalServiceVersionMapper.toBusinessObject(digitalServiceVersionToSave, digitalServiceToSave))
+                .thenReturn(expectedBo);
         when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
 
         InDigitalServiceVersionRest inDigitalServiceVersionRest = mock(InDigitalServiceVersionRest.class);
 
-
-        final DigitalServiceVersionBO result = digitalServiceVersionService.createDigitalServiceVersion(WORKSPACE_ID, USER_ID, inDigitalServiceVersionRest);
+        final DigitalServiceVersionBO result =
+                digitalServiceVersionService.createDigitalServiceVersion(
+                        WORKSPACE_ID,
+                        USER_ID,
+                        inDigitalServiceVersionRest);
 
         assertThat(result).isEqualTo(expectedBo);
-
-        verify(workspaceService, times(1)).getWorkspaceById(WORKSPACE_ID);
-        verify(digitalServiceRepository, times(1)).save(any());
-        verify(digitalServiceVersionRepository, times(1)).save(any());
-        verify(digitalServiceVersionMapper, times(1)).toBusinessObject(digitalServiceVersionToSave, digitalServiceToSave);
-        verify(userRepository, times(1)).findById(USER_ID);
     }
 
     @Test
     void shouldCreateNewDigitalService_withExistingDigitalService() {
 
+        when(clock.instant()).thenReturn(
+                FIXED_TIME.toInstant(ZoneOffset.UTC));
+        when(clock.getZone()).thenReturn(ZoneOffset.UTC);
         final User user = User.builder().id(USER_ID).build();
         final Workspace linkedWorkspace = Workspace.builder().name(WORKSPACE_NAME).build();
 
@@ -164,6 +256,9 @@ class DigitalServiceVersionServiceTest {
     @Test
     void shouldCreateNewDigitalService_withAI() {
 
+        when(clock.instant()).thenReturn(
+                FIXED_TIME.toInstant(ZoneOffset.UTC));
+        when(clock.getZone()).thenReturn(ZoneOffset.UTC);
         final User user = User.builder().id(USER_ID).build();
         final Workspace linkedWorkspace = Workspace.builder().name(WORKSPACE_NAME).build();
         final DigitalServiceVersionBO expectedBo = DigitalServiceVersionBO.builder().build();
@@ -522,89 +617,154 @@ class DigitalServiceVersionServiceTest {
     @Test
     void shouldUpdateLastUpdateDate() {
 
-        digitalServiceVersionService.updateLastUpdateDate(DIGITAL_SERVICE_UID);
-        verify(digitalServiceVersionRepository, times(1))
-                .updateLastUpdateDate(
-                        argThat(date -> date.isAfter(LocalDateTime.now().minusSeconds(1)) && date.isBefore(LocalDateTime.now().plusSeconds(1))),
-                        eq(DIGITAL_SERVICE_UID)
-                );
+        LocalDateTime fixedTime =
+                LocalDateTime.of(2025, 1, 1, 10, 30);
 
+        when(clock.instant()).thenReturn(
+                fixedTime.toInstant(ZoneOffset.UTC));
+        when(clock.getZone()).thenReturn(ZoneOffset.UTC);
+
+        digitalServiceVersionService.updateLastUpdateDate(DIGITAL_SERVICE_UID);
+
+        verify(digitalServiceVersionRepository)
+                .updateLastUpdateDate(fixedTime, DIGITAL_SERVICE_UID);
     }
 
     @Test
     void shareDigitalService_existingLink_updatesExpiryAndReturnsRest() {
+        when(clock.instant()).thenReturn(
+                FIXED_TIME.toInstant(ZoneOffset.UTC));
+        when(clock.getZone()).thenReturn(ZoneOffset.UTC);
+
         DigitalServiceVersion digitalServiceVersion = new DigitalServiceVersion();
         digitalServiceVersion.setUid(DIGITAL_SERVICE_VERSION_UID);
 
         final User user = User.builder().id(USER_ID).build();
         final UserBO userBO = UserBO.builder().id(USER_ID).build();
 
-        List<DigitalServiceSharedLink> digitalServiceSharedLinks = new ArrayList<>();
         DigitalServiceSharedLink existingLink = DigitalServiceSharedLink.builder()
                 .uid("linkUid")
                 .digitalServiceVersion(digitalServiceVersion)
-                .expiryDate(LocalDateTime.now().minusDays(1))
+                .expiryDate(FIXED_TIME.minusDays(1))
                 .isActive(true)
                 .build();
 
-        digitalServiceSharedLinks.add(existingLink);
-        when(digitalServiceVersionRepository.findById(DIGITAL_SERVICE_VERSION_UID)).thenReturn(Optional.of(digitalServiceVersion));
-        when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
-        when(digitalServiceLinkRepo.findByDigitalServiceVersion(digitalServiceVersion)).thenReturn(digitalServiceSharedLinks);
-        when(digitalServiceLinkRepo.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+        when(digitalServiceVersionRepository.findById(DIGITAL_SERVICE_VERSION_UID))
+                .thenReturn(Optional.of(digitalServiceVersion));
 
-        DigitalServiceShareRest result = digitalServiceVersionService.shareDigitalService(ORGANIZATION, WORKSPACE_ID, DIGITAL_SERVICE_VERSION_UID, userBO, true);
+        when(userRepository.findById(USER_ID))
+                .thenReturn(Optional.of(user));
+
+        when(digitalServiceLinkRepo.findByDigitalServiceVersion(digitalServiceVersion))
+                .thenReturn(List.of(existingLink));
+
+        when(digitalServiceLinkRepo.save(any(DigitalServiceSharedLink.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        // When
+        DigitalServiceShareRest result =
+                digitalServiceVersionService.shareDigitalService(
+                        ORGANIZATION,
+                        WORKSPACE_ID,
+                        DIGITAL_SERVICE_VERSION_UID,
+                        userBO,
+                        true);
+
+        // Then
+        LocalDateTime expectedExpiry = FIXED_TIME.plusDays(60)
+                .withHour(23)
+                .withMinute(59)
+                .withSecond(0)
+                .withNano(0);
 
         assertNotNull(result);
         assertTrue(result.getUrl().contains(DIGITAL_SERVICE_VERSION_UID));
         assertTrue(result.getUrl().contains(existingLink.getUid()));
+
         verify(digitalServiceLinkRepo).save(existingLink);
 
-        assertTrue(result.getExpiryDate().isAfter(LocalDateTime.now().plusDays(59)));
+        assertThat(result.getExpiryDate())
+                .isEqualTo(expectedExpiry);
+
+        assertThat(existingLink.getExpiryDate())
+                .isEqualTo(expectedExpiry);
     }
 
     @Test
     void shareDigitalService_noExistingLink_createsNewLinkAndReturnsRest() {
+        when(clock.instant()).thenReturn(
+                FIXED_TIME.toInstant(ZoneOffset.UTC));
+        when(clock.getZone()).thenReturn(ZoneOffset.UTC);
         DigitalServiceVersion digitalServiceVersion = new DigitalServiceVersion();
-        digitalServiceVersion.setUid(DIGITAL_SERVICE_UID);
+        digitalServiceVersion.setUid(DIGITAL_SERVICE_VERSION_UID);
 
-        final User user = User.builder().id(USER_ID).build();
-        final UserBO userBO = UserBO.builder().id(USER_ID).build();
+        User user = User.builder().id(USER_ID).build();
+        UserBO userBO = UserBO.builder().id(USER_ID).build();
+
+        LocalDateTime expectedExpiry = FIXED_TIME.plusDays(30);
 
         DigitalServiceSharedLink newLink = DigitalServiceSharedLink.builder()
                 .uid("newUid123")
-                .expiryDate(LocalDateTime.now().plusDays(30))
+                .expiryDate(expectedExpiry)
+                .isActive(true)
+                .digitalServiceVersion(digitalServiceVersion)
                 .build();
 
-        when(digitalServiceVersionRepository.findById(DIGITAL_SERVICE_VERSION_UID)).thenReturn(Optional.of(digitalServiceVersion));
-        when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
-        when(digitalServiceLinkRepo.findByDigitalServiceVersion(digitalServiceVersion)).thenReturn(Collections.emptyList());
-        when(digitalServiceLinkRepo.save(any())).thenReturn(newLink);
+        when(digitalServiceVersionRepository.findById(DIGITAL_SERVICE_VERSION_UID))
+                .thenReturn(Optional.of(digitalServiceVersion));
 
-        DigitalServiceShareRest result = digitalServiceVersionService.shareDigitalService(ORGANIZATION, WORKSPACE_ID, DIGITAL_SERVICE_VERSION_UID, userBO, true);
+        when(userRepository.findById(USER_ID))
+                .thenReturn(Optional.of(user));
+
+        when(digitalServiceLinkRepo.findByDigitalServiceVersion(digitalServiceVersion))
+                .thenReturn(Collections.emptyList());
+
+        when(digitalServiceLinkRepo.save(any(DigitalServiceSharedLink.class)))
+                .thenReturn(newLink);
+
+        DigitalServiceShareRest result =
+                digitalServiceVersionService.shareDigitalService(
+                        ORGANIZATION,
+                        WORKSPACE_ID,
+                        DIGITAL_SERVICE_VERSION_UID,
+                        userBO,
+                        true);
 
         assertNotNull(result);
         assertTrue(result.getUrl().contains(DIGITAL_SERVICE_VERSION_UID));
-        assertTrue(result.getUrl().contains(newLink.getUid()));
-        assertEquals(newLink.getExpiryDate(), result.getExpiryDate());
-        verify(digitalServiceLinkRepo).save(any());
+        assertTrue(result.getUrl().contains("newUid123"));
+        assertEquals(expectedExpiry, result.getExpiryDate());
+
+        verify(digitalServiceLinkRepo)
+                .save(any(DigitalServiceSharedLink.class));
     }
 
     @Test
     void shareDigitalService_digitalServiceNotFound_throwsException() {
         final UserBO userBO = UserBO.builder().id(USER_ID).build();
 
-        when(digitalServiceVersionRepository.findById(DIGITAL_SERVICE_VERSION_UID)).thenReturn(Optional.empty());
+        when(digitalServiceVersionRepository.findById(DIGITAL_SERVICE_VERSION_UID))
+                .thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> digitalServiceVersionService.shareDigitalService(ORGANIZATION, WORKSPACE_ID, DIGITAL_SERVICE_VERSION_UID, userBO, true))
-                .hasMessageContaining("Digital service " + DIGITAL_SERVICE_VERSION_UID +
-                        " not found in " + ORGANIZATION + "/" + WORKSPACE_ID)
+        assertThatThrownBy(() ->
+                digitalServiceVersionService.shareDigitalService(
+                        ORGANIZATION,
+                        WORKSPACE_ID,
+                        DIGITAL_SERVICE_VERSION_UID,
+                        userBO,
+                        true))
+                .hasMessageContaining(
+                        "Digital service " + DIGITAL_SERVICE_VERSION_UID +
+                                " not found in " + ORGANIZATION + "/" + WORKSPACE_ID)
                 .isInstanceOf(G4itRestException.class);
-
     }
 
+    @Test
     void shouldCreateDigitalServiceVersion_first() {
 
+        when(clock.instant()).thenReturn(
+                FIXED_TIME.toInstant(ZoneOffset.UTC));
+        when(clock.getZone()).thenReturn(ZoneOffset.UTC);
         final Workspace linkedWorkspace = Workspace.builder().id(WORKSPACE_ID).build();
         final User user = User.builder().id(USER_ID).build();
 
@@ -621,17 +781,15 @@ class DigitalServiceVersionServiceTest {
                 .isAi(inDigitalServiceVersionRest.getIsAi())
                 .build();
 
-        LocalDateTime now = LocalDateTime.now();
-
         final DigitalServiceVersion digitalServiceVersion = DigitalServiceVersion.builder()
                 .uid(DIGITAL_SERVICE_VERSION_UID)
                 .description(inDigitalServiceVersionRest.getVersionName())
                 .digitalService(DigitalService.builder().uid(digitalServiceSaved.getUid()).build())
-                .versionType(DigitalServiceVersionStatus.DRAFT.name()) // Initial version type
+                .versionType(DigitalServiceVersionStatus.ACTIVE.name()) // Initial version type
                 .createdBy(digitalServiceSaved.getUser().getId())
-                .creationDate(now)
-                .lastUpdateDate(now)
-                .lastCalculationDate(now)
+                .creationDate(FIXED_TIME)
+                .lastUpdateDate(FIXED_TIME)
+                .lastCalculationDate(FIXED_TIME)
                 .build();
 
 

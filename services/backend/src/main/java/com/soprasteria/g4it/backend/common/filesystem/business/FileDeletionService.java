@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.time.Clock;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +26,9 @@ public class FileDeletionService {
 
     @Autowired
     private FileSystem fileSystem;
+
+    @Autowired
+    private Clock clock;
 
     /**
      * Delete files older than storageRetentionday for organization, workspace, fileFolder
@@ -38,7 +42,7 @@ public class FileDeletionService {
 
         List<String> filePathsToDelete = new ArrayList<>();
 
-        final OffsetDateTime now = OffsetDateTime.now();
+        final OffsetDateTime now = OffsetDateTime.now(clock);
 
         final FileStorage fileStorage = fileSystem.mount(organization, workspace);
         final String prefix = Path.of(workspace).resolve(fileFolder.getFolderName()).toString();

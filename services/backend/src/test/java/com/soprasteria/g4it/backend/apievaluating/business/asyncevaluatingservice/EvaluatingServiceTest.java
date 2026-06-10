@@ -24,6 +24,7 @@ import com.soprasteria.g4it.backend.common.task.model.TaskType;
 import com.soprasteria.g4it.backend.common.task.modeldb.Task;
 import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Answers;
@@ -34,8 +35,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 import org.springframework.core.task.TaskExecutor;
+import org.springframework.test.util.ReflectionTestUtils;
 
+import java.time.Clock;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -54,7 +59,8 @@ class EvaluatingServiceTest {
     static final Long WORKSPACE_ID = 1L;
     static final Long INVENTORY_ID = 2L;
     static final String DIGITAL_SERVICE_VERSION_UID = "90651485-3f8b-49dd-a7be-753e4fe1fd36";
-
+    static final LocalDateTime FIXED_TIME =
+            LocalDateTime.of(2025, 1, 1, 10, 30);
     @InjectMocks
     private EvaluatingService evaluatingService;
 
@@ -83,6 +89,24 @@ class EvaluatingServiceTest {
     private AsyncEvaluatingService asyncEvaluatingService;
     @Mock
     private DigitalServiceVersionService digitalServiceVersionService;
+    @Mock
+    private Clock clock;
+
+    @BeforeEach
+    void setUp() {
+        ReflectionTestUtils.setField(evaluatingService, "taskRepository", taskRepository);
+        ReflectionTestUtils.setField(evaluatingService, "taskExecutor", taskExecutor);
+        ReflectionTestUtils.setField(evaluatingService, "asyncEvaluatingService", asyncEvaluatingService);
+        ReflectionTestUtils.setField(evaluatingService, "exportService", exportService);
+        ReflectionTestUtils.setField(evaluatingService, "workspaceService", workspaceService);
+        ReflectionTestUtils.setField(evaluatingService, "inventoryRepository", inventoryRepository);
+        ReflectionTestUtils.setField(evaluatingService, "digitalServiceRepository", digitalServiceRepository);
+        ReflectionTestUtils.setField(evaluatingService, "digitalServiceVersionRepository", digitalServiceVersionRepository);
+        ReflectionTestUtils.setField(evaluatingService, "userRepository", userRepository);
+        ReflectionTestUtils.setField(evaluatingService, "criteriaService", criteriaService);
+        ReflectionTestUtils.setField(evaluatingService, "authService", authService);
+        ReflectionTestUtils.setField(evaluatingService, "digitalServiceVersionService", digitalServiceVersionService);
+    }
 
 
     @Test
@@ -100,7 +124,9 @@ class EvaluatingServiceTest {
         Inventory inventory = mock(Inventory.class);
         Workspace work = mock(Workspace.class);
         CriteriaByType criteriaByType = mock(CriteriaByType.class);
-
+        when(clock.instant()).thenReturn(
+                FIXED_TIME.toInstant(ZoneOffset.UTC));
+        when(clock.getZone()).thenReturn(ZoneOffset.UTC);
         when(inventoryRepository.findById(INVENTORY_ID)).thenReturn(Optional.of(inventory));
         when(workspaceService.getWorkspaceById(WORKSPACE_ID)).thenReturn(work);
         when(work.getName()).thenReturn(WORKSPACE);
@@ -143,7 +169,9 @@ class EvaluatingServiceTest {
     @Test
     void restartEvaluating_shouldSkip_whenInventoryIsNull() {
         Task task = mock(Task.class);
-
+        when(clock.instant()).thenReturn(
+                FIXED_TIME.toInstant(ZoneOffset.UTC));
+        when(clock.getZone()).thenReturn(ZoneOffset.UTC);
         when(taskRepository.findByStatusAndType(TaskStatus.IN_PROGRESS.toString(), TaskType.EVALUATING.toString()))
                 .thenReturn(List.of(task));
 
@@ -159,12 +187,18 @@ class EvaluatingServiceTest {
     void restartEvaluating_shouldSkip_whenLastUpdateIsRecent() {
         Task task = mock(Task.class);
         Inventory inventory = mock(Inventory.class);
+        LocalDateTime fixedNow = LocalDateTime.of(2025, 1, 1, 12, 0);
+
+        when(clock.instant()).thenReturn(
+                fixedNow.atZone(ZoneId.systemDefault()).toInstant()
+        );
+        when(clock.getZone()).thenReturn(ZoneId.systemDefault());
 
         when(taskRepository.findByStatusAndType(TaskStatus.IN_PROGRESS.toString(), TaskType.EVALUATING.toString()))
                 .thenReturn(List.of(task));
 
         when(task.getInventory()).thenReturn(inventory);
-        when(task.getLastUpdateDate()).thenReturn(LocalDateTime.now().minusMinutes(5)); // NOT eligible
+        when(task.getLastUpdateDate()).thenReturn(fixedNow.minusMinutes(5)); // NOT eligible
 
         evaluatingService.restartEvaluating();
 
@@ -178,12 +212,15 @@ class EvaluatingServiceTest {
         Inventory inventory = mock(Inventory.class);
         Workspace workspace = mock(Workspace.class);
         Organization org = mock(Organization.class);
-
+        LocalDateTime fixedNow = LocalDateTime.of(2025, 1, 1, 12, 0);
+        when(clock.instant()).thenReturn(
+                fixedNow.toInstant(ZoneOffset.UTC));
+        when(clock.getZone()).thenReturn(ZoneOffset.UTC);
         when(taskRepository.findByStatusAndType(TaskStatus.IN_PROGRESS.toString(), TaskType.EVALUATING.toString()))
                 .thenReturn(List.of(task));
 
         when(task.getInventory()).thenReturn(inventory);
-        when(task.getLastUpdateDate()).thenReturn(LocalDateTime.now().minusMinutes(20));
+        when(task.getLastUpdateDate()).thenReturn(fixedNow.minusMinutes(20));
         when(inventory.getWorkspace()).thenReturn(workspace);
         when(workspace.getOrganization()).thenReturn(org);
         when(org.getName()).thenReturn(ORGANIZATION);
@@ -243,6 +280,9 @@ class EvaluatingServiceTest {
         DigitalService digitalService = mock(DigitalService.class);
         DigitalServiceVersion digitalServiceVersion = mock(DigitalServiceVersion.class);
         CriteriaByType criteriaByType = mock(CriteriaByType.class);
+        when(clock.instant()).thenReturn(
+                FIXED_TIME.toInstant(ZoneOffset.UTC));
+        when(clock.getZone()).thenReturn(ZoneOffset.UTC);
 
         when(digitalServiceVersionRepository.findById(DIGITAL_SERVICE_VERSION_UID))
                 .thenReturn(Optional.of(digitalServiceVersion));
@@ -313,7 +353,9 @@ class EvaluatingServiceTest {
 
         User user = mock(User.class);
         UserBO userBO = mock(UserBO.class);
-
+        when(clock.instant()).thenReturn(
+                FIXED_TIME.toInstant(ZoneOffset.UTC));
+        when(clock.getZone()).thenReturn(ZoneOffset.UTC);
         when(inventoryRepository.findById(10L)).thenReturn(Optional.of(inventory));
         when(inventory.getVirtualEquipmentCount()).thenReturn(1L);
         when(inventory.getApplicationCount()).thenReturn(1L);
@@ -368,7 +410,9 @@ class EvaluatingServiceTest {
 
         User user = mock(User.class);
         UserBO userBO = mock(UserBO.class);
-
+        when(clock.instant()).thenReturn(
+                FIXED_TIME.toInstant(ZoneOffset.UTC));
+        when(clock.getZone()).thenReturn(ZoneOffset.UTC);
         when(inventoryRepository.findById(10L)).thenReturn(Optional.of(inventory));
         when(inventory.getVirtualEquipmentCount()).thenReturn(1L);
         when(inventory.getApplicationCount()).thenReturn(1L);
@@ -414,7 +458,9 @@ class EvaluatingServiceTest {
         Inventory inventory = mock(Inventory.class);
         Workspace workspace = mock(Workspace.class);
         Organization org = mock(Organization.class);
-
+        when(clock.instant()).thenReturn(
+                FIXED_TIME.toInstant(ZoneOffset.UTC));
+        when(clock.getZone()).thenReturn(ZoneOffset.UTC);
         when(taskRepository.findByStatusAndType(
                 TaskStatus.IN_PROGRESS.toString(),
                 TaskType.EVALUATING.toString()
@@ -423,7 +469,7 @@ class EvaluatingServiceTest {
         when(task.getId()).thenReturn(101L);
         when(task.getInventory()).thenReturn(inventory);
 
-        when(task.getLastUpdateDate()).thenReturn(LocalDateTime.now().minusMinutes(20));
+        when(task.getLastUpdateDate()).thenReturn(FIXED_TIME.minusMinutes(20));
 
         when(inventory.getWorkspace()).thenReturn(workspace);
         when(workspace.getOrganization()).thenReturn(org);
@@ -480,7 +526,9 @@ class EvaluatingServiceTest {
 
         UserBO userBO = UserBO.builder().id(USER_ID).build();
         User user = User.builder().id(USER_ID).build();
-
+        when(clock.instant()).thenReturn(
+                FIXED_TIME.toInstant(ZoneOffset.UTC));
+        when(clock.getZone()).thenReturn(ZoneOffset.UTC);
         List<String> activeCriteria = List.of("C1", "C2");
 
         when(digitalServiceVersionRepository.findById(DIGITAL_SERVICE_VERSION_UID))

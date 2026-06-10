@@ -39,6 +39,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
+import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
@@ -91,6 +92,12 @@ public class DigitalServiceVersionService {
     @Autowired
     private DigitalServiceVersionRepository digitalServiceVersionRepository;
 
+    private final Clock clock;
+
+    @Autowired
+    public DigitalServiceVersionService(final Clock clock) {
+        this.clock = clock;
+    }
 
     /**
      * Create a new digital service version.
@@ -109,7 +116,7 @@ public class DigitalServiceVersionService {
         // Get the linked user
         final User user = userRepository.findById(userId).orElseThrow();
 
-        final LocalDateTime now = LocalDateTime.now();
+        final LocalDateTime now = LocalDateTime.now(clock);
 
         // Step 1: Create the Digital Service
         final DigitalService digitalService = DigitalService.builder()
@@ -165,8 +172,8 @@ public class DigitalServiceVersionService {
     }
 
     public void updateLastUpdateDate(final String digitalServiceVersionUid) {
-        digitalServiceVersionRepository.updateLastUpdateDate(LocalDateTime.now(), digitalServiceVersionUid);
-        digitalServiceVersionRepository.findById(digitalServiceVersionUid).ifPresent(digitalService -> digitalServiceRepository.updateLastUpdateDate(LocalDateTime.now(), digitalService.getDigitalService().getUid()));
+        digitalServiceVersionRepository.updateLastUpdateDate(LocalDateTime.now(clock), digitalServiceVersionUid);
+        digitalServiceVersionRepository.findById(digitalServiceVersionUid).ifPresent(digitalService -> digitalServiceRepository.updateLastUpdateDate(LocalDateTime.now(clock), digitalService.getDigitalService().getUid()));
     }
 
     /**
@@ -238,7 +245,7 @@ public class DigitalServiceVersionService {
                 .findFirst()
                 .orElse(null);
 
-        LocalDateTime expiryDate = LocalDateTime.now()
+        LocalDateTime expiryDate = LocalDateTime.now(clock)
                 .plusDays(60)
                 .withHour(23)
                 .withMinute(59)
@@ -262,8 +269,8 @@ public class DigitalServiceVersionService {
                     .digitalServiceVersion(digitalServiceVersion)
                     .createdBy(user)
                     .isActive(true)
-                    .creationDate(LocalDateTime.now())
-                    .expiryDate(LocalDateTime.now().plusDays(60))
+                    .creationDate(LocalDateTime.now(clock))
+                    .expiryDate(LocalDateTime.now(clock).plusDays(60))
                     .build();
 
             DigitalServiceSharedLink savedLink = digitalServiceLinkRepository.save(linkToCreate);

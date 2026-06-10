@@ -16,7 +16,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigInteger;
+import java.time.Clock;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -25,6 +27,9 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class InAiParameterServiceTest {
+
+    private static final LocalDateTime FIXED_DATE_TIME =
+            LocalDateTime.of(2025, 1, 1, 12, 0);
 
     @Mock
     private InAiParameterRepository inAiParameterRepository;
@@ -44,6 +49,9 @@ class InAiParameterServiceTest {
     private InAiParameter savedInAiParameterEntity;
     private DigitalServiceVersion digitalServiceVersion;
     private AiParameterRest expectedResult;
+
+    @Mock
+    private Clock clock;
 
     @BeforeEach
     void setUp() {
@@ -92,8 +100,8 @@ class InAiParameterServiceTest {
         savedInAiParameterEntity.setIsInference(true);
         savedInAiParameterEntity.setIsFinetuning(false);
         savedInAiParameterEntity.setDigitalServiceUid(digitalServiceUid);
-        savedInAiParameterEntity.setCreationDate(LocalDateTime.now());
-        savedInAiParameterEntity.setLastUpdateDate(LocalDateTime.now());
+        savedInAiParameterEntity.setCreationDate(FIXED_DATE_TIME);
+        savedInAiParameterEntity.setLastUpdateDate(FIXED_DATE_TIME.plusMinutes(5));
 
         // Setup DigitalService
         digitalServiceVersion = new DigitalServiceVersion();
@@ -201,6 +209,9 @@ class InAiParameterServiceTest {
 
     @Test
     void createAiParameter_Success() {
+        when(clock.instant()).thenReturn(
+                FIXED_DATE_TIME.toInstant(ZoneOffset.UTC));
+        when(clock.getZone()).thenReturn(ZoneOffset.UTC);
         // Given
         when(digitalServiceVersionRepository.findById(digitalServiceUid))
                 .thenReturn(Optional.of(digitalServiceVersion));
@@ -248,7 +259,9 @@ class InAiParameterServiceTest {
 
     @Test
     void createAiParameter_VerifyEntitySetup() {
-        // Given
+        when(clock.instant()).thenReturn(
+                FIXED_DATE_TIME.toInstant(ZoneOffset.UTC));
+        when(clock.getZone()).thenReturn(ZoneOffset.UTC);
         when(digitalServiceVersionRepository.findById(digitalServiceUid))
                 .thenReturn(Optional.of(digitalServiceVersion));
         when(inAiParameterMapper.toEntity(aiParameterRest))
@@ -319,6 +332,9 @@ class InAiParameterServiceTest {
 
     @Test
     void createAiParameter_RepositorySaveException_PropagatesException() {
+        when(clock.instant()).thenReturn(
+                FIXED_DATE_TIME.toInstant(ZoneOffset.UTC));
+        when(clock.getZone()).thenReturn(ZoneOffset.UTC);
         // Given
         when(digitalServiceVersionRepository.findById(digitalServiceUid))
                 .thenReturn(Optional.of(digitalServiceVersion));
@@ -338,6 +354,9 @@ class InAiParameterServiceTest {
 
     @Test
     void createAiParameter_MapperToBusinessObjectException_PropagatesException() {
+        when(clock.instant()).thenReturn(
+                FIXED_DATE_TIME.toInstant(ZoneOffset.UTC));
+        when(clock.getZone()).thenReturn(ZoneOffset.UTC);
         // Given
         when(digitalServiceVersionRepository.findById(digitalServiceUid))
                 .thenReturn(Optional.of(digitalServiceVersion));
@@ -360,6 +379,9 @@ class InAiParameterServiceTest {
 
     @Test
     void createAiParameter_WithValidBoundaryValues_Success() {
+        when(clock.instant()).thenReturn(
+                FIXED_DATE_TIME.toInstant(ZoneOffset.UTC));
+        when(clock.getZone()).thenReturn(ZoneOffset.UTC);
         // Given - Test with boundary values
         AiParameterRest boundaryParameterRest = AiParameterRest.builder().build();
         boundaryParameterRest.setModelName("llama3");
@@ -431,7 +453,9 @@ class InAiParameterServiceTest {
 
     @Test
     void createAiParameter_WithAllValidTypes_Success() {
-        // Test all valid stage values if they exist
+        when(clock.instant()).thenReturn(
+                FIXED_DATE_TIME.toInstant(ZoneOffset.UTC));
+        when(clock.getZone()).thenReturn(ZoneOffset.UTC);
         String[] validTypes = {"LLM", "CLASSIFICATION", "REGRESSION"}; // Adjust based on your enum/constants
 
         for (String type : validTypes) {
@@ -485,8 +509,11 @@ class InAiParameterServiceTest {
 
     @Test
     void createAiParameter_ValidatesDateTimeSettings() {
-        // Given
-        LocalDateTime beforeCall = LocalDateTime.now().minusSeconds(1);
+
+        when(clock.instant()).thenReturn(
+                FIXED_DATE_TIME.toInstant(ZoneOffset.UTC));
+        when(clock.getZone()).thenReturn(ZoneOffset.UTC);
+        LocalDateTime beforeCall = FIXED_DATE_TIME.minusSeconds(1);
 
         when(digitalServiceVersionRepository.findById(digitalServiceUid))
                 .thenReturn(Optional.of(digitalServiceVersion));
@@ -506,7 +533,7 @@ class InAiParameterServiceTest {
         verify(inAiParameterRepository).save(entityCaptor.capture());
         InAiParameter capturedEntity = entityCaptor.getValue();
 
-        LocalDateTime afterCall = LocalDateTime.now().plusSeconds(1);
+        LocalDateTime afterCall = FIXED_DATE_TIME.plusSeconds(1);
 
         assertTrue(capturedEntity.getCreationDate().isAfter(beforeCall));
         assertTrue(capturedEntity.getCreationDate().isBefore(afterCall));
@@ -516,6 +543,9 @@ class InAiParameterServiceTest {
 
     @Test
     void createAiParameter_VerifyMethodCallOrder() {
+        when(clock.instant()).thenReturn(
+                FIXED_DATE_TIME.toInstant(ZoneOffset.UTC));
+        when(clock.getZone()).thenReturn(ZoneOffset.UTC);
         // Given
         when(digitalServiceVersionRepository.findById(digitalServiceUid))
                 .thenReturn(Optional.of(digitalServiceVersion));

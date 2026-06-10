@@ -34,7 +34,9 @@ import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.time.Clock;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Optional;
 
@@ -48,6 +50,12 @@ class WorkspaceServiceTest {
     @InjectMocks
     private WorkspaceService workspaceService;
 
+    @Mock
+    private WorkspaceRepository workspaceRepository;
+
+    @Mock
+    private OrganizationService organizationService;
+
     public static final List<String> ORGANIZATION_ACTIVE_STATUS = List.of(
             WorkspaceStatus.ACTIVE.name(),
             WorkspaceStatus.TO_BE_DELETED.name()
@@ -55,22 +63,23 @@ class WorkspaceServiceTest {
     private static final String LOCAL_FILESYSTEM_PATH = "target/local-filestorage-test/";
     public static final Long ORGANIZATION_ID = 1L;
     public static final Long WORKSPACE_ID = 1L;
+    private static final LocalDateTime FIXED_DATE_TIME =
+            LocalDateTime.of(2025, 1, 1, 12, 0);
     @Mock
     private final FileSystem fileSystem = new LocalFileSystem(LOCAL_FILESYSTEM_PATH);
     @Mock
     private final FileStorage storage = fileSystem.mount("local", "G4IT");
     @Mock
-    WorkspaceRepository workspaceRepository;
-    @Mock
-    OrganizationService organizationService;
-    @Mock
     CacheManager cacheManager;
+    @Mock
+    private Clock clock;
 
     @BeforeEach
     void init() {
         ReflectionTestUtils.setField(workspaceService, "workspaceMapper", new WorkspaceMapperImpl());
         Mockito.lenient().when(cacheManager.getCache(any())).thenReturn(Mockito.mock(Cache.class));
     }
+
     @Test
     void getWorkspaceById_returnsWorkspace() {
         Workspace workspace = Workspace.builder().id(WORKSPACE_ID).build();
@@ -100,15 +109,17 @@ class WorkspaceServiceTest {
         Long organizationId = 1L;
         long workspaceId = 1L;
         long dataRetentionDay = 7L;
-        LocalDateTime now = LocalDateTime.now();
         String workspaceName = "WORKSPACE";
         String currentStatus = WorkspaceStatus.ACTIVE.name();
         String updatedStatus = WorkspaceStatus.TO_BE_DELETED.name();
+        when(clock.instant()).thenReturn(
+                FIXED_DATE_TIME.toInstant(ZoneOffset.UTC));
+        when(clock.getZone()).thenReturn(ZoneOffset.UTC);
         List<Role> organizationAdminRole = List.of(Role.builder().name(Constants.ROLE_ORGANIZATION_ADMINISTRATOR).build());
 
         User user = TestUtils.createUserWithRoleOnOrg(organizationId, organizationAdminRole);
         Optional<Workspace> workspaceEntity = Optional.of(Workspace.builder().id(workspaceId).name(workspaceName).status(currentStatus)
-                .deletionDate(now.plusDays(dataRetentionDay))
+                .deletionDate(FIXED_DATE_TIME.plusDays(dataRetentionDay))
                 .organization(Organization.builder().id(ORGANIZATION_ID).build())
                 .build());
         WorkspaceUpsertRest workspaceUpsertRest = TestUtils.createWorkspaceUpsert(ORGANIZATION_ID, workspaceName
@@ -125,6 +136,9 @@ class WorkspaceServiceTest {
 
     @Test
     void updateWorkspace_setStatustoToActive() {
+        when(clock.instant()).thenReturn(
+                FIXED_DATE_TIME.toInstant(ZoneOffset.UTC));
+        when(clock.getZone()).thenReturn(ZoneOffset.UTC);
         Long organizationId = 1L;
         long workspaceId = 1L;
         long dataRetentionDay = 7L;
@@ -186,6 +200,9 @@ class WorkspaceServiceTest {
 
     @Test
     void updateWorkspace_updateCriteria() {
+        when(clock.instant()).thenReturn(
+                FIXED_DATE_TIME.toInstant(ZoneOffset.UTC));
+        when(clock.getZone()).thenReturn(ZoneOffset.UTC);
         Long organizationId = 1L;
         long workspaceId = 1L;
         String workspaceName = "WORKSPACE";
@@ -214,15 +231,37 @@ class WorkspaceServiceTest {
     void createWorkspace() {
         String workspaceName = "WORKSPACE";
         UserBO user = TestUtils.createUserBOAdminOrg();
-        Organization organization = Organization.builder().name("ORGANIZATION").id(1L).build();
 
-        WorkspaceUpsertRest workspaceUpsertRest = TestUtils.createWorkspaceUpsert(ORGANIZATION_ID, workspaceName
-                , null, 0L);
+        Organization organization = Organization.builder()
+                .name("ORGANIZATION")
+                .id(1L)
+                .build();
 
+        when(organizationService.getOrgById(ORGANIZATION_ID))
+                .thenReturn(organization);
 
-        WorkspaceBO orgBO = workspaceService.createWorkspace(workspaceUpsertRest, user, organization.getId());
+        when(workspaceRepository.findByOrganizationIdAndName(
+                ORGANIZATION_ID,
+                workspaceName))
+                .thenReturn(Optional.empty());
 
-        verify(workspaceRepository, times(1)).findByOrganizationIdAndName(ORGANIZATION_ID, workspaceName);
+        WorkspaceUpsertRest workspaceUpsertRest =
+                TestUtils.createWorkspaceUpsert(
+                        ORGANIZATION_ID,
+                        workspaceName,
+                        null,
+                        0L);
+
+        WorkspaceBO orgBO =
+                workspaceService.createWorkspace(
+                        workspaceUpsertRest,
+                        user,
+                        organization.getId());
+
+        verify(workspaceRepository)
+                .findByOrganizationIdAndName(
+                        ORGANIZATION_ID,
+                        workspaceName);
 
         assertEquals(workspaceUpsertRest.getName(), orgBO.getName());
         assertEquals(WorkspaceStatus.ACTIVE.name(), orgBO.getStatus());

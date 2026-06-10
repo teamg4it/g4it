@@ -20,6 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +42,8 @@ public class WorkspaceDeletionService {
 
     @Autowired
     private FileDeletionService fileDeletionService;
+    @Autowired
+    private Clock clock;
 
     /**
      * Execute the deletion
@@ -49,7 +52,7 @@ public class WorkspaceDeletionService {
      */
     public void executeDeletion() {
         final long start = System.currentTimeMillis();
-        final LocalDateTime now = LocalDateTime.now();
+        final LocalDateTime now = LocalDateTime.now(clock);
         int nbInventoriesDeleted = 0;
         int nbDigitalServicesDeleted = 0;
         List<String> deletedFilePaths = new ArrayList<>();

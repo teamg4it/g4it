@@ -39,6 +39,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Service;
 
+import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -87,6 +88,13 @@ public class EvaluatingService {
     @Autowired
     DigitalServiceVersionService digitalServiceVersionService;
 
+    private final Clock clock;
+
+    @Autowired
+    public EvaluatingService(final Clock clock) {
+        this.clock = clock;
+    }
+
     /**
      * Evaluating an inventory
      *
@@ -111,7 +119,7 @@ public class EvaluatingService {
                 .workspaceName(workspaceService.getWorkspaceById(workspaceId).getName())
                 .inventoryId(inventoryId)
                 .locale(LocaleContextHolder.getLocale())
-                .datetime(LocalDateTime.now())
+                .datetime(LocalDateTime.now(clock))
                 .hasVirtualEquipments(inventory.getVirtualEquipmentCount() > 0)
                 .hasApplications(inventory.getApplicationCount() > 0)
                 .build();
@@ -143,10 +151,10 @@ public class EvaluatingService {
         taskRepository.updateTaskState(
                 task.getId(),
                 TaskStatus.IN_PROGRESS.toString(),
-                LocalDateTime.now(),
+                LocalDateTime.now(clock),
                 "0%"
         );
-        inventory.setLastUpdateDate(LocalDateTime.now());
+        inventory.setLastUpdateDate(LocalDateTime.now(clock));
         inventoryRepository.save(inventory);
 
         // run evaluation async task
@@ -181,7 +189,7 @@ public class EvaluatingService {
                 .digitalServiceVersionUid(digitalServiceVersionUid)
                 .digitalServiceVersionName(digitalServiceVersion.getDescription())
                 .locale(LocaleContextHolder.getLocale())
-                .datetime(LocalDateTime.now())
+                .datetime(LocalDateTime.now(clock))
                 .hasVirtualEquipments(true)
                 .hasApplications(false)
                 .isAi(digitalServiceVersion.getDigitalService().isAi())
@@ -214,14 +222,14 @@ public class EvaluatingService {
         taskRepository.updateTaskState(
                 task.getId(),
                 TaskStatus.IN_PROGRESS.toString(),
-                LocalDateTime.now(),
+                LocalDateTime.now(clock),
                 "0%"
         );
         digitalServiceVersionService.updateLastUpdateDate(digitalServiceVersionUid);
-        digitalService.setLastCalculationDate(LocalDateTime.now());
+        digitalService.setLastCalculationDate(LocalDateTime.now(clock));
         digitalServiceRepository.save(digitalService);
 
-        digitalServiceVersion.setLastCalculationDate(LocalDateTime.now());
+        digitalServiceVersion.setLastCalculationDate(LocalDateTime.now(clock));
         digitalServiceVersionRepository.save(digitalServiceVersion);
 
         // run evaluation task
@@ -243,7 +251,7 @@ public class EvaluatingService {
 
         if (inProgressLoadingTasks.isEmpty()) return;
 
-        final LocalDateTime now = LocalDateTime.now();
+        final LocalDateTime now = LocalDateTime.now(clock);
 
         // check tasks to restart
         inProgressLoadingTasks.stream()

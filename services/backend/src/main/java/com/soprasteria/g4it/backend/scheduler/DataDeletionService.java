@@ -29,6 +29,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
+import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Locale;
@@ -66,6 +67,7 @@ public class DataDeletionService {
     private final DigitalServiceVersionRepository digitalServiceVersionRepository;
     private final UserWorkspaceRepository userWorkspaceRepository;
     private final UserRoleWorkspaceRepository userRoleWorkspaceRepository;
+    private final Clock clock;
 
     @Autowired
     public DataDeletionService(
@@ -75,7 +77,7 @@ public class DataDeletionService {
             DigitalServiceService digitalServiceService,
             DigitalServiceRepository digitalServiceRepository,
             AzureEmailService azureEmailService,
-            MessageSource messageSource, DigitalServiceVersionRepository digitalServiceVersionRepository, UserWorkspaceRepository userWorkspaceRepository, UserRoleWorkspaceRepository userRoleWorkspaceRepository
+            MessageSource messageSource, DigitalServiceVersionRepository digitalServiceVersionRepository, UserWorkspaceRepository userWorkspaceRepository, UserRoleWorkspaceRepository userRoleWorkspaceRepository,Clock clock
     ) {
         this.workspaceRepository = workspaceRepository;
         this.inventoryRepository = inventoryRepository;
@@ -87,6 +89,7 @@ public class DataDeletionService {
         this.digitalServiceVersionRepository = digitalServiceVersionRepository;
         this.userWorkspaceRepository = userWorkspaceRepository;
         this.userRoleWorkspaceRepository = userRoleWorkspaceRepository;
+        this.clock = clock;
     }
 
     /**
@@ -95,7 +98,7 @@ public class DataDeletionService {
      * Execute the deletion for data in
      */
     public void executeDeletion() {
-        final LocalDateTime now = LocalDateTime.now();
+        final LocalDateTime now = LocalDateTime.now(clock);
         int nbInventoriesDeleted = 0;
         int nbDigitalServicesDeleted = 0;
         final long start = System.currentTimeMillis();

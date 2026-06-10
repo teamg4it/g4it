@@ -37,8 +37,10 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
@@ -55,6 +57,8 @@ class InventoryServiceTest {
     private static final String ORGANIZATION = "ORGANIZATION";
     private static final Long WORKSPACE_ID = 1L;
     private static final Long INVENTORY_ID = 2L;
+    private static final LocalDateTime FIXED_TIME =
+            LocalDateTime.of(2025, 1, 1, 12, 0);
 
     @InjectMocks
     private InventoryService inventoryService;
@@ -170,21 +174,27 @@ class InventoryServiceTest {
         final InventoryBO inventory1 = InventoryBO.builder().build();
         final List<InventoryBO> expectedInventoryList = List.of(inventory1);
 
-        final Inventory inventoryEntity1 = Inventory.builder().id(1L).name("03-2023").lastUpdateDate(LocalDateTime.now()).build();
+        final Inventory inventoryEntity1 = Inventory.builder()
+                .id(1L)
+                .name("03-2023")
+                .lastUpdateDate(FIXED_TIME)
+                .build();
+
         var inventoryOptional = Optional.of(inventoryEntity1);
 
+        when(workspaceService.getWorkspaceById(WORKSPACE_ID))
+                .thenReturn(linkedWorkspace);
 
-        when(workspaceService.getWorkspaceById(WORKSPACE_ID)).thenReturn(linkedWorkspace);
-        when(this.inventoryRepo.findByWorkspaceAndId(linkedWorkspace, INVENTORY_ID)).thenReturn(inventoryOptional);
+        when(inventoryRepo.findByWorkspaceAndId(linkedWorkspace, INVENTORY_ID))
+                .thenReturn(inventoryOptional);
 
-        final List<InventoryBO> result = this.inventoryService.getInventories(WORKSPACE_ID, INVENTORY_ID);
+        final List<InventoryBO> result =
+                inventoryService.getInventories(WORKSPACE_ID, INVENTORY_ID);
 
         assertThat(result).hasSameSizeAs(expectedInventoryList);
 
-
-        verify(workspaceService, times(1)).getWorkspaceById(WORKSPACE_ID);
-        verify(inventoryRepo, times(1)).findByWorkspaceAndId(linkedWorkspace, INVENTORY_ID);
-
+        verify(workspaceService).getWorkspaceById(WORKSPACE_ID);
+        verify(inventoryRepo).findByWorkspaceAndId(linkedWorkspace, INVENTORY_ID);
     }
 
     @Test
@@ -724,7 +734,7 @@ class InventoryServiceTest {
 
         Inventory inventory = Inventory.builder()
                 .id(1L)
-                .lastUpdateDate(LocalDateTime.now())
+                .lastUpdateDate(FIXED_TIME)
                 .build();
 
         when(workspaceService.getWorkspaceById(WORKSPACE_ID)).thenReturn(workspace);
@@ -744,7 +754,7 @@ class InventoryServiceTest {
 
         Inventory inventory = Inventory.builder()
                 .id(1L)
-                .lastUpdateDate(LocalDateTime.now())
+                .lastUpdateDate(FIXED_TIME)
                 .build();
 
         when(workspaceService.getWorkspaceById(WORKSPACE_ID)).thenReturn(workspace);

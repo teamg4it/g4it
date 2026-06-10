@@ -25,6 +25,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -58,6 +59,9 @@ public class WorkspaceService {
      */
     @Autowired
     private WorkspaceRepository workspaceRepository;
+
+    @Autowired
+    private Clock clock;
 
     /**
      * Retrieve the active Workspace Entity.
@@ -148,7 +152,7 @@ public class WorkspaceService {
                         workspaceDataDeletionDays :
                         workspaceUpsertRest.getDataRetentionDays().intValue();
 
-                deletionDate = LocalDateTime.now().plusDays(dataDeletionDays.longValue());
+                deletionDate = LocalDateTime.now(clock).plusDays(dataDeletionDays.longValue());
             }
 
             workspaceToSave.setDeletionDate(deletionDate);
@@ -160,7 +164,7 @@ public class WorkspaceService {
         workspaceToSave.setLastUpdatedBy(User.builder()
                 .id(userId)
                 .build());
-        workspaceToSave.setLastUpdateDate(LocalDateTime.now());
+        workspaceToSave.setLastUpdateDate(LocalDateTime.now(clock));
         workspaceRepository.save(workspaceToSave);
         clearWorkspaceCache(workspaceId);
         return workspaceMapper.toBusinessObject(workspaceToSave);

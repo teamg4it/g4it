@@ -35,11 +35,14 @@ class RuleDateServiceTest {
     private final Locale locale = Locale.getDefault();
     private final String filename = "filename";
     private final int line = 1;
+    private static final LocalDate TODAY = LocalDate.of(2025, 1, 1);
+    private static final LocalDate TOMORROW = TODAY.plusDays(1);
+
 
     @Test
     void testRuleDateOk() {
         var actual = ruleDateService.checkDatesPurchaseRetrieval(locale, filename, line,
-                LocalDate.now(), LocalDate.now().plusDays(1), false);
+                TODAY, TOMORROW, false);
         Assertions.assertTrue(actual.isEmpty());
     }
 
@@ -49,7 +52,7 @@ class RuleDateServiceTest {
                 .thenReturn("Purchase date after retrieval date");
 
         var actual = ruleDateService.checkDatesPurchaseRetrieval(locale, filename, line,
-                LocalDate.now().plusDays(1), LocalDate.now(), false);
+                TOMORROW, TODAY, false);
 
         Assertions.assertTrue(actual.isPresent());
         Assertions.assertEquals(new LineError(filename, line, "Purchase date after retrieval date"), actual.get());
@@ -61,7 +64,7 @@ class RuleDateServiceTest {
                 .thenReturn("Invalid purchase date format");
 
         var actual = ruleDateService.checkDatesPurchaseRetrieval(locale, filename, line,
-                Constants.ERROR_DATE_FORMAT, LocalDate.now(), false);
+                Constants.ERROR_DATE_FORMAT, TODAY, false);
 
         Assertions.assertTrue(actual.isPresent());
         Assertions.assertEquals(new LineError(filename, line, "Invalid purchase date format"), actual.get());
@@ -73,7 +76,7 @@ class RuleDateServiceTest {
                 .thenReturn("Invalid retrieval date format");
 
         var actual = ruleDateService.checkDatesPurchaseRetrieval(locale, filename, line,
-                LocalDate.now(), Constants.ERROR_DATE_FORMAT, false);
+                TODAY, Constants.ERROR_DATE_FORMAT, false);
 
         Assertions.assertTrue(actual.isPresent());
         Assertions.assertEquals(new LineError(filename, line, "Invalid retrieval date format"), actual.get());
@@ -82,7 +85,7 @@ class RuleDateServiceTest {
     @Test
     void testEmptyDatePurchaseOk() {
         var actual = ruleDateService.checkDatesPurchaseRetrieval(locale, filename, line,
-                null, LocalDate.now(), false);
+                null, TODAY, false);
 
         Assertions.assertTrue(actual.isEmpty());
     }
@@ -90,7 +93,7 @@ class RuleDateServiceTest {
     @Test
     void testEmptyDateRetrievalOk() {
         var actual = ruleDateService.checkDatesPurchaseRetrieval(locale, filename, line,
-                LocalDate.now(), null, false);
+                TODAY, null, false);
 
         Assertions.assertTrue(actual.isEmpty());
     }
@@ -101,7 +104,7 @@ class RuleDateServiceTest {
                 .thenReturn("Purchase date must not be blank");
 
         var actual = ruleDateService.checkDatesPurchaseRetrieval(locale, filename, line,
-                null, LocalDate.now(), true);
+                null, TODAY, true);
 
         Assertions.assertTrue(actual.isPresent());
         Assertions.assertEquals(new LineError(filename, line, "Purchase date must not be blank"), actual.get());
@@ -113,7 +116,7 @@ class RuleDateServiceTest {
                 .thenReturn("Retrieval date must not be blank");
 
         var actual = ruleDateService.checkDatesPurchaseRetrieval(locale, filename, line,
-                LocalDate.now(), null, true);
+                TODAY, null, true);
 
         Assertions.assertTrue(actual.isPresent());
         Assertions.assertEquals(new LineError(filename, line, "Retrieval date must not be blank"), actual.get());
@@ -122,7 +125,7 @@ class RuleDateServiceTest {
     @Test
     void testDigitalService_ValidDates_NoError() {
         var actual = ruleDateService.checkDatesPurchaseRetrieval(locale, filename, line,
-                LocalDate.now(), LocalDate.now().plusDays(1), true);
+                TODAY, TOMORROW, true);
         Assertions.assertTrue(actual.isEmpty());
     }
 }

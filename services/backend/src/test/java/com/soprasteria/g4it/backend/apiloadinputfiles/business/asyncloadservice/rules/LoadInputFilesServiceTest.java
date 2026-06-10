@@ -40,7 +40,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Clock;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -52,6 +54,9 @@ import org.springframework.mock.web.MockMultipartFile;
 
 @ExtendWith(MockitoExtension.class)
 class LoadInputFilesServiceTest {
+
+    private static final LocalDateTime FIXED_TIME =
+            LocalDateTime.of(2025, 1, 1, 12, 0);
 
     @Mock
     private WorkspaceService workspaceService;
@@ -79,6 +84,9 @@ class LoadInputFilesServiceTest {
     @Mock
     private AuthService authService;
 
+    @Mock
+    private Clock clock;
+
     @BeforeEach
     void setup() throws Exception {
 
@@ -98,6 +106,9 @@ class LoadInputFilesServiceTest {
 
     @Test
     void loadFiles_createsTaskAndExecutesAsyncTask_whenValidInputProvided() {
+        when(clock.instant()).thenReturn(
+                FIXED_TIME.toInstant(ZoneOffset.UTC));
+        when(clock.getZone()).thenReturn(ZoneOffset.UTC);
         String organization = "testOrganization";
         Long workspaceId = 1L;
         Long inventoryId = 1L;
@@ -192,6 +203,9 @@ class LoadInputFilesServiceTest {
 
     @Test
     void digitalServiceLoadFiles_createsTaskAndExecutesAsyncTask_whenValidInputProvided() {
+        when(clock.instant()).thenReturn(
+                FIXED_TIME.toInstant(ZoneOffset.UTC));
+        when(clock.getZone()).thenReturn(ZoneOffset.UTC);
         String organization = "testOrganization";
         Long workspaceId = 1L;
         String digitalServiceUid = "uid";
@@ -282,9 +296,12 @@ class LoadInputFilesServiceTest {
 
     @Test
     void restartInventory_LoadingFiles_restartsTasks_whenTasksAreStale() {
+        when(clock.instant()).thenReturn(
+                FIXED_TIME.toInstant(ZoneOffset.UTC));
+        when(clock.getZone()).thenReturn(ZoneOffset.UTC);
         Task staleTask = Task.builder()
                 .id(1L)
-                .lastUpdateDate(LocalDateTime.now().minusMinutes(20))
+                .lastUpdateDate(FIXED_TIME.minusMinutes(20))
                 .status(TaskStatus.IN_PROGRESS.toString())
                 .type(TaskType.LOADING.toString())
                 .inventory(Inventory.builder()
@@ -311,6 +328,9 @@ class LoadInputFilesServiceTest {
     @Test
     void restartDigitalService_LoadingFiles_restartsTasks_whenTasksAreStale() {
 
+        when(clock.instant()).thenReturn(
+                FIXED_TIME.toInstant(ZoneOffset.UTC));
+        when(clock.getZone()).thenReturn(ZoneOffset.UTC);
         DigitalService digitalService = DigitalService.builder()
                 .uid("dsuid")
                 .workspace(Workspace.builder()
@@ -323,7 +343,7 @@ class LoadInputFilesServiceTest {
                 .digitalService(digitalService).build();
         Task staleTask = Task.builder()
                 .id(1L)
-                .lastUpdateDate(LocalDateTime.now().minusMinutes(20))
+                .lastUpdateDate(FIXED_TIME.minusMinutes(20))
                 .status(TaskStatus.IN_PROGRESS.toString())
                 .type(TaskType.LOADING.toString())
                 .digitalServiceVersion(digitalServiceVersion)

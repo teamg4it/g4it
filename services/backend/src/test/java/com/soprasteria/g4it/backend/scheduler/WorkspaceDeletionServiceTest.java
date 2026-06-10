@@ -25,7 +25,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.Clock;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,6 +36,8 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class WorkspaceDeletionServiceTest {
+    private static final LocalDateTime FIXED_DATE_TIME =
+            LocalDateTime.of(2025, 1, 1, 12, 0);
     @InjectMocks
     WorkspaceDeletionService workspaceDeletionService;
     @Mock
@@ -48,10 +52,15 @@ class WorkspaceDeletionServiceTest {
     private InventoryRepository inventoryRepo;
     @Mock
     private DigitalServiceRepository digitalServiceRepo;
+    @Mock
+    private Clock clock;
 
     @Test
     void testWorkspaceDeletionService_toBeDeletedStatusWithPastDate() {
-        var now = LocalDateTime.now().minusHours(1);
+        when(clock.instant()).thenReturn(
+                FIXED_DATE_TIME.toInstant(ZoneOffset.UTC));
+        when(clock.getZone()).thenReturn(ZoneOffset.UTC);
+        var now = FIXED_DATE_TIME.minusHours(1);
         final Optional<Inventory> inventoryEntity1 = Optional.ofNullable(Inventory.builder().id(1L).name("03-2023").lastUpdateDate(now).build());
         final Optional<DigitalService> digitalServiceEntity = Optional.ofNullable(DigitalService.builder().uid("1234").name("name").lastUpdateDate(now).build());
         final Workspace linkedWorkspace = TestUtils.createToBeDeletedWorkspace(now);
@@ -70,7 +79,10 @@ class WorkspaceDeletionServiceTest {
 
     @Test
     void testWorkspaceDeletionService_toBeDeletedStatusWithFutureDate() {
-        final Workspace linkedWorkspace = TestUtils.createToBeDeletedWorkspace(LocalDateTime.now().plusDays(1));
+        when(clock.instant()).thenReturn(
+                FIXED_DATE_TIME.toInstant(ZoneOffset.UTC));
+        when(clock.getZone()).thenReturn(ZoneOffset.UTC);
+        final Workspace linkedWorkspace = TestUtils.createToBeDeletedWorkspace(FIXED_DATE_TIME.plusDays(1));
         when(workspaceRepository.findAllByStatusIn(List.of(WorkspaceStatus.TO_BE_DELETED.name()))).thenReturn(List.of(linkedWorkspace));
 
         // EXECUTE
@@ -83,6 +95,9 @@ class WorkspaceDeletionServiceTest {
 
     @Test
     void testStorageDeletionService_inActiveStatus() {
+        when(clock.instant()).thenReturn(
+                FIXED_DATE_TIME.toInstant(ZoneOffset.UTC));
+        when(clock.getZone()).thenReturn(ZoneOffset.UTC);
         final Workspace linkedWorkspace = TestUtils.createWorkspaceWithStatus(WorkspaceStatus.INACTIVE.name());
 
         when(workspaceRepository.findAllByStatusIn(List.of(WorkspaceStatus.TO_BE_DELETED.name()))).thenReturn(List.of(linkedWorkspace));
@@ -95,6 +110,9 @@ class WorkspaceDeletionServiceTest {
 
     @Test
     void testStorageDeletionService_deletionDateNull() {
+        when(clock.instant()).thenReturn(
+                FIXED_DATE_TIME.toInstant(ZoneOffset.UTC));
+        when(clock.getZone()).thenReturn(ZoneOffset.UTC);
         final Workspace linkedWorkspace = TestUtils.createWorkspaceWithStatus(WorkspaceStatus.INACTIVE.name());
         linkedWorkspace.setDeletionDate(null);
 

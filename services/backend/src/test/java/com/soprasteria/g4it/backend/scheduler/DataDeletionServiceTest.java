@@ -27,7 +27,9 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.context.MessageSource;
 
+import java.time.Clock;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -38,6 +40,8 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 class DataDeletionServiceTest {
+    private static final LocalDateTime FIXED_DATE_TIME =
+            LocalDateTime.of(2025, 1, 1, 12, 0);
     @Mock
     private WorkspaceRepository workspaceRepository;
     @Mock
@@ -60,6 +64,8 @@ class DataDeletionServiceTest {
     private UserRoleWorkspaceRepository userRoleWorkspaceRepository;
     @Mock
     DigitalServiceVersionRepository digitalServiceVersionRepository;
+    @Mock
+    private Clock clock;
     @BeforeEach
     void setUp() {
         try {
@@ -91,9 +97,12 @@ class DataDeletionServiceTest {
 
     @Test
     void testExecuteDeletion_inventoryDeletedWhenRetentionExceeded() {
+        when(clock.instant()).thenReturn(
+                FIXED_DATE_TIME.toInstant(ZoneOffset.UTC));
+        when(clock.getZone()).thenReturn(ZoneOffset.UTC);
         Workspace workspace = mockWorkspace();
         when(workspaceRepository.findAllByStatusIn(anyList())).thenReturn(List.of(workspace));
-        var inventory = mockInventory(LocalDateTime.now().minusDays(91));
+        var inventory = mockInventory(FIXED_DATE_TIME.minusDays(91));
         when(inventoryRepository.findByWorkspace(any())).thenReturn(List.of(inventory));
         when(digitalServiceRepository.findByWorkspace(any())).thenReturn(Collections.emptyList());
 
@@ -105,10 +114,13 @@ class DataDeletionServiceTest {
 
     @Test
     void testExecuteDeletion_inventoryReminderSent() {
+        when(clock.instant()).thenReturn(
+                FIXED_DATE_TIME.toInstant(ZoneOffset.UTC));
+        when(clock.getZone()).thenReturn(ZoneOffset.UTC);
         Workspace workspace = mockWorkspace();
         when(workspaceRepository.findAllByStatusIn(anyList())).thenReturn(List.of(workspace));
         // 60 days since last update, retention=90, firstReminder=30
-        var inventory = mockInventory(LocalDateTime.now().minusDays(60));
+        var inventory = mockInventory(FIXED_DATE_TIME.minusDays(60));
         when(inventoryRepository.findByWorkspace(any())).thenReturn(List.of(inventory));
         when(digitalServiceRepository.findByWorkspace(any())).thenReturn(Collections.emptyList());
 
@@ -136,6 +148,9 @@ class DataDeletionServiceTest {
 
     @Test
     void testExecuteDeletion_digitalServiceDeletedWhenRetentionExceeded() {
+        when(clock.instant()).thenReturn(
+                FIXED_DATE_TIME.toInstant(ZoneOffset.UTC));
+        when(clock.getZone()).thenReturn(ZoneOffset.UTC);
         Workspace workspace = mockWorkspace();
         when(workspaceRepository.findAllByStatusIn(anyList())).thenReturn(List.of(workspace));
         when(inventoryRepository.findByWorkspace(any())).thenReturn(Collections.emptyList());
@@ -145,7 +160,7 @@ class DataDeletionServiceTest {
         when(user.getEmail()).thenReturn("user@example.com");
         when(digitalService.getUser()).thenReturn(user);
         when(digitalService.getName()).thenReturn("DS1");
-        when(digitalService.getLastUpdateDate()).thenReturn(LocalDateTime.now().minusDays(91));
+        when(digitalService.getLastUpdateDate()).thenReturn(FIXED_DATE_TIME.minusDays(91));
         when(digitalService.getUid()).thenReturn("UID1");
         when(digitalServiceRepository.findByWorkspace(any())).thenReturn(List.of(digitalService));
 
@@ -157,6 +172,9 @@ class DataDeletionServiceTest {
 
     @Test
     void testExecuteDeletion_noActionWhenNothingToDeleteOrRemind() {
+        when(clock.instant()).thenReturn(
+                FIXED_DATE_TIME.toInstant(ZoneOffset.UTC));
+        when(clock.getZone()).thenReturn(ZoneOffset.UTC);
         Workspace workspace = mockWorkspace();
         when(workspaceRepository.findAllByStatusIn(anyList())).thenReturn(List.of(workspace));
         when(inventoryRepository.findByWorkspace(any())).thenReturn(Collections.emptyList());
@@ -194,9 +212,12 @@ class DataDeletionServiceTest {
 
     @Test
     void testHandleInventoryDeletion_sendsSecondReminder() {
+        when(clock.instant()).thenReturn(
+                FIXED_DATE_TIME.toInstant(ZoneOffset.UTC));
+        when(clock.getZone()).thenReturn(ZoneOffset.UTC);
         Workspace workspace = mockWorkspace();
         when(workspaceRepository.findAllByStatusIn(anyList())).thenReturn(List.of(workspace));
-        var inventory = mockInventory(LocalDateTime.now().minusDays(88)); // retention=90, secondReminder=2
+        var inventory = mockInventory(FIXED_DATE_TIME.minusDays(88)); // retention=90, secondReminder=2
         when(inventoryRepository.findByWorkspace(any())).thenReturn(List.of(inventory));
         UserWorkspace userWorkspace = mockUserWorkspaceWithRole();
         when(userWorkspaceRepository.findByWorkspace(any())).thenReturn(List.of(userWorkspace));
@@ -218,12 +239,15 @@ class DataDeletionServiceTest {
 
     @Test
     void testHandleDigitalServiceDeletion_sendsFirstReminderForAI() {
+        when(clock.instant()).thenReturn(
+                FIXED_DATE_TIME.toInstant(ZoneOffset.UTC));
+        when(clock.getZone()).thenReturn(ZoneOffset.UTC);
         Workspace workspace = mockWorkspace();
         when(workspaceRepository.findAllByStatusIn(anyList())).thenReturn(List.of(workspace));
 
         DigitalServiceVersion digitalServiceVersion = mockDigitalServiceVersion("DSV1");
         var digitalService = mock(com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService.class);
-        when(digitalService.getLastUpdateDate()).thenReturn(LocalDateTime.now().minusDays(60));
+        when(digitalService.getLastUpdateDate()).thenReturn(FIXED_DATE_TIME.minusDays(60));
         when(digitalService.isAi()).thenReturn(true);
         when(digitalService.getUid()).thenReturn("UID1");
         when(digitalService.getName()).thenReturn("DS1");

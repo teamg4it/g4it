@@ -9,7 +9,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
+import java.time.Clock;
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Map;
 
@@ -27,7 +29,12 @@ class FileDeletionServiceTest {
 
     @Mock
     private FileStorage fileStorage;
+    @Mock
+    private Clock clock;
 
+
+    private final OffsetDateTime fixedTime =
+            OffsetDateTime.parse("2025-01-10T12:00:00Z");
     /**
      * helper to build FileDescription objects correctly
      */
@@ -43,10 +50,12 @@ class FileDeletionServiceTest {
         String org = "org1";
         String workspace = "ws1";
         int retentionDays = 5;
-        OffsetDateTime now = OffsetDateTime.now();
 
-        FileDescription oldFile = mockFile("ws1/input/old.csv", now.minusDays(10));     // should be deleted
-        FileDescription recentFile = mockFile("ws1/input/recent.csv", now.minusDays(1)); // should NOT be deleted
+        when(clock.instant()).thenReturn(fixedTime.toInstant());
+        when(clock.getZone()).thenReturn(ZoneOffset.UTC);
+
+        FileDescription oldFile = mockFile("ws1/input/old.csv", fixedTime.minusDays(10));     // should be deleted
+        FileDescription recentFile = mockFile("ws1/input/recent.csv", fixedTime.minusDays(1)); // should NOT be deleted
 
         when(fileSystem.mount(org, workspace)).thenReturn(fileStorage);
         when(fileStorage.listFiles(FileFolder.INPUT))
@@ -81,10 +90,11 @@ class FileDeletionServiceTest {
         String org = "org1";
         String workspace = "ws1";
         int retentionDays = 5;
-        OffsetDateTime now = OffsetDateTime.now();
+        when(clock.instant()).thenReturn(fixedTime.toInstant());
+        when(clock.getZone()).thenReturn(ZoneOffset.UTC);
 
-        FileDescription recentFile1 = mockFile("ws1/input/r1.csv", now.minusDays(2));
-        FileDescription recentFile2 = mockFile("ws1/input/r2.csv", now.minusDays(1));
+        FileDescription recentFile1 = mockFile("ws1/input/r1.csv", fixedTime.minusDays(2));
+        FileDescription recentFile2 = mockFile("ws1/input/r2.csv", fixedTime.minusDays(1));
 
         when(fileSystem.mount(org, workspace)).thenReturn(fileStorage);
         when(fileStorage.listFiles(FileFolder.INPUT)).thenReturn(List.of(recentFile1, recentFile2));
@@ -97,6 +107,8 @@ class FileDeletionServiceTest {
 
     @Test
     void deleteFiles_shouldNotDeleteAnything_whenListIsEmpty() throws Exception {
+        when(clock.instant()).thenReturn(fixedTime.toInstant());
+        when(clock.getZone()).thenReturn(ZoneOffset.UTC);
         String org = "org1";
         String workspace = "ws1";
 
@@ -111,6 +123,8 @@ class FileDeletionServiceTest {
 
     @Test
     void deleteFiles_shouldNotThrow_whenIOExceptionOccurs() throws Exception {
+        when(clock.instant()).thenReturn(fixedTime.toInstant());
+        when(clock.getZone()).thenReturn(ZoneOffset.UTC);
         String org = "org1";
         String workspace = "ws1";
 

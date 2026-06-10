@@ -13,6 +13,7 @@ import com.soprasteria.g4it.backend.server.gen.api.dto.AiParameterRest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -25,6 +26,8 @@ public class InAiParameterService {
     private InAiParameterMapper inAiParameterMapper;
     @Autowired
     private DigitalServiceVersionRepository digitalServiceVersionRepository;
+    @Autowired
+    private Clock clock;
 
     public AiParameterRest createAiParameter(final String digitalServiceVersionUid,AiParameterRest aiParameterRest) {
         Optional<DigitalServiceVersion> digitalServiceVersion = digitalServiceVersionRepository.findById(digitalServiceVersionUid);
@@ -34,7 +37,7 @@ public class InAiParameterService {
         }
 
         final InAiParameter entityToSave = inAiParameterMapper.toEntity(aiParameterRest);
-        final LocalDateTime now = LocalDateTime.now();
+        final LocalDateTime now = LocalDateTime.now(clock);
         entityToSave.setDigitalServiceVersionUid(digitalServiceVersionUid);
         entityToSave.setCreationDate(now);
         entityToSave.setLastUpdateDate(now);

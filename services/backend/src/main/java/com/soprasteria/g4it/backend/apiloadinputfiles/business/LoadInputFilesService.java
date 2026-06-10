@@ -48,6 +48,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Stream;
@@ -85,6 +86,9 @@ public class LoadInputFilesService {
 
     @Value("${local.working.folder}")
     private String localWorkingFolder;
+
+    @Autowired
+    private Clock clock;
 
     /**
      * Load input files for an inventory
@@ -144,7 +148,7 @@ public class LoadInputFilesService {
                 .workspaceId(workspaceId)
                 .workspaceName(workspaceService.getWorkspaceById(workspaceId).getName())
                 .inventoryId(inventoryId)
-                .datetime(LocalDateTime.now())
+                .datetime(LocalDateTime.now(clock))
                 .hasVirtualEquipments(inventory.getVirtualEquipmentCount() > 0)
                 .hasApplications(inventory.getApplicationCount() > 0)
                 .build();
@@ -229,7 +233,7 @@ public class LoadInputFilesService {
                 .workspaceId(workspaceId)
                 .workspaceName(workspaceService.getWorkspaceById(workspaceId).getName())
                 .digitalServiceVersionUid(digitalServiceVersionUid)
-                .datetime(LocalDateTime.now())
+                .datetime(LocalDateTime.now(clock))
                 .build();
         final Map<FileType, List<StoredFile>> storedFiles =
                 detachFiles(allFiles, false);
@@ -264,7 +268,7 @@ public class LoadInputFilesService {
     public void restartLoadingFiles() {
         List<Task> inProgressLoadingTasks = taskRepository.findByStatusAndType(TaskStatus.IN_PROGRESS.toString(), TaskType.LOADING.toString());
         if (inProgressLoadingTasks.isEmpty()) return;
-        final LocalDateTime now = LocalDateTime.now();
+        final LocalDateTime now = LocalDateTime.now(clock);
         // check tasks to restart
         inProgressLoadingTasks.stream()
                 .filter(task -> task.getLastUpdateDate().plusMinutes(15).isBefore(now))

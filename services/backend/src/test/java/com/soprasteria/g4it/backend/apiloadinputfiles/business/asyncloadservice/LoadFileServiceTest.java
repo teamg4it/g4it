@@ -54,6 +54,9 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class LoadFileServiceTest {
 
+    private static final LocalDateTime FIXED_TIME =
+            LocalDateTime.of(2025, 1, 1, 12, 0);
+
     @Mock
     CsvFileMapperInfo csvFileMapperInfo;
     @Mock
@@ -96,7 +99,7 @@ class LoadFileServiceTest {
         // make common stubbings lenient to avoid UnnecessaryStubbingException
         lenient().when(fileToLoad.getOriginalFileName()).thenReturn("original.csv");
         lenient().when(context.getInventoryId()).thenReturn(123L);
-        lenient().when(context.getDatetime()).thenReturn(LocalDateTime.now());
+        lenient().when(context.getDatetime()).thenReturn(FIXED_TIME);
         lenient().when(context.log()).thenReturn("CTX");
         lenient().when(context.getLocale()).thenReturn(Locale.ENGLISH);
         lenient().when(context.getFilesToLoad()).thenReturn(List.of(fileToLoad));

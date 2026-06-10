@@ -31,7 +31,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.time.Clock;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -40,6 +42,8 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class RenewServiceTest {
+    private static final LocalDateTime FIXED_DATE_TIME =
+            LocalDateTime.of(2025, 1, 1, 12, 0);
     @Mock
     private InventoryRepository inventoryRepository;
     @Mock
@@ -48,7 +52,8 @@ class RenewServiceTest {
     private WorkspaceRepository workspaceRepository;
     @Mock
     private DigitalServiceVersionRepository digitalServiceVersionRepository;
-
+    @Mock
+    private Clock clock;
     @InjectMocks
     private RenewService renewService;
 
@@ -67,7 +72,7 @@ class RenewServiceTest {
         Inventory inventory = new Inventory();
         inventory.setId(1L);
         inventory.setName("Test Inventory");
-        inventory.setLastUpdateDate(LocalDateTime.now().minusDays(5));
+        inventory.setLastUpdateDate(FIXED_DATE_TIME.minusDays(5));
         when(workspaceRepository.findById(1L)).thenReturn(Optional.of(workspace));
         when(inventoryRepository.findById(1L)).thenReturn(Optional.of(inventory));
         RenewRest result = renewService.getRenewDetailsInventory(1L, 1L);
@@ -106,7 +111,7 @@ class RenewServiceTest {
         DigitalService digitalService = new DigitalService();
         digitalService.setUid("ds-uid");
         digitalService.setName("Digital Service");
-        digitalService.setLastUpdateDate(LocalDateTime.now().minusDays(3));
+        digitalService.setLastUpdateDate(FIXED_DATE_TIME.minusDays(3));
         DigitalServiceVersion version = new DigitalServiceVersion();
         version.setDigitalService(digitalService);
         when(workspaceRepository.findById(anyLong())).thenReturn(Optional.of(workspace));
@@ -132,6 +137,9 @@ class RenewServiceTest {
 
     @Test
     void testRenewDigitalService_success() {
+        when(clock.instant()).thenReturn(
+                FIXED_DATE_TIME.toInstant(ZoneOffset.UTC));
+        when(clock.getZone()).thenReturn(ZoneOffset.UTC);
         Workspace workspace = new Workspace();
         DigitalService digitalService = new DigitalService();
         digitalService.setUid("ds-uid");
@@ -154,6 +162,9 @@ class RenewServiceTest {
 
     @Test
     void testRenewInventoryService_success() {
+        when(clock.instant()).thenReturn(
+                FIXED_DATE_TIME.toInstant(ZoneOffset.UTC));
+        when(clock.getZone()).thenReturn(ZoneOffset.UTC);
         Workspace workspace = new Workspace();
         Inventory inventory = new Inventory();
         inventory.setId(2L);

@@ -27,6 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -38,17 +39,20 @@ public class RenewService {
     private final DigitalServiceRepository digitalServiceRepository;
     private final WorkspaceRepository workspaceRepository;
     private final DigitalServiceVersionRepository digitalServiceVersionRepository;
-
+    private final Clock clock;
     @Value("${g4it.data.retention.day}")
     private Integer dataRetentiondDay;
 
+
+
     public RenewService(InventoryRepository inventoryRepository,
                         DigitalServiceRepository digitalServiceRepository,
-                        WorkspaceRepository workspaceRepository, DigitalServiceVersionRepository digitalServiceVersionRepository) {
+                        WorkspaceRepository workspaceRepository, DigitalServiceVersionRepository digitalServiceVersionRepository, Clock clock) {
         this.inventoryRepository = inventoryRepository;
         this.digitalServiceRepository = digitalServiceRepository;
         this.workspaceRepository = workspaceRepository;
         this.digitalServiceVersionRepository = digitalServiceVersionRepository;
+        this.clock = clock;
     }
 
     public RenewRest getRenewDetailsInventory(Long workspace, Long inventoryId) {
@@ -87,7 +91,7 @@ public class RenewService {
                     new G4itRestException("400", String.format(ErrorConstants.WORKSPACE_NOT_FOUND, workspace)));
             DigitalService digitalService = digitalServiceRepository.findByWorkspaceAndUid(workspaceEntity, renewUpdateRest.getServiceId()).orElseThrow(() ->
                     new G4itRestException("400", String.format(ErrorConstants.DIGITAL_SERVICE_NOT_FOUND, renewUpdateRest.getServiceId())));
-            digitalService.setLastUpdateDate(LocalDateTime.now());
+            digitalService.setLastUpdateDate(LocalDateTime.now(clock));
             digitalServiceRepository.save(digitalService);
             return RenewResponseRest.builder().serviceId(digitalService.getUid()).isRenewed(true).responseMessage(Constants.RENEWAL_SUCCESS_MESSAGE).build();
         } else {
@@ -101,7 +105,7 @@ public class RenewService {
                     new G4itRestException("400", String.format(ErrorConstants.WORKSPACE_NOT_FOUND, workspace)));
             Inventory inventory = inventoryRepository.findById(inventoryId).orElseThrow(() ->
                     new G4itRestException("400", String.format(ErrorConstants.INVENTORY_NOT_FOUND, inventoryId)));
-            inventory.setLastUpdateDate(LocalDateTime.now());
+            inventory.setLastUpdateDate(LocalDateTime.now(clock));
             inventoryRepository.save(inventory);
             return RenewResponseRest.builder().serviceId(String.valueOf(inventory.getId())).isRenewed(true).responseMessage(Constants.RENEWAL_SUCCESS_MESSAGE).build();
         } else {
