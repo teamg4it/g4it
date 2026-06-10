@@ -62,8 +62,6 @@ class DataDeletionServiceTest {
     private UserRoleWorkspaceRepository userRoleWorkspaceRepository;
     @Mock
     DigitalServiceVersionRepository digitalServiceVersionRepository;
-    private static final LocalDateTime referenceTime =
-            LocalDateTime.of(2025, Month.JANUARY, 1, 12, 0);
     @BeforeEach
     void setUp() {
         try {

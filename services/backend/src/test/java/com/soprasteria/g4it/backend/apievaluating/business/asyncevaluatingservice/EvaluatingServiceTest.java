@@ -159,6 +159,8 @@ class EvaluatingServiceTest {
 
     @Test
     void restartEvaluating_shouldSkip_whenLastUpdateIsRecent() {
+        LocalDateTime now = LocalDateTime.now();
+
         Task task = mock(Task.class);
         Inventory inventory = mock(Inventory.class);
 
@@ -168,8 +170,7 @@ class EvaluatingServiceTest {
                 .thenReturn(List.of(task));
 
         when(task.getInventory()).thenReturn(inventory);
-        when(task.getLastUpdateDate())
-                .thenReturn(LocalDateTime.now().minusMinutes(5));
+        when(task.getLastUpdateDate()).thenReturn(now.minusMinutes(5));
 
         evaluatingService.restartEvaluating();
 
