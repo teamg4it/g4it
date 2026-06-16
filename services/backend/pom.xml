@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.5.14</version>  <!-- 3.3.6 is not working on tests, 3.4.0 is not working on using sql sequences -->
+        <version>4.0.0</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
@@ -43,11 +43,8 @@
         <bouncycastle.version>1.84</bouncycastle.version>
         <keycloak-spring-boot-starter.version>25.0.3</keycloak-spring-boot-starter.version>
 
-        <spring-cloud-azure-starter-storage-blob.version>5.22.0</spring-cloud-azure-starter-storage-blob.version>
-        <spring-cloud-azure-starter-keyvault.version>5.22.0</spring-cloud-azure-starter-keyvault.version>
-
         <!-- springdoc 2.7.0 is not working -->
-        <springdoc-openapi-starter-webmvc-ui.version>2.8.8</springdoc-openapi-starter-webmvc-ui.version>
+        <springdoc-openapi-starter-webmvc-ui.version>3.0.0</springdoc-openapi-starter-webmvc-ui.version>
 
         <guava.version>33.4.8-jre</guava.version>
         <commons-csv.version>1.14.1</commons-csv.version>
@@ -61,7 +58,6 @@
         <jacoco-maven-plugin.version>0.8.13</jacoco-maven-plugin.version>
         <shedlock.version>6.9.2</shedlock.version>
         <azure-communication-email.version>1.0.11</azure-communication-email.version>
-        <spring-boot-starter-actuator.version>3.5.12</spring-boot-starter-actuator.version>
         <sonar.coverage.exclusions>
             **/gen/**/*.java,
             **/controller/**/*.java,
@@ -182,7 +178,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
-            <version>${spring-boot-starter-actuator.version} </version>
         </dependency>
         <dependency>
             <groupId>org.keycloak</groupId>
@@ -222,12 +217,10 @@
         <dependency>
             <groupId>com.azure.spring</groupId>
             <artifactId>spring-cloud-azure-starter-storage-blob</artifactId>
-            <version>${spring-cloud-azure-starter-storage-blob.version}</version>
         </dependency>
         <dependency>
             <groupId>com.azure.spring</groupId>
             <artifactId>spring-cloud-azure-starter-keyvault</artifactId>
-            <version>${spring-cloud-azure-starter-keyvault.version}</version>
         </dependency>
 
         <!-- Other deps -->
@@ -326,8 +319,7 @@
         <dependency>
             <groupId>com.azure</groupId>
             <artifactId>azure-communication-email</artifactId>
-            <version>${azure-communication-email.version}</version>
-            <exclusions>
+            <!--<exclusions>
                 <exclusion>
                     <groupId>com.azure</groupId>
                     <artifactId>azure-core</artifactId>
@@ -336,7 +328,7 @@
                     <groupId>com.azure</groupId>
                     <artifactId>azure-core-http-netty</artifactId>
                 </exclusion>
-            </exclusions>
+            </exclusions>-->
         </dependency>
         <dependency>
             <groupId>org.apache.tomcat.embed</groupId>
@@ -367,16 +359,15 @@
                 <version>2.21.1</version>
             </dependency>
             <dependency>
-                <groupId>org.springframework.security</groupId>
-                <artifactId>spring-security-bom</artifactId>
-                <version>6.5.9</version>
-                <type>pom</type>
+                <groupId>com.azure</groupId>
+                <artifactId>azure-sdk-bom</artifactId>
+                <version>1.2.30</version> <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
-                <groupId>io.netty</groupId>
-                <artifactId>netty-bom</artifactId>
-                <version>4.2.15.Final</version>
+                <groupId>com.azure.spring</groupId>
+                <artifactId>spring-cloud-azure-dependencies</artifactId>
+                <version>7.0.0</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -445,10 +436,11 @@
                             </templateDirectory>
                             <additionalProperties>useRole=true</additionalProperties>
                             <configOptions>
-                                <useSpringBoot3>true</useSpringBoot3>
+                                <useJakartaEe>true</useJakartaEe>
+                                <useSpringBoot4>true</useSpringBoot4>
                                 <delegatePattern>true</delegatePattern>
                                 <useTags>true</useTags>
-                                <java8>true</java8>
+                                <java21>true</java21>
                                 <!--suppress UnresolvedMavenProperty -->
                                 <additionalModelTypeAnnotations>
                                     @lombok.experimental.SuperBuilder
@@ -493,8 +485,7 @@
                                 <useJakartaEe>true</useJakartaEe>
                                 <useTags>true</useTags>
                                 <skipDefaultInterface>true</skipDefaultInterface>
-                                <dateLibrary>java8</dateLibrary>
-                                <useSpringBoot3>true</useSpringBoot3>
+                                <dateLibrary>java21</dateLibrary>
                                 <sourceFolder>src/gen/java</sourceFolder>
                                 <serializableModel>true</serializableModel>
                                 <interfaceOnly>true</interfaceOnly>
@@ -537,8 +528,7 @@
                                 <useJakartaEe>true</useJakartaEe>
                                 <useTags>true</useTags>
                                 <skipDefaultInterface>true</skipDefaultInterface>
-                                <dateLibrary>java11</dateLibrary>
-                                <useSpringBoot3>true</useSpringBoot3>
+                                <dateLibrary>java21</dateLibrary>
                                 <sourceFolder>src/gen/java</sourceFolder>
                                 <serializableModel>true</serializableModel>
                                 <interfaceOnly>true</interfaceOnly>
@@ -582,8 +572,7 @@
                                 <useJakartaEe>true</useJakartaEe>
                                 <useTags>true</useTags>
                                 <skipDefaultInterface>true</skipDefaultInterface>
-                                <dateLibrary>java8</dateLibrary>
-                                <useSpringBoot3>true</useSpringBoot3>
+                                <dateLibrary>java21</dateLibrary>
                                 <sourceFolder>src/gen/java</sourceFolder>
                                 <serializableModel>true</serializableModel>
                                 <interfaceOnly>true</interfaceOnly>
@@ -691,6 +680,36 @@
                         </path>
                     </annotationProcessorPaths>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>com.google.code.maven-replacer-plugin</groupId>
+                <artifactId>replacer</artifactId>
+                <version>1.5.3</version>
+                <executions>
+                    <execution>
+                        <id>patch-openapi-webclient</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>replace</goal>
+                        </goals>
+                        <configuration>
+                            <regex>true</regex>
+                            <includes>
+                                <include>${project.build.directory}/generated-sources/**/ApiClient.java</include>
+                            </includes>
+                            <replacements>
+                                <replacement>
+                                    <token>public\s+ApiClient\s+addDefaultHeader\s*\(\s*String\s+name\s*,\s*String\s+value\s*\)\s*\{\s*if\s*\(\s*defaultHeaders\.containsKey\(name\)\s*\)\s*\{\s*defaultHeaders\.remove\(name\);\s*\}\s*defaultHeaders\.add\(name,\s*value\);\s*return\s+this;\s*\}</token>
+                                    <value>public ApiClient addDefaultHeader(String name, String value) { defaultHeaders.set(name, value); return this; }</value>
+                                </replacement>
+                                <replacement>
+                                    <token>protected\s+void\s+addHeadersToRequest\s*\(\s*HttpHeaders\s+headers\s*,\s*WebClient\.RequestBodySpec\s+requestBuilder\s*\)\s*\{\s*for\s*\(\s*Entry&lt;String,\s*List&lt;String&gt;&gt;\s+entry\s*:\s*headers\.entrySet\(\)\s*\)\s*\{\s*List&lt;String&gt;\s+values\s*=\s*entry\.getValue\(\);\s*for\s*\(\s*String\s+value\s*:\s*values\s*\)\s*\{\s*if\s*\(\s*value\s*!=\s*null\s*\)\s*\{\s*requestBuilder\.header\(entry\.getKey\(\),\s*value\);\s*\}\s*\}\s*\}\s*\}</token>
+                                    <value>protected void addHeadersToRequest(HttpHeaders headers, WebClient.RequestBodySpec requestBuilder) { headers.forEach((key, values) -> { if (values != null) { values.forEach(value -> { if (value != null) { requestBuilder.header(key, value); } }); } }); }</value>
+                                </replacement>
+                            </replacements>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

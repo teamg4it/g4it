@@ -48,9 +48,10 @@ import java.util.Map;
 
 @SpringBootTest(
         properties = {
-                "spring.cloud.azure.enabled=false",
+                "spring.cloud.azure.storage.blob.enabled=false",
                 "spring.liquibase.enabled=false",
-                "spring.jpa.hibernate.ddl-auto=create-drop"
+                "spring.jpa.hibernate.ddl-auto=create-drop",
+                "spring.cloud.azure.keyvault.secret.enabled=false"
         }
 )
 @ActiveProfiles({"local", "test"})
@@ -88,7 +89,7 @@ class FunctionalTests {
     CheckApplicationRepository checkApplicationRepository;
 
 
-    @Mock
+    @MockitoBean
     BoaviztapiService boaviztapiService;
 
     @Test
