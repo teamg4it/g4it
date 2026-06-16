@@ -6,7 +6,7 @@
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
 
-import { Component, OnInit, ViewChild } from "@angular/core";
+import { Component, OnInit, signal, ViewChild } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { TranslateModule } from "@ngx-translate/core";
 import { MessageService } from "primeng/api";
@@ -24,14 +24,14 @@ import {
     selector: "app-update-reference",
     standalone: true,
     imports: [
-    ButtonModule,
-    FileUploadModule,
-    ProgressBarModule,
-    TranslateModule,
-    SelectModule,
-    FormsModule,
-    ScrollPanelModule
-],
+        ButtonModule,
+        FileUploadModule,
+        ProgressBarModule,
+        TranslateModule,
+        SelectModule,
+        FormsModule,
+        ScrollPanelModule,
+    ],
     providers: [MessageService],
     templateUrl: "./update-reference.component.html",
 })
@@ -47,7 +47,7 @@ export class UpdateReferenceComponent implements OnInit {
     lastUploadResponse: any = null;
     uploadErrors: string[] = [];
     importedLineNumber: number = 0;
-
+    selectedFile = signal<File | null>(null);
     constructor(
         private readonly messageService: MessageService,
         private readonly csvImportService: CsvImportDataService,
@@ -63,6 +63,7 @@ export class UpdateReferenceComponent implements OnInit {
         this.uploadErrors = [];
         this.importedLineNumber = 0;
 
+        this.selectedFile.set(null);
         // Reset the FileUpload component
         if (this.fileUpload) {
             this.fileUpload.clear();
@@ -196,7 +197,7 @@ export class UpdateReferenceComponent implements OnInit {
 
         // Take only the first file
         const file = files[0];
-
+        this.selectedFile.set(file);
         if (file.size > this.maxFileSize) {
             this.messageService.add({
                 severity: "error",
@@ -216,6 +217,8 @@ export class UpdateReferenceComponent implements OnInit {
     }
 
     onRemove(event: any) {
+        this.selectedFile.set(null);
+        this.fileUpload.clear();
         // Remove the uploaded file
         if (this.uploadedFile && this.uploadedFile.name === event.file.name) {
             this.uploadedFile = null;
