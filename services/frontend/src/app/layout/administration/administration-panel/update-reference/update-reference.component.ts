@@ -218,7 +218,9 @@ export class UpdateReferenceComponent implements OnInit {
 
     onRemove(event: any) {
         this.selectedFile.set(null);
-        this.fileUpload.clear();
+        if (this.fileUpload) {
+            this.fileUpload.clear();
+        }
         // Remove the uploaded file
         if (this.uploadedFile && this.uploadedFile.name === event.file.name) {
             this.uploadedFile = null;
