@@ -1,5 +1,11 @@
 # G4IT
 
+## 3.13.1
+### Major Changes
+
+### Minor Changes
+- 2273 | Fix Unable to upload Platform reference Data
+
 ## 3.13.0
 
 ### Major Changes
