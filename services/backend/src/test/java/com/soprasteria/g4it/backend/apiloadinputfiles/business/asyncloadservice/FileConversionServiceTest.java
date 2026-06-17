@@ -84,10 +84,11 @@ class FileConversionServiceTest {
         File csv = tempDir.resolve("empty.csv").toFile();
         csv.createNewFile();
 
-        assertThrows(
-                NullPointerException.class,
-                () -> fileConversionService.convertFileToCsv(csv, "empty.csv")
-        );
+        File converted =
+                fileConversionService.convertFileToCsv(csv, "empty.csv");
+
+        assertTrue(converted.exists());
+        assertEquals(0, converted.length());
     }
 
     /* -------------------------------------------------
