@@ -49,30 +49,8 @@
     </div>
 
     <div class="flex align-items-center gap-2">
-        <p-fileUpload
-            #fileUpload
-            name="csvFile"
-            [multiple]="false"
-            accept=".csv"
-            [maxFileSize]="maxFileSize"
-            [customUpload]="true"
-            (uploadHandler)="onUpload($event)"
-            (onSelect)="onSelect($event)"
-            (onRemove)="onRemove($event)"
-            (onError)="onError($event)"
-            [auto]="false"
-            [disabled]="!selectedEndpoint"
-            chooseLabel="{{ 'common.choose-file' | translate }}"
-            uploadLabel="{{ 'administration.uploadcsv.upload-button' | translate }}"
-            cancelLabel="{{ 'common.cancel' | translate }}"
-            mode="basic"
-            [showUploadButton]="true"
-            [showCancelButton]="false"
-            styleClass="ml-1"
-        ></p-fileUpload>
-
         <p-button
-            styleClass="p-button-secondary-blue"
+            styleClass="p-button-secondary-blue h-3rem mr-3"
             icon="pi pi-download"
             [label]="'administration.uploadcsv.download-button' | translate"
             [disabled]="!selectedEndpoint"
@@ -81,6 +59,48 @@
             (keydown.enter)="onDownload()"
             (keydown.space)="onDownload()"
         ></p-button>
+
+        <p-fileUpload
+            #fileUpload
+            name="csvFile"
+            [multiple]="false"
+            accept=".csv"
+            class="mr-3"
+            [styleClass]="
+                selectedFile()?.name
+                    ? 'custom-file-upload has-file'
+                    : 'custom-file-upload'
+            "
+            [chooseIcon]="selectedFile()?.name ? 'pi pi-upload' : 'pi pi-plus'"
+            [maxFileSize]="maxFileSize"
+            [customUpload]="true"
+            (uploadHandler)="onUpload($event)"
+            (onSelect)="onSelect($event)"
+            [auto]="false"
+            [chooseLabel]="selectedFile()?.name || ('common.choose-file' | translate)"
+            [attr.title]="selectedFile()?.name || ('common.choose-file' | translate)"
+            mode="basic"
+            id="upload-platform-data"
+        ></p-fileUpload>
+
+        <p-button
+            styleClass="p-button-secondary-blue h-3rem uppercase"
+            icon="pi pi-upload "
+            (onClick)="fileUpload.upload()"
+            [label]="'digital-services-import.start-upload' | translate"
+            [ariaLabel]="'digital-services-import.start-upload' | translate"
+            [disabled]="!selectedEndpoint || !selectedFile() || isProcessing"
+        />
+
+        @if (selectedFile()?.name) {
+            <p-button
+                class="mx-3 mt-1"
+                icon="pi pi-times"
+                (onClick)="onRemove($event)"
+                [text]="true"
+                [ariaLabel]="'administration.delete' | translate"
+            />
+        }
     </div>
 
     <!-- Information section -->
