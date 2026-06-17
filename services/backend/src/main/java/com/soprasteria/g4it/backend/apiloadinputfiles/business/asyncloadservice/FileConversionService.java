@@ -14,6 +14,7 @@ package com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
 
+import com.soprasteria.g4it.backend.apiloadinputfiles.util.CsvReaderUtils;
 import com.soprasteria.g4it.backend.common.utils.Constants;
 import com.soprasteria.g4it.backend.common.utils.CsvUtils;
 import com.soprasteria.g4it.backend.common.utils.StringUtils;
@@ -99,30 +100,50 @@ public class FileConversionService {
      * @throws IOException if an I/O error occurs
      */
     private void convertCsvFileToCsv(File file, CSVPrinter csvPrinter) throws IOException {
-        String separator = CsvUtils.DELIMITER;
+        final String separator = CsvReaderUtils.execute(
+                file.toPath(),
+                reader -> {
+                    try {
+                        handleBomEncoding(reader);
 
-        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file))) {
-            handleBomEncoding(bufferedReader);
-            String headerRow = bufferedReader.readLine();
-            for (String allowedSeparator : ALLOWED_INPUT_CSV_SEPARATORS) {
-                if (headerRow.contains(allowedSeparator)) {
-                    separator = allowedSeparator;
-                    break;
+                        String headerRow = reader.readLine();
+
+                        if (headerRow != null) {
+                            for (String allowedSeparator : ALLOWED_INPUT_CSV_SEPARATORS) {
+                                if (headerRow.contains(allowedSeparator)) {
+                                    return allowedSeparator;
+                                }
+                            }
+                        }
+
+                        return CsvUtils.DELIMITER;
+
+                    } catch (IOException e) {
+                        throw new UncheckedIOException(e);
+                    }
+                });
+        CsvReaderUtils.execute(file.toPath(), reader -> {
+
+            try {
+                handleBomEncoding(reader);
+
+                try (CSVParser csvParser = new CSVParser(
+                        reader,
+                        CSVFormat.RFC4180.builder()
+                                .setDelimiter(separator)
+                                .build())) {
+
+                    for (CSVRecord record : csvParser) {
+                        csvPrinter.printRecord(record);
+                    }
                 }
-            }
-        }
 
-        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
-             CSVParser csvParser = new CSVParser(bufferedReader, CSVFormat.RFC4180
-                     .builder()
-                     .setDelimiter(separator)
-                     .build())) {
-            handleBomEncoding(bufferedReader);
-            Iterator<CSVRecord> it = csvParser.stream().iterator();
-            while (it.hasNext()) {
-                csvPrinter.printRecord(it.next());
+                return null;
+
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
             }
-        }
+        });
     }
 
     /**
