@@ -115,10 +115,12 @@ class FileValidatorUtilsTest {
         Map<String, List<StoredFile>> files =
                 Map.of("files", List.of(file));
 
-        assertThrows(
+        BadRequestException ex = assertThrows(
                 BadRequestException.class,
                 () -> FileValidatorUtils.validateFiles(files)
         );
+
+        assertTrue(ex.getError().contains("large.csv"));
     }
 
     @Test
@@ -132,11 +134,12 @@ class FileValidatorUtilsTest {
                 "text/csv"
         );
 
+        Map<String, List<StoredFile>> files =
+                Map.of("files", List.of(file));
+
         BadRequestException ex = assertThrows(
                 BadRequestException.class,
-                () -> FileValidatorUtils.validateFiles(
-                        Map.of("files", List.of(file))
-                )
+                () -> FileValidatorUtils.validateFiles(files)
         );
 
         assertEquals(
@@ -258,14 +261,16 @@ class FileValidatorUtilsTest {
                 "text/csv"
         );
 
+        Map<String, List<StoredFile>> files =
+                Map.of("files", List.of(file));
+
         BadRequestException ex = assertThrows(
                 BadRequestException.class,
-                () -> FileValidatorUtils.validateFiles(
-                        Map.of("files", List.of(file))
-                )
+                () -> FileValidatorUtils.validateFiles(files)
         );
 
         assertTrue(ex.getError().contains("large.csv"));
+        assertTrue(ex.getError().contains(Constants.VALIDATION_MSG));
     }
 
     @Test
@@ -289,11 +294,12 @@ class FileValidatorUtilsTest {
                 "text/csv"
         );
 
+        Map<String, List<StoredFile>> files =
+                Map.of("files", List.of(file));
+
         BadRequestException ex = assertThrows(
                 BadRequestException.class,
-                () -> FileValidatorUtils.validateFiles(
-                        Map.of("files", List.of(file))
-                )
+                () -> FileValidatorUtils.validateFiles(files)
         );
 
         assertEquals(
@@ -328,11 +334,12 @@ class FileValidatorUtilsTest {
                 "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         );
 
+        Map<String, List<StoredFile>> files =
+                Map.of("files", List.of(file));
+
         BadRequestException ex = assertThrows(
                 BadRequestException.class,
-                () -> FileValidatorUtils.validateFiles(
-                        Map.of("files", List.of(file))
-                )
+                () -> FileValidatorUtils.validateFiles(files)
         );
 
         assertTrue(ex.getError().contains("large.xlsx"));

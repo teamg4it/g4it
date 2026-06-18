@@ -25,7 +25,7 @@ import java.nio.file.Path;
 
 
 import static org.junit.jupiter.api.Assertions.*;
-public class CsvReaderUtilsTest {
+class CsvReaderUtilsTest {
 
     @TempDir
     Path tempDir;

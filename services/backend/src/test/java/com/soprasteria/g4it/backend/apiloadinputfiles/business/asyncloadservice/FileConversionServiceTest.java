@@ -12,10 +12,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
-import org.jopendocument.dom.spreadsheet.Range;
 
 import javax.swing.JTable;
-import java.awt.Point;
 
 import java.lang.reflect.Method;
 
