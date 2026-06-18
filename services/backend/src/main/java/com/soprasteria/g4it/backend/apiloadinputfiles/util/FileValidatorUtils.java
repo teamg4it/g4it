@@ -14,9 +14,9 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 
 import javax.xml.parsers.SAXParserFactory;
-import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
+import java.io.UncheckedIOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -61,10 +61,28 @@ public final class FileValidatorUtils {
 
     private static void validateCsv(StoredFile storedFile) {
 
-        try (BufferedReader reader =
-                     Files.newBufferedReader(storedFile.getPath())) {
+        try {
 
-            long rowCount = reader.lines().count();
+            long rowCount = CsvReaderUtils.execute(
+                    storedFile.getPath(),
+                    reader -> {
+                        try {
+                            long count = 0;
+
+                            while (reader.readLine() != null) {
+                                count++;
+
+                                if (count > Constants.MAX_ROWS) {
+                                    break;
+                                }
+                            }
+
+                            return count;
+
+                        } catch (IOException e) {
+                            throw new UncheckedIOException(e);
+                        }
+                    });
 
             if (rowCount > Constants.MAX_ROWS) {
                 throwMaxRowsException(storedFile.getOriginalFilename());
@@ -72,7 +90,9 @@ public final class FileValidatorUtils {
 
         } catch (BadRequestException e) {
             throw e;
+
         } catch (Exception e) {
+
             log.error(
                     Constants.VALIDATION_IMPORT_CSV_ERROR + "{}",
                     storedFile.getOriginalFilename(),
