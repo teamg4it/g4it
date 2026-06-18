@@ -19,5 +19,7 @@ public class Constants {
     public static final String VALIDATION_MSG = " imported file exceeds the number of rows that the calculation system can process in a single import (100,000 rows). Please perform your import in multiple files.";
     public static final String READ_EXCEL_ERROR = "Unable to read imported Excel file.";
     public static final String VALIDATION_IMPORT_EXCEL_ERROR = "Unable to validate Excel file ";
+    public static final String UNSUPPORTED_UTF32_ERROR =
+            "UTF-32 encoded CSV files are not supported.";
 
 }
