@@ -8,6 +8,8 @@
 
 package com.soprasteria.g4it.backend.apiloadinputfiles.util;
 
+import com.soprasteria.g4it.backend.exception.BadRequestException;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -69,15 +71,20 @@ public final class CsvReaderUtils {
                         (bom[1] & 0xFF) == 0xFE &&
                         bom[2] == 0x00 &&
                         bom[3] == 0x00) {
-                    throw new IOException(
-                            Constants.UNSUPPORTED_UTF32_ERROR);
+                    throw new BadRequestException(
+                            "file",
+                            Constants.UNSUPPORTED_UTF32_ERROR
+                    );
                 }
 
                 if (bom[0] == 0x00 &&
                         bom[1] == 0x00 &&
                         (bom[2] & 0xFF) == 0xFE &&
                         (bom[3] & 0xFF) == 0xFF) {
-                    throw new IOException(Constants.UNSUPPORTED_UTF32_ERROR);
+                    throw new BadRequestException(
+                            "file",
+                            Constants.UNSUPPORTED_UTF32_ERROR
+                    );
                 }
             }
             if (bytesRead >= 2) {

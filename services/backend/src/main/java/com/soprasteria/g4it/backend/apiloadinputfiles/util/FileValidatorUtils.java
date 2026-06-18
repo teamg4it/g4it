@@ -91,12 +91,6 @@ public final class FileValidatorUtils {
         } catch (BadRequestException e) {
             throw e;
 
-        } catch (IOException e) {
-            if (Constants.UNSUPPORTED_UTF32_ERROR.equals(e.getMessage())) {
-                throw new BadRequestException("file", e.getMessage());
-            }
-
-            throw new BadRequestException("file", Constants.READ_CSV_ERROR);
         } catch (Exception e) {
 
             log.error(

@@ -122,7 +122,7 @@ class FileValidatorUtilsTest {
     }
 
     @Test
-    void shouldThrowExceptionWhenCsvCannotBeRead() {
+    void shouldThrowReadCsvErrorWhenCsvCannotBeRead() {
 
         Path missingFile = tempDir.resolve("missing.csv");
 
@@ -132,12 +132,16 @@ class FileValidatorUtilsTest {
                 "text/csv"
         );
 
-        Map<String, List<StoredFile>> files =
-                Map.of("files", List.of(file));
-
-        assertThrows(
+        BadRequestException ex = assertThrows(
                 BadRequestException.class,
-                () -> FileValidatorUtils.validateFiles(files)
+                () -> FileValidatorUtils.validateFiles(
+                        Map.of("files", List.of(file))
+                )
+        );
+
+        assertEquals(
+                Constants.READ_CSV_ERROR,
+                ex.getError()
         );
     }
 
@@ -234,5 +238,103 @@ class FileValidatorUtilsTest {
                                 "batch",
                                 List.of(csvFile, xlsxFile)
                         )));
+    }
+    @Test
+    void shouldRethrowBadRequestWhenCsvExceedsMaxRows() throws Exception {
+
+        Path csv = tempDir.resolve("large.csv");
+
+        StringBuilder content = new StringBuilder();
+
+        for (int i = 0; i <= Constants.MAX_ROWS; i++) {
+            content.append("row").append(i).append('\n');
+        }
+
+        Files.writeString(csv, content);
+
+        StoredFile file = new StoredFile(
+                csv,
+                "large.csv",
+                "text/csv"
+        );
+
+        BadRequestException ex = assertThrows(
+                BadRequestException.class,
+                () -> FileValidatorUtils.validateFiles(
+                        Map.of("files", List.of(file))
+                )
+        );
+
+        assertTrue(ex.getError().contains("large.csv"));
+    }
+
+    @Test
+    void shouldThrowBadRequestForUtf32Csv() throws Exception {
+
+        Path csv = tempDir.resolve("utf32.csv");
+
+        Files.write(
+                csv,
+                new byte[]{
+                        (byte) 0xFF,
+                        (byte) 0xFE,
+                        0x00,
+                        0x00
+                }
+        );
+
+        StoredFile file = new StoredFile(
+                csv,
+                "utf32.csv",
+                "text/csv"
+        );
+
+        BadRequestException ex = assertThrows(
+                BadRequestException.class,
+                () -> FileValidatorUtils.validateFiles(
+                        Map.of("files", List.of(file))
+                )
+        );
+
+        assertEquals(
+                Constants.UNSUPPORTED_UTF32_ERROR,
+                ex.getError()
+        );
+    }
+
+    @Test
+    void shouldThrowExceptionWhenXlsxExceedsMaxRows() throws Exception {
+
+        Path xlsx = tempDir.resolve("large.xlsx");
+
+        try (XSSFWorkbook workbook = new XSSFWorkbook()) {
+
+            var sheet = workbook.createSheet("Sheet1");
+
+            for (int i = 0; i <= Constants.MAX_ROWS; i++) {
+                sheet.createRow(i)
+                        .createCell(0)
+                        .setCellValue("value");
+            }
+
+            try (var os = Files.newOutputStream(xlsx)) {
+                workbook.write(os);
+            }
+        }
+
+        StoredFile file = new StoredFile(
+                xlsx,
+                "large.xlsx",
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        );
+
+        BadRequestException ex = assertThrows(
+                BadRequestException.class,
+                () -> FileValidatorUtils.validateFiles(
+                        Map.of("files", List.of(file))
+                )
+        );
+
+        assertTrue(ex.getError().contains("large.xlsx"));
     }
 }

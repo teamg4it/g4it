@@ -12,7 +12,14 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import org.jopendocument.dom.spreadsheet.Range;
 
+import javax.swing.JTable;
+import java.awt.Point;
+
+import java.lang.reflect.Method;
+
+import java.nio.file.Files;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -217,4 +224,90 @@ class FileConversionServiceTest {
                 () -> fileConversionService.convertFileToCsv(file, "test.txt")
         );
     }
+
+    @Test
+    void shouldStopReadingOdsWhenEmptyRowEncountered() throws Exception {
+
+        File ods = tempDir.resolve("emptyRow.ods").toFile();
+
+        JTable table = new JTable(4, 2);
+
+        SpreadSheet spreadsheet =
+                SpreadSheet.createEmpty(table.getModel());
+
+        var sheet = spreadsheet.getSheet(0);
+
+        sheet.getCellAt(0, 0).setValue("H1");
+        sheet.getCellAt(1, 0).setValue("H2");
+
+        sheet.getCellAt(0, 1).setValue("A");
+        sheet.getCellAt(1, 1).setValue("B");
+
+        // row 2 intentionally empty
+
+        spreadsheet.saveAs(ods);
+
+        File result =
+                fileConversionService.convertFileToCsv(
+                        ods,
+                        "emptyRow.ods");
+
+        List<String> lines =
+                Files.readAllLines(result.toPath());
+
+        assertEquals(2, lines.size());
+    }
+
+    @Test
+    void shouldResetReaderWhenBomNotPresent() throws Exception {
+
+        Method method =
+                FileConversionService.class.getDeclaredMethod(
+                        "handleBomEncoding",
+                        BufferedReader.class);
+
+        method.setAccessible(true);
+
+        BufferedReader reader =
+                new BufferedReader(
+                        new StringReader("ABC"));
+
+        method.invoke(fileConversionService, reader);
+
+        assertEquals('A', reader.read());
+    }
+
+    @Test
+    void shouldSkipBomWhenPresent() throws Exception {
+
+        Method method =
+                FileConversionService.class.getDeclaredMethod(
+                        "handleBomEncoding",
+                        BufferedReader.class);
+
+        method.setAccessible(true);
+
+        BufferedReader reader =
+                new BufferedReader(
+                        new StringReader("\uFEFFABC"));
+
+        method.invoke(fileConversionService, reader);
+
+        assertEquals('A', reader.read());
+    }
+    @Test
+    void shouldWrapIOExceptionInUncheckedIOException() {
+
+        IOException cause = new IOException("boom");
+
+        UncheckedIOException ex =
+                assertThrows(
+                        UncheckedIOException.class,
+                        () -> {
+                            throw new UncheckedIOException(cause);
+                        });
+
+        assertEquals("boom", ex.getCause().getMessage());
+    }
+
 }
