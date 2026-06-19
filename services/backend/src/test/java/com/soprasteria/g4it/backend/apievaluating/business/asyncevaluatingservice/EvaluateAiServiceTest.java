@@ -167,7 +167,8 @@ class EvaluateAiServiceTest {
         when(aiConfigurationMapper.toAIModelConfigRest(any())).thenReturn(List.of(mock(AIConfigurationRest.class)));
         when(aiService.runEstimation(any())).thenReturn(estimation);
 
-        CriterionRest criterionRest = new CriterionRest("CLIMATE_CHANGE");
+        CriterionRest criterionRest = new CriterionRest();
+        criterionRest.setCode("CLIMATE_CHANGE");
         criterionRest.setUnit("kg CO2 eq");
         when(referentialService.getLifecycleSteps()).thenReturn(List.of("use"));
         when(referentialService.getActiveCriteria(task.getCriteria().stream()

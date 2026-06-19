@@ -235,16 +235,6 @@
             <version>${mapstruct.dependency.version}</version>
         </dependency>
         <dependency>
-            <groupId>io.swagger.core.v3</groupId>
-            <artifactId>swagger-annotations</artifactId>
-            <version>${swagger.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.swagger.core.v3</groupId>
-            <artifactId>swagger-models</artifactId>
-            <version>${swagger.version}</version>
-        </dependency>
-        <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
             <version>${springdoc-openapi-starter-webmvc-ui.version}</version>
@@ -436,10 +426,17 @@
                                 <delegatePattern>true</delegatePattern>
                                 <useTags>true</useTags>
                                 <java21>true</java21>
+                                <serializationLibrary>jackson</serializationLibrary>
+                                <openApiNullable>true</openApiNullable>
+                                <generateConstructorWithAllArgs>false</generateConstructorWithAllArgs>
+                                <generatedConstructorWithRequiredArgs>false</generatedConstructorWithRequiredArgs>
+
                                 <!--suppress UnresolvedMavenProperty -->
                                 <additionalModelTypeAnnotations>
                                     @lombok.experimental.SuperBuilder
                                     @lombok.extern.jackson.Jacksonized
+                                    @lombok.NoArgsConstructor
+                                    @lombok.AllArgsConstructor
                                 </additionalModelTypeAnnotations>
                             </configOptions>
                             <typeMappings>
