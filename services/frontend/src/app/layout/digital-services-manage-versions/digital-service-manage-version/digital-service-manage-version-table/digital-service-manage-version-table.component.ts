@@ -1,23 +1,23 @@
+import { AsyncPipe } from "@angular/common";
 import { Component, DestroyRef, inject, OnInit } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { FormsModule } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
-import { TranslateService, TranslatePipe } from "@ngx-translate/core";
+import { TranslatePipe, TranslateService } from "@ngx-translate/core";
 import { ConfirmationService, PrimeTemplate } from "primeng/api";
+import { Button } from "primeng/button";
+import { CheckboxModule } from "primeng/checkbox";
+import { ConfirmPopupModule } from "primeng/confirmpopup";
+import { TableModule } from "primeng/table";
+import { TooltipModule } from "primeng/tooltip";
 import { finalize } from "rxjs";
 import { DigitalServiceVersionResponse } from "src/app/core/interfaces/digital-service-version.interface";
 import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServiceVersionDataService } from "src/app/core/service/data/digital-service-version-data-service";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
 import { GlobalStoreService } from "src/app/core/store/global.store";
-import { TableModule } from "primeng/table";
-import { Button } from "primeng/button";
-import { TooltipModule } from "primeng/tooltip";
-import { VersionTypeTagComponent } from "../../../digital-services-footprint/digital-services-footprint-header/version-type-tag/version-type-tag.component";
-import { ConfirmPopupModule } from "primeng/confirmpopup";
-import { CheckboxModule } from "primeng/checkbox";
-import { FormsModule } from "@angular/forms";
 import { PromoteVersionDialogComponent } from "../../../common/promote-version-dialog/promote-version-dialog.component";
-import { AsyncPipe } from "@angular/common";
+import { VersionTypeTagComponent } from "../../../digital-services-footprint/digital-services-footprint-header/version-type-tag/version-type-tag.component";
 
 @Component({
     selector: "app-digital-service-manage-version-table",
@@ -114,9 +114,7 @@ export class DigitalServiceManageVersionTableComponent implements OnInit {
     }
 
     onVersionSelect(version: DigitalServiceVersionResponse): void {
-        const index = this.selectedVersions.findIndex(
-            (v: string) => v === version.digitalServiceVersionUid,
-        );
+        const index = this.selectedVersions.indexOf(version.digitalServiceVersionUid);
 
         if (index > -1) {
             // Version is already selected, remove it

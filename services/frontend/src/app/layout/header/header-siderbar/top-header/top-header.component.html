@@ -390,55 +390,50 @@
                 </div>
             </div>
         </div>
-        <div class="">
-            <div id="langTitle" class="text-lg p-1">
+        <fieldset class="border-0 p-0 m-0">
+            <legend id="langTitle" class="text-lg p-1">
                 {{ "common.lang" | translate }}
-            </div>
-            <div role="group" aria-labelledby="langTitle" class="">
-                <ul
-                    aria-labelledby="langTitle"
-                    class="mt-2 mb-3"
-                    (keydown)="handleKeydownLanguage($event)"
-                >
-                    <li class="inline-block">
-                        <p-radiobutton
-                            name="language"
-                            value="en"
-                            [(ngModel)]="selectedLanguage"
-                            (onClick)="changeLanguage('en')"
-                            aria-labelledby="enLabel"
-                            inputId="en"
-                        ></p-radiobutton>
-                        <label
-                            for="en"
-                            id="enLabel"
-                            class="ml-1"
-                            [attr.aria-label]="'common.english-button' | translate"
-                        >
-                            {{ "common.english" | translate }}
-                        </label>
-                    </li>
-                    <li class="inline-block ml-5">
-                        <p-radiobutton
-                            name="language"
-                            value="fr"
-                            [(ngModel)]="selectedLanguage"
-                            (onClick)="changeLanguage('fr')"
-                            aria-labelledby="frLabel"
-                            inputId="fr"
-                        ></p-radiobutton>
-                        <label
-                            for="fr"
-                            id="frLabel"
-                            class="ml-1"
-                            [attr.aria-label]="'common.french-button' | translate"
-                        >
-                            {{ "common.french" | translate }}
-                        </label>
-                    </li>
-                </ul>
-            </div>
-        </div>
+            </legend>
+
+            <ul class="mt-2 mb-3" (keydown)="handleKeydownLanguage($event)">
+                <li class="inline-block">
+                    <p-radiobutton
+                        name="language"
+                        value="en"
+                        [(ngModel)]="selectedLanguage"
+                        (onClick)="changeLanguage('en')"
+                        aria-labelledby="enLabel"
+                        inputId="en"
+                    ></p-radiobutton>
+                    <label
+                        for="en"
+                        id="enLabel"
+                        class="ml-1"
+                        [attr.aria-label]="'common.english-button' | translate"
+                    >
+                        {{ "common.english" | translate }}
+                    </label>
+                </li>
+                <li class="inline-block ml-5">
+                    <p-radiobutton
+                        name="language"
+                        value="fr"
+                        [(ngModel)]="selectedLanguage"
+                        (onClick)="changeLanguage('fr')"
+                        aria-labelledby="frLabel"
+                        inputId="fr"
+                    ></p-radiobutton>
+                    <label
+                        for="fr"
+                        id="frLabel"
+                        class="ml-1"
+                        [attr.aria-label]="'common.french-button' | translate"
+                    >
+                        {{ "common.french" | translate }}
+                    </label>
+                </li>
+            </ul>
+        </fieldset>
         <div>
             <p-button
                 styleClass="text-white bg-light-green"
