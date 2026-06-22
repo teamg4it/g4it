@@ -109,7 +109,7 @@
 } @else {
     @if (noData()) {
         <div class="no-data-round">
-            <p tabindex="0" class="text-round-empty">
+            <p class="text-round-empty" [attr.aria-label]="'common.no-data' | translate">
                 {{ "common.no-data" | translate }}
             </p>
         </div>
