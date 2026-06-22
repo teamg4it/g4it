@@ -16,6 +16,20 @@
     font-size: 13px;
     color: #555;
 }
+
+.info-button {
+    background: transparent;
+    border: none;
+    padding: 0;
+    border-radius: 50%;
+}
+
+.info-button:focus-visible {
+    outline: 2px solid var(--light-green-color);
+    outline-offset: 2px;
+    border-radius: 50%;
+}
+
 @media (max-width: 900px) {
     .cards-grid {
         grid-template-columns: repeat(2, 1fr);

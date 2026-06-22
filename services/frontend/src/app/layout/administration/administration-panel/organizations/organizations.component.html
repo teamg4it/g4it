@@ -99,6 +99,10 @@
                             organization.roles.includes(Role.OrganizationAdmin) ||
                             organization.authorizedDomains?.includes(myDomain)
                         ) {
+                            <label for="new-organization-input" class="text-hidden">
+                                {{ "administration.organization.new" | translate }}
+                            </label>
+
                             <input
                                 class="label-input-div-medium input-width inline-block p-2 mx-1"
                                 pInputText
@@ -146,7 +150,14 @@
                 }
                 @for (workspace of organization.workspaces; track workspace) {
                     <div>
+                        <label
+                            [for]="'workspace-name-' + workspace.id"
+                            class="text-hidden"
+                        >
+                            {{ workspace.name }}
+                        </label>
                         <input
+                            [id]="'workspace-name-' + workspace.id"
                             class="label-input-div-medium input-width inline-block p-2 mx-1"
                             [class.ng-invalid]="
                                 workspace.uiStatus !== undefined &&

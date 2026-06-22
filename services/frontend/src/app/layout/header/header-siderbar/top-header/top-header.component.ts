@@ -347,7 +347,7 @@ export class TopHeaderComponent implements OnInit {
     }
 
     handleKeydownLanguage(event: KeyboardEvent): void {
-        const currentIndex = this.languages.findIndex((l) => l === this.selectedLanguage);
+        const currentIndex = this.languages.indexOf(this.selectedLanguage);
 
         let nextIndex = currentIndex;
 
