@@ -192,7 +192,7 @@ describe("StackBarChartComponent", () => {
             const option = component.renderStackChart();
 
             expect((option as any).dataZoom).toBeDefined();
-            expect((option as any).dataZoom.length).toBe(2);
+            expect((option as any).dataZoom).toHaveSize(2);
         });
 
         it("should configure slider dataZoom correctly", () => {
@@ -254,7 +254,7 @@ describe("StackBarChartComponent", () => {
         it("should create two series", () => {
             const option = component.renderStackChart();
 
-            expect((option.series as any[]).length).toBe(2);
+            expect(option.series as any[]).toHaveSize(2);
         });
 
         it("should configure series with bar type", () => {
@@ -525,8 +525,8 @@ describe("StackBarChartComponent", () => {
 
             expect((option.xAxis as any).data).toEqual(xAxisData);
             expect((option as any).cursor).toBe("pointer");
-            expect((option.series as any[]).length).toBe(2);
-            expect((option.series as any[])[0].data.length).toBe(3);
+            expect(option.series as any[]).toHaveSize(2);
+            expect((option.series as any[])[0].data).toHaveSize(3);
         });
 
         it("should handle dynamic updates to all inputs", () => {

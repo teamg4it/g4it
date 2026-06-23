@@ -47,21 +47,21 @@ describe("DigitalServicesComponent", () => {
         };
 
         await TestBed.configureTestingModule({
-    imports: [TranslateModule.forRoot(), DigitalServicesComponent],
-    providers: [
-        { provide: Router, useValue: mockRouter },
-        { provide: ActivatedRoute, useValue: mockRoute },
-        {
-            provide: DigitalServicesDataService,
-            useValue: mockDigitalServicesData,
-        },
-        { provide: UserService, useValue: mockUserService },
-        { provide: GlobalStoreService, useValue: mockGlobalStore },
-        TranslateService,
-        MessageService,
-        ConfirmationService,
-    ],
-}).compileComponents();
+            imports: [TranslateModule.forRoot(), DigitalServicesComponent],
+            providers: [
+                { provide: Router, useValue: mockRouter },
+                { provide: ActivatedRoute, useValue: mockRoute },
+                {
+                    provide: DigitalServicesDataService,
+                    useValue: mockDigitalServicesData,
+                },
+                { provide: UserService, useValue: mockUserService },
+                { provide: GlobalStoreService, useValue: mockGlobalStore },
+                TranslateService,
+                MessageService,
+                ConfirmationService,
+            ],
+        }).compileComponents();
 
         fixture = TestBed.createComponent(DigitalServicesComponent);
         component = fixture.componentInstance;
@@ -78,7 +78,7 @@ describe("DigitalServicesComponent", () => {
         spyOn(component, "retrieveDigitalServices").and.callThrough();
         component.ngOnInit();
         expect(component.retrieveDigitalServices).toHaveBeenCalled();
-        expect(component.allDigitalServices.length).toBe(0);
+        expect(component.allDigitalServices).toHaveSize(0);
     });
 
     it("should update paginated items on page change", () => {
@@ -91,7 +91,7 @@ describe("DigitalServicesComponent", () => {
                 }) as DigitalService,
         );
         component.onPageChange({ first: 0, rows: 10, page: 1 } as any);
-        expect(component.paginatedDigitalServices.length).toBe(10);
+        expect(component.paginatedDigitalServices).toHaveSize(10);
         expect(component.paginatedDigitalServices[0].name).toBe("Service 10");
     });
 

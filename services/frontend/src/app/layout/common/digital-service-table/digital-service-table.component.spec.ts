@@ -27,14 +27,14 @@ describe("DigitalServiceTableComponent", () => {
         ]);
 
         await TestBed.configureTestingModule({
-    imports: [TranslateModule.forRoot(), DigitalServiceTableComponent],
-    providers: [
-        { provide: UserService, useValue: userServiceSpy },
-        { provide: TranslateService, useValue: translateServiceSpy },
-        { provide: ConfirmationService, useValue: confirmationServiceSpy },
-        GlobalStoreService,
-    ],
-}).compileComponents();
+            imports: [TranslateModule.forRoot(), DigitalServiceTableComponent],
+            providers: [
+                { provide: UserService, useValue: userServiceSpy },
+                { provide: TranslateService, useValue: translateServiceSpy },
+                { provide: ConfirmationService, useValue: confirmationServiceSpy },
+                GlobalStoreService,
+            ],
+        }).compileComponents();
 
         fixture = TestBed.createComponent(DigitalServiceTableComponent);
         component = fixture.componentInstance;
@@ -69,7 +69,7 @@ describe("DigitalServiceTableComponent", () => {
 
         it("should accept custom data input", () => {
             component.data = mockData;
-            expect(component.data.length).toBe(3);
+            expect(component.data).toHaveSize(3);
             expect(component.data[0].name).toBe("Service 1");
         });
 

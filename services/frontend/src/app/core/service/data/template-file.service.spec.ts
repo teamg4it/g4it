@@ -56,7 +56,7 @@ describe("TemplateFileService", () => {
         ];
 
         service.getTemplateFiles().subscribe((files) => {
-            expect(files.length).toBe(1);
+            expect(files).toHaveSize(1);
             expect(files[0].name).toBe("file1.csv");
         });
 
@@ -132,7 +132,7 @@ describe("TemplateFileService", () => {
 
         const result = service.transformTemplateFiles(files, false);
 
-        expect(result.length).toBe(3);
+        expect(result).toHaveSize(3);
         expect(result[0].type).toBe("zip");
         expect(result[1].type).toBe("csv");
         expect(result[2].type).toBe("xlsx");

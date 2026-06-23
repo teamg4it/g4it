@@ -73,7 +73,7 @@ describe("OutPhysicalEquipmentsService", () => {
 
             service.get(digitalServiceUid).subscribe((equipments) => {
                 expect(equipments).toEqual(mockPhysicalEquipmentList);
-                expect(equipments.length).toBe(3);
+                expect(equipments).toHaveSize(3);
                 expect(equipments[0].name).toBe("Server-01");
                 expect(equipments[0].unitImpact).toBe(25.5);
             });
@@ -90,7 +90,7 @@ describe("OutPhysicalEquipmentsService", () => {
 
             service.get(digitalServiceUid).subscribe((equipments) => {
                 expect(equipments).toEqual([]);
-                expect(equipments.length).toBe(0);
+                expect(equipments).toHaveSize(0);
             });
 
             const expectedUrl = `${Constants.ENDPOINTS.digitalServicesVersions}/${digitalServiceUid}/outputs/physical-equipments`;
@@ -198,7 +198,7 @@ describe("OutPhysicalEquipmentsService", () => {
                     "Calculation error",
                     "Missing reference data",
                 ]);
-                expect(equipments[0].errors?.length).toBe(2);
+                expect(equipments[0].errors).toHaveSize(2);
             });
 
             const expectedUrl = `${Constants.ENDPOINTS.digitalServicesVersions}/${digitalServiceUid}/outputs/physical-equipments`;
@@ -211,7 +211,7 @@ describe("OutPhysicalEquipmentsService", () => {
             const digitalServiceUid2 = "ds-uid-2";
 
             service.get(digitalServiceUid1).subscribe((equipments) => {
-                expect(equipments.length).toBe(1);
+                expect(equipments).toHaveSize(1);
             });
 
             const req1 = httpMock.expectOne(
@@ -220,7 +220,7 @@ describe("OutPhysicalEquipmentsService", () => {
             req1.flush([mockPhysicalEquipment]);
 
             service.get(digitalServiceUid2).subscribe((equipments) => {
-                expect(equipments.length).toBe(0);
+                expect(equipments).toHaveSize(0);
             });
 
             const req2 = httpMock.expectOne(
@@ -238,7 +238,7 @@ describe("OutPhysicalEquipmentsService", () => {
             ];
 
             service.get(digitalServiceUid).subscribe((equipments) => {
-                expect(equipments.length).toBe(3);
+                expect(equipments).toHaveSize(3);
                 expect(equipments[0].equipmentType).toBe("Server");
                 expect(equipments[1].equipmentType).toBe("Storage");
                 expect(equipments[2].equipmentType).toBe("Network");
@@ -259,7 +259,7 @@ describe("OutPhysicalEquipmentsService", () => {
             ];
 
             service.get(digitalServiceUid).subscribe((equipments) => {
-                expect(equipments.length).toBe(4);
+                expect(equipments).toHaveSize(4);
                 expect(equipments[0].lifecycleStep).toBe("manufacturing");
                 expect(equipments[1].lifecycleStep).toBe("distribution");
                 expect(equipments[2].lifecycleStep).toBe("use");
@@ -280,7 +280,7 @@ describe("OutPhysicalEquipmentsService", () => {
             ];
 
             service.get(digitalServiceUid).subscribe((equipments) => {
-                expect(equipments.length).toBe(3);
+                expect(equipments).toHaveSize(3);
                 expect(equipments[0].criterion).toBe("climate-change");
                 expect(equipments[1].criterion).toBe("resource-use");
                 expect(equipments[2].criterion).toBe("acidification");
@@ -342,7 +342,7 @@ describe("OutPhysicalEquipmentsService", () => {
             ];
 
             service.get(digitalServiceUid).subscribe((equipments) => {
-                expect(equipments.length).toBe(3);
+                expect(equipments).toHaveSize(3);
                 expect(equipments[0].statusIndicator).toBe("OK");
                 expect(equipments[1].statusIndicator).toBe("WARNING");
                 expect(equipments[2].statusIndicator).toBe("ERROR");
@@ -362,7 +362,7 @@ describe("OutPhysicalEquipmentsService", () => {
             ];
 
             service.get(digitalServiceUid).subscribe((equipments) => {
-                expect(equipments.length).toBe(3);
+                expect(equipments).toHaveSize(3);
                 expect(equipments[0].hostingEfficiency).toBe("0.75");
                 expect(equipments[1].hostingEfficiency).toBe("0.85");
                 expect(equipments[2].hostingEfficiency).toBe("0.95");
@@ -448,13 +448,13 @@ describe("OutPhysicalEquipmentsService", () => {
             const uid3 = "ds-3";
 
             service.get(uid1).subscribe((equipments) => {
-                expect(equipments.length).toBe(1);
+                expect(equipments).toHaveSize(1);
             });
             service.get(uid2).subscribe((equipments) => {
-                expect(equipments.length).toBe(2);
+                expect(equipments).toHaveSize(2);
             });
             service.get(uid3).subscribe((equipments) => {
-                expect(equipments.length).toBe(0);
+                expect(equipments).toHaveSize(0);
             });
 
             const req1 = httpMock.expectOne(
@@ -479,7 +479,7 @@ describe("OutPhysicalEquipmentsService", () => {
             const digitalServiceUid = "sequential-ds";
 
             service.get(digitalServiceUid).subscribe((equipments) => {
-                expect(equipments.length).toBe(1);
+                expect(equipments).toHaveSize(1);
             });
 
             const req1 = httpMock.expectOne(
@@ -488,7 +488,7 @@ describe("OutPhysicalEquipmentsService", () => {
             req1.flush([mockPhysicalEquipment]);
 
             service.get(digitalServiceUid).subscribe((equipments) => {
-                expect(equipments.length).toBe(2);
+                expect(equipments).toHaveSize(2);
             });
 
             const req2 = httpMock.expectOne(
