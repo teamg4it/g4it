@@ -77,6 +77,7 @@ export class AddWorkspaceComponent implements OnInit, OnChanges {
     isEcoMindModuleEnabled: boolean = environment.isEcomindEnabled;
     isSuperAdmin = false;
     isWsAdminAndEcomindAccess = false;
+
     private readonly destroyRef = inject(DestroyRef);
     constructor(
         public administrationService: AdministrationService,
@@ -90,13 +91,17 @@ export class AddWorkspaceComponent implements OnInit, OnChanges {
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe((user) => {
                 this.isSuperAdmin = user.isSuperAdmin;
-            });
-        this.userService.roles$
-            .pipe(takeUntilDestroyed(this.destroyRef))
-            .subscribe((roles) => {
-                this.isWsAdminAndEcomindAccess =
-                    roles.includes(Role.WorkspaceAdmin) &&
-                    roles.includes(Role.EcoMindAiWrite);
+                if (this.isSuperAdmin) return;
+                const meRoles = user.organizations
+                    .find((o) => o.id === this.workspace.organizationId)
+                    ?.workspaces.find((w) => w.id === this.workspace.workspaceId)?.roles;
+                if (meRoles?.length) {
+                    this.isWsAdminAndEcomindAccess =
+                        meRoles.includes(Role.WorkspaceAdmin) &&
+                        meRoles.includes(Role.EcoMindAiWrite);
+                } else {
+                    this.isWsAdminAndEcomindAccess = false;
+                }
             });
 
         this.isModuleValues = this.isRoles.map((role) => this.getRoleValue(role));
@@ -129,6 +134,12 @@ export class AddWorkspaceComponent implements OnInit, OnChanges {
         const roles = this.userDetail.roles;
         if (roles.includes(Role.WorkspaceAdmin)) {
             this.forceAdmin();
+            for (const role of [...this.ecomindRoles].reverse()) {
+                if (roles.includes(role)) {
+                    this.ecomindModule = this.getRoleValue(role);
+                    break;
+                }
+            }
             return;
         }
 
