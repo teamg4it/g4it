@@ -19,14 +19,10 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
-
-import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
-
 /**
  * Security Configuration
  */
@@ -46,15 +42,15 @@ public class SecurityConfig {
     /**
      * URI WhiteList.
      */
-    private static final AntPathRequestMatcher[] AUTH_WHITELIST = {
-            antMatcher("/v3/api-docs"),
-            antMatcher("/v3/api-docs/swagger-config"),
-            antMatcher("/swagger-ui/**"),
-            antMatcher("/api/v3/api-docs"),
-            antMatcher("/api/v3/api-docs/swagger-config"),
-            antMatcher("/api/swagger-ui/**"),
-            antMatcher("/actuator/**"),
-            antMatcher("/shared/**")
+    private static final String[] AUTH_WHITELIST = {
+            "/v3/api-docs",
+            "/v3/api-docs/swagger-config",
+            "/swagger-ui/**",
+            "/api/v3/api-docs",
+            "/api/v3/api-docs/swagger-config",
+            "/api/swagger-ui/**",
+            "/actuator/**",
+            "/shared/**"
     };
 
     @Bean
