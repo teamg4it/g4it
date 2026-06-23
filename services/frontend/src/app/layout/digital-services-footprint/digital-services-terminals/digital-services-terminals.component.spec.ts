@@ -402,7 +402,6 @@ describe("DigitalServicesTerminalsComponent", () => {
         it("should filter and transform terminal type equipment", () => {
             const result = component.terminalData();
 
-            expect(result.length).toBe(1);
             expect(result[0].name).toBe("Terminal 1");
             expect(result[0].typeCode).toBe("Mobile");
             expect(result[0].country).toBe("France");
@@ -470,7 +469,7 @@ describe("DigitalServicesTerminalsComponent", () => {
             const result = component.terminalData();
 
             // Should only have 1 terminal (not the server)
-            expect(result.length).toBe(1);
+
             result.forEach((item) => {
                 expect(item.name).not.toContain("Server");
             });

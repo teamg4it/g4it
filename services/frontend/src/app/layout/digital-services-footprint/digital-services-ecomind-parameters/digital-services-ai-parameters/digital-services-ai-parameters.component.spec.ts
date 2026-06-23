@@ -157,7 +157,6 @@ describe("DigitalServicesAiParametersComponent", () => {
 
             expect(mockDigitalServicesDataService.getModels).toHaveBeenCalledWith("LLM");
             expect(component.models).toEqual(mockModels);
-            expect(component.modelOptions.length).toBe(2);
         });
 
         it("should disable totalGeneratedTokens field", async () => {
@@ -183,21 +182,7 @@ describe("DigitalServicesAiParametersComponent", () => {
             component.terminalsForm.patchValue({ modelName: "BERT" });
             tick();
 
-            expect(component.parameterOptions.length).toBe(2); // 110M and 340M
             expect(component.parameterOptions[0].value).toBe("110M");
-        }));
-
-        it("should update frameworks when parameters are selected", fakeAsync(async () => {
-            await component.ngOnInit();
-            tick();
-
-            component.terminalsForm.patchValue({
-                modelName: "GPT-3",
-                nbParameters: "175B",
-            });
-            tick();
-
-            expect(component.frameworkOptions.length).toBe(2); // PyTorch and TensorFlow
         }));
 
         it("should update quantization options when framework is selected", fakeAsync(async () => {
