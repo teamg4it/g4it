@@ -523,7 +523,7 @@ describe("DigitalServicesAiParametersComponent", () => {
             component.terminalsForm.patchValue({ modelName: "TestModel" });
             tick();
 
-            expect(component.frameworkOptions.length).toBe(1);
+            expect(component.frameworkOptions).toHaveSize(1);
         }));
 
         it("should maintain form state when switching between models", fakeAsync(async () => {
