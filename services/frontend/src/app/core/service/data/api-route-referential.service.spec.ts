@@ -5,11 +5,11 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
+import { provideHttpClient } from "@angular/common/http";
 import {
     HttpTestingController,
     provideHttpClientTesting,
 } from "@angular/common/http/testing";
-import { provideHttpClient } from "@angular/common/http";
 import { TestBed } from "@angular/core/testing";
 import { Constants } from "src/constants";
 import { CsvImportDataService, CsvImportEndpoint } from "./api-route-referential.service";
@@ -63,7 +63,7 @@ describe("CsvImportDataService", () => {
         it("should return all 6 CSV endpoints", () => {
             const endpoints = service.getCsvEndpoints();
 
-            expect(endpoints.length).toBe(6);
+            expect(endpoints).toHaveSize(6);
             expect(endpoints).toEqual(expectedEndpoints);
         });
 
@@ -220,7 +220,7 @@ describe("CsvImportDataService", () => {
 
             service.uploadCsvFile("criterion", mockFile).subscribe((response) => {
                 expect(response.importedLineNumber).toBe(5);
-                expect(response.errors.length).toBe(2);
+                expect(response.errors).toHaveSize(2);
                 expect(response.errors).toContain("Line 2: Invalid format");
             });
 

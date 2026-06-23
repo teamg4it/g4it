@@ -227,7 +227,7 @@ describe("TopHeaderComponent", () => {
     it("should set mobileMenuItems with correct structure", () => {
         component.mobileMenuItems = [];
         component.ngOnInit();
-        expect(component.mobileMenuItems?.length).toBe(2);
+        expect(component.mobileMenuItems).toHaveSize(2);
         expect(component.mobileMenuItems?.[0].label).toBe("common.about");
         expect(component.mobileMenuItems?.[1].label).toBe("common.help-center");
     });

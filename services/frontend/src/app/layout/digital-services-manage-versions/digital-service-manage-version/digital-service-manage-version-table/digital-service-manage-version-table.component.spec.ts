@@ -266,7 +266,7 @@ describe("DigitalServiceManageVersionTableComponent", () => {
 
             expect(component.selectedVersions).not.toContain("version-3");
             expect(version.selected).toBe(false);
-            expect(component.selectedVersions.length).toBe(2);
+            expect(component.selectedVersions).toHaveSize(2);
         });
 
         it("should allow selecting second version", () => {
@@ -277,7 +277,7 @@ describe("DigitalServiceManageVersionTableComponent", () => {
 
             expect(component.selectedVersions).toContain("version-2");
             expect(version.selected).toBe(true);
-            expect(component.selectedVersions.length).toBe(2);
+            expect(component.selectedVersions).toHaveSize(2);
         });
     });
 

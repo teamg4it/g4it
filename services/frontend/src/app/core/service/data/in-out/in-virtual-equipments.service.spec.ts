@@ -72,7 +72,7 @@ describe("InVirtualEquipmentsService", () => {
 
             service.getByDigitalService(digitalServiceUid).subscribe((equipments) => {
                 expect(equipments).toEqual(mockVirtualEquipmentList);
-                expect(equipments.length).toBe(3);
+                expect(equipments).toHaveSize(3);
                 expect(equipments[0].name).toBe("VM-Test-1");
             });
 
@@ -88,7 +88,7 @@ describe("InVirtualEquipmentsService", () => {
 
             service.getByDigitalService(digitalServiceUid).subscribe((equipments) => {
                 expect(equipments).toEqual([]);
-                expect(equipments.length).toBe(0);
+                expect(equipments).toHaveSize(0);
             });
 
             const expectedUrl = `${Constants.ENDPOINTS.digitalServicesVersions}/${digitalServiceUid}/inputs/virtual-equipments`;
@@ -135,7 +135,7 @@ describe("InVirtualEquipmentsService", () => {
 
             service.getByInventory(inventoryId).subscribe((equipments) => {
                 expect(equipments).toEqual(mockVirtualEquipmentList);
-                expect(equipments.length).toBe(3);
+                expect(equipments).toHaveSize(3);
                 expect(equipments[0].name).toBe("VM-Test-1");
             });
 
@@ -151,7 +151,7 @@ describe("InVirtualEquipmentsService", () => {
 
             service.getByInventory(inventoryId).subscribe((equipments) => {
                 expect(equipments).toEqual([]);
-                expect(equipments.length).toBe(0);
+                expect(equipments).toHaveSize(0);
             });
 
             const expectedUrl = `${Constants.ENDPOINTS.inventories}/${inventoryId}/inputs/virtual-equipments`;
@@ -372,7 +372,7 @@ describe("InVirtualEquipmentsService", () => {
             const req = httpMock.expectOne((request) =>
                 request.url.includes(digitalServiceVersionId),
             );
-            expect(req.request.body.length).toBe(3);
+            expect(req.request.body).toHaveSize(3);
             expect(req.request.body).toEqual(vms);
             req.flush(mockVirtualEquipment);
         });

@@ -65,7 +65,7 @@ describe("ShareUsefulInformationDataService", () => {
             ] as BusinessHours[];
 
             service.getBusinessHours(sharedToken, dsvId).subscribe((response) => {
-                expect(response.length).toBe(1);
+                expect(response).toHaveSize(1);
                 expect(response).toEqual(mockResponse);
             });
 
