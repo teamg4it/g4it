@@ -9,11 +9,13 @@ package com.soprasteria.g4it.backend.apiinout.mapper;
 
 import com.soprasteria.g4it.backend.apiinout.modeldb.InPhysicalEquipment;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InPhysicalEquipmentRest;
+import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * in physical equipment mapper.
@@ -32,4 +34,22 @@ public interface InPhysicalEquipmentMapper {
     @Mapping(target = "creationDate", ignore = true)
     @Mapping(target = "lastUpdateDate", expression = "java(java.time.LocalDateTime.now())")
     void merge(@MappingTarget final InPhysicalEquipment target, final InPhysicalEquipment source);
+
+    @AfterMapping
+    default void normalizeFilters(@MappingTarget final InPhysicalEquipment target) {
+        target.setCommonFilters(nullIfEmptyOrBlank(target.getCommonFilters()));
+        target.setFilters(nullIfEmptyOrBlank(target.getFilters()));
+    }
+
+    private static List<String> nullIfEmptyOrBlank(final List<String> values) {
+        if (values == null || values.isEmpty()) {
+            return null;
+        }
+        final List<String> normalized = values.stream()
+                .filter(Objects::nonNull)
+                .map(String::trim)
+                .filter(value -> !value.isEmpty())
+                .toList();
+        return normalized.isEmpty() ? null : normalized;
+    }
 }
