@@ -219,7 +219,7 @@ public class AdministratorWorkspaceService {
                 .orElseThrow(() -> new G4itRestException("404", String.format("WorkspaceId %s is not found", workspaceId)));
 
         if (checkAdminRole) {
-            administratorRoleService.hasAdminRightOnOrganizationOrWorkspace(user, workspace.getOrganization().getId(), workspaceId);
+            administratorRoleService.hasWorkspaceAdminAndEcoMindAIWriteRole(user, workspaceId);
         }
         List<UserInfoBO> userInfoList = new ArrayList<>();
 

@@ -75,7 +75,8 @@ export class AddWorkspaceComponent implements OnInit, OnChanges {
     isAdminRoleDisabled: boolean = false;
 
     isEcoMindModuleEnabled: boolean = environment.isEcomindEnabled;
-
+    isSuperAdmin = false;
+    isWsAdminAndEcomindAccess = false;
     private readonly destroyRef = inject(DestroyRef);
     constructor(
         public administrationService: AdministrationService,
@@ -85,6 +86,19 @@ export class AddWorkspaceComponent implements OnInit, OnChanges {
         private readonly router: Router,
     ) {}
     ngOnInit() {
+        this.userService.user$
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe((user) => {
+                this.isSuperAdmin = user.isSuperAdmin;
+            });
+        this.userService.roles$
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe((roles) => {
+                this.isWsAdminAndEcomindAccess =
+                    roles.includes(Role.WorkspaceAdmin) &&
+                    roles.includes(Role.EcoMindAiWrite);
+            });
+
         this.isModuleValues = this.isRoles.map((role) => this.getRoleValue(role));
 
         this.dsModuleValues = this.dsRoles.map((role) => this.getRoleValue(role));
@@ -113,7 +127,6 @@ export class AddWorkspaceComponent implements OnInit, OnChanges {
         if (this.userDetail?.roles === undefined) return;
 
         const roles = this.userDetail.roles;
-
         if (roles.includes(Role.WorkspaceAdmin)) {
             this.forceAdmin();
             return;
@@ -165,6 +178,7 @@ export class AddWorkspaceComponent implements OnInit, OnChanges {
         let roles: string[] = [];
 
         if (this.adminModule.code === Role.WorkspaceAdmin) {
+            if (this.ecomindModule) roles.push(this.ecomindModule.code);
             roles.push(Role.WorkspaceAdmin);
         } else {
             if (this.isModule) roles.push(this.isModule.code);
@@ -214,7 +228,7 @@ export class AddWorkspaceComponent implements OnInit, OnChanges {
     forceAdmin() {
         this.dsModule = this.getRoleValue(Role.DigitalServiceWrite);
         this.isModule = this.getRoleValue(Role.InventoryWrite);
-        this.ecomindModule = this.getRoleValue(Role.EcoMindAiWrite);
+        //this.ecomindModule = this.getRoleValue(Role.EcoMindAiWrite);
 
         this.adminModule = {
             code: Role.WorkspaceAdmin,
