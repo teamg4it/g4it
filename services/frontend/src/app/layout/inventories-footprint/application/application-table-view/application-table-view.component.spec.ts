@@ -63,7 +63,7 @@ describe("ApplicationTableViewComponent", () => {
 
         const result = component.filterImpacts({}, footprint);
 
-        expect(result.length).toBe(1);
+        expect(result).toHaveSize(1);
         expect(result[0].sip).toBe(15);
         expect(result[0].impact).toBe(150);
         expect(result[0].criteria).toBe("Criteria 1");
@@ -82,7 +82,7 @@ describe("ApplicationTableViewComponent", () => {
 
         const result = component.filterImpacts({}, footprint);
 
-        expect(result.length).toBe(0);
+        expect(result).toHaveSize(0);
     });
 
     // ---------------------------

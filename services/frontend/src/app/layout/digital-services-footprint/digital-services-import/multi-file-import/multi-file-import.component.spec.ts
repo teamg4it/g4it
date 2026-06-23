@@ -27,19 +27,19 @@ describe("MultiFileImportComponent", () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-    imports: [
-        HttpClientTestingModule,
-        RouterTestingModule,
-        FormsModule,
-        SharedModule,
-        TranslateModule.forRoot(),
-        MultiFileImportComponent,
-    ],
-    providers: [
-        { provide: LoadingDataService, useValue: mockLoadingService },
-        { provide: ActivatedRoute, useValue: mockActivatedRoute },
-    ],
-}).compileComponents();
+            imports: [
+                HttpClientTestingModule,
+                RouterTestingModule,
+                FormsModule,
+                SharedModule,
+                TranslateModule.forRoot(),
+                MultiFileImportComponent,
+            ],
+            providers: [
+                { provide: LoadingDataService, useValue: mockLoadingService },
+                { provide: ActivatedRoute, useValue: mockActivatedRoute },
+            ],
+        }).compileComponents();
 
         fixture = TestBed.createComponent(MultiFileImportComponent);
         component = fixture.componentInstance;
@@ -118,19 +118,19 @@ describe("MultiFileImportComponent", () => {
     it("should set fileTypes based on selectedMenuIndex", () => {
         component.selectedMenuIndex = 0;
         component.ngOnChanges();
-        expect(component.fileTypes.length).toBe(1);
+        expect(component.fileTypes).toHaveSize(1);
 
         component.selectedMenuIndex = 1;
         component.ngOnChanges();
-        expect(component.fileTypes.length).toBe(1);
+        expect(component.fileTypes).toHaveSize(1);
 
         component.selectedMenuIndex = 2;
         component.ngOnChanges();
-        expect(component.fileTypes.length).toBe(3);
+        expect(component.fileTypes).toHaveSize(3);
 
         component.selectedMenuIndex = 3;
         component.ngOnChanges();
-        expect(component.fileTypes.length).toBe(1);
+        expect(component.fileTypes).toHaveSize(1);
     });
 
     it("should call launchLoadInputFiles and handle success", () => {
@@ -161,7 +161,7 @@ describe("MultiFileImportComponent", () => {
 
     it("resetForm", () => {
         component.resetForm();
-        expect(Object.keys(component.selectedFiles).length).toBe(0);
+        expect(Object.keys(component.selectedFiles)).toHaveSize(0);
     });
 
     it("should update form field value based on isUploadEnabled", () => {

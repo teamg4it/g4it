@@ -140,14 +140,14 @@ describe("DigitalServicesFootprintComponent", () => {
         component.isEcoMindAi = true;
         component.digitalService = { lastCalculationDate: new Date() } as any;
         component.updateTabItems();
-        expect(component.tabItems?.length).toBe(2);
+        expect(component.tabItems).toHaveSize(2);
     });
 
     it("should set tabItems for normal service", () => {
         component.isEcoMindAi = false;
         component.digitalService = { lastCalculationDate: new Date() } as any;
         component.updateTabItems();
-        expect(component.tabItems?.length).toBe(2);
+        expect(component.tabItems).toHaveSize(2);
         expect(component.tabItems?.find((item) => item.id === "resources")).toBeDefined();
     });
 

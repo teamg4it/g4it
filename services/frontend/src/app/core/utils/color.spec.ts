@@ -85,7 +85,7 @@ describe("Color Utils", () => {
             // Test a string that would generate a short hash
             const result = generateColor("A");
 
-            expect(result.length).toBe(7); // # + 6 hex chars
+            expect(result).toHaveSize(7); // # + 6 hex chars
             expect(result).toMatch(/^#[0-9A-F]{6}$/i);
         });
     });

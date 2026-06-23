@@ -155,8 +155,8 @@ describe("InventoryItemComponent", () => {
     });
 
     it("should split loading and evaluating tasks on init", () => {
-        expect(component.taskLoading.length).toBe(0);
-        expect(component.taskEvaluating.length).toBe(0);
+        expect(component.taskLoading).toHaveSize(0);
+        expect(component.taskEvaluating).toHaveSize(0);
     });
 
     it("should return false if no evaluating task", async () => {

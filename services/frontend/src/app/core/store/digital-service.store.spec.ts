@@ -58,8 +58,8 @@ describe("DigitalServiceStoreService", () => {
     it("should have initial default values", () => {
         expect(service.enableCalcul()).toBeFalse();
         expect(service.ecomindEnableCalcul()).toBeFalse();
-        expect(service.inPhysicalEquipments().length).toBe(0);
-        expect(service.inVirtualEquipments().length).toBe(0);
+        expect(service.inPhysicalEquipments()).toHaveSize(0);
+        expect(service.inVirtualEquipments()).toHaveSize(0);
         expect(service.isSharedDS()).toBeFalse();
     });
 
@@ -105,14 +105,14 @@ describe("DigitalServiceStoreService", () => {
     it("setInPhysicalEquipments should update list", () => {
         const list = [{ id: 2 }] as unknown as InPhysicalEquipmentRest[];
         service.setInPhysicalEquipments(list);
-        expect(service.inPhysicalEquipments().length).toBe(1);
+        expect(service.inPhysicalEquipments()).toHaveSize(1);
         expect(service.inPhysicalEquipments()[0].id).toBe(2);
     });
 
     it("initInPhysicalEquipments should fetch and set data", async () => {
         await service.initInPhysicalEquipments("ds-1");
         expect(mockInPhysicalEquipmentsService.get).toHaveBeenCalledWith("ds-1");
-        expect(service.inPhysicalEquipments().length).toBe(1);
+        expect(service.inPhysicalEquipments()).toHaveSize(1);
     });
 
     it("setInVirtualEquipments should update list", () => {
@@ -126,7 +126,7 @@ describe("DigitalServiceStoreService", () => {
         expect(mockInVirtualEquipmentsService.getByDigitalService).toHaveBeenCalledWith(
             "ds-2",
         );
-        expect(service.inVirtualEquipments().length).toBe(1);
+        expect(service.inVirtualEquipments()).toHaveSize(1);
     });
 
     it("setRefresh should update refresh counter", () => {

@@ -72,7 +72,7 @@ describe("InPhysicalEquipmentsService", () => {
 
             service.get(digitalServiceUid).subscribe((equipments) => {
                 expect(equipments).toEqual(mockPhysicalEquipmentList);
-                expect(equipments.length).toBe(3);
+                expect(equipments).toHaveSize(3);
                 expect(equipments[0].name).toBe("Server-01");
                 expect(equipments[0].quantity).toBe(10);
             });
@@ -89,7 +89,7 @@ describe("InPhysicalEquipmentsService", () => {
 
             service.get(digitalServiceUid).subscribe((equipments) => {
                 expect(equipments).toEqual([]);
-                expect(equipments.length).toBe(0);
+                expect(equipments).toHaveSize(0);
             });
 
             const expectedUrl = `${Constants.ENDPOINTS.digitalServicesVersions}/${digitalServiceUid}/inputs/physical-equipments`;
@@ -155,7 +155,7 @@ describe("InPhysicalEquipmentsService", () => {
             ];
 
             service.get(digitalServiceUid).subscribe((equipments) => {
-                expect(equipments.length).toBe(2);
+                expect(equipments).toHaveSize(2);
                 expect(equipments[0].type).toBe("Dedicated Server");
                 expect(equipments[1].type).toBe("Shared Server");
             });
@@ -170,7 +170,7 @@ describe("InPhysicalEquipmentsService", () => {
             const digitalServiceUid2 = "ds-uid-2";
 
             service.get(digitalServiceUid1).subscribe((equipments) => {
-                expect(equipments.length).toBe(1);
+                expect(equipments).toHaveSize(1);
             });
 
             const req1 = httpMock.expectOne(
@@ -179,7 +179,7 @@ describe("InPhysicalEquipmentsService", () => {
             req1.flush([mockPhysicalEquipment]);
 
             service.get(digitalServiceUid2).subscribe((equipments) => {
-                expect(equipments.length).toBe(0);
+                expect(equipments).toHaveSize(0);
             });
 
             const req2 = httpMock.expectOne(
@@ -543,13 +543,13 @@ describe("InPhysicalEquipmentsService", () => {
             const uid3 = "ds-3";
 
             service.get(uid1).subscribe((equipments) => {
-                expect(equipments.length).toBe(1);
+                expect(equipments).toHaveSize(1);
             });
             service.get(uid2).subscribe((equipments) => {
-                expect(equipments.length).toBe(2);
+                expect(equipments).toHaveSize(2);
             });
             service.get(uid3).subscribe((equipments) => {
-                expect(equipments.length).toBe(0);
+                expect(equipments).toHaveSize(0);
             });
 
             const req1 = httpMock.expectOne(
