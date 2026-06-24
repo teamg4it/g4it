@@ -43,13 +43,13 @@ public interface InPhysicalEquipmentMapper {
 
     private static List<String> nullIfEmptyOrBlank(final List<String> values) {
         if (values == null || values.isEmpty()) {
-            return null;
+            return List.of("");
         }
         final List<String> normalized = values.stream()
                 .filter(Objects::nonNull)
                 .map(String::trim)
                 .filter(value -> !value.isEmpty())
                 .toList();
-        return normalized.isEmpty() ? null : normalized;
+        return normalized.isEmpty() ? List.of("") : normalized;
     }
 }
