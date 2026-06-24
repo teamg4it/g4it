@@ -397,6 +397,8 @@ describe("UserService", () => {
             Role.OrganizationAdmin,
             Role.WorkspaceAdmin,
             ...BasicRoles,
+            Role.EcoMindAiRead,
+            Role.EcoMindAiWrite,
         ]);
     });
 
