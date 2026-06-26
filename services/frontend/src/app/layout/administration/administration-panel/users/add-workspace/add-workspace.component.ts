@@ -155,7 +155,7 @@ export class AddWorkspaceComponent implements OnInit, OnChanges {
                 return this.getRoleValue(role);
             }
         }
-        return {} as RoleValue;
+        return undefined as unknown as RoleValue;
     }
 
     getRoleValue(role: Role): RoleValue {
@@ -175,7 +175,7 @@ export class AddWorkspaceComponent implements OnInit, OnChanges {
 
     getWorkspaceBody() {
         let roles: string[] = [];
-
+        console.log(this.ecomindModule);
         if (this.adminModule.code === Role.WorkspaceAdmin) {
             if (this.ecomindModule) roles.push(this.ecomindModule.code);
             roles.push(Role.WorkspaceAdmin);
@@ -184,6 +184,7 @@ export class AddWorkspaceComponent implements OnInit, OnChanges {
             if (this.dsModule) roles.push(this.dsModule.code);
             if (this.ecomindModule) roles.push(this.ecomindModule.code);
         }
+        console.log(roles);
         return {
             workspaceId: this.workspace.workspaceId,
             users: [
