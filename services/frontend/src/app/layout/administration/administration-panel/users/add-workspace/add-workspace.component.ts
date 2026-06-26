@@ -132,14 +132,10 @@ export class AddWorkspaceComponent implements OnInit, OnChanges {
         if (this.userDetail?.roles === undefined) return;
 
         const roles = this.userDetail.roles;
+
         if (roles.includes(Role.WorkspaceAdmin)) {
             this.forceAdmin();
-            for (const role of [...this.ecomindRoles].reverse()) {
-                if (roles.includes(role)) {
-                    this.ecomindModule = this.getRoleValue(role);
-                    break;
-                }
-            }
+            this.ecomindModule = this.mapCodeValueRole(roles, this.ecomindRoles);
             return;
         }
 
@@ -148,26 +144,18 @@ export class AddWorkspaceComponent implements OnInit, OnChanges {
             value: this.translate.instant(`administration.role.user`),
         };
 
-        for (const role of [...this.isRoles].reverse()) {
-            if (roles.includes(role)) {
-                this.isModule = this.getRoleValue(role);
-                break;
-            }
-        }
+        this.isModule = this.mapCodeValueRole(roles, this.isRoles);
+        this.dsModule = this.mapCodeValueRole(roles, this.dsRoles);
+        this.ecomindModule = this.mapCodeValueRole(roles, this.ecomindRoles);
+    }
 
-        for (const role of [...this.dsRoles].reverse()) {
-            if (roles.includes(role)) {
-                this.dsModule = this.getRoleValue(role);
-                break;
+    private mapCodeValueRole(userRoles: Role[], rolesList: Role[]): RoleValue {
+        for (const role of [...rolesList].reverse()) {
+            if (userRoles.includes(role)) {
+                return this.getRoleValue(role);
             }
         }
-
-        for (const role of [...this.ecomindRoles].reverse()) {
-            if (roles.includes(role)) {
-                this.ecomindModule = this.getRoleValue(role);
-                break;
-            }
-        }
+        return {} as RoleValue;
     }
 
     getRoleValue(role: Role): RoleValue {

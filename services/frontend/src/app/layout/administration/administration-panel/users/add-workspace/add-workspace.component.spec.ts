@@ -102,10 +102,10 @@ describe("AddWorkspaceComponent", () => {
         it("should initialize module values with correct roles", () => {
             component.ngOnInit();
 
-            expect(component.isModuleValues.length).toBe(2);
-            expect(component.dsModuleValues.length).toBe(2);
-            expect(component.ecomindModuleValues.length).toBe(2);
-            expect(component.adminModuleValues.length).toBe(2);
+            expect(component.isModuleValues).toHaveSize(2);
+            expect(component.dsModuleValues).toHaveSize(2);
+            expect(component.ecomindModuleValues).toHaveSize(2);
+            expect(component.adminModuleValues).toHaveSize(2);
         });
 
         it("should set up IS module values correctly", () => {
@@ -369,6 +369,26 @@ describe("AddWorkspaceComponent", () => {
             expect(component.forceAdmin).toHaveBeenCalled();
         });
 
+        it("should set ecomindModule for WorkspaceAdmin with EcoMind roles", () => {
+            component.userDetail = {
+                ...mockUser,
+                roles: [Role.WorkspaceAdmin, Role.EcoMindAiRead, Role.EcoMindAiWrite],
+            };
+            component.ngOnChanges();
+
+            expect(component.ecomindModule.code).toBe(Role.EcoMindAiWrite);
+        });
+
+        it("should set ecomindModule to empty for WorkspaceAdmin without EcoMind roles", () => {
+            component.userDetail = {
+                ...mockUser,
+                roles: [Role.WorkspaceAdmin],
+            };
+            component.ngOnChanges();
+
+            expect(component.ecomindModule).toEqual({} as any);
+        });
+
         it("should set adminModule to SimpleUser for non-admin users", () => {
             component.userDetail = {
                 ...mockUser,
@@ -419,6 +439,34 @@ describe("AddWorkspaceComponent", () => {
 
             expect(component.isModule.code).toBe(Role.InventoryWrite);
         });
+
+        it("should leave modules empty when user has no matching roles", () => {
+            component.userDetail = {
+                ...mockUser,
+                roles: [Role.InventoryRead],
+            };
+            component.ngOnChanges();
+
+            expect(component.isModule.code).toBe(Role.InventoryRead);
+            expect(component.dsModule).toEqual({} as any);
+            expect(component.ecomindModule).toEqual({} as any);
+        });
+
+        it("should handle multiple module roles correctly", () => {
+            component.userDetail = {
+                ...mockUser,
+                roles: [
+                    Role.InventoryWrite,
+                    Role.DigitalServiceWrite,
+                    Role.EcoMindAiRead,
+                ],
+            };
+            component.ngOnChanges();
+
+            expect(component.isModule.code).toBe(Role.InventoryWrite);
+            expect(component.dsModule.code).toBe(Role.DigitalServiceWrite);
+            expect(component.ecomindModule.code).toBe(Role.EcoMindAiRead);
+        });
     });
 
     describe("getRoleValue", () => {
@@ -446,6 +494,68 @@ describe("AddWorkspaceComponent", () => {
             expect(mockTranslateService.instant).toHaveBeenCalledWith(
                 "administration.role.read",
             );
+        });
+    });
+
+    describe("mapCodeValueRole", () => {
+        beforeEach(() => {
+            component.ngOnInit();
+        });
+
+        it("should return the highest role (Write) when user has both Read and Write", () => {
+            const userRoles = [Role.InventoryRead, Role.InventoryWrite];
+            const rolesList = [Role.InventoryRead, Role.InventoryWrite];
+
+            const result = component["mapCodeValueRole"](userRoles, rolesList);
+
+            expect(result.code).toBe(Role.InventoryWrite);
+            expect(result.value).toBe("Write");
+        });
+
+        it("should return Read role when user only has Read permission", () => {
+            const userRoles = [Role.InventoryRead];
+            const rolesList = [Role.InventoryRead, Role.InventoryWrite];
+
+            const result = component["mapCodeValueRole"](userRoles, rolesList);
+
+            expect(result.code).toBe(Role.InventoryRead);
+            expect(result.value).toBe("Read");
+        });
+
+        it("should return empty RoleValue when user has no matching roles", () => {
+            const userRoles = [Role.InventoryRead];
+            const rolesList = [Role.DigitalServiceRead, Role.DigitalServiceWrite];
+
+            const result = component["mapCodeValueRole"](userRoles, rolesList);
+
+            expect(result).toEqual({} as any);
+        });
+
+        it("should work correctly with EcoMind roles", () => {
+            const userRoles = [Role.EcoMindAiRead, Role.EcoMindAiWrite];
+            const rolesList = [Role.EcoMindAiRead, Role.EcoMindAiWrite];
+
+            const result = component["mapCodeValueRole"](userRoles, rolesList);
+
+            expect(result.code).toBe(Role.EcoMindAiWrite);
+        });
+
+        it("should return the first matching role from reversed list", () => {
+            const userRoles = [Role.DigitalServiceWrite];
+            const rolesList = [Role.DigitalServiceRead, Role.DigitalServiceWrite];
+
+            const result = component["mapCodeValueRole"](userRoles, rolesList);
+
+            expect(result.code).toBe(Role.DigitalServiceWrite);
+        });
+
+        it("should handle empty user roles array", () => {
+            const userRoles: Role[] = [];
+            const rolesList = [Role.InventoryRead, Role.InventoryWrite];
+
+            const result = component["mapCodeValueRole"](userRoles, rolesList);
+
+            expect(result).toEqual({} as any);
         });
     });
 

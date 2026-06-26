@@ -243,7 +243,7 @@ describe("UsersComponent", () => {
             component.searchList();
 
             expect(mockAdministrationService.getSearchDetails).toHaveBeenCalled();
-            expect(component.filteredMembers.length).toBe(1);
+            expect(component.filteredMembers).toHaveSize(1);
         });
     });
 
@@ -256,7 +256,7 @@ describe("UsersComponent", () => {
             component.getUsersDetails();
 
             expect(mockAdministrationService.getUserDetails).toHaveBeenCalled();
-            expect(component.membersList.length).toBe(1);
+            expect(component.membersList).toHaveSize(1);
         });
     });
 
