@@ -611,7 +611,7 @@ describe("UserService", () => {
 
             expect(roles).toContain(Role.OrganizationAdmin);
             expect(roles).toContain(Role.WorkspaceAdmin);
-            expect(roles.length).toBe(2 + OrgBasicRoles.length);
+            expect(roles).toHaveSize(2 + OrgBasicRoles.length);
         });
 
         it("should return WorkspaceAdmin and BasicRoles with EcoMindAiWrite and EcoMindAiRead when workspace has WorkspaceAdmin and EcoMindAiWrite", () => {
@@ -627,7 +627,7 @@ describe("UserService", () => {
             expect(roles).toContain(Role.WorkspaceAdmin);
             expect(roles).toContain(Role.EcoMindAiWrite);
             expect(roles).toContain(Role.EcoMindAiRead);
-            expect(roles.length).toBe(1 + BasicRoles.length + 2);
+            expect(roles).toHaveSize(1 + BasicRoles.length + 2);
         });
 
         it("should return WorkspaceAdmin and BasicRoles with EcoMindAiRead when workspace has WorkspaceAdmin and only EcoMindAiRead", () => {
@@ -643,7 +643,7 @@ describe("UserService", () => {
             expect(roles).toContain(Role.WorkspaceAdmin);
             expect(roles).toContain(Role.EcoMindAiRead);
             expect(roles).not.toContain(Role.EcoMindAiWrite);
-            expect(roles.length).toBe(1 + BasicRoles.length + 1);
+            expect(roles).toHaveSize(1 + BasicRoles.length + 1);
         });
 
         it("should return WorkspaceAdmin and BasicRoles without EcoMind roles when workspace has WorkspaceAdmin without EcoMind roles", () => {
@@ -659,7 +659,7 @@ describe("UserService", () => {
             expect(roles).toContain(Role.WorkspaceAdmin);
             expect(roles).not.toContain(Role.EcoMindAiRead);
             expect(roles).not.toContain(Role.EcoMindAiWrite);
-            expect(roles.length).toBe(1 + BasicRoles.length);
+            expect(roles).toHaveSize(1 + BasicRoles.length);
         });
 
         it("should add InventoryRead when workspace has InventoryWrite", () => {
@@ -674,7 +674,7 @@ describe("UserService", () => {
 
             expect(roles).toContain(Role.InventoryWrite);
             expect(roles).toContain(Role.InventoryRead);
-            expect(roles.length).toBe(2);
+            expect(roles).toHaveSize(2);
         });
 
         it("should add DigitalServiceRead when workspace has DigitalServiceWrite", () => {
@@ -689,7 +689,7 @@ describe("UserService", () => {
 
             expect(roles).toContain(Role.DigitalServiceWrite);
             expect(roles).toContain(Role.DigitalServiceRead);
-            expect(roles.length).toBe(2);
+            expect(roles).toHaveSize(2);
         });
 
         it("should add EcoMindAiRead when workspace has EcoMindAiWrite for regular users", () => {
@@ -704,7 +704,7 @@ describe("UserService", () => {
 
             expect(roles).toContain(Role.EcoMindAiWrite);
             expect(roles).toContain(Role.EcoMindAiRead);
-            expect(roles.length).toBe(2);
+            expect(roles).toHaveSize(2);
         });
 
         it("should return only workspace roles when user has read-only permissions", () => {
@@ -719,7 +719,7 @@ describe("UserService", () => {
 
             expect(roles).toContain(Role.InventoryRead);
             expect(roles).toContain(Role.DigitalServiceRead);
-            expect(roles.length).toBe(2);
+            expect(roles).toHaveSize(2);
         });
 
         it("should handle multiple write roles correctly", () => {
@@ -742,7 +742,7 @@ describe("UserService", () => {
             expect(roles).toContain(Role.DigitalServiceRead);
             expect(roles).toContain(Role.EcoMindAiWrite);
             expect(roles).toContain(Role.EcoMindAiRead);
-            expect(roles.length).toBe(6);
+            expect(roles).toHaveSize(6);
         });
     });
 });
