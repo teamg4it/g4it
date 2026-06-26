@@ -1,10 +1,16 @@
 # G4IT
 
 ## 3.13.1
+
 ### Major Changes
 
+- 2172 | Spring boot 4 migration
+
 ### Minor Changes
+
 - 2273 | Fix Unable to upload Platform reference Data
+- 2261 | Unable to import .csv file
+- 2210 | Installation KO
 
 ## 3.13.0
 

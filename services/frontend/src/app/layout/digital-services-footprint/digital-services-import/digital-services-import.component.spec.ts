@@ -59,28 +59,28 @@ describe("DigitalServicesImportComponent", () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-    imports: [
-        HttpClientTestingModule,
-        RouterTestingModule,
-        FormsModule,
-        SharedModule,
-        TranslateModule.forRoot(),
-        DigitalServicesImportComponent,
-    ],
-    providers: [
-        { provide: TemplateFileService, useValue: mockTemplateFileService },
-        {
-            provide: DigitalServicesDataService,
-            useValue: mockDigitalServicesData,
-        },
-        { provide: ActivatedRoute, useValue: mockActivatedRoute },
-        {
-            provide: FileSystemBusinessService,
-            useValue: mockFileSystemBusinessService,
-        },
-        { provide: UserService, useValue: mockUserService },
-    ],
-}).compileComponents();
+            imports: [
+                HttpClientTestingModule,
+                RouterTestingModule,
+                FormsModule,
+                SharedModule,
+                TranslateModule.forRoot(),
+                DigitalServicesImportComponent,
+            ],
+            providers: [
+                { provide: TemplateFileService, useValue: mockTemplateFileService },
+                {
+                    provide: DigitalServicesDataService,
+                    useValue: mockDigitalServicesData,
+                },
+                { provide: ActivatedRoute, useValue: mockActivatedRoute },
+                {
+                    provide: FileSystemBusinessService,
+                    useValue: mockFileSystemBusinessService,
+                },
+                { provide: UserService, useValue: mockUserService },
+            ],
+        }).compileComponents();
 
         fixture = TestBed.createComponent(DigitalServicesImportComponent);
         component = fixture.componentInstance;
@@ -290,21 +290,21 @@ describe("DigitalServicesImportComponent", () => {
         it("should return only terminal templates when selectedMenuIndex is 0", () => {
             component.selectedMenuIndex = 0;
             const result = component.getSelectedTemplates(files);
-            expect(result.length).toBe(1);
+            expect(result).toHaveSize(1);
             expect(result[0].name).toContain("physical_equipment_terminal");
         });
 
         it("should return only network templates when selectedMenuIndex is 1", () => {
             component.selectedMenuIndex = 1;
             const result = component.getSelectedTemplates(files);
-            expect(result.length).toBe(1);
+            expect(result).toHaveSize(1);
             expect(result[0].name).toContain("physical_equipment_network");
         });
 
         it("should return non-cloud (excluding terminal, network, and cloud) when selectedMenuIndex is 2", () => {
             component.selectedMenuIndex = 2;
             const result = component.getSelectedTemplates(files);
-            expect(result.length).toBe(2);
+            expect(result).toHaveSize(2);
             expect(
                 result.every(
                     (f) =>
@@ -318,7 +318,7 @@ describe("DigitalServicesImportComponent", () => {
         it("should return only virtual cloud templates when selectedMenuIndex is other (e.g., 3)", () => {
             component.selectedMenuIndex = 3;
             const result = component.getSelectedTemplates(files);
-            expect(result.length).toBe(1);
+            expect(result).toHaveSize(1);
             expect(result[0].name).toContain("virtual_equipment_cloud");
         });
     });

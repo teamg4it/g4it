@@ -183,7 +183,7 @@ describe("ApplicationCriteriaFootprintComponent", () => {
     it("computeImpactOrder should add and then aggregate impacts", () => {
         const impact = component.footprint.impacts[0];
         component.computeImpactOrder(impact, "Domain1", "lifeCycle");
-        expect(component.impactOrder.length).toBe(1);
+        expect(component.impactOrder).toHaveSize(1);
 
         // second time aggregates
         component.computeImpactOrder(

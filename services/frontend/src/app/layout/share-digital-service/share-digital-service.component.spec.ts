@@ -143,7 +143,7 @@ describe("ShareDigitalServiceComponent", () => {
         expect(mockStore.setCountryMap).toHaveBeenCalled();
 
         // Tabs created
-        expect(component.tabItems?.length).toBe(2);
+        expect(component.tabItems).toHaveSize(2);
         const visualizeTab = component.tabItems?.find((t) => t.id === "visualize");
         expect(visualizeTab?.visible).toBeTrue();
     });

@@ -66,7 +66,7 @@ describe("InDatacentersService", () => {
 
             service.get(digitalServiceUid).subscribe((datacenters) => {
                 expect(datacenters).toEqual(mockDatacenterList);
-                expect(datacenters.length).toBe(3);
+                expect(datacenters).toHaveSize(3);
                 expect(datacenters[0].name).toBe("DC-Paris");
                 expect(datacenters[0].pue).toBe(1.5);
             });
@@ -83,7 +83,7 @@ describe("InDatacentersService", () => {
 
             service.get(digitalServiceUid).subscribe((datacenters) => {
                 expect(datacenters).toEqual([]);
-                expect(datacenters.length).toBe(0);
+                expect(datacenters).toHaveSize(0);
             });
 
             const expectedUrl = `${Constants.ENDPOINTS.digitalServicesVersions}/${digitalServiceUid}/inputs/datacenters`;
@@ -150,7 +150,7 @@ describe("InDatacentersService", () => {
             ];
 
             service.get(digitalServiceUid).subscribe((datacenters) => {
-                expect(datacenters.length).toBe(3);
+                expect(datacenters).toHaveSize(3);
                 expect(datacenters[0].pue).toBe(1.2);
                 expect(datacenters[1].pue).toBe(1.5);
                 expect(datacenters[2].pue).toBe(2.0);
@@ -166,7 +166,7 @@ describe("InDatacentersService", () => {
             const digitalServiceUid2 = "ds-uid-2";
 
             service.get(digitalServiceUid1).subscribe((datacenters) => {
-                expect(datacenters.length).toBe(1);
+                expect(datacenters).toHaveSize(1);
             });
 
             const req1 = httpMock.expectOne(
@@ -175,7 +175,7 @@ describe("InDatacentersService", () => {
             req1.flush([mockDatacenter]);
 
             service.get(digitalServiceUid2).subscribe((datacenters) => {
-                expect(datacenters.length).toBe(0);
+                expect(datacenters).toHaveSize(0);
             });
 
             const req2 = httpMock.expectOne(
@@ -193,7 +193,7 @@ describe("InDatacentersService", () => {
             ];
 
             service.get(digitalServiceUid).subscribe((datacenters) => {
-                expect(datacenters.length).toBe(3);
+                expect(datacenters).toHaveSize(3);
                 expect(datacenters[0].location).toBe("France");
                 expect(datacenters[1].location).toBe("United States");
                 expect(datacenters[2].location).toBe("Japan");
@@ -613,13 +613,13 @@ describe("InDatacentersService", () => {
             const uid3 = "ds-3";
 
             service.get(uid1).subscribe((datacenters) => {
-                expect(datacenters.length).toBe(1);
+                expect(datacenters).toHaveSize(1);
             });
             service.get(uid2).subscribe((datacenters) => {
-                expect(datacenters.length).toBe(2);
+                expect(datacenters).toHaveSize(2);
             });
             service.get(uid3).subscribe((datacenters) => {
-                expect(datacenters.length).toBe(0);
+                expect(datacenters).toHaveSize(0);
             });
 
             const req1 = httpMock.expectOne(
