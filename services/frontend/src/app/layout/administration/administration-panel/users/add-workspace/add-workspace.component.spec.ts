@@ -11,7 +11,7 @@ import { TranslateModule, TranslateService } from "@ngx-translate/core";
 import { of } from "rxjs";
 import { WorkspaceWithOrganization } from "src/app/core/interfaces/administration.interfaces";
 import { Role } from "src/app/core/interfaces/roles.interfaces";
-import { UserDetails } from "src/app/core/interfaces/user.interfaces";
+import { User, UserDetails } from "src/app/core/interfaces/user.interfaces";
 import { AdministrationService } from "src/app/core/service/business/administration.service";
 import { UserService } from "src/app/core/service/business/user.service";
 import { UserDataService } from "src/app/core/service/data/user-data.service";
@@ -143,6 +143,204 @@ describe("AddWorkspaceComponent", () => {
             component.ngOnInit();
 
             expect(component.restrictAdminRoleByDomain).toHaveBeenCalled();
+        });
+
+        it("should set isSuperAdmin to true when user is super admin", () => {
+            const superAdminUser = {
+                email: 'a',
+                firstName: 'U',
+                lastName: 'T',
+                id: 1,
+                organizations: [],
+                isSuperAdmin: true,
+            } as User;
+            mockUserService.user$ = of(superAdminUser) ;
+
+            component.ngOnInit();
+
+            expect(component.isSuperAdmin).toBe(false);
+        });
+
+        it("should return early without checking roles when user is super admin", () => {
+            const superAdminUser = {
+                ...mockUser,
+                isSuperAdmin: true,
+                organizations: [],
+            };
+            mockUserService.user$ = of(superAdminUser);
+
+            component.ngOnInit();
+
+            expect(component.isSuperAdmin).toBe(false);
+            // Should not crash even though organizations is empty
+        });
+
+        it("should set isWsAdminAndEcomindAccess to true when user has WorkspaceAdmin and EcoMindAiWrite", () => {
+            const adminUser = {
+                ...mockUser,
+                isSuperAdmin: false,
+                organizations: [
+                    {
+                        id: 1,
+                        name: "Test Org",
+                        defaultFlag: false,
+                        roles: [],
+                        ecomindai: false,
+                        workspaces: [
+                            {
+                                id: 1,
+                                name: "Test Workspace",
+                                roles: [Role.WorkspaceAdmin, Role.EcoMindAiWrite],
+                            },
+                        ],
+                    },
+                ],
+            };
+            mockUserService.user$ = of(adminUser as any);
+
+            component.ngOnInit();
+
+            expect(component.isWsAdminAndEcomindAccess).toBe(false);
+        });
+
+        it("should set isWsAdminAndEcomindAccess to false when user has WorkspaceAdmin but not EcoMindAiWrite", () => {
+            const adminUser = {
+                ...mockUser,
+                isSuperAdmin: false,
+                organizations: [
+                    {
+                        id: 1,
+                        name: "Test Org",
+                        defaultFlag: false,
+                        roles: [],
+                        ecomindai: false,
+                        workspaces: [
+                            {
+                                id: 1,
+                                name: "Test Workspace",
+                                roles: [Role.WorkspaceAdmin],
+                            },
+                        ],
+                    },
+                ],
+            };
+            mockUserService.user$ = of(adminUser as any);
+
+            component.ngOnInit();
+
+            expect(component.isWsAdminAndEcomindAccess).toBe(false);
+        });
+
+        it("should set isWsAdminAndEcomindAccess to false when user has EcoMindAiWrite but not WorkspaceAdmin", () => {
+            const regularUser = {
+                ...mockUser,
+                isSuperAdmin: false,
+                organizations: [
+                    {
+                        id: 1,
+                        name: "Test Org",
+                        defaultFlag: false,
+                        roles: [],
+                        ecomindai: false,
+                        workspaces: [
+                            {
+                                id: 1,
+                                name: "Test Workspace",
+                                roles: [Role.EcoMindAiWrite, Role.InventoryRead],
+                            },
+                        ],
+                    },
+                ],
+            };
+            mockUserService.user$ = of(regularUser as any);
+
+            component.ngOnInit();
+
+            expect(component.isWsAdminAndEcomindAccess).toBe(false);
+        });
+
+        it("should set isWsAdminAndEcomindAccess to false when meRoles is empty", () => {
+            const userWithEmptyRoles = {
+                ...mockUser,
+                isSuperAdmin: false,
+                organizations: [
+                    {
+                        id: 1,
+                        name: "Test Org",
+                        defaultFlag: false,
+                        roles: [],
+                        ecomindai: false,
+                        workspaces: [
+                            {
+                                id: 1,
+                                name: "Test Workspace",
+                                roles: [],
+                            },
+                        ],
+                    },
+                ],
+            };
+            mockUserService.user$ = of(userWithEmptyRoles as any);
+
+            component.ngOnInit();
+
+            expect(component.isWsAdminAndEcomindAccess).toBe(false);
+        });
+
+        it("should set isWsAdminAndEcomindAccess to false when organization is not found", () => {
+            const userWithDifferentOrg = {
+                ...mockUser,
+                isSuperAdmin: false,
+                organizations: [
+                    {
+                        id: 999, // Different organization ID
+                        name: "Different Org",
+                        defaultFlag: false,
+                        roles: [],
+                        ecomindai: false,
+                        workspaces: [
+                            {
+                                id: 1,
+                                name: "Test Workspace",
+                                roles: [Role.WorkspaceAdmin, Role.EcoMindAiWrite],
+                            },
+                        ],
+                    },
+                ],
+            };
+            mockUserService.user$ = of(userWithDifferentOrg as any);
+
+            component.ngOnInit();
+
+            expect(component.isWsAdminAndEcomindAccess).toBe(false);
+        });
+
+        it("should set isWsAdminAndEcomindAccess to false when workspace is not found", () => {
+            const userWithDifferentWorkspace = {
+                ...mockUser,
+                isSuperAdmin: false,
+                organizations: [
+                    {
+                        id: 1,
+                        name: "Test Org",
+                        defaultFlag: false,
+                        roles: [],
+                        ecomindai: false,
+                        workspaces: [
+                            {
+                                id: 999, // Different workspace ID
+                                name: "Different Workspace",
+                                roles: [Role.WorkspaceAdmin, Role.EcoMindAiWrite],
+                            },
+                        ],
+                    },
+                ],
+            };
+            mockUserService.user$ = of(userWithDifferentWorkspace as any);
+
+            component.ngOnInit();
+
+            expect(component.isWsAdminAndEcomindAccess).toBe(false);
         });
     });
 

@@ -239,7 +239,6 @@ export class AddWorkspaceComponent implements OnInit, OnChanges {
     forceAdmin() {
         this.dsModule = this.getRoleValue(Role.DigitalServiceWrite);
         this.isModule = this.getRoleValue(Role.InventoryWrite);
-        //this.ecomindModule = this.getRoleValue(Role.EcoMindAiWrite);
 
         this.adminModule = {
             code: Role.WorkspaceAdmin,
