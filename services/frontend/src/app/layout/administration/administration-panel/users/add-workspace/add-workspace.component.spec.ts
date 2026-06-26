@@ -147,14 +147,14 @@ describe("AddWorkspaceComponent", () => {
 
         it("should set isSuperAdmin to true when user is super admin", () => {
             const superAdminUser = {
-                email: 'a',
-                firstName: 'U',
-                lastName: 'T',
+                email: "a",
+                firstName: "U",
+                lastName: "T",
                 id: 1,
                 organizations: [],
                 isSuperAdmin: true,
             } as User;
-            mockUserService.user$ = of(superAdminUser) ;
+            mockUserService.user$ = of(superAdminUser);
 
             component.ngOnInit();
 
@@ -349,8 +349,6 @@ describe("AddWorkspaceComponent", () => {
             component.ngOnInit();
         });
 
-
-
         it("should return early if userDetail.roles is undefined", () => {
             component.userDetail = { ...mockUser, roles: undefined } as any;
             component.ngOnChanges();
@@ -386,7 +384,7 @@ describe("AddWorkspaceComponent", () => {
             };
             component.ngOnChanges();
 
-            expect(component.ecomindModule).toEqual({} as any);
+            expect(component.ecomindModule).toEqual(undefined as any);
         });
 
         it("should set adminModule to SimpleUser for non-admin users", () => {
@@ -448,8 +446,8 @@ describe("AddWorkspaceComponent", () => {
             component.ngOnChanges();
 
             expect(component.isModule.code).toBe(Role.InventoryRead);
-            expect(component.dsModule).toEqual({} as any);
-            expect(component.ecomindModule).toEqual({} as any);
+            expect(component.dsModule).toEqual(undefined as any);
+            expect(component.ecomindModule).toEqual(undefined as any);
         });
 
         it("should handle multiple module roles correctly", () => {
@@ -528,7 +526,7 @@ describe("AddWorkspaceComponent", () => {
 
             const result = component["mapCodeValueRole"](userRoles, rolesList);
 
-            expect(result).toEqual({} as any);
+            expect(result).toEqual(undefined as any);
         });
 
         it("should work correctly with EcoMind roles", () => {
@@ -555,7 +553,7 @@ describe("AddWorkspaceComponent", () => {
 
             const result = component["mapCodeValueRole"](userRoles, rolesList);
 
-            expect(result).toEqual({} as any);
+            expect(result).toEqual(undefined as any);
         });
     });
 
@@ -585,8 +583,6 @@ describe("AddWorkspaceComponent", () => {
             component.userDetail = mockUser;
         });
 
-
-
         it("should return body with module roles when not admin", () => {
             component.adminModule = { code: "SimpleUser" as Role, value: "User" };
             component.isModule = { code: Role.InventoryRead, value: "Read" };
@@ -606,8 +602,6 @@ describe("AddWorkspaceComponent", () => {
 
             expect(body.users[0].roles).toContain(Role.EcoMindAiWrite);
         });
-
-
     });
 
     describe("addUpdateWorkspace", () => {
@@ -638,8 +632,6 @@ describe("AddWorkspaceComponent", () => {
             expect(callArgs.users[0].userId).toBe(1);
         });
 
-
-
         it("should fetch user info after posting workspace", () => {
             mockAdministrationService.postUserToWorkspaceAndAddRoles.and.returnValue(
                 of({} as any),
@@ -655,8 +647,6 @@ describe("AddWorkspaceComponent", () => {
         beforeEach(() => {
             component.ngOnInit();
         });
-
-
 
         it("should set adminModule to WorkspaceAdmin", () => {
             component.forceAdmin();
@@ -707,8 +697,6 @@ describe("AddWorkspaceComponent", () => {
 
             expect(component.clearFormData).toHaveBeenCalled();
         });
-
-
     });
 
     describe("clearFormData", () => {
@@ -864,8 +852,6 @@ describe("AddWorkspaceComponent", () => {
         it("should have updateOrganizationEnable input with default value false", () => {
             expect(component.updateOrganizationEnable).toBe(false);
         });
-
-
     });
 
     describe("Role Arrays", () => {
