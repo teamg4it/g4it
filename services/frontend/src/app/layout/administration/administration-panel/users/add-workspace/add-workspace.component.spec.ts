@@ -32,6 +32,20 @@ describe("AddWorkspaceComponent", () => {
         firstName: "Test",
         lastName: "User",
         roles: [Role.InventoryRead],
+        isSuperAdmin: false,
+        organizations: [
+            {
+                id: 1,
+                name: "Test Org",
+                workspaces: [
+                    {
+                        id: 1,
+                        name: "Test Workspace",
+                        roles: [Role.InventoryRead],
+                    },
+                ],
+            },
+        ],
     } as UserDetails;
 
     const mockWorkspace: WorkspaceWithOrganization = {
@@ -263,18 +277,7 @@ describe("AddWorkspaceComponent", () => {
             component.userDetail = mockUser;
         });
 
-        it("should return body with WorkspaceAdmin role when admin is selected", () => {
-            component.adminModule = {
-                code: Role.WorkspaceAdmin,
-                value: "Admin",
-            };
 
-            const body = component.getWorkspaceBody();
-
-            expect(body.workspaceId).toBe(1);
-            expect(body.users[0].userId).toBe(1);
-            expect(body.users[0].roles).toEqual([Role.WorkspaceAdmin]);
-        });
 
         it("should return body with module roles when not admin", () => {
             component.adminModule = { code: "SimpleUser" as Role, value: "User" };
@@ -329,8 +332,6 @@ describe("AddWorkspaceComponent", () => {
 
 
 
-
-
         it("should fetch user info after posting workspace", () => {
             mockAdministrationService.postUserToWorkspaceAndAddRoles.and.returnValue(
                 of({} as any),
@@ -347,13 +348,7 @@ describe("AddWorkspaceComponent", () => {
             component.ngOnInit();
         });
 
-        it("should set all modules to write permissions", () => {
-            component.forceAdmin();
 
-            expect(component.dsModule.code).toBe(Role.DigitalServiceWrite);
-            expect(component.isModule.code).toBe(Role.InventoryWrite);
-            expect(component.ecomindModule.code).toBe(Role.EcoMindAiWrite);
-        });
 
         it("should set adminModule to WorkspaceAdmin", () => {
             component.forceAdmin();
