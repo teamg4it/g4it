@@ -286,10 +286,8 @@ export class UserService {
         if (workspace.roles.includes(Role.WorkspaceAdmin)) {
             const workSpaceRoles = [Role.WorkspaceAdmin, ...BasicRoles];
             if (workspace.roles.includes(Role.EcoMindAiWrite)) {
-                workSpaceRoles.push(Role.EcoMindAiWrite);
-                workSpaceRoles.push(Role.EcoMindAiRead);
-            }
-            if (workspace.roles.includes(Role.EcoMindAiRead)) {
+                workSpaceRoles.push(Role.EcoMindAiWrite, Role.EcoMindAiRead);
+            } else if (workspace.roles.includes(Role.EcoMindAiRead)) {
                 workSpaceRoles.push(Role.EcoMindAiRead);
             }
             return workSpaceRoles;
