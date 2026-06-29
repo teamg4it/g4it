@@ -20,6 +20,8 @@ import org.apache.commons.csv.CSVRecord;
 import org.apache.commons.io.input.BOMInputStream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -27,10 +29,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * Csv Import service
@@ -54,6 +53,9 @@ public class ReferentialImportService {
 
     @Autowired
     CacheManager cacheManager;
+
+    @Autowired
+    MessageSource messageSource;
 
     /**
      * Execute import
@@ -359,9 +361,17 @@ public class ReferentialImportService {
          * ===============================
          */
         try (BufferedReader reader = CsvEncodingUtils.getReader(bytes)) {
-            Iterable<CSVRecord> records = createCsvParser().parse(reader);
+            var parser = createCsvParser().parse(reader);
 
-            for (CSVRecord csvRecord : records) {
+            // Validate headers before processing
+            validateHeaders(
+                    parser.getHeaderNames(),
+                    List.of("criterion", "lifecycleStep", "name", "category", "avgElectricityConsumption",
+                            "description", "location", "level", "source", "tier", "unit", "value", "subscriber", "version"),
+                    "ItemImpact"
+            );
+
+            for (CSVRecord csvRecord : parser) {
                 ItemImpactRest itemImpactRest = referentialMapper.csvItemImpactToRest(csvRecord);
 
                 if (!Objects.equals(itemImpactRest.getOrganization(), organization)) {
@@ -395,20 +405,78 @@ public class ReferentialImportService {
          * ===============================
          */
         try (BufferedReader reader = CsvEncodingUtils.getReader(bytes)) {
-            Iterable<CSVRecord> records = createCsvParser().parse(reader);
+            var parser = createCsvParser().parse(reader);
 
-            for (CSVRecord csvRecord : records) {
+            List<String> headerNames = parser.getHeaderNames();
+
+            // Special check: If parser only found 1 column, the file is likely using comma as delimiter
+            if (headerNames.size() == 1) {
+                String singleHeader = headerNames.get(0);
+                if (singleHeader.contains(",")) {
+                    throw new BadRequestException(SUBSCRIBER,
+                        "CSV file format error: The file appears to be using COMMA (,) as delimiter instead of SEMICOLON (;). " +
+                        "This often happens when you include commas in numeric values (like '51,53'). " +
+                        "Solution: Use PERIOD for decimals (51.53) instead of comma, AND ensure your CSV editor saves the file with semicolon (;) as the delimiter. " +
+                        "If you must keep commas in values, quote them like \"51,53\".");
+                }
+            }
+
+            // Validate headers (should be consistent with STEP 1, but included for safety)
+            validateHeaders(
+                    headerNames,
+                    List.of("criterion", "lifecycleStep", "name", "category", "avgElectricityConsumption",
+                            "description", "location", "level", "source", "tier", "unit", "value", "subscriber", "version"),
+                    "ItemImpact"
+            );
+
+            for (CSVRecord csvRecord : parser) {
 
                 line = i + 2 + pageNumber * Constants.BATCH_SIZE;
 
-                ItemImpactRest itemImpactRest = referentialMapper.csvItemImpactToRest(csvRecord);
+                try {
+                    // Check if record has expected number of columns (detect wrong delimiter early)
+                    if (csvRecord.size() < 14) {
+                        String errorMessage = "The CSV file appears to use an incorrect delimiter. " +
+                                "Expected 14 columns but found " + csvRecord.size() + ". " +
+                                "Please ensure the file uses semicolon (;) as delimiter, not comma (,).";
+                        importReportRest.getErrors().add(printLine(line, errorMessage));
+                        i++;
+                        continue;
+                    }
 
-                Optional<String> violations = ValidationUtils.getViolations(validator.validate(itemImpactRest));
+                    ItemImpactRest itemImpactRest = referentialMapper.csvItemImpactToRest(csvRecord);
 
-                if (violations.isEmpty()) {
-                    objects.add(itemImpactRest);
-                } else {
-                    importReportRest.getErrors().add(printLine(line, violations.get()));
+                    Optional<String> violations = ValidationUtils.getViolations(validator.validate(itemImpactRest));
+
+                    if (violations.isEmpty()) {
+                        objects.add(itemImpactRest);
+                    } else {
+                        importReportRest.getErrors().add(printLine(line, violations.get()));
+                    }
+                } catch (NumberFormatException e) {
+                    // AC5: Handle decimal format error (comma instead of period)
+                    Locale locale = LocaleContextHolder.getLocale();
+                    String errorMessage = messageSource.getMessage(
+                            "itemimpact.decimal.comma.invalid",
+                            null,
+                            locale
+                    );
+                    importReportRest.getErrors().add(printLine(line, errorMessage));
+                } catch (IllegalArgumentException e) {
+                    // Handle CSV structure errors (e.g., missing columns, wrong delimiter, malformed data)
+                    String msg = e.getMessage();
+                    String errorMessage;
+
+                    if (msg != null && msg.contains("Index for header") && msg.contains("but CSVRecord only has")) {
+                        // This typically means wrong delimiter is used
+                        errorMessage = "The CSV file appears to use an incorrect delimiter. " +
+                                "Please ensure the file uses semicolon (;) as delimiter, not comma (,). " +
+                                "All required columns must be present in the correct order.";
+                    } else {
+                        errorMessage = "Invalid CSV structure: " + msg +
+                                ". Please ensure the file uses semicolon (;) as delimiter and has all required columns in the correct order.";
+                    }
+                    importReportRest.getErrors().add(printLine(line, errorMessage));
                 }
 
                 // ✅ batch save
@@ -477,16 +545,23 @@ public class ReferentialImportService {
 
             for (CSVRecord csvRecord :parser) {
 
-                ItemTypeRest item = referentialMapper.csvItemTypeToRest(csvRecord);
+                try {
+                    ItemTypeRest item = referentialMapper.csvItemTypeToRest(csvRecord);
 
-                Optional<String> violations =
-                        ValidationUtils.getViolations(validator.validate(item));
+                    Optional<String> violations =
+                            ValidationUtils.getViolations(validator.validate(item));
 
-                if (violations.isEmpty()) {
-                    item.setOrganization(null); // ignore subscriber
-                    objects.add(item);
-                } else {
-                    report.getErrors().add(printLine(line, violations.get()));
+                    if (violations.isEmpty()) {
+                        item.setOrganization(null); // ignore subscriber
+                        objects.add(item);
+                    } else {
+                        report.getErrors().add(printLine(line, violations.get()));
+                    }
+                } catch (IllegalArgumentException e) {
+                    // Handle CSV structure errors (e.g., missing columns, wrong delimiter, malformed data)
+                    String errorMessage = "Invalid CSV structure: " + e.getMessage() +
+                            ". Please ensure the file uses semicolon (;) as delimiter and has all required columns in the correct order.";
+                    report.getErrors().add(printLine(line, errorMessage));
                 }
 
                 line++;
@@ -533,16 +608,23 @@ public class ReferentialImportService {
             );
             for (CSVRecord csvRecord : parser) {
 
-                MatchingItemRest item = referentialMapper.csvMatchingItemToRest(csvRecord);
+                try {
+                    MatchingItemRest item = referentialMapper.csvMatchingItemToRest(csvRecord);
 
-                Optional<String> violations =
-                        ValidationUtils.getViolations(validator.validate(item));
+                    Optional<String> violations =
+                            ValidationUtils.getViolations(validator.validate(item));
 
-                if (violations.isEmpty()) {
-                    item.setOrganization(null);
-                    objects.add(item);
-                } else {
-                    report.getErrors().add(printLine(line, violations.get()));
+                    if (violations.isEmpty()) {
+                        item.setOrganization(null);
+                        objects.add(item);
+                    } else {
+                        report.getErrors().add(printLine(line, violations.get()));
+                    }
+                } catch (IllegalArgumentException e) {
+                    // Handle CSV structure errors (e.g., missing columns, wrong delimiter, malformed data)
+                    String errorMessage = "Invalid CSV structure: " + e.getMessage() +
+                            ". Please ensure the file uses semicolon (;) as delimiter and has all required columns in the correct order.";
+                    report.getErrors().add(printLine(line, errorMessage));
                 }
 
                 line++;
@@ -580,24 +662,80 @@ public class ReferentialImportService {
 
         try (BufferedReader reader = CsvEncodingUtils.getReader(bytes)) {
             var parser = createCsvParser().parse(reader);
+
+            List<String> headerNames = parser.getHeaderNames();
+
+            // Special check: If parser only found 1 column, the file is likely using comma as delimiter
+            // This commonly happens when users put commas in field values (like "51,53" for AC5 testing)
+            // and their CSV editor automatically switches the entire file to comma-delimited format
+            if (headerNames.size() == 1) {
+                String singleHeader = headerNames.get(0);
+                if (singleHeader.contains(",")) {
+                    throw new BadRequestException("csv",
+                        "CSV file format error: The file appears to be using COMMA (,) as delimiter instead of SEMICOLON (;). " +
+                        "This often happens when you include commas in numeric values (like '51,53'). " +
+                        "Solution: Use PERIOD for decimals (51.53) instead of comma, AND ensure your CSV editor saves the file with semicolon (;) as the delimiter. " +
+                        "If you must keep commas in values, quote them like \"51,53\".");
+                }
+            }
+
             validateHeaders(
-                    parser.getHeaderNames(),
+                    headerNames,
                     List.of("criterion", "lifecycleStep", "name", "category", "avgElectricityConsumption",
                             "description", "location", "level", "source", "tier", "unit", "value", "version"),
                     "ItemImpact"
             );
+
             for (CSVRecord csvRecord : parser) {
 
-                ItemImpactRest item = referentialMapper.csvItemImpactToRest(csvRecord);
+                try {
+                    // Check if record has expected number of columns (detect wrong delimiter early)
+                    if (csvRecord.size() < 13) {
+                        String errorMessage = "The CSV file appears to use an incorrect delimiter. " +
+                                "Expected 13 columns but found " + csvRecord.size() + ". " +
+                                "Please ensure the file uses semicolon (;) as delimiter, not comma (,).";
+                        report.getErrors().add(printLine(line, errorMessage));
+                        line++;
+                        continue;
+                    }
 
-                Optional<String> violations =
-                        ValidationUtils.getViolations(validator.validate(item));
+                    ItemImpactRest item = referentialMapper.csvItemImpactToRest(csvRecord);
 
-                if (violations.isEmpty()) {
-                    item.setOrganization(null);
-                    objects.add(item);
-                } else {
-                    report.getErrors().add(printLine(line, violations.get()));
+                    Optional<String> violations =
+                            ValidationUtils.getViolations(validator.validate(item));
+
+                    if (violations.isEmpty()) {
+                        item.setOrganization(null);
+                        objects.add(item);
+                    } else {
+                        // Convert technical validation errors to user-friendly messages
+                        String errorMessage = convertValidationError(violations.get(), item);
+                        report.getErrors().add(printLine(line, errorMessage));
+                    }
+                } catch (NumberFormatException e) {
+                    // AC5: Handle decimal format error (comma instead of period)
+                    Locale locale = LocaleContextHolder.getLocale();
+                    String errorMessage = messageSource.getMessage(
+                            "itemimpact.decimal.comma.invalid",
+                            null,
+                            locale
+                    );
+                    report.getErrors().add(printLine(line, errorMessage));
+                } catch (IllegalArgumentException e) {
+                    // Handle CSV structure errors (e.g., missing columns, wrong delimiter, malformed data)
+                    String msg = e.getMessage();
+                    String errorMessage;
+
+                    if (msg != null && msg.contains("Index for header") && msg.contains("but CSVRecord only has")) {
+                        // This typically means wrong delimiter is used
+                        errorMessage = "The CSV file appears to use an incorrect delimiter. " +
+                                "Please ensure the file uses semicolon (;) as delimiter, not comma (,). " +
+                                "All required columns must be present in the correct order.";
+                    } else {
+                        errorMessage = "Invalid CSV structure: " + msg +
+                                ". Please ensure the file uses semicolon (;) as delimiter and has all required columns in the correct order.";
+                    }
+                    report.getErrors().add(printLine(line, errorMessage));
                 }
 
                 line++;
@@ -618,17 +756,34 @@ public class ReferentialImportService {
     private void validateHeaders(List<String> actual, List<String> expected, String type) {
 
         if (actual.size() != expected.size()) {
-            throw new BadRequestException("csv",
-                    "Invalid headers for " + type + ". Expected: " + expected + ", but got: " + actual);
+            // Check if columns are missing
+            List<String> missing = new ArrayList<>(expected);
+            missing.removeAll(actual);
+
+            if (!missing.isEmpty()) {
+                throw new BadRequestException("csv",
+                        "Some required columns are missing in the " + type + " file. Missing columns: " + missing +
+                        ". Please refer to the data model for the complete list of required columns.");
+            }
+
+            // Check if there are extra columns
+            List<String> extra = new ArrayList<>(actual);
+            extra.removeAll(expected);
+
+            if (!extra.isEmpty()) {
+                throw new BadRequestException("csv",
+                        "Some unexpected columns are present in the " + type + " file. Unexpected columns: " + extra +
+                        ". Please refer to the data model for the complete list of valid columns.");
+            }
         }
 
         for (int i = 0; i < expected.size(); i++) {
             if (!expected.get(i).equals(actual.get(i))) {
                 throw new BadRequestException("csv",
-                        "Invalid header at position " + (i + 1) +
-                                " for " + type +
-                                ". Expected: " + expected.get(i) +
-                                ", but got: " + actual.get(i));
+                        "Invalid column order in the " + type + " file at position " + (i + 1) +
+                                ". Expected column: '" + expected.get(i) +
+                                "', but found: '" + actual.get(i) +
+                                "'. Please ensure columns are in the correct order as specified in the data model.");
             }
         }
     }
@@ -664,5 +819,37 @@ public class ReferentialImportService {
      */
     private String printLine(int line, String str) {
         return String.join(" ", "line", String.valueOf(line), ": ", str);
+    }
+
+    /**
+     * Convert technical validation errors to user-friendly messages
+     *
+     * @param technicalError The technical error from validation
+     * @param item The item being validated
+     * @return User-friendly error message
+     */
+    private String convertValidationError(String technicalError, ItemImpactRest item) {
+        Locale locale = LocaleContextHolder.getLocale();
+
+        // Check for lifecycleStep pattern error (AC3)
+        if (technicalError.contains("lifecycleStep") && technicalError.contains("must match")) {
+            return messageSource.getMessage(
+                    "itemimpact.lifecyclestep.invalid",
+                    null,
+                    locale
+            );
+        }
+
+        // Check for criterion pattern error (AC2)
+        if (technicalError.contains("criterion") && technicalError.contains("must match")) {
+            return messageSource.getMessage(
+                    "itemimpact.criterion.invalid",
+                    null,
+                    locale
+            );
+        }
+
+        // Return original error if no specific match
+        return technicalError;
     }
 }
