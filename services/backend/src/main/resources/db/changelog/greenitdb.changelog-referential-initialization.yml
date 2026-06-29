@@ -603,3 +603,32 @@ databaseChangeLog:
               - column:
                   name: workspace_id
 
+  - changeSet:
+      id: add-hide-reference-values
+      author: G4IT Dev Team
+      changes:
+        - addColumn:
+            tableName: ref_item_impact
+            columns:
+              - column:
+                  name: is_hidden
+                  type: boolean
+                  defaultValueBoolean: true
+                  constraints:
+                    nullable: true
+
+        - update:
+            tableName: ref_item_impact
+            columns:
+              - column:
+                  name: is_hidden
+                  valueBoolean: false
+            where: LOWER(source) LIKE '%base impacts%'
+
+        # Create index on source column
+        - createIndex:
+            indexName: idx_ref_item_impact_source
+            tableName: ref_item_impact
+            columns:
+              - column:
+                  name: source
