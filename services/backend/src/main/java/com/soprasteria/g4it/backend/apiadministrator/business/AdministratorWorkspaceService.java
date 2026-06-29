@@ -219,7 +219,19 @@ public class AdministratorWorkspaceService {
                 .orElseThrow(() -> new G4itRestException("404", String.format("WorkspaceId %s is not found", workspaceId)));
 
         if (checkAdminRole) {
-            administratorRoleService.hasWorkspaceAdminAndEcoMindAIWriteRole(user, workspaceId);
+            // Check if any EcoMind AI roles are being assigned
+            boolean hasEcoMindAIRoles = linkUserRoleRest.getUsers().stream()
+                    .anyMatch(userRoleRest -> userRoleRest.getRoles() != null &&
+                            (userRoleRest.getRoles().contains(Constants.ROLE_ECO_MIND_AI_WRITE)));
+
+            if (hasEcoMindAIRoles) {
+                // If assigning EcoMind AI roles, require workspace admin AND EcoMind AI Write role
+                administratorRoleService.hasWorkspaceAdminAndEcoMindAIWriteRole(user, workspaceId);
+            } else {
+                // For other roles, just require workspace or organization admin role
+                long organizationId = workspace.getOrganization().getId();
+                administratorRoleService.hasAdminRightOnOrganizationOrWorkspace(user, organizationId, workspaceId);
+            }
         }
         List<UserInfoBO> userInfoList = new ArrayList<>();
 
