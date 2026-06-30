@@ -5,7 +5,7 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component, Input, Signal, computed, inject, input } from "@angular/core";
+import { Component, Input, Signal, computed, inject, input, signal } from "@angular/core";
 import { EChartsOption } from "echarts";
 import { Constants } from "src/constants";
 
@@ -40,6 +40,7 @@ import { AbstractDashboard } from "../abstract-dashboard";
 
 import { TranslatePipe } from "@ngx-translate/core";
 import { NgxEchartsDirective } from "ngx-echarts";
+import { InverseAxisButtonComponent } from "../../common/inverse-axis-button/inverse-axis-button.component";
 import { StackBarChartComponent } from "../../common/stack-bar-chart/stack-bar-chart.component";
 import { GraphDescriptionComponent } from "../../digital-services-footprint/digital-services-footprint-dashboard/graph-description/graph-description.component";
 
@@ -56,6 +57,7 @@ import { GraphDescriptionComponent } from "../../digital-services-footprint/digi
         NgxEchartsDirective,
         GraphDescriptionComponent,
         TranslatePipe,
+        InverseAxisButtonComponent,
     ],
 })
 export class InventoriesMultiCriteriaFootprintComponent extends AbstractDashboard {
@@ -77,6 +79,7 @@ export class InventoriesMultiCriteriaFootprintComponent extends AbstractDashboar
     inventory = input<Inventory>();
     sourceList = input<string[]>([]);
     showInconsitencyGraph = false;
+    isAxisInverted = signal<boolean>(false);
     dimensions = Constants.EQUIPMENT_DIMENSIONS;
     criteriaMap: StatusCountMap = {};
     xAxisInput: string[] = [];
@@ -128,15 +131,20 @@ export class InventoriesMultiCriteriaFootprintComponent extends AbstractDashboar
     });
 
     options: Signal<EChartsOption> = computed(() => {
-        return this.renderChart(this.criteriaCalculated(), this.store.dimension());
+        return this.renderChart(
+            this.criteriaCalculated(),
+            this.store.dimension(),
+            this.isAxisInverted(),
+        );
     });
 
     renderChart(
         criteriaCalculated: CriteriaCalculated,
         selectedView: string,
+        isInverted: boolean,
     ): EChartsOption {
         const footprintCalculated = criteriaCalculated.footprints;
-
+        console.log(footprintCalculated);
         if (footprintCalculated.length === 0) {
             this.xAxisInput = [];
             return {};
@@ -206,6 +214,7 @@ export class InventoriesMultiCriteriaFootprintComponent extends AbstractDashboar
                 nameTextStyle: {
                     fontStyle: "italic",
                 },
+                inverse: isInverted,
             },
             polar: {
                 radius: "62%",
@@ -342,5 +351,9 @@ export class InventoriesMultiCriteriaFootprintComponent extends AbstractDashboar
 
     handleImpactClick(impactName: any) {
         this.onChartClick({ name: impactName });
+    }
+
+    onAxisInversionChange(isInverted: boolean): void {
+        this.isAxisInverted.set(isInverted);
     }
 }
