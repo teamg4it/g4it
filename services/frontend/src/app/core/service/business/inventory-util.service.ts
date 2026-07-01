@@ -87,7 +87,9 @@ export class InventoryUtilService {
         const [maxCriteria, maxStep] = this.maxCriteriaAndStep(footprint);
         const impacts = footprint[maxCriteria]?.impacts.filter(
             (impact) =>
-                impact.acvStep === maxStep && impact.status !== Constants.CLOUD_SERVICES,
+                impact.acvStep === maxStep &&
+                impact.status !== Constants.CLOUD_SERVICES &&
+                impact.level == Constants.EQUIPEMENT_2,
         );
 
         const physicalEquipmentCount =
@@ -99,7 +101,9 @@ export class InventoryUtilService {
 
         const filteredEquipmentsAvgAge = equipmentsAvgAge.filter(
             (equipment) =>
-                hasAllFilters || this.isEquipmentPresent(equipment, filtersSet, false),
+                (hasAllFilters ||
+                    this.isEquipmentPresent(equipment, filtersSet, false)) &&
+                equipment.level === Constants.EQUIPEMENT_2,
         );
 
         const { physicalEquipmentSum, poidsSum } = filteredEquipmentsAvgAge.reduce(
