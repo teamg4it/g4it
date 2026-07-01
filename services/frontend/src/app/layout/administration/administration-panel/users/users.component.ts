@@ -202,6 +202,12 @@ export class UsersComponent implements OnInit {
     getRole(roles: string[], type: string) {
         if (!roles || roles.length === 0) return "";
 
+        if (type === "ECO_MIND_AI_") {
+            if (roles.includes(Role.EcoMindAiWrite)) return "administration.role.write";
+            if (roles.includes(Role.EcoMindAiRead)) return "administration.role.read";
+            return "";
+        }
+
         if (type === "ADMINISTRATOR") {
             return this.isAdmin(roles)
                 ? "administration.role.admin"

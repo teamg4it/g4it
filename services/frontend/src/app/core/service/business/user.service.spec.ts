@@ -17,7 +17,7 @@ import { TranslateModule, TranslateService } from "@ngx-translate/core";
 import { MessageService } from "primeng/api";
 import { ToastModule } from "primeng/toast";
 import { of, ReplaySubject } from "rxjs";
-import { BasicRoles, Role } from "../../interfaces/roles.interfaces";
+import { BasicRoles, OrgBasicRoles, Role } from "../../interfaces/roles.interfaces";
 import { Organization, User, Workspace } from "../../interfaces/user.interfaces";
 import { UserDataService } from "../data/user-data.service";
 import { UserService } from "./user.service";
@@ -397,6 +397,8 @@ describe("UserService", () => {
             Role.OrganizationAdmin,
             Role.WorkspaceAdmin,
             ...BasicRoles,
+            Role.EcoMindAiRead,
+            Role.EcoMindAiWrite,
         ]);
     });
 
@@ -593,6 +595,154 @@ describe("UserService", () => {
                 currentUser.organizations[0].workspaces[0],
                 "inventories",
             );
+        });
+    });
+
+    describe("getRoles", () => {
+        it("should return OrganizationAdmin and all OrgBasicRoles when organization has OrganizationAdmin role", () => {
+            const organization = {
+                roles: [Role.OrganizationAdmin],
+            } as Organization;
+            const workspace = {
+                roles: [Role.InventoryRead],
+            } as Workspace;
+
+            const roles = service.getRoles(organization, workspace);
+
+            expect(roles).toContain(Role.OrganizationAdmin);
+            expect(roles).toContain(Role.WorkspaceAdmin);
+            expect(roles).toHaveSize(2 + OrgBasicRoles.length);
+        });
+
+        it("should return WorkspaceAdmin and BasicRoles with EcoMindAiWrite and EcoMindAiRead when workspace has WorkspaceAdmin and EcoMindAiWrite", () => {
+            const organization = {
+                roles: [],
+            } as unknown as Organization;
+            const workspace = {
+                roles: [Role.WorkspaceAdmin, Role.EcoMindAiWrite],
+            } as Workspace;
+
+            const roles = service.getRoles(organization, workspace);
+
+            expect(roles).toContain(Role.WorkspaceAdmin);
+            expect(roles).toContain(Role.EcoMindAiWrite);
+            expect(roles).toContain(Role.EcoMindAiRead);
+            expect(roles).toHaveSize(1 + BasicRoles.length + 2);
+        });
+
+        it("should return WorkspaceAdmin and BasicRoles with EcoMindAiRead when workspace has WorkspaceAdmin and only EcoMindAiRead", () => {
+            const organization = {
+                roles: [],
+            }  as unknown as Organization;
+            const workspace = {
+                roles: [Role.WorkspaceAdmin, Role.EcoMindAiRead],
+            } as Workspace;
+
+            const roles = service.getRoles(organization, workspace);
+
+            expect(roles).toContain(Role.WorkspaceAdmin);
+            expect(roles).toContain(Role.EcoMindAiRead);
+            expect(roles).not.toContain(Role.EcoMindAiWrite);
+            expect(roles).toHaveSize(1 + BasicRoles.length + 1);
+        });
+
+        it("should return WorkspaceAdmin and BasicRoles without EcoMind roles when workspace has WorkspaceAdmin without EcoMind roles", () => {
+            const organization = {
+                roles: [],
+            } as unknown as Organization;
+            const workspace = {
+                roles: [Role.WorkspaceAdmin],
+            } as Workspace;
+
+            const roles = service.getRoles(organization, workspace);
+
+            expect(roles).toContain(Role.WorkspaceAdmin);
+            expect(roles).not.toContain(Role.EcoMindAiRead);
+            expect(roles).not.toContain(Role.EcoMindAiWrite);
+            expect(roles).toHaveSize(1 + BasicRoles.length);
+        });
+
+        it("should add InventoryRead when workspace has InventoryWrite", () => {
+            const organization = {
+                roles: [],
+            } as unknown as Organization;
+            const workspace = {
+                roles: [Role.InventoryWrite],
+            } as Workspace;
+
+            const roles = service.getRoles(organization, workspace);
+
+            expect(roles).toContain(Role.InventoryWrite);
+            expect(roles).toContain(Role.InventoryRead);
+            expect(roles).toHaveSize(2);
+        });
+
+        it("should add DigitalServiceRead when workspace has DigitalServiceWrite", () => {
+            const organization = {
+                roles: [],
+            } as unknown as Organization;
+            const workspace = {
+                roles: [Role.DigitalServiceWrite],
+            } as Workspace;
+
+            const roles = service.getRoles(organization, workspace);
+
+            expect(roles).toContain(Role.DigitalServiceWrite);
+            expect(roles).toContain(Role.DigitalServiceRead);
+            expect(roles).toHaveSize(2);
+        });
+
+        it("should add EcoMindAiRead when workspace has EcoMindAiWrite for regular users", () => {
+            const organization = {
+                roles: [],
+            } as unknown as Organization;
+            const workspace = {
+                roles: [Role.EcoMindAiWrite],
+            } as Workspace;
+
+            const roles = service.getRoles(organization, workspace);
+
+            expect(roles).toContain(Role.EcoMindAiWrite);
+            expect(roles).toContain(Role.EcoMindAiRead);
+            expect(roles).toHaveSize(2);
+        });
+
+        it("should return only workspace roles when user has read-only permissions", () => {
+            const organization = {
+                roles: [],
+            } as unknown as Organization;
+            const workspace = {
+                roles: [Role.InventoryRead, Role.DigitalServiceRead],
+            } as Workspace;
+
+            const roles = service.getRoles(organization, workspace);
+
+            expect(roles).toContain(Role.InventoryRead);
+            expect(roles).toContain(Role.DigitalServiceRead);
+            expect(roles).toHaveSize(2);
+        });
+
+        it("should handle multiple write roles correctly", () => {
+            const organization = {
+                roles: [],
+            } as unknown as Organization;
+            const workspace = {
+                roles: [
+                    Role.InventoryWrite,
+                    Role.DigitalServiceWrite,
+                    Role.EcoMindAiWrite,
+                ],
+            } as Workspace;
+
+            const roles = service.getRoles(organization, workspace);
+
+            expect(roles).toContain(Role.InventoryWrite);
+            expect(roles).toContain(Role.InventoryRead);
+            expect(roles).toContain(Role.DigitalServiceWrite);
+            expect(roles).toContain(Role.DigitalServiceRead);
+            expect(roles).toContain(Role.EcoMindAiWrite);
+            expect(roles).toContain(Role.EcoMindAiRead);
+            expect(roles).toHaveSize(6);
         });
     });
 });
