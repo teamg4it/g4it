@@ -9,7 +9,6 @@
 package com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice;
 
 
-import com.soprasteria.g4it.backend.apidigitalservice.business.DigitalServiceService;
 import com.soprasteria.g4it.backend.apidigitalservice.business.DigitalServiceVersionService;
 import com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.checkmetadata.CheckMetadataInventoryFileService;
 import com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.loadmetadata.AsyncLoadMetadataService;
@@ -18,19 +17,23 @@ import com.soprasteria.g4it.backend.common.filesystem.model.FileType;
 import com.soprasteria.g4it.backend.common.model.Context;
 import com.soprasteria.g4it.backend.common.model.FileToLoad;
 import com.soprasteria.g4it.backend.common.model.LineError;
+import com.soprasteria.g4it.backend.common.task.business.TaskTimeoutMonitor;
 import com.soprasteria.g4it.backend.common.task.model.ITaskExecute;
 import com.soprasteria.g4it.backend.common.task.model.TaskStatus;
 import com.soprasteria.g4it.backend.common.task.modeldb.Task;
 import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
 import com.soprasteria.g4it.backend.common.utils.LogUtils;
 import com.soprasteria.g4it.backend.exception.AsyncTaskException;
+import com.soprasteria.g4it.backend.exception.TaskTimeoutException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 @Service
@@ -50,6 +53,10 @@ public class AsyncLoadFilesService implements ITaskExecute {
     private CheckMetadataInventoryFileService checkMetadataInventoryFileService;
     @Autowired
     private FileLoadingUtils fileLoadingUtils;
+    @Autowired
+    private TaskTimeoutMonitor taskTimeoutMonitor;
+    @Autowired
+    private MessageSource messageSource;
 
     /**
      * Execute the Task of type LOADING
@@ -77,16 +84,35 @@ public class AsyncLoadFilesService implements ITaskExecute {
         context.initTaskId(task.getId());
 
         try {
+            Thread.sleep(90000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            // Check timeout at the beginning
+
+            taskTimeoutMonitor.checkTaskTimeout(task.getId());
+
             //Download all files
             fileLoadingUtils.downloadAllFileToLoad(context);
+
+            // Check timeout after download
+            taskTimeoutMonitor.checkTaskTimeout(task.getId());
 
             //Convert all files
             fileLoadingUtils.convertAllFileToLoad(context);
 
+            // Check timeout after conversion
+            taskTimeoutMonitor.checkTaskTimeout(task.getId());
+
             // Task fails if mandatory headers are missing
             List<String> mandatoryHeaderErrors = loadFileService.mandatoryHeadersCheck(context);
             if (mandatoryHeaderErrors != null && !mandatoryHeaderErrors.isEmpty()) {
-                task.setErrors(mandatoryHeaderErrors);
+                // Truncate errors to fit database limit
+                List<String> truncatedErrors = mandatoryHeaderErrors.stream()
+                        .map(LogUtils::truncateToDbLimit)
+                        .toList();
+                task.setErrors(truncatedErrors);
                 task.setStatus(TaskStatus.FAILED.toString());
                 details.addAll(mandatoryHeaderErrors.stream().map(LogUtils::error).toList());
                 details.add(LogUtils.info("Task failed"));
@@ -99,7 +125,13 @@ public class AsyncLoadFilesService implements ITaskExecute {
             //Load Metadata files
             asyncLoadMetadataService.loadInputMetadata(context);
 
+            // Check timeout after metadata loading
+            taskTimeoutMonitor.checkTaskTimeout(task.getId());
+
             Map<String, Map<Integer, List<LineError>>> coherenceErrors = checkMetadataInventoryFileService.checkMetadataInventoryFile(task.getId(), context.getInventoryId(), context.getDigitalServiceVersionUid());
+
+            // Check timeout after coherence check
+            taskTimeoutMonitor.checkTaskTimeout(task.getId());
 
             //  Check if any file is exceeding the error threshold before processing any files.
             for (FileToLoad fileToLoad : context.getFilesToLoad()) {
@@ -109,7 +141,7 @@ public class AsyncLoadFilesService implements ITaskExecute {
                     errors.add(LogUtils.error(TOO_MANY_ERRORS_MESSAGE + fileToLoad.getOriginalFileName() + " : " + errorNumberInFile));
                     log.error("Task with id '{}' failed due to too many errors in the file '{}' for '{}'", task.getId(), fileToLoad.getOriginalFileName(), context.log());
                     task.setStatus(TaskStatus.FAILED.toString());
-                    details.add(TOO_MANY_ERRORS_MESSAGE + fileToLoad.getOriginalFileName() + " : " + errorNumberInFile);
+                    details.add(LogUtils.error(TOO_MANY_ERRORS_MESSAGE + fileToLoad.getOriginalFileName() + " : " + errorNumberInFile));
                     task.setErrors(errors);
                     task.setDetails(details);
                     taskRepository.save(task);
@@ -125,6 +157,9 @@ public class AsyncLoadFilesService implements ITaskExecute {
                 for (FileToLoad fileToLoad : context.getFilesToLoad()) {
                     if (fileType.equals(fileToLoad.getFileType())) {
 
+                        // Check timeout before processing each file
+                        taskTimeoutMonitor.checkTaskTimeout(task.getId());
+
                         Map<Integer, List<LineError>> specificFileError = coherenceErrors.getOrDefault(fileToLoad.getFilename(), Map.of());
                         fileToLoad.setCoherenceErrorByLineNumer(specificFileError);
 
@@ -135,7 +170,9 @@ public class AsyncLoadFilesService implements ITaskExecute {
                         if (errorNumberInFile > 50000) {
                             errors.add(LogUtils.error(TOO_MANY_ERRORS_MESSAGE + fileToLoad.getOriginalFileName() + " : " + errorNumberInFile));
                         } else {
-                            errors.addAll(loadFileService.manageFile(context, fileToLoad));
+                            // Truncate errors from loadFileService to fit database limit
+                            List<String> fileErrors = loadFileService.manageFile(context, fileToLoad);
+                            errors.addAll(fileErrors.stream().map(LogUtils::truncateToDbLimit).toList());
                         }
 
                         fileNumber++;
@@ -159,6 +196,14 @@ public class AsyncLoadFilesService implements ITaskExecute {
             task.setStatus(hasRejectedFile ? TaskStatus.COMPLETED_WITH_ERRORS.toString() : TaskStatus.COMPLETED.toString());
             task.setProgressPercentage("100%");
 
+        } catch (TaskTimeoutException e) {
+            log.error("Task with id '{}' timed out for '{}' - {}", task.getId(), context.log(), e.getMessage());
+            task.setStatus(TaskStatus.FAILED.toString());
+            // Get the appropriate localized message
+            Locale locale = context.getLocale() != null ? context.getLocale() : Locale.getDefault();
+            String localizedMessage = messageSource.getMessage("import.timeout", null, locale);
+            details.add(LogUtils.error(localizedMessage));
+            errors.add(LogUtils.truncateToDbLimit(localizedMessage));
         } catch (AsyncTaskException e) {
             log.error("Async task with id '{}' failed for '{}' with error: ", task.getId(), context.log(), e);
             task.setStatus(TaskStatus.FAILED.toString());
@@ -167,7 +212,7 @@ public class AsyncLoadFilesService implements ITaskExecute {
             log.error("Task with id '{}' failed for '{}' with error: ", task.getId(), context.log(), e);
             task.setStatus(TaskStatus.FAILED.toString());
             details.add(LogUtils.error(e.getMessage()));
-        } finally {
+        }   finally {
             task.setErrors(errors);
             task.setDetails(details);
         }

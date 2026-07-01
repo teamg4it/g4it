@@ -147,8 +147,8 @@ public class LoadInputFilesService {
                 .datetime(LocalDateTime.now())
                 .hasVirtualEquipments(inventory.getVirtualEquipmentCount() > 0)
                 .hasApplications(inventory.getApplicationCount() > 0)
+                .locale(Locale.getDefault())
                 .build();
-
         /*
          * CRITICAL FIX:
          * Immediately detach MultipartFiles.
@@ -230,6 +230,7 @@ public class LoadInputFilesService {
                 .workspaceName(workspaceService.getWorkspaceById(workspaceId).getName())
                 .digitalServiceVersionUid(digitalServiceVersionUid)
                 .datetime(LocalDateTime.now())
+                .locale(Locale.getDefault())
                 .build();
         final Map<FileType, List<StoredFile>> storedFiles =
                 detachFiles(allFiles, false);
