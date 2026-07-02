@@ -62,6 +62,12 @@ g4it:
   local:
     retention:
       ttl: PT10M
+  task:
+    stuck:
+      timeout:
+        hours: 0.05                  # Tasks stuck for this long will be marked as FAILED
+      check:
+        enabled: true
 
 filesystem.local.path: ".\\storage"
 

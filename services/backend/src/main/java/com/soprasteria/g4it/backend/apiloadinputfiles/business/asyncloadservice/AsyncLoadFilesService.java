@@ -75,7 +75,6 @@ public class AsyncLoadFilesService implements ITaskExecute {
         List<String> filenames = task.getFilenames();
         context.initFileToLoad(fileLoadingUtils.mapFileToLoad(filenames, isInventory));
         context.initTaskId(task.getId());
-
         try {
             //Download all files
             fileLoadingUtils.downloadAllFileToLoad(context);
