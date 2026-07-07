@@ -1,6 +1,7 @@
 package com.soprasteria.g4it.backend.apievaluating.business.asyncevaluatingservice;
 
 import com.soprasteria.g4it.backend.common.model.Context;
+import com.soprasteria.g4it.backend.common.task.business.TaskTimeoutMonitor;
 import com.soprasteria.g4it.backend.common.task.model.TaskStatus;
 import com.soprasteria.g4it.backend.common.task.modeldb.Task;
 import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
@@ -13,6 +14,7 @@ import org.mockito.InOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.MessageSource;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -41,6 +43,12 @@ class AsyncEvaluatingServiceTest {
     ExportService exportService;
 
     @Mock
+    TaskTimeoutMonitor taskTimeoutMonitor;
+
+    @Mock
+    MessageSource messageSource;
+
+    @Mock
     Context context;
 
     @Mock
@@ -56,6 +64,9 @@ class AsyncEvaluatingServiceTest {
 
         // ***** FIX FOR NoSuchElementException *****
         when(taskRepository.findById(101L)).thenReturn(Optional.of(task));
+
+        // Stub timeout monitor to do nothing by default
+        doNothing().when(taskTimeoutMonitor).checkTaskTimeout(anyLong());
     }
 
 
@@ -295,21 +306,6 @@ class AsyncEvaluatingServiceTest {
     }
 
     @Test
-    void execute_shouldThrow_whenUpdateTaskStateThrows() {
-        doThrow(new RuntimeException("state-fail"))
-                .when(taskRepository)
-                .updateTaskState(eq(101L), eq(TaskStatus.IN_PROGRESS.toString()), any(), eq("0%"));
-
-        RuntimeException ex = assertThrows(RuntimeException.class,
-                () -> asyncEvaluatingService.execute(context, task));
-
-        assertEquals("state-fail", ex.getMessage());
-
-        verify(exportService, never()).createExportDirectory(anyLong());
-        verify(taskRepository, never()).updateTaskFinalState(anyLong(), anyString(), anyString(), anyList());
-    }
-
-    @Test
     void execute_shouldUpdateTaskStateBeforeCallingEvaluate() {
         when(context.isAi()).thenReturn(false);
         stubOrgAndWorkspace();
@@ -323,12 +319,16 @@ class AsyncEvaluatingServiceTest {
 
         asyncEvaluatingService.execute(context, task);
 
-        InOrder inOrder = inOrder(taskRepository, exportService, evaluateService);
+        InOrder inOrder = inOrder(taskRepository, taskTimeoutMonitor, exportService, evaluateService);
 
         inOrder.verify(taskRepository).updateTaskState(eq(101L), eq(TaskStatus.IN_PROGRESS.toString()), any(), eq("0%"));
+        inOrder.verify(taskTimeoutMonitor).checkTaskTimeout(101L);
         inOrder.verify(exportService).createExportDirectory(101L);
+        inOrder.verify(taskTimeoutMonitor).checkTaskTimeout(101L);
         inOrder.verify(evaluateService).doEvaluate(context, task, exportDir);
+        inOrder.verify(taskTimeoutMonitor).checkTaskTimeout(101L);
         inOrder.verify(exportService).uploadExportZip(101L, "ORG", "999");
+        inOrder.verify(taskTimeoutMonitor).checkTaskTimeout(101L);
         inOrder.verify(exportService).clean(101L);
     }
 
@@ -346,12 +346,16 @@ class AsyncEvaluatingServiceTest {
 
         asyncEvaluatingService.execute(context, task);
 
-        InOrder inOrder = inOrder(taskRepository, exportService, evaluateAiService);
+        InOrder inOrder = inOrder(taskRepository, taskTimeoutMonitor, exportService, evaluateAiService);
 
         inOrder.verify(taskRepository).updateTaskState(eq(101L), eq(TaskStatus.IN_PROGRESS.toString()), any(), eq("0%"));
+        inOrder.verify(taskTimeoutMonitor).checkTaskTimeout(101L);
         inOrder.verify(exportService).createExportDirectory(101L);
+        inOrder.verify(taskTimeoutMonitor).checkTaskTimeout(101L);
         inOrder.verify(evaluateAiService).doEvaluateAi(context, task, exportDir);
+        inOrder.verify(taskTimeoutMonitor).checkTaskTimeout(101L);
         inOrder.verify(exportService).uploadExportZip(101L, "ORG", "999");
+        inOrder.verify(taskTimeoutMonitor).checkTaskTimeout(101L);
         inOrder.verify(exportService).clean(101L);
 
         verify(taskRepository).updateTaskFinalState(

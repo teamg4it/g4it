@@ -33,6 +33,13 @@ aimodelestimationapi:
 
 g4it:
   criteria: "Climate change, Particulate matter and respiratory inorganics, Ionising radiation, Acidification, Resource use (minerals and metals)"
+  import:
+    timeout:
+      minutes: 1                          # Maximum time for import process before timeout
+    progress:
+      check:
+        interval:
+          seconds: 30                      # Interval to check for import progress
   data:
     retention:
       cron: "0 0 0 * * *"

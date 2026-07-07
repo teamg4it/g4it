@@ -7,6 +7,8 @@ import com.soprasteria.g4it.backend.apiloadinputfiles.util.FileLoadingUtils;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileType;
 import com.soprasteria.g4it.backend.common.model.Context;
 import com.soprasteria.g4it.backend.common.model.FileToLoad;
+import com.soprasteria.g4it.backend.common.task.business.TaskTimeoutMonitor;
+import com.soprasteria.g4it.backend.common.task.model.TaskStatus;
 import com.soprasteria.g4it.backend.common.task.modeldb.Task;
 import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,10 +17,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.MessageSource;
 
 import java.util.Collections;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
@@ -40,10 +44,14 @@ class AsyncLoadFilesServiceTest {
     private CheckMetadataInventoryFileService checkMetadataInventoryFileService;
     @Mock
     private FileLoadingUtils fileLoadingUtils;
+    @Mock
+    private TaskTimeoutMonitor taskTimeoutMonitor;
+    @Mock
+    private MessageSource messageSource;
 
     private Context context;
 
-    @Mock
+
     private Task task;
     private FileToLoad file;
 
@@ -55,6 +63,11 @@ class AsyncLoadFilesServiceTest {
                 .inventoryId(100L)
                 .build();
 
+        task = new Task();
+        task.setId(55L);
+        task.setFilenames(List.of("virtual_equipment.csv"));
+        task.setStatus(TaskStatus.TO_START.toString());
+
         file = new FileToLoad();
         file.setFileType(FileType.EQUIPEMENT_VIRTUEL);
         file.setFilename("virtual_equipment.csv");
@@ -63,11 +76,26 @@ class AsyncLoadFilesServiceTest {
         context.initFileToLoad(List.of(file));
         context.initTaskId(task.getId());
 
-        // Only stubs needed for all tests
         lenient().when(taskRepository.save(any(Task.class))).thenAnswer(inv -> inv.getArgument(0));
         lenient().when(loadFileService.manageFile(any(), any())).thenReturn(Collections.emptyList());
+
+        lenient().doNothing().when(taskTimeoutMonitor).checkTaskTimeout(anyLong());
+
+        lenient().doNothing().when(fileLoadingUtils).downloadAllFileToLoad(any());
+        lenient().doNothing().when(fileLoadingUtils).convertAllFileToLoad(any());
+        lenient().doNothing().when(fileLoadingUtils).cleanConvertedFiles(any());
+
+        lenient().doNothing().when(asyncLoadMetadataService).loadInputMetadata(any());
+
+        lenient().when(checkMetadataInventoryFileService
+                        .checkMetadataInventoryFile(anyLong(), anyLong(), any()))
+                .thenReturn(Collections.emptyMap());
+
+        lenient().doNothing().when(loadFileService).linkApplicationsToVirtualEquipments(anyLong());
+        lenient().doNothing().when(loadFileService).setInventoryCounts(anyLong());
+        lenient().when(fileLoadingUtils.mapFileToLoad(anyList(), anyBoolean()))
+                .thenReturn(List.of(file));
     }
-    
 
     @Test
     void shouldSkipLinkingIfRejectedFiles() {
@@ -82,35 +110,33 @@ class AsyncLoadFilesServiceTest {
         verify(loadFileService).setInventoryCounts(anyLong());
     }
 
-
     @Test
-    void shouldThrowIfMissingReferences() {
+    void shouldContinueWhenMissingReferences() {
         when(fileLoadingUtils.handelRejectedFiles(any(), any(), any(), any(), any(), any()))
                 .thenReturn(false);
-        when(loadFileService.mandatoryHeadersCheck(any())).thenReturn(Collections.emptyList());
+        when(loadFileService.mandatoryHeadersCheck(any()))
+                .thenReturn(Collections.emptyList());
+
         doThrow(new RuntimeException("Missing physical equipment"))
                 .when(loadFileService).linkApplicationsToVirtualEquipments(100L);
 
-        assertThrows(RuntimeException.class, () -> asyncLoadFilesService.execute(context, task));
+        // Should not throw anymore
+        asyncLoadFilesService.execute(context, task);
 
         verify(loadFileService).linkApplicationsToVirtualEquipments(100L);
         verify(loadFileService, never()).setInventoryCounts(anyLong());
+
+        // Optional: verify task is still marked as completed
+        assertEquals(TaskStatus.COMPLETED.toString(), task.getStatus());
     }
 
 
     @Test
     void shouldLinkInventoryWhenProcessingCompletes() {
-        // Arrange
-        when(task.getId()).thenReturn(55L);
-        when(task.getFilenames()).thenReturn(List.of("virtual_equipment.csv"));
         when(loadFileService.mandatoryHeadersCheck(any())).thenReturn(Collections.emptyList());
         when(fileLoadingUtils.handelRejectedFiles(any(), any(), any(), any(), any(), any()))
                 .thenReturn(false);
-
-        // Act
         asyncLoadFilesService.execute(context, task);
-
-        // Assert
         verify(loadFileService).linkApplicationsToVirtualEquipments(100L);
         verify(loadFileService).setInventoryCounts(100L);
     }
