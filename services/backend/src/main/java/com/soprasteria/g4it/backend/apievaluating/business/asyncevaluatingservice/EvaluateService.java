@@ -153,6 +153,11 @@ public class EvaluateService {
                         .filter(vm -> vm.getPhysicalEquipmentName() != null)
                         .collect(Collectors.groupingBy(InVirtualEquipment::getPhysicalEquipmentName));
 
+        try {
+            Thread.sleep(800000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         Inventory inventory = task.getInventory();
         String inventoryName;
         if (inventory == null) {
