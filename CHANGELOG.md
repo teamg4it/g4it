@@ -1,4 +1,10 @@
 # G4IT
+## 3.14.0
+
+### Major Changes
+- 2141 | Require explicit access request for EcomindIA module in new workspaces
+  
+### Minor Changes
 
 ## 3.13.1
 
