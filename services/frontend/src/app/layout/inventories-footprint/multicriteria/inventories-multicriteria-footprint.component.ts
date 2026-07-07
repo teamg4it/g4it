@@ -31,10 +31,6 @@ import {
 import { InVirtualEquipmentRest } from "src/app/core/interfaces/input.interface";
 import { Inventory } from "src/app/core/interfaces/inventory.interfaces";
 import { FootprintService } from "src/app/core/service/business/footprint.service";
-import {
-    getColorFormatter,
-    getLabelFormatter,
-} from "src/app/core/service/mapper/graphs-mapper";
 import { FootprintStoreService } from "src/app/core/store/footprint.store";
 import * as LifeCycleUtils from "src/app/core/utils/lifecycle";
 import { AbstractDashboard } from "../abstract-dashboard";
@@ -227,46 +223,14 @@ export class InventoriesMultiCriteriaFootprintComponent extends AbstractDashboar
                     `;
                 },
             },
-            angleAxis: {
-                type: "category",
-                data: footprintCalculated[0].impacts.map((impact) => {
-                    return {
-                        value: impact.criteria,
-                        textStyle: {
-                            color: getColorFormatter(
-                                !!criteriaCountMap[impact.criteria]?.status?.error,
-                                this.inventory()?.enableDataInconsistency!,
-                            ),
-                        },
-                    };
-                }),
-                axisLabel: {
-                    formatter: (value: any) => {
-                        const title = this.getCriteriaDimensionTranslation(
-                            !isInverted,
-                            value,
-                            selectedView,
-                        );
-                        const hasError = !!criteriaCountMap[value]?.status?.error;
-                        return getLabelFormatter(
-                            hasError,
-                            this.inventory()?.enableDataInconsistency!,
-                            title,
-                        );
-                    },
-                    rich: Constants.CHART_RICH as any,
-                    margin: 26,
-                },
-            },
-            radiusAxis: {
-                name: this.translate.instant("common.peopleeq"),
-                nameLocation: "end",
-                // THIS increases distance from chart
-                nameGap: 21,
-                nameTextStyle: {
-                    fontStyle: "italic",
-                },
-            },
+            angleAxis: this.createAngleAxisConfig(
+                footprintCalculated,
+                criteriaCountMap,
+                isInverted,
+                selectedView,
+                this.inventory()?.enableDataInconsistency ?? false,
+            ),
+            radiusAxis: this.createRadiusAxisConfig(),
             polar: {
                 radius: "62%",
                 center: ["50%", "47%"],
@@ -293,18 +257,11 @@ export class InventoriesMultiCriteriaFootprintComponent extends AbstractDashboar
                 },
             })),
             avoidLabelOverlap: true,
-            legend: {
-                type: "scroll",
-                bottom: 0,
-                data: footprintCalculated.map((item: FootprintCalculated) => item.data),
-                formatter: (param: any) => {
-                    return this.getCriteriaDimensionTranslation(
-                        isInverted,
-                        param,
-                        selectedView,
-                    );
-                },
-            },
+            legend: this.createLegendConfig(
+                footprintCalculated,
+                isInverted,
+                selectedView,
+            ),
             color: Constants.COLOR,
         };
     }
