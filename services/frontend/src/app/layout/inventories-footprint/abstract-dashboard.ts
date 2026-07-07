@@ -38,6 +38,16 @@ export class AbstractDashboard {
         return this.translate.instant(key) === key ? param : this.translate.instant(key);
     }
 
+    getCriteriaDimensionTranslation(
+        isInverted: boolean,
+        dimension: string,
+        selectedView: string,
+    ) {
+        return isInverted
+            ? this.translate.instant(`criteria.${dimension}`).title
+            : this.existingTranslation(dimension, selectedView);
+    }
+
     getCriteriaTranslation(input: string) {
         this.selectedLang = this.translate.currentLang;
         if (Object.keys(this.globalStore.criteriaList()).includes(input)) {

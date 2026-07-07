@@ -36,6 +36,7 @@ import {
     getLabelFormatter,
 } from "src/app/core/service/mapper/graphs-mapper";
 import { FootprintStoreService } from "src/app/core/store/footprint.store";
+import * as LifeCycleUtils from "src/app/core/utils/lifecycle";
 import { AbstractDashboard } from "../abstract-dashboard";
 
 import { TranslatePipe } from "@ngx-translate/core";
@@ -90,24 +91,44 @@ export class InventoriesMultiCriteriaFootprintComponent extends AbstractDashboar
     }[] = [];
 
     criteriaCalculated: Signal<CriteriaCalculated> = computed(() => {
+        const isInverted = this.isAxisInverted();
+        const dimension = this.store.dimension();
+        const lifeCycleOrder = LifeCycleUtils.getLifeCycleList();
+        const isAlphabetical = isInverted && dimension !== Constants.ACV_STEP;
         const { footprintCalculated, criteriaCountMap, impactsWithMaxDimensions } =
             this.footprintService.calculate(
                 this.footprint,
                 this.store.filters(),
-                this.store.dimension(),
+                dimension,
                 this.filterFields,
+                isInverted,
             );
-        // sort footprint by criteria
-        for (const data of footprintCalculated) {
-            data.impacts.sort(
+        if (isInverted) {
+            footprintCalculated.sort(
                 (a, b) =>
-                    this.criteriakeys.indexOf(a.criteria) -
-                    this.criteriakeys.indexOf(b.criteria),
+                    this.criteriakeys.indexOf(a.data) - this.criteriakeys.indexOf(b.data),
             );
         }
+
+        // Only sort impacts by criteria if NOT inverted
+
+        const impactOrder = isInverted ? lifeCycleOrder : this.criteriakeys;
+
+        for (const data of footprintCalculated) {
+            data.impacts.sort((a, b) =>
+                isAlphabetical
+                    ? a.criteria.localeCompare(b.criteria)
+                    : impactOrder.indexOf(a.criteria) - impactOrder.indexOf(b.criteria),
+            );
+        }
+        const countOrder = isInverted ? lifeCycleOrder : this.criteriakeys;
         // sort statusIndicator key by criteria
         const sortedCriteriaCountMap: StatusCountMap = Object.keys(criteriaCountMap)
-            .sort((a, b) => this.criteriakeys.indexOf(a) - this.criteriakeys.indexOf(b))
+            .sort((a, b) =>
+                isAlphabetical
+                    ? a.localeCompare(b)
+                    : countOrder.indexOf(a) - countOrder.indexOf(b),
+            )
             .reduce((acc: StatusCountMap, key) => {
                 acc[key] = criteriaCountMap[key];
                 return acc;
@@ -131,27 +152,47 @@ export class InventoriesMultiCriteriaFootprintComponent extends AbstractDashboar
     });
 
     options: Signal<EChartsOption> = computed(() => {
-        return this.renderChart(
-            this.criteriaCalculated(),
-            this.store.dimension(),
-            this.isAxisInverted(),
-        );
+        return this.renderChart(this.criteriaCalculated(), this.store.dimension());
     });
 
     renderChart(
         criteriaCalculated: CriteriaCalculated,
         selectedView: string,
-        isInverted: boolean,
     ): EChartsOption {
         const footprintCalculated = criteriaCalculated.footprints;
-        console.log(footprintCalculated);
+        const isInverted = this.isAxisInverted();
         if (footprintCalculated.length === 0) {
             this.xAxisInput = [];
             return {};
         }
-        this.xAxisInput = Object.keys(this.footprint)
-            .sort((a, b) => this.criteriakeys.indexOf(a) - this.criteriakeys.indexOf(b))
-            .map((criteria) => this.translate.instant(`criteria.${criteria}`).title);
+        const isAcvStep = this.store.dimension() === Constants.ACV_STEP;
+        if (isInverted) {
+            // When inverted, xAxisInput should show lifecycle stages
+            if (!isAcvStep) {
+                this.xAxisInput =
+                    footprintCalculated[0]?.impacts
+                        .map((impact) => impact.criteria)
+                        .sort((a, b) => a.localeCompare(b)) || [];
+            } else {
+                this.xAxisInput =
+                    footprintCalculated[0]?.impacts
+                        .map((impact) => impact.criteria)
+                        .sort(
+                            (a, b) =>
+                                LifeCycleUtils.getLifeCycleList().indexOf(a) -
+                                LifeCycleUtils.getLifeCycleList().indexOf(b),
+                        )
+                        .map((criteria) =>
+                            this.translate.instant(`acvStep.${criteria}`),
+                        ) || [];
+            }
+        } else {
+            this.xAxisInput = Object.keys(this.footprint)
+                .sort(
+                    (a, b) => this.criteriakeys.indexOf(a) - this.criteriakeys.indexOf(b),
+                )
+                .map((criteria) => this.translate.instant(`criteria.${criteria}`).title);
+        }
 
         const criteriaCountMap = criteriaCalculated.criteriasCount || {};
 
@@ -162,8 +203,11 @@ export class InventoriesMultiCriteriaFootprintComponent extends AbstractDashboar
                     const dataIndex = params.dataIndex;
                     const seriesIndex = params.seriesIndex;
                     const impact = footprintCalculated[seriesIndex].impacts[dataIndex];
-                    const name = this.existingTranslation(
-                        footprintCalculated[seriesIndex].data,
+                    const dimension = footprintCalculated[seriesIndex].data;
+
+                    const name = this.getCriteriaDimensionTranslation(
+                        isInverted,
+                        dimension,
                         selectedView,
                     );
                     return `
@@ -172,7 +216,11 @@ export class InventoriesMultiCriteriaFootprintComponent extends AbstractDashboar
                                 params.color
                             }; border-radius: 50%; margin-right: 5px;"></span>
                             <span style="font-weight: bold; margin-right: 15px;">${name}</span>
-                            <div>${this.translate.instant(`criteria.${impact.criteria}`).title} : ${this.integerPipe.transform(
+                            <div>${this.getCriteriaDimensionTranslation(
+                                !isInverted,
+                                impact.criteria,
+                                selectedView,
+                            )} : ${this.integerPipe.transform(
                                 impact.sumSip,
                             )} ${this.translate.instant("common.peopleeq-min")} </div>
                         </div>
@@ -186,7 +234,7 @@ export class InventoriesMultiCriteriaFootprintComponent extends AbstractDashboar
                         value: impact.criteria,
                         textStyle: {
                             color: getColorFormatter(
-                                !!criteriaCountMap[impact.criteria].status.error,
+                                !!criteriaCountMap[impact.criteria]?.status?.error,
                                 this.inventory()?.enableDataInconsistency!,
                             ),
                         },
@@ -194,8 +242,12 @@ export class InventoriesMultiCriteriaFootprintComponent extends AbstractDashboar
                 }),
                 axisLabel: {
                     formatter: (value: any) => {
-                        const title = this.translate.instant(`criteria.${value}`).title;
-                        const hasError = !!criteriaCountMap[value].status.error;
+                        const title = this.getCriteriaDimensionTranslation(
+                            !isInverted,
+                            value,
+                            selectedView,
+                        );
+                        const hasError = !!criteriaCountMap[value]?.status?.error;
                         return getLabelFormatter(
                             hasError,
                             this.inventory()?.enableDataInconsistency!,
@@ -214,7 +266,6 @@ export class InventoriesMultiCriteriaFootprintComponent extends AbstractDashboar
                 nameTextStyle: {
                     fontStyle: "italic",
                 },
-                inverse: isInverted,
             },
             polar: {
                 radius: "62%",
@@ -247,7 +298,11 @@ export class InventoriesMultiCriteriaFootprintComponent extends AbstractDashboar
                 bottom: 0,
                 data: footprintCalculated.map((item: FootprintCalculated) => item.data),
                 formatter: (param: any) => {
-                    return this.existingTranslation(param, selectedView);
+                    return this.getCriteriaDimensionTranslation(
+                        isInverted,
+                        param,
+                        selectedView,
+                    );
                 },
             },
             color: Constants.COLOR,
@@ -264,8 +319,9 @@ export class InventoriesMultiCriteriaFootprintComponent extends AbstractDashboar
     }
 
     onChartClick(event: any) {
-        if (event?.name) {
-            this.router.navigate([`../${event.name}`], {
+        const criteriName = this.isAxisInverted() ? event?.seriesName : event?.name;
+        if (criteriName) {
+            this.router.navigate([`../${criteriName}`], {
                 relativeTo: this.route,
             });
         }
