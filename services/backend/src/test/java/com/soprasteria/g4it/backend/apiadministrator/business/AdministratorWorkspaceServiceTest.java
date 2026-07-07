@@ -41,6 +41,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.soprasteria.g4it.backend.TestUtils.ROLE;
+import static com.soprasteria.g4it.backend.common.utils.Constants.ROLE_ECO_MIND_AI_WRITE;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
@@ -99,7 +100,7 @@ class AdministratorWorkspaceServiceTest {
         when(userRepository.findById(userId)).thenReturn(Optional.of(User.builder().id(userId).build()));
         when(roleService.getAllRoles()).thenReturn(List.of(Role.builder().name(ROLE).build()));
 
-        List<UserInfoBO> users = administratorWorkspaceService.linkUserToWorkspace(linkUserRoleRest, TestUtils.createUserBOAdminOrg(), true);
+        List<UserInfoBO> users = administratorWorkspaceService.linkUserToWorkspace(linkUserRoleRest, TestUtils.createUserBOAdminOrg(), false);
         assertEquals(1, users.size());
         assertEquals(ROLE, users.getFirst().getRoles().getFirst());
         verify(userWorkspaceRepository, times(1)).save(any(UserWorkspace.class));
@@ -476,6 +477,226 @@ class AdministratorWorkspaceServiceTest {
         assertDoesNotThrow(() -> administratorWorkspaceService.deleteUserWorkLink(linkUserRoleRest, TestUtils.createUserBOAdminOrg()));
 
         verify(userWorkspaceRepository, times(1)).deleteById(1L);
+    }
+
+    @Test
+    void linkUserToWorkspace_WithCheckAdminRole_HasPermissions() {
+        long userId = 1L;
+        UserBO userBO = TestUtils.createUserBOAdminOrg();
+
+        UserRoleRest userRoleRest =
+                TestUtils.createUserRoleRest(
+                        userId,
+                        List.of(ROLE_ECO_MIND_AI_WRITE)
+                );
+        LinkUserRoleRest linkUserRoleRest = TestUtils.createLinkUserRoleRest(workspaceId,
+                Collections.singletonList(userRoleRest));
+
+        when(workspaceRepository.findById(workspaceId)).thenReturn(Optional.of(TestUtils.createWorkspace()));
+        when(userWorkspaceRepository.findByWorkspaceIdAndUserId(workspaceId, userId)).thenReturn(Optional.empty());
+        when(userRepository.findById(userId)).thenReturn(Optional.of(User.builder().id(userId).build()));
+        when(roleService.getAllRoles())
+                .thenReturn(List.of(
+                        Role.builder()
+                                .name(ROLE_ECO_MIND_AI_WRITE)
+                                .build()
+                ));
+        doNothing().when(administratorRoleService).hasWorkspaceAdminAndEcoMindAIWriteRole(userBO, workspaceId);
+
+        List<UserInfoBO> users = administratorWorkspaceService.linkUserToWorkspace(linkUserRoleRest, userBO, true);
+
+        assertEquals(1, users.size());
+        assertEquals(Constants.ROLE_ECO_MIND_AI_WRITE,
+                users.getFirst().getRoles().getFirst());
+        verify(administratorRoleService).hasWorkspaceAdminAndEcoMindAIWriteRole(userBO, workspaceId);
+
+        verify(userWorkspaceRepository, times(1)).save(any(UserWorkspace.class));
+        verify(userRoleWorkspaceRepository, times(1)).saveAll(anyList());
+    }
+
+    @Test
+    void linkUserToWorkspace_WithCheckAdminRole_NoPermissions_ThrowsException() {
+        long userId = 1L;
+        UserBO userBO = TestUtils.createUserBOAdminOrg();
+
+        UserRoleRest userRoleRest = TestUtils.createUserRoleRest(userId, List.of(ROLE_ECO_MIND_AI_WRITE));
+        LinkUserRoleRest linkUserRoleRest = TestUtils.createLinkUserRoleRest(workspaceId,
+                Collections.singletonList(userRoleRest));
+
+        when(workspaceRepository.findById(workspaceId)).thenReturn(Optional.of(TestUtils.createWorkspace()));
+        doThrow(new AuthorizationException(HttpServletResponse.SC_FORBIDDEN,
+                String.format("User with id '%d' does not have workspace admin access or ROLE_ECO_MIND_AI_WRITE role on workspace '%d'",
+                        userBO.getId(), workspaceId)))
+                .when(administratorRoleService).hasWorkspaceAdminAndEcoMindAIWriteRole(userBO, workspaceId);
+
+        AuthorizationException exception = assertThrows(AuthorizationException.class, () -> {
+            administratorWorkspaceService.linkUserToWorkspace(linkUserRoleRest, userBO, true);
+        });
+
+        assertEquals(HttpServletResponse.SC_FORBIDDEN, exception.getStatusCode());
+        assertTrue(exception.getMessage().contains("does not have workspace admin access or ROLE_ECO_MIND_AI_WRITE role"));
+        verify(administratorRoleService).hasWorkspaceAdminAndEcoMindAIWriteRole(userBO, workspaceId);
+        verify(userWorkspaceRepository, never()).save(any(UserWorkspace.class));
+        verify(userRoleWorkspaceRepository, never()).saveAll(anyList());
+    }
+
+    @Test
+    void linkUserToWorkspace_WithoutCheckAdminRole_SkipsPermissionCheck() {
+        long userId = 1L;
+        UserBO userBO = TestUtils.createUserBOAdminOrg();
+
+        UserRoleRest userRoleRest = TestUtils.createUserRoleRest(userId, List.of(ROLE));
+        LinkUserRoleRest linkUserRoleRest = TestUtils.createLinkUserRoleRest(workspaceId,
+                Collections.singletonList(userRoleRest));
+
+        when(workspaceRepository.findById(workspaceId)).thenReturn(Optional.of(TestUtils.createWorkspace()));
+        when(userWorkspaceRepository.findByWorkspaceIdAndUserId(workspaceId, userId)).thenReturn(Optional.empty());
+        when(userRepository.findById(userId)).thenReturn(Optional.of(User.builder().id(userId).build()));
+        when(roleService.getAllRoles()).thenReturn(List.of(Role.builder().name(ROLE).build()));
+
+        List<UserInfoBO> users = administratorWorkspaceService.linkUserToWorkspace(linkUserRoleRest, userBO, false);
+
+        assertEquals(1, users.size());
+        verify(administratorRoleService, never()).hasWorkspaceAdminAndEcoMindAIWriteRole(any(), any());
+        verify(userWorkspaceRepository, times(1)).save(any(UserWorkspace.class));
+        verify(userRoleWorkspaceRepository, times(1)).saveAll(anyList());
+    }
+
+    @Test
+    void linkUserToWorkspace_WithCheckAdminRole_EcoMindRole() {
+        long userId = 1L;
+        UserBO userBO = TestUtils.createUserBOAdminOrg();
+
+        UserRoleRest userRoleRest =
+                TestUtils.createUserRoleRest(
+                        userId,
+                        List.of(Constants.ROLE_ECO_MIND_AI_WRITE));
+
+        LinkUserRoleRest linkUserRoleRest =
+                TestUtils.createLinkUserRoleRest(
+                        workspaceId,
+                        List.of(userRoleRest));
+
+        Workspace workspace = TestUtils.createWorkspace();
+
+        when(workspaceRepository.findById(workspaceId))
+                .thenReturn(Optional.of(workspace));
+
+        when(userWorkspaceRepository.findByWorkspaceIdAndUserId(workspaceId, userId))
+                .thenReturn(Optional.empty());
+
+        when(userRepository.findById(userId))
+                .thenReturn(Optional.of(User.builder()
+                        .id(userId)
+                        .firstName("John")
+                        .lastName("Doe")
+                        .email("john@test.com")
+                        .build()));
+
+        when(roleService.getAllRoles()).thenReturn(List.of(
+                Role.builder().name(Constants.ROLE_ECO_MIND_AI_WRITE).build()
+        ));
+
+        doNothing().when(administratorRoleService)
+                .hasWorkspaceAdminAndEcoMindAIWriteRole(
+                        userBO,
+                        workspaceId);
+
+        List<UserInfoBO> users =
+                administratorWorkspaceService.linkUserToWorkspace(
+                        linkUserRoleRest,
+                        userBO,
+                        true);
+
+        assertEquals(1, users.size());
+        assertEquals(Constants.ROLE_ECO_MIND_AI_WRITE,
+                users.getFirst().getRoles().getFirst());
+
+        verify(administratorRoleService)
+                .hasWorkspaceAdminAndEcoMindAIWriteRole(
+                        userBO,
+                        workspaceId);
+
+        verify(administratorRoleService, never())
+                .hasAdminRightOnOrganizationOrWorkspace(any(), anyLong(), anyLong());
+
+        verify(userWorkspaceRepository).save(any(UserWorkspace.class));
+        verify(userRoleWorkspaceRepository).saveAll(anyList());
+    }
+
+    @Test
+    void linkUserToWorkspace_WithCheckAdminRole_NormalRoles() {
+        long userId1 = 1L;
+        long userId2 = 2L;
+        UserBO userBO = TestUtils.createUserBOAdminOrg();
+
+        UserRoleRest userRoleRest1 =
+                TestUtils.createUserRoleRest(userId1, List.of(ROLE));
+
+        UserRoleRest userRoleRest2 =
+                TestUtils.createUserRoleRest(userId2, List.of(Constants.ROLE_INVENTORY_READ));
+
+        LinkUserRoleRest linkUserRoleRest =
+                TestUtils.createLinkUserRoleRest(workspaceId,
+                        List.of(userRoleRest1, userRoleRest2));
+
+        Workspace workspace = TestUtils.createWorkspace();
+
+        when(workspaceRepository.findById(workspaceId))
+                .thenReturn(Optional.of(workspace));
+
+        when(userWorkspaceRepository.findByWorkspaceIdAndUserId(workspaceId, userId1))
+                .thenReturn(Optional.empty());
+
+        when(userWorkspaceRepository.findByWorkspaceIdAndUserId(workspaceId, userId2))
+                .thenReturn(Optional.empty());
+
+        when(userRepository.findById(userId1))
+                .thenReturn(Optional.of(User.builder()
+                        .id(userId1)
+                        .firstName("John")
+                        .lastName("Doe")
+                        .email("john@test.com")
+                        .build()));
+
+        when(userRepository.findById(userId2))
+                .thenReturn(Optional.of(User.builder()
+                        .id(userId2)
+                        .firstName("Jane")
+                        .lastName("Smith")
+                        .email("jane@test.com")
+                        .build()));
+
+        when(roleService.getAllRoles()).thenReturn(List.of(
+                Role.builder().name(ROLE).build(),
+                Role.builder().name(Constants.ROLE_INVENTORY_READ).build()
+        ));
+
+        doNothing().when(administratorRoleService)
+                .hasAdminRightOnOrganizationOrWorkspace(
+                        eq(userBO),
+                        eq(workspace.getOrganization().getId()),
+                        eq(workspaceId));
+
+        List<UserInfoBO> users =
+                administratorWorkspaceService.linkUserToWorkspace(
+                        linkUserRoleRest,
+                        userBO,
+                        true);
+
+        assertEquals(2, users.size());
+
+        verify(administratorRoleService)
+                .hasAdminRightOnOrganizationOrWorkspace(
+                        eq(userBO),
+                        eq(workspace.getOrganization().getId()),
+                        eq(workspaceId));
+
+        verify(administratorRoleService, never())
+                .hasWorkspaceAdminAndEcoMindAIWriteRole(any(), anyLong());
+
+        verify(userWorkspaceRepository, times(2)).save(any(UserWorkspace.class));
+        verify(userRoleWorkspaceRepository, times(2)).saveAll(anyList());
     }
 
 }
