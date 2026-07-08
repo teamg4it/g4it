@@ -82,11 +82,6 @@ public class AsyncLoadFilesService implements ITaskExecute {
             //Convert all files
             fileLoadingUtils.convertAllFileToLoad(context);
 
-            try {
-                Thread.sleep(800000);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
             // Task fails if mandatory headers are missing
             List<String> mandatoryHeaderErrors = loadFileService.mandatoryHeadersCheck(context);
             if (mandatoryHeaderErrors != null && !mandatoryHeaderErrors.isEmpty()) {
