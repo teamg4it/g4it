@@ -8,7 +8,9 @@
 
 package com.soprasteria.g4it.backend.apiloadinputfiles.mapper;
 
+import com.soprasteria.g4it.backend.common.error.ErrorConstants;
 import com.soprasteria.g4it.backend.common.utils.InfrastructureType;
+import com.soprasteria.g4it.backend.exception.AsyncTaskException;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InApplicationRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InDatacenterRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InPhysicalEquipmentRest;
@@ -16,10 +18,8 @@ import com.soprasteria.g4it.backend.server.gen.api.dto.InVirtualEquipmentRest;
 import org.apache.commons.csv.CSVRecord;
 import org.mapstruct.Mapper;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 import static com.soprasteria.g4it.backend.common.utils.CsvUtils.*;
 
@@ -30,6 +30,11 @@ public interface CsvToInMapper {
      * From Csv import to Rest
      */
     default InDatacenterRest csvInDatacenterToRest(CSVRecord csvRecord, final Long inventoryId, String digitalServiceVersionUid) {
+        final String pueValue = read(csvRecord, "pue");
+        if (pueValue != null && pueValue.contains(",")) {
+            throw new AsyncTaskException(ErrorConstants.INVALID_DECIMAL_NUMBER_FORMAT);
+        }
+
         return InDatacenterRest.builder()
                 .name(read(csvRecord, "nomCourtDatacenter"))
                 .inventoryId(inventoryId)
