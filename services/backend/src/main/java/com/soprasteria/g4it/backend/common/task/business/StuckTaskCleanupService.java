@@ -38,7 +38,7 @@ import java.util.Locale;
 @Slf4j
 public class StuckTaskCleanupService {
 
-    @Value("${g4it.task.stuck.timeout.hours:2}")
+    @Value("${g4it.task.stuck.timeout.hours:0.167}")
     private double stuckTaskTimeoutHours;
 
     @Value("${g4it.task.stuck.check.enabled:true}")
