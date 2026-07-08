@@ -217,43 +217,17 @@ export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboar
 
         const criteriaCountMap = criteriaCalculated.criteriasCount || {};
 
-        return {
-            tooltip: InventoryMultiCriteriaViewMapper.createTooltipConfig(
-                footprintCalculated,
-                isInverted,
-                selectedView,
-                this.translate,
-                this.integerPipe,
-            ),
-            angleAxis: InventoryMultiCriteriaViewMapper.createAngleAxisConfig(
-                footprintCalculated,
-                criteriaCountMap,
-                isInverted,
-                selectedView,
-                this.inventory()?.enableDataInconsistency ?? false,
-                this.translate,
-            ),
-            radiusAxis: InventoryMultiCriteriaViewMapper.createRadiusAxisConfig(
-                this.translate,
-            ),
-            polar: {
-                radius: "62%",
-                center: ["50%", "47%"],
-            },
-            series: InventoryMultiCriteriaViewMapper.createSeriesConfig(
-                footprintCalculated,
-                this.translate,
-                true,
-                getUniqueColorFromText,
-            ),
-            avoidLabelOverlap: true,
-            legend: InventoryMultiCriteriaViewMapper.createLegendConfig(
-                footprintCalculated,
-                isInverted,
-                selectedView,
-                this.translate,
-            ),
-        };
+        return InventoryMultiCriteriaViewMapper.createRadialChartConfig(
+            footprintCalculated,
+            criteriaCountMap,
+            isInverted,
+            selectedView,
+            this.inventory()?.enableDataInconsistency ?? false,
+            this.translate,
+            this.integerPipe,
+            true,
+            getUniqueColorFromText,
+        );
     }
 
     stackChartClick(event: string) {

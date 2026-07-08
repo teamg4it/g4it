@@ -257,3 +257,58 @@ export const getTextDescription = (
     }
     return { textDescription, textImpacts };
 };
+
+/**
+ * Creates complete radial chart configuration for multicriteria views
+ */
+export const createRadialChartConfig = (
+    footprintCalculated: FootprintCalculated[],
+    criteriaCountMap: StatusCountMap,
+    isInverted: boolean,
+    selectedView: string,
+    enableDataInconsistency: boolean,
+    translate: TranslateService,
+    integerPipe: any,
+    useCustomColors: boolean = false,
+    getColorFn?: (data: string) => string,
+    defaultColor?: string[],
+) => {
+    // useCustomColors and getColorFn for Application view only, getColorFn is a function that returns a color based on the data value
+    // defaultColor for Equipment view getColorFn not available
+    return {
+        tooltip: createTooltipConfig(
+            footprintCalculated,
+            isInverted,
+            selectedView,
+            translate,
+            integerPipe,
+        ),
+        angleAxis: createAngleAxisConfig(
+            footprintCalculated,
+            criteriaCountMap,
+            isInverted,
+            selectedView,
+            enableDataInconsistency,
+            translate,
+        ),
+        radiusAxis: createRadiusAxisConfig(translate),
+        polar: {
+            radius: "62%",
+            center: ["50%", "47%"],
+        },
+        series: createSeriesConfig(
+            footprintCalculated,
+            translate,
+            useCustomColors,
+            getColorFn,
+        ),
+        avoidLabelOverlap: true,
+        legend: createLegendConfig(
+            footprintCalculated,
+            isInverted,
+            selectedView,
+            translate,
+        ),
+        ...(defaultColor && { color: defaultColor }),
+    };
+};
