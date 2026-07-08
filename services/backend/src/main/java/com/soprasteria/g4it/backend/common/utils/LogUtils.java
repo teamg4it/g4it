@@ -35,7 +35,7 @@ public final class LogUtils {
     }
 
     /**
-     * Returns a string for printing log message error.
+     * Returns a string for printing log message error
      * The result is automatically truncated to fit within database limits.
      *
      * @param message the message

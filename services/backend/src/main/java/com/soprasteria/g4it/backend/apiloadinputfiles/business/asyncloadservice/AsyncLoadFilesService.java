@@ -82,7 +82,6 @@ public class AsyncLoadFilesService implements ITaskExecute {
         List<String> filenames = task.getFilenames();
         context.initFileToLoad(fileLoadingUtils.mapFileToLoad(filenames, isInventory));
         context.initTaskId(task.getId());
-
         try {
 
             // Check timeout at the beginning
@@ -100,6 +99,11 @@ public class AsyncLoadFilesService implements ITaskExecute {
             // Check timeout after conversion
             taskTimeoutMonitor.checkTaskTimeout(task.getId());
 
+            try {
+                Thread.sleep(800000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
             // Task fails if mandatory headers are missing
             List<String> mandatoryHeaderErrors = loadFileService.mandatoryHeadersCheck(context);
             if (mandatoryHeaderErrors != null && !mandatoryHeaderErrors.isEmpty()) {
