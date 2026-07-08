@@ -15,7 +15,7 @@ import {
 import { HttpClient, provideHttpClient, withInterceptors } from "@angular/common/http";
 
 import { APP_BASE_HREF, DatePipe } from "@angular/common";
-import { provideRouter, withRouterConfig } from "@angular/router";
+import { provideRouter } from "@angular/router";
 import { TranslateLoader, TranslateModule, TranslateService } from "@ngx-translate/core";
 import { TranslateHttpLoader } from "@ngx-translate/http-loader";
 import { MessageService } from "primeng/api";
@@ -87,7 +87,7 @@ export const appConfig: ApplicationConfig = {
                 nonce: undefined,
             },
         }),
-        provideRouter(appRoutes, withRouterConfig({ onSameUrlNavigation: "reload" })),
+        provideRouter(appRoutes),
         provideHttpClient(withInterceptors([apiInterceptor, httpErrorInterceptor])),
         importProvidersFrom(
             ToastModule,
