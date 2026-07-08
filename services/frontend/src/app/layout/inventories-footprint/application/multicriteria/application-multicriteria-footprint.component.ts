@@ -26,8 +26,6 @@ import {
     ApplicationFootprint,
     CriteriaCalculated,
     Criterias,
-    FootprintCalculated,
-    Impact,
     Stat,
 } from "src/app/core/interfaces/footprint.interface";
 import { Inventory } from "src/app/core/interfaces/inventory.interfaces";
@@ -36,6 +34,7 @@ import { IntegerPipe } from "src/app/core/pipes/integer.pipe";
 import { FilterService } from "src/app/core/service/business/filter.service";
 import { FootprintService } from "src/app/core/service/business/footprint.service";
 import { getUniqueColorFromText } from "src/app/core/service/mapper/graphs-mapper";
+import * as InventoryMultiCriteriaViewMapper from "src/app/core/service/mapper/inventory-multicriteria-graph-mapper";
 import { FootprintStoreService } from "src/app/core/store/footprint.store";
 import { GlobalStoreService } from "src/app/core/store/global.store";
 import { Constants } from "src/constants";
@@ -219,78 +218,40 @@ export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboar
         const criteriaCountMap = criteriaCalculated.criteriasCount || {};
 
         return {
-            tooltip: {
-                show: true,
-                formatter: (params: any) => {
-                    const dataIndex = params.dataIndex;
-                    const seriesIndex = params.seriesIndex;
-                    const impact = footprintCalculated[seriesIndex].impacts[dataIndex];
-
-                    const dimension = footprintCalculated[seriesIndex].data;
-
-                    const name = this.getCriteriaDimensionTranslation(
-                        isInverted,
-                        dimension,
-                        selectedView,
-                    );
-                    return `
-                            <div style="display: flex; align-items: center; height: 30px;">
-                                <span style="display: inline-block; width: 10px; height: 10px; background-color: ${
-                                    params.color
-                                }; border-radius: 50%; margin-right: 5px;"></span>
-                                <span style="font-weight: bold; margin-right: 15px;">${name}</span>
-                                <div>${this.getCriteriaDimensionTranslation(
-                                    !isInverted,
-                                    impact.criteria,
-                                    selectedView,
-                                )} : ${this.integerPipe.transform(
-                                    impact.sumSip,
-                                )} ${this.translate.instant("common.peopleeq-min")} </div>
-                            </div>
-                        `;
-                },
-            },
-            angleAxis: this.createAngleAxisConfig(
+            tooltip: InventoryMultiCriteriaViewMapper.createTooltipConfig(
+                footprintCalculated,
+                isInverted,
+                selectedView,
+                this.translate,
+                this.integerPipe,
+            ),
+            angleAxis: InventoryMultiCriteriaViewMapper.createAngleAxisConfig(
                 footprintCalculated,
                 criteriaCountMap,
                 isInverted,
                 selectedView,
                 this.inventory()?.enableDataInconsistency ?? false,
+                this.translate,
             ),
-            radiusAxis: this.createRadiusAxisConfig(),
+            radiusAxis: InventoryMultiCriteriaViewMapper.createRadiusAxisConfig(
+                this.translate,
+            ),
             polar: {
                 radius: "62%",
                 center: ["50%", "47%"],
             },
-            series: footprintCalculated.map((item: FootprintCalculated) => ({
-                name: item.data,
-                itemStyle: {
-                    color: getUniqueColorFromText(item.data),
-                },
-                type: "bar",
-                coordinateSystem: "polar",
-                data: item.impacts.map((impact: Impact) => ({
-                    value: impact.sumSip,
-                    label: {
-                        formatter: () => {
-                            return [
-                                impact.sumImpact,
-                                this.translate.instant(`criteria.${impact.criteria}`)
-                                    .unit,
-                            ].join(" ");
-                        },
-                    },
-                })),
-                stack: "a",
-                emphasis: {
-                    focus: "series",
-                },
-            })),
+            series: InventoryMultiCriteriaViewMapper.createSeriesConfig(
+                footprintCalculated,
+                this.translate,
+                true,
+                getUniqueColorFromText,
+            ),
             avoidLabelOverlap: true,
-            legend: this.createLegendConfig(
+            legend: InventoryMultiCriteriaViewMapper.createLegendConfig(
                 footprintCalculated,
                 isInverted,
                 selectedView,
+                this.translate,
             ),
         };
     }
@@ -420,48 +381,15 @@ export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboar
         translationKey: string,
         criteriaCalculated: CriteriaCalculated,
     ): string {
-        let textDescription = "";
-        let textImpacts = [];
-        const firstPrefix = this.translate.instant(
-            `${translationKey}text-description-first-prefix`,
+        const result = InventoryMultiCriteriaViewMapper.getTextDescription(
+            translationKey,
+            criteriaCalculated,
+            this.translate,
+            this.integerPipe,
+            this.decimalsPipe,
         );
-        const iteratePrefix = this.translate.instant(
-            `${translationKey}text-description-iterate-prefix`,
-        );
-        for (const [
-            index,
-            impact,
-        ] of criteriaCalculated?.impactsWithMaxDimensions?.entries() ?? []) {
-            const prefix = index === 0 ? firstPrefix : iteratePrefix;
-
-            if (index === 0) {
-                textDescription += this.translate.instant(
-                    `${translationKey}text-description`,
-                );
-            }
-            textImpacts.push({
-                text:
-                    prefix +
-                    this.translate.instant(`${translationKey}text-description-iterate`, {
-                        impactName: impact.title,
-                        impactValue: this.integerPipe.transform(impact.peopleeq),
-                        resource: impact.maxCriteria.name,
-                        resourceValue: this.integerPipe.transform(
-                            impact.maxCriteria.peopleeq,
-                        ),
-                        rawValue: this.decimalsPipe.transform(impact.raw),
-                        unit: impact.unite,
-                        resourceRawValue: this.decimalsPipe.transform(
-                            impact.maxCriteria.raw,
-                        ),
-                        resourceUnit: impact.unite,
-                    }),
-                impactName: impact.name,
-                impactNameVisible: impact.title,
-            });
-        }
-        this.textDescriptionImpacts = textImpacts;
-        return textDescription;
+        this.textDescriptionImpacts = result.textImpacts;
+        return result.textDescription;
     }
 
     handleImpactClick(impactName: any) {
