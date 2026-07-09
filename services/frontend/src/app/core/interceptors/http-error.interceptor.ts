@@ -17,6 +17,8 @@ import { MessageService } from "primeng/api";
 import { throwError, timer } from "rxjs";
 import { catchError, retry } from "rxjs/operators";
 import { Constants } from "src/constants";
+import { environment } from "src/environments/environment";
+import { keycloak } from "../service/business/custom-auth.service";
 import { MatomoScriptService } from "../service/business/matomo-script.service";
 import { UserService } from "../service/business/user.service";
 
@@ -115,6 +117,15 @@ function handleErrorPageNavigation(
                         : translate.instant(`toast-errors.${"bad-request"}.text`),
                 sticky: true,
             });
+        } else if (error.status === HttpStatusCode.Unauthorized) {
+            // Redirect to Keycloak login page on 401 Unauthorized
+            if (environment.keycloak?.enabled === "true") {
+                keycloak.login({
+                    redirectUri: globalThis.location.origin + router.url,
+                });
+            } else {
+                router.navigate(["/something-went-wrong", error.status]);
+            }
         } else {
             router.navigate(["/something-went-wrong", error.status]);
         }
