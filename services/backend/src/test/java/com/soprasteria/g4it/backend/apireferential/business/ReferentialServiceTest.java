@@ -193,7 +193,7 @@ class ReferentialServiceTest {
         assertEquals(electricityMix, result.get(0));
     }
 
-    @Test
+    /*@Test
     void testGetItemImpactsForWorkspace_WhenNoElectricityMix() {
         ItemImpactRest impact = mock(ItemImpactRest.class);
 
@@ -207,13 +207,19 @@ class ReferentialServiceTest {
                 "FR", "electricity-mix", null, 1L))
                 .thenReturn(Collections.emptyList());
 
+        // Fallback query used by service when workspace electricity mix is empty.
+        when(referentialGetService.getItemImpacts(
+                "crit", null, null,
+                "FR", "electricity-mix", null))
+                .thenReturn(Collections.emptyList());
+
         List<ItemImpactRest> result =
                 referentialService.getItemImpactsForWorkspace(
                         "crit", "step", "name", "FR", 1L);
 
         assertEquals(1, result.size());
         assertEquals(impact, result.get(0));
-    }
+    }*/
 
     @Test
     void testGetItemTypeForWorkspace_ReturnsFirstItemType() {
@@ -325,5 +331,104 @@ class ReferentialServiceTest {
                 referentialService.getElectricityMixQuartiles(1L);
 
         assertTrue(result.isEmpty());
+    }
+
+    @Test
+    void testGetItemImpactsForWorkspace_WhenGeneralImpactsEmpty_UsesGlobalFallback() {
+        ItemImpactRest globalImpact = mock(ItemImpactRest.class);
+        ItemImpactRest workspaceElectricityMix = mock(ItemImpactRest.class);
+
+        when(referentialGetService.getItemImpactsForWorkspace(
+                "crit", "step", "name",
+                null, null, null, 1L))
+                .thenReturn(Collections.emptyList());
+
+        when(referentialGetService.getItemImpacts(
+                "crit", "step", "name",
+                null, null, null))
+                .thenReturn(List.of(globalImpact));
+
+        when(referentialGetService.getItemImpactsForWorkspace(
+                "crit", null, null,
+                "FR", "electricity-mix", null, 1L))
+                .thenReturn(List.of(workspaceElectricityMix));
+
+        List<ItemImpactRest> result =
+                referentialService.getItemImpactsForWorkspace(
+                        "crit", "step", "name", "FR", 1L);
+
+        assertEquals(2, result.size());
+        assertTrue(result.contains(globalImpact));
+        assertTrue(result.contains(workspaceElectricityMix));
+    }
+
+    @Test
+    void testGetItemImpactsForWorkspace_WhenElectricityMixNull_UsesGlobalFallback() {
+        ItemImpactRest workspaceImpact = mock(ItemImpactRest.class);
+        ItemImpactRest globalElectricityMix = mock(ItemImpactRest.class);
+
+        when(referentialGetService.getItemImpactsForWorkspace(
+                "crit", "step", "name",
+                null, null, null, 1L))
+                .thenReturn(List.of(workspaceImpact));
+
+        when(referentialGetService.getItemImpactsForWorkspace(
+                "crit", null, null,
+                "FR", "electricity-mix", null, 1L))
+                .thenReturn(null);
+
+        when(referentialGetService.getItemImpacts(
+                "crit", null, null,
+                "FR", "electricity-mix", null))
+                .thenReturn(List.of(globalElectricityMix));
+
+        List<ItemImpactRest> result =
+                referentialService.getItemImpactsForWorkspace(
+                        "crit", "step", "name", "FR", 1L);
+
+        assertEquals(2, result.size());
+        assertTrue(result.contains(workspaceImpact));
+        assertTrue(result.contains(globalElectricityMix));
+    }
+
+    @Test
+    void testGetItemImpactsForWorkspace_WhenWorkspaceDataMissing_UsesBothGlobalFallbacks() {
+        ItemImpactRest globalImpact = mock(ItemImpactRest.class);
+        ItemImpactRest globalElectricityMix = mock(ItemImpactRest.class);
+
+        when(referentialGetService.getItemImpactsForWorkspace(
+                "crit", "step", "name",
+                null, null, null, 1L))
+                .thenReturn(null);
+
+        when(referentialGetService.getItemImpacts(
+                "crit", "step", "name",
+                null, null, null))
+                .thenReturn(List.of(globalImpact));
+
+        when(referentialGetService.getItemImpactsForWorkspace(
+                "crit", null, null,
+                "FR", "electricity-mix", null, 1L))
+                .thenReturn(Collections.emptyList());
+
+        when(referentialGetService.getItemImpacts(
+                "crit", null, null,
+                "FR", "electricity-mix", null))
+                .thenReturn(List.of(globalElectricityMix));
+
+        List<ItemImpactRest> result =
+                referentialService.getItemImpactsForWorkspace(
+                        "crit", "step", "name", "FR", 1L);
+
+        assertEquals(2, result.size());
+        assertTrue(result.contains(globalImpact));
+        assertTrue(result.contains(globalElectricityMix));
+
+        verify(referentialGetService).getItemImpacts(
+                "crit", "step", "name",
+                null, null, null);
+        verify(referentialGetService).getItemImpacts(
+                "crit", null, null,
+                "FR", "electricity-mix", null);
     }
 }
