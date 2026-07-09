@@ -1,8 +1,10 @@
 <div class="px-4" [class]="styleClass">
-    <h2 class="side-panel-title" appAutofocus tabIndex="-1">
-        <i class="pi pi-clipboard text-2xl"></i>
-        {{ title }}
-    </h2>
+    @if (showTitle()) {
+        <h2 class="side-panel-title" appAutofocus tabIndex="-1">
+            <i class="pi pi-clipboard text-2xl"></i>
+            {{ title }}
+        </h2>
+    }
 
     <p-editor
         #editor
@@ -13,7 +15,7 @@
         ngDefaultControl
         class="pEditor"
         [style]="{ height: '420px' }"
-        [readonly]="!showButtons || escape"
+        [readonly]="!isWriteRole || escape"
         (keydown.escape)="escape = true"
         (keydown.enter)="escape = false"
         (click)="escape = false"
@@ -101,7 +103,7 @@
     <br />
     <p-toast #toast position="bottom-center"> </p-toast>
     <p-confirmpopup></p-confirmpopup>
-    @if (showButtons) {
+    @if (isWriteRole && showButtons()) {
         <div class="button-bottom-left">
             <p-button
                 styleClass="black-button"
