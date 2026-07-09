@@ -39,6 +39,7 @@ import com.soprasteria.g4it.backend.client.gen.connector.apiecomindv2.dto.Output
 import com.soprasteria.g4it.backend.common.filesystem.business.local.CsvFileService;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileType;
 import com.soprasteria.g4it.backend.common.model.Context;
+import com.soprasteria.g4it.backend.common.task.business.TaskService;
 import com.soprasteria.g4it.backend.common.task.modeldb.Task;
 import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
 import com.soprasteria.g4it.backend.common.utils.StringUtils;
@@ -81,6 +82,8 @@ public class EvaluateAiService {
     OrganizationRepository organizationRepository;
     @Autowired
     TaskRepository taskRepository;
+    @Autowired
+    TaskService taskService;
 
     @Autowired
     AiService aiService;
@@ -333,9 +336,7 @@ public class EvaluateAiService {
                 csvOutPhysicalEquipment.flush();
                 csvOutVirtualEquipment.flush();
 
-                task.setProgressPercentage("100%");
-                task.setLastUpdateDate(LocalDateTime.now());
-                taskRepository.save(task);
+                taskService.updateTaskProgress(task, "100%");
 
                 physicalEquipments.clear();
 

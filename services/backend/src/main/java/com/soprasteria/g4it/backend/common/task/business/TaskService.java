@@ -87,6 +87,7 @@ public class TaskService {
                         .build());
 
         task.setProgressPercentage("0%");
+        task.setProgressLastChangedDate(now); // Initialize progress tracking
         task.setStatus(TaskStatus.IN_PROGRESS.toString());
         task.setCreationDate(now);
         task.setLastUpdateDate(now);
@@ -102,6 +103,45 @@ public class TaskService {
      */
     public void saveTask(Task task) {
         taskRepository.save(task);
+    }
+
+    /**
+     * Update task progress percentage and track when it changes.
+     * If the progress percentage has changed, updates progressLastChangedDate.
+     *
+     * @param task the task to update
+     * @param newProgress the new progress percentage
+     */
+    public void updateTaskProgress(Task task, String newProgress) {
+        String currentProgress = task.getProgressPercentage();
+
+        // Check if progress has actually changed
+        boolean progressChanged = currentProgress == null || !currentProgress.equals(newProgress);
+
+        if (progressChanged) {
+            task.setProgressPercentage(newProgress);
+            task.setProgressLastChangedDate(LocalDateTime.now());
+            task.setLastUpdateDate(LocalDateTime.now());
+        } else {
+            // Progress hasn't changed, only update lastUpdateDate
+            task.setLastUpdateDate(LocalDateTime.now());
+        }
+
+        taskRepository.save(task);
+    }
+
+    /**
+     * Update task progress percentage by task ID and track when it changes.
+     *
+     * @param taskId the task ID
+     * @param newProgress the new progress percentage
+     */
+    @Transactional
+    public void updateTaskProgressById(Long taskId, String newProgress) {
+        Task task = taskRepository.findById(taskId).orElse(null);
+        if (task != null) {
+            updateTaskProgress(task, newProgress);
+        }
     }
 
     /**

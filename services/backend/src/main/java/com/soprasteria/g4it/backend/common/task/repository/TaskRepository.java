@@ -106,6 +106,20 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     @Transactional
     @Query("""
                 update Task t
+                set t.progressPercentage = :progress,
+                    t.progressLastChangedDate = :progressChangedDate,
+                    t.lastUpdateDate = :date
+                where t.id = :id
+            """)
+    void updateProgressWithTracking(@Param("id") Long id,
+                                    @Param("progress") String progress,
+                                    @Param("progressChangedDate") LocalDateTime progressChangedDate,
+                                    @Param("date") LocalDateTime date);
+
+    @Modifying
+    @Transactional
+    @Query("""
+                update Task t
                 set t.status = :status,
                     t.lastUpdateDate = :date,
                     t.progressPercentage = :progress
@@ -115,6 +129,22 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
                          @Param("status") String status,
                          @Param("date") LocalDateTime date,
                          @Param("progress") String progress);
+
+    @Modifying
+    @Transactional
+    @Query("""
+                update Task t
+                set t.status = :status,
+                    t.lastUpdateDate = :date,
+                    t.progressPercentage = :progress,
+                    t.progressLastChangedDate = :progressChangedDate
+                where t.id = :id
+            """)
+    void updateTaskStateWithTracking(@Param("id") Long id,
+                                     @Param("status") String status,
+                                     @Param("date") LocalDateTime date,
+                                     @Param("progress") String progress,
+                                     @Param("progressChangedDate") LocalDateTime progressChangedDate);
 
     @Modifying
     @Transactional

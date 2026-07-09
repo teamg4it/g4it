@@ -79,6 +79,12 @@ public class Task {
     private String progressPercentage;
 
     /**
+     * Date when the progress percentage last changed.
+     * Used to detect stuck tasks with stagnant progress.
+     */
+    private LocalDateTime progressLastChangedDate;
+
+    /**
      * Criteria list to evaluate impacts on
      */
     private List<String> criteria;

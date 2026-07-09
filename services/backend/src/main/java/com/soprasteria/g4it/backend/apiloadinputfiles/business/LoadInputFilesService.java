@@ -168,6 +168,7 @@ public class LoadInputFilesService {
                 .details(new ArrayList<>())
                 .lastUpdateDate(context.getDatetime())
                 .progressPercentage("0%")
+                .progressLastChangedDate(context.getDatetime())
                 .status(TaskStatus.TO_START.toString())
                 .type(TaskType.LOADING.toString())
                 .inventory(
@@ -245,6 +246,7 @@ public class LoadInputFilesService {
                 .details(new ArrayList<>())
                 .lastUpdateDate(context.getDatetime())
                 .progressPercentage("0%")
+                .progressLastChangedDate(context.getDatetime())
                 .status(TaskStatus.TO_START.toString())
                 .type(TaskType.LOADING.toString())
                 .digitalServiceVersion(digitalServiceVersion)
@@ -273,6 +275,7 @@ public class LoadInputFilesService {
                     task.setLastUpdateDate(now);
                     task.setDetails(new ArrayList<>());
                     task.setProgressPercentage("0%");
+                    task.setProgressLastChangedDate(now);
                     taskRepository.save(task);
                     Context context;
                     final Inventory inventory = task.getInventory();

@@ -1,0 +1,25 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-progress-last-changed-date-column
+      author: G4IT Dev Team
+      changes:
+        - addColumn:
+            tableName: task
+            columns:
+              - column:
+                  name: progress_last_changed_date
+                  type: timestamp
+                  constraints:
+                    nullable: true
+        - sql:
+            comment: Initialize progress_last_changed_date for existing tasks with progress
+            sql: >
+              UPDATE task 
+              SET progress_last_changed_date = creation_date 
+              WHERE progress_percentage IS NOT NULL 
+              AND progress_last_changed_date IS NULL
+      rollback:
+        - dropColumn:
+            tableName: task
+            columnName: progress_last_changed_date
+

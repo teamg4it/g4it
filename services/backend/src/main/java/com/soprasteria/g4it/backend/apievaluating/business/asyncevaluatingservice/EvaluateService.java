@@ -34,6 +34,7 @@ import com.soprasteria.g4it.backend.apiuser.repository.OrganizationRepository;
 import com.soprasteria.g4it.backend.common.filesystem.business.local.CsvFileService;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileType;
 import com.soprasteria.g4it.backend.common.model.Context;
+import com.soprasteria.g4it.backend.common.task.business.TaskService;
 import com.soprasteria.g4it.backend.common.task.modeldb.Task;
 import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
 import com.soprasteria.g4it.backend.common.utils.Constants;
@@ -59,7 +60,6 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -100,6 +100,8 @@ public class EvaluateService {
     CsvFileService csvFileService;
     @Autowired
     TaskRepository taskRepository;
+    @Autowired
+    TaskService taskService;
     @Autowired
     OrganizationRepository organizationRepository;
     @Autowired
@@ -376,10 +378,7 @@ public class EvaluateService {
                         int progress =
                                 (int) ((processed * 100.0 * processFactor) / totalEquipments);
 
-                        taskRepository.updateProgress(taskId,
-                                progress + "%",
-                                LocalDateTime.now()
-                        );
+                        taskService.updateTaskProgressById(taskId, progress + "%");
                     }
                     /**
                      * ------------------------------------------------------------------

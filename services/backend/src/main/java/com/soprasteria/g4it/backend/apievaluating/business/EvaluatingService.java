@@ -132,6 +132,7 @@ public class EvaluatingService {
                 .details(new ArrayList<>())
                 .lastUpdateDate(context.getDatetime())
                 .progressPercentage("0%")
+                .progressLastChangedDate(context.getDatetime())
                 .status(TaskStatus.TO_START.toString())
                 .type(TaskType.EVALUATING.toString())
                 .inventory(inventory)
@@ -203,6 +204,7 @@ public class EvaluatingService {
                 .details(new ArrayList<>())
                 .lastUpdateDate(context.getDatetime())
                 .progressPercentage("0%")
+                .progressLastChangedDate(context.getDatetime())
                 .status(TaskStatus.IN_PROGRESS.toString())
                 .type(TaskType.EVALUATING_DIGITAL_SERVICE.toString())
                 .digitalServiceVersion(digitalServiceVersion)
@@ -255,6 +257,7 @@ public class EvaluatingService {
                     task.setLastUpdateDate(now);
                     task.setDetails(new ArrayList<>());
                     task.setProgressPercentage("0%");
+                    task.setProgressLastChangedDate(now);
                     taskRepository.updateTaskStateWithDetails(
                             task.getId(),
                             TaskStatus.TO_START.toString(),

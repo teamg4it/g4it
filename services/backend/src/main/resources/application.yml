@@ -66,6 +66,9 @@ g4it:
     stuck:
       timeout:
         hours: 0.167                  # Tasks stuck for this long will be marked as FAILED (0.167 hours = 10 minutes)
+      progress:
+        timeout:
+          minutes: 10                 # Tasks with unchanged progress for this long will be marked as FAILED
       check:
         enabled: true
 

@@ -41,6 +41,9 @@ public class StuckTaskCleanupService {
     @Value("${g4it.task.stuck.timeout.hours:0.167}")
     private double stuckTaskTimeoutHours;
 
+    @Value("${g4it.task.stuck.progress.timeout.minutes:10}")
+    private long progressStagnationTimeoutMinutes;
+
     @Value("${g4it.task.stuck.check.enabled:true}")
     private boolean stuckTaskCheckEnabled;
 
@@ -96,13 +99,14 @@ public class StuckTaskCleanupService {
     }
 
     /**
-     * Check if a task is stuck based on last update time.
+     * Check if a task is stuck based on last update time or progress stagnation.
      *
      * @param task the task to check
      * @param cutoffTime the cutoff time before which tasks are considered stuck
      * @return true if task is stuck, false otherwise
      */
     private boolean isTaskStuck(Task task, LocalDateTime cutoffTime) {
+        LocalDateTime now = LocalDateTime.now();
         LocalDateTime lastUpdate = task.getLastUpdateDate();
 
         // If no last update date, use creation date
@@ -110,16 +114,29 @@ public class StuckTaskCleanupService {
             lastUpdate = task.getCreationDate();
         }
 
-        // Task is stuck if last update is before cutoff time
-        boolean isStuck = lastUpdate.isBefore(cutoffTime);
+        // Check 1: Task is stuck if last update is before cutoff time
+        boolean isStuckByTime = lastUpdate.isBefore(cutoffTime);
 
-        if (isStuck) {
-            long hoursSinceUpdate = ChronoUnit.HOURS.between(lastUpdate, LocalDateTime.now());
+        // Check 2: Task is stuck if progress percentage hasn't changed in configured minutes
+        boolean isStuckByProgress = false;
+        if (task.getProgressLastChangedDate() != null) {
+            LocalDateTime progressCutoffTime = now.minusMinutes(progressStagnationTimeoutMinutes);
+            isStuckByProgress = task.getProgressLastChangedDate().isBefore(progressCutoffTime);
+
+            if (isStuckByProgress) {
+                long minutesSinceProgressChange = ChronoUnit.MINUTES.between(task.getProgressLastChangedDate(), now);
+                log.warn("Task {} (type: {}) is stuck - progress percentage '{}' hasn't changed for {} minutes",
+                        task.getId(), task.getType(), task.getProgressPercentage(), minutesSinceProgressChange);
+            }
+        }
+
+        if (isStuckByTime && !isStuckByProgress) {
+            long hoursSinceUpdate = ChronoUnit.HOURS.between(lastUpdate, now);
             log.warn("Task {} (type: {}) is stuck - last updated {} hours ago",
                     task.getId(), task.getType(), hoursSinceUpdate);
         }
 
-        return isStuck;
+        return isStuckByTime || isStuckByProgress;
     }
 
     /**
@@ -130,17 +147,39 @@ public class StuckTaskCleanupService {
      */
     private void failTask(Task task, LocalDateTime now) {
         try {
-            // Calculate how long the task has been stuck
+            // Determine the reason for failure
+            String failureReason;
             LocalDateTime lastUpdate = task.getLastUpdateDate() != null ?
                     task.getLastUpdateDate() : task.getCreationDate();
             long hoursStuck = ChronoUnit.HOURS.between(lastUpdate, now);
 
+            // Check if failed due to progress stagnation
+            boolean failedDueToProgressStagnation = false;
+            if (task.getProgressLastChangedDate() != null) {
+                LocalDateTime progressCutoffTime = now.minusMinutes(progressStagnationTimeoutMinutes);
+                if (task.getProgressLastChangedDate().isBefore(progressCutoffTime)) {
+                    failedDueToProgressStagnation = true;
+                }
+            }
+
             // Get localized error message
             Locale locale = Locale.getDefault(); // Could be enhanced to use user's locale if stored
-            String errorMessage = messageSource.getMessage("task.stuck.timeout",
-                    new Object[]{hoursStuck},
-                    "Task has been stuck for " + hoursStuck + " hours and has been automatically terminated.",
-                    locale);
+            String errorMessage;
+
+            if (failedDueToProgressStagnation) {
+                long minutesStagnant = ChronoUnit.MINUTES.between(task.getProgressLastChangedDate(), now);
+                errorMessage = String.format(
+                    "Task has been stuck with progress at %s for %d minutes and has been automatically terminated.",
+                    task.getProgressPercentage(), minutesStagnant
+                );
+                failureReason = "progress stagnation (" + minutesStagnant + " minutes)";
+            } else {
+                errorMessage = messageSource.getMessage("task.stuck.timeout",
+                        new Object[]{hoursStuck},
+                        "Task has been stuck for " + hoursStuck + " hours and has been automatically terminated.",
+                        locale);
+                failureReason = "time timeout (" + hoursStuck + " hours)";
+            }
 
             // Update task details - LogUtils.error/info automatically truncate to fit database limit
             List<String> details = task.getDetails() != null ? new ArrayList<>(task.getDetails()) : new ArrayList<>();
@@ -160,8 +199,8 @@ public class StuckTaskCleanupService {
 
             taskRepository.save(task);
 
-            log.info("Task {} (type: {}) marked as FAILED after being stuck for {} hours",
-                    task.getId(), task.getType(), hoursStuck);
+            log.info("Task {} (type: {}) marked as FAILED due to {}",
+                    task.getId(), task.getType(), failureReason);
 
         } catch (Exception e) {
             log.error("Error while failing stuck task {}: {}", task.getId(), e.getMessage(), e);
@@ -175,6 +214,15 @@ public class StuckTaskCleanupService {
      */
     public double getStuckTaskTimeoutHours() {
         return stuckTaskTimeoutHours;
+    }
+
+    /**
+     * Get the configured progress stagnation timeout in minutes.
+     *
+     * @return timeout in minutes
+     */
+    public long getProgressStagnationTimeoutMinutes() {
+        return progressStagnationTimeoutMinutes;
     }
 
     /**
