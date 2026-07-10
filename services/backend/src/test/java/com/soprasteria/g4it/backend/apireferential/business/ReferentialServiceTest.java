@@ -193,33 +193,6 @@ class ReferentialServiceTest {
         assertEquals(electricityMix, result.get(0));
     }
 
-    /*@Test
-    void testGetItemImpactsForWorkspace_WhenNoElectricityMix() {
-        ItemImpactRest impact = mock(ItemImpactRest.class);
-
-        when(referentialGetService.getItemImpactsForWorkspace(
-                "crit", "step", "name",
-                null, null, null, 1L))
-                .thenReturn(List.of(impact));
-
-        when(referentialGetService.getItemImpactsForWorkspace(
-                "crit", null, null,
-                "FR", "electricity-mix", null, 1L))
-                .thenReturn(Collections.emptyList());
-
-        // Fallback query used by service when workspace electricity mix is empty.
-        when(referentialGetService.getItemImpacts(
-                "crit", null, null,
-                "FR", "electricity-mix", null))
-                .thenReturn(Collections.emptyList());
-
-        List<ItemImpactRest> result =
-                referentialService.getItemImpactsForWorkspace(
-                        "crit", "step", "name", "FR", 1L);
-
-        assertEquals(1, result.size());
-        assertEquals(impact, result.get(0));
-    }*/
 
     @Test
     void testGetItemTypeForWorkspace_ReturnsFirstItemType() {
