@@ -121,7 +121,7 @@ export class UpdateWorkspaceReferenceComponent implements OnInit {
                     "digital-services-import.templates.data-model",
                 );
                 this.dataModel = transformedTemplateFiles.find((file) =>
-                    file.name?.toLowerCase()?.includes("datamodel"),
+                    file.name?.toLowerCase()?.includes("datamodel_workspace"),
                 );
                 if (this.dataModel?.displayFileName) {
                     this.dataModel.displayFileName = this.translate.instant(

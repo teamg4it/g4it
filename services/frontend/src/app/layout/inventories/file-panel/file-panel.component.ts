@@ -23,7 +23,13 @@ import {
     ViewContainerRef,
 } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
+import {
+    FormBuilder,
+    FormGroup,
+    FormsModule,
+    ReactiveFormsModule,
+    Validators,
+} from "@angular/forms";
 import { TranslatePipe, TranslateService } from "@ngx-translate/core";
 import saveAs from "file-saver";
 import { MessageService } from "primeng/api";
@@ -53,15 +59,15 @@ import { AutofocusDirective } from "../../../core/directives/auto-focus.directiv
     templateUrl: "./file-panel.component.html",
     standalone: true,
     imports: [
-    AutofocusDirective,
-    FormsModule,
-    RadioButtonModule,
-    DatePickerModule,
-    ReactiveFormsModule,
-    InputTextModule,
-    Button,
-    TranslatePipe
-],
+        AutofocusDirective,
+        FormsModule,
+        RadioButtonModule,
+        DatePickerModule,
+        ReactiveFormsModule,
+        InputTextModule,
+        Button,
+        TranslatePipe,
+    ],
 })
 export class FilePanelComponent implements OnInit, OnDestroy, AfterViewInit, OnChanges {
     private readonly userService = inject(UserService);
@@ -161,7 +167,8 @@ export class FilePanelComponent implements OnInit, OnDestroy, AfterViewInit, OnC
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe((templateFiles: FileDescription[]) => {
                 templateFiles = templateFiles.filter(
-                    (file) => !file.name.includes("ds_"),
+                    (file) =>
+                        !file.name.includes("ds_") && !file.name.includes("workspace"),
                 );
                 if (templateFiles.length === 0) {
                     this.templateFiles = [];
