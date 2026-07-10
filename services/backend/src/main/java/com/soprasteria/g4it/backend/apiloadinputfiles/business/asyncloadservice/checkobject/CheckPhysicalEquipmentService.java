@@ -65,6 +65,10 @@ public class CheckPhysicalEquipmentService {
         genericRuleService.checkType(context.getLocale(), context.getOrganization(),filename, line, physicalEquipment.getType(), isDigitalService,context.getWorkspaceId())
                 .ifPresent(errors::add);
 
+        // check quantity not null and > 0
+        genericRuleService.checkQuantity(context.getLocale(),filename, line, physicalEquipment.getQuantity(), isDigitalService)
+                .ifPresent(errors::add);
+
 
         // check date purchase < date retrieval
         if (!(isDigitalService && DigitalServiceType.NETWORK.getValue().equals(physicalEquipment.getType()))) {

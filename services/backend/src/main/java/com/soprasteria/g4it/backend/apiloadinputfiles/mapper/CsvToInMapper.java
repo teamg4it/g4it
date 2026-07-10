@@ -48,14 +48,18 @@ public interface CsvToInMapper {
     }
 
     default InPhysicalEquipmentRest csvInPhysicalEquipmentToRest(CSVRecord csvRecord, final Long inventoryId, String digitalServiceVersionUid) {
-
+        final String quantityValue = read(csvRecord, "quantite");
+        final String consoElecAnnulledValue = read(csvRecord, "consoElecAnnuelle");
+        if ((quantityValue != null && quantityValue.contains(",")) || (consoElecAnnulledValue != null && consoElecAnnulledValue.contains(",")) ) {
+            throw new AsyncTaskException(ErrorConstants.INVALID_DECIMAL_NUMBER_FORMAT);
+        }
         return InPhysicalEquipmentRest.builder()
                 .name(read(csvRecord, "nomEquipementPhysique"))
                 .inventoryId(inventoryId)
                 .digitalServiceVersionUid(digitalServiceVersionUid)
                 .datacenterName(read(csvRecord, "nomCourtDatacenter"))
                 .location(read(csvRecord, "paysDUtilisation"))
-                .quantity(readDouble(csvRecord, "quantite", 1d))
+                .quantity(readDouble(csvRecord, "quantite"))
                 .type(read(csvRecord, "type"))
                 .model(read(csvRecord, "modele"))
                 .durationHour(readDouble(csvRecord, "dureeUtilisation"))
