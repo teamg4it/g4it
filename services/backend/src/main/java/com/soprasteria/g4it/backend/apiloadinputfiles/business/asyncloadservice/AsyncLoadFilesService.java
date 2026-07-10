@@ -9,7 +9,6 @@
 package com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice;
 
 
-import com.soprasteria.g4it.backend.apidigitalservice.business.DigitalServiceService;
 import com.soprasteria.g4it.backend.apidigitalservice.business.DigitalServiceVersionService;
 import com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.checkmetadata.CheckMetadataInventoryFileService;
 import com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.loadmetadata.AsyncLoadMetadataService;
@@ -75,7 +74,6 @@ public class AsyncLoadFilesService implements ITaskExecute {
         List<String> filenames = task.getFilenames();
         context.initFileToLoad(fileLoadingUtils.mapFileToLoad(filenames, isInventory));
         context.initTaskId(task.getId());
-
         try {
             //Download all files
             fileLoadingUtils.downloadAllFileToLoad(context);
