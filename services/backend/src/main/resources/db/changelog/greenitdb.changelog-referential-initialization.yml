@@ -604,8 +604,16 @@ databaseChangeLog:
                   name: workspace_id
 
   - changeSet:
-      id: add-hide-reference-values
+      id: add-hide-reference-values-updated
       author: G4IT Dev Team
+      preConditions:
+        onFail: MARK_RAN
+        onError: HALT
+        not:
+          columnExists:
+            tableName: ref_item_impact
+            columnName: is_hidden
+
       changes:
         - addColumn:
             tableName: ref_item_impact

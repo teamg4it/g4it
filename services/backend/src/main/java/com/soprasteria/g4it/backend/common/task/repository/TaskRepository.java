@@ -122,6 +122,7 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
                 update Task t
                 set t.status = :status,
                     t.progressPercentage = :progress,
+                    t.progressLastChangedDate = CURRENT_TIMESTAMP,
                     t.details = :details,
                     t.lastUpdateDate = CURRENT_TIMESTAMP
                 where t.id = :taskId
