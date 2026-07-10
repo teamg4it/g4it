@@ -83,10 +83,6 @@ public class StuckTaskCleanupService {
 
         for (Task task : inProgressTasks) {
             LocalDateTime lastUpdate = task.getLastUpdateDate();
-            if (lastUpdate == null) {
-                lastUpdate = task.getCreationDate();
-            }
-
             LocalDateTime progressLastChanged = task.getProgressLastChangedDate();
 
             // Truncate to seconds to avoid precision issues when comparing
@@ -97,19 +93,29 @@ public class StuckTaskCleanupService {
 
             // Case 1: PLCD is null - First scheduler check, initialize and skip
             if (progressLastChanged == null) {
-                task.setProgressLastChangedDate(task.getLastUpdateDate());
-                taskRepository.save(task);
-                initializedCount++;
-                log.debug("Task {} - First check, initialized PLCD = LUD", task.getId());
+                try {
+                    task.setProgressLastChangedDate(lastUpdate);
+                    taskRepository.save(task);
+                    initializedCount++;
+                    log.debug("Task {} - First check, initialized PLCD = LUD", task.getId());
+                } catch (Exception e) {
+                    log.error("Error while initializing progressLastChangedDate for task {}: {}",
+                            task.getId(), e.getMessage(), e);
+                }
                 continue;
             }
 
             // Case 2: LUD > PLCD - Task has progressed, update and skip
             if (lastUpdate.isAfter(progressLastChanged)) {
-                task.setProgressLastChangedDate(task.getLastUpdateDate());
-                taskRepository.save(task);
-                updatedCount++;
-                log.debug("Task {} - Progress detected, updated PLCD = LUD", task.getId());
+                try {
+                    task.setProgressLastChangedDate(lastUpdate);
+                    taskRepository.save(task);
+                    updatedCount++;
+                    log.debug("Task {} - Progress detected, updated PLCD = LUD", task.getId());
+                } catch (Exception e) {
+                    log.error("Error while updating progressLastChangedDate for task {}: {}",
+                            task.getId(), e.getMessage(), e);
+                }
             }
             // Case 3: LUD == PLCD - Task is stuck, KILL it
             else if (lastUpdate.equals(progressLastChanged) || lastUpdate.isBefore(progressLastChanged)) {
