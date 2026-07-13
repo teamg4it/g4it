@@ -254,4 +254,6 @@ export abstract class Constants {
         this.DECLARATIONS,
         this.WELCOME_PAGE,
     ];
+
+    static readonly DATA_MODEL_CONDITION = "workspace";
 }
