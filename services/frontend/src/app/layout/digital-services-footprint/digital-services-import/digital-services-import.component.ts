@@ -165,8 +165,11 @@ export class DigitalServicesImportComponent implements OnInit, OnDestroy {
             .getTemplateFiles()
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe((templateFiles: FileDescription[]) => {
+                // conditon added to not include workpsace data model and to use platform data model instead
                 templateFiles = templateFiles.filter(
-                    (file) => !file.name.includes("inv_"),
+                    (file) =>
+                        !file.name.includes("inv_") &&
+                        !file.name.includes(Constants.DATA_MODEL_CONDITION),
                 );
                 if (templateFiles.length === 0) {
                     this.templateFilesDescription = [];
