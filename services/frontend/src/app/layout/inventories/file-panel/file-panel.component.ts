@@ -166,9 +166,11 @@ export class FilePanelComponent implements OnInit, OnDestroy, AfterViewInit, OnC
             .getTemplateFiles()
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe((templateFiles: FileDescription[]) => {
+                // conditon added to not include workpsace data model and to use platform data model instead
                 templateFiles = templateFiles.filter(
                     (file) =>
-                        !file.name.includes("ds_") && !file.name.includes("workspace"),
+                        !file.name.includes("ds_") &&
+                        !file.name.includes(Constants.DATA_MODEL_CONDITION),
                 );
                 if (templateFiles.length === 0) {
                     this.templateFiles = [];
