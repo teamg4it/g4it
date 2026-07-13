@@ -78,7 +78,22 @@ public interface CsvToInMapper {
 
     default InVirtualEquipmentRest csvInVirtualEquipmentToRest(CSVRecord csvRecord, final Long inventoryId, String digitalServiceVersionUid) {
 
-        Double workload = readDouble(csvRecord, "chargeMoy");
+        final String consoElecAnnValue = read(csvRecord, "consoElecAn");
+        final String cleRepartitionValue = read(csvRecord, "cleRepartition");
+        final String vcpuValue = read(csvRecord, "vCPU");
+        final String capaciteStockageValue = read(csvRecord, "capaciteStockage");
+        final String dureeUtilisationAnnuelleValue = read(csvRecord, "dureeUtilisationAnnuelle");
+        final String chargeMoyValue = read(csvRecord, "chargeMoy");
+
+        if((consoElecAnnValue!=null && consoElecAnnValue.contains(",")) || (cleRepartitionValue != null && cleRepartitionValue.contains(","))
+                || (vcpuValue != null && vcpuValue.contains(","))
+                || (capaciteStockageValue != null && capaciteStockageValue.contains(","))
+                || (dureeUtilisationAnnuelleValue != null && dureeUtilisationAnnuelleValue.contains(","))
+                || (chargeMoyValue != null && chargeMoyValue.contains(","))) {
+            throw new AsyncTaskException(ErrorConstants.INVALID_DECIMAL_NUMBER_FORMAT);
+        }
+
+        Double workload = chargeMoyValue != null? Double.parseDouble(chargeMoyValue):null;
 
         return InVirtualEquipmentRest.builder()
                 .name(read(csvRecord, "nomEquipementVirtuel"))

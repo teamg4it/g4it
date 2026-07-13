@@ -10,6 +10,7 @@ package com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice
 
 import com.soprasteria.g4it.backend.common.model.LineError;
 import com.soprasteria.g4it.backend.common.utils.InfrastructureType;
+import com.soprasteria.g4it.backend.exception.AsyncTaskException;
 import com.soprasteria.g4it.backend.external.boavizta.business.BoaviztapiService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -259,13 +260,13 @@ class RuleVirtualEquipmentServiceTest {
 
     @Test
     void testDuplicateVirtualEquipmentNameError() {
-        when(messageSource.getMessage(eq("cloud.equipment.unique"), any(), eq(locale)))
-                .thenReturn("nomEquipementVirtuel should be unique");
+        when(messageSource.getMessage(eq("vm.name.should.not.duplicate"), any(), eq(locale)))
+                .thenReturn("nomEquipementVirtuel should not be duplicate");
 
         Set<String> names = new HashSet<>(Set.of("VM1"));
-        var actual = service.checkVirtualEquipmentName(locale, filename, line, "VM1", names, true, false);
-        Assertions.assertTrue(actual.isPresent());
-        Assertions.assertEquals(new LineError(filename,1, "nomEquipementVirtuel should be unique"), actual.get());
+        Assertions.assertThrows(AsyncTaskException.class, () ->
+            service.checkVirtualEquipmentName(locale, filename, line, "VM1", names, true, false)
+        );
     }
 
     @Test
@@ -439,12 +440,12 @@ class RuleVirtualEquipmentServiceTest {
     // checkVirtualEquipmentName unique for !isCloudService
     @Test
     void testCheckVirtualEquipmentNameDuplicateNonCloudService() {
-        when(messageSource.getMessage(eq("cloud.equipment.unique"), any(), eq(locale))).
-                thenReturn("nomEquipementVirtuel should be unique");
+        when(messageSource.getMessage(eq("vm.name.should.not.duplicate"), any(), eq(locale))).
+                thenReturn("nomEquipementVirtuel should not be duplicate");
         Set<String> names = new HashSet<>(Set.of("N1"));
-        var result = service.checkVirtualEquipmentName(locale, filename, line, "N1", names, false, false);
-        Assertions.assertTrue(result.isPresent());
-        Assertions.assertEquals(new LineError(filename,1,"nomEquipementVirtuel should be unique"), result.get());
+        Assertions.assertThrows(AsyncTaskException.class, () ->
+            service.checkVirtualEquipmentName(locale, filename, line, "N1", names, false, false)
+        );
     }
 
     @Test
