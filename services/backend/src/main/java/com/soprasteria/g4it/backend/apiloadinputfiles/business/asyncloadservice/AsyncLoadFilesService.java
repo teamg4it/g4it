@@ -9,7 +9,6 @@
 package com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice;
 
 
-import com.soprasteria.g4it.backend.apidigitalservice.business.DigitalServiceService;
 import com.soprasteria.g4it.backend.apidigitalservice.business.DigitalServiceVersionService;
 import com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.checkmetadata.CheckMetadataInventoryFileService;
 import com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.loadmetadata.AsyncLoadMetadataService;
@@ -82,11 +81,6 @@ public class AsyncLoadFilesService implements ITaskExecute {
             //Convert all files
             fileLoadingUtils.convertAllFileToLoad(context);
 
-            try {
-                Thread.sleep(800000);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
             // Task fails if mandatory headers are missing
             List<String> mandatoryHeaderErrors = loadFileService.mandatoryHeadersCheck(context);
             if (mandatoryHeaderErrors != null && !mandatoryHeaderErrors.isEmpty()) {
