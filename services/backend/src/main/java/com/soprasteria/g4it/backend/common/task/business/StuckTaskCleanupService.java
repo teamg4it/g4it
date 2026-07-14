@@ -47,8 +47,7 @@ public class StuckTaskCleanupService {
     @Autowired
     private TaskRepository taskRepository;
 
-    @Autowired
-    private MessageSource messageSource;
+    private static final String FAILED_BY_SCHEDULER = "FAILED BY SCHEDULER";
 
     /**
      * Find and fail all tasks that are stuck in IN_PROGRESS status.
@@ -146,15 +145,14 @@ public class StuckTaskCleanupService {
         try {
             // Create error message
             String errorMessage = String.format(
-                "Task has been stuck with no updates for %d minutes and has been automatically terminated.",
+                "Task has been stuck with no updates from %d minutes and has been automatically terminated.",
                 minutesWithoutUpdate
             );
-            String failureReason = "no updates for " + minutesWithoutUpdate + " minutes";
 
             // Update task details - LogUtils.error/info automatically truncate to fit database limit
             List<String> details = task.getDetails() != null ? new ArrayList<>(task.getDetails()) : new ArrayList<>();
             details.add(LogUtils.error(errorMessage));
-            details.add(LogUtils.error("Task was automatically failed by the stuck task cleanup scheduler"));
+            details.add(LogUtils.error(FAILED_BY_SCHEDULER));
 
             // Set errors - truncate raw message to fit database limit
             List<String> errors = new ArrayList<>();
@@ -169,8 +167,8 @@ public class StuckTaskCleanupService {
 
             taskRepository.save(task);
 
-            log.info("Task {} (type: {}) marked as FAILED due to {}",
-                    task.getId(), task.getType(), failureReason);
+            log.info("Task {} (type: {}) marked as FAILED",
+                    task.getId(), task.getType());
 
         } catch (Exception e) {
             log.error("Error while failing stuck task {}: {}", task.getId(), e.getMessage(), e);
