@@ -187,10 +187,17 @@ class WorkspaceReferentialImportServiceTest {
 
     @Test
     void importReferentialCSV_itemImpact_success() {
+
         ItemImpactRest rest = new ItemImpactRest();
-        rest.setName("A");
-        rest.setLifecycleStep("L");
-        rest.setCriterion("C");
+        rest.setName("Laptop");
+        rest.setCriterion("CLIMATE_CHANGE");
+        rest.setLifecycleStep("MANUFACTURING");
+        rest.setCategory("Hardware");
+        rest.setLevel("1");
+        rest.setSource("ADEME");
+        rest.setTier("1");
+        rest.setUnit("kg");
+        rest.setValue(12.5);
 
         ItemImpactParseResult result = ItemImpactParseResult.builder()
                 .data(List.of(rest))
@@ -200,14 +207,20 @@ class WorkspaceReferentialImportServiceTest {
         when(file.isEmpty()).thenReturn(false);
         when(referentialImportService.parseItemImpactCsv(file)).thenReturn(result);
 
+        List<ItemImpact> entities = List.of(new ItemImpact());
+
         when(referentialMapper.toItemImpactEntity(any()))
-                .thenReturn(List.of(new ItemImpact()));
+                .thenReturn(entities);
 
         ImportReportRest response =
-                service.importReferentialCSV(ORG, 1L, "itemImpact", file); // ✅
+                service.importReferentialCSV(ORG, 1L, "itemImpact", file);
 
         assertNotNull(response);
-        verify(workspacePersistenceService).syncItemImpacts(eq(1L), any());
+
+        verify(referentialMapper).toItemImpactEntity(result.getData());
+
+        verify(workspacePersistenceService)
+                .syncItemImpacts(1L, entities);
     }
 
     // =========================
@@ -268,16 +281,197 @@ class WorkspaceReferentialImportServiceTest {
                 .report(
                         ImportReportRest.builder()
                                 .errors(List.of("error"))
-                                .build()
-                )
+                                .build())
                 .build();
 
         when(file.isEmpty()).thenReturn(false);
         when(referentialImportService.parseItemTypeCsv(file)).thenReturn(result);
 
-        BadRequestException ex = assertThrows(BadRequestException.class,
+        BadRequestException ex = assertThrows(
+                BadRequestException.class,
                 () -> service.importReferentialCSV(ORG, 1L, "itemType", file));
 
-        assertEquals("Validation errors in file", ex.getError());
+        assertEquals("csv", ex.getField());
+        assertEquals("error", ex.getError());
+    }
+
+    @Test
+    void importReferentialCSV_itemImpact_duplicateTriplet() {
+
+        ItemImpactRest r1 = new ItemImpactRest();
+        r1.setName("Laptop");
+        r1.setCriterion("CLIMATE_CHANGE");
+        r1.setLifecycleStep("MANUFACTURING");
+
+        ItemImpactRest r2 = new ItemImpactRest();
+        r2.setName("Laptop");
+        r2.setCriterion("CLIMATE_CHANGE");
+        r2.setLifecycleStep("MANUFACTURING");
+
+        ItemImpactParseResult result = ItemImpactParseResult.builder()
+                .data(List.of(r1, r2))
+                .report(emptyReport())
+                .build();
+
+        when(file.isEmpty()).thenReturn(false);
+        when(referentialImportService.parseItemImpactCsv(file)).thenReturn(result);
+
+        assertThrows(BadRequestException.class,
+                () -> service.importReferentialCSV(ORG, 1L, "itemImpact", file));
+
+        verifyNoInteractions(workspacePersistenceService);
+    }
+
+    @Test
+    void importReferentialCSV_itemImpact_invalidCriterion() {
+
+        ItemImpactRest rest = new ItemImpactRest();
+
+        rest.setCriterion("INVALID");
+        rest.setLifecycleStep("MANUFACTURING");
+        rest.setName("Laptop");
+        rest.setCategory("cat");
+        rest.setLevel("1");
+        rest.setSource("ADEME");
+        rest.setTier("1");
+        rest.setUnit("kg");
+        rest.setValue(10d);
+
+        ItemImpactParseResult result = ItemImpactParseResult.builder()
+                .data(List.of(rest))
+                .report(emptyReport())
+                .build();
+
+        when(file.isEmpty()).thenReturn(false);
+        when(referentialImportService.parseItemImpactCsv(file)).thenReturn(result);
+
+        assertThrows(BadRequestException.class,
+                () -> service.importReferentialCSV(ORG, 1L, "itemImpact", file));
+    }
+
+    @Test
+    void importReferentialCSV_itemImpact_invalidLifecycleStep() {
+
+        ItemImpactRest rest = new ItemImpactRest();
+
+        rest.setCriterion("CLIMATE_CHANGE");
+        rest.setLifecycleStep("INVALID");
+        rest.setName("Laptop");
+        rest.setCategory("cat");
+        rest.setLevel("1");
+        rest.setSource("ADEME");
+        rest.setTier("1");
+        rest.setUnit("kg");
+        rest.setValue(10d);
+
+        ItemImpactParseResult result = ItemImpactParseResult.builder()
+                .data(List.of(rest))
+                .report(emptyReport())
+                .build();
+
+        when(file.isEmpty()).thenReturn(false);
+        when(referentialImportService.parseItemImpactCsv(file)).thenReturn(result);
+
+        assertThrows(BadRequestException.class,
+                () -> service.importReferentialCSV(ORG, 1L, "itemImpact", file));
+    }
+
+    @Test
+    void importReferentialCSV_itemImpact_missingMandatoryField() {
+
+        ItemImpactRest rest = new ItemImpactRest();
+
+        rest.setCriterion("CLIMATE_CHANGE");
+        rest.setLifecycleStep("MANUFACTURING");
+        rest.setName(null);
+
+        ItemImpactParseResult result = ItemImpactParseResult.builder()
+                .data(List.of(rest))
+                .report(emptyReport())
+                .build();
+
+        when(file.isEmpty()).thenReturn(false);
+        when(referentialImportService.parseItemImpactCsv(file)).thenReturn(result);
+
+        assertThrows(BadRequestException.class,
+                () -> service.importReferentialCSV(ORG, 1L, "itemImpact", file));
+    }
+
+    @Test
+    void importReferentialCSV_itemImpact_usingWithoutConsumption() {
+
+        ItemImpactRest rest = new ItemImpactRest();
+
+        rest.setCriterion("CLIMATE_CHANGE");
+        rest.setLifecycleStep("USING");
+        rest.setName("Laptop");
+        rest.setCategory("cat");
+        rest.setLevel("1");
+        rest.setSource("ADEME");
+        rest.setTier("1");
+        rest.setUnit("kg");
+        rest.setValue(12d);
+
+        ItemImpactParseResult result = ItemImpactParseResult.builder()
+                .data(List.of(rest))
+                .report(emptyReport())
+                .build();
+
+        when(file.isEmpty()).thenReturn(false);
+        when(referentialImportService.parseItemImpactCsv(file)).thenReturn(result);
+
+        assertThrows(BadRequestException.class,
+                () -> service.importReferentialCSV(ORG, 1L, "itemImpact", file));
+    }
+
+    @Test
+    void importReferentialCSV_itemImpact_usingWithConsumption() {
+
+        ItemImpactRest rest = new ItemImpactRest();
+
+        rest.setCriterion("CLIMATE_CHANGE");
+        rest.setLifecycleStep("USING");
+        rest.setName("Laptop");
+        rest.setCategory("cat");
+        rest.setLevel("1");
+        rest.setSource("ADEME");
+        rest.setTier("1");
+        rest.setUnit("kg");
+        rest.setValue(10d);
+        rest.setAvgElectricityConsumption(5d);
+
+        ItemImpactParseResult result = ItemImpactParseResult.builder()
+                .data(List.of(rest))
+                .report(emptyReport())
+                .build();
+
+        when(file.isEmpty()).thenReturn(false);
+        when(referentialImportService.parseItemImpactCsv(file)).thenReturn(result);
+
+        when(referentialMapper.toItemImpactEntity(any()))
+                .thenReturn(List.of(new ItemImpact()));
+
+        service.importReferentialCSV(ORG, 1L, "itemImpact", file);
+
+        verify(workspacePersistenceService)
+                .syncItemImpacts(eq(1L), any());
+    }
+
+    @Test
+    void importReferentialCSV_matchingItem_blankKey() {
+
+        MatchingItemRest rest = new MatchingItemRest();
+        rest.setItemSource(" ");
+
+        MatchingItemParseResult result = MatchingItemParseResult.builder()
+                .data(List.of(rest))
+                .report(emptyReport())
+                .build();
+
+        when(file.isEmpty()).thenReturn(false);
+        when(referentialImportService.parseMatchingItemCsv(file)).thenReturn(result);
+
+        assertThrows(IllegalArgumentException.class,
+                () -> service.importReferentialCSV(ORG, 1L, "matchingItem", file));
     }
 }
