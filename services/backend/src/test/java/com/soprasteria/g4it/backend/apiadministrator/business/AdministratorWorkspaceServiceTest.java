@@ -673,10 +673,7 @@ class AdministratorWorkspaceServiceTest {
         ));
 
         doNothing().when(administratorRoleService)
-                .hasAdminRightOnOrganizationOrWorkspace(
-                        eq(userBO),
-                        eq(workspace.getOrganization().getId()),
-                        eq(workspaceId));
+                .hasAdminRightOnOrganizationOrWorkspace(userBO,workspace.getOrganization().getId(),workspaceId);
 
         List<UserInfoBO> users =
                 administratorWorkspaceService.linkUserToWorkspace(
@@ -687,10 +684,7 @@ class AdministratorWorkspaceServiceTest {
         assertEquals(2, users.size());
 
         verify(administratorRoleService)
-                .hasAdminRightOnOrganizationOrWorkspace(
-                        eq(userBO),
-                        eq(workspace.getOrganization().getId()),
-                        eq(workspaceId));
+                .hasAdminRightOnOrganizationOrWorkspace(userBO,workspace.getOrganization().getId(),workspaceId);
 
         verify(administratorRoleService, never())
                 .hasWorkspaceAdminAndEcoMindAIWriteRole(any(), anyLong());
