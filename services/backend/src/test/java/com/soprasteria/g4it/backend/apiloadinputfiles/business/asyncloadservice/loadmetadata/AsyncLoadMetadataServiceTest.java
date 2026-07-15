@@ -10,7 +10,6 @@ package com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice
 
 import com.soprasteria.g4it.backend.common.model.Context;
 import com.soprasteria.g4it.backend.common.model.FileToLoad;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
@@ -18,6 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Arrays;
 import java.util.Collections;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -37,39 +37,63 @@ class AsyncLoadMetadataServiceTest {
     @Mock
     private FileToLoad fileToLoad2;
 
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
-
     @Test
-    void testLoadInputMetadata_Success() {
+    void shouldLoadMetadataForEachFile() {
         when(context.log()).thenReturn("context-log");
         when(context.getFilesToLoad()).thenReturn(Arrays.asList(fileToLoad1, fileToLoad2));
         when(fileToLoad1.getFilename()).thenReturn("file1.csv");
         when(fileToLoad2.getFilename()).thenReturn("file2.csv");
-        doNothing().when(loadMetadataService).loadMetadataFile(any(), eq(context));
 
         asyncLoadMetadataService.loadInputMetadata(context);
-        verify(loadMetadataService, atLeastOnce()).loadMetadataFile(any(), eq(context));
+
+        verify(loadMetadataService, times(1)).loadMetadataFile(fileToLoad1, context);
+        verify(loadMetadataService, times(1)).loadMetadataFile(fileToLoad2, context);
     }
 
     @Test
-    void testLoadInputMetadata_ExceptionHandled() {
+    void shouldContinueWhenOneFileFailsWithException() {
         when(context.log()).thenReturn("context-log");
-        when(context.getFilesToLoad()).thenReturn(Collections.singletonList(fileToLoad1));
+        when(context.getFilesToLoad()).thenReturn(Arrays.asList(fileToLoad1, fileToLoad2));
         when(fileToLoad1.getFilename()).thenReturn("file1.csv");
-        doThrow(new RuntimeException("fail")).when(loadMetadataService).loadMetadataFile(any(), eq(context));
+        when(fileToLoad2.getFilename()).thenReturn("file2.csv");
+        doAnswer(invocation -> {
+            final FileToLoad fileToLoad = invocation.getArgument(0);
+            if (fileToLoad == fileToLoad1) {
+                throw new RuntimeException("fail");
+            }
+            return null;
+        }).when(loadMetadataService).loadMetadataFile(any(FileToLoad.class), eq(context));
 
         asyncLoadMetadataService.loadInputMetadata(context);
-        verify(loadMetadataService, atLeastOnce()).loadMetadataFile(any(), eq(context));
+
+        verify(loadMetadataService, times(1)).loadMetadataFile(fileToLoad1, context);
+        verify(loadMetadataService, times(1)).loadMetadataFile(fileToLoad2, context);
     }
 
     @Test
-    void testLoadInputMetadata_NoFiles() {
+    void shouldNotLoadMetadataWhenNoFiles() {
         when(context.log()).thenReturn("context-log");
         when(context.getFilesToLoad()).thenReturn(Collections.emptyList());
+
         asyncLoadMetadataService.loadInputMetadata(context);
+
         verify(loadMetadataService, never()).loadMetadataFile(any(), any());
+    }
+
+    @Test
+    void shouldPreserveInterruptedFlagWhenThreadIsInterruptedDuringAwaitTermination() {
+        when(context.log()).thenReturn("context-log");
+        when(context.getFilesToLoad()).thenReturn(Collections.emptyList());
+
+        Thread.currentThread().interrupt();
+        try {
+            asyncLoadMetadataService.loadInputMetadata(context);
+            assertTrue(Thread.currentThread().isInterrupted());
+            verify(loadMetadataService, never()).loadMetadataFile(any(), any());
+        } finally {
+            // Clear interrupted status so this test does not affect following tests.
+            final boolean interruptedStatusCleared = Thread.interrupted();
+            assertTrue(interruptedStatusCleared || !Thread.currentThread().isInterrupted());
+        }
     }
 }

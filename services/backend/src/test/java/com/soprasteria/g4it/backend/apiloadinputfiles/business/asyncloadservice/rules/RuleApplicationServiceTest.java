@@ -18,6 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.MessageSource;
 
 import java.util.Locale;
+import java.util.Set;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -48,5 +49,29 @@ class RuleApplicationServiceTest {
 
         Assertions.assertEquals(new LineError(filename, line, "Application must have a virtual equipment name"), actual.get());
 
+    }
+
+    @Test
+    void testPhysicalEquipmentLinked_NullPhysicalEquipment_Ok() {
+        var actual = service.checkPhysicalEquipmentLinked(locale, filename, line, null, Set.of("PE1"));
+
+        Assertions.assertTrue(actual.isEmpty());
+    }
+
+    @Test
+    void testPhysicalEquipmentLinked_ExistingPhysicalEquipment_Ok() {
+        var actual = service.checkPhysicalEquipmentLinked(locale, filename, line, "PE1", Set.of("PE1", "PE2"));
+
+        Assertions.assertTrue(actual.isEmpty());
+    }
+
+    @Test
+    void testPhysicalEquipmentLinked_UnknownPhysicalEquipment_Error() {
+        when(messageSource.getMessage(any(), any(), eq(locale)))
+                .thenReturn("Physical equipment unknown");
+        var actual = service.checkPhysicalEquipmentLinked(locale, filename, line, "PE404", Set.of("PE1", "PE2"));
+
+        Assertions.assertTrue(actual.isPresent());
+        Assertions.assertEquals(new LineError(filename, line, "Physical equipment unknown"), actual.get());
     }
 }
