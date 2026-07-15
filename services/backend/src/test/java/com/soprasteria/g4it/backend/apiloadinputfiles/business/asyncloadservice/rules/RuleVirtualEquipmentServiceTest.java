@@ -15,6 +15,8 @@ import com.soprasteria.g4it.backend.external.boavizta.business.BoaviztapiService
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -485,23 +487,10 @@ class RuleVirtualEquipmentServiceTest {
         Assertions.assertEquals(new LineError(filename, line, "Allocation factor must be between 0 and 1"), result.get());
     }
 
-    @Test
-    void testCheckAllocationFactorZeroBoundaryIsOk() {
-        var result = service.checkAllocationFactor(locale, filename, line, 0D);
-
-        Assertions.assertTrue(result.isEmpty());
-    }
-
-    @Test
-    void testCheckAllocationFactorOneBoundaryIsOk() {
-        var result = service.checkAllocationFactor(locale, filename, line, 1D);
-
-        Assertions.assertTrue(result.isEmpty());
-    }
-
-    @Test
-    void testCheckAllocationFactorMidRangeIsOk() {
-        var result = service.checkAllocationFactor(locale, filename, line, 0.5D);
+    @ParameterizedTest
+    @ValueSource(doubles = {0D, 1D, 0.5D})
+    void testCheckAllocationFactorValidValuesOk(double allocationFactor) {
+        var result = service.checkAllocationFactor(locale, filename, line, allocationFactor);
 
         Assertions.assertTrue(result.isEmpty());
     }
