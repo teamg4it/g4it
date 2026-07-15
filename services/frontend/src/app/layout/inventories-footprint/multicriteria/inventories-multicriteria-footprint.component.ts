@@ -96,7 +96,9 @@ export class InventoriesMultiCriteriaFootprintComponent extends AbstractDashboar
     }[] = [];
 
     shouldShowStackBarChart = computed(() => {
-        return Object.keys(this.footprint()).length > 4;
+        return (
+            Object.keys(this.footprint()).length > Constants.MAX_NUMBER_OF_CRITERIA_RADAR
+        );
     });
 
     criteriaCalculated: Signal<CriteriaCalculated> = computed(() => {
@@ -203,7 +205,7 @@ export class InventoriesMultiCriteriaFootprintComponent extends AbstractDashboar
 
         const criteriaCountMap = criteriaCalculated.criteriasCount || {};
 
-        // Return stack bar chart if criteria count > 4
+        // Return stack bar chart if criteria count > 5
         if (showStackBar) {
             return createStackBarChartConfig({
                 footprints: footprintCalculated,

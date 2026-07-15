@@ -257,4 +257,5 @@ export abstract class Constants {
 
     static readonly DATA_MODEL_CONDITION = "workspace";
     static readonly MAX_NUMBER_OF_BARS_TO_BE_DISPLAYED = 10;
+    static readonly MAX_NUMBER_OF_CRITERIA_RADAR = 5;
 }

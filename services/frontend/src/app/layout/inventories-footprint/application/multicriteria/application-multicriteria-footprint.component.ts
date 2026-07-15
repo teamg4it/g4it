@@ -98,7 +98,9 @@ export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboar
     isAxisInverted = signal<boolean>(false);
 
     shouldShowStackBarChart = computed(() => {
-        return Object.keys(this.footprint()).length > 4;
+        return (
+            Object.keys(this.footprint()).length > Constants.MAX_NUMBER_OF_CRITERIA_RADAR
+        );
     });
 
     applicationStats = computed<Stat[]>(() => {
