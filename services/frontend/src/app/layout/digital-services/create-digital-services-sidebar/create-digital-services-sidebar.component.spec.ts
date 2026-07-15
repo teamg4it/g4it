@@ -477,4 +477,95 @@ describe("CreateDigitalServicesSidebarComponent", () => {
             );
         });
     });
+
+    describe("onEditorContentChange", () => {
+        beforeEach(() => {
+            digitalServiceBusinessService.getNextAvailableName.and.returnValue(
+                "Digital Service 1",
+            );
+            fixture.componentRef.setInput("allDigitalServices", []);
+            fixture.componentRef.setInput("isEcoMindAi", false);
+            component.ngOnInit();
+        });
+
+        it("should update note form control with the provided content", () => {
+            const testContent = "<p>Test note content</p>";
+
+            component.onEditorContentChange(testContent);
+
+            expect(component.createForm.get("note")?.value).toBe(testContent);
+        });
+
+        it("should update note form control with empty string", () => {
+            component.createForm.patchValue({ note: "Previous content" });
+
+            component.onEditorContentChange("");
+
+            expect(component.createForm.get("note")?.value).toBe("");
+        });
+
+        it("should update note form control with HTML content", () => {
+            const htmlContent = '<div><h1>Title</h1><p>Paragraph</p></div>';
+
+            component.onEditorContentChange(htmlContent);
+
+            expect(component.createForm.get("note")?.value).toBe(htmlContent);
+        });
+
+        it("should preserve other form values when updating note", () => {
+            component.createForm.patchValue({
+                dsName: "Test Service",
+                dsVersionName: "Version 1",
+            });
+
+            component.onEditorContentChange("<p>New note</p>");
+
+            expect(component.createForm.get("dsName")?.value).toBe("Test Service");
+            expect(component.createForm.get("dsVersionName")?.value).toBe("Version 1");
+            expect(component.createForm.get("note")?.value).toBe("<p>New note</p>");
+        });
+    });
+
+    describe("selectTab", () => {
+        beforeEach(() => {
+            digitalServiceBusinessService.getNextAvailableName.and.returnValue(
+                "Digital Service 1",
+            );
+            fixture.componentRef.setInput("allDigitalServices", []);
+            fixture.componentRef.setInput("isEcoMindAi", false);
+            component.ngOnInit();
+        });
+
+        it("should set selectedMenuIndex to the provided index", () => {
+            component.selectTab(1);
+
+            expect(component.selectedMenuIndex).toBe(1);
+        });
+
+        it("should activate the selected menu item", () => {
+            component.selectTab(0);
+
+            const details = component.importDetails();
+            expect(details.menu[0].active).toBe(true);
+        });
+
+        it("should deactivate other menu items", () => {
+            component.selectTab(1);
+
+            const details = component.importDetails();
+            expect(details.menu[0].active).toBe(false);
+            expect(details.menu[1].active).toBe(true);
+        });
+
+        it("should switch between tabs correctly", () => {
+            component.selectTab(0);
+            expect(component.selectedMenuIndex).toBe(0);
+
+            component.selectTab(1);
+            expect(component.selectedMenuIndex).toBe(1);
+
+            component.selectTab(0);
+            expect(component.selectedMenuIndex).toBe(0);
+        });
+    });
 });
