@@ -88,6 +88,8 @@
             "eq": "View equipments' detail for inventory of",
             "refresh": "Refresh inventory informations of",
             "addNote": "Click to add a note",
+            "add-context": "Click to add context/assumptions",
+            "edit-context": "Click to edit context/assumptions",
             "attachedNote": "Click to consult the Context and assumptions",
             "download": "Click to download your result",
             "note": "Note",
@@ -314,6 +316,7 @@
             },
             "context-and-assumptions": "Context and assumptions",
             "edit-context-assumptions": "EDIT CONTEXT/ASSUMPTIONS",
+            "add-context-assumptions": "ADD CONTEXT/ASSUMPTIONS",
             "context-text": "Please describe the context of your analysis and the assumptions made (sources, methodological choices, limitations, etc.). This information helps ensure better understanding, traceability, and comparability of your impact assessment. <br /> These elements can be completed later."
         },
         "error.digital-service-already-exists": "Digital Service already exists",

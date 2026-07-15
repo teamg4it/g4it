@@ -208,11 +208,14 @@
                 <p-button
                     (onClick)="sidebarVisible = true"
                     styleClass="cancel-creation-button uppercase mx-2 mb-3 lg:mb-0"
-                    [ariaLabel]="'common.accessibility.addNote' | translate"
+                    [ariaLabel]="'common.accessibility.add-context' | translate"
                     icon="pi pi-pen-to-square"
                     [pTooltip]="'common.note.add' | translate"
                     id="add-note"
                     tooltipPosition="bottom"
+                    [label]="
+                        'digital-services.version.add-context-assumptions' | translate
+                    "
                 />
             }
 
@@ -220,7 +223,7 @@
                 <p-button
                     (onClick)="sidebarVisible = true"
                     styleClass="cancel-creation-button uppercase mx-2 mb-3 lg:mb-0"
-                    [ariaLabel]="'common.accessibility.attachedNote' | translate"
+                    [ariaLabel]="'common.accessibility.edit-context' | translate"
                     icon="pi pi-pen-to-square"
                     [pTooltip]="'common.note.attached' | translate"
                     tooltipPosition="bottom"
