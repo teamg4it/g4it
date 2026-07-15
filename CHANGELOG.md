@@ -3,6 +3,7 @@
 
 ### Major Changes
 - 2141 | Require explicit access request for EcomindIA module in new workspaces
+- 2196 | Managing the context and calculation assumptions for a digital service
   
 ### Minor Changes
 
