@@ -149,6 +149,12 @@ export class CreateDigitalServicesSidebarComponent implements OnInit {
         this.sidebarVisibleChange.emit(false);
     }
 
+    onEditorContentChange(content: string) {
+        this.createForm.patchValue({
+            note: content,
+        });
+    }
+
     selectTab(index: number) {
         this.selectedMenuIndex = index;
         for (const [i, detail] of this.importDetails().menu.entries()) {

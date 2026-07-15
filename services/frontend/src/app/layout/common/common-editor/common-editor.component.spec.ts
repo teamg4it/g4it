@@ -248,6 +248,34 @@ describe("CommonEditorComponent", () => {
         });
     });
 
+    describe("onTextChange", () => {
+        it("should emit contentChange event with the provided value", () => {
+            spyOn(component.contentChange, "emit");
+            const testContent = "<p>Test content</p>";
+
+            component.onTextChange(testContent);
+
+            expect(component.contentChange.emit).toHaveBeenCalledWith(testContent);
+        });
+
+        it("should emit contentChange event with empty string", () => {
+            spyOn(component.contentChange, "emit");
+
+            component.onTextChange("");
+
+            expect(component.contentChange.emit).toHaveBeenCalledWith("");
+        });
+
+        it("should emit contentChange event with HTML content", () => {
+            spyOn(component.contentChange, "emit");
+            const htmlContent = '<div><h1>Title</h1><p>Paragraph</p></div>';
+
+            component.onTextChange(htmlContent);
+
+            expect(component.contentChange.emit).toHaveBeenCalledWith(htmlContent);
+        });
+    });
+
     describe("deleteContent", () => {
         it("should call confirmationService.confirm", () => {
             spyOn(confirmationService, "confirm");

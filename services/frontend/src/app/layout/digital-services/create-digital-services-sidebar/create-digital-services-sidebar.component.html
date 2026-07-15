@@ -125,6 +125,7 @@
                             [isWriteRole]="true"
                             [showButtons]="false"
                             [showTitle]="false"
+                            (contentChange)="onEditorContentChange($event)"
                             styleClass="m-0 mt-4 p-0 hide-editor-buttons"
                         >
                         </app-common-editor>

@@ -46,6 +46,7 @@ export class CommonEditorComponent implements OnChanges {
     @Output() outClose: EventEmitter<any> = new EventEmitter();
     @Output() delete: EventEmitter<any> = new EventEmitter();
     @Output() saveValue: EventEmitter<string> = new EventEmitter();
+    @Output() contentChange: EventEmitter<string> = new EventEmitter();
 
     editorTextValue = "";
     editorTextValueUnmodified = "";
@@ -69,6 +70,10 @@ export class CommonEditorComponent implements OnChanges {
             this.editorTextValue = change?.currentValue;
             this.editorTextValueUnmodified = change?.currentValue;
         }
+    }
+
+    onTextChange(value: string) {
+        this.contentChange.emit(value);
     }
 
     removeStylesFromText(htmlText: string) {
