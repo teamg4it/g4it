@@ -62,7 +62,7 @@ export class UpdateWorkspaceReferenceComponent implements OnInit {
     loadingResults: any[] = [];
     downloadInProgress = false;
     uploadInProgress = false;
-
+    allowedFileExtensions = [".csv", ".xlsx", ".ods"];
     ngOnInit() {
         this.csvEndpoints = this.workspaceReferenceDataService.getWorkspaceCsvEndpoints();
         this.getTemplates();
