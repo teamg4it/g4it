@@ -246,8 +246,8 @@ export class InventoriesMultiCriteriaFootprintComponent extends AbstractDashboar
     onChartClick(event: any) {
         const isAxisInverted = this.isAxisInverted();
         let criteriaName: string | undefined;
-
-        if (isAxisInverted) {
+        // condition for graph, only not description click
+        if (isAxisInverted && event?.seriesType) {
             criteriaName = event?.seriesName;
 
             if (this.shouldShowStackBarChart()) {
