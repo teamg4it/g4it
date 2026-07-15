@@ -219,18 +219,28 @@ public class ReferentialService {
     }*/
     public List<ItemImpactRest> getItemImpactsForWorkspace(final String criterion, final String lifecycleStep, final String name,
                                                final String location,Long workspaceId) {
-        List<ItemImpactRest> itemImpacts = referentialGetService.getItemImpactsForWorkspace(criterion, lifecycleStep,
+        List<ItemImpactRest> workspaceImpacts = referentialGetService.getItemImpactsForWorkspace(criterion, lifecycleStep,
                     name, null, null, null,workspaceId);
 
+        List<ItemImpactRest> itemImpacts;
+        if (workspaceImpacts == null || workspaceImpacts.isEmpty()) {
+            List<ItemImpactRest> fallbackImpacts = referentialGetService.getItemImpacts(criterion, lifecycleStep,
+                    name, null, null, null);
+            itemImpacts = fallbackImpacts == null ? new ArrayList<>() : new ArrayList<>(fallbackImpacts);
+        } else {
+            // Copy to mutable list because upstream may return immutable collections.
+            itemImpacts = new ArrayList<>(workspaceImpacts);
+        }
+
         List<ItemImpactRest> electricityMixImpact = referentialGetService.getItemImpactsForWorkspace(criterion, null, null, location, "electricity-mix", null,workspaceId);
+        if (electricityMixImpact == null || electricityMixImpact.isEmpty()) {
+            electricityMixImpact = referentialGetService.getItemImpacts(criterion, null, null, location, "electricity-mix", null);
+        }
+
         if (electricityMixImpact != null && !electricityMixImpact.isEmpty()) {
-            if (itemImpacts == null) {
-                itemImpacts = new ArrayList<>();
-            }
             itemImpacts.addAll(electricityMixImpact);
         }
 
         return itemImpacts;
     }
 }
-
