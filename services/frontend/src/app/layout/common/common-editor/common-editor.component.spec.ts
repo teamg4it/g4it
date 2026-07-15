@@ -108,6 +108,48 @@ describe("CommonEditorComponent", () => {
         });
     });
 
+    describe("validateAndGetSanitizedContent", () => {
+        it("should return sanitized content when valid", () => {
+            component.editorTextValue = "<p>Valid content</p>";
+            const result = component.validateAndGetSanitizedContent();
+            expect(result).toBe("<p>Valid content</p>");
+        });
+
+        it("should return null when content exceeds max length", () => {
+            spyOn(messageService, "add");
+            component.maxContentLength = 10;
+            component.editorTextValue = "This content is way too long";
+
+            const result = component.validateAndGetSanitizedContent();
+
+            expect(result).toBeNull();
+            expect(messageService.add).toHaveBeenCalledWith({
+                severity: "error",
+                summary: "common.note.content-length-exceeded",
+            });
+        });
+
+        it("should return null when sanitizer returns empty string", () => {
+            const sanitizer = TestBed.inject(DomSanitizer);
+            spyOn(sanitizer, "sanitize").and.returnValue("");
+            component.editorTextValue = "<p>Content</p>";
+
+            const result = component.validateAndGetSanitizedContent();
+
+            expect(result).toBeNull();
+        });
+
+        it("should return null when sanitizer returns null", () => {
+            const sanitizer = TestBed.inject(DomSanitizer);
+            spyOn(sanitizer, "sanitize").and.returnValue(null);
+            component.editorTextValue = "<p>Content</p>";
+
+            const result = component.validateAndGetSanitizedContent();
+
+            expect(result).toBeNull();
+        });
+    });
+
     describe("saveContent", () => {
         it("should show error when editor text is empty", () => {
             spyOn(messageService, "add");
@@ -153,6 +195,28 @@ describe("CommonEditorComponent", () => {
             component.saveContent();
 
             expect(component.saveValue.emit).toHaveBeenCalledWith("<p>Valid content</p>");
+        });
+
+        it("should not emit when sanitizer returns empty string", () => {
+            const sanitizer = TestBed.inject(DomSanitizer);
+            spyOn(sanitizer, "sanitize").and.returnValue("");
+            spyOn(component.saveValue, "emit");
+            component.editorTextValue = "<p>Content</p>";
+
+            component.saveContent();
+
+            expect(component.saveValue.emit).not.toHaveBeenCalled();
+        });
+
+        it("should not emit when sanitizer returns null", () => {
+            const sanitizer = TestBed.inject(DomSanitizer);
+            spyOn(sanitizer, "sanitize").and.returnValue(null);
+            spyOn(component.saveValue, "emit");
+            component.editorTextValue = "<p>Content</p>";
+
+            component.saveContent();
+
+            expect(component.saveValue.emit).not.toHaveBeenCalled();
         });
     });
 
