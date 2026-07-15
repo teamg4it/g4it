@@ -800,6 +800,9 @@ components:
           type: string
         isAi:
           type: boolean
+        note:
+          type: object
+          $ref: "#/components/schemas/NoteRest"
 
     DigitalServiceServerImpactRest:
       type: object

@@ -36,7 +36,7 @@
             <app-common-editor
                 [content]="selectedInventory.note?.content"
                 [title]="'Note - ' + selectedInventory.name"
-                [showButtons]="userService.isAllowedInventoryWrite$ | async"
+                [isWriteRole]="userService.isAllowedInventoryWrite$ | async"
                 (saveValue)="noteSaveValue($event)"
                 (outClose)="sidebarVisible = $event"
                 (delete)="noteDelete($event); sidebarVisible = $event"
