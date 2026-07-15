@@ -10,8 +10,10 @@ package com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice
 
 import com.soprasteria.g4it.backend.apiinout.mapper.InApplicationMapper;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InApplication;
+import com.soprasteria.g4it.backend.apiinout.modeldb.InPhysicalEquipment;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InVirtualEquipment;
 import com.soprasteria.g4it.backend.apiinout.repository.InApplicationRepository;
+import com.soprasteria.g4it.backend.apiinout.repository.InPhysicalEquipmentRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.InVirtualEquipmentRepository;
 import com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.checkobject.CheckApplicationService;
 import com.soprasteria.g4it.backend.common.model.Context;
@@ -26,10 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -48,6 +47,9 @@ public class LoadApplicationService {
     @Autowired
     InVirtualEquipmentRepository inVirtualEquipmentRepository;
 
+    @Autowired
+    InPhysicalEquipmentRepository inPhysicalEquipmentRepository;
+
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -59,12 +61,22 @@ public class LoadApplicationService {
 
         List<LineError> errors = new ArrayList<>();
         List<InApplication> applicationsToSave = new ArrayList<>();
-
+        Set<String> requestedPhysicalEquipments = applications.stream()
+                .map(InApplicationRest::getPhysicalEquipmentName) // adapt getter if different
+                .filter(Objects::nonNull)
+                .filter(name -> !name.isEmpty())
+                .collect(Collectors.toSet());
+        Set<String> physicalEquipments = requestedPhysicalEquipments.isEmpty()
+                ? Set.of()
+                : inPhysicalEquipmentRepository.findExistingNamesByInventoryIdAndNameIn(
+                context.getInventoryId(),
+                requestedPhysicalEquipments
+        );
         for (int i = 0; i < applications.size(); i++) {
             int line = Constants.BATCH_SIZE * pageNumber + i + 2;
             List<LineError> coherenceErrorInLine = fileToLoad.getCoherenceErrorByLineNumer().getOrDefault(line, List.of());
 
-            final List<LineError> checkErrors = checkApplicationService.checkRules(context, applications.get(i), fileToLoad.getFilename(), line);
+            final List<LineError> checkErrors = checkApplicationService.checkRules(context, applications.get(i), fileToLoad.getFilename(), line,physicalEquipments);
             if (checkErrors.isEmpty() && coherenceErrorInLine.isEmpty()) {
                 applicationsToSave.add(inApplicationMapper.toEntity(applications.get(i)));
             } else {

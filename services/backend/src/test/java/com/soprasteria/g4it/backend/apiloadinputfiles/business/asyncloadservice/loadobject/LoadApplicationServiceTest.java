@@ -64,7 +64,7 @@ class LoadApplicationServiceTest {
         InApplicationRest appRest = mock(InApplicationRest.class);
         when(appRest.getName()).thenReturn("app1");
         List<InApplicationRest> applications = List.of(appRest);
-        when(checkApplicationService.checkRules(any(), any(), any(), anyInt())).thenReturn(Collections.emptyList());
+        when(checkApplicationService.checkRules(any(), any(), any(), anyInt(),anySet())).thenReturn(Collections.emptyList());
         InApplication appEntity = mock(InApplication.class);
         when(inApplicationMapper.toEntity(appRest)).thenReturn(appEntity);
         when(appEntity.getVirtualEquipmentName()).thenReturn("ve1");
@@ -96,7 +96,7 @@ class LoadApplicationServiceTest {
         when(appRest.getName()).thenReturn("app1");
         List<InApplicationRest> applications = List.of(appRest);
         List<LineError> checkErrors = List.of(mock(LineError.class));
-        when(checkApplicationService.checkRules(any(), any(), any(), anyInt())).thenReturn(checkErrors);
+        when(checkApplicationService.checkRules(any(), any(), any(), anyInt(), anySet())).thenReturn(checkErrors);
         List<LineError> result = service.execute(context, fileToLoad, 0, applications);
         assertEquals(2, result.size());
     }
