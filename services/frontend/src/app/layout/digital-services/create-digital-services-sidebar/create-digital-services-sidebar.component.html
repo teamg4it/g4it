@@ -148,6 +148,12 @@
                     >
                         @if (selectedMenuIndex === 1) {
                             <p-button
+                                    styleClass="p-button-secondary-blue uppercase mr-3"
+                                    (onClick)="selectTab(0)"
+                                    [label]="'common.previous' | translate"
+                                    [ariaLabel]="'common.previous' | translate"
+                                ></p-button>
+                            <p-button
                                 (onClick)="createDS()"
                                 styleClass="uppercase bg-light-green"
                                 [disabled]="createForm.invalid"
