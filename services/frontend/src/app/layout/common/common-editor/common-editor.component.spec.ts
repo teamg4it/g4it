@@ -58,6 +58,23 @@ describe("CommonEditorComponent", () => {
         expect(component.removeStylesFromText("<p>  </p><p>  </p>")).toBe("    ");
     });
 
+    it("should remove HTML tags and return text content", () => {
+        expect(component.removeStylesFromText("<p>Hello World</p>")).toBe("Hello World");
+        expect(component.removeStylesFromText("<div><strong>Bold Text</strong></div>")).toBe("Bold Text");
+    });
+
+    it("should strip styles and formatting from HTML", () => {
+        expect(component.removeStylesFromText('<p style="color: red;">Styled text</p>'))
+            .toBe("Styled text");
+        expect(component.removeStylesFromText('<span class="highlight">Text with class</span>'))
+            .toBe("Text with class");
+    });
+
+    it("should handle complex HTML with multiple elements", () => {
+        const htmlContent = '<div><h1>Title</h1><p>Paragraph</p><ul><li>Item 1</li><li>Item 2</li></ul></div>';
+        expect(component.removeStylesFromText(htmlContent)).toBe("TitleParagraphItem 1Item 2");
+    });
+
     describe("ngOnChanges", () => {
         it("should reset editor text when content changes to null", () => {
             component.editorTextValue = "previous";
