@@ -12,6 +12,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.multipart.MultipartFile;
+import java.util.stream.Stream;
+
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.Arguments;
 
 import java.util.List;
 
@@ -323,60 +328,6 @@ class WorkspaceReferentialImportServiceTest {
     }
 
     @Test
-    void importReferentialCSV_itemImpact_invalidCriterion() {
-
-        ItemImpactRest rest = new ItemImpactRest();
-
-        rest.setCriterion("INVALID");
-        rest.setLifecycleStep("MANUFACTURING");
-        rest.setName("Laptop");
-        rest.setCategory("cat");
-        rest.setLevel("1");
-        rest.setSource("ADEME");
-        rest.setTier("1");
-        rest.setUnit("kg");
-        rest.setValue(10d);
-
-        ItemImpactParseResult result = ItemImpactParseResult.builder()
-                .data(List.of(rest))
-                .report(emptyReport())
-                .build();
-
-        when(file.isEmpty()).thenReturn(false);
-        when(referentialImportService.parseItemImpactCsv(file)).thenReturn(result);
-
-        assertThrows(BadRequestException.class,
-                () -> service.importReferentialCSV(ORG, 1L, "itemImpact", file));
-    }
-
-    @Test
-    void importReferentialCSV_itemImpact_invalidLifecycleStep() {
-
-        ItemImpactRest rest = new ItemImpactRest();
-
-        rest.setCriterion("CLIMATE_CHANGE");
-        rest.setLifecycleStep("INVALID");
-        rest.setName("Laptop");
-        rest.setCategory("cat");
-        rest.setLevel("1");
-        rest.setSource("ADEME");
-        rest.setTier("1");
-        rest.setUnit("kg");
-        rest.setValue(10d);
-
-        ItemImpactParseResult result = ItemImpactParseResult.builder()
-                .data(List.of(rest))
-                .report(emptyReport())
-                .build();
-
-        when(file.isEmpty()).thenReturn(false);
-        when(referentialImportService.parseItemImpactCsv(file)).thenReturn(result);
-
-        assertThrows(BadRequestException.class,
-                () -> service.importReferentialCSV(ORG, 1L, "itemImpact", file));
-    }
-
-    @Test
     void importReferentialCSV_itemImpact_missingMandatoryField() {
 
         ItemImpactRest rest = new ItemImpactRest();
@@ -384,33 +335,6 @@ class WorkspaceReferentialImportServiceTest {
         rest.setCriterion("CLIMATE_CHANGE");
         rest.setLifecycleStep("MANUFACTURING");
         rest.setName(null);
-
-        ItemImpactParseResult result = ItemImpactParseResult.builder()
-                .data(List.of(rest))
-                .report(emptyReport())
-                .build();
-
-        when(file.isEmpty()).thenReturn(false);
-        when(referentialImportService.parseItemImpactCsv(file)).thenReturn(result);
-
-        assertThrows(BadRequestException.class,
-                () -> service.importReferentialCSV(ORG, 1L, "itemImpact", file));
-    }
-
-    @Test
-    void importReferentialCSV_itemImpact_usingWithoutConsumption() {
-
-        ItemImpactRest rest = new ItemImpactRest();
-
-        rest.setCriterion("CLIMATE_CHANGE");
-        rest.setLifecycleStep("USING");
-        rest.setName("Laptop");
-        rest.setCategory("cat");
-        rest.setLevel("1");
-        rest.setSource("ADEME");
-        rest.setTier("1");
-        rest.setUnit("kg");
-        rest.setValue(12d);
 
         ItemImpactParseResult result = ItemImpactParseResult.builder()
                 .data(List.of(rest))
@@ -473,5 +397,48 @@ class WorkspaceReferentialImportServiceTest {
 
         assertThrows(IllegalArgumentException.class,
                 () -> service.importReferentialCSV(ORG, 1L, "matchingItem", file));
+    }
+
+    @ParameterizedTest
+    @MethodSource("invalidItemImpactProvider")
+    void importReferentialCSV_itemImpact_invalidData(
+            String criterion,
+            String lifecycleStep,
+            Double value) {
+
+        ItemImpactRest rest = new ItemImpactRest();
+        rest.setCriterion(criterion);
+        rest.setLifecycleStep(lifecycleStep);
+        rest.setName("Laptop");
+        rest.setCategory("cat");
+        rest.setLevel("1");
+        rest.setSource("ADEME");
+        rest.setTier("1");
+        rest.setUnit("kg");
+        rest.setValue(value);
+
+        ItemImpactParseResult result = ItemImpactParseResult.builder()
+                .data(List.of(rest))
+                .report(emptyReport())
+                .build();
+
+        when(file.isEmpty()).thenReturn(false);
+        when(referentialImportService.parseItemImpactCsv(file)).thenReturn(result);
+
+        assertThrows(BadRequestException.class,
+                () -> service.importReferentialCSV(ORG, 1L, "itemImpact", file));
+    }
+
+    private static Stream<Arguments> invalidItemImpactProvider() {
+        return Stream.of(
+                // Invalid criterion
+                Arguments.of("INVALID", "MANUFACTURING", 10d),
+
+                // Invalid lifecycle step
+                Arguments.of("CLIMATE_CHANGE", "INVALID", 10d),
+
+                // USING must have consumption value
+                Arguments.of("CLIMATE_CHANGE", "USING", 12d)
+        );
     }
 }

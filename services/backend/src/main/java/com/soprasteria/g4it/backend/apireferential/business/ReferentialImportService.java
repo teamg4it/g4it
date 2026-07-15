@@ -368,46 +368,17 @@ public class ReferentialImportService {
 
             for (CSVRecord csvRecord : parser) {
                 // check if CSV format is valid (columns are accessible)
-                String avgElectricityConsumptionStr = null;
-                String valueStr = null;
+                ItemImpactRest itemImpactRest = validateAndMapItemImpactRecord(csvRecord);
 
-                try {
-                    avgElectricityConsumptionStr = csvRecord.get("avgElectricityConsumption");
-                    valueStr = csvRecord.get("value");
-                } catch (IllegalArgumentException e) {
-                    // Handle malformed CSV: wrong delimiter, missing columns, etc.
-                    if (e.getMessage() != null && e.getMessage().contains("Index for header")) {
-                        String recordStr = csvRecord.toString();
-                        if (recordStr.matches(".*\\d+,\\d+.*")) {
-                            throw new BadRequestException("csv", "csv.decimal.comma.invalid");
-                        }
-                        throw new BadRequestException("csv", "csv.format.invalid");
-                    }
-                    throw e;
+                if (!Objects.equals(itemImpactRest.getOrganization(), organization)) {
+                    throw new BadRequestException(
+                            SUBSCRIBER,
+                            String.format("Line %d : The column subscriber must be '%s'",
+                                    i + 2,
+                                    organization == null ? "" : organization)
+                    );
                 }
 
-                if (avgElectricityConsumptionStr != null && !avgElectricityConsumptionStr.trim().isEmpty()
-                        && avgElectricityConsumptionStr.contains(",")) {
-                    throw new BadRequestException("csv", "csv.decimal.comma.invalid");
-                }
-
-                if (valueStr != null && !valueStr.trim().isEmpty() && valueStr.contains(",")) {
-                    throw new BadRequestException("csv", "csv.decimal.comma.invalid");
-                }
-
-                try {
-                    ItemImpactRest itemImpactRest = referentialMapper.csvItemImpactToRest(csvRecord);
-
-                    if (!Objects.equals(itemImpactRest.getOrganization(), organization)) {
-                        throw new BadRequestException(
-                                SUBSCRIBER,
-                                String.format("Line %d : The column subscriber must be '%s'", i + 2,
-                                        organization == null ? "" : organization)
-                        );
-                    }
-                } catch (NumberFormatException e) {
-                    throw new BadRequestException("csv", "csv.decimal.comma.invalid");
-                }
                 i++;
             }
 
@@ -626,51 +597,17 @@ public class ReferentialImportService {
             for (CSVRecord csvRecord : parser) {
 
                 // First check if CSV format is valid (columns are accessible)
-                String avgElectricityConsumptionStr = null;
-                String valueStr = null;
+                ItemImpactRest item = validateAndMapItemImpactRecord(csvRecord);
 
-                try {
-                    avgElectricityConsumptionStr = csvRecord.get("avgElectricityConsumption");
-                    valueStr = csvRecord.get("value");
-                } catch (IllegalArgumentException e) {
-                    // Handle malformed CSV: wrong delimiter, missing columns, etc.
-                    if (e.getMessage() != null && e.getMessage().contains("Index for header")) {
-                        String recordStr = csvRecord.toString();
-                        if (recordStr.matches(".*\\d+,\\d+.*")) {
-                            // Record contains number-comma-number pattern, likely comma decimal issue
-                            throw new BadRequestException("csv", "csv.decimal.comma.invalid");
-                        }
-                        throw new BadRequestException("csv", "csv.format.invalid");
-                    }
-                    throw e;
+                Optional<String> violations =
+                        ValidationUtils.getViolations(validator.validate(item));
+
+                if (violations.isEmpty()) {
+                    item.setOrganization(null);
+                    objects.add(item);
+                } else {
+                    report.getErrors().add(printLine(lineNumber, violations.get()));
                 }
-
-                if (avgElectricityConsumptionStr != null && !avgElectricityConsumptionStr.trim().isEmpty()
-                        && avgElectricityConsumptionStr.contains(",")) {
-                    throw new BadRequestException("csv", "csv.decimal.comma.invalid");
-                }
-
-                if (valueStr != null && !valueStr.trim().isEmpty() && valueStr.contains(",")) {
-                    throw new BadRequestException("csv", "csv.decimal.comma.invalid");
-                }
-
-                try {
-                    ItemImpactRest item = referentialMapper.csvItemImpactToRest(csvRecord);
-
-                    // Perform Bean Validation to catch other validation errors
-                    Optional<String> violations = ValidationUtils.getViolations(validator.validate(item));
-
-                    if (violations.isEmpty()) {
-                        // Skip Bean Validation here - custom validation is performed in WorkspaceReferentialImportService. This prevents @Pattern annotations from showing generic error messages
-                        item.setOrganization(null);
-                        objects.add(item);
-                    } else {
-                        report.getErrors().add(printLine(lineNumber, violations.get()));
-                    }
-                } catch (NumberFormatException e) {
-                    throw new BadRequestException("csv", "csv.decimal.comma.invalid");
-                }
-
                 lineNumber++;
             }
 
@@ -712,6 +649,47 @@ public class ReferentialImportService {
                 throw new BadRequestException("csv",
                         "csv.columns.order.invalid:" + type + ":" + (i + 1) + ":" + expected.get(i) + ":" + actual.get(i));
             }
+        }
+    }
+
+    private void validateItemImpactRecord(CSVRecord csvRecord) {
+        String avgElectricityConsumptionStr;
+        String valueStr;
+
+        try {
+            avgElectricityConsumptionStr = csvRecord.get("avgElectricityConsumption");
+            valueStr = csvRecord.get("value");
+        } catch (IllegalArgumentException e) {
+            if (e.getMessage() != null && e.getMessage().contains("Index for header")) {
+                String recordStr = csvRecord.toString();
+                if (recordStr.matches(".*\\d+,\\d+.*")) {
+                    throw new BadRequestException("csv", "csv.decimal.comma.invalid");
+                }
+                throw new BadRequestException("csv", "csv.format.invalid");
+            }
+            throw e;
+        }
+
+        if (avgElectricityConsumptionStr != null
+                && !avgElectricityConsumptionStr.trim().isEmpty()
+                && avgElectricityConsumptionStr.contains(",")) {
+            throw new BadRequestException("csv", "csv.decimal.comma.invalid");
+        }
+
+        if (valueStr != null
+                && !valueStr.trim().isEmpty()
+                && valueStr.contains(",")) {
+            throw new BadRequestException("csv", "csv.decimal.comma.invalid");
+        }
+    }
+
+    private ItemImpactRest validateAndMapItemImpactRecord(CSVRecord csvRecord) {
+        validateItemImpactRecord(csvRecord);
+
+        try {
+            return referentialMapper.csvItemImpactToRest(csvRecord);
+        } catch (NumberFormatException e) {
+            throw new BadRequestException("csv", "csv.decimal.comma.invalid");
         }
     }
 

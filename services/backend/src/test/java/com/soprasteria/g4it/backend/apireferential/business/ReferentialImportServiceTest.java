@@ -36,6 +36,11 @@ import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
+import java.util.stream.Stream;
+
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 @ExtendWith(MockitoExtension.class)
 class ReferentialImportServiceTest {
@@ -1380,44 +1385,6 @@ t;c;com;1;true;s;ref;1
     }
 
     @Test
-    void shouldThrowExceptionWhenHeadersAreInWrongOrder() throws IOException {
-
-        String csv = """
-            lifecycleStep;criterion;name;category;avgElectricityConsumption;description;location;level;source;tier;unit;value;version
-            l1;c1;n1;cat;10.5;desc;FR;1;ADEME;1;kg;100.2;1
-            """;
-
-        when(file.getBytes()).thenReturn(csv.getBytes(StandardCharsets.UTF_8));
-
-        BadRequestException exception = assertThrows(
-                BadRequestException.class,
-                () -> referentialImportService.parseItemImpactCsv(file));
-
-        assertEquals(
-                "csv.columns.order.invalid:ItemImpact:1:criterion:lifecycleStep",
-                exception.getError());
-    }
-
-    @Test
-    void shouldThrowExceptionWhenUnexpectedHeadersExist() throws IOException {
-
-        String csv = """
-            criterion;lifecycleStep;name;category;avgElectricityConsumption;description;location;level;source;tier;unit;value;version;extra
-            c1;l1;n1;cat;10.5;desc;FR;1;ADEME;1;kg;100.2;1;x
-            """;
-
-        when(file.getBytes()).thenReturn(csv.getBytes(StandardCharsets.UTF_8));
-
-        BadRequestException exception = assertThrows(
-                BadRequestException.class,
-                () -> referentialImportService.parseItemImpactCsv(file));
-
-        assertEquals(
-                "csv.columns.unexpected:ItemImpact:[extra]",
-                exception.getError());
-    }
-
-    @Test
     void shouldThrowExceptionWhenSubscriberDoesNotMatch() throws IOException {
 
         String csv = """
@@ -1449,40 +1416,6 @@ t;c;com;1;true;s;ref;1
 
         verify(persistenceService, never())
                 .saveItemImpacts(anyList());
-    }
-
-    @Test
-    void shouldThrowExceptionWhenAvgElectricityConsumptionContainsComma() throws IOException {
-
-        String csv = """
-            criterion;lifecycleStep;name;category;avgElectricityConsumption;description;location;level;source;tier;unit;value;version
-            c1;l1;n1;cat;10,5;desc;FR;1;ADEME;1;kg;100.2;1
-            """;
-
-        when(file.getBytes()).thenReturn(csv.getBytes(StandardCharsets.UTF_8));
-
-        BadRequestException exception = assertThrows(
-                BadRequestException.class,
-                () -> referentialImportService.parseItemImpactCsv(file));
-
-        assertEquals("csv.decimal.comma.invalid", exception.getError());
-    }
-
-    @Test
-    void shouldThrowExceptionWhenValueContainsComma() throws IOException {
-
-        String csv = """
-            criterion;lifecycleStep;name;category;avgElectricityConsumption;description;location;level;source;tier;unit;value;version
-            c1;l1;n1;cat;10.5;desc;FR;1;ADEME;1;kg;100,2;1
-            """;
-
-        when(file.getBytes()).thenReturn(csv.getBytes(StandardCharsets.UTF_8));
-
-        BadRequestException exception = assertThrows(
-                BadRequestException.class,
-                () -> referentialImportService.parseItemImpactCsv(file));
-
-        assertEquals("csv.decimal.comma.invalid", exception.getError());
     }
 
     @Test
@@ -1834,6 +1767,54 @@ t;c;com;1;true;s;ref;1
         assertNull(result.getData().get(0).getOrganization());
         assertEquals(1L, result.getReport().getImportedLineNumber());
         assertTrue(result.getReport().getErrors().isEmpty());
+    }
+
+    @ParameterizedTest
+    @MethodSource("invalidItemImpactCsvProvider")
+    void shouldThrowExceptionWhenItemImpactCsvIsInvalid(
+            String csv,
+            String expectedError) throws IOException {
+
+        when(file.getBytes()).thenReturn(csv.getBytes(StandardCharsets.UTF_8));
+
+        BadRequestException exception = assertThrows(
+                BadRequestException.class,
+                () -> referentialImportService.parseItemImpactCsv(file));
+
+        assertEquals(expectedError, exception.getError());
+    }
+
+    private static Stream<Arguments> invalidItemImpactCsvProvider() {
+        return Stream.of(
+                Arguments.of(
+                        """
+                        lifecycleStep;criterion;name;category;avgElectricityConsumption;description;location;level;source;tier;unit;value;version
+                        l1;c1;n1;cat;10.5;desc;FR;1;ADEME;1;kg;100.2;1
+                        """,
+                        "csv.columns.order.invalid:ItemImpact:1:criterion:lifecycleStep"
+                ),
+                Arguments.of(
+                        """
+                        criterion;lifecycleStep;name;category;avgElectricityConsumption;description;location;level;source;tier;unit;value;version;extra
+                        c1;l1;n1;cat;10.5;desc;FR;1;ADEME;1;kg;100.2;1;x
+                        """,
+                        "csv.columns.unexpected:ItemImpact:[extra]"
+                ),
+                Arguments.of(
+                        """
+                        criterion;lifecycleStep;name;category;avgElectricityConsumption;description;location;level;source;tier;unit;value;version
+                        c1;l1;n1;cat;10,5;desc;FR;1;ADEME;1;kg;100.2;1
+                        """,
+                        "csv.decimal.comma.invalid"
+                ),
+                Arguments.of(
+                        """
+                        criterion;lifecycleStep;name;category;avgElectricityConsumption;description;location;level;source;tier;unit;value;version
+                        c1;l1;n1;cat;10.5;desc;FR;1;ADEME;1;kg;100,2;1
+                        """,
+                        "csv.decimal.comma.invalid"
+                )
+        );
     }
 
 
