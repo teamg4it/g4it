@@ -109,7 +109,7 @@ describe("DigitalServicesComponent", () => {
     it("should create a new digital service and navigate to its footprint", async () => {
         mockDigitalServicesData.create.and.returnValue(of({ uid: 2 }));
         //for the else if
-        component.isEcoMindAi = false;
+        component.isEcoMindAi.set(false);
         component.isAllowedDigitalService = true;
         await component.createNewDigitalServices({ dsName: "New DS", versionName: "v1" });
         expect(mockDigitalServicesData.create).toHaveBeenCalled();
