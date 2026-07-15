@@ -2,15 +2,15 @@
 <div class="flex justify-content-between align-items-center flex-wrap mr-4 mb-4">
     <h1>
         {{
-            isEcoMindAi
+            isEcoMindAi()
                 ? ("eco-mind-ai.title" | translate: { WorkspaceName: selectedWorkspace })
                 : ("digital-services.title"
                   | translate: { WorkspaceName: selectedWorkspace })
         }}
     </h1>
     @if (
-        ((userService.isAllowedDigitalServiceWrite$ | async) && !isEcoMindAi) ||
-        ((userService.isAllowedEcoMindAiWrite$ | async) && isEcoMindAi)
+        ((userService.isAllowedDigitalServiceWrite$ | async) && !isEcoMindAi()) ||
+        ((userService.isAllowedEcoMindAiWrite$ | async) && isEcoMindAi())
     ) {
         <p-button
             styleClass="black-button matomo-add-digital-service"
@@ -18,7 +18,7 @@
             id="add-digital"
         >
             {{
-                isEcoMindAi
+                isEcoMindAi()
                     ? ("eco-mind-ai.add" | translate)
                     : ("digital-services.add" | translate)
             }}
@@ -30,7 +30,7 @@
         @for (digitalService of paginatedDigitalServices; track $index) {
             <li>
                 <app-digital-services-item
-                    [isAi]="isEcoMindAi"
+                    [isAi]="isEcoMindAi()"
                     [digitalService]="digitalService"
                     (deleteUid)="itemDelete($event)"
                     (renewInventoryId)="
@@ -67,7 +67,7 @@
                 [allDigitalServices]="allDigitalServices"
                 (sidebarVisibleChange)="newDsSidebarVisible = $event"
                 (submitCreateDsForm)="createNewDigitalServices($event)"
-                [isEcoMindAi]="isEcoMindAi"
+                [isEcoMindAi]="isEcoMindAi()"
             />
         </ng-template>
     </p-drawer>
