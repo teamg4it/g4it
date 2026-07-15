@@ -5,7 +5,16 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component, Input, Signal, computed, inject, input, signal } from "@angular/core";
+import {
+    Component,
+    Input,
+    InputSignal,
+    Signal,
+    computed,
+    inject,
+    input,
+    signal,
+} from "@angular/core";
 import { EChartsOption } from "echarts";
 import { Constants } from "src/constants";
 
@@ -30,6 +39,7 @@ import { InVirtualEquipmentRest } from "src/app/core/interfaces/input.interface"
 import { Inventory } from "src/app/core/interfaces/inventory.interfaces";
 import { FootprintService } from "src/app/core/service/business/footprint.service";
 import * as InventoryMultiCriteriaViewMapper from "src/app/core/service/mapper/inventory-multicriteria-graph-mapper";
+import { createStackBarChartConfig } from "src/app/core/service/mapper/multicriteria-stack-bar-chart.mapper";
 import { FootprintStoreService } from "src/app/core/store/footprint.store";
 import * as LifeCycleUtils from "src/app/core/utils/lifecycle";
 import { AbstractDashboard } from "../abstract-dashboard";
@@ -63,7 +73,7 @@ export class InventoriesMultiCriteriaFootprintComponent extends AbstractDashboar
     private readonly route = inject(ActivatedRoute);
     currentLang: string = this.translate.currentLang;
     criteriakeys = Object.keys(this.translate.translations[this.currentLang]["criteria"]);
-    @Input() footprint: Criterias = {};
+    footprint: InputSignal<Criterias> = input({});
     @Input() filterFields: string[] = [];
     @Input() datacenters: Datacenter[] = [];
     @Input() inVirtualEquipments: InVirtualEquipmentRest[] = [];
@@ -85,6 +95,10 @@ export class InventoriesMultiCriteriaFootprintComponent extends AbstractDashboar
         impactNameVisible: string;
     }[] = [];
 
+    shouldShowStackBarChart = computed(() => {
+        return Object.keys(this.footprint()).length > 4;
+    });
+
     criteriaCalculated: Signal<CriteriaCalculated> = computed(() => {
         const isInverted = this.isAxisInverted();
         const dimension = this.store.dimension();
@@ -92,11 +106,12 @@ export class InventoriesMultiCriteriaFootprintComponent extends AbstractDashboar
         const isAlphabetical = isInverted && dimension !== Constants.ACV_STEP;
         const { footprintCalculated, criteriaCountMap, impactsWithMaxDimensions } =
             this.footprintService.calculate(
-                this.footprint,
+                this.footprint(),
                 this.store.filters(),
                 dimension,
                 this.filterFields,
                 isInverted,
+                this.shouldShowStackBarChart(),
             );
         if (isInverted) {
             footprintCalculated.sort(
@@ -156,33 +171,30 @@ export class InventoriesMultiCriteriaFootprintComponent extends AbstractDashboar
     ): EChartsOption {
         const footprintCalculated = criteriaCalculated.footprints;
         const isInverted = this.isAxisInverted();
+        const showStackBar = this.shouldShowStackBarChart();
+
         if (footprintCalculated.length === 0) {
             this.xAxisInput = [];
             return {};
         }
+
         const isAcvStep = this.store.dimension() === Constants.ACV_STEP;
+
+        // Set xAxisInput based on chart type
         if (isInverted) {
-            // When inverted, xAxisInput should show lifecycle stages
-            if (!isAcvStep) {
-                this.xAxisInput =
-                    footprintCalculated[0]?.impacts
-                        .map((impact) => impact.criteria)
-                        .sort((a, b) => a.localeCompare(b)) || [];
-            } else {
-                this.xAxisInput =
-                    footprintCalculated[0]?.impacts
-                        .map((impact) => impact.criteria)
-                        .sort(
-                            (a, b) =>
-                                LifeCycleUtils.getLifeCycleList().indexOf(a) -
-                                LifeCycleUtils.getLifeCycleList().indexOf(b),
-                        )
-                        .map((criteria) =>
-                            this.translate.instant(`acvStep.${criteria}`),
-                        ) || [];
-            }
+            // Determine data source: footprint data for stack bar, criteria for radial
+            const dataSource = showStackBar
+                ? footprintCalculated?.map((fp) => fp.data) || []
+                : footprintCalculated[0]?.impacts.map((impact) => impact.criteria) || [];
+
+            // Apply sorting and transformation
+            this.xAxisInput = InventoryMultiCriteriaViewMapper.sortAndTransformAxis(
+                dataSource,
+                isAcvStep,
+                this.translate,
+            );
         } else {
-            this.xAxisInput = Object.keys(this.footprint)
+            this.xAxisInput = Object.keys(this.footprint())
                 .sort(
                     (a, b) => this.criteriakeys.indexOf(a) - this.criteriakeys.indexOf(b),
                 )
@@ -191,6 +203,21 @@ export class InventoriesMultiCriteriaFootprintComponent extends AbstractDashboar
 
         const criteriaCountMap = criteriaCalculated.criteriasCount || {};
 
+        // Return stack bar chart if criteria count > 4
+        if (showStackBar) {
+            return createStackBarChartConfig({
+                footprints: footprintCalculated,
+                criteriaCountMap,
+                selectedView,
+                enableDataInconsistency:
+                    this.inventory()?.enableDataInconsistency ?? false,
+                isAxisInverted: isInverted,
+                translate: this.translate,
+                integerPipe: this.integerPipe,
+            });
+        }
+
+        // Return radial chart for 4 or fewer criteria
         return InventoryMultiCriteriaViewMapper.createRadialChartConfig(
             footprintCalculated,
             criteriaCountMap,
@@ -215,12 +242,30 @@ export class InventoriesMultiCriteriaFootprintComponent extends AbstractDashboar
     }
 
     onChartClick(event: any) {
-        const criteriName = this.isAxisInverted() ? event?.seriesName : event?.name;
-        if (criteriName) {
-            this.router.navigate([`../${criteriName}`], {
-                relativeTo: this.route,
-            });
+        const isAxisInverted = this.isAxisInverted();
+        let criteriaName: string | undefined;
+
+        if (isAxisInverted) {
+            criteriaName = event?.seriesName;
+
+            if (this.shouldShowStackBarChart()) {
+                const criteria = this.translate.instant("criteria");
+
+                criteriaName = Object.keys(criteria).find(
+                    (key) => criteria[key].title === event?.seriesName,
+                );
+            }
+        } else {
+            criteriaName = event?.name;
         }
+
+        if (!criteriaName) {
+            return;
+        }
+
+        this.router.navigate([`../${criteriaName}`], {
+            relativeTo: this.route,
+        });
     }
 
     getContentText = computed((): GraphDescriptionContent => {
@@ -236,7 +281,7 @@ export class InventoriesMultiCriteriaFootprintComponent extends AbstractDashboar
         );
         return {
             description: this.translate.instant(`${translationKey}description`, {
-                criteria: Object.keys(this.footprint)
+                criteria: Object.keys(this.footprint())
                     .map((impact) => this.translate.instant(`criteria.${impact}`).title)
                     .join(", "),
                 module: this.translate.instant("ds-graph-module.inventory"),

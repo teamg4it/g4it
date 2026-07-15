@@ -179,6 +179,7 @@ export class FootprintService {
         selectedView: string,
         filterFields: string[],
         isAxisInverted: boolean,
+        shouldShowStackBarChart: boolean,
     ): {
         footprintCalculated: FootprintCalculated[];
         criteriaCountMap: StatusCountMap;
@@ -279,7 +280,7 @@ export class FootprintService {
                 };
             }
 
-            if (isAxisInverted) {
+            if (isAxisInverted !== shouldShowStackBarChart) {
                 // When inverted: criteria is the outer grouping, dimensions are inner
                 for (let [dimension, sumImpact] of groupedSumImpacts) {
                     const translated = lifeCycleMap.get(dimension);

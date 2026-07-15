@@ -175,8 +175,6 @@ export class ApplicationCriteriaFootprintComponent
         );
     });
 
-    maxNumberOfBarsToBeDisplayed: number = 10;
-
     constructor(
         protected readonly appComponent: InventoriesApplicationFootprintComponent,
         override translate: TranslateService,
@@ -644,7 +642,7 @@ export class ApplicationCriteriaFootprintComponent
                 (f) => f.status?.error,
             );
         });
-        if (result.xAxis.length < 10) {
+        if (result.xAxis.length < Constants.MAX_NUMBER_OF_BARS_TO_BE_DISPLAYED) {
             showZoom = false;
         }
         return {
@@ -736,7 +734,8 @@ export class ApplicationCriteriaFootprintComponent
                 {
                     show: showZoom,
                     startValue: result.xAxis[0],
-                    endValue: result.xAxis[this.maxNumberOfBarsToBeDisplayed - 1],
+                    endValue:
+                        result.xAxis[Constants.MAX_NUMBER_OF_BARS_TO_BE_DISPLAYED - 1],
                 },
             ],
             xAxis: [
