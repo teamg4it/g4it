@@ -455,4 +455,54 @@ class RuleVirtualEquipmentServiceTest {
         Assertions.assertTrue(result.isEmpty());
         Assertions.assertTrue(names.contains("name"));
     }
+
+    @Test
+    void testCheckAllocationFactorNullIsOk() {
+        var result = service.checkAllocationFactor(locale, filename, line, null);
+
+        Assertions.assertTrue(result.isEmpty());
+    }
+
+    @Test
+    void testCheckAllocationFactorNegativeError() {
+        when(messageSource.getMessage(eq("allocation.factor.should.be.greater.than.zero"), any(), eq(locale)))
+                .thenReturn("Allocation factor must be between 0 and 1");
+
+        var result = service.checkAllocationFactor(locale, filename, line, -0.01);
+
+        Assertions.assertTrue(result.isPresent());
+        Assertions.assertEquals(new LineError(filename, line, "Allocation factor must be between 0 and 1"), result.get());
+    }
+
+    @Test
+    void testCheckAllocationFactorGreaterThanOneError() {
+        when(messageSource.getMessage(eq("allocation.factor.should.be.greater.than.zero"), any(), eq(locale)))
+                .thenReturn("Allocation factor must be between 0 and 1");
+
+        var result = service.checkAllocationFactor(locale, filename, line, 1.01);
+
+        Assertions.assertTrue(result.isPresent());
+        Assertions.assertEquals(new LineError(filename, line, "Allocation factor must be between 0 and 1"), result.get());
+    }
+
+    @Test
+    void testCheckAllocationFactorZeroBoundaryIsOk() {
+        var result = service.checkAllocationFactor(locale, filename, line, 0D);
+
+        Assertions.assertTrue(result.isEmpty());
+    }
+
+    @Test
+    void testCheckAllocationFactorOneBoundaryIsOk() {
+        var result = service.checkAllocationFactor(locale, filename, line, 1D);
+
+        Assertions.assertTrue(result.isEmpty());
+    }
+
+    @Test
+    void testCheckAllocationFactorMidRangeIsOk() {
+        var result = service.checkAllocationFactor(locale, filename, line, 0.5D);
+
+        Assertions.assertTrue(result.isEmpty());
+    }
 }
