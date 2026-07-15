@@ -86,7 +86,7 @@ public class GenericRuleService {
 
     public Optional<LineError> checkQuantity(Locale locale, String filename, int line, Double quantity, boolean isDigitalService) {
 
-        if (!isDigitalService && (quantity==null || quantity<0)) {
+        if (!isDigitalService && (quantity==null || quantity<=0)) {
             return Optional.of(new LineError(filename, line,
                     messageSource.getMessage("quanity.should.be.greater.than.zero",
                             new String[]{},
