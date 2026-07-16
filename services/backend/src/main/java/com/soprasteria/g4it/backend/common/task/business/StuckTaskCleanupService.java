@@ -156,7 +156,6 @@ public class StuckTaskCleanupService {
 
             // Set errors - truncate raw message to fit database limit
             List<String> errors = new ArrayList<>();
-            errors.add(LogUtils.truncateToDbLimit(errorMessage));
             errors.add(LogUtils.error(FAILED_BY_SCHEDULER));
 
             // Update task status
