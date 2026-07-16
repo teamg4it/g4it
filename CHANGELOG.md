@@ -4,6 +4,7 @@
 ### Major Changes
 - 2141 | Require explicit access request for EcomindIA module in new workspaces
 - 2196 | Managing the context and calculation assumptions for a digital service
+- 2158 | Reverse Axes on the main Radial graph 
   
 ### Minor Changes
 
