@@ -11,6 +11,7 @@ import {
     inject,
     input,
     Input,
+    InputSignal,
     OnChanges,
     Output,
     SimpleChanges,
@@ -41,7 +42,7 @@ export class RadialChartComponent extends AbstractDashboard implements OnChanges
     @Output() selectedCriteriaChange: EventEmitter<string> = new EventEmitter();
     @Input() enableDataInconsistency: boolean = false;
     @Input() isCompareScreen = false;
-    @Input() shouldShowStackBarChart: boolean = false;
+    shouldShowStackBarChart: InputSignal<boolean> = input(false);
     isAxisInverted = input<boolean>(false);
     compareMax = input<number>(0);
     showInconsitency = input<boolean>();
@@ -108,7 +109,7 @@ export class RadialChartComponent extends AbstractDashboard implements OnChanges
 
     onChartClick(params: any) {
         const isInverted = this.isAxisInverted();
-        const isStackBar = this.shouldShowStackBarChart;
+        const isStackBar = this.shouldShowStackBarChart();
 
         // When inverted, criteria are in series (seriesName), otherwise in data name
         if (isInverted) {
@@ -189,7 +190,7 @@ export class RadialChartComponent extends AbstractDashboard implements OnChanges
         });
 
         // If more than 5 criteria and NOT inverted, return stack bar chart configuration
-        if (this.shouldShowStackBarChart && !isInverted) {
+        if (this.shouldShowStackBarChart() && !isInverted) {
             return this.createStackBarChartConfig(noErrorRadialChartData, isInverted);
         }
 
@@ -444,6 +445,7 @@ export class RadialChartComponent extends AbstractDashboard implements OnChanges
         chartData: DigitalServiceFootprint[],
         isInverted: boolean,
     ): EChartsOption {
+        let showZoom = true;
         // Get unique criteria
         const criteriaSet = new Set<string>();
         chartData.forEach((tierData) => {
@@ -488,7 +490,9 @@ export class RadialChartComponent extends AbstractDashboard implements OnChanges
                 data: data,
             });
         });
-
+        if (this.xAxisInput.length < Constants.MAX_NUMBER_OF_BARS_TO_BE_DISPLAYED) {
+            showZoom = false;
+        }
         return {
             tooltip: {
                 show: true,
@@ -521,6 +525,14 @@ export class RadialChartComponent extends AbstractDashboard implements OnChanges
                 bottom: "10%",
                 containLabel: true,
             },
+            dataZoom: [
+                {
+                    show: showZoom,
+                    startValue: this.xAxisInput[0],
+                    endValue:
+                        this.xAxisInput[Constants.MAX_NUMBER_OF_BARS_TO_BE_DISPLAYED - 1],
+                },
+            ],
             xAxis: {
                 type: "category",
                 data: this.xAxisInput,
