@@ -96,9 +96,32 @@ export class InventoriesMultiCriteriaFootprintComponent extends AbstractDashboar
     }[] = [];
 
     shouldShowStackBarChart = computed(() => {
-        return (
-            Object.keys(this.footprint()).length > Constants.MAX_NUMBER_OF_CRITERIA_RADAR
-        );
+        const isInverted = this.isAxisInverted();
+
+        if (isInverted) {
+            // When inverted, count the number of data points (axes) from footprint
+            const footprintData = this.footprint();
+            const dimension = this.store.dimension();
+
+            // Count unique dimension values across all criteria
+            const uniqueDimensions = new Set<string>();
+            Object.values(footprintData).forEach((criteriaData: any) => {
+                if (criteriaData?.impacts) {
+                    criteriaData.impacts.forEach((impact: any) => {
+                        if (impact[dimension]) {
+                            uniqueDimensions.add(impact[dimension]);
+                        }
+                    });
+                }
+            });
+            return uniqueDimensions.size > Constants.MAX_NUMBER_OF_CRITERIA_RADAR;
+        } else {
+            // When not inverted, check number of criteria
+            return (
+                Object.keys(this.footprint()).length >
+                Constants.MAX_NUMBER_OF_CRITERIA_RADAR
+            );
+        }
     });
 
     criteriaCalculated: Signal<CriteriaCalculated> = computed(() => {
