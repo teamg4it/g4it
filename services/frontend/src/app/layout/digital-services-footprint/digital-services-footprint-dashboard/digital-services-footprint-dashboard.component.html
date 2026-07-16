@@ -119,6 +119,7 @@
                             [enableDataInconsistency]="
                                 digitalService.enableDataInconsistency
                             "
+                            [isAxisInverted]="isAxisInverted()"
                         ></app-radial-chart>
                     }
                     @if (chartType() == "pie") {
@@ -159,6 +160,9 @@
                         ></app-bar-chart>
                     }
                 }
+                <app-inverse-axis-button
+                    (inverseAxisChange)="this.isAxisInverted.set($event)"
+                ></app-inverse-axis-button>
             </div>
             <app-graph-description
                 [ecoMindRecomendation]="getEcoMindRecomendation()"

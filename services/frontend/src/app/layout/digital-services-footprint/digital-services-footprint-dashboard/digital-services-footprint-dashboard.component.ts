@@ -64,6 +64,7 @@ import { Constants } from "src/constants";
 import { ConfigureViewFiltersComponent } from "../../common/configure-view-filters/configure-view-filters.component";
 import { CriteriaPopupComponent } from "../../common/criteria-popup/criteria-popup.component";
 import { ImpactSidebarComponent } from "../../common/impact-sidebar/impact-sidebar.component";
+import { InverseAxisButtonComponent } from "../../common/inverse-axis-button/inverse-axis-button.component";
 import { AbstractDashboard } from "../../inventories-footprint/abstract-dashboard";
 import { BarChartComponent } from "./bar-chart/bar-chart.component";
 import { GraphDescriptionComponent } from "./graph-description/graph-description.component";
@@ -88,6 +89,7 @@ import { RadialChartComponent } from "./radial-chart/radial-chart.component";
         DrawerModule,
         ConfigureViewFiltersComponent,
         TranslatePipe,
+        InverseAxisButtonComponent,
     ],
 })
 export class DigitalServicesFootprintDashboardComponent
@@ -102,6 +104,7 @@ export class DigitalServicesFootprintDashboardComponent
     private readonly shareDigitalService = inject(ShareDigitalServiceDataService);
     private readonly route = inject(ActivatedRoute);
     chartType = signal("radial");
+    isAxisInverted = signal<boolean>(false);
     showInconsitencyBtn = false;
     constants = Constants;
     noData = true;
