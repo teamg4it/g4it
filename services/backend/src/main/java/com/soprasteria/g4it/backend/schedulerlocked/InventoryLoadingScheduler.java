@@ -24,8 +24,8 @@ public class InventoryLoadingScheduler {
     @Autowired
     private LoadInputFilesService loadInputFilesService;
 
-    @Scheduled(fixedDelay = 60_000, initialDelay = 5_000)
-    @SchedulerLock(name = "restartLostLoading", lockAtMostFor = "2m", lockAtLeastFor = "9s")
+    // @Scheduled(fixedDelay = 60_000, initialDelay = 5_000)
+   // @SchedulerLock(name = "restartLostLoading", lockAtMostFor = "2m", lockAtLeastFor = "9s")
     public void restartLostLoading() {
         loadInputFilesService.restartLoadingFiles();
     }

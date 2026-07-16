@@ -47,17 +47,17 @@ public class StuckTaskCleanupService {
     @Autowired
     private TaskRepository taskRepository;
 
-    @Autowired
-    private MessageSource messageSource;
+    private static final String FAILED_BY_SCHEDULER = "FAILED BY SCHEDULER";
 
     /**
      * Find and fail all tasks that are stuck in IN_PROGRESS status.
      *
-     * A task is considered stuck if:
-     * - Status is IN_PROGRESS
-     * - Last update was more than configured hours ago
+     * Logic:
+     * - If PLCD is null: Initialize PLCD = LUD (first time, task is progressing)
+     * - If LUD > PLCD: Task has progressed, update PLCD = LUD
+     * - If LUD == PLCD: Task is stuck (no updates since last check), KILL it
      *
-     * Stuck tasks are marked as FAILED with an appropriate error message.
+     * Where PLCD = progressLastChangedDate, LUD = lastUpdateDate
      */
     @Transactional
     public void failStuckTasks() {
@@ -66,7 +66,7 @@ public class StuckTaskCleanupService {
             return;
         }
 
-        log.info("Starting stuck task cleanup - checking for tasks stuck for more than {} hours", stuckTaskTimeoutHours);
+        log.info("Starting stuck task cleanup - checking IN_PROGRESS tasks for activity");
 
         List<Task> inProgressTasks = taskRepository.findByStatus(TaskStatus.IN_PROGRESS.toString());
 
@@ -76,50 +76,62 @@ public class StuckTaskCleanupService {
         }
 
         LocalDateTime now = LocalDateTime.now();
-        long timeoutMinutes = (long) (stuckTaskTimeoutHours * 60);
-        LocalDateTime cutoffTime = now.minusMinutes(timeoutMinutes);
-
         int failedCount = 0;
+        int initializedCount = 0;
+        int updatedCount = 0;
 
         for (Task task : inProgressTasks) {
-            if (isTaskStuck(task, cutoffTime)) {
-                failTask(task, now);
+            LocalDateTime lastUpdate = task.getLastUpdateDate();
+            LocalDateTime progressLastChanged = task.getProgressLastChangedDate();
+
+            // Truncate to seconds to avoid precision issues when comparing
+            lastUpdate = lastUpdate.truncatedTo(ChronoUnit.SECONDS);
+            if (progressLastChanged != null) {
+                progressLastChanged = progressLastChanged.truncatedTo(ChronoUnit.SECONDS);
+            }
+
+            // Case 1: PLCD is null - First scheduler check, initialize and skip
+            if (progressLastChanged == null) {
+                try {
+                    task.setProgressLastChangedDate(lastUpdate);
+                    taskRepository.save(task);
+                    initializedCount++;
+                    log.debug("Task {} - First check, initialized PLCD = LUD", task.getId());
+                } catch (Exception e) {
+                    log.error("Error while initializing progressLastChangedDate for task {}: {}",
+                            task.getId(), e.getMessage(), e);
+                }
+                continue;
+            }
+
+            // Case 2: LUD > PLCD - Task has progressed, update and skip
+            if (lastUpdate.isAfter(progressLastChanged)) {
+                try {
+                    task.setProgressLastChangedDate(lastUpdate);
+                    taskRepository.save(task);
+                    updatedCount++;
+                    log.debug("Task {} - Progress detected, updated PLCD = LUD", task.getId());
+                } catch (Exception e) {
+                    log.error("Error while updating progressLastChangedDate for task {}: {}",
+                            task.getId(), e.getMessage(), e);
+                }
+            }
+            // Case 3: LUD == PLCD - Task is stuck, KILL it
+            else if (lastUpdate.equals(progressLastChanged) || lastUpdate.isBefore(progressLastChanged)) {
+                long minutesSinceLastUpdate = ChronoUnit.MINUTES.between(task.getProgressLastChangedDate(), now);
+                log.warn("Task {} (type: {}) is STUCK - LUD == PLCD, no updates for {} minutes",
+                        task.getId(), task.getType(), minutesSinceLastUpdate);
+                failTask(task, now, minutesSinceLastUpdate);
                 failedCount++;
             }
         }
 
-        if (failedCount > 0) {
-            log.info("Stuck task cleanup completed - {} task(s) marked as FAILED", failedCount);
+        if (failedCount > 0 || initializedCount > 0 || updatedCount > 0) {
+            log.info("Stuck task cleanup completed - {} initialized, {} updated, {} KILLED",
+                    initializedCount, updatedCount, failedCount);
         } else {
-            log.debug("No stuck tasks found");
+            log.debug("All IN_PROGRESS tasks are healthy");
         }
-    }
-
-    /**
-     * Check if a task is stuck based on last update time.
-     *
-     * @param task the task to check
-     * @param cutoffTime the cutoff time before which tasks are considered stuck
-     * @return true if task is stuck, false otherwise
-     */
-    private boolean isTaskStuck(Task task, LocalDateTime cutoffTime) {
-        LocalDateTime lastUpdate = task.getLastUpdateDate();
-
-        // If no last update date, use creation date
-        if (lastUpdate == null) {
-            lastUpdate = task.getCreationDate();
-        }
-
-        // Task is stuck if last update is before cutoff time
-        boolean isStuck = lastUpdate.isBefore(cutoffTime);
-
-        if (isStuck) {
-            long hoursSinceUpdate = ChronoUnit.HOURS.between(lastUpdate, LocalDateTime.now());
-            log.warn("Task {} (type: {}) is stuck - last updated {} hours ago",
-                    task.getId(), task.getType(), hoursSinceUpdate);
-        }
-
-        return isStuck;
     }
 
     /**
@@ -127,29 +139,24 @@ public class StuckTaskCleanupService {
      *
      * @param task the task to fail
      * @param now the current timestamp
+     * @param minutesWithoutUpdate minutes since last update
      */
-    private void failTask(Task task, LocalDateTime now) {
+    private void failTask(Task task, LocalDateTime now, long minutesWithoutUpdate) {
         try {
-            // Calculate how long the task has been stuck
-            LocalDateTime lastUpdate = task.getLastUpdateDate() != null ?
-                    task.getLastUpdateDate() : task.getCreationDate();
-            long hoursStuck = ChronoUnit.HOURS.between(lastUpdate, now);
-
-            // Get localized error message
-            Locale locale = Locale.getDefault(); // Could be enhanced to use user's locale if stored
-            String errorMessage = messageSource.getMessage("task.stuck.timeout",
-                    new Object[]{hoursStuck},
-                    "Task has been stuck for " + hoursStuck + " hours and has been automatically terminated.",
-                    locale);
+            // Create error message
+            String errorMessage = String.format(
+                "Task has been stuck with no updates from %d minutes and has been automatically terminated.",
+                minutesWithoutUpdate
+            );
 
             // Update task details - LogUtils.error/info automatically truncate to fit database limit
             List<String> details = task.getDetails() != null ? new ArrayList<>(task.getDetails()) : new ArrayList<>();
             details.add(LogUtils.error(errorMessage));
-            details.add(LogUtils.error("Task was automatically failed by the stuck task cleanup scheduler"));
+
 
             // Set errors - truncate raw message to fit database limit
             List<String> errors = new ArrayList<>();
-            errors.add(LogUtils.truncateToDbLimit(errorMessage));
+            errors.add(LogUtils.error(FAILED_BY_SCHEDULER));
 
             // Update task status
             task.setStatus(TaskStatus.FAILED.toString());
@@ -160,8 +167,8 @@ public class StuckTaskCleanupService {
 
             taskRepository.save(task);
 
-            log.info("Task {} (type: {}) marked as FAILED after being stuck for {} hours",
-                    task.getId(), task.getType(), hoursStuck);
+            log.info("Task {} (type: {}) marked as FAILED",
+                    task.getId(), task.getType());
 
         } catch (Exception e) {
             log.error("Error while failing stuck task {}: {}", task.getId(), e.getMessage(), e);
