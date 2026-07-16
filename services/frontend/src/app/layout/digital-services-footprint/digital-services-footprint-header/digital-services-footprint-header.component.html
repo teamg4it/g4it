@@ -10,7 +10,8 @@
     >
         <app-common-editor
             [content]="digitalService.note?.content"
-            [showButtons]="userService.isAllowedDigitalServiceWrite$ | async"
+            [title]="'digital-services.version.context-and-assumptions' | translate"
+            [isWriteRole]="userService.isAllowedDigitalServiceWrite$ | async"
             (saveValue)="noteSaveValue($event)"
             (outClose)="sidebarVisible = $event"
             (delete)="noteDelete(); sidebarVisible = $event"
@@ -207,11 +208,13 @@
                 <p-button
                     (onClick)="sidebarVisible = true"
                     styleClass="cancel-creation-button uppercase mx-2 mb-3 lg:mb-0"
-                    [ariaLabel]="'common.accessibility.addNote' | translate"
+                    [ariaLabel]="'common.accessibility.add-context' | translate"
                     icon="pi pi-pen-to-square"
-                    [pTooltip]="'common.note.add' | translate"
                     id="add-note"
                     tooltipPosition="bottom"
+                    [label]="
+                        'digital-services.version.add-context-assumptions' | translate
+                    "
                 />
             }
 
@@ -219,10 +222,12 @@
                 <p-button
                     (onClick)="sidebarVisible = true"
                     styleClass="cancel-creation-button uppercase mx-2 mb-3 lg:mb-0"
-                    [ariaLabel]="'common.accessibility.attachedNote' | translate"
-                    icon="pi pi-clipboard"
-                    [pTooltip]="'common.note.attached' | translate"
+                    [ariaLabel]="'common.accessibility.edit-context' | translate"
+                    icon="pi pi-pen-to-square"
                     tooltipPosition="bottom"
+                    [label]="
+                        'digital-services.version.edit-context-assumptions' | translate
+                    "
                 />
             }
 
