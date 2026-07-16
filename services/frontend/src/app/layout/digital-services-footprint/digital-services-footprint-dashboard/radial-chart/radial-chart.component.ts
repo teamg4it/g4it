@@ -41,6 +41,7 @@ export class RadialChartComponent extends AbstractDashboard implements OnChanges
     @Output() selectedCriteriaChange: EventEmitter<string> = new EventEmitter();
     @Input() enableDataInconsistency: boolean = false;
     @Input() isCompareScreen = false;
+    @Input() shouldShowStackBarChart: boolean = false;
     isAxisInverted = input<boolean>(false);
     compareMax = input<number>(0);
     showInconsitency = input<boolean>();
@@ -107,6 +108,8 @@ export class RadialChartComponent extends AbstractDashboard implements OnChanges
 
     onChartClick(params: any) {
         const isInverted = this.isAxisInverted();
+        const isStackBar = this.shouldShowStackBarChart;
+
         // When inverted, criteria are in series (seriesName), otherwise in data name
         if (isInverted) {
             // In inverted mode, criteria name is in seriesName
@@ -118,8 +121,20 @@ export class RadialChartComponent extends AbstractDashboard implements OnChanges
                 this.selectedCriteriaChange.emit(key);
             }
         } else {
-            // In normal mode, criteria is in the impact data
-            this.selectedCriteriaChange.emit(params.data.impact.criteria);
+            // In normal mode
+            if (isStackBar && params.componentType === "series") {
+                // Stack bar chart: criteria is in params.name (xAxis label)
+                const key = Object.keys(this.translate.instant("criteria")).find(
+                    (key) =>
+                        this.translate.instant("criteria")[key].title === params.name,
+                );
+                if (key) {
+                    this.selectedCriteriaChange.emit(key);
+                }
+            } else if (params.data && params.data.impact) {
+                // Radial chart: criteria is in the impact data
+                this.selectedCriteriaChange.emit(params.data.impact.criteria);
+            }
         }
     }
 
@@ -172,6 +187,11 @@ export class RadialChartComponent extends AbstractDashboard implements OnChanges
                 criteriaUnitValues[criteriaName].total += impact.unitValue;
             });
         });
+
+        // If more than 5 criteria and NOT inverted, return stack bar chart configuration
+        if (this.shouldShowStackBarChart && !isInverted) {
+            return this.createStackBarChartConfig(noErrorRadialChartData, isInverted);
+        }
 
         // Prepare data based on inversion state
         if (isInverted) {
@@ -416,6 +436,106 @@ export class RadialChartComponent extends AbstractDashboard implements OnChanges
                         : this.existingTranslation(param, "digital-services");
                 },
             },
+            color: Constants.COLOR,
+        };
+    }
+
+    createStackBarChartConfig(
+        chartData: DigitalServiceFootprint[],
+        isInverted: boolean,
+    ): EChartsOption {
+        // Get unique criteria
+        const criteriaSet = new Set<string>();
+        chartData.forEach((tierData) => {
+            tierData.impacts.forEach((impact) => {
+                const twoWordsImpact = impact.criteria.split(" ").slice(0, 2).join(" ");
+                criteriaSet.add(this.getCriteriaTranslation(twoWordsImpact));
+            });
+        });
+        this.xAxisInput = Array.from(criteriaSet);
+
+        // Build series data
+        const seriesData: any[] = [];
+
+        // X-axis: criteria, Series: tiers (stacked)
+        chartData.forEach((tierData) => {
+            const tierName = this.existingTranslation(tierData.tier, "digital-services");
+            const data = this.xAxisInput.map((criteriaName) => {
+                const impact = tierData.impacts.find((imp) => {
+                    const twoWordsImpact = imp.criteria.split(" ").slice(0, 2).join(" ");
+                    return this.getCriteriaTranslation(twoWordsImpact) === criteriaName;
+                });
+                return impact
+                    ? {
+                          value: impact.sipValue,
+                          unitValue: impact.unitValue,
+                          unit: impact.unit,
+                      }
+                    : {
+                          value: 0,
+                          unitValue: 0,
+                          unit: "",
+                      };
+            });
+
+            seriesData.push({
+                name: tierName,
+                type: "bar",
+                stack: "total",
+                emphasis: {
+                    focus: "series",
+                },
+                data: data,
+            });
+        });
+
+        return {
+            tooltip: {
+                show: true,
+                formatter: (params: any) => {
+                    const dataObj = params.data || { value: 0, unitValue: 0, unit: "" };
+                    const sipValue = dataObj.value || 0;
+                    const dimensionLabel = params.name; // x-axis label (criteria name)
+                    const seriesName = params.seriesName; // tier name
+
+                    return `
+                        <div style="display: flex; align-items: center; height: 30px;">
+                            <span style="display: inline-block; width: 10px; height: 10px; background-color: ${
+                                params.color
+                            }; border-radius: 50%; margin-right: 5px;"></span>
+                            <span style="font-weight: bold; margin-right: 15px;">${seriesName}</span>
+                            <div>${dimensionLabel} : ${this.integerPipe.transform(
+                                sipValue,
+                            )} ${this.translate.instant("common.peopleeq-min")} </div>
+                        </div>
+                    `;
+                },
+            },
+            legend: {
+                data: seriesData.map((s) => s.name),
+                bottom: 0,
+            },
+            grid: {
+                left: "3%",
+                right: "4%",
+                bottom: "10%",
+                containLabel: true,
+            },
+            xAxis: {
+                type: "category",
+                data: this.xAxisInput,
+                axisLabel: {
+                    interval: 0,
+                    rotate: this.xAxisInput.length > 5 ? 45 : 0,
+                },
+            },
+            yAxis: {
+                type: "value",
+                axisLabel: {
+                    formatter: (value: number) => this.integerPipe.transform(value),
+                },
+            },
+            series: seriesData,
             color: Constants.COLOR,
         };
     }

@@ -183,6 +183,27 @@ export class DigitalServicesFootprintDashboardComponent
         );
     });
 
+    shouldShowStackBarChart = computed(() => {
+        if (!this.globalVisionChartData || this.globalVisionChartData.length === 0) {
+            return false;
+        }
+
+        // Stack bar chart only for non-inverted mode
+        if (this.isAxisInverted()) {
+            return false;
+        }
+
+        // Count unique criteria
+        const uniqueCriteria = new Set<string>();
+        this.globalVisionChartData.forEach((tierData) => {
+            tierData.impacts.forEach((impact) => {
+                uniqueCriteria.add(impact.criteria);
+            });
+        });
+
+        return uniqueCriteria.size > Constants.MAX_NUMBER_OF_CRITERIA_RADAR;
+    });
+
     calculatedCriteriaList: string[] = [];
     sub!: Subscription;
     constructor(
