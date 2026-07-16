@@ -93,7 +93,14 @@ public class WorkspaceReferentialImportService {
 
         validateReportOrFail(result.getReport());
 
-        validateDuplicates(result.getData(), ItemTypeRest::getType, "type");
+        // AC7: Validate mandatory fields for each itemType row
+        validateItemTypeMandatoryFields(result.getData());
+
+        // AC8: Validate no duplicate type values with explicit error message
+        validateItemTypeDuplicates(result.getData());
+
+        // AC9: Validate default_lifespan is greater than 0
+        validateItemTypeLifespan(result.getData());
 
         List<ItemType> entities = referentialMapper.toItemTypeEntity(result.getData());
 
@@ -108,7 +115,12 @@ public class WorkspaceReferentialImportService {
 
         validateReportOrFail(result.getReport());
 
+        // AC10: Validate mandatory fields for each matchingItem row
+        validateMatchingItemMandatoryFields(result.getData());
+
         validateDuplicates(result.getData(), MatchingItemRest::getItemSource, "itemSource");
+
+        // AC11: Validate refItemTarget exists in ref_item_impact with explicit message
         validateMatchingItems(result.getData(), workspaceId);
 
         List<MatchingItem> entities = referentialMapper.toMatchingEntity(result.getData());
@@ -178,10 +190,7 @@ public class WorkspaceReferentialImportService {
         for (MatchingItemRest item : items) {
 
             if (!validTargets.contains(item.getRefItemTarget())) {
-                throw new BadRequestException(
-                        "refItemTarget",
-                        "Invalid reference: " + item.getRefItemTarget()
-                );
+                throw new BadRequestException("matchingItem", "matchingitem.invalid.reference: "+ item.getRefItemTarget());
             }
         }
 
@@ -224,7 +233,7 @@ public class WorkspaceReferentialImportService {
     private void validateItemImpactCriterionValues(List<ItemImpactRest> items) {
         for (ItemImpactRest item : items) {
             if (item.getCriterion() != null && !VALID_CRITERION_VALUES.contains(item.getCriterion())) {
-                throw new BadRequestException("itemImpact", "itemimpact.criterion.invalid");
+                throw new BadRequestException("itemImpact", "itemimpact.criterion.invalid: " + item.getCriterion());
             }
         }
     }
@@ -239,7 +248,7 @@ public class WorkspaceReferentialImportService {
     private void validateItemImpactLifecycleStepValues(List<ItemImpactRest> items) {
         for (ItemImpactRest item : items) {
             if (item.getLifecycleStep() != null && !VALID_LIFECYCLE_STEP_VALUES.contains(item.getLifecycleStep())) {
-                throw new BadRequestException("itemImpact", "itemimpact.lifecyclestep.invalid");
+                throw new BadRequestException("itemImpact", "itemimpact.lifecyclestep.invalid: " + item.getLifecycleStep());
             }
         }
     }
@@ -253,7 +262,7 @@ public class WorkspaceReferentialImportService {
     private void validateItemImpactElectricityConsumption(List<ItemImpactRest> items) {
         for (ItemImpactRest item : items) {
             if ("USING".equals(item.getLifecycleStep()) && item.getAvgElectricityConsumption() == null) {
-                throw new BadRequestException("itemImpact", "itemimpact.electricity.consumption.missing");
+                throw new BadRequestException("itemImpact", "itemimpact.electricity.consumption.missing: " + item.getName());
             }
         }
     }
@@ -276,5 +285,78 @@ public class WorkspaceReferentialImportService {
             }
         }
     }
+
+    /**
+     * AC7: Validate that all mandatory fields are present for itemType rows.
+     * Mandatory columns: type, category, default_lifespan, is_server and ref_default_item.
+     *
+     * @param items List of ItemTypeRest to validate
+     * @throws BadRequestException if any mandatory field is missing
+     */
+    private void validateItemTypeMandatoryFields(List<ItemTypeRest> items) {
+        for (ItemTypeRest item : items) {
+            if (StringUtils.isBlank(item.getType()) ||
+                    StringUtils.isBlank(item.getCategory()) ||
+                    item.getDefaultLifespan() == null ||
+                    item.getIsServer() == null ||
+                    StringUtils.isBlank(item.getRefDefaultItem())) {
+                throw new BadRequestException("itemType", "itemtype.required.fields.missing");
+            }
+        }
+    }
+
+    /**
+     * AC8: Validate that the type column has no duplicate values.
+     * Provides explicit error message for itemType duplicates.
+     *
+     * @param items List of ItemTypeRest to validate
+     * @throws BadRequestException if duplicate type is found
+     */
+    private void validateItemTypeDuplicates(List<ItemTypeRest> items) {
+        Set<String> seen = new java.util.HashSet<>();
+
+        for (ItemTypeRest item : items) {
+            String type = item.getType();
+
+            if (type == null || type.isBlank()) {
+                throw new BadRequestException("itemType", "itemtype.type.missing");
+            }
+
+            if (!seen.add(type)) {
+                throw new BadRequestException("itemImpact", "itemtype.duplicate.type" + ": " + type);
+            }
+        }
+    }
+
+    /**
+     * AC9: Validate that default_lifespan is strictly greater than 0.
+     *
+     * @param items List of ItemTypeRest to validate
+     * @throws BadRequestException if default_lifespan is <= 0
+     */
+    private void validateItemTypeLifespan(List<ItemTypeRest> items) {
+        for (ItemTypeRest item : items) {
+            if (item.getDefaultLifespan() != null && item.getDefaultLifespan() <= 0) {
+                throw new BadRequestException("itemType", "itemtype.lifespan.invalid: " + item.getType());
+            }
+        }
+    }
+
+    /**
+     * AC10: Validate that all mandatory fields are present for matchingItem rows.
+     * Mandatory columns: itemSource and refItemTarget.
+     *
+     * @param items List of MatchingItemRest to validate
+     * @throws BadRequestException if any mandatory field is missing
+     */
+    private void validateMatchingItemMandatoryFields(List<MatchingItemRest> items) {
+        for (MatchingItemRest item : items) {
+            if (StringUtils.isBlank(item.getItemSource()) ||
+                    StringUtils.isBlank(item.getRefItemTarget())) {
+                throw new BadRequestException("matchingItem", "matchingitem.required.fields.missing");
+            }
+        }
+    }
+
 
 }
