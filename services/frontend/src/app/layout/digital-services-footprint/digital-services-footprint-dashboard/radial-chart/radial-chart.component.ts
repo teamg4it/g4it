@@ -515,16 +515,13 @@ export class RadialChartComponent extends AbstractDashboard implements OnChanges
                                 params.color
                             }; border-radius: 50%; margin-right: 5px;"></span>
                             <span style="font-weight: bold; margin-right: 15px;">${seriesName}</span>
-                            <div>${dimensionLabel} : ${this.integerPipe.transform(
-                                sipValue,
-                            )} ${this.translate.instant("common.peopleeq-min")} </div>
+                            <div>${dimensionLabel} : ${this.integerPipe.transform(sipValue)} ${this.translate.instant("common.peopleeq-min")} </div>
                         </div>
                     `;
                 },
             },
             legend: {
                 data: seriesData.map((s) => s.name),
-                bottom: 0,
             },
             grid: {
                 left: "3%",
@@ -571,9 +568,6 @@ export class RadialChartComponent extends AbstractDashboard implements OnChanges
             },
             yAxis: {
                 type: "value",
-                axisLabel: {
-                    formatter: (value: number) => this.integerPipe.transform(value),
-                },
             },
             series: seriesData,
             color: Constants.COLOR,
