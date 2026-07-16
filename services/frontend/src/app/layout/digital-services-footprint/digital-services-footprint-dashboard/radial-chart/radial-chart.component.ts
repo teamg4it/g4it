@@ -446,15 +446,22 @@ export class RadialChartComponent extends AbstractDashboard implements OnChanges
         isInverted: boolean,
     ): EChartsOption {
         let showZoom = true;
-        // Get unique criteria
-        const criteriaSet = new Set<string>();
+        // Calculate total values for each criteria and sort in decreasing order
+        const criteriaTotals = new Map<string, number>();
         chartData.forEach((tierData) => {
             tierData.impacts.forEach((impact) => {
                 const twoWordsImpact = impact.criteria.split(" ").slice(0, 2).join(" ");
-                criteriaSet.add(this.getCriteriaTranslation(twoWordsImpact));
+                const criteriaName = this.getCriteriaTranslation(twoWordsImpact);
+                criteriaTotals.set(
+                    criteriaName,
+                    (criteriaTotals.get(criteriaName) || 0) + impact.sipValue,
+                );
             });
         });
-        this.xAxisInput = Array.from(criteriaSet);
+
+        this.xAxisInput = Array.from(criteriaTotals.keys()).sort(
+            (a, b) => (criteriaTotals.get(b) || 0) - (criteriaTotals.get(a) || 0),
+        );
 
         // Build series data
         const seriesData: any[] = [];
