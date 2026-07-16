@@ -542,10 +542,31 @@ export class RadialChartComponent extends AbstractDashboard implements OnChanges
             ],
             xAxis: {
                 type: "category",
-                data: this.xAxisInput,
+                data: this.xAxisInput.map((criteriaName) => {
+                    return {
+                        value: criteriaName,
+                        textStyle: {
+                            color: getColorFormatter(
+                                !!this.criteriaMap[criteriaName]?.status?.error,
+                                this.enableDataInconsistency,
+                            ),
+                        },
+                    };
+                }),
                 axisLabel: {
                     interval: 0,
                     rotate: this.xAxisInput.length > 5 ? 45 : 0,
+                    formatter: (value: string) => {
+                        const hasError = !!this.criteriaMap[value]?.status?.error;
+                        return getLabelFormatter(
+                            hasError,
+                            this.enableDataInconsistency,
+                            value,
+                        );
+                    },
+                    rich: this.isCompareScreen
+                        ? (Constants.CHART_RICH_SMALL as any)
+                        : (Constants.CHART_RICH as any),
                 },
             },
             yAxis: {
