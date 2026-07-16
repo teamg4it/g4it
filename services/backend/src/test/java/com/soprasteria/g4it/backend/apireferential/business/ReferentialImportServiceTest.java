@@ -489,7 +489,7 @@ t;c;com;1;true;s;ref;1
         BadRequestException ex = assertThrows(BadRequestException.class,
                 () -> referentialImportService.parseItemImpactCsv(file));
 
-        assertEquals("csv.decimal.comma.invalid", ex.getError());
+        assertEquals("csv.decimal.comma.invalid: 2", ex.getError());
     }
 
     @Test
@@ -506,7 +506,7 @@ t;c;com;1;true;s;ref;1
         BadRequestException ex = assertThrows(BadRequestException.class,
                 () -> referentialImportService.parseItemImpactCsv(file));
 
-        assertEquals("csv.decimal.comma.invalid", ex.getError());
+        assertEquals("csv.decimal.comma.invalid: 2", ex.getError());
     }
 
     @Test
@@ -523,7 +523,7 @@ t;c;com;1;true;s;ref;1
         BadRequestException ex = assertThrows(BadRequestException.class,
                 () -> referentialImportService.processItemImpactCsv(file, "org"));
 
-        assertEquals("csv.decimal.comma.invalid", ex.getError());
+        assertEquals("csv.decimal.comma.invalid: 2", ex.getError());
     }
 
     @Test
@@ -540,7 +540,7 @@ t;c;com;1;true;s;ref;1
         BadRequestException ex = assertThrows(BadRequestException.class,
                 () -> referentialImportService.processItemImpactCsv(file, "org"));
 
-        assertEquals("csv.decimal.comma.invalid", ex.getError());
+        assertEquals("csv.decimal.comma.invalid: 2", ex.getError());
     }
 
     @Test
@@ -560,7 +560,7 @@ t;c;com;1;true;s;ref;1
         BadRequestException ex = assertThrows(BadRequestException.class,
                 () -> referentialImportService.parseItemImpactCsv(file));
 
-        assertEquals("csv.decimal.comma.invalid", ex.getError());
+        assertEquals("csv.decimal.comma.invalid: 2", ex.getError());
     }
 
     @Test
@@ -1435,7 +1435,7 @@ t;c;com;1;true;s;ref;1
                 BadRequestException.class,
                 () -> referentialImportService.parseItemImpactCsv(file));
 
-        assertEquals("csv.decimal.comma.invalid", exception.getError());
+        assertEquals("csv.decimal.comma.invalid: 2", exception.getError());
     }
 
     @Test
@@ -1805,18 +1805,93 @@ t;c;com;1;true;s;ref;1
                         criterion;lifecycleStep;name;category;avgElectricityConsumption;description;location;level;source;tier;unit;value;version
                         c1;l1;n1;cat;10,5;desc;FR;1;ADEME;1;kg;100.2;1
                         """,
-                        "csv.decimal.comma.invalid"
+                        "csv.decimal.comma.invalid: 2"
                 ),
                 Arguments.of(
                         """
                         criterion;lifecycleStep;name;category;avgElectricityConsumption;description;location;level;source;tier;unit;value;version
                         c1;l1;n1;cat;10.5;desc;FR;1;ADEME;1;kg;100,2;1
                         """,
-                        "csv.decimal.comma.invalid"
+                        "csv.decimal.comma.invalid: 2"
                 )
         );
     }
 
+    @Test
+    void shouldReturnLineNumberWhenMapperThrowsNumberFormatException() throws Exception {
+
+        String csv = """
+        criterion;lifecycleStep;name;category;avgElectricityConsumption;description;location;level;source;tier;unit;value;version
+        c;l;n;cat;1.5;desc;loc;lev;src;t;u;10.5;1
+        """;
+
+        when(file.getBytes()).thenReturn(csv.getBytes(StandardCharsets.UTF_8));
+
+        when(referentialMapper.csvItemImpactToRest(any()))
+                .thenThrow(new NumberFormatException());
+
+        BadRequestException ex = assertThrows(
+                BadRequestException.class,
+                () -> referentialImportService.parseItemImpactCsv(file));
+
+        assertTrue(ex.getError().startsWith("csv.decimal.comma.invalid"));
+    }
+
+    @Test
+    void shouldReturnColumnNameWhenValueContainsComma() throws Exception {
+
+        String csv = """
+        criterion;lifecycleStep;name;category;avgElectricityConsumption;description;location;level;source;tier;unit;value;version
+        c;l;n;cat;1.5;desc;loc;lev;src;t;u;10,5;1
+        """;
+
+        when(file.getBytes()).thenReturn(csv.getBytes(StandardCharsets.UTF_8));
+
+        BadRequestException ex = assertThrows(
+                BadRequestException.class,
+                () -> referentialImportService.parseItemImpactCsv(file));
+
+        assertTrue(ex.getError().contains("csv.decimal.comma.invalid"));
+    }
+
+
+    @Test
+    void shouldReturnColumnNameWhenAvgElectricityContainsComma() throws Exception {
+
+        String csv = """
+        criterion;lifecycleStep;name;category;avgElectricityConsumption;description;location;level;source;tier;unit;value;version
+        c;l;n;cat;1,5;desc;loc;lev;src;t;u;10.5;1
+        """;
+
+        when(file.getBytes()).thenReturn(csv.getBytes(StandardCharsets.UTF_8));
+
+        BadRequestException ex = assertThrows(
+                BadRequestException.class,
+                () -> referentialImportService.parseItemImpactCsv(file));
+
+        assertTrue(ex.getError().contains("csv.decimal.comma.invalid"));
+    }
+
+    @Test
+    void shouldParseItemImpactWithValidDecimals() throws Exception {
+
+        String csv = """
+        criterion;lifecycleStep;name;category;avgElectricityConsumption;description;location;level;source;tier;unit;value;version
+        c;l;n;cat;1.5;desc;loc;lev;src;t;u;10.5;1
+        """;
+
+        ItemImpactRest item = new ItemImpactRest();
+
+        when(file.getBytes()).thenReturn(csv.getBytes(StandardCharsets.UTF_8));
+        when(referentialMapper.csvItemImpactToRest(any())).thenReturn(item);
+        when(validator.validate(any())).thenReturn(Collections.emptySet());
+
+        ItemImpactParseResult result =
+                referentialImportService.parseItemImpactCsv(file);
+
+        assertTrue(result.getReport().getErrors().isEmpty());
+        assertEquals(1, result.getData().size());
+    }
 
 
 }

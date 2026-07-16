@@ -60,6 +60,10 @@ class WorkspaceReferentialImportServiceTest {
     void importReferentialCSV_itemType_success() {
         ItemTypeRest rest = new ItemTypeRest();
         rest.setType("A");
+        rest.setCategory("Laptop");
+        rest.setDefaultLifespan(5.0);
+        rest.setIsServer(false);
+        rest.setRefDefaultItem("Laptop");
 
         ItemTypeParseResult result = ItemTypeParseResult.builder()
                 .data(List.of(rest))
@@ -79,14 +83,22 @@ class WorkspaceReferentialImportServiceTest {
 
     @Test
     void importReferentialCSV_itemType_duplicate() {
-        ItemTypeRest r1 = new ItemTypeRest();
-        r1.setType("A");
+        ItemTypeRest rest1 = new ItemTypeRest();
+        rest1.setType("A");
+        rest1.setCategory("Laptop");
+        rest1.setDefaultLifespan(5.0);
+        rest1.setIsServer(false);
+        rest1.setRefDefaultItem("Laptop");
 
-        ItemTypeRest r2 = new ItemTypeRest();
-        r2.setType("A");
+        ItemTypeRest rest2 = new ItemTypeRest();
+        rest2.setType("A");
+        rest2.setCategory("Laptop");
+        rest2.setDefaultLifespan(5.0);
+        rest2.setIsServer(false);
+        rest2.setRefDefaultItem("Laptop");
 
         ItemTypeParseResult result = ItemTypeParseResult.builder()
-                .data(List.of(r1, r2))
+                .data(List.of(rest1, rest2))
                 .report(emptyReport())
                 .build();
 
@@ -101,6 +113,10 @@ class WorkspaceReferentialImportServiceTest {
     void importReferentialCSV_itemType_nullKey() {
         ItemTypeRest rest = new ItemTypeRest();
         rest.setType(null);
+        rest.setCategory("Laptop");
+        rest.setDefaultLifespan(5.0);
+        rest.setIsServer(false);
+        rest.setRefDefaultItem("Laptop");
 
         ItemTypeParseResult result = ItemTypeParseResult.builder()
                 .data(List.of(rest))
@@ -110,8 +126,12 @@ class WorkspaceReferentialImportServiceTest {
         when(file.isEmpty()).thenReturn(false);
         when(referentialImportService.parseItemTypeCsv(file)).thenReturn(result);
 
-        assertThrows(IllegalArgumentException.class,
-                () -> service.importReferentialCSV(ORG, 1L, "itemType", file)); // ✅
+        BadRequestException ex = assertThrows(
+                BadRequestException.class,
+                () -> service.importReferentialCSV(ORG, 1L, "itemType", file));
+
+        assertEquals("itemType", ex.getField());
+        assertEquals("itemtype.required.fields.missing", ex.getError());
     }
 
     // =========================
@@ -258,6 +278,10 @@ class WorkspaceReferentialImportServiceTest {
 
         ItemTypeRest rest = new ItemTypeRest();
         rest.setType("   ");
+        rest.setCategory("Laptop");
+        rest.setDefaultLifespan(5.0);
+        rest.setIsServer(false);
+        rest.setRefDefaultItem("Laptop");
 
         ItemTypeParseResult result = ItemTypeParseResult.builder()
                 .data(List.of(rest))
@@ -267,15 +291,19 @@ class WorkspaceReferentialImportServiceTest {
         when(file.isEmpty()).thenReturn(false);
         when(referentialImportService.parseItemTypeCsv(file)).thenReturn(result);
 
-        assertThrows(IllegalArgumentException.class,
+        BadRequestException ex = assertThrows(BadRequestException.class,
                 () -> service.importReferentialCSV(ORG, 1L, "itemType", file));
+        assertEquals("itemType", ex.getField());
+        assertEquals("itemtype.required.fields.missing", ex.getError());
     }
 
     @Test
     void importReferentialCSV_nullFile_shouldThrow() {
 
-        assertThrows(BadRequestException.class,
+        BadRequestException ex = assertThrows(BadRequestException.class,
                 () -> service.importReferentialCSV(ORG, 1L, "itemType", null));
+        assertEquals("file", ex.getField());
+        assertEquals("File is empty", ex.getError());
     }
 
     @Test
@@ -395,8 +423,12 @@ class WorkspaceReferentialImportServiceTest {
         when(file.isEmpty()).thenReturn(false);
         when(referentialImportService.parseMatchingItemCsv(file)).thenReturn(result);
 
-        assertThrows(IllegalArgumentException.class,
+        BadRequestException ex = assertThrows(
+                BadRequestException.class,
                 () -> service.importReferentialCSV(ORG, 1L, "matchingItem", file));
+
+        assertEquals("matchingItem", ex.getField());
+        assertEquals("matchingitem.required.fields.missing", ex.getError());
     }
 
     @ParameterizedTest
@@ -432,13 +464,152 @@ class WorkspaceReferentialImportServiceTest {
     private static Stream<Arguments> invalidItemImpactProvider() {
         return Stream.of(
                 // Invalid criterion
-                Arguments.of("INVALID", "MANUFACTURING", 10d),
+                Arguments.of("INVALID", "MANUFACTURING", 10.0),
 
                 // Invalid lifecycle step
-                Arguments.of("CLIMATE_CHANGE", "INVALID", 10d),
+                Arguments.of("CLIMATE_CHANGE", "INVALID", 10.0),
 
                 // USING must have consumption value
-                Arguments.of("CLIMATE_CHANGE", "USING", 12d)
+                Arguments.of("CLIMATE_CHANGE", "USING", 12.0)
         );
+    }
+
+    @Test
+    void importReferentialCSV_reportContainsMultipleErrors() {
+        ItemTypeParseResult result = ItemTypeParseResult.builder()
+                .data(List.of())
+                .report(ImportReportRest.builder()
+                        .errors(List.of("error1", "error2"))
+                        .build())
+                .build();
+
+        when(file.isEmpty()).thenReturn(false);
+        when(referentialImportService.parseItemTypeCsv(file)).thenReturn(result);
+
+        BadRequestException ex = assertThrows(
+                BadRequestException.class,
+                () -> service.importReferentialCSV(ORG, 1L, "itemType", file));
+
+        assertEquals("csv", ex.getField());
+        assertEquals("error1; error2", ex.getError());
+    }
+
+    @Test
+    void importReferentialCSV_itemType_invalidLifespan() {
+
+        ItemTypeRest item = new ItemTypeRest();
+        item.setType("Laptop");
+        item.setCategory("Hardware");
+        item.setDefaultLifespan(0.0);
+        item.setIsServer(false);
+        item.setRefDefaultItem("Laptop");
+
+        ItemTypeParseResult result = ItemTypeParseResult.builder()
+                .data(List.of(item))
+                .report(emptyReport())
+                .build();
+
+        when(file.isEmpty()).thenReturn(false);
+        when(referentialImportService.parseItemTypeCsv(file)).thenReturn(result);
+
+        BadRequestException ex = assertThrows(
+                BadRequestException.class,
+                () -> service.importReferentialCSV(ORG, 1L, "itemType", file));
+
+        assertEquals("itemtype.lifespan.invalid: Laptop", ex.getError());
+    }
+
+    private static Stream<Arguments> invalidItemTypeProvider() {
+        return Stream.of(
+                Arguments.of(null, "cat", 5.0, true, "ref"),
+                Arguments.of("Laptop", null, 5.0, true, "ref"),
+                Arguments.of("Laptop", "cat", null, true, "ref"),
+                Arguments.of("Laptop", "cat", 5.0, null, "ref"),
+                Arguments.of("Laptop", "cat", 5.0, true, null)
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("invalidItemTypeProvider")
+    void importReferentialCSV_itemType_missingMandatoryFields(
+            String type,
+            String category,
+            Double lifespan,
+            Boolean server,
+            String refDefault) {
+
+        ItemTypeRest item = new ItemTypeRest();
+        item.setType(type);
+        item.setCategory(category);
+        item.setDefaultLifespan(lifespan);
+        item.setIsServer(server);
+        item.setRefDefaultItem(refDefault);
+
+        ItemTypeParseResult result = ItemTypeParseResult.builder()
+                .data(List.of(item))
+                .report(emptyReport())
+                .build();
+
+        when(file.isEmpty()).thenReturn(false);
+        when(referentialImportService.parseItemTypeCsv(file)).thenReturn(result);
+
+        assertThrows(BadRequestException.class,
+                () -> service.importReferentialCSV(ORG, 1L, "itemType", file));
+    }
+
+    private static Stream<Arguments> invalidMatchingProvider() {
+        return Stream.of(
+                Arguments.of(null, "Laptop"),
+                Arguments.of("Laptop", null),
+                Arguments.of("", "Laptop"),
+                Arguments.of("Laptop", "")
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("invalidMatchingProvider")
+    void importReferentialCSV_matchingItem_missingMandatoryFields(
+            String source,
+            String target) {
+
+        MatchingItemRest item = new MatchingItemRest();
+        item.setItemSource(source);
+        item.setRefItemTarget(target);
+
+        MatchingItemParseResult result = MatchingItemParseResult.builder()
+                .data(List.of(item))
+                .report(emptyReport())
+                .build();
+
+        when(file.isEmpty()).thenReturn(false);
+        when(referentialImportService.parseMatchingItemCsv(file)).thenReturn(result);
+
+        assertThrows(BadRequestException.class,
+                () -> service.importReferentialCSV(ORG, 1L, "matchingItem", file));
+    }
+
+    @Test
+    void importReferentialCSV_matchingItem_noValidTargets() {
+
+        MatchingItemRest item = new MatchingItemRest();
+        item.setItemSource("Laptop");
+        item.setRefItemTarget("Laptop");
+
+        MatchingItemParseResult result = MatchingItemParseResult.builder()
+                .data(List.of(item))
+                .report(emptyReport())
+                .build();
+
+        when(file.isEmpty()).thenReturn(false);
+        when(referentialImportService.parseMatchingItemCsv(file)).thenReturn(result);
+
+        when(itemImpactRepository.findByWorkspaceIdOrWorkspaceIdIsNull(1L))
+                .thenReturn(List.of());
+
+        BadRequestException ex = assertThrows(
+                BadRequestException.class,
+                () -> service.importReferentialCSV(ORG, 1L, "matchingItem", file));
+
+        assertEquals("matchingitem.invalid.reference: Laptop", ex.getError());
     }
 }
