@@ -88,7 +88,9 @@
             "eq": "View equipments' detail for inventory of",
             "refresh": "Refresh inventory informations of",
             "addNote": "Click to add a note",
-            "attachedNote": "Click to consult the note",
+            "add-context": "Click to add context/assumptions",
+            "edit-context": "Click to edit context/assumptions",
+            "attachedNote": "Click to consult the Context and assumptions",
             "download": "Click to download your result",
             "note": "Note",
             "accordion-open": "Click to show sub domains",
@@ -311,7 +313,11 @@
             "popup": {
                 "delete-question": "Are you sure you want to delete the digital service version",
                 "archived-text": "You are about to delete an archived version, you won't be able to use this version to track your progress."
-            }
+            },
+            "context-and-assumptions": "Context and assumptions",
+            "edit-context-assumptions": "EDIT CONTEXT/ASSUMPTIONS",
+            "add-context-assumptions": "ADD CONTEXT/ASSUMPTIONS",
+            "context-text": "Please describe the context of your analysis and the assumptions made (sources, methodological choices, limitations, etc.). This information helps ensure better understanding, traceability, and comparability of your impact assessment. <br /> These elements can be completed later."
         },
         "error.digital-service-already-exists": "Digital Service already exists",
         "error.digital-service-version-already-exists": "Version already exists",
