@@ -1332,7 +1332,7 @@
         },
         "technology-used": {
             "title": "Technologies utilisées",
-            "one": "Angular - 18.2.13",
+            "one": "Angular - 21.2.12",
             "two": "HTML5",
             "three": "CSS"
         },
