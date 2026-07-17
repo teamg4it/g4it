@@ -427,7 +427,7 @@ export class RadialChartComponent extends AbstractDashboard implements OnChanges
                       },
                   })),
             legend: {
-                show: true,
+                type: "scroll",
                 data: isInverted
                     ? criteriaSetArray
                     : noErrorRadialChartData.map((item: any) => item.tier),
@@ -497,7 +497,7 @@ export class RadialChartComponent extends AbstractDashboard implements OnChanges
                 data: data,
             });
         });
-        if (this.xAxisInput.length < Constants.MAX_NUMBER_OF_BARS_TO_BE_DISPLAYED) {
+        if (this.xAxisInput.length < Constants.TOTAL_VISIBLE_GRAPH_ITEMS) {
             showZoom = false;
         }
         return {
@@ -521,6 +521,7 @@ export class RadialChartComponent extends AbstractDashboard implements OnChanges
                 },
             },
             legend: {
+                type: "scroll",
                 data: seriesData.map((s) => s.name),
             },
             grid: {
@@ -533,8 +534,7 @@ export class RadialChartComponent extends AbstractDashboard implements OnChanges
                 {
                     show: showZoom,
                     startValue: this.xAxisInput[0],
-                    endValue:
-                        this.xAxisInput[Constants.MAX_NUMBER_OF_BARS_TO_BE_DISPLAYED - 1],
+                    endValue: this.xAxisInput[Constants.TOTAL_VISIBLE_GRAPH_ITEMS - 1],
                 },
             ],
             xAxis: {

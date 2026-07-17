@@ -86,7 +86,7 @@ export const createStackBarChartConfig = (config: StackBarChartConfig): EChartsO
 
     // Extract x-axis categories
     const xAxis = sortedFootprints.map((f) => f.data);
-    if (xAxis.length < Constants.MAX_NUMBER_OF_BARS_TO_BE_DISPLAYED) {
+    if (xAxis.length < Constants.TOTAL_VISIBLE_GRAPH_ITEMS) {
         showZoom = false;
     } // Show zoom if more than 10 footprints
     // Collect all unique criteria names
@@ -144,13 +144,14 @@ export const createStackBarChartConfig = (config: StackBarChartConfig): EChartsO
             containLabel: true,
         },
         legend: {
-            selectedMode: false,
+            show: true,
+            type: "scroll",
         },
         dataZoom: [
             {
                 show: showZoom,
                 startValue: xAxis[0],
-                endValue: xAxis[Constants.MAX_NUMBER_OF_BARS_TO_BE_DISPLAYED - 1],
+                endValue: xAxis[Constants.TOTAL_VISIBLE_GRAPH_ITEMS - 1],
             },
         ],
         xAxis: [
