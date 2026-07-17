@@ -26,6 +26,8 @@ databaseChangeLog:
   - include:
       file: db/changelog/greenitdb.changelog-task-initialization.yml
   - include:
+      file: db/changelog/greenitdb.changelog-add-progress-tracking.yml
+  - include:
       file: db/changelog/greenitdb.changelog-check-load-constraints.yml
   - include:
       file: db/changelog/greenitdb.changelog-clean-old-digital-service.yml
