@@ -86,9 +86,8 @@ export class RadialChartComponent extends AbstractDashboard implements OnChanges
     private buildCriteriaBasedMap(radialChartData: DigitalServiceFootprint[]): void {
         for (const data of radialChartData) {
             for (const impact of data.impacts) {
-                const translatedCriteria = this.getCriteriaTranslation(
-                    impact.criteria.split(" ").slice(0, 2).join(" "),
-                );
+                const twoWordsCriteria = this.extractTwoWordsCriteria(impact.criteria);
+                const translatedCriteria = this.getCriteriaTranslation(twoWordsCriteria);
                 this.updateStatusMap(translatedCriteria, impact);
             }
         }
@@ -107,35 +106,82 @@ export class RadialChartComponent extends AbstractDashboard implements OnChanges
         };
     }
 
+    private extractTwoWordsCriteria(criteria: string): string {
+        return criteria.split(" ").slice(0, 2).join(" ");
+    }
+
+    private truncateText(text: string, maxLength: number): string {
+        return text.length > maxLength ? text.substring(0, maxLength) + "…" : text;
+    }
+
+    private formatAxisLabel(
+        value: string,
+        criteriaMap: StatusCountMap,
+        criteriaUnitValues?: { [key: string]: { total: number; unit: string } },
+    ): string {
+        const hasError = !!criteriaMap[value]?.status?.error;
+
+        if (!criteriaUnitValues) {
+            return getLabelFormatter(hasError, this.enableDataInconsistency, value);
+        }
+
+        const unitData = criteriaUnitValues[value];
+        const unitValueText = unitData
+            ? `\n (${this.decimalsPipe.transform(unitData.total)} ${unitData.unit})`
+            : "";
+
+        const maxChars = 20;
+        const truncatedValue = this.truncateText(value, maxChars);
+        const shortUnitValue = this.truncateText(unitValueText, maxChars - 2);
+
+        return getLabelFormatter(
+            hasError,
+            this.enableDataInconsistency,
+            truncatedValue + shortUnitValue,
+        );
+    }
+
+    private formatTooltip(
+        color: string,
+        label: string,
+        dimensionLabel: string,
+        sipValue: number,
+        unitValue: number,
+        unit: string,
+    ): string {
+        return `<div style="display: flex; align-items: center; height: 30px;">
+                <span style="display: inline-block; width: 10px; height: 10px; background-color: ${color}; border-radius: 50%; margin-right: 5px;"></span>
+                <span style="font-weight: bold; margin-right: 15px;">${label}</span>
+            </div>
+            <div>${dimensionLabel} : ${this.integerPipe.transform(sipValue)}
+            ${this.translate.instant("common.peopleeq-min")}<br>
+            ${this.decimalsPipe.transform(unitValue)} ${unit}
+            </div>
+        </div>`;
+    }
+
+    private findCriteriaKey(title: string): string | undefined {
+        const criteriaTranslations = this.translate.instant("criteria");
+        return Object.keys(criteriaTranslations).find(
+            (key) => criteriaTranslations[key].title === title,
+        );
+    }
+
     onChartClick(params: any) {
         const isInverted = this.isAxisInverted();
         const isStackBar = this.shouldShowStackBarChart();
 
-        // When inverted, criteria are in series (seriesName), otherwise in data name
-        if (isInverted) {
-            // In inverted mode, criteria name is in seriesName
-            const key = Object.keys(this.translate.instant("criteria")).find(
-                (key) =>
-                    this.translate.instant("criteria")[key].title === params.seriesName,
-            );
-            if (key) {
-                this.selectedCriteriaChange.emit(key);
-            }
-        } else {
-            // In normal mode
-            if (isStackBar && params.componentType === "series") {
-                // Stack bar chart: criteria is in params.name (xAxis label)
-                const key = Object.keys(this.translate.instant("criteria")).find(
-                    (key) =>
-                        this.translate.instant("criteria")[key].title === params.name,
-                );
-                if (key) {
-                    this.selectedCriteriaChange.emit(key);
-                }
-            } else if (params.data && params.data.impact) {
-                // Radial chart: criteria is in the impact data
-                this.selectedCriteriaChange.emit(params.data.impact.criteria);
-            }
+        let key: string | undefined;
+
+        if (isInverted || (isStackBar && params.componentType === "series")) {
+            const title = isInverted ? params.seriesName : params.name;
+            key = this.findCriteriaKey(title);
+        } else if (params.data?.impact) {
+            key = params.data.impact.criteria;
+        }
+
+        if (key) {
+            this.selectedCriteriaChange.emit(key);
         }
     }
 
@@ -180,7 +226,7 @@ export class RadialChartComponent extends AbstractDashboard implements OnChanges
         const criteriaUnitValues: { [key: string]: { total: number; unit: string } } = {};
         noErrorRadialChartData.forEach((tierData) => {
             tierData.impacts.forEach((impact) => {
-                const twoWordsImpact = impact.criteria.split(" ").slice(0, 2).join(" ");
+                const twoWordsImpact = this.extractTwoWordsCriteria(impact.criteria);
                 const criteriaName = this.getCriteriaTranslation(twoWordsImpact);
                 if (!criteriaUnitValues[criteriaName]) {
                     criteriaUnitValues[criteriaName] = { total: 0, unit: impact.unit };
@@ -205,10 +251,7 @@ export class RadialChartComponent extends AbstractDashboard implements OnChanges
             const criteriaSeries: { [key: string]: any[] } = {};
             noErrorRadialChartData.forEach((tierData) => {
                 tierData.impacts.forEach((impact) => {
-                    const twoWordsImpact = impact.criteria
-                        .split(" ")
-                        .slice(0, 2)
-                        .join(" ");
+                    const twoWordsImpact = this.extractTwoWordsCriteria(impact.criteria);
                     const criteriaName = this.getCriteriaTranslation(twoWordsImpact);
                     if (!criteriaSeries[criteriaName]) {
                         criteriaSeries[criteriaName] = [];
@@ -259,6 +302,7 @@ export class RadialChartComponent extends AbstractDashboard implements OnChanges
                     const dataIndex = params.dataIndex;
                     let impact: any;
                     let label: string;
+                    let dimensionLabel: string;
 
                     if (isInverted) {
                         const criteriaName = params.seriesName;
@@ -266,22 +310,10 @@ export class RadialChartComponent extends AbstractDashboard implements OnChanges
                         impact = criteriaSeries?.[criteriaName]?.[dataIndex]?.impact;
                         if (!impact) return "";
                         label = criteriaName;
-                        const tierName = this.existingTranslation(
+                        dimensionLabel = this.existingTranslation(
                             tierData.tier,
                             "digital-services",
                         );
-                        return `<div style="display: flex; align-items: center; height: 30px;">
-                        <span style="display: inline-block; width: 10px; height: 10px; background-color: ${
-                            params.color
-                        }; border-radius: 50%; margin-right: 5px;"></span>
-                        <span style="font-weight: bold; margin-right: 15px;">${label}</span>
-                    </div>
-                        <div>${tierName} : ${this.integerPipe.transform(impact.sipValue)}
-                        ${this.translate.instant("common.peopleeq-min")}<br>
-                        ${this.decimalsPipe.transform(impact.unitValue)} ${impact.unit}
-                        </div>
-                    </div>
-                `;
                     } else {
                         const seriesIndex = params.seriesIndex;
                         impact = noErrorRadialChartData[seriesIndex].impacts[dataIndex];
@@ -289,21 +321,20 @@ export class RadialChartComponent extends AbstractDashboard implements OnChanges
                             noErrorRadialChartData[seriesIndex].tier,
                             "digital-services",
                         );
-                        return `<div style="display: flex; align-items: center; height: 30px;">
-                        <span style="display: inline-block; width: 10px; height: 10px; background-color: ${
-                            params.color
-                        }; border-radius: 50%; margin-right: 5px;"></span>
-                        <span style="font-weight: bold; margin-right: 15px;">${label}</span>
-                    </div>
-                        <div>${this.getCriteriaTranslation(
-                            impact.criteria.split(" ").slice(0, 2).join(" "),
-                        )} : ${this.integerPipe.transform(impact.sipValue)}
-                        ${this.translate.instant("common.peopleeq-min")}<br>
-                        ${this.decimalsPipe.transform(impact.unitValue)} ${impact.unit}
-                        </div>
-                    </div>
-                `;
+                        const twoWordsCriteria = this.extractTwoWordsCriteria(
+                            impact.criteria,
+                        );
+                        dimensionLabel = this.getCriteriaTranslation(twoWordsCriteria);
                     }
+
+                    return this.formatTooltip(
+                        params.color,
+                        label,
+                        dimensionLabel,
+                        impact.sipValue,
+                        impact.unitValue,
+                        impact.unit,
+                    );
                 },
             },
             angleAxis: {
@@ -325,10 +356,9 @@ export class RadialChartComponent extends AbstractDashboard implements OnChanges
                           };
                       })
                     : noErrorRadialChartData[0].impacts.map((impact) => {
-                          const twoWordsImpact = impact.criteria
-                              .split(" ")
-                              .slice(0, 2)
-                              .join(" ");
+                          const twoWordsImpact = this.extractTwoWordsCriteria(
+                              impact.criteria,
+                          );
                           const wordsValue = this.getCriteriaTranslation(twoWordsImpact);
                           return {
                               value: wordsValue,
@@ -342,37 +372,13 @@ export class RadialChartComponent extends AbstractDashboard implements OnChanges
                       }),
                 axisLabel: {
                     formatter: (value: string) => {
-                        if (isInverted) {
-                            const hasError = !!criteriaMap[value]?.status?.error;
-                            return getLabelFormatter(
-                                hasError,
-                                this.enableDataInconsistency,
-                                value,
-                            );
-                        } else {
-                            const hasError = !!criteriaMap[value].status.error;
-                            const unitData = criteriaUnitValues[value];
-                            const unitValueText = unitData
-                                ? `\n (${this.decimalsPipe.transform(unitData.total)} ${unitData.unit})`
-                                : "";
-
-                            const maxCharacters = 20;
-                            const truncatedValue =
-                                value.length > maxCharacters
-                                    ? value.substring(0, maxCharacters) + "…"
-                                    : value;
-
-                            const shortUnitValue =
-                                unitValueText.length > maxCharacters
-                                    ? unitValueText.substring(0, maxCharacters - 2) + "…"
-                                    : unitValueText;
-
-                            return getLabelFormatter(
-                                hasError,
-                                this.enableDataInconsistency,
-                                truncatedValue + shortUnitValue,
-                            );
-                        }
+                        return isInverted
+                            ? this.formatAxisLabel(value, criteriaMap)
+                            : this.formatAxisLabel(
+                                  value,
+                                  criteriaMap,
+                                  criteriaUnitValues,
+                              );
                     },
                     margin: this.isCompareScreen ? 20 : 26,
                     rich: this.isCompareScreen
@@ -445,14 +451,13 @@ export class RadialChartComponent extends AbstractDashboard implements OnChanges
         chartData: DigitalServiceFootprint[],
         isInverted: boolean,
     ): EChartsOption {
-        let showZoom = true;
         // Calculate total values for each criteria and sort in decreasing order
         const criteriaTotals = new Map<string, number>();
         const criteriaUnitValues: { [key: string]: { total: number; unit: string } } = {};
 
         chartData.forEach((tierData) => {
             tierData.impacts.forEach((impact) => {
-                const twoWordsImpact = impact.criteria.split(" ").slice(0, 2).join(" ");
+                const twoWordsImpact = this.extractTwoWordsCriteria(impact.criteria);
                 const criteriaName = this.getCriteriaTranslation(twoWordsImpact);
                 criteriaTotals.set(
                     criteriaName,
@@ -470,17 +475,22 @@ export class RadialChartComponent extends AbstractDashboard implements OnChanges
             (a, b) => (criteriaTotals.get(b) || 0) - (criteriaTotals.get(a) || 0),
         );
 
-        // Build series data
+        // Build series data with optimized impact lookup
         const seriesData: any[] = [];
 
-        // X-axis: criteria, Series: tiers (stacked)
         chartData.forEach((tierData) => {
             const tierName = this.existingTranslation(tierData.tier, "digital-services");
+
+            // Build impact map for O(1) lookup
+            const impactMap = new Map<string, any>();
+            tierData.impacts.forEach((impact) => {
+                const twoWordsImpact = this.extractTwoWordsCriteria(impact.criteria);
+                const criteriaName = this.getCriteriaTranslation(twoWordsImpact);
+                impactMap.set(criteriaName, impact);
+            });
+
             const data = this.xAxisInput.map((criteriaName) => {
-                const impact = tierData.impacts.find((imp) => {
-                    const twoWordsImpact = imp.criteria.split(" ").slice(0, 2).join(" ");
-                    return this.getCriteriaTranslation(twoWordsImpact) === criteriaName;
-                });
+                const impact = impactMap.get(criteriaName);
                 return impact
                     ? {
                           value: impact.sipValue,
@@ -504,9 +514,8 @@ export class RadialChartComponent extends AbstractDashboard implements OnChanges
                 data: data,
             });
         });
-        if (this.xAxisInput.length < Constants.TOTAL_VISIBLE_GRAPH_ITEMS) {
-            showZoom = false;
-        }
+        const showZoom = this.xAxisInput.length >= Constants.TOTAL_VISIBLE_GRAPH_ITEMS;
+
         return {
             tooltip: {
                 show: true,
@@ -561,27 +570,10 @@ export class RadialChartComponent extends AbstractDashboard implements OnChanges
                     interval: 0,
                     rotate: this.xAxisInput.length > 5 ? 45 : 0,
                     formatter: (value: string) => {
-                        const hasError = !!this.criteriaMap[value]?.status?.error;
-                        const unitData = criteriaUnitValues[value];
-                        const unitValueText = unitData
-                            ? `\n (${this.decimalsPipe.transform(unitData.total)} ${unitData.unit})`
-                            : "";
-
-                        const maxCharacters = 20;
-                        const truncatedValue =
-                            value.length > maxCharacters
-                                ? value.substring(0, maxCharacters) + "…"
-                                : value;
-
-                        const shortUnitValue =
-                            unitValueText.length > maxCharacters
-                                ? unitValueText.substring(0, maxCharacters - 2) + "…"
-                                : unitValueText;
-
-                        return getLabelFormatter(
-                            hasError,
-                            this.enableDataInconsistency,
-                            truncatedValue + shortUnitValue,
+                        return this.formatAxisLabel(
+                            value,
+                            this.criteriaMap,
+                            criteriaUnitValues,
                         );
                     },
                     rich: this.isCompareScreen

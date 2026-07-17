@@ -10,6 +10,7 @@ import {
     Component,
     computed,
     DestroyRef,
+    effect,
     inject,
     OnDestroy,
     OnInit,
@@ -218,6 +219,13 @@ export class DigitalServicesFootprintDashboardComponent
         private readonly router: Router,
     ) {
         super(translate, integerPipe, decimalsPipe, globalStore);
+
+        // Automatically reset axis inversion when leaving radial chart
+        effect(() => {
+            if (this.chartType() !== "radial") {
+                this.isAxisInverted.set(false);
+            }
+        });
     }
 
     ngOnInit() {
