@@ -448,6 +448,8 @@ export class RadialChartComponent extends AbstractDashboard implements OnChanges
         let showZoom = true;
         // Calculate total values for each criteria and sort in decreasing order
         const criteriaTotals = new Map<string, number>();
+        const criteriaUnitValues: { [key: string]: { total: number; unit: string } } = {};
+
         chartData.forEach((tierData) => {
             tierData.impacts.forEach((impact) => {
                 const twoWordsImpact = impact.criteria.split(" ").slice(0, 2).join(" ");
@@ -456,6 +458,11 @@ export class RadialChartComponent extends AbstractDashboard implements OnChanges
                     criteriaName,
                     (criteriaTotals.get(criteriaName) || 0) + impact.sipValue,
                 );
+
+                if (!criteriaUnitValues[criteriaName]) {
+                    criteriaUnitValues[criteriaName] = { total: 0, unit: impact.unit };
+                }
+                criteriaUnitValues[criteriaName].total += impact.unitValue;
             });
         });
 
@@ -555,10 +562,26 @@ export class RadialChartComponent extends AbstractDashboard implements OnChanges
                     rotate: this.xAxisInput.length > 5 ? 45 : 0,
                     formatter: (value: string) => {
                         const hasError = !!this.criteriaMap[value]?.status?.error;
+                        const unitData = criteriaUnitValues[value];
+                        const unitValueText = unitData
+                            ? `\n (${this.decimalsPipe.transform(unitData.total)} ${unitData.unit})`
+                            : "";
+
+                        const maxCharacters = 20;
+                        const truncatedValue =
+                            value.length > maxCharacters
+                                ? value.substring(0, maxCharacters) + "…"
+                                : value;
+
+                        const shortUnitValue =
+                            unitValueText.length > maxCharacters
+                                ? unitValueText.substring(0, maxCharacters - 2) + "…"
+                                : unitValueText;
+
                         return getLabelFormatter(
                             hasError,
                             this.enableDataInconsistency,
-                            value,
+                            truncatedValue + shortUnitValue,
                         );
                     },
                     rich: this.isCompareScreen
