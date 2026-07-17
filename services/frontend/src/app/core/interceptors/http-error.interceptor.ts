@@ -106,47 +106,7 @@ function handleErrorPageNavigation(
                 sticky: true,
             });
         } else if (error.status === HttpStatusCode.BadRequest) {
-            let errorDetail = translate.instant(`toast-errors.${"bad-request"}.text`);
-
-            // For CSV/file errors, try to translate the error message key
-            if (
-                error?.error?.field === "csv" ||
-                error?.error?.field === "file" ||
-                error?.error?.field === "itemImpact" ||
-                error?.error?.field === "matchingItem" ||
-                error?.error?.field === "itemType"
-            ) {
-                const errorMessage = error?.error?.message || "";
-
-                // Check if message contains parameters (e.g., "key:param1:param2:param3")
-                const [messageKey, ...params] = errorMessage.split(":");
-
-                // Check if it's a translation key in toast-errors
-                const errorKeys = Object.keys(translate.instant(`toast-errors`));
-                if (errorKeys.includes(messageKey)) {
-                    // It's a known translation key, translate it
-                    let translatedMessage = translate.instant(
-                        `toast-errors.${messageKey}`,
-                    );
-
-                    // Replace parameters if present (e.g., {0}, {1}, {2}, etc.)
-                    if (params.length > 0) {
-                        params.forEach((param: string, index: number) => {
-                            const placeholder = `{${index}}`;
-                            translatedMessage = translatedMessage.replace(
-                                new RegExp(`\\${placeholder}`, "g"),
-                                param,
-                            );
-                        });
-                        errorDetail = translatedMessage;
-                    } else {
-                        errorDetail = translatedMessage;
-                    }
-                } else {
-                    // Not a translation key, use the message directly
-                    errorDetail = errorMessage;
-                }
-            }
+            const errorDetail = getTranslatedBadRequestError(error, translate);
 
             messageService.add({
                 severity: "error",
@@ -171,6 +131,45 @@ function handleErrorPageNavigation(
             sticky: true,
         });
     }
+}
+
+function getTranslatedBadRequestError(error: any, translate: TranslateService): string {
+    let errorDetail = translate.instant(`toast-errors.${"bad-request"}.text`);
+
+    // For CSV/file errors, try to translate the error message key
+    const fileRelatedFields = ["csv", "file", "itemImpact", "matchingItem", "itemType"];
+    if (fileRelatedFields.includes(error?.error?.field)) {
+        const errorMessage = error?.error?.message || "";
+
+        // Check if message contains parameters (e.g., "key:param1:param2:param3")
+        const [messageKey, ...params] = errorMessage.split(":");
+
+        // Check if it's a translation key in toast-errors
+        const errorKeys = Object.keys(translate.instant(`toast-errors`));
+        if (errorKeys.includes(messageKey)) {
+            // It's a known translation key, translate it
+            let translatedMessage = translate.instant(`toast-errors.${messageKey}`);
+
+            // Replace parameters if present (e.g., {0}, {1}, {2}, etc.)
+            if (params.length > 0) {
+                params.forEach((param: string, index: number) => {
+                    const placeholder = `{${index}}`;
+                    translatedMessage = translatedMessage.replace(
+                        new RegExp(`\\${placeholder}`, "g"),
+                        param,
+                    );
+                });
+                errorDetail = translatedMessage;
+            } else {
+                errorDetail = translatedMessage;
+            }
+        } else {
+            // Not a translation key, use the message directly
+            errorDetail = errorMessage;
+        }
+    }
+
+    return errorDetail;
 }
 
 /**
