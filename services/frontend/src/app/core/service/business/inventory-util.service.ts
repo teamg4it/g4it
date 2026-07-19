@@ -258,12 +258,23 @@ export class InventoryUtilService {
             filterFields,
         );
         const hasAllFilters = this.checkAllFilters(filtersSet);
+        const datacenterFallbackFields = ["country", "entity"];
+        const fallbackFiltersSet: InventoryFilterSet = this.createFiltersSet(
+            filters,
+            datacenterFallbackFields,
+        );
 
-        const filteredDatacenters = hasAllFilters
+        let filteredDatacenters = hasAllFilters
             ? datacenters
             : datacenters.filter((datacenter) => {
                   return this.isItemPresent(datacenter, filtersSet);
               });
+
+        if (!hasAllFilters && filteredDatacenters.length === 0) {
+            filteredDatacenters = datacenters.filter((datacenter) =>
+                this.isItemPresent(datacenter, fallbackFiltersSet),
+            );
+        }
 
         let datacenterPhysicalEquipmentCount = 0;
         let datacenterSum = 0;

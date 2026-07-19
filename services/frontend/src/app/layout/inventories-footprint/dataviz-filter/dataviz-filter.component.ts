@@ -14,13 +14,12 @@ import {
     signal,
     SimpleChanges,
 } from "@angular/core";
-import { TranslateService, TranslatePipe } from "@ngx-translate/core";
-import { debounceTime, Subject } from "rxjs";
+import { TranslatePipe, TranslateService } from "@ngx-translate/core";
+import { Button } from "primeng/button";
 import { Filter } from "src/app/core/interfaces/filter.interface";
 import { FilterService } from "src/app/core/service/business/filter.service";
 import { FootprintStoreService } from "src/app/core/store/footprint.store";
 import { Constants } from "src/constants";
-import { Button } from "primeng/button";
 import { BaseFilterSidebarComponent } from "../base-filter-sidebar/base-filter-sidebar.component";
 
 @Component({
@@ -28,11 +27,7 @@ import { BaseFilterSidebarComponent } from "../base-filter-sidebar/base-filter-s
     templateUrl: "./dataviz-filter.component.html",
     styleUrl: "./dataviz-filter.component.scss",
     standalone: true,
-    imports: [
-        Button,
-        BaseFilterSidebarComponent,
-        TranslatePipe,
-    ],
+    imports: [Button, BaseFilterSidebarComponent, TranslatePipe],
 })
 export class DatavizFilterComponent implements OnChanges {
     protected footprintStore = inject(FootprintStoreService);
@@ -81,16 +76,8 @@ export class DatavizFilterComponent implements OnChanges {
         this.localFilters.set(currentFilters);
     }
 
-    private readonly checkboxChange$ = new Subject<any>();
-
-    constructor() {
-        this.checkboxChange$.pipe(debounceTime(200)).subscribe((change) => {
-            this.onFilterSelected(change.selectedValues, change.tab, change.selection);
-        });
-    }
-
     onCheckboxChange(selectedValues: string[], tab: string, selection: string): void {
-        this.checkboxChange$.next({ selectedValues, tab, selection });
+        this.onFilterSelected(selectedValues, tab, selection);
     }
 
     openFilterSidebar(): void {

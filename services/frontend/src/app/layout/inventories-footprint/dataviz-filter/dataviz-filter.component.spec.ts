@@ -38,7 +38,7 @@ describe("DatavizFilterComponent", () => {
         expect(component).toBeTruthy();
     });
 
-    it("should debounce onCheckboxChange calls", (done) => {
+    it("should update filter selection immediately on checkbox change", () => {
         spyOn(component, "onFilterSelected");
         const selectedValues = ["value1"];
         const tab = "tab1";
@@ -46,14 +46,11 @@ describe("DatavizFilterComponent", () => {
 
         component.onCheckboxChange(selectedValues, tab, selection);
 
-        setTimeout(() => {
-            expect(component.onFilterSelected).toHaveBeenCalledWith(
-                selectedValues,
-                tab,
-                selection,
-            );
-            done();
-        }, 300); // Wait for debounceTime (200ms) + buffer
+        expect(component.onFilterSelected).toHaveBeenCalledWith(
+            selectedValues,
+            tab,
+            selection,
+        );
     });
 
     it("should determine if a filter is active", () => {

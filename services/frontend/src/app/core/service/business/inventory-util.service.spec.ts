@@ -420,6 +420,37 @@ describe("InventoryUtilService", () => {
                 },
             ]);
         });
+
+        it("should fallback to country/entity filtering when strict dimensions produce no datacenter match", async () => {
+            const filters: Filter<string> = {
+                country: ["France"],
+                entity: ["Entity"],
+                equipment: ["Laptop"],
+                status: ["Inactive"],
+            };
+
+            const filterFields = ["country", "entity", "equipment", "status"];
+
+            const datacenters = [
+                {
+                    dataCenterName: "Datacenter 1",
+                    physicalEquipmentCount: 10,
+                    pue: 1.5,
+                    country: "France",
+                    entity: "Entity",
+                    equipment: "Server",
+                    status: "Active",
+                },
+            ] as Datacenter[];
+
+            const result = await service.computeDataCenterStats(
+                filters,
+                filterFields,
+                datacenters,
+            );
+
+            expect(result[1].value).toBe(1.5);
+        });
     });
 
     describe("computeEquipmentStats", () => {
