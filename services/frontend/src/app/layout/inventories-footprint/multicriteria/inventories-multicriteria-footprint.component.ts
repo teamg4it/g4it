@@ -5,7 +5,16 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component, Input, Signal, computed, inject, input } from "@angular/core";
+import {
+    Component,
+    Input,
+    InputSignal,
+    Signal,
+    computed,
+    inject,
+    input,
+    signal,
+} from "@angular/core";
 import { EChartsOption } from "echarts";
 import { Constants } from "src/constants";
 
@@ -22,8 +31,6 @@ import {
     CriteriaCalculated,
     Criterias,
     Datacenter,
-    FootprintCalculated,
-    Impact,
     PhysicalEquipmentAvgAge,
     PhysicalEquipmentLowImpact,
     PhysicalEquipmentsElecConsumption,
@@ -31,15 +38,15 @@ import {
 import { InVirtualEquipmentRest } from "src/app/core/interfaces/input.interface";
 import { Inventory } from "src/app/core/interfaces/inventory.interfaces";
 import { FootprintService } from "src/app/core/service/business/footprint.service";
-import {
-    getColorFormatter,
-    getLabelFormatter,
-} from "src/app/core/service/mapper/graphs-mapper";
+import * as InventoryMultiCriteriaViewMapper from "src/app/core/service/mapper/inventory-multicriteria-graph-mapper";
+import { createStackBarChartConfig } from "src/app/core/service/mapper/multicriteria-stack-bar-chart.mapper";
 import { FootprintStoreService } from "src/app/core/store/footprint.store";
+import * as LifeCycleUtils from "src/app/core/utils/lifecycle";
 import { AbstractDashboard } from "../abstract-dashboard";
 
 import { TranslatePipe } from "@ngx-translate/core";
 import { NgxEchartsDirective } from "ngx-echarts";
+import { InverseAxisButtonComponent } from "../../common/inverse-axis-button/inverse-axis-button.component";
 import { StackBarChartComponent } from "../../common/stack-bar-chart/stack-bar-chart.component";
 import { GraphDescriptionComponent } from "../../digital-services-footprint/digital-services-footprint-dashboard/graph-description/graph-description.component";
 
@@ -56,6 +63,7 @@ import { GraphDescriptionComponent } from "../../digital-services-footprint/digi
         NgxEchartsDirective,
         GraphDescriptionComponent,
         TranslatePipe,
+        InverseAxisButtonComponent,
     ],
 })
 export class InventoriesMultiCriteriaFootprintComponent extends AbstractDashboard {
@@ -65,7 +73,7 @@ export class InventoriesMultiCriteriaFootprintComponent extends AbstractDashboar
     private readonly route = inject(ActivatedRoute);
     currentLang: string = this.translate.currentLang;
     criteriakeys = Object.keys(this.translate.translations[this.currentLang]["criteria"]);
-    @Input() footprint: Criterias = {};
+    footprint: InputSignal<Criterias> = input({});
     @Input() filterFields: string[] = [];
     @Input() datacenters: Datacenter[] = [];
     @Input() inVirtualEquipments: InVirtualEquipmentRest[] = [];
@@ -77,6 +85,7 @@ export class InventoriesMultiCriteriaFootprintComponent extends AbstractDashboar
     inventory = input<Inventory>();
     sourceList = input<string[]>([]);
     showInconsitencyGraph = false;
+    isAxisInverted = signal<boolean>(false);
     dimensions = Constants.EQUIPMENT_DIMENSIONS;
     criteriaMap: StatusCountMap = {};
     xAxisInput: string[] = [];
@@ -86,25 +95,75 @@ export class InventoriesMultiCriteriaFootprintComponent extends AbstractDashboar
         impactNameVisible: string;
     }[] = [];
 
-    criteriaCalculated: Signal<CriteriaCalculated> = computed(() => {
-        const { footprintCalculated, criteriaCountMap, impactsWithMaxDimensions } =
-            this.footprintService.calculate(
-                this.footprint,
-                this.store.filters(),
-                this.store.dimension(),
-                this.filterFields,
-            );
-        // sort footprint by criteria
-        for (const data of footprintCalculated) {
-            data.impacts.sort(
-                (a, b) =>
-                    this.criteriakeys.indexOf(a.criteria) -
-                    this.criteriakeys.indexOf(b.criteria),
+    shouldShowStackBarChart = computed(() => {
+        const isInverted = this.isAxisInverted();
+
+        if (isInverted) {
+            // When inverted, count the number of data points (axes) from footprint
+            const footprintData = this.footprint();
+            const dimension = this.store.dimension();
+
+            // Count unique dimension values across all criteria
+            const uniqueDimensions = new Set<string>();
+            Object.values(footprintData).forEach((criteriaData: any) => {
+                if (criteriaData?.impacts) {
+                    criteriaData.impacts.forEach((impact: any) => {
+                        if (impact[dimension]) {
+                            uniqueDimensions.add(impact[dimension]);
+                        }
+                    });
+                }
+            });
+            return uniqueDimensions.size > Constants.MAX_NUMBER_OF_CRITERIA_RADAR;
+        } else {
+            // When not inverted, check number of criteria
+            return (
+                Object.keys(this.footprint()).length >
+                Constants.MAX_NUMBER_OF_CRITERIA_RADAR
             );
         }
+    });
+
+    criteriaCalculated: Signal<CriteriaCalculated> = computed(() => {
+        const isInverted = this.isAxisInverted();
+        const dimension = this.store.dimension();
+        const lifeCycleOrder = LifeCycleUtils.getLifeCycleList();
+        const isAlphabetical = isInverted && dimension !== Constants.ACV_STEP;
+        const { footprintCalculated, criteriaCountMap, impactsWithMaxDimensions } =
+            this.footprintService.calculate(
+                this.footprint(),
+                this.store.filters(),
+                dimension,
+                this.filterFields,
+                isInverted,
+                this.shouldShowStackBarChart(),
+            );
+        if (isInverted) {
+            footprintCalculated.sort(
+                (a, b) =>
+                    this.criteriakeys.indexOf(a.data) - this.criteriakeys.indexOf(b.data),
+            );
+        }
+
+        // Only sort impacts by criteria if NOT inverted
+
+        const impactOrder = isInverted ? lifeCycleOrder : this.criteriakeys;
+
+        for (const data of footprintCalculated) {
+            data.impacts.sort((a, b) =>
+                isAlphabetical
+                    ? a.criteria.localeCompare(b.criteria)
+                    : impactOrder.indexOf(a.criteria) - impactOrder.indexOf(b.criteria),
+            );
+        }
+        const countOrder = isInverted ? lifeCycleOrder : this.criteriakeys;
         // sort statusIndicator key by criteria
         const sortedCriteriaCountMap: StatusCountMap = Object.keys(criteriaCountMap)
-            .sort((a, b) => this.criteriakeys.indexOf(a) - this.criteriakeys.indexOf(b))
+            .sort((a, b) =>
+                isAlphabetical
+                    ? a.localeCompare(b)
+                    : countOrder.indexOf(a) - countOrder.indexOf(b),
+            )
             .reduce((acc: StatusCountMap, key) => {
                 acc[key] = criteriaCountMap[key];
                 return acc;
@@ -136,113 +195,66 @@ export class InventoriesMultiCriteriaFootprintComponent extends AbstractDashboar
         selectedView: string,
     ): EChartsOption {
         const footprintCalculated = criteriaCalculated.footprints;
+        const isInverted = this.isAxisInverted();
+        const showStackBar = this.shouldShowStackBarChart();
 
         if (footprintCalculated.length === 0) {
             this.xAxisInput = [];
             return {};
         }
-        this.xAxisInput = Object.keys(this.footprint)
-            .sort((a, b) => this.criteriakeys.indexOf(a) - this.criteriakeys.indexOf(b))
-            .map((criteria) => this.translate.instant(`criteria.${criteria}`).title);
+
+        const isAcvStep = this.store.dimension() === Constants.ACV_STEP;
+
+        // Set xAxisInput based on chart type
+        if (isInverted) {
+            // Determine data source: footprint data for stack bar, criteria for radial
+            const dataSource = showStackBar
+                ? footprintCalculated?.map((fp) => fp.data) || []
+                : footprintCalculated[0]?.impacts.map((impact) => impact.criteria) || [];
+
+            // Apply sorting and transformation
+            this.xAxisInput = InventoryMultiCriteriaViewMapper.sortAndTransformAxis(
+                dataSource,
+                isAcvStep,
+                this.translate,
+            );
+        } else {
+            this.xAxisInput = Object.keys(this.footprint())
+                .sort(
+                    (a, b) => this.criteriakeys.indexOf(a) - this.criteriakeys.indexOf(b),
+                )
+                .map((criteria) => this.translate.instant(`criteria.${criteria}`).title);
+        }
 
         const criteriaCountMap = criteriaCalculated.criteriasCount || {};
 
-        return {
-            tooltip: {
-                show: true,
-                formatter: (params: any) => {
-                    const dataIndex = params.dataIndex;
-                    const seriesIndex = params.seriesIndex;
-                    const impact = footprintCalculated[seriesIndex].impacts[dataIndex];
-                    const name = this.existingTranslation(
-                        footprintCalculated[seriesIndex].data,
-                        selectedView,
-                    );
-                    return `
-                        <div style="display: flex; align-items: center; height: 30px;">
-                            <span style="display: inline-block; width: 10px; height: 10px; background-color: ${
-                                params.color
-                            }; border-radius: 50%; margin-right: 5px;"></span>
-                            <span style="font-weight: bold; margin-right: 15px;">${name}</span>
-                            <div>${this.translate.instant(`criteria.${impact.criteria}`).title} : ${this.integerPipe.transform(
-                                impact.sumSip,
-                            )} ${this.translate.instant("common.peopleeq-min")} </div>
-                        </div>
-                    `;
-                },
-            },
-            angleAxis: {
-                type: "category",
-                data: footprintCalculated[0].impacts.map((impact) => {
-                    return {
-                        value: impact.criteria,
-                        textStyle: {
-                            color: getColorFormatter(
-                                !!criteriaCountMap[impact.criteria].status.error,
-                                this.inventory()?.enableDataInconsistency!,
-                            ),
-                        },
-                    };
-                }),
-                axisLabel: {
-                    formatter: (value: any) => {
-                        const title = this.translate.instant(`criteria.${value}`).title;
-                        const hasError = !!criteriaCountMap[value].status.error;
-                        return getLabelFormatter(
-                            hasError,
-                            this.inventory()?.enableDataInconsistency!,
-                            title,
-                        );
-                    },
-                    rich: Constants.CHART_RICH as any,
-                    margin: 26,
-                },
-            },
-            radiusAxis: {
-                name: this.translate.instant("common.peopleeq"),
-                nameLocation: "end",
-                // THIS increases distance from chart
-                nameGap: 21,
-                nameTextStyle: {
-                    fontStyle: "italic",
-                },
-            },
-            polar: {
-                radius: "62%",
-                center: ["50%", "47%"],
-            },
-            series: footprintCalculated.map((item: FootprintCalculated) => ({
-                name: item.data,
-                type: "bar",
-                coordinateSystem: "polar",
-                data: item.impacts.map((impact: Impact) => ({
-                    value: impact.sumSip,
-                    label: {
-                        formatter: () => {
-                            return [
-                                impact.sumImpact,
-                                this.translate.instant(`criteria.${impact.criteria}`)
-                                    .unit,
-                            ].join(" ");
-                        },
-                    },
-                })),
-                stack: "a",
-                emphasis: {
-                    focus: "series",
-                },
-            })),
-            avoidLabelOverlap: true,
-            legend: {
-                type: "scroll",
-                bottom: 0,
-                data: footprintCalculated.map((item: FootprintCalculated) => item.data),
-                formatter: (param: any) => {
-                    return this.existingTranslation(param, selectedView);
-                },
-            },
-            color: Constants.COLOR,
-        };
+        // Return stack bar chart if criteria count > 5
+        if (showStackBar) {
+            return createStackBarChartConfig({
+                footprints: footprintCalculated,
+                criteriaCountMap,
+                selectedView,
+                enableDataInconsistency:
+                    this.inventory()?.enableDataInconsistency ?? false,
+                isAxisInverted: isInverted,
+                translate: this.translate,
+                integerPipe: this.integerPipe,
+            });
+        }
+
+        // Return radial chart for 4 or fewer criteria
+        return InventoryMultiCriteriaViewMapper.createRadialChartConfig(
+            footprintCalculated,
+            criteriaCountMap,
+            isInverted,
+            selectedView,
+            this.inventory()?.enableDataInconsistency ?? false,
+            this.translate,
+            this.integerPipe,
+            false,
+            undefined,
+            Constants.COLOR,
+        );
     }
 
     stackChartClick(event: string) {
@@ -255,11 +267,30 @@ export class InventoriesMultiCriteriaFootprintComponent extends AbstractDashboar
     }
 
     onChartClick(event: any) {
-        if (event?.name) {
-            this.router.navigate([`../${event.name}`], {
-                relativeTo: this.route,
-            });
+        const isAxisInverted = this.isAxisInverted();
+        let criteriaName: string | undefined;
+        // condition for graph, only not description click
+        if (isAxisInverted && event?.seriesType) {
+            criteriaName = event?.seriesName;
+
+            if (this.shouldShowStackBarChart()) {
+                const criteria = this.translate.instant("criteria");
+
+                criteriaName = Object.keys(criteria).find(
+                    (key) => criteria[key].title === event?.seriesName,
+                );
+            }
+        } else {
+            criteriaName = event?.name;
         }
+
+        if (!criteriaName) {
+            return;
+        }
+
+        this.router.navigate([`../${criteriaName}`], {
+            relativeTo: this.route,
+        });
     }
 
     getContentText = computed((): GraphDescriptionContent => {
@@ -275,7 +306,7 @@ export class InventoriesMultiCriteriaFootprintComponent extends AbstractDashboar
         );
         return {
             description: this.translate.instant(`${translationKey}description`, {
-                criteria: Object.keys(this.footprint)
+                criteria: Object.keys(this.footprint())
                     .map((impact) => this.translate.instant(`criteria.${impact}`).title)
                     .join(", "),
                 module: this.translate.instant("ds-graph-module.inventory"),
@@ -296,51 +327,22 @@ export class InventoriesMultiCriteriaFootprintComponent extends AbstractDashboar
         translationKey: string,
         criteriaCalculated: CriteriaCalculated,
     ): string {
-        let textDescription = "";
-        let textImpacts = [];
-        const firstPrefix = this.translate.instant(
-            `${translationKey}text-description-first-prefix`,
+        const result = InventoryMultiCriteriaViewMapper.getTextDescription(
+            translationKey,
+            criteriaCalculated,
+            this.translate,
+            this.integerPipe,
+            this.decimalsPipe,
         );
-        const iteratePrefix = this.translate.instant(
-            `${translationKey}text-description-iterate-prefix`,
-        );
-        for (const [
-            index,
-            impact,
-        ] of criteriaCalculated?.impactsWithMaxDimensions?.entries() ?? []) {
-            const prefix = index === 0 ? firstPrefix : iteratePrefix;
-
-            if (index === 0) {
-                textDescription += this.translate.instant(
-                    `${translationKey}text-description`,
-                );
-            }
-            textImpacts.push({
-                text:
-                    prefix +
-                    this.translate.instant(`${translationKey}text-description-iterate`, {
-                        impactName: impact.title,
-                        impactValue: this.integerPipe.transform(impact.peopleeq),
-                        resource: impact.maxCriteria.name,
-                        resourceValue: this.integerPipe.transform(
-                            impact.maxCriteria.peopleeq,
-                        ),
-                        rawValue: this.decimalsPipe.transform(impact.raw),
-                        unit: impact.unite,
-                        resourceRawValue: this.decimalsPipe.transform(
-                            impact.maxCriteria.raw,
-                        ),
-                        resourceUnit: impact.unite,
-                    }),
-                impactName: impact.name,
-                impactNameVisible: impact.title,
-            });
-        }
-        this.textDescriptionImpacts = textImpacts;
-        return textDescription;
+        this.textDescriptionImpacts = result.textImpacts;
+        return result.textDescription;
     }
 
     handleImpactClick(impactName: any) {
         this.onChartClick({ name: impactName });
+    }
+
+    onAxisInversionChange(isInverted: boolean): void {
+        this.isAxisInverted.set(isInverted);
     }
 }
