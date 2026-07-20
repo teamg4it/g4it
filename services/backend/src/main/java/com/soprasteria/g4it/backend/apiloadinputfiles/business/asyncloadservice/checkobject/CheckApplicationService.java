@@ -38,8 +38,7 @@ public class CheckApplicationService {
      * @param line        the line number
      * @return the list of errors
      */
-    public List<LineError> checkRules(final Context context, final InApplicationRest application, final String filename, final int line,
-                                      Set<String> physicalEquipments) {
+    public List<LineError> checkRules(final Context context, final InApplicationRest application, final String filename, final int line) {
         List<LineError> errors = new ArrayList<>();
 
         // check InApplicationRest constraint violations
@@ -47,10 +46,6 @@ public class CheckApplicationService {
 
         // check application has a virtual equipment linked
         ruleApplicationService.checkVirtualEquipmentLinked(context.getLocale(),filename, line, application.getVirtualEquipmentName())
-                .ifPresent(errors::add);
-
-        // check application has a physical equipment linked
-        ruleApplicationService.checkPhysicalEquipmentLinked(context.getLocale(),filename, line, application.getPhysicalEquipmentName(),physicalEquipments)
                 .ifPresent(errors::add);
 
         return errors;

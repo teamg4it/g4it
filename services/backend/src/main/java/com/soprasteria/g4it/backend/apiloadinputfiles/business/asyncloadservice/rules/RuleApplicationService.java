@@ -36,15 +36,4 @@ public class RuleApplicationService {
 
         return Optional.empty();
     }
-
-    public Optional<LineError> checkPhysicalEquipmentLinked(Locale locale,final String filename, int line, final String physicalEquipment,
-                                                            Set<String> physicalEquipments) {
-        if (physicalEquipment != null && !physicalEquipments.contains(physicalEquipment)) {
-                return Optional.of(new LineError(filename, line, messageSource.getMessage(
-                        "physical.equipment.unknown",
-                        new String[]{},
-                        locale)));
-            }
-        return Optional.empty();
-    }
 }

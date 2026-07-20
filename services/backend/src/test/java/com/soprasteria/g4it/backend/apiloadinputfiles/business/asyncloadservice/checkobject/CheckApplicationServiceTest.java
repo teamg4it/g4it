@@ -22,7 +22,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -52,21 +51,17 @@ class CheckApplicationServiceTest {
         final Locale locale = Locale.FRANCE;
         final String filename = "application.csv";
         final int line = 8;
-        final Set<String> physicalEquipments = Set.of("PE-1", "PE-2");
 
         when(context.getLocale()).thenReturn(locale);
         when(application.getVirtualEquipmentName()).thenReturn("VE-1");
-        when(application.getPhysicalEquipmentName()).thenReturn("PE-1");
         when(genericRuleService.checkViolations(application, filename, line)).thenReturn(Optional.empty());
         when(ruleApplicationService.checkVirtualEquipmentLinked(locale, filename, line, "VE-1")).thenReturn(Optional.empty());
-        when(ruleApplicationService.checkPhysicalEquipmentLinked(locale, filename, line, "PE-1", physicalEquipments)).thenReturn(Optional.empty());
 
-        final List<LineError> result = service.checkRules(context, application, filename, line, physicalEquipments);
+        final List<LineError> result = service.checkRules(context, application, filename, line);
 
         assertTrue(result.isEmpty());
         verify(genericRuleService).checkViolations(application, filename, line);
         verify(ruleApplicationService).checkVirtualEquipmentLinked(locale, filename, line, "VE-1");
-        verify(ruleApplicationService).checkPhysicalEquipmentLinked(locale, filename, line, "PE-1", physicalEquipments);
     }
 
     @Test
@@ -74,24 +69,19 @@ class CheckApplicationServiceTest {
         final Locale locale = Locale.ENGLISH;
         final String filename = "application.csv";
         final int line = 3;
-        final Set<String> physicalEquipments = Set.of("PE-1");
 
         final LineError genericError = new LineError(filename, line, "invalid payload");
         final LineError virtualEquipmentError = new LineError(filename, line, "missing virtual equipment");
-        final LineError physicalEquipmentError = new LineError(filename, line, "unknown physical equipment");
 
         when(context.getLocale()).thenReturn(locale);
         when(application.getVirtualEquipmentName()).thenReturn(null);
-        when(application.getPhysicalEquipmentName()).thenReturn("PE-404");
         when(genericRuleService.checkViolations(application, filename, line)).thenReturn(Optional.of(genericError));
         when(ruleApplicationService.checkVirtualEquipmentLinked(locale, filename, line, null))
                 .thenReturn(Optional.of(virtualEquipmentError));
-        when(ruleApplicationService.checkPhysicalEquipmentLinked(locale, filename, line, "PE-404", physicalEquipments))
-                .thenReturn(Optional.of(physicalEquipmentError));
 
-        final List<LineError> result = service.checkRules(context, application, filename, line, physicalEquipments);
+        final List<LineError> result = service.checkRules(context, application, filename, line);
 
-        assertEquals(List.of(genericError, virtualEquipmentError, physicalEquipmentError), result);
+        assertEquals(List.of(genericError, virtualEquipmentError), result);
     }
 
     @Test
@@ -99,19 +89,15 @@ class CheckApplicationServiceTest {
         final Locale locale = Locale.CANADA;
         final String filename = "application.csv";
         final int line = 21;
-        final Set<String> physicalEquipments = Set.of("PE-1", "PE-2");
         final LineError virtualEquipmentError = new LineError(filename, line, "missing virtual equipment");
 
         when(context.getLocale()).thenReturn(locale);
         when(application.getVirtualEquipmentName()).thenReturn(null);
-        when(application.getPhysicalEquipmentName()).thenReturn("PE-1");
         when(genericRuleService.checkViolations(application, filename, line)).thenReturn(Optional.empty());
         when(ruleApplicationService.checkVirtualEquipmentLinked(locale, filename, line, null))
                 .thenReturn(Optional.of(virtualEquipmentError));
-        when(ruleApplicationService.checkPhysicalEquipmentLinked(locale, filename, line, "PE-1", physicalEquipments))
-                .thenReturn(Optional.empty());
 
-        final List<LineError> result = service.checkRules(context, application, filename, line, physicalEquipments);
+        final List<LineError> result = service.checkRules(context, application, filename, line);
 
         assertEquals(1, result.size());
         assertEquals(virtualEquipmentError, result.getFirst());
