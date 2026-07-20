@@ -5,7 +5,16 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component, computed, inject, input, Input, signal, Signal } from "@angular/core";
+import {
+    Component,
+    computed,
+    inject,
+    input,
+    Input,
+    InputSignal,
+    signal,
+    Signal,
+} from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { TranslatePipe, TranslateService } from "@ngx-translate/core";
@@ -35,6 +44,7 @@ import { FilterService } from "src/app/core/service/business/filter.service";
 import { FootprintService } from "src/app/core/service/business/footprint.service";
 import { getUniqueColorFromText } from "src/app/core/service/mapper/graphs-mapper";
 import * as InventoryMultiCriteriaViewMapper from "src/app/core/service/mapper/inventory-multicriteria-graph-mapper";
+import { createStackBarChartConfig } from "src/app/core/service/mapper/multicriteria-stack-bar-chart.mapper";
 import { FootprintStoreService } from "src/app/core/store/footprint.store";
 import { GlobalStoreService } from "src/app/core/store/global.store";
 import { Constants } from "src/constants";
@@ -63,7 +73,7 @@ import { GraphDescriptionComponent } from "../../../digital-services-footprint/d
     ],
 })
 export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboard {
-    @Input() footprint: ApplicationFootprint[] = [];
+    footprint: InputSignal<ApplicationFootprint[]> = input([] as any);
     @Input() filterFields: ConstantApplicationFilter[] = [];
     inventory = input<Inventory>();
     showInconsitencyGraph = false;
@@ -87,8 +97,34 @@ export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboar
     }[] = [];
     isAxisInverted = signal<boolean>(false);
 
+    shouldShowStackBarChart = computed(() => {
+        const isInverted = this.isAxisInverted();
+
+        if (isInverted) {
+            // When inverted, count the number of data points (axes) from footprint
+            const footprintData = this.footprint();
+            const dimension = this.selectedDimension();
+
+            // Count unique dimension values across all criteria
+            const uniqueDimensions = new Set<string>();
+            footprintData.forEach((criteriaData) => {
+                if (criteriaData?.impacts) {
+                    criteriaData.impacts.forEach((impact: any) => {
+                        if (impact[dimension]) {
+                            uniqueDimensions.add(impact[dimension]);
+                        }
+                    });
+                }
+            });
+            return uniqueDimensions.size > Constants.MAX_NUMBER_OF_CRITERIA_RADAR;
+        } else {
+            // When not inverted, check number of criteria
+            return this.footprint().length > Constants.MAX_NUMBER_OF_CRITERIA_RADAR;
+        }
+    });
+
     applicationStats = computed<Stat[]>(() => {
-        const localFootprint = this.appComponent.formatLifecycleImpact(this.footprint);
+        const localFootprint = this.appComponent.formatLifecycleImpact(this.footprint());
         return this.computeApplicationStats(
             localFootprint,
             this.footprintStore.applicationSelectedFilters(),
@@ -97,7 +133,7 @@ export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboar
 
     criteriaCalculated: Signal<CriteriaCalculated> = computed(() => {
         const isInverted = this.isAxisInverted();
-        const criteriaFootprint = this.footprint.reduce((acc, f) => {
+        const criteriaFootprint = this.footprint().reduce((acc, f) => {
             acc[f.criteria] = {
                 impacts: f.impacts as any,
                 label: f.criteria,
@@ -124,6 +160,7 @@ export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboar
                 this.selectedDimension(),
                 filFields,
                 isInverted,
+                this.shouldShowStackBarChart(),
             );
         if (isInverted) {
             footprintCalculated.sort(
@@ -194,18 +231,29 @@ export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboar
     ): EChartsOption {
         const footprintCalculated = criteriaCalculated.footprints;
         const isInverted = this.isAxisInverted();
+        const showStackBar = this.shouldShowStackBarChart();
+
         if (footprintCalculated.length === 0) {
             this.xAxisInput = [];
             return {};
         }
+
+        const isAcvStep = this.selectedDimension() === Constants.ACV_STEP;
+
         if (isInverted) {
-            // When inverted, xAxisInput should show lifecycle stages
-            this.xAxisInput =
-                footprintCalculated[0]?.impacts
-                    .map((impact) => impact.criteria)
-                    .sort((a, b) => a.localeCompare(b)) || [];
+            // Determine data source: footprint data for stack bar, criteria for radial
+            const dataSource = showStackBar
+                ? footprintCalculated?.map((fp) => fp.data) || []
+                : footprintCalculated[0]?.impacts.map((impact) => impact.criteria) || [];
+
+            // Apply sorting and transformation
+            this.xAxisInput = InventoryMultiCriteriaViewMapper.sortAndTransformAxis(
+                dataSource,
+                isAcvStep,
+                this.translate,
+            );
         } else {
-            this.xAxisInput = this.footprint
+            this.xAxisInput = this.footprint()
                 .flatMap((f) => f.criteria)
                 .sort(
                     (a, b) => this.criteriakeys.indexOf(a) - this.criteriakeys.indexOf(b),
@@ -217,6 +265,18 @@ export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboar
 
         const criteriaCountMap = criteriaCalculated.criteriasCount || {};
 
+        if (showStackBar) {
+            return createStackBarChartConfig({
+                footprints: footprintCalculated,
+                criteriaCountMap,
+                selectedView,
+                enableDataInconsistency:
+                    this.inventory()?.enableDataInconsistency ?? false,
+                isAxisInverted: isInverted,
+                translate: this.translate,
+                integerPipe: this.integerPipe,
+            });
+        }
         return InventoryMultiCriteriaViewMapper.createRadialChartConfig(
             footprintCalculated,
             criteriaCountMap,
@@ -240,12 +300,30 @@ export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboar
     }
 
     onChartClick(event: any) {
-        const criteriName = this.isAxisInverted() ? event?.seriesName : event?.name;
-        if (criteriName) {
-            this.router.navigate([`../${criteriName}`], {
-                relativeTo: this.route,
-            });
+        const isAxisInverted = this.isAxisInverted();
+        let criteriaName: string | undefined;
+        // condition for graph, only not description click
+        if (isAxisInverted && event?.seriesType) {
+            criteriaName = event?.seriesName;
+
+            if (this.shouldShowStackBarChart()) {
+                const criteria = this.translate.instant("criteria");
+
+                criteriaName = Object.keys(criteria).find(
+                    (key) => criteria[key].title === event?.seriesName,
+                );
+            }
+        } else {
+            criteriaName = event?.name;
         }
+
+        if (!criteriaName) {
+            return;
+        }
+
+        this.router.navigate([`../${criteriaName}`], {
+            relativeTo: this.route,
+        });
     }
 
     selectedStackBarClick(criteriaName: string): void {
@@ -331,7 +409,7 @@ export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboar
         );
         return {
             description: this.translate.instant(`${translationKey}description`, {
-                criteria: this.footprint
+                criteria: this.footprint()
                     .map(
                         (impact) =>
                             this.translate.instant(`criteria.${impact.criteria}`).title,
@@ -368,5 +446,9 @@ export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboar
 
     handleImpactClick(impactName: any) {
         this.onChartClick({ name: impactName });
+    }
+
+    onAxisInversionChange(isInverted: boolean): void {
+        this.isAxisInverted.set(isInverted);
     }
 }

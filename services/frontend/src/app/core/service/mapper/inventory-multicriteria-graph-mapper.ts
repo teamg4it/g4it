@@ -8,6 +8,7 @@
 import { TranslateService } from "@ngx-translate/core";
 import { StatusCountMap } from "src/app/core/interfaces/digital-service.interfaces";
 import { FootprintCalculated, Impact } from "src/app/core/interfaces/footprint.interface";
+import * as LifeCycleUtils from "src/app/core/utils/lifecycle";
 import { Constants } from "src/constants";
 import { DecimalsPipe } from "../../pipes/decimal.pipe";
 import { IntegerPipe } from "../../pipes/integer.pipe";
@@ -44,6 +45,42 @@ export const getCriteriaDimensionTranslation = (
     return isInverted
         ? translate.instant(`criteria.${dimension}`).title
         : existingTranslation(dimension, selectedView, translate);
+};
+
+/**
+ * Sorts data source alphabetically
+ */
+export const sortAlphabetically = (dataSource: string[]): string[] => {
+    return [...dataSource].sort((a, b) => a.localeCompare(b));
+};
+
+/**
+ * Sorts data source by lifecycle order and translates using acvStep
+ */
+export const sortByLifecycleOrder = (
+    dataSource: string[],
+    translate: TranslateService,
+): string[] => {
+    return [...dataSource]
+        .sort(
+            (a, b) =>
+                LifeCycleUtils.getLifeCycleList().indexOf(a) -
+                LifeCycleUtils.getLifeCycleList().indexOf(b),
+        )
+        .map((criteria) => translate.instant(`acvStep.${criteria}`));
+};
+
+/**
+ * Sorts and transforms axis data based on dimension type
+ */
+export const sortAndTransformAxis = (
+    dataSource: string[],
+    isAcvStep: boolean,
+    translate: TranslateService,
+): string[] => {
+    return isAcvStep
+        ? sortByLifecycleOrder(dataSource, translate)
+        : sortAlphabetically(dataSource);
 };
 
 /**

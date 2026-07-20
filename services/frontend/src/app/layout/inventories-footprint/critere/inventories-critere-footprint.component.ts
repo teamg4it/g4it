@@ -123,6 +123,7 @@ export class InventoriesCritereFootprintComponent
             this.footprintStore.dimension(),
             this.filterFields,
             false,
+            false,
         );
 
         return {
