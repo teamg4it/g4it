@@ -81,7 +81,8 @@ main {
     height: calc(100vh - 70px);
     width: calc(100vw - 80px);
     margin-top: 70px;
-    background-image: url("assets/images/background/blue-elipse.svg"),
+    background-image:
+        url("assets/images/background/blue-elipse.svg"),
         url("assets/images/background/yellow-elipse.svg"),
         url("assets/images/background/fingerprint-background.svg");
     background-repeat: no-repeat;
@@ -247,7 +248,8 @@ main {
     flex-shrink: 0;
     background-color: var(--header-color);
     width: 100%;
-    background-image: url("assets/images/background/fingerprint.svg"),
+    background-image:
+        url("assets/images/background/fingerprint.svg"),
         url("assets/images/background/fingerprint.svg");
     background-repeat: no-repeat;
     background-position:
@@ -2052,4 +2054,29 @@ app-base-filter-sidebar,
 
 p-sorticon {
     margin-left: 5px;
+}
+
+.inverse-axis-toggle {
+    border-radius: 7px;
+    background: var(--tints-black-20, #cacbca);
+    padding: 3px;
+}
+
+.inverse-axis-toggle.off {
+    background: var(--basics-tints-black-10, #e0e0e0);
+    button {
+        background: var(--basics-tints-black-10, #e0e0e0);
+        color: var(--basics-tints-black-70, #5e615e);
+    }
+}
+
+.inverse-axis-toggle.on {
+    button {
+        color: #ffffff;
+        background: var(--light-green-color);
+    }
+}
+
+.inverse-axis-toggle button:hover {
+    opacity: 0.9;
 }
