@@ -16,6 +16,7 @@ import {
 } from "@angular/core";
 import { TranslatePipe, TranslateService } from "@ngx-translate/core";
 import { Button } from "primeng/button";
+import { debounceTime, Subject } from "rxjs";
 import { Filter } from "src/app/core/interfaces/filter.interface";
 import { FilterService } from "src/app/core/service/business/filter.service";
 import { FootprintStoreService } from "src/app/core/store/footprint.store";
@@ -76,8 +77,16 @@ export class DatavizFilterComponent implements OnChanges {
         this.localFilters.set(currentFilters);
     }
 
+    private readonly checkboxChange$ = new Subject<any>();
+
+    constructor() {
+        this.checkboxChange$.pipe(debounceTime(200)).subscribe((change) => {
+            this.onFilterSelected(change.selectedValues, change.tab, change.selection);
+        });
+    }
+
     onCheckboxChange(selectedValues: string[], tab: string, selection: string): void {
-        this.onFilterSelected(selectedValues, tab, selection);
+        this.checkboxChange$.next({ selectedValues, tab, selection });
     }
 
     openFilterSidebar(): void {

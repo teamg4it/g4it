@@ -258,7 +258,7 @@ export class InventoryUtilService {
             filterFields,
         );
         const hasAllFilters = this.checkAllFilters(filtersSet);
-        const datacenterFallbackFields = ["country", "entity"];
+        const datacenterFallbackFields = ["country"];
         const fallbackFiltersSet: InventoryFilterSet = this.createFiltersSet(
             filters,
             datacenterFallbackFields,
