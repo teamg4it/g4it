@@ -26,10 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -59,7 +56,6 @@ public class LoadApplicationService {
 
         List<LineError> errors = new ArrayList<>();
         List<InApplication> applicationsToSave = new ArrayList<>();
-
         for (int i = 0; i < applications.size(); i++) {
             int line = Constants.BATCH_SIZE * pageNumber + i + 2;
             List<LineError> coherenceErrorInLine = fileToLoad.getCoherenceErrorByLineNumer().getOrDefault(line, List.of());
