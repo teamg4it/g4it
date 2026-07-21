@@ -17,7 +17,6 @@ import jakarta.validation.Validator;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
-import org.apache.commons.io.input.BOMInputStream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
@@ -25,8 +24,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -359,18 +356,29 @@ public class ReferentialImportService {
          * ===============================
          */
         try (BufferedReader reader = CsvEncodingUtils.getReader(bytes)) {
-            Iterable<CSVRecord> records = createCsvParser().parse(reader);
+            var parser = createCsvParser().parse(reader);
 
-            for (CSVRecord csvRecord : records) {
-                ItemImpactRest itemImpactRest = referentialMapper.csvItemImpactToRest(csvRecord);
+            // Validate headers before processing
+            validateHeaders(
+                    parser.getHeaderNames(),
+                    List.of("criterion", "lifecycleStep", "name", "category", "avgElectricityConsumption",
+                            "description", "location", "level", "source", "tier", "unit", "value", "subscriber", "version"),
+                    "ItemImpact"
+            );
+
+            for (CSVRecord csvRecord : parser) {
+                // check if CSV format is valid (columns are accessible)
+                ItemImpactRest itemImpactRest = validateAndMapItemImpactRecord(csvRecord, i + 2);
 
                 if (!Objects.equals(itemImpactRest.getOrganization(), organization)) {
                     throw new BadRequestException(
                             SUBSCRIBER,
-                            String.format("Line %d : The column subscriber must be '%s'", i + 2,
+                            String.format("Line %d : The column subscriber must be '%s'",
+                                    i + 2,
                                     organization == null ? "" : organization)
                     );
                 }
+
                 i++;
             }
 
@@ -411,7 +419,7 @@ public class ReferentialImportService {
                     importReportRest.getErrors().add(printLine(line, violations.get()));
                 }
 
-                // ✅ batch save
+                // batch save
                 if (objects.size() >= Constants.BATCH_SIZE) {
                     persistenceService.saveItemImpacts(referentialMapper.toItemImpactEntity(objects));
                     objects.clear();
@@ -569,8 +577,6 @@ public class ReferentialImportService {
 
         List<ItemImpactRest> objects = new ArrayList<>();
 
-        int line = 2;
-
         byte[] bytes = getBytesSafe(file, report);
         if (bytes == null) {
             return ItemImpactParseResult.builder()
@@ -586,9 +592,12 @@ public class ReferentialImportService {
                             "description", "location", "level", "source", "tier", "unit", "value", "version"),
                     "ItemImpact"
             );
+
+            int lineNumber = 2; // Start at line 2 (line 1 is header)
             for (CSVRecord csvRecord : parser) {
 
-                ItemImpactRest item = referentialMapper.csvItemImpactToRest(csvRecord);
+                // First check if CSV format is valid (columns are accessible)
+                ItemImpactRest item = validateAndMapItemImpactRecord(csvRecord, lineNumber);
 
                 Optional<String> violations =
                         ValidationUtils.getViolations(validator.validate(item));
@@ -597,10 +606,9 @@ public class ReferentialImportService {
                     item.setOrganization(null);
                     objects.add(item);
                 } else {
-                    report.getErrors().add(printLine(line, violations.get()));
+                    report.getErrors().add(printLine(lineNumber, violations.get()));
                 }
-
-                line++;
+                lineNumber++;
             }
 
         } catch (IOException e) {
@@ -618,18 +626,70 @@ public class ReferentialImportService {
     private void validateHeaders(List<String> actual, List<String> expected, String type) {
 
         if (actual.size() != expected.size()) {
-            throw new BadRequestException("csv",
-                    "Invalid headers for " + type + ". Expected: " + expected + ", but got: " + actual);
+            // Check if columns are missing
+            List<String> missing = new ArrayList<>(expected);
+            missing.removeAll(actual);
+
+            if (!missing.isEmpty()) {
+                throw new BadRequestException("csv",
+                        "csv.columns.missing:" + type + ":" + missing);
+            }
+
+            List<String> extraColumns = new ArrayList<>(actual);
+            extraColumns.removeAll(expected);
+
+            if (!extraColumns.isEmpty()) {
+                throw new BadRequestException("csv",
+                        "csv.columns.unexpected:" + type + ":" + extraColumns);
+            }
         }
 
         for (int i = 0; i < expected.size(); i++) {
             if (!expected.get(i).equals(actual.get(i))) {
                 throw new BadRequestException("csv",
-                        "Invalid header at position " + (i + 1) +
-                                " for " + type +
-                                ". Expected: " + expected.get(i) +
-                                ", but got: " + actual.get(i));
+                        "csv.columns.order.invalid:" + type + ":" + (i + 1) + ":" + expected.get(i) + ":" + actual.get(i));
             }
+        }
+    }
+
+    private void validateItemImpactRecord(CSVRecord csvRecord, int lineNumber) {
+        String avgElectricityConsumptionStr;
+        String valueStr;
+
+        try {
+            avgElectricityConsumptionStr = csvRecord.get("avgElectricityConsumption");
+            valueStr = csvRecord.get("value");
+        } catch (IllegalArgumentException e) {
+            if (e.getMessage() != null && e.getMessage().contains("Index for header")) {
+                String recordStr = csvRecord.toString();
+                if (recordStr.matches(".*\\d+,\\d+.*")) {
+                    throw new BadRequestException("csv", "csv.decimal.comma.invalid: " + lineNumber);
+                }
+                throw new BadRequestException("csv", "csv.format.invalid: " + lineNumber);
+            }
+            throw e;
+        }
+
+        if (avgElectricityConsumptionStr != null
+                && !avgElectricityConsumptionStr.trim().isEmpty()
+                && avgElectricityConsumptionStr.contains(",")) {
+            throw new BadRequestException("csv", "csv.decimal.comma.invalid: " + lineNumber);
+        }
+
+        if (valueStr != null
+                && !valueStr.trim().isEmpty()
+                && valueStr.contains(",")) {
+            throw new BadRequestException("csv", "csv.decimal.comma.invalid: " + lineNumber);
+        }
+    }
+
+    private ItemImpactRest validateAndMapItemImpactRecord(CSVRecord csvRecord, int lineNumber) {
+        validateItemImpactRecord(csvRecord, lineNumber);
+
+        try {
+            return referentialMapper.csvItemImpactToRest(csvRecord);
+        } catch (NumberFormatException e) {
+            throw new BadRequestException("csv", "csv.decimal.comma.invalid: " + lineNumber);
         }
     }
 
@@ -654,6 +714,7 @@ public class ReferentialImportService {
             return null;
         }
     }
+
 
     /**
      * Print the line as string

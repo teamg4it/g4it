@@ -34,6 +34,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.List;
 import java.util.stream.Stream;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class AuthServiceTest {
@@ -136,17 +137,17 @@ class AuthServiceTest {
     @ParameterizedTest
     @MethodSource("getAdminUserTestCases")
     void testGetAdminUser(AdminUserTestCase testCase) {
-        Mockito.when(environment.matchesProfiles(Constants.NOSECURITY)).thenReturn(testCase.noSecurityProfile);
+        when(environment.matchesProfiles(Constants.NOSECURITY)).thenReturn(testCase.noSecurityProfile);
         if (testCase.jwt != null) {
             Authentication auth = new JwtAuthenticationToken(testCase.jwt);
             SecurityContextHolder.getContext().setAuthentication(auth);
-            Mockito.when(userService.getUserFromToken(testCase.jwt)).thenReturn(testCase.userFromToken);
-            Mockito.when(userService.getUserByName(ArgumentMatchers.any())).thenReturn(null);
+            when(userService.getUserFromToken(testCase.jwt)).thenReturn(testCase.userFromToken);
+            when(userService.getUserByName(ArgumentMatchers.any())).thenReturn(null);
         } else {
             SecurityContextHolder.getContext().setAuthentication(null);
         }
         if (testCase.expected != null) {
-            Mockito.when(userService.getNoSecurityUser(true)).thenReturn(testCase.expected);
+            when(userService.getNoSecurityUser(true)).thenReturn(testCase.expected);
             UserBO result = ReflectionTestUtils.invokeMethod(authService, "getAdminUser");
             Assertions.assertEquals(testCase.expected, result);
         } else {
@@ -173,16 +174,16 @@ class AuthServiceTest {
 
     @Test
     void testGetUser_noSecurityProfile() {
-        Mockito.when(environment.matchesProfiles(Constants.NOSECURITY)).thenReturn(true);
+        when(environment.matchesProfiles(Constants.NOSECURITY)).thenReturn(true);
         UserBO expected = UserBO.builder().id(1).build();
-        Mockito.when(userService.getNoSecurityUser(true)).thenReturn(expected);
+        when(userService.getNoSecurityUser(true)).thenReturn(expected);
         UserBO result = ReflectionTestUtils.invokeMethod(authService, "getUser");
         Assertions.assertEquals(expected, result);
     }
 
     @Test
     void testGetUser_invalidAuthentication() {
-        Mockito.when(environment.matchesProfiles(Constants.NOSECURITY)).thenReturn(false);
+        when(environment.matchesProfiles(Constants.NOSECURITY)).thenReturn(false);
         SecurityContextHolder.getContext().setAuthentication(null);
         AuthorizationException ex = Assertions.assertThrows(AuthorizationException.class,
             () -> ReflectionTestUtils.invokeMethod(authService, "getUser"));
@@ -191,12 +192,12 @@ class AuthServiceTest {
 
     @Test
     void testGetUser_userNotFound() {
-        Mockito.when(environment.matchesProfiles(Constants.NOSECURITY)).thenReturn(false);
+        when(environment.matchesProfiles(Constants.NOSECURITY)).thenReturn(false);
         Jwt jwt = Jwt.withTokenValue("token").header("alg", "none").claim("sub", "sub").build();
         Authentication auth = new JwtAuthenticationToken(jwt);
         SecurityContextHolder.getContext().setAuthentication(auth);
-        Mockito.when(userService.getUserFromToken(jwt)).thenReturn(UserBO.builder().id(1).build());
-        Mockito.when(userService.getUserByName(ArgumentMatchers.any())).thenReturn(null);
+        when(userService.getUserFromToken(jwt)).thenReturn(UserBO.builder().id(1).build());
+        when(userService.getUserByName(ArgumentMatchers.any())).thenReturn(null);
         AuthorizationException ex = Assertions.assertThrows(AuthorizationException.class,
             () -> ReflectionTestUtils.invokeMethod(authService, "getUser"));
         Assertions.assertTrue(ex.getMessage().contains("support.g4it@soprasteria.com"));
@@ -226,16 +227,16 @@ class AuthServiceTest {
 
     @Test
     void testVerifyUserAuthentication_noSecurityProfile() {
-        Mockito.when(environment.matchesProfiles(Constants.NOSECURITY)).thenReturn(true);
+        when(environment.matchesProfiles(Constants.NOSECURITY)).thenReturn(true);
         UserBO expected = UserBO.builder().id(1).build();
-        Mockito.when(userService.getNoSecurityUser(false)).thenReturn(expected);
+        when(userService.getNoSecurityUser(false)).thenReturn(expected);
         UserBO result = ReflectionTestUtils.invokeMethod(authService, "verifyUserAuthentication");
         Assertions.assertEquals(expected, result);
     }
 
     @Test
     void testVerifyUserAuthentication_invalidAuthentication() {
-        Mockito.when(environment.matchesProfiles(Constants.NOSECURITY)).thenReturn(false);
+        when(environment.matchesProfiles(Constants.NOSECURITY)).thenReturn(false);
         SecurityContextHolder.getContext().setAuthentication(null);
         AuthorizationException ex = Assertions.assertThrows(AuthorizationException.class,
             () -> ReflectionTestUtils.invokeMethod(authService, "verifyUserAuthentication"));
@@ -244,10 +245,10 @@ class AuthServiceTest {
 
     @Test
     void testVerifyUserAuthentication_invalidPrincipal() {
-        Mockito.when(environment.matchesProfiles(Constants.NOSECURITY)).thenReturn(false);
+        when(environment.matchesProfiles(Constants.NOSECURITY)).thenReturn(false);
         Authentication auth = Mockito.mock(Authentication.class);
-        Mockito.when(auth.isAuthenticated()).thenReturn(true);
-        Mockito.when(auth.getPrincipal()).thenReturn("notJwt");
+        when(auth.isAuthenticated()).thenReturn(true);
+        when(auth.getPrincipal()).thenReturn("notJwt");
         SecurityContextHolder.getContext().setAuthentication(auth);
         AuthorizationException ex = Assertions.assertThrows(AuthorizationException.class,
             () -> ReflectionTestUtils.invokeMethod(authService, "verifyUserAuthentication"));
@@ -256,14 +257,14 @@ class AuthServiceTest {
 
     @Test
     void testVerifyUserAuthentication_nominal() {
-        Mockito.when(environment.matchesProfiles(Constants.NOSECURITY)).thenReturn(false);
+        when(environment.matchesProfiles(Constants.NOSECURITY)).thenReturn(false);
         Jwt jwt = Jwt.withTokenValue("token").header("alg", "none").claim("sub", "sub").build();
         Authentication auth = Mockito.mock(Authentication.class);
-        Mockito.when(auth.isAuthenticated()).thenReturn(true);
-        Mockito.when(auth.getPrincipal()).thenReturn(jwt);
+        when(auth.isAuthenticated()).thenReturn(true);
+        when(auth.getPrincipal()).thenReturn(jwt);
         SecurityContextHolder.getContext().setAuthentication(auth);
         UserBO expected = UserBO.builder().id(1).build();
-        Mockito.when(userService.getUserFromToken(jwt)).thenReturn(expected);
+        when(userService.getUserFromToken(jwt)).thenReturn(expected);
         UserBO result = ReflectionTestUtils.invokeMethod(authService, "verifyUserAuthentication");
         Assertions.assertEquals(expected, result);
     }
@@ -271,7 +272,7 @@ class AuthServiceTest {
     @Test
     void testGetJwtToken_userNotFound() {
         UserBO userInfo = UserBO.builder().email("test@test.com").build();
-        Mockito.when(userService.getUserByName(userInfo)).thenReturn(null);
+        when(userService.getUserByName(userInfo)).thenReturn(null);
         AuthorizationException ex = Assertions.assertThrows(AuthorizationException.class,
             () -> ReflectionTestUtils.invokeMethod(authService, "getJwtToken", userInfo, "org", 1L));
         Assertions.assertTrue(ex.getMessage().contains("support.g4it@soprasteria.com"));
@@ -280,7 +281,7 @@ class AuthServiceTest {
     @Test
     void testCheckUserRightForDigitalService_digitalServiceExistsFalse() {
         String[] urlSplit = {"", "organizations", "org", "workspaces", "1", "digital-services", "dsUid"};
-        Mockito.when(digitalServiceService.digitalServiceExists("org", 1L, "dsUid")).thenReturn(false);
+        when(digitalServiceService.digitalServiceExists("org", 1L, "dsUid")).thenReturn(false);
         AuthorizationException ex = Assertions.assertThrows(AuthorizationException.class,
             () -> ReflectionTestUtils.invokeMethod(authService, "checkUserRightForDigitalService", (Object) urlSplit));
         Assertions.assertTrue(ex.getMessage().contains("does not exist or is not linked"));
@@ -289,7 +290,7 @@ class AuthServiceTest {
     @Test
     void testCheckUserRightForInventory_inventoryExistsFalse() {
         String[] urlSplit = {"", "organizations", "org", "organizations", "1", "inventories", "2"};
-        Mockito.when(inventoryService.inventoryExists("org", 1L, 2L)).thenReturn(false);
+        when(inventoryService.inventoryExists("org", 1L, 2L)).thenReturn(false);
         AuthorizationException ex = Assertions.assertThrows(AuthorizationException.class,
             () -> ReflectionTestUtils.invokeMethod(authService, "checkUserRightForInventory", (Object) urlSplit));
         Assertions.assertTrue(ex.getMessage().contains("does not exist or is not linked"));
