@@ -67,6 +67,11 @@ public class AsyncEvaluatingService implements ITaskExecute {
         String finalProgress = "100%";
 
         try {
+            Thread.sleep(1200000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        try {
             Path exportDirectory = exportService.createExportDirectory(taskId);
 
             if (context.isAi()) {
