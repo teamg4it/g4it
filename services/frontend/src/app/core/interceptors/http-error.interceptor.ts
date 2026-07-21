@@ -120,7 +120,7 @@ function handleErrorPageNavigation(
             // Redirect to Keycloak login page on 401 Unauthorized
             if (environment.keycloak?.enabled === "true") {
                 keycloak.login({
-                    redirectUri: globalThis.location.origin + router.url,
+                    redirectUri: globalThis.location.href,
                 });
             } else {
                 router.navigate(["/something-went-wrong", error.status]);
