@@ -25,7 +25,8 @@ import java.io.Serializable;
                         @ColumnResult(name = "nom_entite"),
                         @ColumnResult(name = "statut"),
                         @ColumnResult(name = "poids", type = Double.class),
-                        @ColumnResult(name = "age_moyen", type = Double.class)
+                        @ColumnResult(name = "age_moyen", type = Double.class),
+                        @ColumnResult(name = "level")
                 }
         )
 )
@@ -39,6 +40,7 @@ import java.io.Serializable;
                                 equipment_type,
                                 common_filters,
                                 filters,
+                                level,
                                 MAX(quantity) AS quantity,
                                 MAX(lifespan) AS lifespan
                             FROM out_physical_equipment
@@ -46,12 +48,14 @@ import java.io.Serializable;
                               AND status_indicator = 'OK'
                               AND lifespan IS NOT NULL
                               AND lifespan > 0
+                              AND (level = '2-Equipement' OR level IS NULL)
                             GROUP BY
                                 reference,
                                 location,
                                 equipment_type,
                                 common_filters,
-                                filters
+                                filters,
+                                level
                         )
                         SELECT
                             ROW_NUMBER() OVER ()          AS id,
@@ -60,13 +64,15 @@ import java.io.Serializable;
                             common_filters[1]             AS nom_entite,
                             filters[1]                    AS statut,
                             SUM(quantity)                 AS poids,
-                            SUM(lifespan) / SUM(quantity) AS age_moyen
+                            SUM(lifespan) / SUM(quantity) AS age_moyen,
+                            level                         AS level
                         FROM equipment_lifespan
                         GROUP BY
                             location,
                             equipment_type,
                             common_filters,
-                            filters;
+                            filters,
+                            level;
         """)
 @Data
 @Entity
@@ -88,4 +94,6 @@ public class InPhysicalEquipmentAvgAgeView implements Serializable {
     private Double poids;
 
     private Double ageMoyen;
+
+    private String level;
 }
