@@ -811,7 +811,10 @@
         },
         "filter-view": "Filter the view",
         "filter-text": "Filters",
-        "filter-description": "These filters allow you to view only a portion of the data calculated by G4IT. Your selections will apply to the entire page and update the key indicators and impacts based on the filter you set."
+        "filter-description": "These filters allow you to view only a portion of the data calculated by G4IT. Your selections will apply to the entire page and update the key indicators and impacts based on the filter you set.",
+        "inverse-axis": "Invert the axes",
+        "on": "On",
+        "off": "Off"
     },
     "error-page": {
         "title": {
@@ -1348,7 +1351,7 @@
         },
         "technology-used": {
             "title": "Technologies Used",
-            "one": "Angular - 18.2.13",
+            "one": "Angular - 21.2.12",
             "two": "HTML5",
             "three": "CSS"
         },

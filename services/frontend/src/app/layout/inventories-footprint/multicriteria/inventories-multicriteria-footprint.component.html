@@ -64,6 +64,11 @@
             <p class="text-round-empty">{{ "common.no-data" | translate }}</p>
         </div>
     }
+}
+<app-inverse-axis-button
+    (inverseAxisChange)="onAxisInversionChange($event)"
+></app-inverse-axis-button>
+@if (!showInconsitencyGraph) {
     <app-graph-description
         [contentText]="getContentText()"
         [textDescriptionImpacts]="textDescriptionImpacts"

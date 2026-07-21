@@ -55,6 +55,7 @@ import { InventoryService } from "src/app/core/service/business/inventory.servic
 import { UserService } from "src/app/core/service/business/user.service";
 import { EvaluationDataService } from "src/app/core/service/data/evaluation-data.service";
 import { FootprintDataService } from "src/app/core/service/data/footprint-data.service";
+import { resetColorMap } from "src/app/core/service/mapper/graphs-mapper";
 import { FootprintStoreService } from "src/app/core/store/footprint.store";
 import { GlobalStoreService } from "src/app/core/store/global.store";
 import * as LifeCycleUtils from "src/app/core/utils/lifecycle";
@@ -301,6 +302,7 @@ export class InventoriesApplicationFootprintComponent implements OnInit, OnDestr
 
     ngOnInit() {
         this.checkStatusAndLoopApis();
+        resetColorMap();
     }
 
     async checkStatusAndLoopApis() {
