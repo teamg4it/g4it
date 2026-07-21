@@ -9,6 +9,8 @@
 - 2150 | Modifying the rendering of the main graph when more than 5 items 
   
 ### Minor Changes
+- 2318 | Correct calculation of total equipment count and average lifespan in Inventory module
+- 2183 | New data model file for importing workspace reference data + updating platform data model
 
 ## 3.13.1
 
