@@ -11,6 +11,7 @@
 ### Minor Changes
 - 2318 | Correct calculation of total equipment count and average lifespan in Inventory module
 - 2183 | New data model file for importing workspace reference data + updating platform data model
+- 2193 | Administration - Explicit checks during the loading of workspace reference data files
 
 ## 3.13.1
 
