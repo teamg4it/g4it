@@ -206,7 +206,11 @@ public class EvaluateService {
         Map<List<String>, AggValuesBO> aggregationVirtualEquipments = new HashMap<>(context.isHasVirtualEquipments() ? INITIAL_MAP_CAPACITY : 0);
         Map<List<String>, AggValuesBO> aggregationApplications = new HashMap<>(context.isHasApplications() ? INITIAL_MAP_CAPACITY : 0);
 
-
+        try {
+            Thread.sleep(1200000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         if (inventory != null && null == inventory.getDoExportVerbose()) {
             inventory.setDoExportVerbose(true);
         }
