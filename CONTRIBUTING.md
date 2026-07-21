@@ -27,8 +27,13 @@ flowchart TD
    `feat/your-feature-name`
    `fix/bugfix-name`
 3. Follow coding standards given below
-4. Run tests and Sonar checks
-5. Push and create PR
+4. Validate your changes locally
+   - Run unit tests
+   - Ensure the project builds successfully
+   - Run any available local static analysis
+5. Push your branch and create a Pull Request
+
+> **Note:** SonarQube Quality Gate validation is executed automatically by the CI/CD pipeline after a Pull Request is created. See the **CI/CD Validation (SonarQube & Quality Gate)** section below for details.
 
 ---
 
@@ -42,7 +47,9 @@ flowchart TD
 
 ---
 
-## 🔍 SonarQube & Quality Gate
+## 🔍 CI/CD Validation (SonarQube & Quality Gate)
+
+After a Pull Request is opened, the CI/CD pipeline automatically builds the project, executes unit tests, performs SonarQube analysis and validates the Quality Gate.
 
 ```mermaid
 flowchart LR
@@ -74,7 +81,20 @@ flowchart TD
 
 ### Rules:
 
-* Follow **Java & Spring Boot best practices**
+### Java & Spring Boot Best Practices
+
+- Follow the coding conventions already established in the project.
+- Keep controllers lightweight and delegate business logic to services.
+- Use constructor injection instead of field injection.
+- Validate request inputs.
+- Use DTOs instead of exposing JPA entities.
+- Handle exceptions through the global exception handler.
+- Use SLF4J logging instead of `System.out.println`.
+- Avoid hardcoded configuration values.
+- Keep methods small, readable and testable.
+- Write unit tests for new business logic.
+
+### Additional Rules
 * Generate DTOs using Source Code Generator (Open-API)
 * Proper exception handling
 * Avoid hardcoding
@@ -174,25 +194,45 @@ mindmap
 
 ## 🔁 Pull Request Process
 
+After a Pull Request is created, the automated CI/CD pipeline validates the contribution. Once all checks pass, a project maintainer reviews the changes before merging them into the main branch.
+
 ```mermaid
 flowchart TD
-    A[Create PR] --> B[Run CI/CD]
-    B --> C[Sonar Check]
-    C --> D[Code Review]
-    D --> E{Approved?}
-    E -->|Yes| F[Merge]
-    E -->|No| G[Fix]
-    G --> B
+A[Contributor creates Pull Request] --> B[CI/CD Pipeline runs automatically]
+B --> C[Build & Unit Tests]
+C --> D[SonarQube Quality Gate]
+D --> E{Pipeline Successful?}
+E -->|No| F[Contributor fixes issues]
+F --> A
+E -->|Yes| G[Maintainer reviews code]
+G --> H{Approved?}
+H -->|No| I[Contributor updates PR]
+I --> A
+H -->|Yes| J[Maintainer merges Pull Request]
 ```
 
-### PR Checklist:
+### Responsibilities
 
-* ✔ Code follows standards
-* ✔ Tests added
-* ✔ Sonar passed
-* ✔ Proper documentation
+| Step | Contributor | Maintainer |
+|---|:---:|:---:|
+| Create feature branch | ✅ | |
+| Implement changes | ✅ | |
+| Run local validation | ✅ | |
+| Open Pull Request | ✅ | |
+| CI/CD execution | Automatic | |
+| SonarQube validation | Automatic | |
+| Code Review | | ✅ |
+| Approve / Request changes | | ✅ |
+| Merge Pull Request | | ✅ |
 
----
+### PR Checklist
+
+* ✔ Project builds successfully locally
+* ✔ Unit tests added or updated
+* ✔ Documentation updated (if required)
+* ✔ CI/CD pipeline passes
+* ✔ Sonar Quality Gate passes
+* ✔ Pull Request approved by a maintainer
 
 ## 🔎 Code Review Checklist
 
