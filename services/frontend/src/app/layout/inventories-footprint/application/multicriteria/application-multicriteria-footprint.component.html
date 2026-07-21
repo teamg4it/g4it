@@ -72,6 +72,11 @@
             </p>
         </div>
     }
+}
+<app-inverse-axis-button
+    (inverseAxisChange)="this.isAxisInverted.set($event)"
+></app-inverse-axis-button>
+@if (!showInconsitencyGraph) {
     <app-graph-description
         [contentText]="getContentText()"
         [textDescriptionImpacts]="textDescriptionImpacts"

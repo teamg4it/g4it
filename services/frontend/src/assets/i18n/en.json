@@ -88,6 +88,8 @@
             "eq": "View equipments' detail for inventory of",
             "refresh": "Refresh inventory informations of",
             "addNote": "Click to add a note",
+            "add-context": "Click to add context/assumptions",
+            "edit-context": "Click to edit context/assumptions",
             "attachedNote": "Click to consult the Context and assumptions",
             "download": "Click to download your result",
             "note": "Note",
@@ -314,6 +316,7 @@
             },
             "context-and-assumptions": "Context and assumptions",
             "edit-context-assumptions": "EDIT CONTEXT/ASSUMPTIONS",
+            "add-context-assumptions": "ADD CONTEXT/ASSUMPTIONS",
             "context-text": "Please describe the context of your analysis and the assumptions made (sources, methodological choices, limitations, etc.). This information helps ensure better understanding, traceability, and comparability of your impact assessment. <br /> These elements can be completed later."
         },
         "error.digital-service-already-exists": "Digital Service already exists",
@@ -808,7 +811,10 @@
         },
         "filter-view": "Filter the view",
         "filter-text": "Filters",
-        "filter-description": "These filters allow you to view only a portion of the data calculated by G4IT. Your selections will apply to the entire page and update the key indicators and impacts based on the filter you set."
+        "filter-description": "These filters allow you to view only a portion of the data calculated by G4IT. Your selections will apply to the entire page and update the key indicators and impacts based on the filter you set.",
+        "inverse-axis": "Invert the axes",
+        "on": "On",
+        "off": "Off"
     },
     "error-page": {
         "title": {
@@ -1330,7 +1336,7 @@
         },
         "technology-used": {
             "title": "Technologies Used",
-            "one": "Angular - 18.2.13",
+            "one": "Angular - 21.2.12",
             "two": "HTML5",
             "three": "CSS"
         },

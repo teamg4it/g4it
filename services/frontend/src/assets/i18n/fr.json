@@ -87,6 +87,8 @@
             "eq": "Voir l'impact des équipements pour l'inventaire de",
             "refresh": "Rafraichir les informations pour l'inventaire de",
             "addNote": "Cliquer pour ajouter une note",
+            "add-context": "Cliquer pour ajouter le contexte/les hypothèses",
+            "edit-context": "Cliquer pour modifier le contexte/les hypothèses",
             "attachedNote": "Cliquer pour consulter la Contexte et hypothèses",
             "download": "Cliquez pour télécharger les résultats",
             "note": "Note",
@@ -312,6 +314,7 @@
             },
             "context-and-assumptions": "Contexte et hypothèses",
             "edit-context-assumptions": "EDIT CONTEXTE/HYPOTHESES",
+            "add-context-assumptions": "AJOUTER CONTEXTE/HYPOTHESES",
             "context-text": "Nous vous invitons à décrire ici le contexte de votre analyse ainsi que les hypothèses retenues (sources, choix méthodologiques, limites, etc.). Ces éléments permettent de mieux comprendre, tracer et comparer votre évaluation d’impact. <br /> Ces éléments pourront être complétés ultérieurement."
         },
         "error.digital-service-already-exists": "Le service numérique existe déjà",
@@ -805,7 +808,10 @@
         },
         "filter-view": "Filtrer la vue",
         "filter-text": "Filtres",
-        "filter-description": "Ces filtres vous permettent de ne visualiser qu'un partie des données calculées par G4IT. Vos choix s’appliqueront à toute la page et mettront à jour les indicateurs clés et les impacts selon le filtre définit."
+        "filter-description": "Ces filtres vous permettent de ne visualiser qu'un partie des données calculées par G4IT. Vos choix s’appliqueront à toute la page et mettront à jour les indicateurs clés et les impacts selon le filtre définit.",
+        "inverse-axis": "Inverser les axes",
+        "on": "On",
+        "off": "Off"
     },
     "error-page": {
         "title": {
@@ -1326,7 +1332,7 @@
         },
         "technology-used": {
             "title": "Technologies utilisées",
-            "one": "Angular - 18.2.13",
+            "one": "Angular - 21.2.12",
             "two": "HTML5",
             "three": "CSS"
         },
