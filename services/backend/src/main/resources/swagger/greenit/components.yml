@@ -482,6 +482,9 @@ components:
           type: string
         countValue:
           type: number
+        level:
+          type: string
+          description: Equipment level from referential (e.g. 2-Equipement, 3-System)
 
     ApplicationIndicatorRest:
       type: object
@@ -599,6 +602,9 @@ components:
         ageMoyen:
           type: number
           format: double
+        level:
+          type: string
+          description: Equipment level from referential (e.g. 2-Equipement, 3-System)
     PhysicalEquipmentElecConsumptionRest:
       type: object
       properties:
