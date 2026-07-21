@@ -134,7 +134,7 @@ function handleErrorPageNavigation(
 }
 
 function getTranslatedBadRequestError(error: any, translate: TranslateService): string {
-    let errorDetail = translate.instant(`toast-errors.${"bad-request"}.text`);
+    let errorDetail = translate.instant(`toast-errors.bad-request.text`);
 
     // For CSV/file errors, try to translate the error message key
     const fileRelatedFields = ["csv", "file", "itemImpact", "matchingItem", "itemType"];
