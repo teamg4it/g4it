@@ -19,7 +19,6 @@ import com.soprasteria.g4it.backend.common.model.FileToLoad;
 import com.soprasteria.g4it.backend.common.model.LineError;
 import com.soprasteria.g4it.backend.common.utils.Constants;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InPhysicalEquipmentRest;
-import com.soprasteria.g4it.backend.server.gen.api.dto.ItemTypeRest;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
@@ -57,11 +56,6 @@ public class LoadPhysicalEquipmentService {
         if (physicalEquipments.isEmpty()) return List.of();
 
         log.info("Load physical equipments for {}, size = {}", context.log(), physicalEquipments.size());
-        /*Set<String> types = physicalEquipments.stream()
-                .map(InPhysicalEquipmentRest::getType)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toSet());
-        Map<String, List<ItemTypeRest>> itemTypeMap =referentialGetService.bulkGetItemTypesForWorkspace(types,context.getWorkspaceId());*/
 
         List<LineError> errors = new ArrayList<>();
 

@@ -27,6 +27,8 @@ export class StackBarChartComponent extends AbstractDashboard {
         return {
             legend: {
                 selectedMode: false,
+                show: true,
+                type: "scroll",
             },
             grid: {
                 left: "3%",
