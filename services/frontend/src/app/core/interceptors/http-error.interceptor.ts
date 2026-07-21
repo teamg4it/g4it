@@ -151,6 +151,7 @@ function getTranslatedBadRequestError(error: any, translate: TranslateService): 
             let translatedMessage = translate.instant(`toast-errors.${messageKey}`);
 
             // Replace parameters if present (e.g., {0}, {1}, {2}, etc.)
+            // Dynamic error from backend used translate angular for showing it on UI
             if (params.length > 0) {
                 params.forEach((param: string, index: number) => {
                     const placeholder = `{${index}}`;
