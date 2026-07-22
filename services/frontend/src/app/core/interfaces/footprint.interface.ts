@@ -167,7 +167,7 @@ export interface PhysicalEquipmentLowImpact {
     type: string;
     nomEntite: string | null;
     statut: string;
-    quantite: number;t
+    quantite: number;
     lowImpact: boolean;
     pourcentageLowImpact?: number;
     count?: number;
