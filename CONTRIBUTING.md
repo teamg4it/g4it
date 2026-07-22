@@ -5,11 +5,38 @@ This project is built with a strong focus on **Green IT** and **Eco-design princ
 
 ---
 
+## 💡 Before You Start
+
+For **new features**, please discuss your proposal with the **Solution Maintainers** before starting development.
+
+This discussion helps ensure that:
+
+- The feature provides value to the project and its users.
+- It aligns with the project's functional roadmap and priorities.
+- The proposed implementation fits the existing architecture and design.
+- Similar work is not already planned or in progress.
+
+Bug fixes, documentation improvements, and small enhancements generally do not require prior discussion unless they significantly impact the application's behavior.
+
+---
+
 ## 📌 Contribution Workflow
 
 ```mermaid
 flowchart TD
-    A[Fork Repository] --> B[Create Feature/Fix Branch]
+    A{New Feature?}
+    A -->|Yes| B[Discuss with Solution Maintainers]
+    A -->|No| C[Fork Repository]
+    B --> C
+    C --> D[Create Feature/Fix Branch]
+    D --> E[Write Code]
+    E --> F[Validate Changes Locally]
+    F --> G[Commit Changes]
+    G --> H[Push Branch]
+    H --> I[Create Pull Request]
+    I --> J[CI/CD Validation]
+    J --> K[Maintainer Code Review]
+    K --> L[Merge]
     B --> C[Write Code]
     C --> D[Run Tests & Sonar Checks]
     D --> E[Fix Issues]
@@ -22,16 +49,17 @@ flowchart TD
 
 ### Steps:
 
-1. Fork the repository
-2. Create a new branch
+1. **For new features**, discuss the proposal with the Solution Maintainers to validate its value and alignment with the project roadmap.
+2. Fork the repository
+3. Create a new branch
    `feat/your-feature-name`
    `fix/bugfix-name`
-3. Follow coding standards given below
-4. Validate your changes locally
+4. Follow coding standards described below
+5. Validate your changes locally
    - Run unit tests
    - Ensure the project builds successfully
    - Run any available local static analysis
-5. Push your branch and create a Pull Request
+6. Push your branch and create a Pull Request
 
 > **Note:** SonarQube Quality Gate validation is executed automatically by the CI/CD pipeline after a Pull Request is created. See the **CI/CD Validation (SonarQube & Quality Gate)** section below for details.
 
