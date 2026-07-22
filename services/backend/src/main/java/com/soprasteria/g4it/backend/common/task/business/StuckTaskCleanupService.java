@@ -38,9 +38,6 @@ import java.util.Locale;
 @Slf4j
 public class StuckTaskCleanupService {
 
-    @Value("${g4it.task.stuck.timeout.hours:2}")
-    private double stuckTaskTimeoutHours;
-
     @Value("${g4it.task.stuck.check.enabled:true}")
     private boolean stuckTaskCheckEnabled;
 
@@ -173,15 +170,6 @@ public class StuckTaskCleanupService {
         } catch (Exception e) {
             log.error("Error while failing stuck task {}: {}", task.getId(), e.getMessage(), e);
         }
-    }
-
-    /**
-     * Get the configured stuck task timeout in hours.
-     *
-     * @return timeout in hours
-     */
-    public double getStuckTaskTimeoutHours() {
-        return stuckTaskTimeoutHours;
     }
 
     /**
