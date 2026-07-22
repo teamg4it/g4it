@@ -77,6 +77,9 @@ function getErrorMessage(
 }
 
 function handleUnauthorizedError(error: any, router: Router): void {
+    console.log(environment?.keycloak?.enabled);
+    console.log(keycloak.authenticated);
+    console.log(keycloak);
     if (environment?.keycloak?.enabled === "true" && !keycloak.authenticated) {
         keycloak.login({
             redirectUri: globalThis.location.href,
