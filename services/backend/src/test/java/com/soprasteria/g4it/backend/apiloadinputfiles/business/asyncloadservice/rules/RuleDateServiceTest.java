@@ -15,7 +15,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.MessageSource;
 
@@ -24,6 +23,7 @@ import java.time.Month;
 import java.util.Locale;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class RuleDateServiceTest {
@@ -48,7 +48,7 @@ class RuleDateServiceTest {
 
     @Test
     void testRuleDateError() {
-        Mockito.when(messageSource.getMessage(any(), any(), any()))
+        when(messageSource.getMessage(any(), any(), any()))
                 .thenReturn("Purchase date after retrieval date");
 
         var actual = ruleDateService.checkDatesPurchaseRetrieval(locale, filename, line,
@@ -60,7 +60,7 @@ class RuleDateServiceTest {
 
     @Test
     void testDatePurchase_InvalidFormatError() {
-        Mockito.when(messageSource.getMessage(any(), any(), any()))
+        when(messageSource.getMessage(any(), any(), any()))
                 .thenReturn("Invalid purchase date format");
 
         var actual = ruleDateService.checkDatesPurchaseRetrieval(locale, filename, line,
@@ -72,7 +72,7 @@ class RuleDateServiceTest {
 
     @Test
     void testDateRetrieval_InvalidFormatError() {
-        Mockito.when(messageSource.getMessage(any(), any(), any()))
+        when(messageSource.getMessage(any(), any(), any()))
                 .thenReturn("Invalid retrieval date format");
 
         var actual = ruleDateService.checkDatesPurchaseRetrieval(locale, filename, line,
@@ -100,7 +100,7 @@ class RuleDateServiceTest {
 
     @Test
     void testDigitalService_NullPurchaseDate_Error() {
-        Mockito.when(messageSource.getMessage(any(), any(), any()))
+        when(messageSource.getMessage(any(), any(), any()))
                 .thenReturn("Purchase date must not be blank");
 
         var actual = ruleDateService.checkDatesPurchaseRetrieval(locale, filename, line,
@@ -112,7 +112,7 @@ class RuleDateServiceTest {
 
     @Test
     void testDigitalService_NullRetrievalDate_Error() {
-        Mockito.when(messageSource.getMessage(any(), any(), any()))
+        when(messageSource.getMessage(any(), any(), any()))
                 .thenReturn("Retrieval date must not be blank");
 
         var actual = ruleDateService.checkDatesPurchaseRetrieval(locale, filename, line,
