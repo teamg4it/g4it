@@ -204,6 +204,8 @@ All user interface changes must comply with the General Accessibility Improvemen
 - Images and icons include meaningful alternative text where applicable.
 - Forms include accessible labels, instructions, and error messages.
 
+---
+
 ## Eco-Design
 
 If your changes impact the frontend, user interface, or user journey, you must run a GreenIT Analysis before submitting your contribution.
@@ -213,6 +215,8 @@ If your changes impact the frontend, user interface, or user journey, you must r
 - Include the analysis results with your pull request when applicable.
 
 GreenIT Analysis CLI: https://github.com/cnumr/GreenIT-Analysis-cli
+
+---
 
 ## 🌍 Green IT & Eco-Design Principles
 
