@@ -27,19 +27,11 @@ import java.util.Locale;
 
 /**
  * Service to detect and fail tasks that are stuck in IN_PROGRESS status.
- *
- * This service monitors all tasks and marks them as FAILED if they:
- * - Have been IN_PROGRESS for longer than the maximum allowed timeout
- * - Haven't been updated for longer than the stuck task threshold
- *
  * This prevents zombie tasks and provides clear feedback to users.
  */
 @Service
 @Slf4j
 public class StuckTaskCleanupService {
-
-    @Value("${g4it.task.stuck.timeout.hours:2}")
-    private double stuckTaskTimeoutHours;
 
     @Value("${g4it.task.stuck.check.enabled:true}")
     private boolean stuckTaskCheckEnabled;
@@ -173,15 +165,6 @@ public class StuckTaskCleanupService {
         } catch (Exception e) {
             log.error("Error while failing stuck task {}: {}", task.getId(), e.getMessage(), e);
         }
-    }
-
-    /**
-     * Get the configured stuck task timeout in hours.
-     *
-     * @return timeout in hours
-     */
-    public double getStuckTaskTimeoutHours() {
-        return stuckTaskTimeoutHours;
     }
 
     /**
