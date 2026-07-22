@@ -118,7 +118,9 @@ function handleErrorPageNavigation(
             });
         } else if (error.status === HttpStatusCode.Unauthorized) {
             // Redirect to Keycloak login page on 401 Unauthorized
-            if (environment.keycloak?.enabled === "true") {
+            if (environment?.keycloak?.enabled === "true" && !keycloak.authenticated) {
+                // Only redirect to login if user is not authenticated
+                // This prevents infinite loops when token refresh fails
                 keycloak.login({
                     redirectUri: globalThis.location.href,
                 });
