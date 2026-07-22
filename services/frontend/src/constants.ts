@@ -248,7 +248,6 @@ export abstract class Constants {
     static readonly USEFUL_INFORMATION = "useful-information";
     static readonly DECLARATIONS = "declarations";
     static readonly WELCOME_PAGE = "welcome-page";
-    static readonly EQUIPEMENT_2 = "2-Equipement";
 
     static readonly VALID_PAGES = [
         this.USEFUL_INFORMATION,

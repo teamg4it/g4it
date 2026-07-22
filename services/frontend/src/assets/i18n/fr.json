@@ -808,10 +808,7 @@
         },
         "filter-view": "Filtrer la vue",
         "filter-text": "Filtres",
-        "filter-description": "Ces filtres vous permettent de ne visualiser qu'un partie des données calculées par G4IT. Vos choix s’appliqueront à toute la page et mettront à jour les indicateurs clés et les impacts selon le filtre définit.",
-        "inverse-axis": "Inverser les axes",
-        "on": "On",
-        "off": "Off"
+        "filter-description": "Ces filtres vous permettent de ne visualiser qu'un partie des données calculées par G4IT. Vos choix s’appliqueront à toute la page et mettront à jour les indicateurs clés et les impacts selon le filtre définit."
     },
     "error-page": {
         "title": {
@@ -881,7 +878,7 @@
         "csv.format.invalid": "Le format du fichier CSV est incorrect. Veuillez vous assurer d'utiliser le point-virgule (;) comme délimiteur et que toutes les colonnes requises sont présentes. Consultez le modèle de données pour plus d'informations.",
         "itemimpact.required.fields.missing": "Certaines informations obligatoires sont manquantes. Merci de vous référer au dataModel pour connaître les données demandées.",
         "itemimpact.criterion.invalid": "Certains critères d'impact [{0}] renseignés sont inconnus. Merci de vous référer aux valeurs indiquées dans le dataModel.",
-        "itemimpact.lifecyclestep.invalid": "Valeur d'étape du cycle de vie [{0}] invalide. Veuillez vous référer au modèle de données pour les valeurs autorisées.",
+        "itemimpact.lifecyclestep.invalid": "Certaines étapes du cycle de vie [{0}] renseignées sont inconnues. Merci de vous référer aux valeurs indiquées dans le dataModel.",
         "itemimpact.electricity.consumption.missing": "La consommation d'électricité doit être indiquée pour toutes les lignes relatives à l'étape « UTILISATION » du cycle de vie [{0}].",
         "itemimpact.duplicate.triplet": "Valeur en double trouvée pour le triplet (critère/étape du cycle de vie/nom) pour l'élément suivant : [{0}]",
         "itemtype.required.fields.missing": "Certaines informations obligatoires sont manquantes. Merci de vous référer au dataModel pour connaître les données demandées.",
@@ -1347,7 +1344,7 @@
         },
         "technology-used": {
             "title": "Technologies utilisées",
-            "one": "Angular - 21.2.12",
+            "one": "Angular - 18.2.13",
             "two": "HTML5",
             "three": "CSS"
         },

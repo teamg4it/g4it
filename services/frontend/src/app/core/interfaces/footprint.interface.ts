@@ -119,7 +119,6 @@ export interface Impact {
     countValue: number;
     quantity?: number;
     unit?: string;
-    level?: string;
 }
 
 export interface ImpactEntity extends Impact {
@@ -160,7 +159,6 @@ export interface PhysicalEquipmentAvgAge {
     poids: number;
     ageMoyen: number;
     avgWeightedAge?: number;
-    level?: string;
 }
 
 export interface PhysicalEquipmentLowImpact {
@@ -169,7 +167,7 @@ export interface PhysicalEquipmentLowImpact {
     type: string;
     nomEntite: string | null;
     statut: string;
-    quantite: number;
+    quantite: number;t
     lowImpact: boolean;
     pourcentageLowImpact?: number;
     count?: number;
