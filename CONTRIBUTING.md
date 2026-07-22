@@ -192,6 +192,28 @@ flowchart TD
 
 ---
 
+## Accessibility
+
+All user interface changes must comply with the General Accessibility Improvement Framework (RGAA) accessibility requirements. Ensure that:
+
+- All interactive elements are fully keyboard accessible.
+- Appropriate semantic HTML and ARIA attributes are used where necessary.
+- Color contrast meets RGAA accessibility requirements.
+- Screen reader compatibility is maintained.
+- Focus indicators are clearly visible and keyboard navigation follows a logical order.
+- Images and icons include meaningful alternative text where applicable.
+- Forms include accessible labels, instructions, and error messages.
+
+## Eco-Design
+
+If your changes impact the frontend, user interface, or user journey, you must run a GreenIT Analysis before submitting your contribution.
+
+- Run the GreenIT Analysis CLI to evaluate the environmental impact of your changes.
+- Review the generated report and address any significant regressions where possible.
+- Include the analysis results with your pull request when applicable.
+
+GreenIT Analysis CLI: https://github.com/cnumr/GreenIT-Analysis-cli
+
 ## 🌍 Green IT & Eco-Design Principles
 
 ```mermaid
