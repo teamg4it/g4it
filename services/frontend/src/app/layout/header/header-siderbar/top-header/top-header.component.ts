@@ -408,6 +408,10 @@ export class TopHeaderComponent implements OnInit {
         this.translate.use(lang);
         localStorage.setItem("lang", lang);
         document.querySelector("html")!.setAttribute("lang", lang);
+        this.router.navigate([], {
+            skipLocationChange: true,
+            queryParamsHandling: "merge",
+        });
         // Directly reload since we're reloading anyway
         globalThis.location.reload();
     }
