@@ -84,7 +84,7 @@ public class SaveService {
         outPhysicalEquipments.clear();
         int totalSaved = finalizeSaveAndCleanup(aggregation);
         // Populate level field from referential data in batches to avoid transaction timeout on large datasets
-        populateLevelInBatches(taskId);
+        // populateLevelInBatches(taskId);
         return totalSaved;
     }
 
