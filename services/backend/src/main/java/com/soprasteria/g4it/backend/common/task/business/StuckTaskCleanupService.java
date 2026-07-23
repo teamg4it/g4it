@@ -59,7 +59,7 @@ public class StuckTaskCleanupService {
     @Transactional
     public void failStuckTasks() {
         if (!stuckTaskCheckEnabled) {
-            log.debug("Stuck task check is disabled");
+            log.info("Stuck task check is disabled");
             return;
         }
 
@@ -68,7 +68,7 @@ public class StuckTaskCleanupService {
         List<Task> inProgressTasks = taskRepository.findByStatus(TaskStatus.IN_PROGRESS.toString());
 
         if (inProgressTasks.isEmpty()) {
-            log.debug("No IN_PROGRESS tasks found");
+            log.info("No IN_PROGRESS tasks found");
             return;
         }
 
@@ -93,7 +93,7 @@ public class StuckTaskCleanupService {
                     task.setProgressLastChangedDate(lastUpdate);
                     taskRepository.save(task);
                     initializedCount++;
-                    log.debug("Task {} - First check, initialized PLCD = LUD", task.getId());
+                    log.info("Task {} - First check, initialized PLCD = LUD", task.getId());
                 } catch (Exception e) {
                     log.error("Error while initializing progressLastChangedDate for task {}: {}",
                             task.getId(), e.getMessage(), e);
@@ -107,7 +107,7 @@ public class StuckTaskCleanupService {
                     task.setProgressLastChangedDate(lastUpdate);
                     taskRepository.save(task);
                     updatedCount++;
-                    log.debug("Task {} - Progress detected, updated PLCD = LUD", task.getId());
+                    log.info("Task {} - Progress detected, updated PLCD = LUD", task.getId());
                 } catch (Exception e) {
                     log.error("Error while updating progressLastChangedDate for task {}: {}",
                             task.getId(), e.getMessage(), e);
@@ -116,7 +116,7 @@ public class StuckTaskCleanupService {
             // Case 3: LUD == PLCD - Task is stuck, KILL it
             else if (lastUpdate.equals(progressLastChanged) || lastUpdate.isBefore(progressLastChanged)) {
                 long minutesSinceLastUpdate = ChronoUnit.MINUTES.between(task.getProgressLastChangedDate(), now);
-                log.warn("Task {} (type: {}) is STUCK - LUD == PLCD, no updates for {} minutes",
+                log.info("Task {} (type: {}) is STUCK - LUD == PLCD, no updates for {} minutes",
                         task.getId(), task.getType(), minutesSinceLastUpdate);
                 failTask(task, now, minutesSinceLastUpdate);
                 failedCount++;
@@ -127,7 +127,7 @@ public class StuckTaskCleanupService {
             log.info("Stuck task cleanup completed - {} initialized, {} updated, {} KILLED",
                     initializedCount, updatedCount, failedCount);
         } else {
-            log.debug("All IN_PROGRESS tasks are healthy");
+            log.info("All IN_PROGRESS tasks are healthy");
         }
     }
 
