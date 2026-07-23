@@ -1,7 +1,7 @@
 ---
-title: "Context and Assumptions"
+title: "2.13. Context and Assumptions"
 description: "This use case describes how to create and update Context and Assumptions for a digital service version"
-weight: 20
+weight: 130
 mermaid: true
 ---
 
