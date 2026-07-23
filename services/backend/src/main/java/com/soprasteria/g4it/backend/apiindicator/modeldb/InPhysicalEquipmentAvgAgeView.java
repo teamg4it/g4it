@@ -64,7 +64,7 @@ import java.io.Serializable;
                             common_filters[1]             AS nom_entite,
                             filters[1]                    AS statut,
                             SUM(quantity)                 AS poids,
-                            SUM(lifespan) / SUM(quantity) AS age_moyen
+                            SUM(lifespan) / SUM(quantity) AS age_moyen,
                             level                         AS level
                         FROM equipment_lifespan
                         GROUP BY
