@@ -70,6 +70,10 @@ public interface AggregationToOutput {
         String[] values = key.toArray(new String[0]);
 
         String criterion = refShortcutBO.criterionMap().inverse().get(values[2]);
+        String reference = values[6];
+
+        // Lookup level from the reference item name using the pre-built map
+        String level = refShortcutBO.levelMap().get(reference);
 
         return OutPhysicalEquipment.builder()
                 .taskId(taskId)
@@ -79,12 +83,13 @@ public interface AggregationToOutput {
                 .lifecycleStep(refShortcutBO.lifecycleStepMap().inverse().get(values[3]))
                 .location(values[4])
                 .statusIndicator(values[5])
-                .reference(values[6])
+                .reference(reference)
                 .numberOfUsers("null".equals(values[7]) || values[7] == null ? 0.0 : Double.parseDouble(values[7]))
                 .hostingEfficiency("null".equals(values[8]) ? null : values[8])
                 .commonFilters(Arrays.asList(values[9].split(";")))
                 .filters(Arrays.asList(values[10].split(";")))
                 .source(values[11])
+                .level(level)
                 .countValue(agg.getCountValue())
                 .quantity(agg.getQuantity())
                 .lifespan(agg.getLifespan())

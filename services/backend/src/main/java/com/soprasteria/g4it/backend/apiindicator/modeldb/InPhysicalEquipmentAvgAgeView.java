@@ -96,4 +96,5 @@ public class InPhysicalEquipmentAvgAgeView implements Serializable {
     private Double ageMoyen;
 
     private String level;
+
 }

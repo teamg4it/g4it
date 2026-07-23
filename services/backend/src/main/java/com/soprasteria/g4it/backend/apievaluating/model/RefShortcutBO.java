@@ -15,5 +15,6 @@ import java.util.Map;
 
 public record RefShortcutBO(Map<String, String> unitMap, BiMap<String, String> criterionMap,
                             BiMap<String, String> lifecycleStepMap,
-                            Map<Pair<String, String>, Integer> elecMixQuartiles) {
+                            Map<Pair<String, String>, Integer> elecMixQuartiles,
+                            Map<String, String> levelMap) {
 }

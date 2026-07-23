@@ -102,6 +102,7 @@ export class InventoryUtilService {
                     (impact) => hasAllFilters || this.isItemPresent(impact, filtersSet),
                 )
                 ?.reduce((n, impact) => n + impact.countValue, 0) || 0;
+
         /*
         Only physical equipment (category "2 – Equipment" (Constants.EQUIPEMENT_2)) are
         considered in Total equipment count calculation and  Average lifespan calculation
