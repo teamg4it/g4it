@@ -7,6 +7,7 @@
 - 2196 | Managing the context and calculation assumptions for a digital service
 - 2158 | Reverse Axes on the main Radial graph
 - 2150 | Modifying the rendering of the main graph when more than 5 items 
+- 2195 | Explicit checks during the creation of an inventory by importing a file
   
 ### Minor Changes
 - 2318 | Correct calculation of total equipment count and average lifespan in Inventory module
@@ -14,6 +15,8 @@
 - 2193 | Administration - Explicit checks during the loading of workspace reference data files
 - 2304 | Redirect to login page if user is logout due to session out
 - 2217 | Display loading state during inventory creation
+- 2288 | Fix for Electric Mix Resolution Issue During Equipment Impact Calculation
+- 2190 | Fix for Encoding problems when exporting reference data files (platform and workspace)
 - 2364 | Average PUE undisplayed when 1 equipment type is unfiltered
 
 ## 3.13.1
