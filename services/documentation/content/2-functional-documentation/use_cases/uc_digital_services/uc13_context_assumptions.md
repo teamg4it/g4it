@@ -42,15 +42,15 @@ E -->|Save| F[Updated Context Saved]
 
 **Create Context and Assumptions**
 
-![uc13_create-context_assumptions.png](../images/uc13_create-context_assumptions.png)
+![uc13_create-context_assumptions_updated.png](../images/uc13_create-context_assumptions_updated.png)
 
 **Context and Assumptions with content**
 
-![uc13_after_create_context.png](../images/uc13_after_create_context.png)
+![uc13_after_create_context_updated.png](../images/uc13_after_create_context_updated.png)
 
 **Edit Context and Assumptions**
 
-![uc13_edit_context.png](../images/uc13_edit_context.png)
+![uc13_edit_context_updated.png](../images/uc13_edit_context_updated.png)
 
 {{% expand title="Show the behavior detail" expanded="false" center="true"%}}
 
