@@ -22,6 +22,9 @@ public interface DataCenterIndicatorMapper {
 
     @Mapping(target = "dataCenterName", source = "name")
     @Mapping(target = "country", source = "location")
+    @Mapping(target = "entity", source = "entity")
+    @Mapping(target = "equipment", source = "equipment")
+    @Mapping(target = "status", source = "status")
     DataCentersInformationBO toInDataCentersDto(final InDatacenterIndicatorView source);
 
 }
