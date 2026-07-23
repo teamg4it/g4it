@@ -13,6 +13,7 @@
 - 2183 | New data model file for importing workspace reference data + updating platform data model
 - 2193 | Administration - Explicit checks during the loading of workspace reference data files
 - 2304 | Redirect to login page if user is logout due to session out
+- 2217 | Display loading state during inventory creation
 
 ## 3.13.1
 
