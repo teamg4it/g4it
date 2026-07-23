@@ -70,7 +70,7 @@ class SaveServiceTest {
         RefShortcutBO refShortcutBO = new RefShortcutBO(
                 null, null,
                 null,
-                null
+                null, null
         );
         Long taskId = 1L;
 
@@ -90,7 +90,7 @@ class SaveServiceTest {
         RefShortcutBO refShortcutBO = new RefShortcutBO(
                 null, null,
                 null,
-                null
+                null, null
         );
         Long taskId = 1L;
 
@@ -109,7 +109,7 @@ class SaveServiceTest {
         RefShortcutBO refShortcutBO = new RefShortcutBO(
                 null, null,
                 null,
-                null
+                null, null
         );
         Long taskId = 1L;
 
@@ -129,7 +129,7 @@ class SaveServiceTest {
                 List.of("key2"), new AggValuesBO()
         ));
 
-        RefShortcutBO refShortcutBO = new RefShortcutBO(null, null, null, null);
+        RefShortcutBO refShortcutBO = new RefShortcutBO(null, null, null, null, null);
         Long taskId = 1L;
 
         when(aggregationToOutput.mapApplication(any(), any(), eq(taskId), eq(refShortcutBO)))
@@ -168,7 +168,7 @@ class SaveServiceTest {
             aggregation.put(List.of("k" + i), new AggValuesBO());
         }
 
-        RefShortcutBO ref = new RefShortcutBO(null, null, null, null);
+        RefShortcutBO ref = new RefShortcutBO(null, null, null, null, null);
         Long taskId = 1L;
 
         when(aggregationToOutput.mapPhysicalEquipment(any(), any(), eq(taskId), eq(ref)))
@@ -191,7 +191,7 @@ class SaveServiceTest {
             aggregation.put(List.of("k" + i), new AggValuesBO());
         }
 
-        RefShortcutBO ref = new RefShortcutBO(null, null, null, null);
+        RefShortcutBO ref = new RefShortcutBO(null, null, null, null, null);
         Long taskId = 1L;
 
         when(aggregationToOutput.mapApplication(any(), any(), eq(taskId), eq(ref)))
@@ -213,7 +213,7 @@ class SaveServiceTest {
             aggregation.put(List.of("k" + i), new AggValuesBO());
         }
 
-        RefShortcutBO ref = new RefShortcutBO(null, null, null, null);
+        RefShortcutBO ref = new RefShortcutBO(null, null, null, null, null);
         Long taskId = 1L;
 
         when(aggregationToOutput.mapVirtualEquipment(any(), any(), eq(taskId), eq(ref)))
