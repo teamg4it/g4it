@@ -213,11 +213,12 @@ export class InventoriesMultiCriteriaFootprintComponent extends AbstractDashboar
                 : footprintCalculated[0]?.impacts.map((impact) => impact.criteria) || [];
 
             // Apply sorting and transformation
-            this.xAxisInput = InventoryMultiCriteriaViewMapper.sortAndTransformAxis(
-                dataSource,
-                isAcvStep,
-                this.translate,
-            );
+            this.xAxisInput = isAcvStep
+                ? InventoryMultiCriteriaViewMapper.sortByLifecycleOrder(
+                      dataSource,
+                      this.translate,
+                  )
+                : InventoryMultiCriteriaViewMapper.sortAlphabetically(dataSource);
         } else {
             this.xAxisInput = Object.keys(this.footprint())
                 .sort(
@@ -243,18 +244,17 @@ export class InventoriesMultiCriteriaFootprintComponent extends AbstractDashboar
         }
 
         // Return radial chart for 4 or fewer criteria
-        return InventoryMultiCriteriaViewMapper.createRadialChartConfig(
+        return InventoryMultiCriteriaViewMapper.createRadialChartConfig({
             footprintCalculated,
             criteriaCountMap,
             isInverted,
             selectedView,
-            this.inventory()?.enableDataInconsistency ?? false,
-            this.translate,
-            this.integerPipe,
-            false,
-            undefined,
-            Constants.COLOR,
-        );
+            enableDataInconsistency: this.inventory()?.enableDataInconsistency ?? false,
+            translate: this.translate,
+            integerPipe: this.integerPipe,
+            useCustomColors: false,
+            defaultColor: Constants.COLOR,
+        });
     }
 
     stackChartClick(event: string) {
