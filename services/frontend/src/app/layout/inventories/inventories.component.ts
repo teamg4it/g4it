@@ -171,6 +171,12 @@ export class InventoriesComponent implements OnInit, OnDestroy {
 
     loopLoadInventories() {
         this.inventoryInterval = setInterval(async () => {
+            // Don't reload if on error page (prevents 401 loops)
+            if (this.router.url.includes("/something-went-wrong")) {
+                clearInterval(this.inventoryInterval);
+                return;
+            }
+
             if (this.inventoriesToReload.size === 0) {
                 clearInterval(this.inventoryInterval);
             } else {
