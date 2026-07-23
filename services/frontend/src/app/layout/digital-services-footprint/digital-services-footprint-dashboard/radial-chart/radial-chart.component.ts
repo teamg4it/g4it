@@ -372,13 +372,14 @@ export class RadialChartComponent extends AbstractDashboard implements OnChanges
                       }),
                 axisLabel: {
                     formatter: (value: string) => {
-                        return isInverted
-                            ? this.formatAxisLabel(value, criteriaMap)
-                            : this.formatAxisLabel(
-                                  value,
-                                  criteriaMap,
-                                  criteriaUnitValues,
-                              );
+                        if (isInverted) {
+                            return this.formatAxisLabel(value, criteriaMap);
+                        }
+                        return this.formatAxisLabel(
+                            value,
+                            criteriaMap,
+                            criteriaUnitValues,
+                        );
                     },
                     margin: this.isCompareScreen ? 20 : 26,
                     rich: this.isCompareScreen
@@ -438,9 +439,10 @@ export class RadialChartComponent extends AbstractDashboard implements OnChanges
                     ? criteriaSetArray
                     : noErrorRadialChartData.map((item: any) => item.tier),
                 formatter: (param: any) => {
-                    return isInverted
-                        ? param
-                        : this.existingTranslation(param, "digital-services");
+                    if (isInverted) {
+                        return param;
+                    }
+                    return this.existingTranslation(param, "digital-services");
                 },
             },
             color: Constants.COLOR,
