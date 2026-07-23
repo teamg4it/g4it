@@ -1,7 +1,7 @@
 ---
-title: "Context and Assumptions"
+title: "2.13. Context and Assumptions"
 description: "This use case describes how to create and update Context and Assumptions for a digital service version"
-weight: 20
+weight: 121
 mermaid: true
 ---
 
@@ -23,7 +23,7 @@ The information is optional and can include:
 - Methodological choices
 - Known limitations
 
-During creation, users enter the Digital Service name, click **Next**, complete the **Context and Assumptions** page if desired, and then click **Validate Creation**. The content is saved with the created version.
+During Digital Service creation, users enter the Digital Service name, click **Next**, complete the **Context and Assumptions** page if desired, and then click **Validate Creation**. The content is saved with the created version.
 
 After creation, users can edit the Context and Assumptions at any time using the **Edit Context/Assumptions** button and save their changes.
 
@@ -31,7 +31,7 @@ After creation, users can edit the Context and Assumptions at any time using the
 
 {{< mermaid align="center" >}}
 graph TD
-A[Digital Service Name] -->|Next| B[Context and Assumptions]
+A[Add a digital service] -->|Next| B[Context and Assumptions]
 B --> C[Enter or Skip Context]
 C -->|Validate Creation| D[Context Saved with Version]
 D -->|Edit Context/Assumptions| E[Update Context]
@@ -39,6 +39,10 @@ E -->|Save| F[Updated Context Saved]
 {{< /mermaid >}}
 
 ## Mockup
+
+**Create Digital service**
+
+![uc13_create_ds.png](../images/uc13_create_ds.png)
 
 **Create Context and Assumptions**
 
@@ -74,6 +78,9 @@ participant FrontEnd
 participant BackEnd
 participant Database
 
+User->>FrontEnd: Create Digital Service
+FrontEnd-->>User: Display Digital Service name page
+User->>FrontEnd: Enter Digital Service name
 User->>FrontEnd: Next
 FrontEnd-->>User: Display Context and Assumptions page
 User->>FrontEnd: Enter Context and Assumptions (optional)
