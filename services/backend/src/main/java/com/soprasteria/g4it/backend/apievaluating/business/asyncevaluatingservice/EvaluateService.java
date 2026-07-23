@@ -57,6 +57,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import com.soprasteria.g4it.backend.apireferential.modeldb.ItemImpact;
 
 import java.io.IOException;
 import java.nio.file.Files;

@@ -29,6 +29,7 @@ public interface EquipmentIndicatorMapper {
     @Mapping(target = "sip", source = "peopleEqImpact")
     @Mapping(target = "quantity", source = "quantity")
     @Mapping(target = "statusIndicator", source = "statusIndicator")
+    @Mapping(target = "level", source = "level")
     @Mapping(target = "countValue", source = "countValue")
     EquipmentImpactBO toImpact(final OutPhysicalEquipment source);
 
