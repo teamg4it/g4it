@@ -17,6 +17,8 @@ import { MessageService } from "primeng/api";
 import { throwError, timer } from "rxjs";
 import { catchError, retry } from "rxjs/operators";
 import { Constants } from "src/constants";
+import { environment } from "src/environments/environment";
+import { keycloak } from "../service/business/custom-auth.service";
 import { MatomoScriptService } from "../service/business/matomo-script.service";
 import { UserService } from "../service/business/user.service";
 
@@ -74,6 +76,25 @@ function getErrorMessage(
     return errorMessage;
 }
 
+function handleUnauthorizedError(error: any, router: Router): void {
+    if (environment?.keycloak?.enabled === "true" && keycloak.isTokenExpired()) {
+        keycloak.login({
+            redirectUri: globalThis.location.href,
+        });
+    } else {
+        navigateToErrorPage(router, error.status);
+    }
+}
+
+function navigateToErrorPage(router: Router, statusCode: number): void {
+    const currentUrl = router.url;
+    const targetErrorUrl = `/something-went-wrong/${statusCode}`;
+
+    if (!currentUrl.includes(targetErrorUrl)) {
+        router.navigate(["/something-went-wrong", statusCode]);
+    }
+}
+
 function handleErrorPageNavigation(
     error: any,
     router: Router,
@@ -114,8 +135,10 @@ function handleErrorPageNavigation(
                 detail: errorDetail,
                 sticky: true,
             });
+        } else if (error.status === HttpStatusCode.Unauthorized) {
+            handleUnauthorizedError(error, router);
         } else {
-            router.navigate(["/something-went-wrong", error.status]);
+            navigateToErrorPage(router, error.status);
         }
     } else if (error.status === 0) {
         messageService.add({

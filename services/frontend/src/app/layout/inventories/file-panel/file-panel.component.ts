@@ -52,6 +52,7 @@ import { SelectFileComponent } from "./select-file/select-file.component";
 import { Button } from "primeng/button";
 import { DatePickerModule } from "primeng/datepicker";
 import { InputTextModule } from "primeng/inputtext";
+import { GlobalStoreService } from "src/app/core/store/global.store";
 import { AutofocusDirective } from "../../../core/directives/auto-focus.directive";
 
 @Component({
@@ -75,6 +76,7 @@ export class FilePanelComponent implements OnInit, OnDestroy, AfterViewInit, OnC
     private readonly workspaceReferenceDataService = inject(
         WorkspaceReferenceDataService,
     );
+    protected readonly global = inject(GlobalStoreService);
     className: string = "default-calendar max-w-full";
 
     @ViewChild("uploaderContainer", { read: ViewContainerRef })
@@ -234,8 +236,10 @@ export class FilePanelComponent implements OnInit, OnDestroy, AfterViewInit, OnC
     }
 
     submitFormData() {
+        this.global.setLoading(true);
         if (this.name === "") {
             this.className = "ng-invalid ng-dirty";
+            this.global.setLoading(false);
             return;
         }
         let formData = new FormData();
@@ -271,13 +275,16 @@ export class FilePanelComponent implements OnInit, OnDestroy, AfterViewInit, OnC
                         } ${this.translate.instant("inventories.created")}`,
                     });
                     if (bodyLoading.length === 0) {
+                        this.global.setLoading(false);
                         this.reloadInventoriesAndLoop.emit(response.id);
                         this.close();
                     } else {
                         this.uploadAndLaunchLoading(formData, response.id);
                     }
                 },
-                error: (error) => {},
+                error: (error) => {
+                    this.global.setLoading(false);
+                },
             });
             return;
         }
@@ -303,11 +310,13 @@ export class FilePanelComponent implements OnInit, OnDestroy, AfterViewInit, OnC
             .pipe(delay(500))
             .subscribe({
                 next: () => {
+                    this.global.setLoading(false);
                     this.sidebarVisibleChange.emit(false);
                     this.reloadInventoriesAndLoop.emit(inventoryId);
                     this.close();
                 },
                 error: () => {
+                    this.global.setLoading(false);
                     this.sidebarPurposeChange.emit("upload");
                 },
             });
