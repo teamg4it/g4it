@@ -5,11 +5,38 @@ This project is built with a strong focus on **Green IT** and **Eco-design princ
 
 ---
 
+## 💡 Before You Start
+
+For **new features**, please discuss your proposal with the **Solution Maintainers** before starting development.
+
+This discussion helps ensure that:
+
+- The feature provides value to the project and its users.
+- It aligns with the project's functional roadmap and priorities.
+- The proposed implementation fits the existing architecture and design.
+- Similar work is not already planned or in progress.
+
+Bug fixes, documentation improvements, and small enhancements generally do not require prior discussion unless they significantly impact the application's behavior.
+
+---
+
 ## 📌 Contribution Workflow
 
 ```mermaid
 flowchart TD
-    A[Fork Repository] --> B[Create Feature/Fix Branch]
+    A{New Feature?}
+    A -->|Yes| B[Discuss with Solution Maintainers]
+    A -->|No| C[Fork Repository]
+    B --> C
+    C --> D[Create Feature/Fix Branch]
+    D --> E[Write Code]
+    E --> F[Validate Changes Locally]
+    F --> G[Commit Changes]
+    G --> H[Push Branch]
+    H --> I[Create Pull Request]
+    I --> J[CI/CD Validation]
+    J --> K[Maintainer Code Review]
+    K --> L[Merge]
     B --> C[Write Code]
     C --> D[Run Tests & Sonar Checks]
     D --> E[Fix Issues]
@@ -22,13 +49,19 @@ flowchart TD
 
 ### Steps:
 
-1. Fork the repository
-2. Create a new branch
+1. **For new features**, discuss the proposal with the Solution Maintainers to validate its value and alignment with the project roadmap.
+2. Fork the repository
+3. Create a new branch
    `feat/your-feature-name`
    `fix/bugfix-name`
-3. Follow coding standards given below
-4. Run tests and Sonar checks
-5. Push and create PR
+4. Follow coding standards described below
+5. Validate your changes locally
+   - Run unit tests
+   - Ensure the project builds successfully
+   - Run any available local static analysis
+6. Push your branch and create a Pull Request
+
+> **Note:** SonarQube Quality Gate validation is executed automatically by the CI/CD pipeline after a Pull Request is created. See the **CI/CD Validation (SonarQube & Quality Gate)** section below for details.
 
 ---
 
@@ -42,7 +75,9 @@ flowchart TD
 
 ---
 
-## 🔍 SonarQube & Quality Gate
+## 🔍 CI/CD Validation (SonarQube & Quality Gate)
+
+After a Pull Request is opened, the CI/CD pipeline automatically builds the project, executes unit tests, performs SonarQube analysis and validates the Quality Gate.
 
 ```mermaid
 flowchart LR
@@ -74,7 +109,20 @@ flowchart TD
 
 ### Rules:
 
-* Follow **Java & Spring Boot best practices**
+### Java & Spring Boot Best Practices
+
+- Follow the coding conventions already established in the project.
+- Keep controllers lightweight and delegate business logic to services.
+- Use constructor injection instead of field injection.
+- Validate request inputs.
+- Use DTOs instead of exposing JPA entities.
+- Handle exceptions through the global exception handler.
+- Use SLF4J logging instead of `System.out.println`.
+- Avoid hardcoded configuration values.
+- Keep methods small, readable and testable.
+- Write unit tests for new business logic.
+
+### Additional Rules
 * Generate DTOs using Source Code Generator (Open-API)
 * Proper exception handling
 * Avoid hardcoding
@@ -144,6 +192,32 @@ flowchart TD
 
 ---
 
+## Accessibility
+
+All user interface changes must comply with the General Accessibility Improvement Framework (RGAA) accessibility requirements. Ensure that:
+
+- All interactive elements are fully keyboard accessible.
+- Appropriate semantic HTML and ARIA attributes are used where necessary.
+- Color contrast meets RGAA accessibility requirements.
+- Screen reader compatibility is maintained.
+- Focus indicators are clearly visible and keyboard navigation follows a logical order.
+- Images and icons include meaningful alternative text where applicable.
+- Forms include accessible labels, instructions, and error messages.
+
+---
+
+## Eco-Design
+
+If your changes impact the frontend, user interface, or user journey, you must run a GreenIT Analysis before submitting your contribution.
+
+- Run the GreenIT Analysis CLI to evaluate the environmental impact of your changes.
+- Review the generated report and address any significant regressions where possible.
+- Include the analysis results with your pull request when applicable.
+
+GreenIT Analysis CLI: https://github.com/cnumr/GreenIT-Analysis-cli
+
+---
+
 ## 🌍 Green IT & Eco-Design Principles
 
 ```mermaid
@@ -174,25 +248,45 @@ mindmap
 
 ## 🔁 Pull Request Process
 
+After a Pull Request is created, the automated CI/CD pipeline validates the contribution. Once all checks pass, a project maintainer reviews the changes before merging them into the main branch.
+
 ```mermaid
 flowchart TD
-    A[Create PR] --> B[Run CI/CD]
-    B --> C[Sonar Check]
-    C --> D[Code Review]
-    D --> E{Approved?}
-    E -->|Yes| F[Merge]
-    E -->|No| G[Fix]
-    G --> B
+A[Contributor creates Pull Request] --> B[CI/CD Pipeline runs automatically]
+B --> C[Build & Unit Tests]
+C --> D[SonarQube Quality Gate]
+D --> E{Pipeline Successful?}
+E -->|No| F[Contributor fixes issues]
+F --> A
+E -->|Yes| G[Maintainer reviews code]
+G --> H{Approved?}
+H -->|No| I[Contributor updates PR]
+I --> A
+H -->|Yes| J[Maintainer merges Pull Request]
 ```
 
-### PR Checklist:
+### Responsibilities
 
-* ✔ Code follows standards
-* ✔ Tests added
-* ✔ Sonar passed
-* ✔ Proper documentation
+| Step | Contributor | Maintainer |
+|---|:---:|:---:|
+| Create feature branch | ✅ | |
+| Implement changes | ✅ | |
+| Run local validation | ✅ | |
+| Open Pull Request | ✅ | |
+| CI/CD execution | Automatic | |
+| SonarQube validation | Automatic | |
+| Code Review | | ✅ |
+| Approve / Request changes | | ✅ |
+| Merge Pull Request | | ✅ |
 
----
+### PR Checklist
+
+* ✔ Project builds successfully locally
+* ✔ Unit tests added or updated
+* ✔ Documentation updated (if required)
+* ✔ CI/CD pipeline passes
+* ✔ Sonar Quality Gate passes
+* ✔ Pull Request approved by a maintainer
 
 ## 🔎 Code Review Checklist
 

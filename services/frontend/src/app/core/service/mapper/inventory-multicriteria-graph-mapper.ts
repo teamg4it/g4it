@@ -15,6 +15,22 @@ import { IntegerPipe } from "../../pipes/integer.pipe";
 import { getColorFormatter, getLabelFormatter } from "./graphs-mapper";
 
 /**
+ * Configuration options for radial chart creation
+ */
+export interface RadialChartConfig {
+    footprintCalculated: FootprintCalculated[];
+    criteriaCountMap: StatusCountMap;
+    isInverted: boolean;
+    selectedView: string;
+    enableDataInconsistency: boolean;
+    translate: TranslateService;
+    integerPipe: IntegerPipe;
+    useCustomColors?: boolean;
+    getColorFn?: (data: string) => string;
+    defaultColor?: string[];
+}
+
+/**
  * Translates a parameter using existing translations or returns the parameter itself
  */
 export const existingTranslation = (
@@ -42,9 +58,11 @@ export const getCriteriaDimensionTranslation = (
     selectedView: string,
     translate: TranslateService,
 ): string => {
-    return isInverted
-        ? translate.instant(`criteria.${dimension}`).title
-        : existingTranslation(dimension, selectedView, translate);
+    if (isInverted) {
+        return translate.instant(`criteria.${dimension}`).title;
+    }
+
+    return existingTranslation(dimension, selectedView, translate);
 };
 
 /**
@@ -68,19 +86,6 @@ export const sortByLifecycleOrder = (
                 LifeCycleUtils.getLifeCycleList().indexOf(b),
         )
         .map((criteria) => translate.instant(`acvStep.${criteria}`));
-};
-
-/**
- * Sorts and transforms axis data based on dimension type
- */
-export const sortAndTransformAxis = (
-    dataSource: string[],
-    isAcvStep: boolean,
-    translate: TranslateService,
-): string[] => {
-    return isAcvStep
-        ? sortByLifecycleOrder(dataSource, translate)
-        : sortAlphabetically(dataSource);
 };
 
 /**
@@ -298,20 +303,20 @@ export const getTextDescription = (
 /**
  * Creates complete radial chart configuration for multicriteria views
  */
-export const createRadialChartConfig = (
-    footprintCalculated: FootprintCalculated[],
-    criteriaCountMap: StatusCountMap,
-    isInverted: boolean,
-    selectedView: string,
-    enableDataInconsistency: boolean,
-    translate: TranslateService,
-    integerPipe: any,
-    useCustomColors: boolean = false,
-    getColorFn?: (data: string) => string,
-    defaultColor?: string[],
-) => {
-    // useCustomColors and getColorFn for Application view only, getColorFn is a function that returns a color based on the data value
-    // defaultColor for Equipment view getColorFn not available
+export const createRadialChartConfig = (config: RadialChartConfig) => {
+    const {
+        footprintCalculated,
+        criteriaCountMap,
+        isInverted,
+        selectedView,
+        enableDataInconsistency,
+        translate,
+        integerPipe,
+        useCustomColors = false,
+        getColorFn,
+        defaultColor,
+    } = config;
+
     return {
         tooltip: createTooltipConfig(
             footprintCalculated,
