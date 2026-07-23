@@ -17,6 +17,7 @@
 - 2217 | Display loading state during inventory creation
 - 2288 | Fix for Electric Mix Resolution Issue During Equipment Impact Calculation
 - 2190 | Fix for Encoding problems when exporting reference data files (platform and workspace)
+- 2364 | Average PUE undisplayed when 1 equipment type is unfiltered
 
 ## 3.13.1
 
