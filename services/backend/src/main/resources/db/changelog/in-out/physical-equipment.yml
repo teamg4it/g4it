@@ -337,6 +337,17 @@ databaseChangeLog:
                   type: varchar(255)
 
   - changeSet:
+      id: add-index-in-physical-equipment-dsv-uid-name
+      author: G4IT Dev Team
+      changes:
+        - createIndex:
+            tableName: in_physical_equipment
+            indexName: idx_in_physical_equipment_dsv_uid_name
+            columns:
+              - column:
+                  name: digital_service_version_uid
+              - column:
+                  name: name
       id: add-level-to-out-physical-equipment
       author: G4IT Dev Team
       comment: Add level field to out_physical_equipment to distinguish between physical equipment (2-Equipement) and other types (0-Base data, 1-Digital component, 3-System, 4-Digital services). This enables accurate equipment count and lifespan calculations by filtering only actual physical equipment items. The level field is used ONLY for indicator filtering and does NOT affect impact calculations.

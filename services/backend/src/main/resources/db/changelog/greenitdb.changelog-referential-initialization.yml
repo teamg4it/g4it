@@ -690,3 +690,52 @@ databaseChangeLog:
               SET source = 'This step is an addition by G4IT Team to avoid error on indicators for POE equipment'
               WHERE lifecycle_step = 'USING'
                 AND name IN ('wifi-hotspot-1', 'WiFi hotspot');
+  - changeSet:
+      id: add-barcode-scanner-1-using-impact-update-poe-sources-update-level-for-2-equipement
+      author: G4IT Dev Team
+      changes:
+        - sql:
+            splitStatements: true
+            stripComments: false
+            sql: |
+              -- Add USING step rows for Barcode scanner 1 (12 criteria)
+              INSERT INTO ref_item_impact (
+                  name,
+                  category,
+                  level,
+                  tier,
+                  lifecycle_step,
+                  criterion,
+                  avg_electricity_consumption,
+                  source,
+                  unit,
+                  value
+              )
+              SELECT
+                  'barcode-scanner-1',
+                  'Specific',
+                  '2-Equipement',
+                  'End-user/Terminals',
+                  'USING',
+                  c.criterion,
+                  0,
+                  'This step is an addition by G4IT Team to avoid error on indicators for POE equipment',
+                  'Item',
+                  0
+              FROM (
+                  SELECT DISTINCT criterion
+                  FROM ref_item_impact
+                  LIMIT 12
+              ) c
+              WHERE NOT EXISTS (
+                  SELECT 1
+                  FROM ref_item_impact rii
+                  WHERE rii.name = 'barcode-scanner-1'
+                    AND rii.lifecycle_step = 'USING'
+                    AND rii.criterion = c.criterion
+              );
+              
+              -- Update level to '2-Equipement' for rows with value '2 - Equipement'
+                UPDATE ref_item_impact
+                SET level = '2-Equipement'
+                WHERE name IN ('2 - Equipement');
