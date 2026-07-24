@@ -123,6 +123,18 @@ Step5-->|New filters selected|Step6[View is updated according to the filters]
 
 {{% /expand %}}
 
+### Adaptive Visualization for Multi-Criteria Graph
+![uc5_visualize_equipment_footprint_multi_items1.png](../images/uc5_visualize_equipment_footprint_multi_items1.png)
+- **Default Visualization**
+  A radial chart is displayed when 5 or fewer items are shown.
+ - **Automatic Conversion**
+  When more than 5 items are displayed on the axis, the graph automatically changes to a bar chart.
+- **Purpose**
+  This behavior improves readability by avoiding overlapping axis labels and ensuring that all items remain clearly visible.
+- The underlying data, calculations, filters, and interactions remain unchanged; only the chart visualization is adapted.
+- If the number of displayed items is reduced to 5 or fewer, the visualization automatically shifts to the radial chart.
+  
+
 
 ### View dedicated for each criterion
 
