@@ -109,6 +109,21 @@ Step5-->|New filters selected|Step6[View is updated according to the filters]
 
 {{% /expand %}}
 
+### Reverse Axes on the multicriteria graph
+
+![uc5_visualize_equipment_footprint_multi_reverse1.png](../images/uc5_visualize_equipment_footprint_multi_reverse1.png)
+![uc5_visualize_equipment_footprint_multi_reverse2.png](../images/uc5_visualize_equipment_footprint_multi_reverse2.png)
+{{% expand title="Show the behavior detail" expanded="false" center="true"%}}
+
+| Reference | Group                      | Elements               | Sub-Elements              | Type   | Description                                                                                                                                                                                        |
+| --------- | -------------------------- | ---------------------- | ------------------------- | ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1         | Inverse the Axis (Off)     | Toggle Button          |                           | button | <li><u>_initialization rules_</u>: Allows users to switch the orientation of the graph axes. By default, the Inverse Axis option is Off, and the graph is displayed using its standard axis orientation.   |
+| 2         | Inverse the Axis (On)      | Toggle Button          |                           | button | <li><u>_initialization rules_</u>: When the Inverse Axis option is enabled (On), the graph axes are reversed. The chart is immediately redrawn using the inverted orientation while preserving the displayed data and applied filters.   |
+| 3         | Multicriteria-graph        | Graph                  |                           | graph   | <li><u>_initialization rules_</u>: The Inverse Axis feature is available on the Inventory module's equipment view multicriteria graphs. Enabling the option swaps the chart axes to provide an alternative visualization, making it easier to analyze the same inventory data from a different perspective without affecting the underlying dataset. |
+
+{{% /expand %}}
+
+
 ### View dedicated for each criterion
 
 ![uc5_visualize_equipment_footprint_one.png](../images/uc5_visualize_equipment_footprint_one.png)
