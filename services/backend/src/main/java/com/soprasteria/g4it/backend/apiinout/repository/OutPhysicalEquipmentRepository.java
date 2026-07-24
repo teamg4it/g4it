@@ -48,7 +48,10 @@ public interface OutPhysicalEquipmentRepository extends JpaRepository<OutPhysica
      * Populate level field from referential data.
      * Level is determined by the original equipment model/type from in_physical_equipment.
      * Uses the same three-tier priority as indicator views: model direct, matching_item, then type default.
+     *
+     * @deprecated Use {@link #populateLevelFromReferentialBatch(Long, int, int)} for large datasets to avoid transaction timeout
      */
+    @Deprecated(since = "2.2.0", forRemoval = false)
     @Transactional
     @Modifying
     @Query(value = """
@@ -97,5 +100,72 @@ public interface OutPhysicalEquipmentRepository extends JpaRepository<OutPhysica
         WHERE ope.task_id = :taskId
     """, nativeQuery = true)
     void populateLevelFromReferential(@Param("taskId") Long taskId);
+
+    /**
+     * Populate level field in batches to prevent transaction timeout on large datasets (100k+).
+     * Process records in manageable chunks to reduce memory and database lock contention.
+     *
+     * @param taskId the task id
+     * @param offset the offset for pagination
+     * @param limit  the batch size limit (recommended: 10k)
+     */
+    @Transactional
+    @Modifying
+    @Query(value = """
+        UPDATE out_physical_equipment ope
+        SET level = (
+            SELECT COALESCE(
+                -- Priority 1: Direct model match in ref_item_impact
+                (SELECT rii.level
+                 FROM in_physical_equipment ipe
+                 JOIN inventory inv ON inv.id = ipe.inventory_id
+                 JOIN ref_item_impact rii ON rii.name = ipe.model
+                 WHERE ipe.inventory_id = (SELECT inventory_id FROM task WHERE id = :taskId)
+                   AND ope.equipment_type = ipe.type
+                   AND rii.level IS NOT NULL
+                   AND (rii.workspace_id = inv.organization_id OR rii.workspace_id IS NULL)
+                 ORDER BY rii.workspace_id DESC NULLS LAST
+                 LIMIT 1),
+                -- Priority 2: Model via matching_item
+                (SELECT rii.level
+                 FROM in_physical_equipment ipe
+                 JOIN inventory inv ON inv.id = ipe.inventory_id
+                 JOIN ref_matching_item rmi ON rmi.item_source = ipe.model
+                 JOIN ref_item_impact rii ON rii.name = rmi.ref_item_target
+                 WHERE ipe.inventory_id = (SELECT inventory_id FROM task WHERE id = :taskId)
+                   AND ope.equipment_type = ipe.type
+                   AND rmi.subscriber IS NULL
+                   AND (rmi.workspace_id = inv.organization_id OR rmi.workspace_id IS NULL)
+                   AND rii.level IS NOT NULL
+                   AND (rii.workspace_id = inv.organization_id OR rii.workspace_id IS NULL)
+                 ORDER BY rmi.workspace_id DESC NULLS LAST, rii.workspace_id DESC NULLS LAST
+                 LIMIT 1),
+                -- Priority 3: Type default from ref_item_type
+                (SELECT rii.level
+                 FROM inventory inv
+                 JOIN ref_item_type rit ON rit.type = ope.equipment_type
+                 JOIN ref_item_impact rii ON rii.name = rit.ref_default_item
+                 WHERE inv.id = (SELECT inventory_id FROM task WHERE id = :taskId)
+                   AND rit.subscriber IS NULL
+                   AND (rit.workspace_id = inv.organization_id OR rit.workspace_id IS NULL)
+                   AND rii.level IS NOT NULL
+                   AND (rii.workspace_id = inv.organization_id OR rii.workspace_id IS NULL)
+                 ORDER BY rit.workspace_id DESC NULLS LAST, rii.workspace_id DESC NULLS LAST
+                 LIMIT 1)
+            )
+        )
+        WHERE ope.task_id = :taskId
+          AND ope.id IN (
+              SELECT id FROM out_physical_equipment 
+              WHERE task_id = :taskId 
+              ORDER BY id 
+              LIMIT :limit OFFSET :offset
+          )
+    """, nativeQuery = true)
+    void populateLevelFromReferentialBatch(
+            @Param("taskId") Long taskId,
+            @Param("offset") int offset,
+            @Param("limit") int limit
+    );
 }
 

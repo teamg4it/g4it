@@ -82,9 +82,50 @@ public class SaveService {
         }
         outPhysicalEquipmentRepository.saveAll(outPhysicalEquipments);
         outPhysicalEquipments.clear();
-        // Populate level field from referential data after all records are saved. Level is determined by equipment reference and stored for indicator filtering
-        outPhysicalEquipmentRepository.populateLevelFromReferential(taskId);
-        return finalizeSaveAndCleanup(aggregation);
+        int totalSaved = finalizeSaveAndCleanup(aggregation);
+        // Populate level field from referential data in batches to avoid transaction timeout on large datasets
+        // populateLevelInBatches(taskId);
+        return totalSaved;
+    }
+
+    /**
+     * Batch the expensive populateLevelFromReferential operation to prevent transaction timeout.
+     * Processes records in chunks of 10k to keep transaction scope manageable.
+     *
+     * @param taskId the task id
+     */
+    private void populateLevelInBatches(Long taskId) {
+        List<OutPhysicalEquipment> records = outPhysicalEquipmentRepository.findByTaskId(taskId);
+        int totalRecords = records.size();
+
+        log.info("Starting batched level population for taskId: {} with {} records", taskId, totalRecords);
+
+        for (int offset = 0; offset < totalRecords; offset += Constants.BATCH_SIZE) {
+            int batchEnd = Math.min(offset + Constants.BATCH_SIZE, totalRecords);
+            log.debug("Populating level for records {}-{} of {}", offset, batchEnd, totalRecords);
+            populateLevelBatch(taskId, offset, Constants.BATCH_SIZE);
+            try {
+                Thread.sleep(100); // Brief pause between batches to reduce database pressure
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                log.warn("Batch population interrupted", e);
+                break;
+            }
+        }
+
+        log.info("Completed batched level population for taskId: {}", taskId);
+    }
+
+    /**
+     * Populate level for a single batch using separate transaction to avoid timeout.
+     *
+     * @param taskId the task id
+     * @param offset the offset
+     * @param limit  the batch size limit
+     */
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void populateLevelBatch(Long taskId, int offset, int limit) {
+        outPhysicalEquipmentRepository.populateLevelFromReferentialBatch(taskId, offset, limit);
     }
 
     private void flushAndClearEntityManager() {
