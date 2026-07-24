@@ -23,7 +23,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
@@ -65,7 +64,7 @@ class AdministratorServiceTest {
     void init() {
         organizationId = workspace.getOrganization().getId();
         workspaceId = workspace.getId();
-        Mockito.lenient().when(cacheManager.getCache(any())).thenReturn(Mockito.mock(Cache.class));
+        lenient().when(cacheManager.getCache(any())).thenReturn(mock(Cache.class));
     }
 
 

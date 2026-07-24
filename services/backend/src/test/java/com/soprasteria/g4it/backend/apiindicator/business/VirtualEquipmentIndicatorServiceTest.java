@@ -10,9 +10,9 @@ import com.soprasteria.g4it.backend.apiindicator.repository.InVirtualEquipmentLo
 import com.soprasteria.g4it.backend.apiuser.business.WorkspaceService;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
 import com.soprasteria.g4it.backend.external.boavizta.business.BoaviztapiService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -44,19 +44,8 @@ class VirtualEquipmentIndicatorServiceTest {
     @Mock
     private BoaviztapiService boaviztapiService;
 
+    @InjectMocks
     private VirtualEquipmentIndicatorService service;
-
-    @BeforeEach
-    void setup() {
-        service = new VirtualEquipmentIndicatorService(
-                lowImpactRepository,
-                elecRepository,
-                mapper,
-                workspaceService,
-                lowImpactService,
-                boaviztapiService
-        );
-    }
 
     @Test
     void shouldReturnVirtualEquipmentElecConsumption() {
