@@ -9,8 +9,8 @@ mermaid: true
 
 -   [Table of contents](#table-of-contents)
 -   [Description](#description)
--   [Mockup](#mockup)
 -   [State Diagram](#state-diagram)
+-   [Mockup](#mockup)
 -   [Sequence Diagram](#sequence-diagram)
 
 ## Description
