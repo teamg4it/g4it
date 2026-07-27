@@ -30,6 +30,7 @@ public interface EquipmentIndicatorMapper {
     @Mapping(target = "quantity", source = "quantity")
     @Mapping(target = "statusIndicator", source = "statusIndicator")
     @Mapping(target = "level", source = "level")
+    @Mapping(target = "impactUnit", source = "impactUnit")
     @Mapping(target = "countValue", source = "countValue")
     EquipmentImpactBO toImpact(final OutPhysicalEquipment source);
 

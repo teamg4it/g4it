@@ -485,6 +485,9 @@ components:
         level:
           type: string
           description: Equipment level from referential (e.g. 2-Equipement, 3-System)
+        impactUnit:
+          type: string
+          description: Impact unit from referential (e.g. kgCO2e, kWh, m3)
 
     ApplicationIndicatorRest:
       type: object
