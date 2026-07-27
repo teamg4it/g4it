@@ -198,7 +198,7 @@ describe("Array Utility Functions", () => {
             const result = groupByField(input, "status");
 
             expect(result["active"]).toEqual(input);
-            expect(Object.keys(result).length).toBe(1);
+            expect(Object.keys(result)).toHaveSize(1);
         });
 
         it("should handle different field types", () => {
@@ -209,8 +209,8 @@ describe("Array Utility Functions", () => {
             ];
             const result = groupByField(input, "flag");
 
-            expect(result["true"].length).toBe(2);
-            expect(result["false"].length).toBe(1);
+            expect(result["true"]).toHaveSize(2);
+            expect(result["false"]).toHaveSize(1);
         });
     });
 

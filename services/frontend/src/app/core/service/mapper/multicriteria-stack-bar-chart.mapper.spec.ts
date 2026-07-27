@@ -113,7 +113,7 @@ describe("multicriteria-stack-bar-chart.mapper", () => {
         it("should create one series per unique criterion", () => {
             const result = createStackBarChartConfig(baseConfig);
 
-            expect((result.series as any).length).toBe(3); // 3 unique criteria
+            expect(result.series as any).toHaveSize(3); // 3 unique criteria
         });
 
         it("should set correct series properties for each criterion", () => {
@@ -126,7 +126,7 @@ describe("multicriteria-stack-bar-chart.mapper", () => {
                 expect(s.emphasis).toEqual({ focus: "series" });
                 expect(s.itemStyle.color).toBeDefined();
                 expect(s.data).toBeDefined();
-                expect(s.data.length).toBe(3); // 3 footprints
+                expect(s.data).toHaveSize(3); // 3 footprints
             });
         });
 
@@ -168,7 +168,7 @@ describe("multicriteria-stack-bar-chart.mapper", () => {
 
             // Check that series have correct data length
             seriesData.forEach((s) => {
-                expect(s.data.length).toBe(2); // 2 footprints
+                expect(s.data).toHaveSize(2); // 2 footprints
             });
         });
 
@@ -437,7 +437,7 @@ describe("multicriteria-stack-bar-chart.mapper", () => {
             const result = createStackBarChartConfig(baseConfig);
 
             expect((result.xAxis as any)[0].data).toEqual([]);
-            expect((result.series as any).length).toBe(0);
+            expect(result.series as any).toHaveSize(0);
             expect((result.dataZoom as any)[0].show).toBe(false);
         });
 
@@ -453,7 +453,7 @@ describe("multicriteria-stack-bar-chart.mapper", () => {
 
             const result = createStackBarChartConfig(baseConfig);
 
-            expect((result.series as any).length).toBe(0);
+            expect(result.series as any).toHaveSize(0);
         });
 
         it("should handle multiple footprints with same criteria", () => {
@@ -462,7 +462,7 @@ describe("multicriteria-stack-bar-chart.mapper", () => {
 
             // Each series should have data for all 3 footprints
             series.forEach((s) => {
-                expect(s.data.length).toBe(3);
+                expect(s.data).toHaveSize(3);
             });
         });
 
@@ -513,7 +513,7 @@ describe("multicriteria-stack-bar-chart.mapper", () => {
             const series = result.series as any[];
 
             // Series should be created in alphabetical order by criteria
-            expect(series.length).toBe(3);
+            expect(series).toHaveSize(3);
             expect(series[0].data).toBeDefined();
             expect(series[1].data).toBeDefined();
             expect(series[2].data).toBeDefined();
