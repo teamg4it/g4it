@@ -72,8 +72,10 @@ public interface AggregationToOutput {
         String criterion = refShortcutBO.criterionMap().inverse().get(values[2]);
         String reference = values[6];
 
-        // Lookup level from the reference item name using the pre-built map
-        String level = refShortcutBO.levelMap().get(reference);
+        // Lookup level and unit from the reference item name using the pre-built map
+        var referentialInfo = refShortcutBO.itemReferentialMap().get(reference);
+        String level = referentialInfo != null ? referentialInfo.level() : null;
+        String impactUnit = referentialInfo != null ? referentialInfo.unit() : null;
 
         return OutPhysicalEquipment.builder()
                 .taskId(taskId)
@@ -90,6 +92,7 @@ public interface AggregationToOutput {
                 .filters(Arrays.asList(values[10].split(";")))
                 .source(values[11])
                 .level(level)
+                .impactUnit(impactUnit)
                 .countValue(agg.getCountValue())
                 .quantity(agg.getQuantity())
                 .lifespan(agg.getLifespan())

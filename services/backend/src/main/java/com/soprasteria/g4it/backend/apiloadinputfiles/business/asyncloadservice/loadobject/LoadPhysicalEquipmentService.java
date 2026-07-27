@@ -14,6 +14,7 @@ import com.soprasteria.g4it.backend.apiinout.repository.InPhysicalEquipmentRepos
 import com.soprasteria.g4it.backend.apiinout.repository.InVirtualEquipmentRepository;
 import com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.checkobject.CheckPhysicalEquipmentService;
 import com.soprasteria.g4it.backend.apireferential.business.ReferentialGetService;
+import com.soprasteria.g4it.backend.apireferential.business.ReferentialService;
 import com.soprasteria.g4it.backend.common.model.Context;
 import com.soprasteria.g4it.backend.common.model.FileToLoad;
 import com.soprasteria.g4it.backend.common.model.LineError;
@@ -51,6 +52,9 @@ public class LoadPhysicalEquipmentService {
     @Autowired
     ReferentialGetService referentialGetService;
 
+    @Autowired
+    ReferentialService referentialService;
+
     @Transactional
     public List<LineError> execute(final Context context, final FileToLoad fileToLoad, final int pageNumber, List<InPhysicalEquipmentRest> physicalEquipments) {
         if (physicalEquipments.isEmpty()) return List.of();
@@ -61,13 +65,23 @@ public class LoadPhysicalEquipmentService {
 
         List<InPhysicalEquipment> physicalEquipmentsToSave = new ArrayList<>();
 
+        // Check if workspace has referential data
+        long workspaceCount = context.getWorkspaceId() != null ?
+            referentialGetService.countItemImpactsForWorkspace(context.getWorkspaceId()) : 0;
+
         for (int i = 0; i < physicalEquipments.size(); i++) {
             int line = Constants.BATCH_SIZE * pageNumber + i + 2;
             List<LineError> coherenceErrorInLine =  fileToLoad.getCoherenceErrorByLineNumer().getOrDefault(line, List.of());
 
             final List<LineError> checkErrors = checkPhysicalEquipmentService.checkRules(context, physicalEquipments.get(i),fileToLoad.getFilename(),  line);
             if (checkErrors.isEmpty() && coherenceErrorInLine.isEmpty()) {
-                physicalEquipmentsToSave.add(inPhysicalEquipmentMapper.toEntity(physicalEquipments.get(i)));
+
+                InPhysicalEquipment equipment = inPhysicalEquipmentMapper.toEntity(physicalEquipments.get(i));
+
+                // Populate level and impactUnit from referential data
+                referentialService.populateLevelAndUnit(equipment, context.getOrganization(), context.getWorkspaceId(), workspaceCount);
+
+                physicalEquipmentsToSave.add(equipment);
             } else {
                 errors.addAll(checkErrors);
                 errors.addAll(coherenceErrorInLine);
@@ -93,5 +107,6 @@ public class LoadPhysicalEquipmentService {
     public Long getPhysicalEquipmentCount(Long inventoryId) {
         return inPhysicalEquipmentRepository.sumQuantityByInventoryId(inventoryId);
     }
+
 
 }

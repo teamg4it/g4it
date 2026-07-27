@@ -97,4 +97,8 @@ public class InPhysicalEquipment {
 
     @EqualsAndHashCode.Exclude
     private LocalDateTime lastUpdateDate;
+
+    private String level;
+
+    private String impactUnit;
 }

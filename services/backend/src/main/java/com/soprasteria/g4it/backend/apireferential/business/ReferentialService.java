@@ -12,7 +12,10 @@ import com.google.common.math.Quantiles;
 import com.soprasteria.g4it.backend.apiindicator.modeldb.RefSustainableIndividualPackage;
 import com.soprasteria.g4it.backend.apiindicator.repository.RefSustainableIndividualPackageRepository;
 import com.soprasteria.g4it.backend.apiindicator.utils.CriteriaUtils;
+import com.soprasteria.g4it.backend.apiinout.modeldb.InPhysicalEquipment;
+import com.soprasteria.g4it.backend.apievaluating.model.ItemReferentialInfo;
 import com.soprasteria.g4it.backend.apireferential.modeldb.ItemImpact;
+import com.soprasteria.g4it.backend.apireferential.repository.ItemImpactRepository;
 import com.soprasteria.g4it.backend.common.utils.StringUtils;
 import com.soprasteria.g4it.backend.server.gen.api.dto.*;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +25,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -36,6 +40,9 @@ public class ReferentialService {
 
     @Autowired
     RefSustainableIndividualPackageRepository refSustainableIndividualPackageRepository;
+
+    @Autowired
+    ItemImpactRepository itemImpactRepository;
 
     public List<String> getLifecycleSteps() {
         return referentialGetService.getAllLifecycleSteps().stream().map(LifecycleStepRest::getCode).toList();
@@ -242,5 +249,176 @@ public class ReferentialService {
         }
 
         return itemImpacts;
+    }
+
+
+
+     /*public void getLevelAndUnitReferential(){
+     //per record
+             MatchingItemRest matchingItem = null;
+        boolean isModelMatched = true;
+        ItemTypeRest itemTypeRest;
+
+        if (physicalEquipment.getModel() != null) {
+            if(workspaceCount>0) {
+                matchingItem = referentialService.getMatchingItemForWorkspace(physicalEquipment.getModel(),workspaceId);
+                if(matchingItem == null){
+                    matchingItem = referentialService.getMatchingItem(physicalEquipment.getModel(), organization);
+                }
+            }else {
+                matchingItem = referentialService.getMatchingItem(physicalEquipment.getModel(), organization);
+            }
+        }
+        //type
+
+        if(workspaceCount>0) {
+            itemTypeRest = referentialService.getItemTypeForWorkspace(physicalEquipment.getType(), workspaceId);
+            if(itemTypeRest == null){
+                itemTypeRest = referentialService.getItemType(physicalEquipment.getType(), organization);
+            }
+        }else{
+            itemTypeRest = referentialService.getItemType(physicalEquipment.getType(), organization);
+        }
+
+        //by default
+
+        List<ItemImpactRest> workspaceImpacts = referentialGetService.getItemImpactsForWorkspace(criterion, lifecycleStep,
+                    name, null, null, null,workspaceId);
+
+        List<ItemImpactRest> itemImpacts;
+        if (workspaceImpacts == null || workspaceImpacts.isEmpty()) {
+            List<ItemImpactRest> fallbackImpacts = referentialGetService.getItemImpacts(criterion, lifecycleStep,
+                    name, null, null, null);
+            itemImpacts = fallbackImpacts == null ? new ArrayList<>() : new ArrayList<>(fallbackImpacts);
+        } else {
+            // Copy to mutable list because upstream may return immutable collections.
+            itemImpacts = new ArrayList<>(workspaceImpacts);
+        }
+
+    }*/
+
+    /**
+     * Build a lookup map from item reference names to their referential information (level and unit).
+     * This avoids slow UPDATE queries by determining level and unit during evaluation.
+     *
+     * @param workspaceId the workspace ID
+     * @return map of item reference name to ItemReferentialInfo (e.g., "desktop-4" -> {level: "2-Equipement", unit: "unit"})
+     */
+    public Map<String, ItemReferentialInfo> buildItemReferentialMap(Long workspaceId) {
+        Map<String, ItemReferentialInfo> referentialMap = new HashMap<>();
+        try {
+            // Get all item impacts for this workspace (includes both workspace-specific and global)
+            List<ItemImpact> itemImpacts = itemImpactRepository.findByWorkspaceIdOrWorkspaceIdIsNull(workspaceId);
+
+            // Build map: item name -> ItemReferentialInfo (workspace-specific items take precedence over global)
+            // Process global items first, then workspace-specific ones will override
+            itemImpacts.stream()
+                    .filter(item -> item.getName() != null && (item.getLevel() != null || item.getUnit() != null))
+                    .sorted((a, b) -> {
+                        // Sort: global (null workspaceId) first, then workspace-specific
+                        if (a.getWorkspaceId() == null && b.getWorkspaceId() != null) return -1;
+                        if (a.getWorkspaceId() != null && b.getWorkspaceId() == null) return 1;
+                        return 0;
+                    })
+                    .forEach(item -> referentialMap.put(
+                            item.getName(),
+                            new ItemReferentialInfo(item.getLevel(), item.getUnit())
+                    ));
+
+            log.debug("Built item referential map with {} entries for workspace {}", referentialMap.size(), workspaceId);
+        } catch (Exception e) {
+            log.warn("Failed to build item referential map for workspace {}: {}", workspaceId, e.getMessage());
+        }
+        return referentialMap;
+    }
+
+    /**
+     * Returns level/unit for a reference item name.
+     * Looks in workspace referential first, then global referential.
+     */
+    private ItemImpactRest getItemImpact(String itemName, Long workspaceId) {
+        if (itemName == null || itemName.isBlank()) {
+            return null;
+        }
+
+        List<ItemImpactRest> itemImpacts = getItemImpactsForWorkspace(
+                null,
+                null,
+                itemName,
+                null,
+                workspaceId);
+
+        return (itemImpacts != null && !itemImpacts.isEmpty())
+                ? itemImpacts.getFirst()
+                : null;
+    }
+
+    public void populateLevelAndUnit(InPhysicalEquipment equipment,
+                                     String organization,
+                                     Long workspaceId,
+                                     long workspaceCount) {
+
+        ItemTypeRest itemTypeRest = null;
+        ItemImpactRest firstImpact = null;
+        MatchingItemRest matchingItem = null;
+
+
+        if(equipment.getModel() !=null){
+            matchingItem = getMatchingItemForWorkspace(equipment.getModel(),workspaceId);
+            if(matchingItem == null){
+                matchingItem = getMatchingItem(equipment.getModel(), organization);
+            }
+        }
+
+        itemTypeRest = getItemTypeForWorkspace(equipment.getType(), workspaceId);
+        if(itemTypeRest == null){
+            itemTypeRest = getItemType(equipment.getType(), organization);
+        }
+
+        String itemImpactName = null;
+        if (matchingItem == null) {
+            if (itemTypeRest.getRefDefaultItem() != null) {
+                itemImpactName = itemTypeRest.getRefDefaultItem();
+            }
+        } else {
+            itemImpactName = matchingItem.getRefItemTarget();
+        }
+
+        List<ItemImpactRest> workspaceImpacts = referentialGetService.getItemImpactsForWorkspace(null, null,
+                itemImpactName, null, null, null,workspaceId);
+
+        List<ItemImpactRest> itemImpacts;
+        if (workspaceImpacts == null || workspaceImpacts.isEmpty()) {
+            List<ItemImpactRest> fallbackImpacts = referentialGetService.getItemImpacts(null, null,
+                    itemImpactName, null, null, null);
+            itemImpacts = fallbackImpacts == null ? new ArrayList<>() : new ArrayList<>(fallbackImpacts);
+        } else {
+            itemImpacts = new ArrayList<>(workspaceImpacts);
+        }
+
+        firstImpact = itemImpacts.stream().findFirst().orElse(null);
+
+        if(firstImpact != null){
+            /*if ("2-Equipement".equals(firstImpact.getLevel())
+                    && "Item".equalsIgnoreCase(firstImpact.getUnit())) {
+
+                equipment.setLevel(firstImpact.getLevel());
+                equipment.setImpactUnit(firstImpact.getUnit());
+
+            } else {
+                equipment.setLevel(null);
+                equipment.setImpactUnit(null);
+            }*/
+            equipment.setLevel(firstImpact.getLevel());
+            equipment.setImpactUnit(firstImpact.getUnit());
+        }else{
+            throw new IllegalArgumentException(
+                    String.format(
+                            "Unable to resolve referential item for model '%s' and type '%s'",
+                            equipment.getModel(),
+                            equipment.getType()
+                    ));
+        }
+
     }
 }
