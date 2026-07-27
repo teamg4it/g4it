@@ -17,7 +17,6 @@ import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceVers
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceLinkRepository;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceVersionRepository;
-import com.soprasteria.g4it.backend.apiinout.repository.InApplicationRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.InDatacenterRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.InPhysicalEquipmentRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.InVirtualEquipmentRepository;
