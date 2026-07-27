@@ -39,4 +39,6 @@ public class EquipmentImpactBO {
     private Long countValue;
 
     private String level;
+
+    private String impactUnit;
 }

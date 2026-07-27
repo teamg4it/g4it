@@ -15,10 +15,7 @@ import com.soprasteria.g4it.backend.apievaluating.business.asyncevaluatingservic
 import com.soprasteria.g4it.backend.apievaluating.mapper.AggregationToOutput;
 import com.soprasteria.g4it.backend.apievaluating.mapper.ImpactToCsvRecord;
 import com.soprasteria.g4it.backend.apievaluating.mapper.InternalToNumEcoEvalImpact;
-import com.soprasteria.g4it.backend.apievaluating.model.AggValuesBO;
-import com.soprasteria.g4it.backend.apievaluating.model.EvaluateReportBO;
-import com.soprasteria.g4it.backend.apievaluating.model.ImpactBO;
-import com.soprasteria.g4it.backend.apievaluating.model.RefShortcutBO;
+import com.soprasteria.g4it.backend.apievaluating.model.*;
 import com.soprasteria.g4it.backend.apiindicator.repository.RefSustainableIndividualPackageRepository;
 import com.soprasteria.g4it.backend.apiinout.mapper.InputToCsvRecord;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InApplication;
@@ -30,8 +27,6 @@ import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
 import com.soprasteria.g4it.backend.apireferential.business.ReferentialGetService;
 import com.soprasteria.g4it.backend.apireferential.business.ReferentialService;
-import com.soprasteria.g4it.backend.apireferential.modeldb.ItemImpact;
-import com.soprasteria.g4it.backend.apireferential.repository.ItemImpactRepository;
 import com.soprasteria.g4it.backend.apiuser.repository.OrganizationRepository;
 import com.soprasteria.g4it.backend.common.filesystem.business.local.CsvFileService;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileType;
@@ -57,7 +52,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import com.soprasteria.g4it.backend.apireferential.modeldb.ItemImpact;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -115,8 +109,6 @@ public class EvaluateService {
     BoaviztapiService boaviztapiService;
     @Autowired
     InventoryRepository inventoryRepository;
-    @Autowired
-    ItemImpactRepository itemImpactRepository;
 
     @Value("${local.working.folder}")
     private String localWorkingFolder;
@@ -193,15 +185,15 @@ public class EvaluateService {
                 CriterionRest::getUnit
         ));
 
-        // Build level lookup map: item reference name -> level
-        Map<String, String> levelMap = buildLevelMap(context.getWorkspaceId());
+        // Build item referential map: item reference name -> {level, unit}
+        Map<String, ItemReferentialInfo> itemReferentialMap = referentialService.buildItemReferentialMap(context.getWorkspaceId());
 
         RefShortcutBO refShortcutBO = new RefShortcutBO(
                 criteriaUnitMap,
                 getShortcutMap(criteriaCodes),
                 getShortcutMap(lifecycleSteps),
                 electricityMixQuartilesCache,
-                levelMap
+                itemReferentialMap
         );
 
         final List<HypothesisRest> hypothesisRestList = referentialService.getHypotheses(organization);
@@ -720,38 +712,6 @@ public class EvaluateService {
             result.put(strings.get(i), String.valueOf(i));
         }
         return result;
-    }
-
-    /**
-     * Build a lookup map from item reference names to their levels.
-     * This avoids slow UPDATE queries by determining levels during evaluation.
-     *
-     * @param workspaceId the workspace ID
-     * @return map of item reference name to level (e.g., "desktop-4" -> "2-Equipement")
-     */
-    private Map<String, String> buildLevelMap(Long workspaceId) {
-        Map<String, String> levelMap = new HashMap<>();
-        try {
-            // Get all item impacts for this workspace (includes both workspace-specific and global)
-            List<ItemImpact> itemImpacts = itemImpactRepository.findByWorkspaceIdOrWorkspaceIdIsNull(workspaceId);
-
-            // Build map: item name -> level (workspace-specific items take precedence over global)
-            // Process global items first, then workspace-specific ones will override
-            itemImpacts.stream()
-                    .filter(item -> item.getName() != null && item.getLevel() != null)
-                    .sorted((a, b) -> {
-                        // Sort: global (null workspaceId) first, then workspace-specific
-                        if (a.getWorkspaceId() == null && b.getWorkspaceId() != null) return -1;
-                        if (a.getWorkspaceId() != null && b.getWorkspaceId() == null) return 1;
-                        return 0;
-                    })
-                    .forEach(item -> levelMap.put(item.getName(), item.getLevel()));
-
-            log.debug("Built level lookup map with {} entries for workspace {}", levelMap.size(), workspaceId);
-        } catch (Exception e) {
-            log.warn("Failed to build level lookup map for workspace {}: {}", workspaceId, e.getMessage());
-        }
-        return levelMap;
     }
 
     record SaveResult(int savedVirtualCount, int savedApplicationCount) {
