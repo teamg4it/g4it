@@ -17,7 +17,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.ArgumentMatchers;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -246,7 +245,7 @@ class AuthServiceTest {
     @Test
     void testVerifyUserAuthentication_invalidPrincipal() {
         when(environment.matchesProfiles(Constants.NOSECURITY)).thenReturn(false);
-        Authentication auth = Mockito.mock(Authentication.class);
+        Authentication auth = mock(Authentication.class);
         when(auth.isAuthenticated()).thenReturn(true);
         when(auth.getPrincipal()).thenReturn("notJwt");
         SecurityContextHolder.getContext().setAuthentication(auth);
@@ -259,7 +258,7 @@ class AuthServiceTest {
     void testVerifyUserAuthentication_nominal() {
         when(environment.matchesProfiles(Constants.NOSECURITY)).thenReturn(false);
         Jwt jwt = Jwt.withTokenValue("token").header("alg", "none").claim("sub", "sub").build();
-        Authentication auth = Mockito.mock(Authentication.class);
+        Authentication auth = mock(Authentication.class);
         when(auth.isAuthenticated()).thenReturn(true);
         when(auth.getPrincipal()).thenReturn(jwt);
         SecurityContextHolder.getContext().setAuthentication(auth);

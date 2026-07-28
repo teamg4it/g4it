@@ -39,7 +39,7 @@
         <liquibase-core.version>4.31.1</liquibase-core.version>
 
         <keycloak-adapter-bom.version>25.0.6</keycloak-adapter-bom.version>
-        <postgresql.version>42.7.11</postgresql.version>
+        <postgresql.version>42.7.12</postgresql.version>
         <bouncycastle.version>1.84</bouncycastle.version>
         <keycloak-spring-boot-starter.version>25.0.3</keycloak-spring-boot-starter.version>
 
@@ -58,6 +58,8 @@
         <jacoco-maven-plugin.version>0.8.13</jacoco-maven-plugin.version>
         <shedlock.version>6.9.2</shedlock.version>
         <azure-communication-email.version>1.0.11</azure-communication-email.version>
+        <!-- Netty version override to remediate CVE-2026-59901 and related vulnerabilities -->
+        <netty.version>4.2.16.Final</netty.version>
         <sonar.coverage.exclusions>
             **/gen/**/*.java,
             **/controller/**/*.java,
@@ -359,6 +361,22 @@
                 <version>7.0.0</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+            <!-- Netty overrides to fix CVE-2026-59901 and related HIGH vulnerabilities -->
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-codec-compression</artifactId>
+                <version>${netty.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-codec-http</artifactId>
+                <version>${netty.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-codec-http2</artifactId>
+                <version>${netty.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
