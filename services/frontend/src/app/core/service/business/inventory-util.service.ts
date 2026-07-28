@@ -93,7 +93,8 @@ export class InventoryUtilService {
             (impact) =>
                 impact.acvStep === maxStep &&
                 impact.status !== Constants.CLOUD_SERVICES &&
-                impact.level === Constants.EQUIPEMENT_2,
+                impact.level === Constants.EQUIPEMENT_2 &&
+                impact.impactUnit === Constants.ITEM,
         );
 
         const physicalEquipmentCount =
@@ -111,7 +112,8 @@ export class InventoryUtilService {
             (equipment) =>
                 (hasAllFilters ||
                     this.isEquipmentPresent(equipment, filtersSet, false)) &&
-                equipment.level === Constants.EQUIPEMENT_2,
+                equipment.level === Constants.EQUIPEMENT_2 &&
+                equipment.impactUnit === Constants.ITEM,
         );
 
         const { physicalEquipmentSum, poidsSum } = filteredEquipmentsAvgAge.reduce(
