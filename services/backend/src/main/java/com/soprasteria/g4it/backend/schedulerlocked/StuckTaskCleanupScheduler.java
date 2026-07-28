@@ -28,18 +28,18 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class StuckTaskCleanupScheduler {
 
-    @Autowired
+    /*@Autowired
     private StuckTaskCleanupService stuckTaskCleanupService;
 
     /**
      * Runs every 5 minutes to check for and fail stuck tasks.
      * Uses ShedLock to ensure only one instance runs in a distributed environment.
      */
-    @Scheduled(fixedDelay = 600_000, initialDelay = 60_000) // Every 10 minutes, start after 1 minute
-    @SchedulerLock(name = "failStuckTasks", lockAtMostFor = "4m", lockAtLeastFor = "30s")
+    /*@Scheduled(fixedDelay = 600_000, initialDelay = 60_000) // Every 10 minutes, start after 1 minute
+    @SchedulerLock(name = "failStuckTasks", lockAtMostFor = "4m", lockAtLeastFor = "30s")*/
     public void failStuckTasks() {
         log.info("Running stuck task cleanup scheduler started");
-        stuckTaskCleanupService.failStuckTasks();
+        //stuckTaskCleanupService.failStuckTasks();
         log.info("Running stuck task cleanup scheduler stopped");
     }
 
