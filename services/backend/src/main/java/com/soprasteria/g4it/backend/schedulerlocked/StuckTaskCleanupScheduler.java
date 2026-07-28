@@ -28,7 +28,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class StuckTaskCleanupScheduler {
 
-    /*@Autowired
+    //@Autowired
     private StuckTaskCleanupService stuckTaskCleanupService;
 
     /**
@@ -39,7 +39,7 @@ public class StuckTaskCleanupScheduler {
     @SchedulerLock(name = "failStuckTasks", lockAtMostFor = "4m", lockAtLeastFor = "30s")*/
     public void failStuckTasks() {
         log.info("Running stuck task cleanup scheduler started");
-        //stuckTaskCleanupService.failStuckTasks();
+        stuckTaskCleanupService.failStuckTasks();
         log.info("Running stuck task cleanup scheduler stopped");
     }
 
