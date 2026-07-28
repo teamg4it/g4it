@@ -15,10 +15,7 @@ import com.soprasteria.g4it.backend.apievaluating.business.asyncevaluatingservic
 import com.soprasteria.g4it.backend.apievaluating.mapper.AggregationToOutput;
 import com.soprasteria.g4it.backend.apievaluating.mapper.ImpactToCsvRecord;
 import com.soprasteria.g4it.backend.apievaluating.mapper.InternalToNumEcoEvalImpact;
-import com.soprasteria.g4it.backend.apievaluating.model.AggValuesBO;
-import com.soprasteria.g4it.backend.apievaluating.model.EvaluateReportBO;
-import com.soprasteria.g4it.backend.apievaluating.model.ImpactBO;
-import com.soprasteria.g4it.backend.apievaluating.model.RefShortcutBO;
+import com.soprasteria.g4it.backend.apievaluating.model.*;
 import com.soprasteria.g4it.backend.apiindicator.repository.RefSustainableIndividualPackageRepository;
 import com.soprasteria.g4it.backend.apiinout.mapper.InputToCsvRecord;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InApplication;
@@ -188,11 +185,15 @@ public class EvaluateService {
                 CriterionRest::getUnit
         ));
 
+        // Build item referential map: item reference name -> {level, unit}
+        Map<String, ItemReferentialInfo> itemReferentialMap = referentialService.buildItemReferentialMap(context.getWorkspaceId());
+
         RefShortcutBO refShortcutBO = new RefShortcutBO(
                 criteriaUnitMap,
                 getShortcutMap(criteriaCodes),
                 getShortcutMap(lifecycleSteps),
-                electricityMixQuartilesCache
+                electricityMixQuartilesCache,
+                itemReferentialMap
         );
 
         final List<HypothesisRest> hypothesisRestList = referentialService.getHypotheses(organization);

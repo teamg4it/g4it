@@ -120,6 +120,7 @@ export interface Impact {
     quantity?: number;
     unit?: string;
     level?: string;
+    impactUnit?: string;
 }
 
 export interface ImpactEntity extends Impact {
@@ -161,6 +162,7 @@ export interface PhysicalEquipmentAvgAge {
     ageMoyen: number;
     avgWeightedAge?: number;
     level?: string;
+    impactUnit?: string;
 }
 
 export interface PhysicalEquipmentLowImpact {

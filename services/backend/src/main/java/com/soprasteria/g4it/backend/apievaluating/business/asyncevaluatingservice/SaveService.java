@@ -82,8 +82,6 @@ public class SaveService {
         }
         outPhysicalEquipmentRepository.saveAll(outPhysicalEquipments);
         outPhysicalEquipments.clear();
-        // Populate level field from referential data after all records are saved. Level is determined by equipment reference and stored for indicator filtering
-        outPhysicalEquipmentRepository.populateLevelFromReferential(taskId);
         return finalizeSaveAndCleanup(aggregation);
     }
 

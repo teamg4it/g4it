@@ -24,8 +24,8 @@ public class InventoryEvaluatingScheduler {
     @Autowired
     private EvaluatingService evaluatingService;
 
-    @Scheduled(fixedDelay = 60_000, initialDelay = 5_000)
-    @SchedulerLock(name = "restartLostEvaluating", lockAtMostFor = "2m", lockAtLeastFor = "9s")
+  /*  @Scheduled(fixedDelay = 60_000, initialDelay = 5_000)
+    @SchedulerLock(name = "restartLostEvaluating", lockAtMostFor = "2m", lockAtLeastFor = "9s")*/
     public void restartLostEvaluating() {
         evaluatingService.restartEvaluating();
     }

@@ -36,4 +36,6 @@ public class PhysicalEquipmentsAvgAgeBO {
 
     private String level;
 
+    private String impactUnit;
+
 }
