@@ -38,7 +38,7 @@ public class SpringAsyncTaskConfig {
         executor.setQueueCapacity(100);
         executor.setThreadNamePrefix("LoadInput-");
         executor.setWaitForTasksToCompleteOnShutdown(true);
-        executor.setAwaitTerminationSeconds(60 * 10);
+        executor.setAwaitTerminationSeconds(120);
         executor.initialize();
         return executor;
     }
