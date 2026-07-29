@@ -35,10 +35,10 @@ public class SpringAsyncTaskConfig {
         // Dedicated pool for load-input jobs to avoid single-thread bottlenecks.
         executor.setCorePoolSize(2);
         executor.setMaxPoolSize(4);
-        executor.setQueueCapacity(100);
+        executor.setQueueCapacity(200);
         executor.setThreadNamePrefix("LoadInput-");
         executor.setWaitForTasksToCompleteOnShutdown(true);
-        executor.setAwaitTerminationSeconds(120);
+        executor.setAwaitTerminationSeconds(60 * 10);
         executor.initialize();
         return executor;
     }
