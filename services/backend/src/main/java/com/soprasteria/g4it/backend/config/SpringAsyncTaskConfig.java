@@ -29,7 +29,7 @@ public class SpringAsyncTaskConfig {
         return executor;
     }
 
-    @Bean(name = "taskExecutorLoadInputFiles")
+    /*@Bean(name = "taskExecutorLoadInputFiles")
     public TaskExecutor taskExecutorLoadInputFiles() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         // Dedicated pool for load-input jobs to avoid single-thread bottlenecks.
@@ -41,6 +41,6 @@ public class SpringAsyncTaskConfig {
         executor.setAwaitTerminationSeconds(60 * 10);
         executor.initialize();
         return executor;
-    }
+    }*/
 
 }
