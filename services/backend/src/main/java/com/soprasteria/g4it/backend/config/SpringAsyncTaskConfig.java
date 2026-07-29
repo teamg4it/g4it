@@ -13,16 +13,19 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
+import java.util.concurrent.ThreadPoolExecutor;
+
 @Configuration
 public class SpringAsyncTaskConfig {
 
     @Bean(name = "taskExecutorSingleThreaded")
     public TaskExecutor threadPoolTaskExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setCorePoolSize(0);  // Minimum number of threads in the pool
+        executor.setCorePoolSize(1);  // Minimum number of threads in the pool
         executor.setMaxPoolSize(1);  // Maximum number of threads in the pool
         executor.setQueueCapacity(100);  // Queue capacity for pending tasks
         executor.setThreadNamePrefix("Task-");  // Prefix for thread names
+        executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
         executor.setWaitForTasksToCompleteOnShutdown(true);  // Ensures tasks complete on shutdown
         executor.setAwaitTerminationSeconds(60 * 10);  // Timeout for waiting for tasks to complete
         executor.initialize();  // Initializes the thread pool
