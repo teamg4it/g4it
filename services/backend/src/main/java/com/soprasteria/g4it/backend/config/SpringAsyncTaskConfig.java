@@ -34,7 +34,7 @@ public class SpringAsyncTaskConfig {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         // Dedicated pool for load-input jobs to avoid single-thread bottlenecks.
         executor.setCorePoolSize(2);
-        executor.setMaxPoolSize(3);
+        executor.setMaxPoolSize(4);
         executor.setQueueCapacity(100);
         executor.setThreadNamePrefix("LoadInput-");
         executor.setWaitForTasksToCompleteOnShutdown(true);
