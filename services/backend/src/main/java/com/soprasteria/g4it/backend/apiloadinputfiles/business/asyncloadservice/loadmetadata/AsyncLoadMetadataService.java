@@ -61,7 +61,7 @@ public class AsyncLoadMetadataService {
                 executorService.shutdownNow();
                 Thread.currentThread().interrupt();
             } finally {
-                log.debug("All metadata files have been loaded");
+                log.info("All metadata files have been loaded");
             }
         }
 

@@ -21,29 +21,28 @@ public class SpringAsyncTaskConfig {
     @Bean(name = "taskExecutorSingleThreaded")
     public TaskExecutor threadPoolTaskExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setCorePoolSize(2);  // Minimum number of threads in the pool
-        executor.setMaxPoolSize(2);  // Maximum number of threads in the pool
+        executor.setCorePoolSize(0);  // Minimum number of threads in the pool
+        executor.setMaxPoolSize(1);  // Maximum number of threads in the pool
         executor.setQueueCapacity(100);  // Queue capacity for pending tasks
         executor.setThreadNamePrefix("Task-");  // Prefix for thread names
-        executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
         executor.setWaitForTasksToCompleteOnShutdown(true);  // Ensures tasks complete on shutdown
         executor.setAwaitTerminationSeconds(60 * 10);  // Timeout for waiting for tasks to complete
         executor.initialize();  // Initializes the thread pool
         return executor;
     }
 
-    @Bean(name = "taskExecutorLoadInputFiles")
+    /*@Bean(name = "taskExecutorLoadInputFiles")
     public TaskExecutor taskExecutorLoadInputFiles() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         // Dedicated pool for load-input jobs to avoid single-thread bottlenecks.
         executor.setCorePoolSize(2);
-        executor.setMaxPoolSize(2);
+        executor.setMaxPoolSize(4);
         executor.setQueueCapacity(100);
         executor.setThreadNamePrefix("LoadInput-");
         executor.setWaitForTasksToCompleteOnShutdown(true);
         executor.setAwaitTerminationSeconds(60 * 10);
         executor.initialize();
         return executor;
-    }
+    }*/
 
 }
