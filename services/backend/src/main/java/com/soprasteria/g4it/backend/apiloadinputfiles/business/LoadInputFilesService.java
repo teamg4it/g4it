@@ -71,7 +71,7 @@ public class LoadInputFilesService {
     @Autowired
     UserRepository userRepository;
     @Autowired
-    @Qualifier("taskExecutorSingleThreaded")
+    @Qualifier("taskExecutorLoadInputFiles")
     TaskExecutor taskExecutor;
     /**
      * Async Service where is executed the file loading
