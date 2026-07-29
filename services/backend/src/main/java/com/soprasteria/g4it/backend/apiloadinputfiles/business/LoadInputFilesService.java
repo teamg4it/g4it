@@ -39,6 +39,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
@@ -178,7 +179,9 @@ public class LoadInputFilesService {
                 .filenames(filenames)
                 .createdBy(user)
                 .build();
+        logEvaluatorExecutorState("before-submit-evaluating");
         saveAndLaunchLoadingTask(context,task);
+        logEvaluatorExecutorState("after-submit-evaluating");
         return task;
     }
 
@@ -447,5 +450,23 @@ public class LoadInputFilesService {
     private void saveAndLaunchLoadingTask(Context context, Task task) {
         taskRepository.save(task);
         taskExecutor.execute(new BackgroundTask(context, task, asyncLoadFilesService));
+    }
+    private void logEvaluatorExecutorState(String phase) {
+        if (!(taskExecutor instanceof ThreadPoolTaskExecutor evaluatorExecutor)) {
+            log.info("phase={} executorType={} thread={}", phase, taskExecutor.getClass().getSimpleName(), Thread.currentThread().getName());
+            return;
+        }
+
+        int queueSize = evaluatorExecutor.getThreadPoolExecutor().getQueue().size();
+        log.info(
+                "phase={} executor='{}' active={} poolSize={} maxPool={} queueSize={} thread={}",
+                phase,
+                "taskExecutorSingleThreaded",
+                evaluatorExecutor.getActiveCount(),
+                evaluatorExecutor.getPoolSize(),
+                evaluatorExecutor.getMaxPoolSize(),
+                queueSize,
+                Thread.currentThread().getName()
+        );
     }
 }
