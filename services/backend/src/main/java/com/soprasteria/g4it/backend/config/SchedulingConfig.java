@@ -17,12 +17,12 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 @Configuration
 @Slf4j
-public class SchedulingConfig implements SchedulingConfigurer {
+    public class SchedulingConfig implements SchedulingConfigurer {
 
     @Bean(name = "schedulerTaskExecutor")
     public ThreadPoolTaskScheduler schedulerTaskExecutor() {
         ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
-        scheduler.setPoolSize(2);
+        scheduler.setPoolSize(4);
         scheduler.setThreadNamePrefix("Scheduler-");
         scheduler.setWaitForTasksToCompleteOnShutdown(true);
         scheduler.setAwaitTerminationSeconds(60);
