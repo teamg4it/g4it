@@ -67,7 +67,7 @@ public class EvaluatingService {
     @Autowired
     UserRepository userRepository;
     @Autowired
-    @Qualifier("taskExecutorSingleThreaded")
+    @Qualifier("taskExecutorLoadInputFiles")
     TaskExecutor taskExecutor;
 
     @Autowired
