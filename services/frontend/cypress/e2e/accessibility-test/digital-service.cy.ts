@@ -26,6 +26,7 @@ describe("Digital Service", () => {
         cy.get('[id="add-digital"]').click();
         const dsName = `cy-digital-service ${Math.random().toFixed(2)}`;
         cy.wait(200).get('[id="dsName-input"]').clear().type(dsName);
+        cy.wait(2000).get('[id="next-creation-button"]').click();
         cy.wait(2000).get('[id="validate-creation-button"]').click();
 
         // add a note
