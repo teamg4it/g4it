@@ -143,7 +143,10 @@ public class EvaluateService {
 
         log.info("inside doEvaluate");
         // retrieving the VM list for this DS
-        Map<String, List<InVirtualEquipment>> vmsByPhysical =
+        Map<String, List<InVirtualEquipment>> vmsByPhysical =context.getInventoryId() != null?inVirtualEquipmentRepository.findByInventoryId(context.getInventoryId()).stream()
+                        // ONLY VMs attached to a physical equipment
+                        .filter(vm -> vm.getPhysicalEquipmentName() != null)
+                        .collect(Collectors.groupingBy(InVirtualEquipment::getPhysicalEquipmentName)):
                 inVirtualEquipmentRepository
                         .findByDigitalServiceVersionUid(context.getDigitalServiceVersionUid())
                         .stream()
