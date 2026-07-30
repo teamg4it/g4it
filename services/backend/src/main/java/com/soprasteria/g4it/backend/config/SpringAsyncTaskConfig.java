@@ -19,8 +19,8 @@ public class SpringAsyncTaskConfig {
     @Bean(name = "taskExecutorSingleThreaded")
     public TaskExecutor threadPoolTaskExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setCorePoolSize(2);  // Minimum number of threads in the pool
-        executor.setMaxPoolSize(4);  // Maximum number of threads in the pool
+        executor.setCorePoolSize(0);  // Minimum number of threads in the pool
+        executor.setMaxPoolSize(1);  // Maximum number of threads in the pool
         executor.setQueueCapacity(100);  // Queue capacity for pending tasks
         executor.setThreadNamePrefix("Task-");  // Prefix for thread names
         executor.setWaitForTasksToCompleteOnShutdown(true);  // Ensures tasks complete on shutdown
