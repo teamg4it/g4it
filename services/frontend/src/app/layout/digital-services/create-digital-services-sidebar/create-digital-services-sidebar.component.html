@@ -147,13 +147,15 @@
                     <div
                         class="space-form--button-group flex align-content-end justify-content-end flex-wrap"
                     >
-                        @if (selectedMenuIndex === 1) {
+                        @if (selectedMenuIndex === 1 && !isEcoMindAi()) {
                             <p-button
-                                    styleClass="p-button-secondary-blue uppercase mr-3"
-                                    (onClick)="selectTab(0)"
-                                    [label]="'common.previous' | translate"
-                                    [ariaLabel]="'common.previous' | translate"
-                                ></p-button>
+                                styleClass="p-button-secondary-blue uppercase mr-3"
+                                (onClick)="selectTab(0)"
+                                [label]="'common.previous' | translate"
+                                [ariaLabel]="'common.previous' | translate"
+                            ></p-button>
+                        }
+                        @if (selectedMenuIndex === 1 || isEcoMindAi()) {
                             <p-button
                                 (onClick)="createDS()"
                                 styleClass="uppercase bg-light-green"
@@ -169,12 +171,13 @@
                                 "
                             ></p-button>
                         }
-                        @if (selectedMenuIndex === 0) {
+                        @if (selectedMenuIndex === 0 && !isEcoMindAi()) {
                             <p-button
                                 styleClass="p-button-secondary-blue p-button uppercase"
                                 (onClick)="selectTab(1)"
                                 [label]="'common.next' | translate"
                                 [ariaLabel]="'common.next' | translate"
+                                id="next-creation-button"
                             ></p-button>
                         }
                     </div>
