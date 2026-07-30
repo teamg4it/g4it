@@ -141,6 +141,7 @@ public class EvaluateService {
      */
     public void doEvaluate(final Context context, final Task task, Path exportDirectory) {
 
+        log.info("inside doEvaluate");
         // retrieving the VM list for this DS
         Map<String, List<InVirtualEquipment>> vmsByPhysical =
                 inVirtualEquipmentRepository
@@ -165,6 +166,7 @@ public class EvaluateService {
         final Long taskId = task.getId();
 
         // Get datacenters by name (name, InDatacenter)
+        log.info("before datacenterByNameMap");
         final Map<String, InDatacenter> datacenterByNameMap = context.getInventoryId() == null ?
                 inDatacenterRepository.findByDigitalServiceVersionUid(context.getDigitalServiceVersionUid()).stream()
                         .collect(Collectors.toMap(InDatacenter::getName, Function.identity())) :
@@ -172,6 +174,7 @@ public class EvaluateService {
                         .collect(Collectors.toMap(InDatacenter::getName, Function.identity()));
         final List<String> lifecycleSteps = lifecycleStepsCache;
 
+        log.info("after datacenterByNameMap");
         List<CriterionRest> activeCriteria = referentialService.getActiveCriteria(task.getCriteria().stream()
                 .map(StringUtils::kebabToSnakeCase).toList());
 
@@ -185,9 +188,10 @@ public class EvaluateService {
                 CriterionRest::getUnit
         ));
 
+        log.info("before itemReferentialMap");
         // Build item referential map: item reference name -> {level, unit}
         Map<String, ItemReferentialInfo> itemReferentialMap = referentialService.buildItemReferentialMap(context.getWorkspaceId());
-
+        log.info("after itemReferentialMap");
         RefShortcutBO refShortcutBO = new RefShortcutBO(
                 criteriaUnitMap,
                 getShortcutMap(criteriaCodes),
@@ -195,7 +199,7 @@ public class EvaluateService {
                 electricityMixQuartilesCache,
                 itemReferentialMap
         );
-
+        log.info("after refShortcutBO");
         final List<HypothesisRest> hypothesisRestList = referentialService.getHypotheses(organization);
 
         log.info("Start evaluating impacts for {}/{}", context.log(), taskId);
@@ -221,12 +225,12 @@ public class EvaluateService {
                 .taskId(taskId)
                 .name(inventoryName)
                 .build();
-
+        log.info("before countByDigitalServiceVersionUid");
         long totalPhysicalEquipments =
                 context.getInventoryId() == null ?
                         inPhysicalEquipmentRepository.countByDigitalServiceVersionUid(context.getDigitalServiceVersionUid()) :
                         inPhysicalEquipmentRepository.countByInventoryId(context.getInventoryId());
-
+        log.info("after countByDigitalServiceVersionUid");
         long totalCloudVirtualEquipments = context.getInventoryId() == null ?
                 inVirtualEquipmentRepository.countByDigitalServiceVersionUidAndInfrastructureType(context.getDigitalServiceVersionUid(), CLOUD_SERVICES.name()) :
                 inVirtualEquipmentRepository.countByInventoryIdAndInfrastructureType(context.getInventoryId(), CLOUD_SERVICES.name());
@@ -253,7 +257,7 @@ public class EvaluateService {
                     csvInDatacenter.printRecord(inputToCsvRecord.toCsv(inDatacenter));
                 }
             }
-
+            log.info("before evaluateVirtualsEquipments");
             // manage virtual equipments without physical equipments (cloud)
             SaveResult saveResult = evaluateVirtualsEquipments(context, evaluateReportBO, null, null,
                     aggregationVirtualEquipments, aggregationApplications,

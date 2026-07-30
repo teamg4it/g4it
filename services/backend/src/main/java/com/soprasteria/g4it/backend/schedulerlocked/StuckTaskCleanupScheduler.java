@@ -38,9 +38,9 @@ public class StuckTaskCleanupScheduler {
    /* @Scheduled(fixedDelay = 600_000, initialDelay = 60_000) // Every 10 minutes, start after 1 minute
     @SchedulerLock(name = "failStuckTasks", lockAtMostFor = "4m", lockAtLeastFor = "30s")*/
     public void failStuckTasks() {
-        log.info("Running stuck task cleanup scheduler started");
+        log.info("Running stuck task cleanup scheduler started on thread {}", Thread.currentThread().getName());
         stuckTaskCleanupService.failStuckTasks();
-        log.info("Running stuck task cleanup scheduler stopped");
+        log.info("Running stuck task cleanup scheduler stopped on thread {}", Thread.currentThread().getName());
     }
 
 }

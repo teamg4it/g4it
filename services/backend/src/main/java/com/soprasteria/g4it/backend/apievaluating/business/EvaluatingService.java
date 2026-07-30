@@ -37,6 +37,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.core.task.TaskExecutor;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -150,7 +151,9 @@ public class EvaluatingService {
         inventoryRepository.save(inventory);
 
         // run evaluation async task
+        logEvaluatorExecutorState("before-submit-evaluating");
         taskExecutor.execute(new BackgroundTask(context, task, asyncEvaluatingService));
+        logEvaluatorExecutorState("after-submit-evaluating");
         return task;
     }
 
@@ -296,6 +299,25 @@ public class EvaluatingService {
 
                     taskExecutor.execute(new BackgroundTask(context, task, asyncEvaluatingService));
                 });
+    }
+
+    private void logEvaluatorExecutorState(String phase) {
+        if (!(taskExecutor instanceof ThreadPoolTaskExecutor evaluatorExecutor)) {
+            log.info("phase={} executorType={} thread={}", phase, taskExecutor.getClass().getSimpleName(), Thread.currentThread().getName());
+            return;
+        }
+
+        int queueSize = evaluatorExecutor.getThreadPoolExecutor().getQueue().size();
+        log.info(
+                "phase={} executor='{}' active={} poolSize={} maxPool={} queueSize={} thread={}",
+                phase,
+                "taskExecutorSingleThreaded",
+                evaluatorExecutor.getActiveCount(),
+                evaluatorExecutor.getPoolSize(),
+                evaluatorExecutor.getMaxPoolSize(),
+                queueSize,
+                Thread.currentThread().getName()
+        );
     }
 
     /**
