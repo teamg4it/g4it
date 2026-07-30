@@ -39,15 +39,6 @@ Additionally, several improvements strengthen the reliability of inventory impor
 
 ---
 
-### Smarter Inventory Import Management
-
-- Automatic detection and timeout of stalled imports
-- Loading indicator during inventory creation
-- Improved validation messages for inventory imports
-- Better validation during workspace reference data imports
-
----
-
 ### Workspace Reference Data Improvements
 
 - New workspace reference data model available for download
@@ -78,7 +69,6 @@ Additionally, several improvements strengthen the reliability of inventory impor
 - 2196 | Context and calculation assumptions for Digital Services
 - 2158 | Axis inversion for main impact graphs
 - 2150 | Automatic histogram view for graphs displaying more than five items
-- 2229 | Automatic detection and timeout of stalled file imports
 
 ### Minor Changes
 

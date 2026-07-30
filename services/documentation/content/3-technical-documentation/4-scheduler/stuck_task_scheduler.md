@@ -3,6 +3,11 @@ title: "4 - Stuck Task Scheduler"
 description: "Automatically detect and fail tasks that are stuck in progress"
 weight: 70
 mermaid: true
+
+
+build:
+    render: never
+    list: never
 ---
 
 ## Overview
