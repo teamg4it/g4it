@@ -206,6 +206,16 @@ All user interface changes must comply with the General Accessibility Improvemen
 
 ---
 
+## Accessibility Validation
+Accessibility is monitored regularly through automated Cypress accessibility tests executed as part of our quality assurance process. Contributors can run the provided Cypress scripts locally to identify potential accessibility issues before submitting changes.
+The project provides dedicated scripts to execute these checks:
+npm run cypress:open
+npm run cypress:run
+The generated reports are reviewed periodically to track regressions and guide improvements. These checks support continuous accessibility compliance. 
+Accessibility improvements are assessed and addressed as part of the overall development and review process.
+
+---
+
 ## Eco-Design
 
 If your changes impact the frontend, user interface, or user journey, you must run a GreenIT Analysis before submitting your contribution.
@@ -215,6 +225,12 @@ If your changes impact the frontend, user interface, or user journey, you must r
 - Include the analysis results with your pull request when applicable.
 
 GreenIT Analysis CLI: https://github.com/cnumr/GreenIT-Analysis-cli
+
+---
+
+## Ecodesgn Validation
+
+To help preserve the application's environmental performance, contributors should perform a manual eco-design assessment using the GreenIT Analysis Chrome extension (https://chromewebstore.google.com/detail/greenit-analysis/mofbfhffeklkbebfclfaiifefjflcpad). The recommended approach is to compare the user journey before and after the implementation and ensure that the environmental impact (EcoIndex and eco-design indicators) does not significantly increase. This manual verification helps identify regressions while supporting continuous eco-design improvements throughout development.
 
 ---
 
