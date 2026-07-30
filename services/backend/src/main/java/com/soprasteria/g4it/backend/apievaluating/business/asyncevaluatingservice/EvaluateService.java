@@ -141,6 +141,7 @@ public class EvaluateService {
      */
     public void doEvaluate(final Context context, final Task task, Path exportDirectory) {
 
+        log.info("inside doEvaluate");
         // retrieving the VM list for this DS
         Map<String, List<InVirtualEquipment>> vmsByPhysical =
                 inVirtualEquipmentRepository
@@ -149,7 +150,7 @@ public class EvaluateService {
                         // ONLY VMs attached to a physical equipment
                         .filter(vm -> vm.getPhysicalEquipmentName() != null)
                         .collect(Collectors.groupingBy(InVirtualEquipment::getPhysicalEquipmentName));
-
+        log.info("after vmsByPhysical");
         Inventory inventory = task.getInventory();
         String inventoryName;
         if (inventory == null) {
@@ -160,6 +161,7 @@ public class EvaluateService {
                     ? context.getDigitalServiceName()
                     : inventory.getName();
         }
+        log.info("after findById inventory ");
         final long start = System.currentTimeMillis();
         final String organization = context.getOrganization();
         final Long taskId = task.getId();
@@ -185,9 +187,10 @@ public class EvaluateService {
                 CriterionRest::getUnit
         ));
 
+        log.info("before buildItemReferentialMap ");
         // Build item referential map: item reference name -> {level, unit}
         Map<String, ItemReferentialInfo> itemReferentialMap = referentialService.buildItemReferentialMap(context.getWorkspaceId());
-
+        log.info("after buildItemReferentialMap ");
         RefShortcutBO refShortcutBO = new RefShortcutBO(
                 criteriaUnitMap,
                 getShortcutMap(criteriaCodes),
