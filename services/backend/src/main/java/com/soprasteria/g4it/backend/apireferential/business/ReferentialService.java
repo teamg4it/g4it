@@ -274,9 +274,9 @@ public class ReferentialService {
                             new ItemReferentialInfo(item.getLevel(), item.getUnit())
                     ));
 
-            log.debug("Built item referential map with {} entries for workspace {}", referentialMap.size(), workspaceId);
+            log.info("Built item referential map with {} entries for workspace {}", referentialMap.size(), workspaceId);
         } catch (Exception e) {
-            log.warn("Failed to build item referential map for workspace {}: {}", workspaceId, e.getMessage());
+            log.error("Failed to build item referential map for workspace {}: {}", workspaceId, e.getMessage());
         }
         return referentialMap;
     }
