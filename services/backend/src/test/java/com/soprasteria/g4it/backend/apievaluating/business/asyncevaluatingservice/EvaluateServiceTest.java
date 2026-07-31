@@ -616,6 +616,9 @@ class EvaluateServiceTest {
         when(ve.getWorkload()).thenReturn(0.5);
         when(ve.getLocation()).thenReturn("France");
 
+        when(inVirtualEquipmentRepository.findByInventoryId(1L))
+                .thenReturn(List.of(ve));
+
         when(inVirtualEquipmentRepository.findByDigitalServiceVersionUid("DSV1"))
                 .thenReturn(List.of(ve));
 
