@@ -209,8 +209,10 @@ All user interface changes must comply with the General Accessibility Improvemen
 ## Accessibility Validation
 Accessibility is monitored regularly through automated Cypress accessibility tests executed as part of our quality assurance process. Contributors can run the provided Cypress scripts locally to identify potential accessibility issues before submitting changes.
 The project provides dedicated scripts to execute these checks:
-npm run cypress:open
-npm run cypress:run
+
+- npm run cypress:open (This launches the Cypress Test Runner with a graphical interface (GUI))
+- npm run cypress:run (This runs Cypress in headless mode (without the interactive UI))
+
 The generated reports are reviewed periodically to track regressions and guide improvements. These checks support continuous accessibility compliance. 
 Accessibility improvements are assessed and addressed as part of the overall development and review process.
 
