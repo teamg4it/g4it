@@ -30,7 +30,7 @@ public class BoaviztapiService {
      */
     private BoaviztapiClient boaviztapiClient;
 
-    public static final String BOAVIZTAPI_VERSION = "1.3";
+    public static final String BOAVIZTAPI_VERSION = "2.3.0";
     public static final String BOAVIZTAPI_ENGINE = "BoaviztAPI";
     private static final double HOURS_PER_YEAR = 24d * 365d;
 

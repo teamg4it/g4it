@@ -47,7 +47,7 @@ public class BoaviztapiClient {
      * hours life time is calculated by h5 * 365 * 24;
      */
     private static final int HOURS_LIFE_TIME = 43800;
-    public static final String BOAVIZTAPI_VERSION = "1.3";
+    public static final String BOAVIZTAPI_VERSION = "2.3.0";
     public static final String BOAVIZTAPI_ENGINE = "BoaviztAPI";
 
     /**
@@ -147,6 +147,7 @@ public class BoaviztapiClient {
                 .queryParam(CRITERIA, "epf")
                 .queryParam(CRITERIA, "epm")
                 .queryParam(CRITERIA, "adpf")
+                .queryParam(CRITERIA,"wu")
                 .build();
         try {
             BoaResponseRest response = webClient.post()

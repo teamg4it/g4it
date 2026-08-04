@@ -61,7 +61,8 @@ public class EvaluateBoaviztapiService {
                         new AbstractMap.SimpleEntry<>("EUTROPHICATION_TERRESTRIAL", response.getImpacts().getEpt()),
                         new AbstractMap.SimpleEntry<>("EUTROPHICATION_FRESHWATER", response.getImpacts().getEpf()),
                         new AbstractMap.SimpleEntry<>("EUTROPHICATION_MARINE", response.getImpacts().getEpm()),
-                        new AbstractMap.SimpleEntry<>("RESOURCE_USE_FOSSILS", response.getImpacts().getAdpf())
+                        new AbstractMap.SimpleEntry<>("RESOURCE_USE_FOSSILS", response.getImpacts().getAdpf()),
+                        new AbstractMap.SimpleEntry<>("RESOURCE_USE_WATER", response.getImpacts().getWu())
                 );
 
         for (String criterion : criteria) {
