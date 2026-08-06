@@ -10,6 +10,7 @@ package com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice
 
 import com.soprasteria.g4it.backend.common.model.FileToLoad;
 import com.soprasteria.g4it.backend.common.model.LineError;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 
@@ -23,6 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
 
+@Slf4j
 @Service
 public class CheckMetadataInventoryFileService {
 
@@ -38,6 +40,7 @@ public class CheckMetadataInventoryFileService {
      */
     public Map<String, Map<Integer, List<LineError>>> checkMetadataInventoryFile(Long taskId, Long inventoryId, String digitalServiceVersionUid) {
         // check unicity
+        log.info("Check metadata inventory file for taskId {} and inventoryId {} ", taskId, inventoryId);
         boolean isDigitalService = digitalServiceVersionUid != null;
         Map<String, Map<Integer, List<LineError>>> duplicatesMap = checkConstraintService.checkUnicity(taskId, isDigitalService);
 

@@ -46,4 +46,18 @@ public class SpringAsyncTaskConfig {
         return executor;
     }
 
+    @Bean(name = "taskExecutorMetadataLoading")
+    public TaskExecutor metadataLoadingTaskExecutor() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        // Metadata loading performs transactional DB writes, so keep parallelism bounded.
+        executor.setCorePoolSize(1);
+        executor.setMaxPoolSize(2);
+        executor.setQueueCapacity(20);
+        executor.setThreadNamePrefix("MetadataLoad-");
+        executor.setWaitForTasksToCompleteOnShutdown(true);
+        executor.setAwaitTerminationSeconds(60 * 10);
+        executor.initialize();
+        return executor;
+    }
+
 }
