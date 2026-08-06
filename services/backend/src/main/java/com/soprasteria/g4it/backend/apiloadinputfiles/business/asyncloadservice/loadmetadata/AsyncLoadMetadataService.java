@@ -11,6 +11,7 @@ package com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice
 import com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.loadmetadata.LoadMetadataService;
 import com.soprasteria.g4it.backend.common.model.Context;
 import com.soprasteria.g4it.backend.common.model.FileToLoad;
+import com.soprasteria.g4it.backend.exception.AsyncTaskException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -40,6 +41,9 @@ public class AsyncLoadMetadataService {
                     try{
                         log.info("Load input metadata for file {} {}",fileToLoad.getFilename(), context.log());
                         loadMetadataService.loadMetadataFile(fileToLoad, context);
+                    }
+                    catch (AsyncTaskException e) {
+                        throw e;
                     }
                     catch (Exception e){
                         log.error("Error loading metadata file {}", fileToLoad.getFilename(), e);

@@ -10,6 +10,7 @@ import {
     Component,
     computed,
     DestroyRef,
+    effect,
     inject,
     OnDestroy,
     OnInit,
@@ -64,6 +65,7 @@ import { Constants } from "src/constants";
 import { ConfigureViewFiltersComponent } from "../../common/configure-view-filters/configure-view-filters.component";
 import { CriteriaPopupComponent } from "../../common/criteria-popup/criteria-popup.component";
 import { ImpactSidebarComponent } from "../../common/impact-sidebar/impact-sidebar.component";
+import { InverseAxisButtonComponent } from "../../common/inverse-axis-button/inverse-axis-button.component";
 import { AbstractDashboard } from "../../inventories-footprint/abstract-dashboard";
 import { BarChartComponent } from "./bar-chart/bar-chart.component";
 import { GraphDescriptionComponent } from "./graph-description/graph-description.component";
@@ -88,6 +90,7 @@ import { RadialChartComponent } from "./radial-chart/radial-chart.component";
         DrawerModule,
         ConfigureViewFiltersComponent,
         TranslatePipe,
+        InverseAxisButtonComponent,
     ],
 })
 export class DigitalServicesFootprintDashboardComponent
@@ -102,6 +105,7 @@ export class DigitalServicesFootprintDashboardComponent
     private readonly shareDigitalService = inject(ShareDigitalServiceDataService);
     private readonly route = inject(ActivatedRoute);
     chartType = signal("radial");
+    isAxisInverted = signal<boolean>(false);
     showInconsitencyBtn = false;
     constants = Constants;
     noData = true;
@@ -180,6 +184,27 @@ export class DigitalServicesFootprintDashboardComponent
         );
     });
 
+    shouldShowStackBarChart = computed(() => {
+        if (!this.globalVisionChartData || this.globalVisionChartData.length === 0) {
+            return false;
+        }
+
+        // Stack bar chart only for non-inverted mode
+        if (this.isAxisInverted()) {
+            return false;
+        }
+
+        // Count unique criteria
+        const uniqueCriteria = new Set<string>();
+        this.globalVisionChartData.forEach((tierData) => {
+            tierData.impacts.forEach((impact) => {
+                uniqueCriteria.add(impact.criteria);
+            });
+        });
+
+        return uniqueCriteria.size > Constants.MAX_NUMBER_OF_CRITERIA_RADAR;
+    });
+
     calculatedCriteriaList: string[] = [];
     sub!: Subscription;
     constructor(
@@ -194,6 +219,13 @@ export class DigitalServicesFootprintDashboardComponent
         private readonly router: Router,
     ) {
         super(translate, integerPipe, decimalsPipe, globalStore);
+
+        // Automatically reset axis inversion when leaving radial chart
+        effect(() => {
+            if (this.chartType() !== "radial") {
+                this.isAxisInverted.set(false);
+            }
+        });
     }
 
     ngOnInit() {

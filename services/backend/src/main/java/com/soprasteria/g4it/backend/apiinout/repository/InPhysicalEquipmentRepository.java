@@ -16,6 +16,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -125,4 +126,13 @@ public interface InPhysicalEquipmentRepository extends JpaRepository<InPhysicalE
             WHERE digital_service_version_uid = :oldUid
             """, nativeQuery = true)
     void copyForVersion(@Param("oldUid") String oldUid, @Param("newUid") String newUid);
+
+    @Query("""
+       SELECT p.name
+       FROM InPhysicalEquipment p
+       WHERE p.inventoryId = :inventoryId
+         AND p.name IN :names
+       """)
+    Set<String> findExistingNamesByInventoryIdAndNameIn(@Param("inventoryId") Long inventoryId,
+                                                        @Param("names") Collection<String> names);
 }

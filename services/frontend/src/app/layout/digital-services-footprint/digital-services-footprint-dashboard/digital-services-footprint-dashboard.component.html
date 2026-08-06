@@ -119,7 +119,12 @@
                             [enableDataInconsistency]="
                                 digitalService.enableDataInconsistency
                             "
+                            [isAxisInverted]="isAxisInverted()"
+                            [shouldShowStackBarChart]="shouldShowStackBarChart()"
                         ></app-radial-chart>
+                        <app-inverse-axis-button
+                            (inverseAxisChange)="this.isAxisInverted.set($event)"
+                        ></app-inverse-axis-button>
                     }
                     @if (chartType() == "pie") {
                         <app-pie-chart

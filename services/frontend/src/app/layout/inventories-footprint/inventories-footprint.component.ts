@@ -62,6 +62,7 @@ import { FootprintDataService } from "src/app/core/service/data/footprint-data.s
 import { InVirtualEquipmentsService } from "src/app/core/service/data/in-out/in-virtual-equipments.service";
 import { OutVirtualEquipmentsService } from "src/app/core/service/data/in-out/out-virtual-equipments.service";
 import { transformCriterion } from "src/app/core/service/mapper/array";
+import { resetColorMap } from "src/app/core/service/mapper/graphs-mapper";
 import { DigitalServiceStoreService } from "src/app/core/store/digital-service.store";
 import { FootprintStoreService } from "src/app/core/store/footprint.store";
 import { GlobalStoreService } from "src/app/core/store/global.store";
@@ -258,6 +259,7 @@ export class InventoriesFootprintComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.checkStatusAndLoopApis();
+        resetColorMap();
     }
 
     async checkStatusAndLoopApis() {

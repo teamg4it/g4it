@@ -218,7 +218,8 @@
                     (onClick)="submitFormData()"
                     [disabled]="
                         (purpose === 'new' && (name === '' || checkForDuplicate())) ||
-                        (purpose === 'upload' && !isFileUploaded())
+                        (purpose === 'upload' && !isFileUploaded()) ||
+                        global.loading()
                     "
                     id="add-new-inventory"
                 >

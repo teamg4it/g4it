@@ -17,7 +17,6 @@ import com.soprasteria.g4it.backend.apireferential.repository.CriterionRepositor
 import com.soprasteria.g4it.backend.apireferential.repository.ItemImpactRepository;
 import com.soprasteria.g4it.backend.apireferential.repository.LifecycleStepRepository;
 import com.soprasteria.g4it.backend.apireferential.repository.MatchingItemRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -42,11 +41,6 @@ class ReferentialGetAnalysisServiceTest {
 
     @InjectMocks
     ReferentialGetAnalysisService service;
-
-    @BeforeEach
-    void setUp() {
-        service = new ReferentialGetAnalysisService(itemImpactRepo, matchingItemRepo, criterionRepo, lifecycleStepRepo);
-    }
 
     @Test
     void testGetAnalysis_ItemImpactErrors() {

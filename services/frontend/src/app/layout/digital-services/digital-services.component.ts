@@ -6,7 +6,7 @@
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
 import { AsyncPipe } from "@angular/common";
-import { Component, DestroyRef, inject, OnInit } from "@angular/core";
+import { Component, DestroyRef, inject, OnInit, signal } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { Title } from "@angular/platform-browser";
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
@@ -66,7 +66,7 @@ export class DigitalServicesComponent implements OnInit {
 
     rowsPerPage: number = 10;
     currentPage = 0;
-    isEcoMindAi = false;
+    isEcoMindAi = signal(false);
     firstCall = true;
     displayRenewServicePopup = false;
     digitalServiceUid = "";
@@ -84,9 +84,10 @@ export class DigitalServicesComponent implements OnInit {
 
     ngOnInit(): void {
         this.route.parent?.data.subscribe((data) => {
-            this.isEcoMindAi = data["isIa"] === true;
+            this.isEcoMindAi.set(data["isIa"] === true);
         });
-        const titleKey = this.isEcoMindAi
+
+        const titleKey = this.isEcoMindAi()
             ? "welcome-page.eco-mind-ai.title"
             : "digital-services.page-title";
         this.translate
@@ -134,7 +135,7 @@ export class DigitalServicesComponent implements OnInit {
     async retrieveDigitalServices() {
         this.allDigitalServices = [];
         if (
-            this.isEcoMindAi &&
+            this.isEcoMindAi() &&
             this.isAllowedEcoMindAiService &&
             this.isEcoMindEnabledForCurrentOrganization &&
             this.isEcoMindModuleEnabled
@@ -142,7 +143,7 @@ export class DigitalServicesComponent implements OnInit {
             const apiResult = await lastValueFrom(this.digitalServicesData.list(true));
             apiResult.sort((x, y) => x.name.localeCompare(y.name));
             this.allDigitalServices.push(...apiResult);
-        } else if (!this.isEcoMindAi && this.isAllowedDigitalService) {
+        } else if (!this.isEcoMindAi() && this.isAllowedDigitalService) {
             const apiResult = await lastValueFrom(this.digitalServicesData.list(false));
             apiResult.sort((x, y) => x.name.localeCompare(y.name));
             this.allDigitalServices.push(...apiResult);
@@ -152,7 +153,7 @@ export class DigitalServicesComponent implements OnInit {
 
     async createNewDigitalServices(event: { dsName: string; versionName: string }) {
         if (
-            this.isEcoMindAi &&
+            this.isEcoMindAi() &&
             this.isAllowedEcoMindAiService &&
             this.isEcoMindEnabledForCurrentOrganization &&
             this.isEcoMindModuleEnabled
@@ -163,7 +164,7 @@ export class DigitalServicesComponent implements OnInit {
             };
             const { uid } = await lastValueFrom(this.digitalServicesData.create(req));
             this.goToDigitalServiceFootprint(uid);
-        } else if (!this.isEcoMindAi && this.isAllowedDigitalService) {
+        } else if (!this.isEcoMindAi() && this.isAllowedDigitalService) {
             const req = {
                 ...event,
                 isAi: false,
@@ -187,7 +188,7 @@ export class DigitalServicesComponent implements OnInit {
     }
 
     goToDigitalServiceFootprint(uid: string) {
-        if (this.isEcoMindAi) {
+        if (this.isEcoMindAi()) {
             this.router.navigate([`../eco-mind-ai/${uid}/footprint/ecomind-parameters`], {
                 relativeTo: this.route,
             });

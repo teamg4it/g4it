@@ -10,8 +10,8 @@ import { TranslateService } from "@ngx-translate/core";
 import { Subject } from "rxjs";
 import { DecimalsPipe } from "src/app/core/pipes/decimal.pipe";
 import { IntegerPipe } from "src/app/core/pipes/integer.pipe";
+import * as InventoryMultiCriteriaViewMapper from "src/app/core/service/mapper/inventory-multicriteria-graph-mapper";
 import { GlobalStoreService } from "src/app/core/store/global.store";
-import { Constants } from "src/constants";
 
 @Component({
     template: "",
@@ -28,14 +28,25 @@ export class AbstractDashboard {
     ) {}
 
     existingTranslation(param: string, view: string, type: string = "series") {
-        let key = view + "." + param;
-        if (param === "other") {
-            key = type === "legend" ? "common.otherLegend" : "common.other";
-        }
-        if (param === Constants.EMPTY) {
-            return this.translate.instant("common.empty");
-        }
-        return this.translate.instant(key) === key ? param : this.translate.instant(key);
+        return InventoryMultiCriteriaViewMapper.existingTranslation(
+            param,
+            view,
+            this.translate,
+            type,
+        );
+    }
+
+    getCriteriaDimensionTranslation(
+        isInverted: boolean,
+        dimension: string,
+        selectedView: string,
+    ) {
+        return InventoryMultiCriteriaViewMapper.getCriteriaDimensionTranslation(
+            isInverted,
+            dimension,
+            selectedView,
+            this.translate,
+        );
     }
 
     getCriteriaTranslation(input: string) {

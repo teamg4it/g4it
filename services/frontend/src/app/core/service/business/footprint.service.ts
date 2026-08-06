@@ -93,6 +93,28 @@ export class FootprintService {
         };
     }
 
+    private calculateDimensionStatus(
+        filteredImpacts: Impact[],
+        selectedView: string,
+        dimension: string,
+    ): StatusCount {
+        const dimStatusOk = filteredImpacts.filter(
+            (i) =>
+                this.checkIfEmpty(this.valueImpact(i, selectedView)) === dimension &&
+                i.statusIndicator === Constants.DATA_QUALITY_STATUS.ok,
+        ).length;
+        const dimStatusError = filteredImpacts.filter(
+            (i) =>
+                this.checkIfEmpty(this.valueImpact(i, selectedView)) === dimension &&
+                i.statusIndicator !== Constants.DATA_QUALITY_STATUS.ok,
+        ).length;
+        return {
+            ok: dimStatusOk,
+            error: dimStatusError,
+            total: dimStatusOk + dimStatusError,
+        };
+    }
+
     setGroupedSumImpacts(
         filteredImpacts: Impact[],
         selectedView: string,
@@ -156,6 +178,8 @@ export class FootprintService {
         filters: Filter,
         selectedView: string,
         filterFields: string[],
+        isAxisInverted: boolean,
+        shouldShowStackBarChart: boolean,
     ): {
         footprintCalculated: FootprintCalculated[];
         criteriaCountMap: StatusCountMap;
@@ -219,68 +243,120 @@ export class FootprintService {
                 maxCriteria: this.findMaxRepartition(filteredImpacts, selectedView),
             });
 
-            criteriaCountMap[criteria] = {
-                status: {
-                    ok: filteredImpacts.filter(
-                        (i) => i.statusIndicator === Constants.DATA_QUALITY_STATUS.ok,
-                    ).length,
-                    error: filteredImpacts.filter(
-                        (i) => i.statusIndicator !== Constants.DATA_QUALITY_STATUS.ok,
-                    ).length,
-                    total: filteredImpacts.length,
-                },
-            };
             const groupedSumImpacts = new Map<string, SumImpact>();
 
             this.setGroupedSumImpacts(filteredImpacts, selectedView, groupedSumImpacts);
-            for (let [dimension, sumImpact] of groupedSumImpacts) {
-                const impact = {
-                    criteria,
-                    sumSip: sumImpact.sip,
-                    sumImpact: sumImpact.impact,
-                } as Impact;
 
-                const translated = lifeCycleMap.get(dimension);
-
-                const view: FootprintCalculated = {
-                    data: translated ?? dimension,
-                    impacts: [impact],
-                    total: {
-                        impact: impact.sumImpact,
-                        sip: impact.sumSip,
-                    },
+            if (isAxisInverted) {
+                // When inverted: populate criteriaCountMap per dimension (which becomes the key)
+                for (let [dimension] of groupedSumImpacts) {
+                    const status = this.calculateDimensionStatus(
+                        filteredImpacts,
+                        selectedView,
+                        dimension,
+                    );
+                    const translatedDim = lifeCycleMap.get(dimension) ?? dimension;
+                    if (!criteriaCountMap[translatedDim]) {
+                        criteriaCountMap[translatedDim] = { status };
+                    } else {
+                        criteriaCountMap[translatedDim].status = this.addStatus(
+                            criteriaCountMap[translatedDim].status,
+                            status,
+                        );
+                    }
+                }
+            } else {
+                // Normal mode: populate criteriaCountMap per criteria
+                criteriaCountMap[criteria] = {
                     status: {
                         ok: filteredImpacts.filter(
-                            (i) =>
-                                this.checkIfEmpty(this.valueImpact(i, selectedView)) ===
-                                    dimension && i.statusIndicator === "OK",
+                            (i) => i.statusIndicator === Constants.DATA_QUALITY_STATUS.ok,
                         ).length,
                         error: filteredImpacts.filter(
-                            (i) =>
-                                this.checkIfEmpty(this.valueImpact(i, selectedView)) ===
-                                    dimension && i.statusIndicator !== "OK",
+                            (i) => i.statusIndicator !== Constants.DATA_QUALITY_STATUS.ok,
                         ).length,
-                        total: filteredImpacts.filter(
-                            (i) =>
-                                this.checkIfEmpty(this.valueImpact(i, selectedView)) ===
-                                dimension,
-                        ).length,
+                        total: filteredImpacts.length,
                     },
                 };
+            }
 
-                const viewExist = footprintCalculated.find(
-                    (data: any) => data.data === view.data,
-                );
-                this.performActionsOnFootprint(
-                    viewExist,
-                    impact,
-                    view,
-                    footprintCalculated,
-                );
+            if (isAxisInverted !== shouldShowStackBarChart) {
+                // When inverted: criteria is the outer grouping, dimensions are inner
+                for (let [dimension, sumImpact] of groupedSumImpacts) {
+                    const translated = lifeCycleMap.get(dimension);
+                    const impact = {
+                        criteria: translated ?? dimension,
+                        sumSip: sumImpact.sip,
+                        sumImpact: sumImpact.impact,
+                    } as Impact;
+
+                    const status = this.calculateDimensionStatus(
+                        filteredImpacts,
+                        selectedView,
+                        dimension,
+                    );
+
+                    let viewExist = footprintCalculated.find(
+                        (data: any) => data.data === criteria,
+                    );
+
+                    if (viewExist) {
+                        viewExist.impacts.push(impact);
+                        viewExist.total.impact += impact.sumImpact;
+                        viewExist.total.sip += impact.sumSip;
+                        viewExist.status = this.addStatus(viewExist.status, status);
+                    } else {
+                        footprintCalculated.push({
+                            data: criteria,
+                            impacts: [impact],
+                            total: {
+                                impact: impact.sumImpact,
+                                sip: impact.sumSip,
+                            },
+                            status,
+                        });
+                    }
+                }
+            } else {
+                // Normal mode: dimensions are outer grouping, criteria are inner
+                for (let [dimension, sumImpact] of groupedSumImpacts) {
+                    const translated = lifeCycleMap.get(dimension);
+                    const impact = {
+                        criteria,
+                        sumSip: sumImpact.sip,
+                        sumImpact: sumImpact.impact,
+                    } as Impact;
+
+                    const status = this.calculateDimensionStatus(
+                        filteredImpacts,
+                        selectedView,
+                        dimension,
+                    );
+
+                    const view: FootprintCalculated = {
+                        data: translated ?? dimension,
+                        impacts: [impact],
+                        total: {
+                            impact: impact.sumImpact,
+                            sip: impact.sumSip,
+                        },
+                        status,
+                    };
+
+                    const viewExist = footprintCalculated.find(
+                        (data: any) => data.data === view.data,
+                    );
+                    this.performActionsOnFootprint(
+                        viewExist,
+                        impact,
+                        view,
+                        footprintCalculated,
+                    );
+                }
             }
         }
-
-        if (selectedView === Constants.ACV_STEP) {
+        // In case of Inverse sort is handled in multi criteria component file
+        if (selectedView === Constants.ACV_STEP && !isAxisInverted) {
             footprintCalculated.sort((a: any, b: any) => {
                 return order.indexOf(a.data) - order.indexOf(b.data);
             });
@@ -297,6 +373,7 @@ export class FootprintService {
             impactsWithMaxDimensions: filterAllImpactsWithMax,
         };
     }
+
     findMaxRepartition(filteredImpacts: Impact[], selectedView: string) {
         if (!filteredImpacts || filteredImpacts.length === 0) {
             return {

@@ -15,7 +15,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.MessageSource;
 
@@ -24,6 +23,7 @@ import java.util.Locale;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class RulePhysicalEquipmentServiceTest {
@@ -42,7 +42,7 @@ class RulePhysicalEquipmentServiceTest {
     @Test
     void testCheckElectricityConsumption_NullValue_ReturnsError() {
 
-        Mockito.when(messageSource.getMessage(any(), any(), any())).thenReturn("Field 'consoElecAn' is mandatory.");
+        when(messageSource.getMessage(any(), any(), any())).thenReturn("Field 'consoElecAn' is mandatory.");
         var actual = ruleService.checkElectricityConsumption(locale, filename, line, null);
         Assertions.assertTrue(actual.isPresent());
         Assertions.assertEquals(new LineError(filename, line, "Field 'consoElecAn' is mandatory."), actual.get());
@@ -57,7 +57,7 @@ class RulePhysicalEquipmentServiceTest {
 
     @Test
     void testCheckDurationHour_Null_ReturnsBlankError() {
-        Mockito.when(messageSource.getMessage(any(), any(), any())).thenReturn("Field 'dureeUtilisation' is mandatory.");
+        when(messageSource.getMessage(any(), any(), any())).thenReturn("Field 'dureeUtilisation' is mandatory.");
         var actual = ruleService.checkDurationHour(locale, filename, line, null);
         assertTrue(actual.isPresent());
         Assertions.assertEquals(new LineError(filename, line, "Field 'dureeUtilisation' is mandatory."), actual.get());
@@ -65,7 +65,7 @@ class RulePhysicalEquipmentServiceTest {
 
     @Test
     void testCheckDurationHour_Negative_ReturnsBlankError() {
-        Mockito.when(messageSource.getMessage(any(), any(), any())).thenReturn("Field 'dureeUtilisation' is mandatory.");
+        when(messageSource.getMessage(any(), any(), any())).thenReturn("Field 'dureeUtilisation' is mandatory.");
         var actual = ruleService.checkDurationHour(locale, filename, line, -5.0);
         assertTrue(actual.isPresent());
         Assertions.assertEquals(new LineError(filename, line, "Field 'dureeUtilisation' is mandatory."), actual.get());
@@ -73,7 +73,7 @@ class RulePhysicalEquipmentServiceTest {
 
     @Test
     void testCheckDurationHour_TooHigh_ReturnsInvalidError() {
-        Mockito.when(messageSource.getMessage(eq("durationHour.invalid"), any(), any())).thenReturn("dureeUtilisation should not be more than 8760");
+        when(messageSource.getMessage(eq("durationHour.invalid"), any(), any())).thenReturn("dureeUtilisation should not be more than 8760");
         var actual = ruleService.checkDurationHour(locale, filename, line, 9999.0);
         assertTrue(actual.isPresent());
         Assertions.assertEquals(new LineError(filename, line, "dureeUtilisation should not be more than 8760"), actual.get());

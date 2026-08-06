@@ -37,4 +37,8 @@ public class EquipmentImpactBO {
     private String statusIndicator;
 
     private Long countValue;
+
+    private String level;
+
+    private String impactUnit;
 }

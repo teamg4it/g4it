@@ -14,7 +14,7 @@ import { NavigationEnd, Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { MessageService } from "primeng/api";
 import { Constants } from "src/constants";
-import { BasicRoles, Role } from "../../interfaces/roles.interfaces";
+import { BasicRoles, OrgBasicRoles, Role } from "../../interfaces/roles.interfaces";
 
 @Injectable({
     providedIn: "root",
@@ -280,11 +280,17 @@ export class UserService {
 
     getRoles(organization: Organization, workspace: Workspace): Role[] {
         if (organization.roles.includes(Role.OrganizationAdmin)) {
-            return [Role.OrganizationAdmin, Role.WorkspaceAdmin, ...BasicRoles];
+            return [Role.OrganizationAdmin, Role.WorkspaceAdmin, ...OrgBasicRoles];
         }
 
         if (workspace.roles.includes(Role.WorkspaceAdmin)) {
-            return [Role.WorkspaceAdmin, ...BasicRoles];
+            const workSpaceRoles = [Role.WorkspaceAdmin, ...BasicRoles];
+            if (workspace.roles.includes(Role.EcoMindAiWrite)) {
+                workSpaceRoles.push(Role.EcoMindAiWrite, Role.EcoMindAiRead);
+            } else if (workspace.roles.includes(Role.EcoMindAiRead)) {
+                workSpaceRoles.push(Role.EcoMindAiRead);
+            }
+            return workSpaceRoles;
         }
 
         const roles = [...workspace.roles];

@@ -52,3 +52,15 @@ When updating referential data, the CSV files must follow a specific structure w
 | `item_source`     | The source item name or classification.                       |
 | `ref_item_target` | The target referential item it maps to.                       |
 | `subscriber`      | The organization name (must match your current organization). |
+
+## Download the Data Model
+
+From the **Update Workspace Reference Data** page, after selecting a workspace, administrators can download the latest **Workspace Reference Data Model**.
+
+The downloaded file:
+
+- Is a **generic data model** that can be used for any workspace.
+- Describes the expected structure and content for reference data imports.
+- Includes import rules, mandatory fields, accepted values, and validation constraints.
+
+![workspace_datamodel.png](../images/workspace_datamodel.png)

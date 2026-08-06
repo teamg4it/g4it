@@ -6,6 +6,7 @@
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
 import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { signal } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute, Router } from "@angular/router";
 import { TranslateModule, TranslateService } from "@ngx-translate/core";
@@ -228,16 +229,20 @@ describe("ApplicationMulticriteriaFootprintComponent", () => {
 
         fixture = TestBed.createComponent(ApplicationMulticriteriaFootprintComponent);
         component = fixture.componentInstance;
-        component.footprint = mockFootprintData as any;
-        component.filterFields = [
-            { field: "domain", label: "Domain" },
-            { field: "environment", label: "Environment" },
-        ] as any;
-        fixture.componentRef.setInput("inventory", {
+
+        // Override signal inputs with test signals
+        (component as any).footprint = signal(mockFootprintData);
+        (component as any).inventory = signal({
             id: 1,
             name: "Test Inventory",
             enableDataInconsistency: true,
         });
+
+        component.filterFields = [
+            { field: "domain", label: "Domain" },
+            { field: "environment", label: "Environment" },
+        ] as any;
+
         fixture.detectChanges();
     });
 
@@ -563,7 +568,7 @@ describe("ApplicationMulticriteriaFootprintComponent", () => {
         });
 
         it("should populate xAxisInput with translated criteria", () => {
-            component.footprint = mockFootprintData as any;
+            (component as any).footprint = signal(mockFootprintData);
             const criteriaCalculated = {
                 footprints: [
                     {

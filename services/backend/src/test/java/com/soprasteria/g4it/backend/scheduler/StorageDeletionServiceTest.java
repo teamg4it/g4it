@@ -17,7 +17,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -25,8 +24,7 @@ import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class StorageDeletionServiceTest {
@@ -42,9 +40,9 @@ class StorageDeletionServiceTest {
 
     @Test
     void testStorageDeletionService_zeroWorkspace() {
-        Mockito.when(workspaceRepository.findAllByStatusIn(List.of(WorkspaceStatus.ACTIVE.name()))).thenReturn(List.of());
+        when(workspaceRepository.findAllByStatusIn(List.of(WorkspaceStatus.ACTIVE.name()))).thenReturn(List.of());
         storageDeletionService.executeDeletion();
-        Mockito.verify(workspaceRepository).findAllByStatusIn(List.of(WorkspaceStatus.ACTIVE.name()));
+        verify(workspaceRepository).findAllByStatusIn(List.of(WorkspaceStatus.ACTIVE.name()));
     }
 
     @Test
@@ -64,8 +62,8 @@ class StorageDeletionServiceTest {
                 .status(WorkspaceStatus.ACTIVE.name())
                 .build());
 
-        Mockito.when(workspaceRepository.findAllByStatusIn(List.of(WorkspaceStatus.ACTIVE.name()))).thenReturn(workspaces);
-        Mockito.when(fileDeletionService.deleteFiles(any(), any(), any(), any())).thenReturn(List.of());
+        when(workspaceRepository.findAllByStatusIn(List.of(WorkspaceStatus.ACTIVE.name()))).thenReturn(workspaces);
+        when(fileDeletionService.deleteFiles(any(), any(), any(), any())).thenReturn(List.of());
 
         // EXECUTE
         storageDeletionService.executeDeletion();
@@ -89,8 +87,8 @@ class StorageDeletionServiceTest {
                 .status(WorkspaceStatus.ACTIVE.name())
                 .build());
 
-        Mockito.when(workspaceRepository.findAllByStatusIn(List.of(WorkspaceStatus.ACTIVE.name()))).thenReturn(workspaces);
-        Mockito.when(fileDeletionService.deleteFiles(any(), any(), any(), any())).thenReturn(List.of());
+        when(workspaceRepository.findAllByStatusIn(List.of(WorkspaceStatus.ACTIVE.name()))).thenReturn(workspaces);
+        when(fileDeletionService.deleteFiles(any(), any(), any(), any())).thenReturn(List.of());
 
         // EXECUTE
         storageDeletionService.executeDeletion();

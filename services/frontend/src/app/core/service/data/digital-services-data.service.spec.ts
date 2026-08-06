@@ -392,7 +392,7 @@ describe("DigitalServicesDataService", () => {
         const id = "ds-55";
 
         service.getDuplicateDigitalServiceAndVersionName(id).subscribe((res) => {
-            expect(res.versionNames).toBe([]);
+            expect(res.versionNames).toEqual([]);
         });
 
         const req = httpMock.expectOne(

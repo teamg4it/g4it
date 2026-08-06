@@ -34,4 +34,8 @@ public class PhysicalEquipmentsAvgAgeBO {
 
     private Double ageMoyen;
 
+    private String level;
+
+    private String impactUnit;
+
 }

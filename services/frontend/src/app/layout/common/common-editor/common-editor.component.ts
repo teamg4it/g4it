@@ -1,6 +1,7 @@
 import {
     Component,
     EventEmitter,
+    input,
     Input,
     OnChanges,
     Output,
@@ -36,13 +37,16 @@ export class CommonEditorComponent implements OnChanges {
     @Input() styleClass = "";
     @Input() maxContentLength = 20000;
     @Input() content: string | undefined = undefined;
-    @Input() showButtons: boolean | null = false;
+    @Input() isWriteRole: boolean | null = false;
+    showTitle = input(true);
+    showButtons = input(true);
     @Input() title = "Note";
     escape: boolean = false;
 
     @Output() outClose: EventEmitter<any> = new EventEmitter();
     @Output() delete: EventEmitter<any> = new EventEmitter();
     @Output() saveValue: EventEmitter<string> = new EventEmitter();
+    @Output() contentChange: EventEmitter<string> = new EventEmitter();
 
     editorTextValue = "";
     editorTextValueUnmodified = "";
@@ -68,9 +72,34 @@ export class CommonEditorComponent implements OnChanges {
         }
     }
 
+    onTextChange(value: string) {
+        this.contentChange.emit(value);
+    }
+
     removeStylesFromText(htmlText: string) {
         let html = new DOMParser().parseFromString(htmlText, "text/html");
         return html.body.textContent ?? "";
+    }
+
+    /**
+     * Validates and returns sanitized content, or null if validation fails
+     * Shows error messages via MessageService
+     */
+    validateAndGetSanitizedContent(): string | null {
+        if (this.editorTextValue.length > this.maxContentLength) {
+            this.messageService.add({
+                severity: "error",
+                summary: this.translate.instant("common.note.content-length-exceeded"),
+            });
+            return null;
+        }
+
+        const sanitizedData: any = this.sanitizer.sanitize(
+            SecurityContext.HTML,
+            this.editorTextValue,
+        );
+
+        return sanitizedData || null;
     }
 
     saveContent() {
@@ -84,20 +113,7 @@ export class CommonEditorComponent implements OnChanges {
             });
             return;
         }
-
-        if (this.editorTextValue.length > this.maxContentLength) {
-            this.messageService.add({
-                severity: "error",
-                summary: this.translate.instant("common.note.content-length-exceeded"),
-            });
-            return;
-        }
-
-        const sanitizedData: any = this.sanitizer.sanitize(
-            SecurityContext.HTML,
-            this.editorTextValue,
-        );
-
+        const sanitizedData = this.validateAndGetSanitizedContent();
         if (sanitizedData) {
             this.saveValue.emit(sanitizedData);
         }

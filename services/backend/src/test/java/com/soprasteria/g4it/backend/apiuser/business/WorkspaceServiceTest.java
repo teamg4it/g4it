@@ -72,7 +72,7 @@ class WorkspaceServiceTest {
     @BeforeEach
     void init() {
         ReflectionTestUtils.setField(workspaceService, "workspaceMapper", new WorkspaceMapperImpl());
-        Mockito.lenient().when(cacheManager.getCache(any())).thenReturn(Mockito.mock(Cache.class));
+        Mockito.lenient().when(cacheManager.getCache(any())).thenReturn(mock(Cache.class));
     }
     @Test
     void getWorkspaceById_returnsWorkspace() {

@@ -72,7 +72,7 @@
             <app-common-editor
                 [content]="inventory.note?.content"
                 [title]="'Note - ' + inventory.name"
-                [showButtons]="userService.isAllowedInventoryWrite$ | async"
+                [isWriteRole]="userService.isAllowedInventoryWrite$ | async"
                 (saveValue)="noteSaveValue($event)"
                 (outClose)="sidebarVisible = $event"
                 (delete)="noteDelete($event); sidebarVisible = $event"

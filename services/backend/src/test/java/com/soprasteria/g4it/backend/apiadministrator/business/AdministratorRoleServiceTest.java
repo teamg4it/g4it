@@ -9,8 +9,11 @@
 package com.soprasteria.g4it.backend.apiadministrator.business;
 
 import com.soprasteria.g4it.backend.apiuser.business.RoleService;
+import com.soprasteria.g4it.backend.apiuser.model.OrganizationBO;
 import com.soprasteria.g4it.backend.apiuser.model.RoleBO;
 import com.soprasteria.g4it.backend.apiuser.model.UserBO;
+import com.soprasteria.g4it.backend.apiuser.model.WorkspaceBO;
+import com.soprasteria.g4it.backend.common.utils.Constants;
 import com.soprasteria.g4it.backend.exception.AuthorizationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -204,5 +207,194 @@ class AdministratorRoleServiceTest {
 
         assertTrue(exception.getMessage().contains(
                 "has no admin role on organization"));
+    }
+
+    @Test
+    void shouldPassWhenUserIsSuperAdmin() {
+        Long workspaceId = 100L;
+        UserBO superAdmin = UserBO.builder()
+                .id(1L)
+                .email(Constants.SUPER_ADMIN_EMAIL)
+                .build();
+
+        assertDoesNotThrow(
+                () -> administratorRoleService.hasWorkspaceAdminAndEcoMindAIWriteRole(superAdmin, workspaceId));
+
+        verify(roleService, never()).hasWorkspaceAdminRights(any(), any());
+    }
+
+    @Test
+    void shouldPassWhenUserHasBothWorkspaceAdminAndEcoMindAIWriteRole() {
+        Long workspaceId = 100L;
+        Long organizationId = 50L;
+
+        WorkspaceBO workspace = WorkspaceBO.builder()
+                .id(workspaceId)
+                .roles(List.of(Constants.ROLE_ECO_MIND_AI_WRITE))
+                .build();
+
+        OrganizationBO organization = OrganizationBO.builder()
+                .id(organizationId)
+                .workspaces(List.of(workspace))
+                .build();
+
+        UserBO userWithBothRoles = UserBO.builder()
+                .id(1L)
+                .email("user@test.com")
+                .organizations(List.of(organization))
+                .build();
+
+        when(roleService.hasWorkspaceAdminRights(userWithBothRoles, workspaceId)).thenReturn(true);
+
+        assertDoesNotThrow(
+                () -> administratorRoleService.hasWorkspaceAdminAndEcoMindAIWriteRole(userWithBothRoles, workspaceId));
+
+        verify(roleService).hasWorkspaceAdminRights(userWithBothRoles, workspaceId);
+    }
+
+    @Test
+    void shouldThrowWhenUserHasWorkspaceAdminButNoEcoMindAIWriteRole() {
+        Long workspaceId = 100L;
+        Long organizationId = 50L;
+
+        WorkspaceBO workspace = WorkspaceBO.builder()
+                .id(workspaceId)
+                .roles(List.of("SOME_OTHER_ROLE"))
+                .build();
+
+        OrganizationBO organization = OrganizationBO.builder()
+                .id(organizationId)
+                .workspaces(List.of(workspace))
+                .build();
+
+        UserBO userWithoutEcoMindRole = UserBO.builder()
+                .id(1L)
+                .email("user@test.com")
+                .organizations(List.of(organization))
+                .build();
+
+        when(roleService.hasWorkspaceAdminRights(userWithoutEcoMindRole, workspaceId)).thenReturn(true);
+
+        AuthorizationException exception = assertThrows(
+                AuthorizationException.class,
+                () -> administratorRoleService.hasWorkspaceAdminAndEcoMindAIWriteRole(userWithoutEcoMindRole, workspaceId));
+
+        assertTrue(exception.getMessage().contains("does not have workspace admin access or ROLE_ECO_MIND_AI_WRITE role"));
+        assertTrue(exception.getMessage().contains(workspaceId.toString()));
+        verify(roleService).hasWorkspaceAdminRights(userWithoutEcoMindRole, workspaceId);
+    }
+
+    @Test
+    void shouldThrowWhenUserHasEcoMindAIWriteRoleButNoWorkspaceAdmin() {
+        Long workspaceId = 100L;
+        Long organizationId = 50L;
+
+        WorkspaceBO workspace = WorkspaceBO.builder()
+                .id(workspaceId)
+                .roles(List.of(Constants.ROLE_ECO_MIND_AI_WRITE))
+                .build();
+
+        OrganizationBO organization = OrganizationBO.builder()
+                .id(organizationId)
+                .workspaces(List.of(workspace))
+                .build();
+
+        UserBO userWithoutWorkspaceAdmin = UserBO.builder()
+                .id(1L)
+                .email("user@test.com")
+                .organizations(List.of(organization))
+                .build();
+
+        when(roleService.hasWorkspaceAdminRights(userWithoutWorkspaceAdmin, workspaceId)).thenReturn(false);
+
+        AuthorizationException exception = assertThrows(
+                AuthorizationException.class,
+                () -> administratorRoleService.hasWorkspaceAdminAndEcoMindAIWriteRole(userWithoutWorkspaceAdmin, workspaceId));
+
+        assertTrue(exception.getMessage().contains("does not have workspace admin access or ROLE_ECO_MIND_AI_WRITE role"));
+        verify(roleService).hasWorkspaceAdminRights(userWithoutWorkspaceAdmin, workspaceId);
+    }
+
+    @Test
+    void shouldThrowWhenUserHasNeitherWorkspaceAdminNorEcoMindAIWriteRole() {
+        Long workspaceId = 100L;
+        Long organizationId = 50L;
+
+        WorkspaceBO workspace = WorkspaceBO.builder()
+                .id(workspaceId)
+                .roles(List.of("SOME_OTHER_ROLE"))
+                .build();
+
+        OrganizationBO organization = OrganizationBO.builder()
+                .id(organizationId)
+                .workspaces(List.of(workspace))
+                .build();
+
+        UserBO userWithoutRoles = UserBO.builder()
+                .id(1L)
+                .email("user@test.com")
+                .organizations(List.of(organization))
+                .build();
+
+        when(roleService.hasWorkspaceAdminRights(userWithoutRoles, workspaceId)).thenReturn(false);
+
+        AuthorizationException exception = assertThrows(
+                AuthorizationException.class,
+                () -> administratorRoleService.hasWorkspaceAdminAndEcoMindAIWriteRole(userWithoutRoles, workspaceId));
+
+        assertTrue(exception.getMessage().contains("does not have workspace admin access or ROLE_ECO_MIND_AI_WRITE role"));
+        verify(roleService).hasWorkspaceAdminRights(userWithoutRoles, workspaceId);
+    }
+
+    @Test
+    void shouldThrowWhenUserHasNoOrganizations() {
+        Long workspaceId = 100L;
+
+        UserBO userWithoutOrganizations = UserBO.builder()
+                .id(1L)
+                .email("user@test.com")
+                .organizations(List.of())
+                .build();
+
+        when(roleService.hasWorkspaceAdminRights(userWithoutOrganizations, workspaceId)).thenReturn(false);
+
+        AuthorizationException exception = assertThrows(
+                AuthorizationException.class,
+                () -> administratorRoleService.hasWorkspaceAdminAndEcoMindAIWriteRole(userWithoutOrganizations, workspaceId));
+
+        assertTrue(exception.getMessage().contains("does not have workspace admin access or ROLE_ECO_MIND_AI_WRITE role"));
+        verify(roleService).hasWorkspaceAdminRights(userWithoutOrganizations, workspaceId);
+    }
+
+    @Test
+    void shouldThrowWhenWorkspaceNotFoundInUserOrganizations() {
+        Long workspaceId = 100L;
+        Long organizationId = 50L;
+        Long differentWorkspaceId = 999L;
+
+        WorkspaceBO workspace = WorkspaceBO.builder()
+                .id(differentWorkspaceId)
+                .roles(List.of(Constants.ROLE_ECO_MIND_AI_WRITE))
+                .build();
+
+        OrganizationBO organization = OrganizationBO.builder()
+                .id(organizationId)
+                .workspaces(List.of(workspace))
+                .build();
+
+        UserBO userWithDifferentWorkspace = UserBO.builder()
+                .id(1L)
+                .email("user@test.com")
+                .organizations(List.of(organization))
+                .build();
+
+        when(roleService.hasWorkspaceAdminRights(userWithDifferentWorkspace, workspaceId)).thenReturn(true);
+
+        AuthorizationException exception = assertThrows(
+                AuthorizationException.class,
+                () -> administratorRoleService.hasWorkspaceAdminAndEcoMindAIWriteRole(userWithDifferentWorkspace, workspaceId));
+
+        assertTrue(exception.getMessage().contains("does not have workspace admin access or ROLE_ECO_MIND_AI_WRITE role"));
+        verify(roleService).hasWorkspaceAdminRights(userWithDifferentWorkspace, workspaceId);
     }
 }

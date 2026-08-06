@@ -13,6 +13,7 @@ import com.soprasteria.g4it.backend.common.model.Context;
 import com.soprasteria.g4it.backend.common.model.LineError;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InDatacenterRest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -23,6 +24,9 @@ public class CheckDatacenterService {
 
     @Autowired
     GenericRuleService genericRuleService;
+
+    @Autowired
+    MessageSource messageSource;
 
     /**
      * Check a datacenter object
@@ -40,6 +44,11 @@ public class CheckDatacenterService {
 
         // check location is in country referential
         genericRuleService.checkLocation(context.getLocale(), context.getOrganization(), filename, line, datacenter.getLocation()).ifPresent(errors::add);
+
+        // check if pue value is not greater than 1
+        if(datacenter.getPue() == null || datacenter.getPue() <= 1) {
+            errors.add(new LineError(filename, line, messageSource.getMessage("pue.should.greater.than.one", new String[]{}, context.getLocale())));
+        }
 
         return errors;
     }

@@ -11,6 +11,7 @@ package com.soprasteria.g4it.backend.apiadministrator.business;
 import com.soprasteria.g4it.backend.apiuser.business.RoleService;
 import com.soprasteria.g4it.backend.apiuser.model.RoleBO;
 import com.soprasteria.g4it.backend.apiuser.model.UserBO;
+import com.soprasteria.g4it.backend.common.utils.Constants;
 import com.soprasteria.g4it.backend.exception.AuthorizationException;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
@@ -70,6 +71,32 @@ public class AdministratorRoleService {
                     HttpServletResponse.SC_FORBIDDEN,
                     String.format("User with id '%d' has no admin role on organization '%d' or has domain not authorized.",
                             user.getId(), organizationId)
+            );
+        }
+    }
+
+    /**
+     * Check if user has workspace admin access and ROLE_ECO_MIND_AI_WRITE role on a specific workspace
+     *
+     * @param user        the user BO
+     * @param workspaceId the workspace id
+     */
+    public void hasWorkspaceAdminAndEcoMindAIWriteRole(UserBO user, Long workspaceId) {
+        if(Constants.SUPER_ADMIN_EMAIL.equals(user.getEmail())) {
+            return; // Super admin has all rights
+        }
+        boolean hasWorkspaceAdmin = roleService.hasWorkspaceAdminRights(user, workspaceId);
+        boolean hasEcoMindAIWriteRole = user.getOrganizations().stream()
+                .anyMatch(orgBO -> orgBO.getWorkspaces().stream()
+                        .filter(workspaceBO -> workspaceBO.getId().equals(workspaceId))
+                        .anyMatch(workspaceBO -> workspaceBO.getRoles().contains(com.soprasteria.g4it.backend.common.utils.Constants.ROLE_ECO_MIND_AI_WRITE))
+                );
+
+        if (!(hasWorkspaceAdmin && hasEcoMindAIWriteRole)) {
+            throw new AuthorizationException(
+                    HttpServletResponse.SC_FORBIDDEN,
+                    String.format("User with id '%d' does not have workspace admin access or ROLE_ECO_MIND_AI_WRITE role on workspace '%d'",
+                            user.getId(), workspaceId)
             );
         }
     }

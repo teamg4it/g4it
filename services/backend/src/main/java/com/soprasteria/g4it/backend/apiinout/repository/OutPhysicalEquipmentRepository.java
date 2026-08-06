@@ -42,4 +42,6 @@ public interface OutPhysicalEquipmentRepository extends JpaRepository<OutPhysica
         AND o.source IS NOT NULL
 """)
     List<String> findDistinctSourcesByTaskId(@Param("taskId") Long taskId);
+
 }
+

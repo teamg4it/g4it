@@ -15,6 +15,7 @@ import {
     SimpleChanges,
 } from "@angular/core";
 import { EChartsOption } from "echarts";
+import { NgxEchartsDirective } from "ngx-echarts";
 import {
     DigitalServiceFootprint,
     StatusCountMap,
@@ -26,7 +27,6 @@ import {
 import { AbstractDashboard } from "src/app/layout/inventories-footprint/abstract-dashboard";
 import { Constants } from "src/constants";
 import { StackBarChartComponent } from "../../../common/stack-bar-chart/stack-bar-chart.component";
-import { NgxEchartsDirective } from "ngx-echarts";
 @Component({
     selector: "app-pie-chart",
     templateUrl: "./pie-chart.component.html",
@@ -158,6 +158,7 @@ export class PieChartComponent extends AbstractDashboard implements OnChanges {
             },
             legend: {
                 orient: "horizontal",
+                type: "scroll",
                 formatter: (param: any) => {
                     return this.existingTranslation(param, "digital-services");
                 },

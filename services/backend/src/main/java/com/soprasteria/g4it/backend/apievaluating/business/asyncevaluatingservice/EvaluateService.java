@@ -15,10 +15,7 @@ import com.soprasteria.g4it.backend.apievaluating.business.asyncevaluatingservic
 import com.soprasteria.g4it.backend.apievaluating.mapper.AggregationToOutput;
 import com.soprasteria.g4it.backend.apievaluating.mapper.ImpactToCsvRecord;
 import com.soprasteria.g4it.backend.apievaluating.mapper.InternalToNumEcoEvalImpact;
-import com.soprasteria.g4it.backend.apievaluating.model.AggValuesBO;
-import com.soprasteria.g4it.backend.apievaluating.model.EvaluateReportBO;
-import com.soprasteria.g4it.backend.apievaluating.model.ImpactBO;
-import com.soprasteria.g4it.backend.apievaluating.model.RefShortcutBO;
+import com.soprasteria.g4it.backend.apievaluating.model.*;
 import com.soprasteria.g4it.backend.apiindicator.repository.RefSustainableIndividualPackageRepository;
 import com.soprasteria.g4it.backend.apiinout.mapper.InputToCsvRecord;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InApplication;
@@ -145,7 +142,10 @@ public class EvaluateService {
     public void doEvaluate(final Context context, final Task task, Path exportDirectory) {
 
         // retrieving the VM list for this DS
-        Map<String, List<InVirtualEquipment>> vmsByPhysical =
+        Map<String, List<InVirtualEquipment>> vmsByPhysical =context.getInventoryId() != null?inVirtualEquipmentRepository.findByInventoryId(context.getInventoryId()).stream()
+                        // ONLY VMs attached to a physical equipment
+                        .filter(vm -> vm.getPhysicalEquipmentName() != null)
+                        .collect(Collectors.groupingBy(InVirtualEquipment::getPhysicalEquipmentName)):
                 inVirtualEquipmentRepository
                         .findByDigitalServiceVersionUid(context.getDigitalServiceVersionUid())
                         .stream()
@@ -163,6 +163,7 @@ public class EvaluateService {
                     ? context.getDigitalServiceName()
                     : inventory.getName();
         }
+
         final long start = System.currentTimeMillis();
         final String organization = context.getOrganization();
         final Long taskId = task.getId();
@@ -188,11 +189,15 @@ public class EvaluateService {
                 CriterionRest::getUnit
         ));
 
+
+        // Build item referential map: item reference name -> {level, unit}
+        Map<String, ItemReferentialInfo> itemReferentialMap = referentialService.buildItemReferentialMap(context.getWorkspaceId());
         RefShortcutBO refShortcutBO = new RefShortcutBO(
                 criteriaUnitMap,
                 getShortcutMap(criteriaCodes),
                 getShortcutMap(lifecycleSteps),
-                electricityMixQuartilesCache
+                electricityMixQuartilesCache,
+                itemReferentialMap
         );
 
         final List<HypothesisRest> hypothesisRestList = referentialService.getHypotheses(organization);
@@ -282,32 +287,6 @@ public class EvaluateService {
 
                 log.info("Evaluating {} physical equipments, page {}/{}", physicalEquipments.size(), pageNumber + 1, (int) Math.ceil((double) totalPhysicalEquipments / Constants.BATCH_SIZE));
                 int physicalSaveCounter = 0;
-                /*Map<String, MatchingItemRest> matchingItemMap = Collections.emptyMap();
-                Map<String, List<ItemTypeRest>> itemTypeMap = Collections.emptyMap();
-                Map<String, List<ItemImpactRest>> itemImpactMap = Collections.emptyMap();
-                if(countItemImpactWorkspace>0) {
-                    log.info("Loading referential data for workspace id {} with count {}", context.getWorkspaceId(), countItemImpactWorkspace);
-                    Set<String> models = physicalEquipments.stream()
-                            .map(InPhysicalEquipment::getModel)
-                            .filter(Objects::nonNull)
-                            .collect(Collectors.toSet());
-                    Set<String> types = physicalEquipments.stream()
-                            .map(InPhysicalEquipment::getType)
-                            .filter(Objects::nonNull)
-                            .collect(Collectors.toSet());
-                    Set<String> locations = physicalEquipments.stream()
-                            .map(InPhysicalEquipment::getLocation)
-                            .filter(Objects::nonNull)
-                            .collect(Collectors.toSet());
-                    matchingItemMap = referentialGetService.bulkGetMatchingItemsForWorkspace(models, context.getWorkspaceId());
-                    itemTypeMap = referentialGetService.bulkGetItemTypesForWorkspace(types, context.getWorkspaceId());
-                    itemImpactMap = referentialGetService.bulkGetAllItemImpactsForWorkspace(
-                            activeCriteria.stream().map(CriterionRest::getCode).collect(Collectors.toSet()),
-                            new HashSet<>(lifecycleSteps),
-                            locations,
-                            context.getWorkspaceId()
-                    );
-                }*/
                 for (InPhysicalEquipment physicalEquipment : physicalEquipments) {
 
                     if (aggregationPhysicalEquipments.size() > MAXIMUM_MAP_CAPACITY) {

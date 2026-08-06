@@ -18,6 +18,7 @@ import com.soprasteria.g4it.backend.apievaluating.mapper.AggregationToOutput;
 import com.soprasteria.g4it.backend.apievaluating.mapper.ImpactToCsvRecord;
 import com.soprasteria.g4it.backend.apievaluating.model.AggValuesBO;
 import com.soprasteria.g4it.backend.apievaluating.model.EvaluateReportBO;
+import com.soprasteria.g4it.backend.apievaluating.model.ItemReferentialInfo;
 import com.soprasteria.g4it.backend.apievaluating.model.RefShortcutBO;
 import com.soprasteria.g4it.backend.apiinout.mapper.InputToCsvRecord;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InDatacenter;
@@ -201,11 +202,15 @@ public class EvaluateAiService {
                 CriterionRest::getUnit
         ));
 
+        // Build item referential map: item reference name -> {level, unit}
+        Map<String, ItemReferentialInfo> itemReferentialMap = referentialService.buildItemReferentialMap(context.getWorkspaceId());
+
         RefShortcutBO refShortcutBO = new RefShortcutBO(
                 criteriaUnitMap,
                 getShortcutMap(criteriaCodes),
                 getShortcutMap(lifecycleSteps),
-                referentialService.getElectricityMixQuartiles(context.getWorkspaceId())
+                referentialService.getElectricityMixQuartiles(context.getWorkspaceId()),
+                itemReferentialMap
         );
 
         final List<HypothesisRest> hypothesisRestList = referentialService.getHypotheses(organization);

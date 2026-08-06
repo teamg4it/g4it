@@ -23,7 +23,11 @@ import java.io.Serializable;
                         @ColumnResult(name = "name"),
                         @ColumnResult(name = "location"),
                         @ColumnResult(name = "pue", type = Double.class),
-                        @ColumnResult(name = "physical_equipment_count", type = Double.class)
+                        @ColumnResult(name = "physical_equipment_count", type = Double.class),
+                        @ColumnResult(name = "entity"),
+                        @ColumnResult(name = "status"),
+                        @ColumnResult(name = "equipment")
+
                 }
         )
 )
@@ -33,7 +37,10 @@ import java.io.Serializable;
                    dc."name"         AS NAME,
                    dc."location"     AS location,
                    dc.pue            AS pue,
-                   Sum(ipe.quantity) AS physical_equipment_count
+                   Sum(ipe.quantity) AS physical_equipment_count,
+                   ipe.common_filters[1]       AS entity,
+                   ipe.filters[1]       AS status,
+                   ipe.type    AS equipment
             FROM   in_datacenter dc
                    LEFT JOIN in_physical_equipment ipe
                            ON dc.inventory_id = ipe.inventory_id
@@ -41,7 +48,10 @@ import java.io.Serializable;
             WHERE  dc.inventory_id = :inventoryId
             GROUP  BY dc."name",
                       dc."location",
-                      dc.pue
+                      dc.pue,
+                      ipe.common_filters[1],
+                      ipe.filters[1],
+                      ipe.type
         """)
 
 @Data
@@ -60,5 +70,13 @@ public class InDatacenterIndicatorView implements Serializable {
     private Double pue;
 
     private Double physicalEquipmentCount;
+
+    private String entity;
+
+    private String status;
+
+    private String equipment;
+
+
 
 }

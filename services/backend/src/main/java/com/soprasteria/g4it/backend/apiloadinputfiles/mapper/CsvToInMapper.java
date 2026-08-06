@@ -8,7 +8,9 @@
 
 package com.soprasteria.g4it.backend.apiloadinputfiles.mapper;
 
+import com.soprasteria.g4it.backend.common.error.ErrorConstants;
 import com.soprasteria.g4it.backend.common.utils.InfrastructureType;
+import com.soprasteria.g4it.backend.exception.AsyncTaskException;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InApplicationRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InDatacenterRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InPhysicalEquipmentRest;
@@ -16,10 +18,8 @@ import com.soprasteria.g4it.backend.server.gen.api.dto.InVirtualEquipmentRest;
 import org.apache.commons.csv.CSVRecord;
 import org.mapstruct.Mapper;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 import static com.soprasteria.g4it.backend.common.utils.CsvUtils.*;
 
@@ -30,12 +30,17 @@ public interface CsvToInMapper {
      * From Csv import to Rest
      */
     default InDatacenterRest csvInDatacenterToRest(CSVRecord csvRecord, final Long inventoryId, String digitalServiceVersionUid) {
+        final String pueValue = read(csvRecord, "pue");
+        if (pueValue != null && pueValue.contains(",")) {
+            throw new AsyncTaskException(ErrorConstants.INVALID_DECIMAL_NUMBER_FORMAT);
+        }
+
         return InDatacenterRest.builder()
                 .name(read(csvRecord, "nomCourtDatacenter"))
                 .inventoryId(inventoryId)
                 .digitalServiceVersionUid(digitalServiceVersionUid)
                 .fullName(read(csvRecord, "nomLongDatacenter"))
-                .pue(readDouble(csvRecord, "pue"))
+                .pue(pueValue!=null? Double.valueOf(pueValue):null)
                 .location(read(csvRecord, "localisation"))
                 .creationDate(LocalDateTime.now())
                 .commonFilters(List.of(read(csvRecord, "nomEntite", "")))
@@ -43,14 +48,18 @@ public interface CsvToInMapper {
     }
 
     default InPhysicalEquipmentRest csvInPhysicalEquipmentToRest(CSVRecord csvRecord, final Long inventoryId, String digitalServiceVersionUid) {
-
+        final String quantityValue = read(csvRecord, "quantite");
+        final String consoElecAnnulledValue = read(csvRecord, "consoElecAnnuelle");
+        if ((quantityValue != null && quantityValue.contains(",")) || (consoElecAnnulledValue != null && consoElecAnnulledValue.contains(",")) ) {
+            throw new AsyncTaskException(ErrorConstants.INVALID_DECIMAL_NUMBER_FORMAT);
+        }
         return InPhysicalEquipmentRest.builder()
                 .name(read(csvRecord, "nomEquipementPhysique"))
                 .inventoryId(inventoryId)
                 .digitalServiceVersionUid(digitalServiceVersionUid)
                 .datacenterName(read(csvRecord, "nomCourtDatacenter"))
                 .location(read(csvRecord, "paysDUtilisation"))
-                .quantity(readDouble(csvRecord, "quantite", 1d))
+                .quantity(quantityValue!=null?Double.valueOf(quantityValue):null)
                 .type(read(csvRecord, "type"))
                 .model(read(csvRecord, "modele"))
                 .durationHour(readDouble(csvRecord, "dureeUtilisation"))
@@ -59,7 +68,7 @@ public interface CsvToInMapper {
                 .source(read(csvRecord, "nomSourceDonnee"))
                 .cpuCoreNumber(readDouble(csvRecord, "nbCoeur"))
                 .sizeDiskGb(readDouble(csvRecord, "tailleDuDisque"))
-                .electricityConsumption(readDouble(csvRecord, "consoElecAnnuelle"))
+                .electricityConsumption(consoElecAnnulledValue!=null? Double.valueOf(consoElecAnnulledValue):null)
                 .numberOfUsers(readDouble(csvRecord, "nombreUtilisateur"))
                 .creationDate(LocalDateTime.now())
                 .filters(List.of(read(csvRecord, "statut", "")))
@@ -69,7 +78,22 @@ public interface CsvToInMapper {
 
     default InVirtualEquipmentRest csvInVirtualEquipmentToRest(CSVRecord csvRecord, final Long inventoryId, String digitalServiceVersionUid) {
 
-        Double workload = readDouble(csvRecord, "chargeMoy");
+        final String consoElecAnnValue = read(csvRecord, "consoElecAn");
+        final String cleRepartitionValue = read(csvRecord, "cleRepartition");
+        final String vcpuValue = read(csvRecord, "vCPU");
+        final String capaciteStockageValue = read(csvRecord, "capaciteStockage");
+        final String dureeUtilisationAnnuelleValue = read(csvRecord, "dureeUtilisationAnnuelle");
+        final String chargeMoyValue = read(csvRecord, "chargeMoy");
+
+        if((consoElecAnnValue!=null && consoElecAnnValue.contains(",")) || (cleRepartitionValue != null && cleRepartitionValue.contains(","))
+                || (vcpuValue != null && vcpuValue.contains(","))
+                || (capaciteStockageValue != null && capaciteStockageValue.contains(","))
+                || (dureeUtilisationAnnuelleValue != null && dureeUtilisationAnnuelleValue.contains(","))
+                || (chargeMoyValue != null && chargeMoyValue.contains(","))) {
+            throw new AsyncTaskException(ErrorConstants.INVALID_DECIMAL_NUMBER_FORMAT);
+        }
+
+        Double workload = chargeMoyValue != null? Double.parseDouble(chargeMoyValue):null;
 
         return InVirtualEquipmentRest.builder()
                 .name(read(csvRecord, "nomEquipementVirtuel"))
@@ -78,15 +102,15 @@ public interface CsvToInMapper {
                 .physicalEquipmentName(read(csvRecord, "nomEquipementPhysique"))
                 .quantity(readDouble(csvRecord, "quantite", 1d))
                 .type(read(csvRecord, "typeEqv"))
-                .vcpuCoreNumber(readDouble(csvRecord, "vCPU"))
-                .sizeDiskGb(readDouble(csvRecord, "capaciteStockage"))
-                .allocationFactor(readDouble(csvRecord, "cleRepartition"))
-                .electricityConsumption(readDouble(csvRecord, "consoElecAn"))
+                .vcpuCoreNumber(vcpuValue!=null?Double.valueOf(vcpuValue):null)
+                .sizeDiskGb(capaciteStockageValue!=null?Double.valueOf(capaciteStockageValue):null)
+                .allocationFactor(cleRepartitionValue!=null?Double.valueOf(cleRepartitionValue):null)
+                .electricityConsumption(consoElecAnnValue != null ? Double.valueOf(consoElecAnnValue) : null)
                 .infrastructureType(read(csvRecord, "typeInfrastructure", InfrastructureType.NON_CLOUD_SERVERS.name()))
                 .provider(read(csvRecord, "provider"))
                 .instanceType(read(csvRecord, "typeInstance"))
                 .location(read(csvRecord, "location"))
-                .durationHour(readDouble(csvRecord, "dureeUtilisationAnnuelle"))
+                .durationHour(dureeUtilisationAnnuelleValue!=null?Double.valueOf(dureeUtilisationAnnuelleValue):null)
                 .workload(workload == null ? null : workload / 100.0)
                 .creationDate(LocalDateTime.now())
                 .filters(List.of(read(csvRecord, "cluster", "")))

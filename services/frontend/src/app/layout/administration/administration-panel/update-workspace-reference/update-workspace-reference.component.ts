@@ -22,6 +22,7 @@ import { CsvImportEndpoint } from "src/app/core/service/data/api-route-referenti
 import { TemplateFileService } from "src/app/core/service/data/template-file.service";
 import { WorkspaceReferenceDataService } from "src/app/core/service/data/workspace-reference-data.service";
 import { SharedModule } from "src/app/core/shared/shared.module";
+import { Constants } from "src/constants";
 
 @Component({
     selector: "app-update-workspace-reference",
@@ -61,7 +62,7 @@ export class UpdateWorkspaceReferenceComponent implements OnInit {
     loadingResults: any[] = [];
     downloadInProgress = false;
     uploadInProgress = false;
-
+    allowedFileExtensions = [".csv", ".xlsx", ".ods"];
     ngOnInit() {
         this.csvEndpoints = this.workspaceReferenceDataService.getWorkspaceCsvEndpoints();
         this.getTemplates();
@@ -120,8 +121,9 @@ export class UpdateWorkspaceReferenceComponent implements OnInit {
                 transformedTemplateFiles[0].displayFileName = this.translate.instant(
                     "digital-services-import.templates.data-model",
                 );
+                // conditon added to include workpsace data model
                 this.dataModel = transformedTemplateFiles.find((file) =>
-                    file.name?.toLowerCase()?.includes("datamodel"),
+                    file.name?.toLowerCase()?.includes(Constants.DATA_MODEL_CONDITION),
                 );
                 if (this.dataModel?.displayFileName) {
                     this.dataModel.displayFileName = this.translate.instant(

@@ -9,8 +9,8 @@ mermaid: true
 
 -   [Table of contents](#table-of-contents)
 -   [Description](#description)
--   [Mockup](#mockup)
 -   [State Diagram](#state-diagram)
+-   [Mockup](#mockup)
 -   [Sequence Diagram](#sequence-diagram)
 
 ## Description
@@ -99,8 +99,8 @@ Step5-->|New filters selected|Step6[View is updated according to the filters]
 | 4         |                            | Data consistency       |                           | button | <li><u>_action rules_</u>: Click to view graph of data consistency for all criteria. See [Global concepts/ Data consistency](../../global_concepts/uc1_dataconsistency.md)</li>                    |
 |           | Key indicators             |                        |                           |        |                                                                                                                                                                                                    |
 |           |                            | Infrastructure         |                           |        |                                                                                                                                                                                                    |
-| 5         |                            |                        | Number of equipments      | label  |                                                                                                                                                                                                    |
-| 6         |                            |                        | Avg. lifespan             | label  | The Lifespan for each equipment is calculated as(date_retrait - date_achat)/365.0 years, where date_achat defaults to current date if empty.                                                       |
+| 5         |                            |                        | Number of equipments      | label  |  The Number of Equipment metric includes only items belonging to the "2 – Equipment" category with the unit "Item". Items from other categories or using different units (e.g. GB) are excluded to ensure the count represents only physical equipment.                                                                                                                                                                                                  |
+| 6         |                            |                        | Avg. lifespan             | label  | The Lifespan for each equipment is calculated as(date_retrait - date_achat)/365.0 years, where date_achat defaults to current date if empty. The Average Lifespan is calculated using only items belonging to the "2 – Equipment" category with the unit "Item". Items from other categories or using different units are excluded to provide an accurate average lifespan for physical equipment only.                                                      |
 | 7         |                            |                        | Number of Cloud Instances | label  |                                                                                                                                                                                                    |
 |           |                            | Energy                 |                           |        |                                                                                                                                                                                                    |
 | 8         |                            |                        | Total power consumption   | label  |                                                                                                                                                                                                    |
@@ -108,6 +108,33 @@ Step5-->|New filters selected|Step6[View is updated according to the filters]
 | 10        |                            |                        | Avg. PUE                  | label  |                                                                                                                                                                                                    |
 
 {{% /expand %}}
+
+### Reverse Axes on the multicriteria graph
+
+![uc5_visualize_equipment_footprint_multi_reverse1.png](../images/uc5_visualize_equipment_footprint_multi_reverse1.png)
+![uc5_visualize_equipment_footprint_multi_reverse2.png](../images/uc5_visualize_equipment_footprint_multi_reverse2.png)
+{{% expand title="Show the behavior detail" expanded="false" center="true"%}}
+
+| Reference | Group                      | Elements               | Sub-Elements              | Type   | Description                                                                                                                                                                                        |
+| --------- | -------------------------- | ---------------------- | ------------------------- | ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1         | Inverse the Axis (Off)     | Toggle Button          |                           | button | <li><u>_initialization rules_</u>: Allows users to switch the orientation of the graph axes. By default, the Inverse Axis option is Off, and the graph is displayed using its standard axis orientation.   |
+| 2         | Inverse the Axis (On)      | Toggle Button          |                           | button | <li><u>_initialization rules_</u>: When the Inverse Axis option is enabled (On), the graph axes are reversed. The chart is immediately redrawn using the inverted orientation while preserving the displayed data and applied filters.   |
+| 3         | Multicriteria-graph        | Graph                  |                           | graph   | <li><u>_initialization rules_</u>: The Inverse Axis feature is available on the Inventory module's equipment view multicriteria graphs. Enabling the option swaps the chart axes to provide an alternative visualization, making it easier to analyze the same inventory data from a different perspective without affecting the underlying dataset. |
+
+{{% /expand %}}
+
+### Adaptive Visualization for Multi-Criteria Graph
+![uc5_visualize_equipment_footprint_multi_items1.png](../images/uc5_visualize_equipment_footprint_multi_items1.png)
+- **Default Visualization**
+  A radial chart is displayed when 5 or fewer items are shown.
+ - **Automatic Conversion**
+  When more than 5 items are displayed on the axis, the graph automatically changes to a bar chart.
+- **Purpose**
+  This behavior improves readability by avoiding overlapping axis labels and ensuring that all items remain clearly visible.
+- The underlying data, calculations, filters, and interactions remain unchanged; only the chart visualization is adapted.
+- If the number of displayed items is reduced to 5 or fewer, the visualization automatically shifts to the radial chart.
+  
+
 
 ### View dedicated for each criterion
 

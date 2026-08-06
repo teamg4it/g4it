@@ -20,7 +20,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -115,7 +114,7 @@ class FileSystemServiceTest {
         String expectedPath = "/input/file.txt";
 
         // Spy getFilenameFromUrl if needed
-        FileSystemService spyService = Mockito.spy(fileSystemService);
+        FileSystemService spyService = spy(fileSystemService);
         doReturn(fileName).when(spyService).getFilenameFromUrl(fileUrl, 0);
 
         when(fileSystem.mount(organization, workId.toString())).thenReturn(fileStorage);
@@ -137,7 +136,7 @@ class FileSystemServiceTest {
         String expectedPath = "/input/file.txt";
         HttpResponse mockResponse = mock(HttpResponse.class);
 
-        FileSystemService spyService = Mockito.spy(fileSystemService);
+        FileSystemService spyService = spy(fileSystemService);
         doReturn(fileName).when(spyService).getFilenameFromUrl(fileUrl, 0);
 
         when(fileSystem.mount(organization, workId.toString())).thenReturn(fileStorage);
@@ -160,7 +159,7 @@ class FileSystemServiceTest {
         String fileName = "file.txt";
         String expectedPath = "/input/file.txt";
 
-        FileSystemService spyService = Mockito.spy(fileSystemService);
+        FileSystemService spyService = spy(fileSystemService);
         doReturn(fileName).when(spyService).getFilenameFromUrl(fileUrl, 0);
 
         when(fileSystem.mount(organization, workId.toString())).thenReturn(fileStorage);

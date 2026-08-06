@@ -15,7 +15,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -24,6 +23,7 @@ import java.util.Map;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class LowImpactServiceTest {
@@ -49,8 +49,8 @@ class LowImpactServiceTest {
 
         ReflectionTestUtils.setField(lowImpactService, "criterias", Set.of("Climate change", "Acidification"));
 
-        Mockito.when(referentialGetService.getCountries(null)).thenReturn(List.of("France", "Germany"));
-        Mockito.when(referentialService.getElectricityMixQuartiles(1L)).thenReturn(quartileMap);
+        when(referentialGetService.getCountries(null)).thenReturn(List.of("France", "Germany"));
+        when(referentialService.getElectricityMixQuartiles(1L)).thenReturn(quartileMap);
 
         assertThat(lowImpactService.isLowImpact("France",1L)).isTrue();
         assertThat(lowImpactService.isLowImpact("Germany",1L)).isFalse();

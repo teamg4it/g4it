@@ -482,6 +482,12 @@ components:
           type: string
         countValue:
           type: number
+        level:
+          type: string
+          description: Equipment level from referential (e.g. 2-Equipement, 3-System)
+        impactUnit:
+          type: string
+          description: Impact unit from referential (e.g. kgCO2e, kWh, m3)
 
     ApplicationIndicatorRest:
       type: object
@@ -599,6 +605,12 @@ components:
         ageMoyen:
           type: number
           format: double
+        level:
+          type: string
+          description: Equipment level from referential (e.g. 2-Equipement, 3-System)
+        impactUnit:
+          type: string
+          description: Impact unit from referential (e.g. kgCO2e, kWh, m3)
     PhysicalEquipmentElecConsumptionRest:
       type: object
       properties:
@@ -800,6 +812,9 @@ components:
           type: string
         isAi:
           type: boolean
+        note:
+          type: object
+          $ref: "#/components/schemas/NoteRest"
 
     DigitalServiceServerImpactRest:
       type: object

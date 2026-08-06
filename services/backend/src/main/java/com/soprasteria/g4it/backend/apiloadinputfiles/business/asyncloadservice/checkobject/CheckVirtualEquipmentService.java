@@ -55,6 +55,11 @@ public class CheckVirtualEquipmentService {
                         virtualEquipment.getName(), virtualEquipmentNames, isCloudService, isDigitalService)
                 .ifPresent(errors::add);
 
+        // check allocation factor value is not between 0 and 1
+        ruleVirtualEquipmentService.checkAllocationFactor(context.getLocale(), filename, line,
+                        virtualEquipment.getAllocationFactor())
+                .ifPresent(errors::add);
+
         if(isCloudService || isDigitalService) {
             // check annual usage duration is not empty
             ruleVirtualEquipmentService.checkUsageDuration(context.getLocale(), filename, line,

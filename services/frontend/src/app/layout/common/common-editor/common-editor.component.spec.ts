@@ -58,6 +58,23 @@ describe("CommonEditorComponent", () => {
         expect(component.removeStylesFromText("<p>  </p><p>  </p>")).toBe("    ");
     });
 
+    it("should remove HTML tags and return text content", () => {
+        expect(component.removeStylesFromText("<p>Hello World</p>")).toBe("Hello World");
+        expect(component.removeStylesFromText("<div><strong>Bold Text</strong></div>")).toBe("Bold Text");
+    });
+
+    it("should strip styles and formatting from HTML", () => {
+        expect(component.removeStylesFromText('<p style="color: red;">Styled text</p>'))
+            .toBe("Styled text");
+        expect(component.removeStylesFromText('<span class="highlight">Text with class</span>'))
+            .toBe("Text with class");
+    });
+
+    it("should handle complex HTML with multiple elements", () => {
+        const htmlContent = '<div><h1>Title</h1><p>Paragraph</p><ul><li>Item 1</li><li>Item 2</li></ul></div>';
+        expect(component.removeStylesFromText(htmlContent)).toBe("TitleParagraphItem 1Item 2");
+    });
+
     describe("ngOnChanges", () => {
         it("should reset editor text when content changes to null", () => {
             component.editorTextValue = "previous";
@@ -88,6 +105,48 @@ describe("CommonEditorComponent", () => {
 
             expect(component.editorTextValue).toBe("existing");
             expect(component.editorTextValueUnmodified).toBe("existing");
+        });
+    });
+
+    describe("validateAndGetSanitizedContent", () => {
+        it("should return sanitized content when valid", () => {
+            component.editorTextValue = "<p>Valid content</p>";
+            const result = component.validateAndGetSanitizedContent();
+            expect(result).toBe("<p>Valid content</p>");
+        });
+
+        it("should return null when content exceeds max length", () => {
+            spyOn(messageService, "add");
+            component.maxContentLength = 10;
+            component.editorTextValue = "This content is way too long";
+
+            const result = component.validateAndGetSanitizedContent();
+
+            expect(result).toBeNull();
+            expect(messageService.add).toHaveBeenCalledWith({
+                severity: "error",
+                summary: "common.note.content-length-exceeded",
+            });
+        });
+
+        it("should return null when sanitizer returns empty string", () => {
+            const sanitizer = TestBed.inject(DomSanitizer);
+            spyOn(sanitizer, "sanitize").and.returnValue("");
+            component.editorTextValue = "<p>Content</p>";
+
+            const result = component.validateAndGetSanitizedContent();
+
+            expect(result).toBeNull();
+        });
+
+        it("should return null when sanitizer returns null", () => {
+            const sanitizer = TestBed.inject(DomSanitizer);
+            spyOn(sanitizer, "sanitize").and.returnValue(null);
+            component.editorTextValue = "<p>Content</p>";
+
+            const result = component.validateAndGetSanitizedContent();
+
+            expect(result).toBeNull();
         });
     });
 
@@ -137,6 +196,28 @@ describe("CommonEditorComponent", () => {
 
             expect(component.saveValue.emit).toHaveBeenCalledWith("<p>Valid content</p>");
         });
+
+        it("should not emit when sanitizer returns empty string", () => {
+            const sanitizer = TestBed.inject(DomSanitizer);
+            spyOn(sanitizer, "sanitize").and.returnValue("");
+            spyOn(component.saveValue, "emit");
+            component.editorTextValue = "<p>Content</p>";
+
+            component.saveContent();
+
+            expect(component.saveValue.emit).not.toHaveBeenCalled();
+        });
+
+        it("should not emit when sanitizer returns null", () => {
+            const sanitizer = TestBed.inject(DomSanitizer);
+            spyOn(sanitizer, "sanitize").and.returnValue(null);
+            spyOn(component.saveValue, "emit");
+            component.editorTextValue = "<p>Content</p>";
+
+            component.saveContent();
+
+            expect(component.saveValue.emit).not.toHaveBeenCalled();
+        });
     });
 
     describe("cancelContent", () => {
@@ -164,6 +245,34 @@ describe("CommonEditorComponent", () => {
 
             expect(component.editorTextValue).toBe("original");
             expect(component.outClose.emit).toHaveBeenCalled();
+        });
+    });
+
+    describe("onTextChange", () => {
+        it("should emit contentChange event with the provided value", () => {
+            spyOn(component.contentChange, "emit");
+            const testContent = "<p>Test content</p>";
+
+            component.onTextChange(testContent);
+
+            expect(component.contentChange.emit).toHaveBeenCalledWith(testContent);
+        });
+
+        it("should emit contentChange event with empty string", () => {
+            spyOn(component.contentChange, "emit");
+
+            component.onTextChange("");
+
+            expect(component.contentChange.emit).toHaveBeenCalledWith("");
+        });
+
+        it("should emit contentChange event with HTML content", () => {
+            spyOn(component.contentChange, "emit");
+            const htmlContent = '<div><h1>Title</h1><p>Paragraph</p></div>';
+
+            component.onTextChange(htmlContent);
+
+            expect(component.contentChange.emit).toHaveBeenCalledWith(htmlContent);
         });
     });
 

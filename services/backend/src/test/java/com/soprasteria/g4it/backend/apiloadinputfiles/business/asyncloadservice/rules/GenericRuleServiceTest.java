@@ -151,6 +151,55 @@ class GenericRuleServiceTest {
     }
 
     @Test
+    void testCheckQuantity_NonDigitalService_NullQuantity_Error() {
+        when(messageSource.getMessage(eq("quanity.should.be.greater.than.zero"), any(), eq(locale)))
+                .thenReturn("Quantity must be greater than zero");
+
+        var actual = genericRuleService.checkQuantity(locale, filename, line, null, false);
+
+        assertTrue(actual.isPresent());
+        assertEquals(new LineError(filename, line, "Quantity must be greater than zero"), actual.get());
+    }
+
+    @Test
+    void testCheckQuantity_NonDigitalService_ZeroQuantity_Error() {
+        when(messageSource.getMessage(eq("quanity.should.be.greater.than.zero"), any(), eq(locale)))
+                .thenReturn("Quantity must be greater than zero");
+
+        var actual = genericRuleService.checkQuantity(locale, filename, line, 0D, false);
+
+        assertTrue(actual.isPresent());
+        assertEquals(new LineError(filename, line, "Quantity must be greater than zero"), actual.get());
+    }
+
+    @Test
+    void testCheckQuantity_NonDigitalService_NegativeQuantity_Error() {
+        when(messageSource.getMessage(eq("quanity.should.be.greater.than.zero"), any(), eq(locale)))
+                .thenReturn("Quantity must be greater than zero");
+
+        var actual = genericRuleService.checkQuantity(locale, filename, line, -1D, false);
+
+        assertTrue(actual.isPresent());
+        assertEquals(new LineError(filename, line, "Quantity must be greater than zero"), actual.get());
+    }
+
+    @Test
+    void testCheckQuantity_NonDigitalService_PositiveQuantity_Ok() {
+        var actual = genericRuleService.checkQuantity(locale, filename, line, 1D, false);
+
+        assertTrue(actual.isEmpty());
+    }
+
+    @Test
+    void testCheckQuantity_DigitalService_ZeroOrNullQuantity_Ok() {
+        var actualNull = genericRuleService.checkQuantity(locale, filename, line, null, true);
+        var actualZero = genericRuleService.checkQuantity(locale, filename, line, 0D, true);
+
+        assertTrue(actualNull.isEmpty());
+        assertTrue(actualZero.isEmpty());
+    }
+
+    @Test
     void testViolations_Ok() {
         when(validator.validate(any())).thenReturn(Set.of());
         assertTrue(genericRuleService.checkViolations(new Object(), filename, line).isEmpty());

@@ -412,6 +412,7 @@ export class TopHeaderComponent implements OnInit {
             skipLocationChange: true,
             queryParamsHandling: "merge",
         });
+        // Directly reload since we're reloading anyway
         globalThis.location.reload();
     }
 

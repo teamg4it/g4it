@@ -29,6 +29,7 @@ import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
 import com.soprasteria.g4it.backend.apiuser.repository.OrganizationRepository;
 import com.soprasteria.g4it.backend.apiuser.repository.UserRepository;
 import com.soprasteria.g4it.backend.apiuser.repository.UserWorkspaceRepository;
+import com.soprasteria.g4it.backend.common.dbmodel.Note;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
 import com.soprasteria.g4it.backend.server.gen.api.dto.*;
 import jakarta.persistence.EntityNotFoundException;
@@ -53,15 +54,12 @@ import java.util.stream.Collectors;
 @Slf4j
 public class DigitalServiceVersionService {
 
-    private static final String DEFAULT_NAME_PREFIX = "Digital Service";
     @Autowired
     private DigitalServiceRepository digitalServiceRepository;
     @Autowired
     private DigitalServiceReferentialService digitalServiceReferentialService;
     @Autowired
     private UserRepository userRepository;
-    @Autowired
-    private DigitalServiceMapper digitalServiceMapper;
     @Autowired
     private DigitalServiceVersionMapper digitalServiceVersionMapper;
     @Autowired
@@ -116,12 +114,18 @@ public class DigitalServiceVersionService {
                 .name(inDigitalServiceVersionRest.getDsName())
                 .user(user)
                 .workspace(linkedWorkspace)
-                .isAi(inDigitalServiceVersionRest.getIsAi())
+                .isAi(Boolean.TRUE.equals(inDigitalServiceVersionRest.getIsAi()))
                 .creationDate(now)
                 .lastUpdateDate(now)
                 .build();
 
         final DigitalService savedDigitalService = digitalServiceRepository.save(digitalService);
+
+        Note note = inDigitalServiceVersionRest.getNote() != null ? inDigitalServiceVersionRest.getNote().getContent() != null ? Note.builder()
+                .content(inDigitalServiceVersionRest.getNote().getContent())
+                .creationDate(now)
+                .lastUpdateDate(now)
+                .build() : null : null;
 
         // Step 2: Create the Digital Service Version
         final DigitalServiceVersion digitalServiceVersion = DigitalServiceVersion.builder()
@@ -132,6 +136,7 @@ public class DigitalServiceVersionService {
                 .creationDate(savedDigitalService.getCreationDate())
                 .lastUpdateDate(savedDigitalService.getLastUpdateDate())
                 .lastCalculationDate(savedDigitalService.getLastCalculationDate())
+                .note(note)
                 .build();
 
         final DigitalServiceVersion savedDigitalServiceVersion = digitalServiceVersionRepository.save(digitalServiceVersion);

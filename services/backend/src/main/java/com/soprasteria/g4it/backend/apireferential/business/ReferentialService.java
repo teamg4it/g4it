@@ -9,10 +9,12 @@
 package com.soprasteria.g4it.backend.apireferential.business;
 
 import com.google.common.math.Quantiles;
+import com.soprasteria.g4it.backend.apievaluating.model.ItemReferentialInfo;
 import com.soprasteria.g4it.backend.apiindicator.modeldb.RefSustainableIndividualPackage;
 import com.soprasteria.g4it.backend.apiindicator.repository.RefSustainableIndividualPackageRepository;
 import com.soprasteria.g4it.backend.apiindicator.utils.CriteriaUtils;
 import com.soprasteria.g4it.backend.apireferential.modeldb.ItemImpact;
+import com.soprasteria.g4it.backend.apireferential.repository.ItemImpactRepository;
 import com.soprasteria.g4it.backend.common.utils.StringUtils;
 import com.soprasteria.g4it.backend.server.gen.api.dto.*;
 import lombok.extern.slf4j.Slf4j;
@@ -21,10 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,6 +35,9 @@ public class ReferentialService {
 
     @Autowired
     RefSustainableIndividualPackageRepository refSustainableIndividualPackageRepository;
+
+    @Autowired
+    ItemImpactRepository itemImpactRepository;
 
     public List<String> getLifecycleSteps() {
         return referentialGetService.getAllLifecycleSteps().stream().map(LifecycleStepRest::getCode).toList();
@@ -219,18 +221,63 @@ public class ReferentialService {
     }*/
     public List<ItemImpactRest> getItemImpactsForWorkspace(final String criterion, final String lifecycleStep, final String name,
                                                final String location,Long workspaceId) {
-        List<ItemImpactRest> itemImpacts = referentialGetService.getItemImpactsForWorkspace(criterion, lifecycleStep,
+        List<ItemImpactRest> workspaceImpacts = referentialGetService.getItemImpactsForWorkspace(criterion, lifecycleStep,
                     name, null, null, null,workspaceId);
 
+        List<ItemImpactRest> itemImpacts;
+        if (workspaceImpacts == null || workspaceImpacts.isEmpty()) {
+            List<ItemImpactRest> fallbackImpacts = referentialGetService.getItemImpacts(criterion, lifecycleStep,
+                    name, null, null, null);
+            itemImpacts = fallbackImpacts == null ? new ArrayList<>() : new ArrayList<>(fallbackImpacts);
+        } else {
+            // Copy to mutable list because upstream may return immutable collections.
+            itemImpacts = new ArrayList<>(workspaceImpacts);
+        }
+
         List<ItemImpactRest> electricityMixImpact = referentialGetService.getItemImpactsForWorkspace(criterion, null, null, location, "electricity-mix", null,workspaceId);
+        if (electricityMixImpact == null || electricityMixImpact.isEmpty()) {
+            electricityMixImpact = referentialGetService.getItemImpacts(criterion, null, null, location, "electricity-mix", null);
+        }
+
         if (electricityMixImpact != null && !electricityMixImpact.isEmpty()) {
-            if (itemImpacts == null) {
-                itemImpacts = new ArrayList<>();
-            }
             itemImpacts.addAll(electricityMixImpact);
         }
 
         return itemImpacts;
     }
-}
 
+    /**
+     * Build a lookup map from item reference names to their referential information (level and unit).
+     * This avoids slow UPDATE queries by determining level and unit during evaluation.
+     *
+     * @param workspaceId the workspace ID
+     * @return map of item reference name to ItemReferentialInfo (e.g., "desktop-4" -> {level: "2-Equipement", unit: "unit"})
+     */
+    public Map<String, ItemReferentialInfo> buildItemReferentialMap(Long workspaceId) {
+        Map<String, ItemReferentialInfo> referentialMap = new HashMap<>();
+        try {
+            // Get all item impacts for this workspace (includes both workspace-specific and global)
+            List<ItemImpact> itemImpacts = itemImpactRepository.findByWorkspaceIdOrWorkspaceIdIsNull(workspaceId);
+
+            // Build map: item name -> ItemReferentialInfo (workspace-specific items take precedence over global)
+            // Process global items first, then workspace-specific ones will override
+            itemImpacts.stream()
+                    .filter(item -> item.getName() != null && (item.getLevel() != null || item.getUnit() != null))
+                    .sorted((a, b) -> {
+                        // Sort: global (null workspaceId) first, then workspace-specific
+                        if (a.getWorkspaceId() == null && b.getWorkspaceId() != null) return -1;
+                        if (a.getWorkspaceId() != null && b.getWorkspaceId() == null) return 1;
+                        return 0;
+                    })
+                    .forEach(item -> referentialMap.put(
+                            item.getName(),
+                            new ItemReferentialInfo(item.getLevel(), item.getUnit())
+                    ));
+
+            log.info("Built item referential map with {} entries for workspace {}", referentialMap.size(), workspaceId);
+        } catch (Exception e) {
+            log.error("Failed to build item referential map for workspace {}: {}", workspaceId, e.getMessage());
+        }
+        return referentialMap;
+    }
+}

@@ -7,7 +7,14 @@
  */
 import { NgClass } from "@angular/common";
 import { Component, EventEmitter, inject, Input, OnInit, Output } from "@angular/core";
-import { AbstractControl, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
+import {
+    AbstractControl,
+    FormControl,
+    FormGroup,
+    FormsModule,
+    ReactiveFormsModule,
+    Validators,
+} from "@angular/forms";
 import { Router } from "@angular/router";
 import { TranslatePipe, TranslateService } from "@ngx-translate/core";
 import { MessageService } from "primeng/api";
@@ -253,7 +260,13 @@ export class WorkspaceComponent implements OnInit {
                                     // To refresh workspace list in Admin page.
                                     this.administrationService.refreshGetUsers();
                                 }
-                                this.router.navigate([this.router.url]);
+                                // Reload current route by navigating away and back
+                                const currentUrl = this.router.url;
+                                this.router
+                                    .navigateByUrl("/", { skipLocationChange: true })
+                                    .then(() => {
+                                        this.router.navigateByUrl(currentUrl);
+                                    });
                             }
                         });
                 }
