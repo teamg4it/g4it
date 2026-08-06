@@ -447,6 +447,7 @@ public class LoadInputFilesService {
     // Common for inventory and digital service loading, but not perfect for both, so we can refactor later if needed
     private void saveAndLaunchLoadingTask(Context context, Task task) {
         taskRepository.save(task);
+        log.info("started load files async task - {}", task.getId());
         CompletableFuture.runAsync(() -> new BackgroundTask(context, task, asyncLoadFilesService).run())
                 .exceptionally(exception -> {
                     log.error("Failed to execute loading task {}", task.getId(), exception);
