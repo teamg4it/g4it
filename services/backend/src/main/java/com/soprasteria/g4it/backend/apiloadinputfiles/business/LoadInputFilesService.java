@@ -50,6 +50,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 
 @Service
@@ -446,6 +447,10 @@ public class LoadInputFilesService {
     // Common for inventory and digital service loading, but not perfect for both, so we can refactor later if needed
     private void saveAndLaunchLoadingTask(Context context, Task task) {
         taskRepository.save(task);
-        taskExecutor.execute(new BackgroundTask(context, task, asyncLoadFilesService));
+        CompletableFuture.runAsync(() -> new BackgroundTask(context, task, asyncLoadFilesService).run())
+                .exceptionally(exception -> {
+                    log.error("Failed to execute loading task {}", task.getId(), exception);
+                    return null;
+                });
     }
 }

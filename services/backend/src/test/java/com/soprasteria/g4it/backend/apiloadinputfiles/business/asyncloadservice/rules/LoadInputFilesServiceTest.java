@@ -15,6 +15,7 @@ import com.soprasteria.g4it.backend.apifiles.business.FileSystemService;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
 import com.soprasteria.g4it.backend.apiloadinputfiles.business.LoadInputFilesService;
+import com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.AsyncLoadFilesService;
 import com.soprasteria.g4it.backend.apiuser.business.AuthService;
 import com.soprasteria.g4it.backend.apiuser.business.WorkspaceService;
 import com.soprasteria.g4it.backend.apiuser.model.UserBO;
@@ -72,6 +73,9 @@ class LoadInputFilesServiceTest {
 
     @Mock
     private FileSystemService fileSystemService;
+
+    @Mock
+    private AsyncLoadFilesService asyncLoadFilesService;
 
     @InjectMocks
     private LoadInputFilesService loadInputFilesService;
@@ -190,7 +194,7 @@ class LoadInputFilesServiceTest {
 
         assertNotNull(result);
         verify(taskRepository).save(any(Task.class));
-        verify(taskExecutor).execute(any(BackgroundTask.class));
+        verify(asyncLoadFilesService, timeout(1000)).execute(any(), any());
     }
 
     @Test
@@ -267,7 +271,7 @@ class LoadInputFilesServiceTest {
 
         assertNotNull(result);
         verify(taskRepository).save(any(Task.class));
-        verify(taskExecutor).execute(any(BackgroundTask.class));
+        verify(asyncLoadFilesService, timeout(1000)).execute(any(), any());
     }
 
     @Test
