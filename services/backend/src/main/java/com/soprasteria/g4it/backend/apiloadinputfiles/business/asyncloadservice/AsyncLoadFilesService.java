@@ -94,6 +94,19 @@ public class AsyncLoadFilesService implements ITaskExecute {
                 return;
             }
 
+            // Task fails if equipment count exceeds limit
+            List<String> equipmentLimitErrors = loadFileService.equipmentCountLimitCheck(context);
+            if (equipmentLimitErrors != null && !equipmentLimitErrors.isEmpty()) {
+                task.setErrors(equipmentLimitErrors);
+                task.setStatus(TaskStatus.FAILED.toString());
+                details.addAll(equipmentLimitErrors.stream().map(LogUtils::error).toList());
+                details.add(LogUtils.info("Task failed"));
+                task.setDetails(details);
+                taskRepository.save(task);
+                log.error("Task with id '{}' failed due to equipment count limit exceeded: {}", task.getId(), equipmentLimitErrors);
+                return;
+            }
+
             //Load Metadata files
             asyncLoadMetadataService.loadInputMetadata(context);
 

@@ -11,6 +11,8 @@ package com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice
 import com.soprasteria.g4it.backend.apiinout.modeldb.InApplication;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InVirtualEquipment;
 import com.soprasteria.g4it.backend.apiinout.repository.InApplicationRepository;
+import com.soprasteria.g4it.backend.apiinout.repository.InDatacenterRepository;
+import com.soprasteria.g4it.backend.apiinout.repository.InPhysicalEquipmentRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.InVirtualEquipmentRepository;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
@@ -26,6 +28,7 @@ import com.soprasteria.g4it.backend.common.model.FileToLoad;
 import com.soprasteria.g4it.backend.common.model.LineError;
 import com.soprasteria.g4it.backend.common.utils.Constants;
 import com.soprasteria.g4it.backend.common.utils.CsvUtils;
+import com.soprasteria.g4it.backend.config.FileEquipmentLimitConfiguration;
 import com.soprasteria.g4it.backend.exception.AsyncTaskException;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InApplicationRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InDatacenterRest;
@@ -47,6 +50,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.*;
 
@@ -76,6 +80,12 @@ public class LoadFileService {
     InVirtualEquipmentRepository inVirtualEquipmentRepository;
     @Autowired
     InApplicationRepository inApplicationRepository;
+    @Autowired
+    InPhysicalEquipmentRepository inPhysicalEquipmentRepository;
+    @Autowired
+    InDatacenterRepository inDatacenterRepository;
+    @Autowired
+    FileEquipmentLimitConfiguration fileEquipmentLimitConfiguration;
     @Value("${local.working.folder}")
     private String localWorkingFolder;
 
@@ -391,6 +401,286 @@ public class LoadFileService {
         }
 
         return errors;
+    }
+
+    /**
+     * Check equipment count limits
+     * Validates that existing inventory equipment count + new files count does not exceed limits
+     * Uses parallel processing to efficiently calculate equipment counts for multiple files
+     *
+     * @param context the context
+     * @return list of equipment count limit violations
+     */
+    public List<String> equipmentCountLimitCheck(final Context context) {
+        log.info("Starting equipment count limit check for {}", context.log());
+        
+        // Group files by type to calculate total count per type
+        Map<FileType, Long> newCountsByType = context.getFilesToLoad().parallelStream()
+                .collect(Collectors.groupingBy(
+                        FileToLoad::getFileType,
+                        Collectors.summingLong(fileToLoad -> {
+                            long count = calculateFileEquipmentCount(context, fileToLoad);
+                            log.info("File '{}' type '{}' has {} equipment", 
+                                    fileToLoad.getOriginalFileName(), fileToLoad.getFileType(), count);
+                            return count;
+                        })
+                ));
+
+        log.info("Equipment counts by type: {}", newCountsByType);
+
+        // Check each file type against limits
+        return Stream.of(FileType.DATACENTER, FileType.EQUIPEMENT_PHYSIQUE, FileType.EQUIPEMENT_VIRTUEL, FileType.APPLICATION)
+                .map(fileType -> checkEquipmentTypeLimit(context, fileType, newCountsByType.getOrDefault(fileType, 0L)))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Check equipment limit for a specific equipment type
+     *
+     * @param context     the context
+     * @param fileType    the file type
+     * @param newCount    the new equipment count from files
+     * @return Optional containing error message if limit is exceeded
+     */
+    private Optional<String> checkEquipmentTypeLimit(final Context context, final FileType fileType, final long newCount) {
+        if (newCount == 0) {
+            log.debug("No new equipment for type: {}", fileType);
+            return Optional.empty(); // No new equipment of this type
+        }
+
+        Integer limit = getEquipmentLimitForFileType(fileType);
+        log.info("Checking type: {}, newCount: {}, limit: {}", fileType, newCount, limit);
+        
+        if (limit == null) {
+            log.warn("No limit configured for file type: {}", fileType);
+            return Optional.empty(); // No limit configured for this file type
+        }
+
+        // Get existing equipment count from inventory
+        long existingCount = getExistingEquipmentCount(context, fileType);
+        long totalCount = existingCount + newCount;
+        
+        log.info("Type: {}, Existing: {}, New: {}, Total: {}, Limit: {}", 
+                fileType, existingCount, newCount, totalCount, limit);
+
+        if (totalCount > limit) {
+            String fileTypeLabel = getFileTypeLabel(fileType);
+            String errorMessage = messageSource.getMessage(
+                    "equipment.limit.exceeded",
+                    new String[]{
+                            fileTypeLabel,
+                            String.valueOf(existingCount),
+                            String.valueOf(newCount),
+                            String.valueOf(totalCount),
+                            String.valueOf(limit)
+                    },
+                    context.getLocale()
+            );
+            log.error("Equipment limit exceeded for {}: {}", fileType, errorMessage);
+            return Optional.of(errorMessage);
+        }
+
+        return Optional.empty();
+    }
+
+    /**
+     * Get existing equipment count from inventory or digital service version
+     *
+     * @param context  the context
+     * @param fileType the file type
+     * @return existing equipment count
+     */
+    private long getExistingEquipmentCount(final Context context, final FileType fileType) {
+        // Only check for inventory, digital service versions are typically new/temporary
+        if (context.getInventoryId() == null) {
+            return 0L;
+        }
+
+        Long count = switch (fileType) {
+            case DATACENTER -> inDatacenterRepository.countDistinctNameByInventoryId(context.getInventoryId());
+            case EQUIPEMENT_PHYSIQUE -> inPhysicalEquipmentRepository.sumQuantityByInventoryId(context.getInventoryId());
+            case EQUIPEMENT_VIRTUEL -> inVirtualEquipmentRepository.sumQuantityByInventoryId(context.getInventoryId());
+            case APPLICATION -> inApplicationRepository.countDistinctNameByInventoryId(context.getInventoryId());
+            default -> 0L;
+        };
+
+        return count != null ? count : 0L;
+    }
+
+    /**
+     * Calculate equipment count for a single file
+     *
+     * @param context    the context
+     * @param fileToLoad the file to calculate
+     * @return equipment count
+     */
+    private long calculateFileEquipmentCount(final Context context, final FileToLoad fileToLoad) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(fileToLoad.getConvertedFile()))) {
+            CSVParser records = CSVFormat.RFC4180.builder()
+                    .setHeader()
+                    .setDelimiter(CsvUtils.DELIMITER)
+                    .setAllowMissingColumnNames(true)
+                    .setSkipHeaderRecord(true)
+                    .build()
+                    .parse(reader);
+
+            return calculateEquipmentCount(fileToLoad.getFileType(), records);
+
+        } catch (Exception e) {
+            throw new AsyncTaskException(String.format("%s - Error while checking equipment count for file '%s'", context.log(),
+                    fileToLoad.getConvertedFile().getName()), e);
+        }
+    }
+
+    /**
+     * Get user-friendly label for file type
+     *
+     * @param fileType the file type
+     * @return file type label
+     */
+    private String getFileTypeLabel(FileType fileType) {
+        return switch (fileType) {
+            case APPLICATION -> "Application";
+            case EQUIPEMENT_PHYSIQUE -> "Physical Equipment";
+            case EQUIPEMENT_VIRTUEL -> "Virtual Equipment";
+            case DATACENTER -> "Datacenter";
+            default -> fileType.toString();
+        };
+    }
+
+    /**
+     * Calculate equipment count based on file type
+     * Mimics the logic used in setInventoryCounts:
+     * - DATACENTER: count distinct names
+     * - EQUIPEMENT_PHYSIQUE: sum of quantity field
+     * - EQUIPEMENT_VIRTUEL: count quantity by distinct name (approximation: sum of quantity if available)
+     * - APPLICATION: count distinct names
+     *
+     * @param fileType the file type
+     * @param records  the CSV records
+     * @return the equipment count
+     */
+    private long calculateEquipmentCount(FileType fileType, CSVParser records) {
+        try {
+            return switch (fileType) {
+                case DATACENTER -> countDistinctNames(records, "nomCourtDatacenter");
+                case EQUIPEMENT_PHYSIQUE -> sumQuantityField(records, "quantite");
+                case EQUIPEMENT_VIRTUEL -> sumQuantityField(records, "quantite");
+                case APPLICATION -> countDistinctNames(records, "nomApplication");
+                default -> records.stream().count();
+            };
+        } catch (Exception e) {
+            log.error("Error calculating equipment count for type {}: {}", fileType, e.getMessage(), e);
+            // If we can't calculate properly, count rows as fallback
+            return records.stream().count();
+        }
+    }
+
+    /**
+     * Count distinct values in a specific column
+     *
+     * @param records    the CSV records
+     * @param columnName the column name to count distinct values
+     * @return count of distinct values
+     */
+    private long countDistinctNames(CSVParser records, String columnName) {
+        List<CSVRecord> recordList = new ArrayList<>();
+        records.forEach(recordList::add);
+        
+        log.debug("Counting distinct values in column '{}', total records: {}", columnName, recordList.size());
+        
+        long count = recordList.stream()
+                .map(record -> {
+                    try {
+                        return record.get(columnName);
+                    } catch (IllegalArgumentException e) {
+                        log.warn("Column '{}' not found in record", columnName);
+                        return null;
+                    }
+                })
+                .filter(Objects::nonNull)
+                .filter(name -> !name.isBlank())
+                .distinct()
+                .count();
+        
+        log.debug("Distinct count for column '{}': {}", columnName, count);
+        return count;
+    }
+
+    /**
+     * Sum quantity field values
+     *
+     * @param records    the CSV records
+     * @param columnName the quantity column name
+     * @return sum of quantity values
+     */
+    private long sumQuantityField(CSVParser records, String columnName) {
+        List<CSVRecord> recordList = new ArrayList<>();
+        records.forEach(recordList::add);
+        
+        log.debug("Summing quantity field '{}', total records: {}", columnName, recordList.size());
+        
+        if (recordList.isEmpty()) {
+            return 0L;
+        }
+        
+        // Check if column exists
+        Set<String> headers = recordList.get(0).getParser().getHeaderNames().stream()
+                .map(String::toLowerCase)
+                .collect(Collectors.toSet());
+        
+        log.debug("Available headers: {}", headers);
+        
+        if (!headers.contains(columnName.toLowerCase())) {
+            log.warn("Column '{}' not found. Falling back to row count. Available columns: {}", 
+                    columnName, recordList.get(0).getParser().getHeaderNames());
+            // For physical equipment, if quantite doesn't exist, count rows (each row = 1 equipment)
+            return recordList.size();
+        }
+        
+        long sum = recordList.stream()
+                .mapToLong(record -> {
+                    try {
+                        String quantityStr = record.get(columnName);
+                        if (quantityStr == null || quantityStr.isBlank()) {
+                            log.debug("Empty quantity value at line {}, defaulting to 1", record.getRecordNumber());
+                            return 1L; // Default to 1 if quantity is missing
+                        }
+                        // Parse as double first to handle decimal values like "1000.0"
+                        // then convert to long (truncates decimal part)
+                        double quantityDouble = Double.parseDouble(quantityStr.trim());
+                        return (long) quantityDouble;
+                    } catch (NumberFormatException e) {
+                        log.warn("Could not parse quantity '{}' at line {}, defaulting to 1: {}", 
+                                record.get(columnName), record.getRecordNumber(), e.getMessage());
+                        return 1L;
+                    } catch (IllegalArgumentException e) {
+                        log.warn("Error reading quantity at line {}, defaulting to 1", record.getRecordNumber());
+                        return 1L;
+                    }
+                })
+                .sum();
+        
+        log.debug("Sum of quantity field '{}': {}", columnName, sum);
+        return sum;
+    }
+
+    /**
+     * Get equipment limit for a specific file type
+     *
+     * @param fileType the file type
+     * @return the equipment limit or null if not configured
+     */
+    private Integer getEquipmentLimitForFileType(FileType fileType) {
+        return switch (fileType) {
+            case APPLICATION -> fileEquipmentLimitConfiguration.getApplication();
+            case EQUIPEMENT_PHYSIQUE -> fileEquipmentLimitConfiguration.getPhysicalEquipment();
+            case EQUIPEMENT_VIRTUEL -> fileEquipmentLimitConfiguration.getVirtualEquipment();
+            case DATACENTER -> fileEquipmentLimitConfiguration.getDatacenter();
+            default -> null;
+        };
     }
 
     @Transactional

@@ -25,6 +25,8 @@ import com.soprasteria.g4it.backend.server.gen.api.dto.InPhysicalEquipmentRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InVirtualEquipmentRest;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -190,13 +192,35 @@ public class InVirtualEquipmentService {
 
     /**
      * Get the virtual equipments list linked to an inventory
+     * Fetches data in batches to handle large datasets efficiently
      *
      * @param inventoryId the inventory id
      * @return the virtual equipment list.
      */
     public List<InVirtualEquipmentRest> getByInventory(final Long inventoryId) {
-        final List<InVirtualEquipment> inVirtualEquipment = inVirtualEquipmentRepository.findByInventoryId(inventoryId);
-        return inVirtualEquipmentMapper.toRest(inVirtualEquipment);
+        final int BATCH_SIZE = 1000; // Fetch 1000 records at a time
+        final List<InVirtualEquipmentRest> allResults = new ArrayList<>();
+        int pageNumber = 0;
+        List<InVirtualEquipment> batch;
+        
+        log.info("Starting batched fetch for inventory {} with batch size {}", inventoryId, BATCH_SIZE);
+        
+        do {
+            Pageable pageable = PageRequest.of(pageNumber, BATCH_SIZE);
+            batch = inVirtualEquipmentRepository.findByInventoryId(inventoryId, pageable);
+            
+            if (!batch.isEmpty()) {
+                List<InVirtualEquipmentRest> batchResults = inVirtualEquipmentMapper.toRest(batch);
+                allResults.addAll(batchResults);
+                log.debug("Fetched batch {} with {} records. Total so far: {}", 
+                         pageNumber, batch.size(), allResults.size());
+            }
+            
+            pageNumber++;
+        } while (!batch.isEmpty() && batch.size() == BATCH_SIZE);
+        
+        log.info("Completed batched fetch for inventory {}. Total records: {}", inventoryId, allResults.size());
+        return allResults;
     }
 
     /**

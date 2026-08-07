@@ -78,6 +78,15 @@ public interface InVirtualEquipmentRepository extends JpaRepository<InVirtualEqu
     List<InVirtualEquipment> findByInventoryId(Long inventoryId);
 
     /**
+     * Find virtual equipments of one inventory with pagination
+     *
+     * @param inventoryId inventory id
+     * @param pageable    pagination information
+     * @return return a page of virtual equipments
+     */
+    List<InVirtualEquipment> findByInventoryId(Long inventoryId, Pageable pageable);
+
+    /**
      * Find virtual equipments of one inventory and one physical equipment name
      *
      * @param inventoryId           inventory i
