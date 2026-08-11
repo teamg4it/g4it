@@ -95,7 +95,13 @@
                         </h1>
                     </ng-template>
                     <ng-template pTemplate="content">
+                        <label for="digitalServiceName" class="visually-hidden">
+                            {{
+                                "digital-services.version.ds-name-placeholder" | translate
+                            }}
+                        </label>
                         <input
+                            id="digitalServiceName"
                             type="text"
                             class="text-xl font-semibold color-black-seventy px-2 mr-2 w-11 lg:text-4xl"
                             pInputText
@@ -151,7 +157,17 @@
                             </h2>
                         </ng-template>
                         <ng-template pTemplate="content">
+                            <label
+                                for="digitalServiceDescription"
+                                class="visually-hidden"
+                            >
+                                {{
+                                    "digital-services.version.ds-version-name-placeholder"
+                                        | translate
+                                }}
+                            </label>
                             <input
+                                id="digitalServiceDescription"
                                 type="text"
                                 class="text-xl font-semibold px-2 mr-2 w-11 lg:text-4xl"
                                 pInputText
