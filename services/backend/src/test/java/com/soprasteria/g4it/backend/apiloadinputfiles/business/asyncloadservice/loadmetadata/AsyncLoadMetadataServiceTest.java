@@ -10,17 +10,13 @@ package com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice
 
 import com.soprasteria.g4it.backend.common.model.Context;
 import com.soprasteria.g4it.backend.common.model.FileToLoad;
-import com.soprasteria.g4it.backend.exception.AsyncTaskException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.core.task.TaskExecutor;
-
 import java.util.Arrays;
 import java.util.Collections;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
@@ -34,9 +30,6 @@ class AsyncLoadMetadataServiceTest {
     private LoadMetadataService loadMetadataService;
 
     @Mock
-    private TaskExecutor metadataTaskExecutor;
-
-    @Mock
     private Context context;
 
     @Mock
@@ -46,12 +39,6 @@ class AsyncLoadMetadataServiceTest {
 
     @Test
     void shouldLoadMetadataForEachFile() {
-        doAnswer(invocation -> {
-            Runnable runnable = invocation.getArgument(0);
-            runnable.run();
-            return null;
-        }).when(metadataTaskExecutor).execute(any(Runnable.class));
-
         when(context.log()).thenReturn("context-log");
         when(context.getFilesToLoad()).thenReturn(Arrays.asList(fileToLoad1, fileToLoad2));
         when(fileToLoad1.getFilename()).thenReturn("file1.csv");
@@ -64,13 +51,7 @@ class AsyncLoadMetadataServiceTest {
     }
 
     @Test
-    void shouldPropagateAsyncTaskExceptionWhenOneFileFails() {
-        doAnswer(invocation -> {
-            Runnable runnable = invocation.getArgument(0);
-            runnable.run();
-            return null;
-        }).when(metadataTaskExecutor).execute(any(Runnable.class));
-
+    void shouldContinueWhenOneFileFailsWithException() {
         when(context.log()).thenReturn("context-log");
         when(context.getFilesToLoad()).thenReturn(Arrays.asList(fileToLoad1, fileToLoad2));
         when(fileToLoad1.getFilename()).thenReturn("file1.csv");
@@ -78,12 +59,12 @@ class AsyncLoadMetadataServiceTest {
         doAnswer(invocation -> {
             final FileToLoad fileToLoad = invocation.getArgument(0);
             if (fileToLoad == fileToLoad1) {
-                throw new AsyncTaskException("fail");
+                throw new RuntimeException("fail");
             }
             return null;
         }).when(loadMetadataService).loadMetadataFile(any(FileToLoad.class), eq(context));
 
-        assertThrows(AsyncTaskException.class, () -> asyncLoadMetadataService.loadInputMetadata(context));
+        asyncLoadMetadataService.loadInputMetadata(context);
 
         verify(loadMetadataService, times(1)).loadMetadataFile(fileToLoad1, context);
         verify(loadMetadataService, times(1)).loadMetadataFile(fileToLoad2, context);
