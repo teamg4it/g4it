@@ -194,6 +194,14 @@ export class DatavizFilterApplicationComponent {
             );
     }
 
+    toggleCollapse(item: TransformedDomain): void {
+        // Update signal to trigger change detection and height recalculation
+        this.allUnusedFilters.update((filters) => {
+            item.collapsed = !item.collapsed;
+            return { ...filters }; // Return new object reference to trigger updates
+        });
+    }
+
     openFilterSidebar(): void {
         // Show sidebar immediately
         this.filterSidebarVisible = true;
@@ -262,6 +270,7 @@ export class DatavizFilterApplicationComponent {
     }
 
     applyFilters(): void {
+        // to not hang browser, we will apply the filters in a setTimeout to let the UI update first
         // Show loader and close sidebar immediately for responsive UX
         this.globalStore.setLoading(true);
         this.filterSidebarVisible = false;

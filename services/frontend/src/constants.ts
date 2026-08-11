@@ -188,6 +188,7 @@ export abstract class Constants {
         lifeCycle: "lifeCycles",
         domain: "domains",
     };
+    static readonly VIEWPORT_SCROLL_THRESHOLD: number = 20;
     static readonly ALL: string = "All";
     static readonly EMPTY: string = "!Empty"; // ! character is used for sorting Empty on top
 

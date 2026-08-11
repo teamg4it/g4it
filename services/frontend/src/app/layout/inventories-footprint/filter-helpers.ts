@@ -66,8 +66,8 @@ export function calculateViewportHeight(
 
     const itemCount = items.length;
 
-    // If 20 or fewer items, show all (no scroll)
-    if (itemCount <= 20) {
+    // If threshold or fewer items, show all (no scroll)
+    if (itemCount <= Constants.VIEWPORT_SCROLL_THRESHOLD) {
         const calculatedHeight = itemCount * itemHeight;
         return `${Math.max(calculatedHeight, minHeight)}px`;
     }
@@ -84,8 +84,39 @@ export function getSimpleViewportHeight(items: any[] | undefined): string {
 }
 
 /**
+ * Count visible children for a tree item
+ */
+function countVisibleChildren(item: any): number {
+    if (item.collapsed || !item.children) return 0;
+
+    let count = 0;
+    for (const child of item.children) {
+        if (child.visible !== false) {
+            count++;
+        }
+    }
+    return count;
+}
+
+/**
  * Get viewport height for tree items (50px per item)
+ * Accounts for expanded children to avoid unnecessary scrolling
  */
 export function getTreeViewportHeight(items: any[] | undefined): string {
-    return calculateViewportHeight(items, 50, 150, 500);
+    if (!items || !Array.isArray(items)) return "150px";
+
+    let totalVisibleItems = 0;
+
+    for (const item of items) {
+        if (item.visible === false) continue;
+
+        totalVisibleItems++; // Count parent
+        totalVisibleItems += countVisibleChildren(item);
+    }
+
+    // 50px per item, min 150px, max 500px
+    const calculatedHeight = totalVisibleItems * 50;
+    const height = Math.max(150, Math.min(calculatedHeight, 500));
+
+    return `${height}px`;
 }
