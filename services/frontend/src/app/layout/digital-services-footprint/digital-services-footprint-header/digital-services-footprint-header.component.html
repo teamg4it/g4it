@@ -96,7 +96,9 @@
                     </ng-template>
                     <ng-template pTemplate="content">
                         <label for="digitalServiceName" class="visually-hidden">
-                            {{ "digital-service.name" | translate }}
+                            {{
+                                "digital-services.version.ds-name-placeholder" | translate
+                            }}
                         </label>
                         <input
                             id="digitalServiceName"
@@ -159,7 +161,10 @@
                                 for="digitalServiceDescription"
                                 class="visually-hidden"
                             >
-                                {{ "digital-service.description" | translate }}
+                                {{
+                                    "digital-services.version.ds-version-name-placeholder"
+                                        | translate
+                                }}
                             </label>
                             <input
                                 id="digitalServiceDescription"
