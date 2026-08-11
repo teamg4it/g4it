@@ -33,12 +33,10 @@ public class SpringAsyncTaskConfig {
     public TaskExecutor loadingTaskExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         // B2s-safe defaults (2 vCPU / 4 GiB): keep concurrency low to protect heap.
-        // Queue is intentionally small (5) because the DB is the real persistent queue.
-        // Tasks enter as TO_START in DB; dispatchPendingLoadingTasks() feeds them here every 5s.
         // Unlimited users can submit — only execution throughput is bounded.
-        executor.setCorePoolSize(1);
-        executor.setMaxPoolSize(2);
-        executor.setQueueCapacity(20);
+        executor.setCorePoolSize(2);
+        executor.setMaxPoolSize(3);
+        executor.setQueueCapacity(50);
         executor.setThreadNamePrefix("LoadTask-");
         executor.setWaitForTasksToCompleteOnShutdown(true);
         executor.setAwaitTerminationSeconds(60 * 10);
@@ -46,14 +44,15 @@ public class SpringAsyncTaskConfig {
         return executor;
     }
 
-    @Bean(name = "taskExecutorMetadataLoading")
-    public TaskExecutor metadataLoadingTaskExecutor() {
+    @Bean(name = "taskExecutorEvaluation")
+    public TaskExecutor evaluatingTaskExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        // Metadata loading performs transactional DB writes, so keep parallelism bounded.
-        executor.setCorePoolSize(1);
-        executor.setMaxPoolSize(2);
-        executor.setQueueCapacity(20);
-        executor.setThreadNamePrefix("MetadataLoad-");
+        // B2s-safe defaults (2 vCPU / 4 GiB): keep concurrency low to protect heap.
+        // Unlimited users can submit — only execution throughput is bounded.
+        executor.setCorePoolSize(2);
+        executor.setMaxPoolSize(3);
+        executor.setQueueCapacity(50);
+        executor.setThreadNamePrefix("EvaluationTask-");
         executor.setWaitForTasksToCompleteOnShutdown(true);
         executor.setAwaitTerminationSeconds(60 * 10);
         executor.initialize();

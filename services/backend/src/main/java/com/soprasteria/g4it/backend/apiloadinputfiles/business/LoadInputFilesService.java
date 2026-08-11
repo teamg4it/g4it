@@ -72,7 +72,7 @@ public class LoadInputFilesService {
     @Autowired
     UserRepository userRepository;
     @Autowired
-    @Qualifier("taskExecutorSingleThreaded")
+    @Qualifier("taskExecutorLoading")
     TaskExecutor taskExecutor;
     /**
      * Async Service where is executed the file loading
@@ -448,7 +448,9 @@ public class LoadInputFilesService {
     private void saveAndLaunchLoadingTask(Context context, Task task) {
         taskRepository.save(task);
         log.info("started load files async task - {}", task.getId());
-        CompletableFuture.runAsync(() -> new BackgroundTask(context, task, asyncLoadFilesService).run())
+        CompletableFuture.runAsync(
+                        () -> new BackgroundTask(context, task, asyncLoadFilesService).run(),
+                        taskExecutor)
                 .exceptionally(exception -> {
                     log.error("Failed to execute loading task {}", task.getId(), exception);
                     return null;

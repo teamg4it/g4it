@@ -31,6 +31,7 @@ import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -194,7 +195,10 @@ class LoadInputFilesServiceTest {
 
         assertNotNull(result);
         verify(taskRepository).save(any(Task.class));
-        verify(asyncLoadFilesService, timeout(1000)).execute(any(), any());
+        ArgumentCaptor<Runnable> runnableCaptor = ArgumentCaptor.forClass(Runnable.class);
+        verify(taskExecutor).execute(runnableCaptor.capture());
+        runnableCaptor.getValue().run();
+        verify(asyncLoadFilesService).execute(any(), any());
     }
 
     @Test
@@ -271,7 +275,10 @@ class LoadInputFilesServiceTest {
 
         assertNotNull(result);
         verify(taskRepository).save(any(Task.class));
-        verify(asyncLoadFilesService, timeout(1000)).execute(any(), any());
+        ArgumentCaptor<Runnable> runnableCaptor = ArgumentCaptor.forClass(Runnable.class);
+        verify(taskExecutor).execute(runnableCaptor.capture());
+        runnableCaptor.getValue().run();
+        verify(asyncLoadFilesService).execute(any(), any());
     }
 
     @Test

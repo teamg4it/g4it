@@ -128,7 +128,10 @@ class EvaluatingServiceTest {
         assertEquals(5, task.getCriteria().size()); // fallback default 5
         assertEquals(Constants.CRITERIA_LIST.subList(0, 5), task.getCriteria());
 
-        verify(taskExecutor).execute(any(BackgroundTask.class));
+        ArgumentCaptor<Runnable> runnableCaptor = ArgumentCaptor.forClass(Runnable.class);
+        verify(taskExecutor).execute(runnableCaptor.capture());
+        runnableCaptor.getValue().run();
+        verify(asyncEvaluatingService).execute(any(), any());
     }
 
     @Test
@@ -365,7 +368,10 @@ class EvaluatingServiceTest {
         verify(exportService).cleanExport(2L, "ORG", "1");
         verify(exportService).cleanExport(1L, "ORG", "1");
 
-        verify(taskExecutor).execute(any(BackgroundTask.class));
+        ArgumentCaptor<Runnable> runnableCaptor = ArgumentCaptor.forClass(Runnable.class);
+        verify(taskExecutor).execute(runnableCaptor.capture());
+        runnableCaptor.getValue().run();
+        verify(asyncEvaluatingService).execute(any(), any());
     }
 
     @Test
@@ -412,7 +418,10 @@ class EvaluatingServiceTest {
         assertNotNull(createdTask.getCriteria());
         assertEquals(5, createdTask.getCriteria().size());
 
-        verify(taskExecutor).execute(any(BackgroundTask.class));
+        ArgumentCaptor<Runnable> runnableCaptor = ArgumentCaptor.forClass(Runnable.class);
+        verify(taskExecutor).execute(runnableCaptor.capture());
+        runnableCaptor.getValue().run();
+        verify(asyncEvaluatingService).execute(any(), any());
     }
 
     @Test
