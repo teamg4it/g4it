@@ -63,8 +63,6 @@ public class StuckTaskCleanupService {
             return;
         }
 
-        log.info("Starting stuck task cleanup - checking IN_PROGRESS tasks for activity");
-
         List<Task> inProgressTasks = taskRepository.findByStatus(TaskStatus.IN_PROGRESS.toString());
 
         if (inProgressTasks.isEmpty()) {
@@ -116,7 +114,7 @@ public class StuckTaskCleanupService {
             // Case 3: LUD == PLCD - Task is stuck, KILL it
             else if (lastUpdate.equals(progressLastChanged) || lastUpdate.isBefore(progressLastChanged)) {
                 long minutesSinceLastUpdate = ChronoUnit.MINUTES.between(task.getProgressLastChangedDate(), now);
-                log.info("Task {} (type: {}) is STUCK - LUD == PLCD, no updates for {} minutes",
+                log.info("Task {} (type: {}) is STUCK - LUD == PLCD, no updates from {} minutes",
                         task.getId(), task.getType(), minutesSinceLastUpdate);
                 failTask(task, now, minutesSinceLastUpdate);
                 failedCount++;
@@ -170,14 +168,5 @@ public class StuckTaskCleanupService {
         } catch (Exception e) {
             log.error("Error while failing stuck task {}: {}", task.getId(), e.getMessage(), e);
         }
-    }
-
-    /**
-     * Check if stuck task cleanup is enabled.
-     *
-     * @return true if enabled, false otherwise
-     */
-    public boolean isStuckTaskCheckEnabled() {
-        return stuckTaskCheckEnabled;
     }
 }
