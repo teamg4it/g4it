@@ -85,7 +85,6 @@ describe("DigitalServicesTerminalsSidePanelComponent", () => {
         expect(component.terminal.type.value).toEqual("mobile");
         expect(component.terminal.country).toEqual("France");
         expect(component.updateTerminals.emit).toHaveBeenCalled();
-        expect(component.close()).toHaveBeenCalled;
     });
 
     it("should reset terminal when resetTerminal() is call", () => {

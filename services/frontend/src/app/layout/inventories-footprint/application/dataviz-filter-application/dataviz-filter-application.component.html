@@ -139,52 +139,56 @@
                                                     "
                                                 >
                                                     @if (filter.children) {
-                                                        @for (
-                                                            child of filter.children;
-                                                            track $index;
-                                                            let isFirst = $first
-                                                        ) {
-                                                            <li
-                                                                [ngClass]="
-                                                                    isFirst
-                                                                        ? 'ml-8 mt-0 mb-3'
-                                                                        : 'ml-8 my-3'
-                                                                "
-                                                            >
-                                                                @if (child.visible) {
-                                                                    <p-checkbox
-                                                                        class="mb-1 mr-2"
-                                                                        [binary]="true"
-                                                                        [(ngModel)]="
-                                                                            child.checked
-                                                                        "
-                                                                        (onChange)="
-                                                                            onTreeChildChanged(
-                                                                                $event,
-                                                                                filter
-                                                                            )
-                                                                        "
-                                                                        [inputId]="
-                                                                            'tree-filter-child-' +
-                                                                            filter.label +
-                                                                            '-' +
-                                                                            child.label
-                                                                        "
-                                                                    ></p-checkbox>
-                                                                    <label
-                                                                        [attr.for]="
-                                                                            'tree-filter-child-' +
-                                                                            filter.label +
-                                                                            '-' +
-                                                                            child.label
-                                                                        "
-                                                                        >{{
-                                                                            child.label
-                                                                        }}</label
-                                                                    >
-                                                                }
-                                                            </li>
-                                                        }
+                                                        <ul class="list-none p-0 m-0">
+                                                            @for (
+                                                                child of filter.children;
+                                                                track $index;
+                                                                let isFirst = $first
+                                                            ) {
+                                                                <li
+                                                                    [ngClass]="
+                                                                        isFirst
+                                                                            ? 'ml-8 mt-0 mb-3'
+                                                                            : 'ml-8 my-3'
+                                                                    "
+                                                                >
+                                                                    @if (child.visible) {
+                                                                        <p-checkbox
+                                                                            class="mb-1 mr-2"
+                                                                            [binary]="
+                                                                                true
+                                                                            "
+                                                                            [(ngModel)]="
+                                                                                child.checked
+                                                                            "
+                                                                            (onChange)="
+                                                                                onTreeChildChanged(
+                                                                                    $event,
+                                                                                    filter
+                                                                                )
+                                                                            "
+                                                                            [inputId]="
+                                                                                'tree-filter-child-' +
+                                                                                filter.label +
+                                                                                '-' +
+                                                                                child.label
+                                                                            "
+                                                                        ></p-checkbox>
+                                                                        <label
+                                                                            [attr.for]="
+                                                                                'tree-filter-child-' +
+                                                                                filter.label +
+                                                                                '-' +
+                                                                                child.label
+                                                                            "
+                                                                            >{{
+                                                                                child.label
+                                                                            }}</label
+                                                                        >
+                                                                    }
+                                                                </li>
+                                                            }
+                                                        </ul>
                                                     }
                                                 </div>
                                             }
