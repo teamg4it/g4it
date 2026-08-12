@@ -15,7 +15,6 @@ import com.soprasteria.g4it.backend.apiloadinputfiles.repository.CheckDatacenter
 import com.soprasteria.g4it.backend.apiloadinputfiles.repository.CheckPhysicalEquipmentRepository;
 import com.soprasteria.g4it.backend.apiloadinputfiles.repository.CheckVirtualEquipmentRepository;
 import com.soprasteria.g4it.backend.common.model.LineError;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -24,7 +23,6 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Slf4j
 @Service
 public class CheckConstraintService {
     @Autowired
@@ -232,15 +230,13 @@ public class CheckConstraintService {
                 .collect(Collectors.toList());
 
         List<CoherenceParentDTO> incoherentVirtualEquipement = new ArrayList<>();
-        long startTime = System.currentTimeMillis();
-        log.info("check virtual equipment validation checkVirtualEquipmentCoherence start for taskId {} and inventoryId {} ", taskId, inventoryId);
+
         if (errorenousPhysicalEquipement.isEmpty()) {
             incoherentVirtualEquipement = checkVirtualEqpRepository.findIncoherentVirtualEquipments(taskId, inventoryId, digitalServiceVersionUid);
         } else {
             incoherentVirtualEquipement = checkVirtualEqpRepository.findIncoherentVirtualEquipments(taskId, inventoryId, digitalServiceVersionUid, errorenousPhysicalEquipement);
         }
-        long endTime = System.currentTimeMillis();
-        log.info("checkVirtualEquipmentCoherence ends Time taken: {}s", (endTime - startTime)/1000);
+
 
         for (CoherenceParentDTO coherenceParentDTO : incoherentVirtualEquipement) {
 
