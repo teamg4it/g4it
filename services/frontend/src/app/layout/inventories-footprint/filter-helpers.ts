@@ -45,3 +45,78 @@ export function mapFilterActiveStatus(filters: Filter<any>): Record<string, bool
         {} as Record<string, boolean>,
     );
 }
+
+/**
+ * Calculate dynamic viewport height for virtual scroll
+ * Show all items (no scroll) when <= 20, limit height (show scroll) when > 20
+ *
+ * @param items Array of filter items
+ * @param itemHeight Height of each item in pixels
+ * @param minHeight Minimum viewport height in pixels
+ * @param maxHeight Maximum viewport height in pixels
+ * @returns Calculated height as a CSS string (e.g., "200px")
+ */
+export function calculateViewportHeight(
+    items: any[] | undefined,
+    itemHeight: number,
+    minHeight: number,
+    maxHeight: number,
+): string {
+    if (!items || !Array.isArray(items)) return `${minHeight}px`;
+
+    const itemCount = items.length;
+
+    // If threshold or fewer items, show all (no scroll)
+    if (itemCount <= Constants.VIEWPORT_SCROLL_THRESHOLD) {
+        const calculatedHeight = itemCount * itemHeight;
+        return `${Math.max(calculatedHeight, minHeight)}px`;
+    }
+
+    // If more than 20 items, limit height to show scroll
+    return `${maxHeight}px`;
+}
+
+/**
+ * Get viewport height for simple list items (45px per item)
+ */
+export function getSimpleViewportHeight(items: any[] | undefined): string {
+    return calculateViewportHeight(items, 45, 100, 400);
+}
+
+/**
+ * Count visible children for a tree item
+ */
+function countVisibleChildren(item: any): number {
+    if (item.collapsed || !item.children) return 0;
+
+    let count = 0;
+    for (const child of item.children) {
+        if (child.visible !== false) {
+            count++;
+        }
+    }
+    return count;
+}
+
+/**
+ * Get viewport height for tree items (50px per item)
+ * Accounts for expanded children to avoid unnecessary scrolling
+ */
+export function getTreeViewportHeight(items: any[] | undefined): string {
+    if (!items || !Array.isArray(items)) return "150px";
+
+    let totalVisibleItems = 0;
+
+    for (const item of items) {
+        if (item.visible === false) continue;
+
+        totalVisibleItems++; // Count parent
+        totalVisibleItems += countVisibleChildren(item);
+    }
+
+    // 50px per item, min 150px, max 500px
+    const calculatedHeight = totalVisibleItems * 50;
+    const height = Math.max(150, Math.min(calculatedHeight, 500));
+
+    return `${height}px`;
+}
