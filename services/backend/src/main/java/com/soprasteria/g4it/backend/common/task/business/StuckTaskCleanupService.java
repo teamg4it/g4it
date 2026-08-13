@@ -15,15 +15,12 @@ import com.soprasteria.g4it.backend.common.utils.LogUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * Service to detect and fail tasks that are stuck in IN_PROGRESS status.
@@ -56,7 +53,6 @@ public class StuckTaskCleanupService {
      *
      * Where PLCD = progressLastChangedDate, LUD = lastUpdateDate
      */
-    @Transactional
     public void failStuckTasks() {
         if (!stuckTaskCheckEnabled) {
             log.info("Stuck task check is disabled");
