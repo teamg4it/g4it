@@ -235,10 +235,22 @@ public class CheckConstraintService {
         long startTime = System.currentTimeMillis();
         log.info("Start Check metadata inventory file for taskId {} and inventoryId {} ", taskId, inventoryId);
 
-        if (errorenousPhysicalEquipement.isEmpty()) {
-            incoherentVirtualEquipement = checkVirtualEqpRepository.findIncoherentVirtualEquipments(taskId, inventoryId, digitalServiceVersionUid);
+        if (digitalServiceVersionUid != null) {
+            if (errorenousPhysicalEquipement.isEmpty()) {
+                incoherentVirtualEquipement = checkVirtualEqpRepository
+                        .findIncoherentVirtualEquipmentsByDsv(taskId, digitalServiceVersionUid);
+            } else {
+                incoherentVirtualEquipement = checkVirtualEqpRepository
+                        .findIncoherentVirtualEquipmentsByDsv(taskId, digitalServiceVersionUid, errorenousPhysicalEquipement);
+            }
         } else {
-            incoherentVirtualEquipement = checkVirtualEqpRepository.findIncoherentVirtualEquipments(taskId, inventoryId, digitalServiceVersionUid, errorenousPhysicalEquipement);
+            if (errorenousPhysicalEquipement.isEmpty()) {
+                incoherentVirtualEquipement = checkVirtualEqpRepository
+                        .findIncoherentVirtualEquipmentsByInventory(taskId, inventoryId);
+            } else {
+                incoherentVirtualEquipement = checkVirtualEqpRepository
+                        .findIncoherentVirtualEquipmentsByInventory(taskId, inventoryId, errorenousPhysicalEquipement);
+            }
         }
         long endTime = System.currentTimeMillis();
         log.info("checkMetadataInventoryFile ends Time taken: {}s", (endTime - startTime)/1000);
