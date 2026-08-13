@@ -29,4 +29,34 @@ public class SpringAsyncTaskConfig {
         return executor;
     }
 
+    @Bean(name = "taskExecutorLoading")
+    public TaskExecutor loadingTaskExecutor() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        // B2s-safe defaults (2 vCPU / 4 GiB): keep concurrency low to protect heap.
+        // Unlimited users can submit — only execution throughput is bounded.
+        executor.setCorePoolSize(2);
+        executor.setMaxPoolSize(3);
+        executor.setQueueCapacity(50);
+        executor.setThreadNamePrefix("LoadTask-");
+        executor.setWaitForTasksToCompleteOnShutdown(true);
+        executor.setAwaitTerminationSeconds(60 * 10);
+        executor.initialize();
+        return executor;
+    }
+
+    @Bean(name = "taskExecutorEvaluation")
+    public TaskExecutor evaluatingTaskExecutor() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        // B2s-safe defaults (2 vCPU / 4 GiB): keep concurrency low to protect heap.
+        // Unlimited users can submit — only execution throughput is bounded.
+        executor.setCorePoolSize(2);
+        executor.setMaxPoolSize(3);
+        executor.setQueueCapacity(50);
+        executor.setThreadNamePrefix("EvaluationTask-");
+        executor.setWaitForTasksToCompleteOnShutdown(true);
+        executor.setAwaitTerminationSeconds(60 * 10);
+        executor.initialize();
+        return executor;
+    }
+
 }

@@ -8,7 +8,6 @@
 
 package com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.loadmetadata;
 
-import com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.loadmetadata.LoadMetadataService;
 import com.soprasteria.g4it.backend.common.model.Context;
 import com.soprasteria.g4it.backend.common.model.FileToLoad;
 import com.soprasteria.g4it.backend.exception.AsyncTaskException;
@@ -18,7 +17,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @Service

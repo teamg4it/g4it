@@ -44,6 +44,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 @Slf4j
@@ -67,7 +68,7 @@ public class EvaluatingService {
     @Autowired
     UserRepository userRepository;
     @Autowired
-    @Qualifier("taskExecutorSingleThreaded")
+    @Qualifier("taskExecutorEvaluation")
     TaskExecutor taskExecutor;
 
     @Autowired
@@ -149,8 +150,14 @@ public class EvaluatingService {
         inventory.setLastUpdateDate(LocalDateTime.now());
         inventoryRepository.save(inventory);
 
-        // run evaluation async task
-        taskExecutor.execute(new BackgroundTask(context, task, asyncEvaluatingService));
+        // run evaluation async task with the configured evaluation executor
+        CompletableFuture.runAsync(
+                () -> new BackgroundTask(context, task, asyncEvaluatingService).run(),
+                taskExecutor
+        ).exceptionally(exception -> {
+            log.error("Failed to execute evaluating task {}", task.getId(), exception);
+            return null;
+        });
         return task;
     }
 
