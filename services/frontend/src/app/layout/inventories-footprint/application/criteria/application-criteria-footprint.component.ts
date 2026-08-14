@@ -196,6 +196,7 @@ export class ApplicationCriteriaFootprintComponent
     }
 
     onChartClick(event: any) {
+        if (this.footprintStore.appGraphType() === "application") return;
         this.globalStore.setLoading(true);
         setTimeout(() => {
             if (this.footprintStore.appGraphType() === "global") {
