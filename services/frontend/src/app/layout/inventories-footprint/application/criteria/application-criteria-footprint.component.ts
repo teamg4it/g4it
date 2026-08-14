@@ -196,26 +196,32 @@ export class ApplicationCriteriaFootprintComponent
     }
 
     onChartClick(event: any) {
-        if (this.footprintStore.appGraphType() === "global") {
-            const domainSelected: any = this.footprintStore
-                .applicationSelectedFilters()
-                ["domain"].find((d) => (d as TransformedDomain).label === event.name);
-            if (domainSelected?.children.length <= 1) {
-                this.footprintStore.setDomain(event.name);
-                this.footprintStore.setSubDomain(domainSelected?.children[0].label);
+        this.globalStore.setLoading(true);
+        setTimeout(() => {
+            if (this.footprintStore.appGraphType() === "global") {
+                const domainSelected: any = this.footprintStore
+                    .applicationSelectedFilters()
+                    ["domain"].find((d) => (d as TransformedDomain).label === event.name);
+                if (domainSelected?.children.length <= 1) {
+                    this.footprintStore.setDomain(event.name);
+                    this.footprintStore.setSubDomain(domainSelected?.children[0].label);
+                    this.footprintStore.setGraphType("subdomain");
+                } else {
+                    this.footprintStore.setGraphType("domain");
+                    this.footprintStore.setDomain(event.name);
+                    this.footprintStore.setSubDomain("");
+                }
+            } else if (this.footprintStore.appGraphType() === "domain") {
                 this.footprintStore.setGraphType("subdomain");
-            } else {
-                this.footprintStore.setGraphType("domain");
-                this.footprintStore.setDomain(event.name);
-                this.footprintStore.setSubDomain("");
+                this.footprintStore.setSubDomain(event.name);
+            } else if (this.footprintStore.appGraphType() === "subdomain") {
+                this.footprintStore.setGraphType("application");
+                this.footprintStore.setApplication(event.name);
             }
-        } else if (this.footprintStore.appGraphType() === "domain") {
-            this.footprintStore.setGraphType("subdomain");
-            this.footprintStore.setSubDomain(event.name);
-        } else if (this.footprintStore.appGraphType() === "subdomain") {
-            this.footprintStore.setGraphType("application");
-            this.footprintStore.setApplication(event.name);
-        }
+            setTimeout(() => {
+                this.globalStore.setLoading(false);
+            }, 10);
+        }, 10);
     }
 
     onArrowClick() {
