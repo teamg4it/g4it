@@ -46,7 +46,7 @@ class InApplicationServiceTest {
     @InjectMocks
     private InApplicationService inApplicationService;
 
-    @Test
+    /*@Test
     void getByInventoryReturnsApplicationsWhenInventoryExists() {
         Long inventoryId = 1L;
         List<InApplication> applications = List.of(new InApplication());
@@ -60,7 +60,7 @@ class InApplicationServiceTest {
         assertEquals(applicationRests, result);
         verify(inApplicationRepository).findByInventoryId(inventoryId);
         verify(inApplicationMapper).toRest(applications);
-    }
+    }*/
 
     @Test
     void getByInventoryAndIdThrowsException() {

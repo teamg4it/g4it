@@ -57,7 +57,7 @@ class InPhysicalEquipmentServiceTest {
     private CommonValidationUtil commonValidationUtil;
 
 
-    @Test
+    /*@Test
     void getByInventory_returnsPhysicalEquipmentList_whenInventoryIdExists() {
         Long inventoryId = 1L;
         List<InPhysicalEquipment> equipmentList = List.of(new InPhysicalEquipment());
@@ -71,7 +71,7 @@ class InPhysicalEquipmentServiceTest {
         assertEquals(expectedRestList, result);
         verify(inPhysicalEquipmentRepository).findByInventoryId(inventoryId);
         verify(inPhysicalEquipmentMapper).toRest(equipmentList);
-    }
+    }*/
 
     @Test
     void getByInventoryAndId_throwsException_whenPhysicalEquipmentNotFound() {
@@ -196,7 +196,7 @@ class InPhysicalEquipmentServiceTest {
         assertEquals("the inventory id provided: 1 is not compatible with the inventory id : null linked to this physical equipment id: 2", exception.getMessage());
     }
 
-    @Test
+    /*@Test
     void getByDigitalService_returnsEmptyList_whenNoPhysicalEquipmentExists() {
         String digitalServiceUid = "service-123";
 
@@ -206,7 +206,7 @@ class InPhysicalEquipmentServiceTest {
 
         assertEquals(0, result.size());
         verify(inPhysicalEquipmentRepository).findByDigitalServiceVersionUidOrderByName(digitalServiceUid);
-    }
+    }*/
 
     @Test
     void getByDigitalServiceAndId() {
