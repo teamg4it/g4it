@@ -18,6 +18,8 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 
 /**
  * In Datacenter JPA repository.
@@ -57,7 +59,10 @@ public interface InApplicationRepository extends JpaRepository<InApplication, Lo
      * @param inventoryId inventory id
      * @return return a list of applications
      */
-    List<InApplication> findByInventoryId(Long inventoryId);
+    // List<InApplication> findByInventoryId(Long inventoryId);
+    Slice<InApplication> findByInventoryId(
+            Long inventoryId,
+            Pageable pageable);
 
     List<InApplication> findByInventoryIdAndPhysicalEquipmentNameAndVirtualEquipmentName(Long inventoryId,
                                                                                          String physicalEquipmentName,

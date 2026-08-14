@@ -17,6 +17,8 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 
 /**
  * Out Virtual Equipment JPA repository.
@@ -37,4 +39,8 @@ public interface OutVirtualEquipmentRepository extends JpaRepository<OutVirtualE
                                 AND o.source IS NOT NULL
 """)
     List<String> findDistinctSourcesByTaskId(@Param("taskId") Long taskId);
+
+    Slice<OutVirtualEquipment> findByTaskIdOrderByIdAsc(
+            Long taskId,
+            Pageable pageable);
 }

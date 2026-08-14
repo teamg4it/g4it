@@ -16,11 +16,18 @@ import com.soprasteria.g4it.backend.apiinout.modeldb.OutPhysicalEquipment;
 import com.soprasteria.g4it.backend.apiinout.repository.OutApplicationRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.OutPhysicalEquipmentRepository;
 import com.soprasteria.g4it.backend.apiuser.business.WorkspaceService;
+import com.soprasteria.g4it.backend.common.utils.BatchProcessorUtil;
+import com.soprasteria.g4it.backend.common.utils.StringUtils;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -58,15 +65,22 @@ public class IndicatorService {
     @Autowired
     private OutApplicationRepository outApplicationRepository;
 
+    @Autowired
+    private BatchProcessorUtil batchProcessorUtil;
+
+    @PersistenceContext
+    private EntityManager entityManager;
+
     /**
      * Retrieve equipment indicators.
      *
      * @param taskId the task id.
      * @return indicator by criteria.
      */
+    @Transactional(readOnly = true)
     public Map<String, EquipmentIndicatorBO> getEquipmentIndicators(final Long taskId) {
 
-        List<Object[]> results = outPhysicalEquipmentRepository.findCriterionAndEquipmentByTaskId(taskId);
+        /*List<Object[]> results = outPhysicalEquipmentRepository.findCriterionAndEquipmentByTaskId(taskId);
         Map<String, List<OutPhysicalEquipment>> grouped = results.stream()
                 .collect(Collectors.groupingBy(
                         r -> (String) r[0],
@@ -77,8 +91,40 @@ public class IndicatorService {
                 .collect(Collectors.toMap(
                         e -> com.soprasteria.g4it.backend.common.utils.StringUtils.snakeToKebabCase(e.getKey()),
                         e -> equipmentIndicatorMapper.outToDto(e.getValue())
+                ));*/
+
+        Map<String, List<OutPhysicalEquipment>> grouped = new HashMap<>();
+
+        batchProcessorUtil.processInBatches(
+                pageable -> outPhysicalEquipmentRepository
+                        .findCriterionAndEquipmentByTaskId(taskId, pageable),
+                5000,
+                (List<Object[]> batch) -> {
+
+                    for (Object[] row : batch) {
+
+                        String criterion = (String) row[0];
+
+                        OutPhysicalEquipment equipment =
+                                (OutPhysicalEquipment) row[1];
+
+                        grouped.computeIfAbsent(
+                                        criterion,
+                                        key -> new ArrayList<>())
+                                .add(equipment);
+                    }
+
+                    entityManager.clear();
+                });
+
+        return grouped.entrySet()
+                .stream()
+                .collect(Collectors.toMap(
+                        e -> StringUtils.snakeToKebabCase(e.getKey()),
+                        e -> equipmentIndicatorMapper.outToDto(e.getValue())
                 ));
-    }
+
+}
 
     /**
      * Retrieve application indicators.
@@ -86,12 +132,35 @@ public class IndicatorService {
      * @param taskId the task id.
      * @return indicator by criteria.
      */
-    public List<ApplicationIndicatorBO<ApplicationImpactBO>> getApplicationIndicators(final Long taskId) {
+    /*public List<ApplicationIndicatorBO<ApplicationImpactBO>> getApplicationIndicators(final Long taskId) {
         List<OutApplication> outApplications = outApplicationRepository.findByTaskId(taskId);
         outApplications.forEach(app -> app.setLifecycleStep(LifecycleStepUtils.getReverse(app.getLifecycleStep())));
 
         return applicationIndicatorMapper.toOutDto(outApplications);
+    }*/
+
+    @Transactional(readOnly = true)
+    public List<ApplicationIndicatorBO<ApplicationImpactBO>> getApplicationIndicators(Long taskId) {
+
+        List<ApplicationIndicatorBO<ApplicationImpactBO>> result = new ArrayList<>();
+
+        batchProcessorUtil.processInBatches(
+                pageable -> outApplicationRepository.findByTaskId(taskId, pageable),
+                5000,
+                batch -> {
+
+                    batch.forEach(app ->
+                            app.setLifecycleStep(
+                                    LifecycleStepUtils.getReverse(app.getLifecycleStep())));
+
+                    result.addAll(applicationIndicatorMapper.toOutDto(batch));
+
+                    entityManager.clear();
+                });
+
+        return result;
     }
+
 
     /**
      * Retrieve datacenter indicators.

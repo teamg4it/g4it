@@ -19,12 +19,14 @@ import com.soprasteria.g4it.backend.apiinout.repository.InPhysicalEquipmentRepos
 import com.soprasteria.g4it.backend.apiinout.repository.InVirtualEquipmentRepository;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
+import com.soprasteria.g4it.backend.common.utils.BatchProcessorUtil;
 import com.soprasteria.g4it.backend.common.utils.CommonValidationUtil;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InPhysicalEquipmentRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InVirtualEquipmentRest;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -32,6 +34,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @AllArgsConstructor
@@ -45,15 +50,44 @@ public class InVirtualEquipmentService {
     private InPhysicalEquipmentRepository inPhysicalEquipmentRepository;
     private CommonValidationUtil commonValidationUtil;
 
+    @PersistenceContext
+    private EntityManager entityManager;
+
+    @Autowired
+    private BatchProcessorUtil batchProcessorUtil;
+
     /**
      * Get the virtual equipments list linked to a digital service.
      *
      * @param digitalServiceVersionUid the digital service UID.
      * @return the virtual equipment list.
      */
-    public List<InVirtualEquipmentRest> getByDigitalServiceVersion(final String digitalServiceVersionUid) {
+    /*public List<InVirtualEquipmentRest> getByDigitalServiceVersion(final String digitalServiceVersionUid) {
         final List<InVirtualEquipment> inVirtualEquipment = inVirtualEquipmentRepository.findByDigitalServiceVersionUidOrderByName(digitalServiceVersionUid);
         return inVirtualEquipmentMapper.toRest(inVirtualEquipment);
+    }*/
+    @Transactional(readOnly = true)
+    public List<InVirtualEquipmentRest> getByDigitalServiceVersion(
+            final String digitalServiceVersionUid) {
+
+        List<InVirtualEquipmentRest> result = new ArrayList<>();
+
+        batchProcessorUtil.processInBatches(
+                pageable -> inVirtualEquipmentRepository
+                        .findByDigitalServiceVersionUidOrderByNameAscIdAsc(
+                                digitalServiceVersionUid,
+                                pageable),
+                5000,
+                batch -> {
+
+                    result.addAll(
+                            inVirtualEquipmentMapper.toRest(batch)
+                    );
+
+                    entityManager.clear();
+                });
+
+        return result;
     }
 
     /**
@@ -194,9 +228,29 @@ public class InVirtualEquipmentService {
      * @param inventoryId the inventory id
      * @return the virtual equipment list.
      */
-    public List<InVirtualEquipmentRest> getByInventory(final Long inventoryId) {
+    /*public List<InVirtualEquipmentRest> getByInventory(final Long inventoryId) {
         final List<InVirtualEquipment> inVirtualEquipment = inVirtualEquipmentRepository.findByInventoryId(inventoryId);
         return inVirtualEquipmentMapper.toRest(inVirtualEquipment);
+    }*/
+    @Transactional(readOnly = true)
+    public List<InVirtualEquipmentRest> getByInventory(final Long inventoryId) {
+
+        List<InVirtualEquipmentRest> result = new ArrayList<>();
+
+        batchProcessorUtil.processInBatches(
+                pageable -> inVirtualEquipmentRepository
+                        .findByInventoryIdOrderByIdAsc(inventoryId, pageable),
+                5000,
+                batch -> {
+
+                    result.addAll(
+                            inVirtualEquipmentMapper.toRest(batch)
+                    );
+
+                    entityManager.clear();
+                });
+
+        return result;
     }
 
     /**

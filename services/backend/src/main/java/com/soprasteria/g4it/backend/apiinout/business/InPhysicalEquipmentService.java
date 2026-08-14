@@ -15,17 +15,24 @@ import com.soprasteria.g4it.backend.apiinout.modeldb.InPhysicalEquipment;
 import com.soprasteria.g4it.backend.apiinout.repository.InPhysicalEquipmentRepository;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
+import com.soprasteria.g4it.backend.common.utils.BatchProcessorUtil;
 import com.soprasteria.g4it.backend.common.utils.CommonValidationUtil;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InPhysicalEquipmentRest;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import org.springframework.transaction.annotation.Transactional;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 
 @Service
 @AllArgsConstructor
@@ -38,15 +45,41 @@ public class InPhysicalEquipmentService {
     private InventoryRepository inventoryRepository;
     private CommonValidationUtil commonValidationUtil;
 
+    @PersistenceContext
+    private EntityManager entityManager;
+
+    @Autowired
+    private BatchProcessorUtil batchProcessorUtil;
+
     /**
      * Get the physical equipments list linked to a digital service.
      *
      * @param digitalServiceVersionUid the digital service UID.
      * @return the physical equipment list.
      */
-    public List<InPhysicalEquipmentRest> getByDigitalServiceVersion(final String digitalServiceVersionUid) {
+    /*public List<InPhysicalEquipmentRest> getByDigitalServiceVersion(final String digitalServiceVersionUid) {
         final List<InPhysicalEquipment> inPhysicalEquipments = inPhysicalEquipmentRepository.findByDigitalServiceVersionUidOrderByName(digitalServiceVersionUid);
         return inPhysicalEquipmentMapper.toRest(inPhysicalEquipments);
+    }*/
+    @Transactional(readOnly = true)
+    public List<InPhysicalEquipmentRest> getByDigitalServiceVersion(
+            final String digitalServiceVersionUid) {
+
+        List<InPhysicalEquipmentRest> result = new ArrayList<>();
+
+        batchProcessorUtil.processInBatches(
+                pageable -> inPhysicalEquipmentRepository
+                        .findByDigitalServiceVersionUidOrderByName(
+                                digitalServiceVersionUid,
+                                pageable),
+                5000,
+                batch -> {
+                    result.addAll(inPhysicalEquipmentMapper.toRest(batch));
+
+                    entityManager.clear();
+                });
+
+        return result;
     }
 
     /**
@@ -139,9 +172,29 @@ public class InPhysicalEquipmentService {
      * @param inventoryId the inventory id
      * @return the physical equipment list.
      */
-    public List<InPhysicalEquipmentRest> getByInventory(final Long inventoryId) {
+    /*public List<InPhysicalEquipmentRest> getByInventory(final Long inventoryId) {
         final List<InPhysicalEquipment> inVirtualEquipment = inPhysicalEquipmentRepository.findByInventoryId(inventoryId);
         return inPhysicalEquipmentMapper.toRest(inVirtualEquipment);
+    }*/
+    @Transactional(readOnly = true)
+    public List<InPhysicalEquipmentRest> getByInventory(final Long inventoryId) {
+
+        List<InPhysicalEquipmentRest> result = new ArrayList<>();
+
+        batchProcessorUtil.processInBatches(
+                pageable -> inPhysicalEquipmentRepository
+                        .findByInventoryIdOrderByIdAsc(inventoryId, pageable),
+                5000,
+                batch -> {
+
+                    result.addAll(
+                            inPhysicalEquipmentMapper.toRest(batch)
+                    );
+
+                    entityManager.clear();
+                });
+
+        return result;
     }
 
     /**

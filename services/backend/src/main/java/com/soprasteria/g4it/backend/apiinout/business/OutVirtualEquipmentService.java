@@ -15,10 +15,20 @@ import com.soprasteria.g4it.backend.apiinout.repository.OutVirtualEquipmentRepos
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.common.task.modeldb.Task;
 import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
+import com.soprasteria.g4it.backend.common.utils.BatchProcessorUtil;
 import com.soprasteria.g4it.backend.server.gen.api.dto.OutVirtualEquipmentRest;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,6 +41,12 @@ public class OutVirtualEquipmentService {
     private TaskRepository taskRepository;
     private OutVirtualEquipmentMapper outVirtualEquipmentMapper;
 
+    @PersistenceContext
+    private EntityManager entityManager;
+
+    @Autowired
+    private BatchProcessorUtil batchProcessorUtil;
+
     /**
      * Get virtual equipments by inventory id
      * Find by last task
@@ -38,7 +54,7 @@ public class OutVirtualEquipmentService {
      * @param inventory the inventory
      * @return list of aggregated virtual equipments
      */
-    public List<OutVirtualEquipmentRest> getByInventory(final Inventory inventory) {
+    /*public List<OutVirtualEquipmentRest> getByInventory(final Inventory inventory) {
 
         Optional<Task> task = taskRepository.findByInventoryAndLastCreationDate(inventory);
 
@@ -50,6 +66,35 @@ public class OutVirtualEquipmentService {
                 outVirtualEquipmentRepository.findByTaskId(task.get().getId())
         );
 
+    }*/
+    @Transactional(readOnly = true)
+    public List<OutVirtualEquipmentRest> getByInventory(final Inventory inventory) {
+
+        Optional<Task> task =
+                taskRepository.findByInventoryAndLastCreationDate(inventory);
+
+        if (task.isEmpty()) {
+            return List.of();
+        }
+
+        final Long taskId = task.get().getId();
+
+        List<OutVirtualEquipmentRest> result = new ArrayList<>();
+
+        batchProcessorUtil.processInBatches(
+                pageable -> outVirtualEquipmentRepository
+                        .findByTaskIdOrderByIdAsc(taskId, pageable),
+                5000,
+                batch -> {
+
+                    result.addAll(
+                            outVirtualEquipmentMapper.toRest(batch)
+                    );
+
+                    entityManager.clear();
+                });
+
+        return result;
     }
 
     /**
@@ -59,7 +104,7 @@ public class OutVirtualEquipmentService {
      * @param digitalServiceVersionUid the digital service uid
      * @return list of aggregated virtual equipments
      */
-    public List<OutVirtualEquipmentRest> getByDigitalServiceVersionUid(final String digitalServiceVersionUid) {
+    /*public List<OutVirtualEquipmentRest> getByDigitalServiceVersionUid(final String digitalServiceVersionUid) {
         DigitalServiceVersion digitalServiceVersion = digitalServiceVersionRepository.findById(digitalServiceVersionUid).orElseThrow();
 
         Optional<Task> task = taskRepository.findTopByDigitalServiceVersionOrderByIdDesc(digitalServiceVersion);
@@ -71,6 +116,42 @@ public class OutVirtualEquipmentService {
                 outVirtualEquipmentRepository.findByTaskId(task.get().getId())
         );
 
+    }*/
+    @Transactional(readOnly = true)
+    public List<OutVirtualEquipmentRest> getByDigitalServiceVersionUid(
+            final String digitalServiceVersionUid) {
+
+        DigitalServiceVersion digitalServiceVersion =
+                digitalServiceVersionRepository
+                        .findById(digitalServiceVersionUid)
+                        .orElseThrow();
+
+        Optional<Task> task =
+                taskRepository.findTopByDigitalServiceVersionOrderByIdDesc(
+                        digitalServiceVersion);
+
+        if (task.isEmpty()) {
+            return List.of();
+        }
+
+        final Long taskId = task.get().getId();
+
+        List<OutVirtualEquipmentRest> result = new ArrayList<>();
+
+        batchProcessorUtil.processInBatches(
+                pageable -> outVirtualEquipmentRepository
+                        .findByTaskIdOrderByIdAsc(taskId, pageable),
+                5000,
+                batch -> {
+
+                    result.addAll(
+                            outVirtualEquipmentMapper.toRest(batch)
+                    );
+
+                    entityManager.clear();
+                });
+
+        return result;
     }
 
 }

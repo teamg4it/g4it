@@ -8,25 +8,28 @@
 
 package com.soprasteria.g4it.backend.apiinout.business;
 
-import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceVersion;
-import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceVersionRepository;
 import com.soprasteria.g4it.backend.apiinout.mapper.InDatacenterMapper;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InDatacenter;
 import com.soprasteria.g4it.backend.apiinout.repository.InDatacenterRepository;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
+import com.soprasteria.g4it.backend.common.utils.BatchProcessorUtil;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InDatacenterRest;
+import jakarta.persistence.EntityManager;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @AllArgsConstructor
@@ -38,15 +41,39 @@ public class InDatacenterService {
     private DigitalServiceVersionRepository digitalServiceVersionRepository;
     private InventoryRepository inventoryRepository;
 
+    @Autowired
+    private BatchProcessorUtil batchProcessorUtil;
+
+    @Autowired
+    private EntityManager entityManager;
+
     /**
      * Get the datacenters list linked to a digital service.
      *
      * @param digitalServiceVersionUid the digital service UID.
      * @return the datacenter list.
      */
-    public List<InDatacenterRest> getByDigitalServiceVersion(final String digitalServiceVersionUid) {
+    /*public List<InDatacenterRest> getByDigitalServiceVersion(final String digitalServiceVersionUid) {
         final List<InDatacenter> inDatacenters = inDatacenterRepository.findByDigitalServiceVersionUid(digitalServiceVersionUid);
         return inDatacenterMapper.toRest(inDatacenters);
+    }*/
+    public List<InDatacenterRest> getByDigitalServiceVersion(
+            final String digitalServiceVersionUid) {
+
+        List<InDatacenterRest> result = new ArrayList<>();
+
+        batchProcessorUtil.processInBatches(
+                pageable -> inDatacenterRepository
+                        .findByDigitalServiceVersionUid(
+                                digitalServiceVersionUid,
+                                pageable),
+                5000,
+                batch -> result.addAll(
+                        inDatacenterMapper.toRest(batch)
+                )
+        );
+
+        return result;
     }
 
     /**
@@ -128,9 +155,28 @@ public class InDatacenterService {
      * @param inventoryId the inventory id
      * @return the datacenter list.
      */
-    public List<InDatacenterRest> getByInventory(final Long inventoryId) {
+    /*public List<InDatacenterRest> getByInventory(final Long inventoryId) {
         final List<InDatacenter> inDatacenter = inDatacenterRepository.findByInventoryId(inventoryId);
         return inDatacenterMapper.toRest(inDatacenter);
+    }*/
+
+    @Transactional(readOnly = true)
+    public List<InDatacenterRest> getByInventory(final Long inventoryId) {
+
+        List<InDatacenterRest> result = new ArrayList<>();
+
+        batchProcessorUtil.processInBatches(
+                pageable -> inDatacenterRepository
+                        .findByInventoryIdOrderByIdAsc(inventoryId, pageable),
+                5000,
+                batch -> {
+
+                    result.addAll(inDatacenterMapper.toRest(batch));
+
+                    entityManager.clear();
+                });
+
+        return result;
     }
 
     /**

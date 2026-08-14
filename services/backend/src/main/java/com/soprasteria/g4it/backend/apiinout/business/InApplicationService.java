@@ -13,13 +13,17 @@ import com.soprasteria.g4it.backend.apiinout.modeldb.InApplication;
 import com.soprasteria.g4it.backend.apiinout.repository.InApplicationRepository;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
+import com.soprasteria.g4it.backend.common.utils.BatchProcessorUtil;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InApplicationRest;
+import jakarta.persistence.EntityManager;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -33,15 +37,40 @@ public class InApplicationService {
     private InApplicationMapper inApplicationMapper;
     private InventoryRepository inventoryRepository;
 
+    @Autowired
+    private BatchProcessorUtil batchProcessorUtil;
+
+    @Autowired
+    private EntityManager entityManager;
+
     /**
      * Get the applications list linked to an inventory
      *
      * @param inventoryId the inventory id
      * @return the application list.
      */
-    public List<InApplicationRest> getByInventory(final Long inventoryId) {
+    /*public List<InApplicationRest> getByInventory(final Long inventoryId) {
         final List<InApplication> inApplication = inApplicationRepository.findByInventoryId(inventoryId);
         return inApplicationMapper.toRest(inApplication);
+    }*/
+    public List<InApplicationRest> getByInventory(final Long inventoryId) {
+
+        List<InApplicationRest> result = new ArrayList<>();
+
+        batchProcessorUtil.processInBatches(
+                pageable -> inApplicationRepository
+                        .findByInventoryId(inventoryId, pageable),
+                5000,
+                batch -> {
+                    result.addAll(
+                            inApplicationMapper.toRest(batch)
+                    );
+                    entityManager.clear();
+                }
+
+        );
+
+        return result;
     }
 
     /**

@@ -9,8 +9,11 @@
 package com.soprasteria.g4it.backend.apiinout.repository;
 
 import com.soprasteria.g4it.backend.apiinout.modeldb.OutApplication;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+
 
 import java.util.List;
 
@@ -20,6 +23,13 @@ import java.util.List;
 @Repository
 public interface OutApplicationRepository extends JpaRepository<OutApplication, Long> {
 
-    List<OutApplication> findByTaskId(Long taskId);
+    //List<OutApplication> findByTaskId(Long taskId);
+    Slice<OutApplication> findByTaskId(Long taskId, Pageable pageable);
+
+    Slice<OutApplication> findByTaskIdOrderByIdAsc(
+            Long taskId,
+            Pageable pageable);
+
+
 
 }
