@@ -15,15 +15,12 @@ import com.soprasteria.g4it.backend.common.utils.LogUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * Service to detect and fail tasks that are stuck in IN_PROGRESS status.
@@ -56,14 +53,11 @@ public class StuckTaskCleanupService {
      *
      * Where PLCD = progressLastChangedDate, LUD = lastUpdateDate
      */
-    @Transactional
     public void failStuckTasks() {
         if (!stuckTaskCheckEnabled) {
             log.info("Stuck task check is disabled");
             return;
         }
-
-        log.info("Starting stuck task cleanup - checking IN_PROGRESS tasks for activity");
 
         List<Task> inProgressTasks = taskRepository.findByStatus(TaskStatus.IN_PROGRESS.toString());
 
@@ -116,7 +110,7 @@ public class StuckTaskCleanupService {
             // Case 3: LUD == PLCD - Task is stuck, KILL it
             else if (lastUpdate.equals(progressLastChanged) || lastUpdate.isBefore(progressLastChanged)) {
                 long minutesSinceLastUpdate = ChronoUnit.MINUTES.between(task.getProgressLastChangedDate(), now);
-                log.info("Task {} (type: {}) is STUCK - LUD == PLCD, no updates for {} minutes",
+                log.info("Task {} (type: {}) is STUCK - LUD == PLCD, no updates from {} minutes",
                         task.getId(), task.getType(), minutesSinceLastUpdate);
                 failTask(task, now, minutesSinceLastUpdate);
                 failedCount++;
@@ -170,14 +164,5 @@ public class StuckTaskCleanupService {
         } catch (Exception e) {
             log.error("Error while failing stuck task {}: {}", task.getId(), e.getMessage(), e);
         }
-    }
-
-    /**
-     * Check if stuck task cleanup is enabled.
-     *
-     * @return true if enabled, false otherwise
-     */
-    public boolean isStuckTaskCheckEnabled() {
-        return stuckTaskCheckEnabled;
     }
 }

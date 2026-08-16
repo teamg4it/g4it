@@ -327,18 +327,4 @@ class StuckTaskCleanupServiceTest {
         // One save per task
         verify(taskRepository, times(3)).save(any(Task.class));
     }
-
-    // ──────────────── isStuckTaskCheckEnabled() ────────────────
-
-    @Test
-    void isStuckTaskCheckEnabled_whenTrue_shouldReturnTrue() {
-        ReflectionTestUtils.setField(stuckTaskCleanupService, "stuckTaskCheckEnabled", true);
-        assertThat(stuckTaskCleanupService.isStuckTaskCheckEnabled()).isTrue();
-    }
-
-    @Test
-    void isStuckTaskCheckEnabled_whenFalse_shouldReturnFalse() {
-        ReflectionTestUtils.setField(stuckTaskCleanupService, "stuckTaskCheckEnabled", false);
-        assertThat(stuckTaskCleanupService.isStuckTaskCheckEnabled()).isFalse();
-    }
 }
