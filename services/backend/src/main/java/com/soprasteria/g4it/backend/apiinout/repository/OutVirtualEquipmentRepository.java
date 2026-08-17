@@ -40,11 +40,11 @@ public interface OutVirtualEquipmentRepository extends JpaRepository<OutVirtualE
 """)
     List<String> findDistinctSourcesByTaskId(@Param("taskId") Long taskId);
 
-    Slice<OutVirtualEquipment> findByTaskIdOrderByIdAsc(
+    /*Slice<OutVirtualEquipment> findByTaskIdOrderByIdAsc(
             Long taskId,
-            Pageable pageable);
+            Pageable pageable);*/
 
-    List<OutVirtualEquipment> findByTaskIdOrderByIdAscWithPagination(
+    List<OutVirtualEquipment> findByTaskIdOrderByIdAsc(
             Long taskId,
             Pageable pageable);
 }

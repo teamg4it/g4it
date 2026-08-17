@@ -94,7 +94,7 @@ public class OutVirtualEquipmentService {
 
             List<OutVirtualEquipment> virtualEquipments =
                     outVirtualEquipmentRepository
-                            .findByTaskIdOrderByIdAscWithPagination(taskId, page);
+                            .findByTaskIdOrderByIdAsc(taskId, page);
 
             if (virtualEquipments.isEmpty()) {
                 break;
@@ -165,9 +165,34 @@ public class OutVirtualEquipmentService {
 
         final Long taskId = task.get().getId();
 
+        int pageNumber = 0;
         List<OutVirtualEquipmentRest> result = new ArrayList<>();
 
-        batchProcessorUtil.processInBatches(
+        while (true) {
+            Pageable page = PageRequest.of(
+                    pageNumber,
+                    50000
+            );
+
+            List<OutVirtualEquipment> virtualEquipments =
+                    outVirtualEquipmentRepository
+                            .findByTaskIdOrderByIdAsc(taskId, page);
+
+            if (virtualEquipments.isEmpty()) {
+                break;
+            }
+
+            result.addAll(
+                    outVirtualEquipmentMapper.toRest(virtualEquipments)
+            );
+
+            virtualEquipments.clear();
+            entityManager.clear();
+
+            pageNumber++;
+        }
+
+        /*batchProcessorUtil.processInBatches(
                 pageable -> outVirtualEquipmentRepository
                         .findByTaskIdOrderByIdAsc(taskId, pageable),
                 5000,
@@ -178,7 +203,7 @@ public class OutVirtualEquipmentService {
                     );
 
                     entityManager.clear();
-                });
+                });*/
 
         return result;
     }
