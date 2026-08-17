@@ -104,6 +104,7 @@ public class OutVirtualEquipmentService {
                     outVirtualEquipmentMapper.toRest(virtualEquipments)
             );
 
+            virtualEquipments.clear();
             entityManager.clear();
 
             pageNumber++;
