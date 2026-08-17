@@ -43,4 +43,8 @@ public interface OutVirtualEquipmentRepository extends JpaRepository<OutVirtualE
     Slice<OutVirtualEquipment> findByTaskIdOrderByIdAsc(
             Long taskId,
             Pageable pageable);
+
+    List<OutVirtualEquipment> findByTaskIdOrderByIdAscWithPagination(
+            Long taskId,
+            Pageable pageable);
 }

@@ -11,6 +11,7 @@ package com.soprasteria.g4it.backend.apiinout.business;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceVersion;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceVersionRepository;
 import com.soprasteria.g4it.backend.apiinout.mapper.OutVirtualEquipmentMapper;
+import com.soprasteria.g4it.backend.apiinout.modeldb.OutVirtualEquipment;
 import com.soprasteria.g4it.backend.apiinout.repository.OutVirtualEquipmentRepository;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.common.task.modeldb.Task;
@@ -19,6 +20,8 @@ import com.soprasteria.g4it.backend.common.utils.BatchProcessorUtil;
 import com.soprasteria.g4it.backend.server.gen.api.dto.OutVirtualEquipmentRest;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -79,12 +82,37 @@ public class OutVirtualEquipmentService {
 
         final Long taskId = task.get().getId();
 
+        int pageNumber = 0;
         List<OutVirtualEquipmentRest> result = new ArrayList<>();
 
-        batchProcessorUtil.processInBatches(
+
+        while (true) {
+            Pageable page = PageRequest.of(
+                    pageNumber,
+                    50000
+            );
+
+            List<OutVirtualEquipment> virtualEquipments =
+                    outVirtualEquipmentRepository
+                            .findByTaskIdOrderByIdAscWithPagination(taskId, page);
+
+            if (virtualEquipments.isEmpty()) {
+                break;
+            }
+
+            result.addAll(
+                    outVirtualEquipmentMapper.toRest(virtualEquipments)
+            );
+
+            entityManager.clear();
+
+            pageNumber++;
+        }
+
+        /*batchProcessorUtil.processInBatches(
                 pageable -> outVirtualEquipmentRepository
                         .findByTaskIdOrderByIdAsc(taskId, pageable),
-                5000,
+                50000,
                 batch -> {
 
                     result.addAll(
@@ -92,7 +120,7 @@ public class OutVirtualEquipmentService {
                     );
 
                     entityManager.clear();
-                });
+                });*/
 
         return result;
     }
