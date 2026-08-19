@@ -73,14 +73,25 @@
                                             </div>
                                         </p-accordion-header>
                                         <p-accordion-content>
-                                            <ul class="m-0">
-                                                @for (
-                                                    item of allFilters[getTabField(tab)];
-                                                    track $index
-                                                ) {
+                                            <cdk-virtual-scroll-viewport
+                                                itemSize="45"
+                                                class="viewport-simple"
+                                                [style.height]="
+                                                    getSimpleViewportHeight(
+                                                        getTabField(tab)
+                                                    )
+                                                "
+                                            >
+                                                <ul class="m-0">
                                                     <li
+                                                        *cdkVirtualFor="
+                                                            let item of allFilters[
+                                                                getTabField(tab)
+                                                            ];
+                                                            let i = index
+                                                        "
                                                         class="my-3"
-                                                        [id]="'inv-filter-li-' + $index"
+                                                        [id]="'inv-filter-li-' + i"
                                                     >
                                                         <p-checkbox
                                                             class="mb-1 mr-2"
@@ -126,8 +137,8 @@
                                                             }}</label
                                                         >
                                                     </li>
-                                                }
-                                            </ul>
+                                                </ul>
+                                            </cdk-virtual-scroll-viewport>
                                         </p-accordion-content>
                                     </p-accordion-panel>
                                 }

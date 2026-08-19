@@ -301,6 +301,7 @@ export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboar
     }
 
     onChartClick(event: any) {
+        this.globalStore.setLoading(true);
         const isAxisInverted = this.isAxisInverted();
         let criteriaName: string | undefined;
         // condition for graph, only not description click
@@ -322,9 +323,12 @@ export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboar
             return;
         }
 
-        this.router.navigate([`../${criteriaName}`], {
-            relativeTo: this.route,
-        });
+        setTimeout(() => {
+            this.globalStore.setLoading(false);
+            this.router.navigate([`../${criteriaName}`], {
+                relativeTo: this.route,
+            });
+        }, 10);
     }
 
     selectedStackBarClick(criteriaName: string): void {

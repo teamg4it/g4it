@@ -147,7 +147,7 @@
                     <button
                         class="segment flex align-items-center gap-1 text-xs px-3 py-2 cursor-pointer"
                         [class.active]="view === 'graph'"
-                        (click)="view = 'graph'"
+                        (click)="switchView('graph')"
                     >
                         <i class="pi pi-chart-bar text-xs"></i>
                         {{
@@ -158,7 +158,7 @@
                     <button
                         class="segment flex align-items-center gap-1 text-xs px-3 py-2 cursor-pointer"
                         [class.active]="view === 'table'"
-                        (click)="view = 'table'"
+                        (click)="switchView('table')"
                     >
                         <i class="pi pi-table text-xs"></i>
                         {{

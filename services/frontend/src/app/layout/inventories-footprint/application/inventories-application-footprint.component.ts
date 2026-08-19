@@ -316,6 +316,22 @@ export class InventoriesApplicationFootprintComponent implements OnInit, OnDestr
         }
     }
 
+    switchView(newView: "graph" | "table") {
+        // Show global loader immediately
+        this.globalStore.setLoading(true);
+
+        // Use setTimeout to allow loader to render before heavy computation
+        setTimeout(() => {
+            // Switch view - this triggers the computed signals
+            this.view = newView;
+
+            // Give Angular time to render and process the new view
+            setTimeout(() => {
+                this.globalStore.setLoading(false);
+            }, 10);
+        }, 10);
+    }
+
     async getInventoryStatus() {
         this.globalStore.setLoading(true);
         await this.initInventory();
