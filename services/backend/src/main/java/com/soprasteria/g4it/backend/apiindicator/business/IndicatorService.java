@@ -164,7 +164,7 @@ public class IndicatorService {
     @Transactional(readOnly = true)
     public List<ApplicationIndicatorBO<ApplicationImpactBO>> getApplicationIndicators(Long taskId) {
 
-        List<ApplicationIndicatorBO<ApplicationImpactBO>> result = new ArrayList<>();
+        List<OutApplication> resultOutApplication = new ArrayList<>();
 
         int pageNumber = 0;
 
@@ -178,14 +178,13 @@ public class IndicatorService {
             if(outApplications.isEmpty()){
                 break;
             }
-            outApplications.forEach(app -> app.setLifecycleStep(LifecycleStepUtils.getReverse(app.getLifecycleStep())));
-            result.addAll(applicationIndicatorMapper.toOutDto(outApplications));
+            resultOutApplication.addAll(outApplications);
             outApplications.clear();
             entityManager.clear();
             pageNumber++;
         }
-
-        return result;
+        resultOutApplication.forEach(app -> app.setLifecycleStep(LifecycleStepUtils.getReverse(app.getLifecycleStep())));
+        return applicationIndicatorMapper.toOutDto(resultOutApplication);
     }
 
 
