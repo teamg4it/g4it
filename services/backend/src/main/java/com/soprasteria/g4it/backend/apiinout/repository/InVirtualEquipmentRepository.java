@@ -60,7 +60,7 @@ public interface InVirtualEquipmentRepository extends JpaRepository<InVirtualEqu
      * @return return a list of virtual equipments
      */
     // List<InVirtualEquipment> findByDigitalServiceVersionUidOrderByName(String digitalServiceVersionUid);
-    Slice<InVirtualEquipment> findByDigitalServiceVersionUidOrderByNameAscIdAsc(
+    List<InVirtualEquipment> findByDigitalServiceVersionUidOrderByNameAscIdAsc(
             String digitalServiceVersionUid,
             Pageable pageable);
 
@@ -81,7 +81,7 @@ public interface InVirtualEquipmentRepository extends JpaRepository<InVirtualEqu
      */
     List<InVirtualEquipment> findByInventoryId(Long inventoryId);
 
-    Slice<InVirtualEquipment> findByInventoryIdOrderByIdAsc(
+    List<InVirtualEquipment> findByInventoryIdOrderByIdAsc(
             Long inventoryId,
             Pageable pageable);
 

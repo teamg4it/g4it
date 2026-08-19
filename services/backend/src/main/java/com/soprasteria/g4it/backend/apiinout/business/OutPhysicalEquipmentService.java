@@ -11,16 +11,19 @@ package com.soprasteria.g4it.backend.apiinout.business;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceVersion;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceVersionRepository;
 import com.soprasteria.g4it.backend.apiinout.mapper.OutPhysicalEquipmentMapper;
+import com.soprasteria.g4it.backend.apiinout.modeldb.OutPhysicalEquipment;
 import com.soprasteria.g4it.backend.apiinout.repository.OutPhysicalEquipmentRepository;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.common.task.modeldb.Task;
 import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
-import com.soprasteria.g4it.backend.common.utils.BatchProcessorUtil;
+import com.soprasteria.g4it.backend.common.utils.Constants;
 import com.soprasteria.g4it.backend.server.gen.api.dto.OutPhysicalEquipmentRest;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -31,6 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * Output physical equipment service
  */
+@Slf4j
 @Service
 @AllArgsConstructor
 public class OutPhysicalEquipmentService {
@@ -42,9 +46,6 @@ public class OutPhysicalEquipmentService {
 
     @PersistenceContext
     private EntityManager entityManager;
-
-    @Autowired
-    private BatchProcessorUtil batchProcessorUtil;
 
     /**
      * Get physical equipments by digital service uid
@@ -70,13 +71,11 @@ public class OutPhysicalEquipmentService {
     public List<OutPhysicalEquipmentRest> getByDigitalServiceVersionUid(
             final String digitalServiceVersionUid) {
 
-        DigitalServiceVersion digitalServiceVersion =
-                digitalServiceVersionRepository
+        DigitalServiceVersion digitalServiceVersion = digitalServiceVersionRepository
                         .findById(digitalServiceVersionUid)
                         .orElseThrow();
 
-        Optional<Task> task =
-                taskRepository.findTopByDigitalServiceVersionOrderByIdDesc(
+        Optional<Task> task = taskRepository.findTopByDigitalServiceVersionOrderByIdDesc(
                         digitalServiceVersion);
 
         if (task.isEmpty()) {
@@ -85,21 +84,37 @@ public class OutPhysicalEquipmentService {
 
         final Long taskId = task.get().getId();
 
+        int pageNumber = 0;
         List<OutPhysicalEquipmentRest> result = new ArrayList<>();
 
-        batchProcessorUtil.processInBatches(
-                pageable -> outPhysicalEquipmentRepository
-                        .findByTaskIdOrderByIdAsc(taskId, pageable),
-                5000,
-                batch -> {
+        while (true) {
+            Pageable page = PageRequest.of(
+                    pageNumber,
+                    Constants.BATCH_SIZE_50000
+            );
 
-                    result.addAll(
-                            outPhysicalEquipmentMapper.toRest(batch)
-                    );
+            List<OutPhysicalEquipment> physicalEquipments =
+                    outPhysicalEquipmentRepository
+                            .findByTaskIdOrderByIdAsc(taskId, page);
 
-                    entityManager.clear();
-                });
+            if (physicalEquipments.isEmpty()) {
+                break;
+            }
 
+            result.addAll(
+                    outPhysicalEquipmentMapper.toRest(physicalEquipments)
+            );
+            log.info(
+                    "Processed out_physical_equipment page={}, records={}, totalResult={}",
+                    pageNumber,
+                    physicalEquipments.size(),
+                    result.size()
+            );
+            physicalEquipments.clear();
+            entityManager.clear();
+
+            pageNumber++;
+        }
         return result;
     }
 
@@ -118,10 +133,39 @@ public class OutPhysicalEquipmentService {
             return List.of();
         }
 
-        return outPhysicalEquipmentMapper.toRest(
-                outPhysicalEquipmentRepository.findByTaskId(task.get().getId())
-        );
+        final Long taskId = task.get().getId();
+        int pageNumber = 0;
+        List<OutPhysicalEquipmentRest> result = new ArrayList<>();
 
+        while (true) {
+            Pageable page = PageRequest.of(
+                    pageNumber,
+                    Constants.BATCH_SIZE_50000
+            );
+
+            List<OutPhysicalEquipment> physicalEquipments =
+                    outPhysicalEquipmentRepository
+                            .findByTaskId(taskId, page);
+
+            if (physicalEquipments.isEmpty()) {
+                break;
+            }
+
+            result.addAll(
+                    outPhysicalEquipmentMapper.toRest(physicalEquipments)
+            );
+            log.info(
+                    "Processed  out_physical_equipment  page={}, records={}, totalResult={}",
+                    pageNumber,
+                    physicalEquipments.size(),
+                    result.size()
+            );
+            physicalEquipments.clear();
+            entityManager.clear();
+
+            pageNumber++;
+        }
+        return result;
     }
 
 }

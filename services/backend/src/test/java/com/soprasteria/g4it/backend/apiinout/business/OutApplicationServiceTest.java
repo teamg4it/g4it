@@ -15,7 +15,6 @@ import com.soprasteria.g4it.backend.apiinout.repository.OutApplicationRepository
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.common.task.modeldb.Task;
 import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
-import com.soprasteria.g4it.backend.common.utils.BatchProcessorUtil;
 import com.soprasteria.g4it.backend.server.gen.api.dto.OutApplicationRest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -50,9 +49,6 @@ class OutApplicationServiceTest {
 
     @Mock
     private OutApplicationMapper outApplicationMapper;
-
-    @Spy
-    private BatchProcessorUtil batchProcessorUtil;
 
     @Test
     void getByInventory_returnsEmptyList_whenNoTaskFound() {

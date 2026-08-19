@@ -57,7 +57,7 @@ public interface InPhysicalEquipmentRepository extends JpaRepository<InPhysicalE
      * @return return a list of physical equipments
      */
     // List<InPhysicalEquipment> findByDigitalServiceVersionUidOrderByName(String digitalServiceVersionUid);
-    Slice<InPhysicalEquipment> findByDigitalServiceVersionUidOrderByName(
+    List<InPhysicalEquipment> findByDigitalServiceVersionUidOrderByName(
             String digitalServiceVersionUid,
             Pageable pageable);
     /**
@@ -76,7 +76,7 @@ public interface InPhysicalEquipmentRepository extends JpaRepository<InPhysicalE
      * @return return a list of physical equipments
      */
     // List<InPhysicalEquipment> findByInventoryId(Long inventoryId);
-    Slice<InPhysicalEquipment> findByInventoryIdOrderByIdAsc(
+    List<InPhysicalEquipment> findByInventoryIdOrderByIdAsc(
             Long inventoryId,
             Pageable pageable);
 

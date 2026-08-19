@@ -15,13 +15,15 @@ import com.soprasteria.g4it.backend.apiinout.modeldb.InDatacenter;
 import com.soprasteria.g4it.backend.apiinout.repository.InDatacenterRepository;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
-import com.soprasteria.g4it.backend.common.utils.BatchProcessorUtil;
+import com.soprasteria.g4it.backend.common.utils.Constants;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InDatacenterRest;
 import jakarta.persistence.EntityManager;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -42,9 +44,6 @@ public class InDatacenterService {
     private InventoryRepository inventoryRepository;
 
     @Autowired
-    private BatchProcessorUtil batchProcessorUtil;
-
-    @Autowired
     private EntityManager entityManager;
 
     /**
@@ -62,17 +61,30 @@ public class InDatacenterService {
 
         List<InDatacenterRest> result = new ArrayList<>();
 
-        batchProcessorUtil.processInBatches(
-                pageable -> inDatacenterRepository
-                        .findByDigitalServiceVersionUid(
-                                digitalServiceVersionUid,
-                                pageable),
-                5000,
-                batch -> result.addAll(
-                        inDatacenterMapper.toRest(batch)
-                )
-        );
+        int pageNumber = 0;
 
+        while(true){
+            Pageable page = PageRequest.of(
+                    pageNumber,
+                    Constants.BATCH_SIZE_50000
+            );
+
+            List<InDatacenter> inDatacenters = inDatacenterRepository.findByDigitalServiceVersionUid(digitalServiceVersionUid,page);
+            if(inDatacenters.isEmpty()){
+                break;
+            }
+            result.addAll(inDatacenterMapper.toRest(inDatacenters));
+            log.info(
+                    "Processed in_datacenter page={}, records={}, totalResult={}",
+                    pageNumber,
+                    inDatacenters.size(),
+                    result.size()
+            );
+
+            entityManager.clear();
+            inDatacenters.clear();
+            pageNumber++;
+        }
         return result;
     }
 
@@ -165,17 +177,30 @@ public class InDatacenterService {
 
         List<InDatacenterRest> result = new ArrayList<>();
 
-        batchProcessorUtil.processInBatches(
-                pageable -> inDatacenterRepository
-                        .findByInventoryIdOrderByIdAsc(inventoryId, pageable),
-                5000,
-                batch -> {
+        int pageNumber = 0;
 
-                    result.addAll(inDatacenterMapper.toRest(batch));
+        while(true){
+            Pageable page = PageRequest.of(
+                    pageNumber,
+                    Constants.BATCH_SIZE_50000
+            );
 
-                    entityManager.clear();
-                });
+            List<InDatacenter> inDatacenters = inDatacenterRepository.findByInventoryIdOrderByIdAsc(inventoryId, page);
+            if(inDatacenters.isEmpty()){
+                break;
+            }
+            result.addAll(inDatacenterMapper.toRest(inDatacenters));
 
+            log.info(
+                    "Processed in_datacenter page={}, records={}, totalResult={}",
+                    pageNumber,
+                    inDatacenters.size(),
+                    result.size()
+            );
+            entityManager.clear();
+            inDatacenters.clear();
+            pageNumber++;
+        }
         return result;
     }
 

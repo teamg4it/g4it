@@ -44,7 +44,7 @@ public interface InDatacenterRepository extends JpaRepository<InDatacenter, Long
      */
     List<InDatacenter> findByDigitalServiceVersionUid(String digitalServiceVersionUid);
 
-    Slice<InDatacenter> findByDigitalServiceVersionUid(
+    List<InDatacenter> findByDigitalServiceVersionUid(
             String digitalServiceVersionUid,
             Pageable pageable);
 
@@ -65,7 +65,7 @@ public interface InDatacenterRepository extends JpaRepository<InDatacenter, Long
      */
     List<InDatacenter> findByInventoryId(Long inventoryId);
 
-    Slice<InDatacenter> findByInventoryIdOrderByIdAsc(
+    List<InDatacenter> findByInventoryIdOrderByIdAsc(
             Long inventoryId,
             Pageable pageable);
 

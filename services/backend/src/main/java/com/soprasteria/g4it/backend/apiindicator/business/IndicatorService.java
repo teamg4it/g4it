@@ -16,13 +16,14 @@ import com.soprasteria.g4it.backend.apiinout.modeldb.OutPhysicalEquipment;
 import com.soprasteria.g4it.backend.apiinout.repository.OutApplicationRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.OutPhysicalEquipmentRepository;
 import com.soprasteria.g4it.backend.apiuser.business.WorkspaceService;
-import com.soprasteria.g4it.backend.common.utils.BatchProcessorUtil;
 import com.soprasteria.g4it.backend.common.utils.StringUtils;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -65,9 +66,6 @@ public class IndicatorService {
     @Autowired
     private OutApplicationRepository outApplicationRepository;
 
-    @Autowired
-    private BatchProcessorUtil batchProcessorUtil;
-
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -93,38 +91,62 @@ public class IndicatorService {
                         e -> equipmentIndicatorMapper.outToDto(e.getValue())
                 ));*/
 
-        Map<String, List<OutPhysicalEquipment>> grouped = new HashMap<>();
+        Map<String, List<OutPhysicalEquipment>> result = new HashMap<>();
+        int pageNumber = 0;
 
-        batchProcessorUtil.processInBatches(
-                pageable -> outPhysicalEquipmentRepository
-                        .findCriterionAndEquipmentByTaskId(taskId, pageable),
-                5000,
-                (List<Object[]> batch) -> {
+        while (true) {
+            Pageable page = PageRequest.of(
+                    pageNumber,
+                    50000
+            );
+            List<Object[]> physicalEquipments =
+                    outPhysicalEquipmentRepository
+                            .findCriterionAndEquipmentByTaskId(taskId, page);
 
-                    for (Object[] row : batch) {
+            if (physicalEquipments.isEmpty()) {
+                break;
+            }
 
-                        String criterion = (String) row[0];
+            Map<String, List<OutPhysicalEquipment>> grouped =
+                    physicalEquipments.stream()
+                            .collect(Collectors.groupingBy(
+                                    r -> (String) r[0],
+                                    Collectors.mapping(
+                                            r -> (OutPhysicalEquipment) r[1],
+                                            Collectors.toList()
+                                    )
+                            ));
 
-                        OutPhysicalEquipment equipment =
-                                (OutPhysicalEquipment) row[1];
+            // Merge current page into the final result
+            grouped.forEach((criterion, equipments) ->
+                    result.merge(
+                            criterion,
+                            new ArrayList<>(equipments),
+                            (existing, current) -> {
+                                existing.addAll(current);
+                                return existing;
+                            }
+                    )
+            );
 
-                        grouped.computeIfAbsent(
-                                        criterion,
-                                        key -> new ArrayList<>())
-                                .add(equipment);
-                    }
+            log.info(
+                    "Processed physical equipment page={}, records={}, criteria={}",
+                    pageNumber,
+                    physicalEquipments.size(),
+                    grouped.size()
+            );
 
-                    entityManager.clear();
-                });
+            pageNumber++;
 
-        return grouped.entrySet()
+        }
+        return result.entrySet()
                 .stream()
                 .collect(Collectors.toMap(
                         e -> StringUtils.snakeToKebabCase(e.getKey()),
                         e -> equipmentIndicatorMapper.outToDto(e.getValue())
                 ));
 
-}
+    }
 
     /**
      * Retrieve application indicators.
@@ -144,19 +166,24 @@ public class IndicatorService {
 
         List<ApplicationIndicatorBO<ApplicationImpactBO>> result = new ArrayList<>();
 
-        batchProcessorUtil.processInBatches(
-                pageable -> outApplicationRepository.findByTaskId(taskId, pageable),
-                5000,
-                batch -> {
+        int pageNumber = 0;
 
-                    batch.forEach(app ->
-                            app.setLifecycleStep(
-                                    LifecycleStepUtils.getReverse(app.getLifecycleStep())));
+        while (true){
+            Pageable page = PageRequest.of(
+                    pageNumber,
+                    50000
+            );
 
-                    result.addAll(applicationIndicatorMapper.toOutDto(batch));
-
-                    entityManager.clear();
-                });
+            List<OutApplication> outApplications = outApplicationRepository.findByTaskIdOrderByIdAsc(taskId, page);
+            if(outApplications.isEmpty()){
+                break;
+            }
+            outApplications.forEach(app -> app.setLifecycleStep(LifecycleStepUtils.getReverse(app.getLifecycleStep())));
+            result.addAll(applicationIndicatorMapper.toOutDto(outApplications));
+            outApplications.clear();
+            entityManager.clear();
+            pageNumber++;
+        }
 
         return result;
     }

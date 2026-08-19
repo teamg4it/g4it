@@ -11,21 +11,21 @@ package com.soprasteria.g4it.backend.apiinout.business;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceVersion;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceVersionRepository;
 import com.soprasteria.g4it.backend.apiinout.mapper.OutApplicationMapper;
+import com.soprasteria.g4it.backend.apiinout.modeldb.OutApplication;
 import com.soprasteria.g4it.backend.apiinout.repository.OutApplicationRepository;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.common.task.modeldb.Task;
 import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
-import com.soprasteria.g4it.backend.common.utils.BatchProcessorUtil;
+import com.soprasteria.g4it.backend.common.utils.Constants;
 import com.soprasteria.g4it.backend.server.gen.api.dto.OutApplicationRest;
 import lombok.AllArgsConstructor;
-import org.hibernate.engine.jdbc.batch.spi.Batch;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
+
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,9 +33,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
 
+@Slf4j
 @Service
 @AllArgsConstructor
 public class OutApplicationService {
@@ -47,9 +46,6 @@ public class OutApplicationService {
 
     @PersistenceContext
     private EntityManager entityManager;
-
-    @Autowired
-    private BatchProcessorUtil batchProcessorUtil;
 
     /**
      * Get applications by inventory id
@@ -79,25 +75,37 @@ public class OutApplicationService {
         Optional<Task> task =
                 taskRepository.findByInventoryAndLastCreationDate(inventory);
 
+
         if (task.isEmpty()) {
             return List.of();
         }
+        final Long taskId = task.get().getId();
 
+        int pageNumber = 0;
         List<OutApplicationRest> result = new ArrayList<>();
 
-        batchProcessorUtil.processInBatches(
-                pageable -> outApplicationRepository
-                        .findByTaskIdOrderByIdAsc(
-                                task.get().getId(),
-                                pageable),
-                5000,
-                batch -> {
-                    result.addAll(
-                            outApplicationMapper.toRest(batch)
-                    );
-
-                    entityManager.clear();
-                });
+        while(true){
+            Pageable page = PageRequest.of(
+                    pageNumber,
+                    Constants.BATCH_SIZE_50000
+            );
+            List<OutApplication> outApplications = outApplicationRepository.findByTaskIdOrderByIdAsc(taskId, page);
+            if(outApplications.isEmpty()){
+                break;
+            }
+            List<OutApplicationRest> batch = outApplicationMapper.toRest(outApplications);
+            result.addAll(batch);
+            log.info(
+                    "Processed application batch: taskId={}, page={}, batchSize={}, totalResult={}",
+                    taskId,
+                    pageNumber,
+                    batch.size(),
+                    result.size()
+            );
+            entityManager.clear();
+            outApplications.clear();
+            pageNumber++;
+        }
 
         return result;
     }
@@ -140,22 +148,33 @@ public class OutApplicationService {
             return List.of();
         }
 
-        List<OutApplicationRest> result = new ArrayList<>();
-
         final Long taskId = task.get().getId();
 
-        batchProcessorUtil.processInBatches(
-                pageable -> outApplicationRepository
-                        .findByTaskIdOrderByIdAsc(taskId, pageable),
-                5000,
-                batch -> {
-                    result.addAll(
-                            outApplicationMapper.toRest(batch)
-                    );
+        int pageNumber = 0;
+        List<OutApplicationRest> result = new ArrayList<>();
 
-                    entityManager.clear();
-                });
-
+        while(true){
+            Pageable page = PageRequest.of(
+                    pageNumber,
+                    Constants.BATCH_SIZE_50000
+            );
+            List<OutApplication> outApplications = outApplicationRepository.findByTaskIdOrderByIdAsc(taskId, page);
+            if(outApplications.isEmpty()){
+                break;
+            }
+            List<OutApplicationRest> batch = outApplicationMapper.toRest(outApplications);
+            result.addAll(batch);
+            log.info(
+                    "Processed application batch: taskId={}, page={}, batchSize={}, totalResult={}",
+                    taskId,
+                    pageNumber,
+                    batch.size(),
+                    result.size()
+            );
+            entityManager.clear();
+            outApplications.clear();
+            pageNumber++;
+        }
         return result;
     }
 

@@ -26,10 +26,8 @@ public interface OutApplicationRepository extends JpaRepository<OutApplication, 
     //List<OutApplication> findByTaskId(Long taskId);
     Slice<OutApplication> findByTaskId(Long taskId, Pageable pageable);
 
-    Slice<OutApplication> findByTaskIdOrderByIdAsc(
+    List<OutApplication> findByTaskIdOrderByIdAsc(
             Long taskId,
             Pageable pageable);
-
-
 
 }

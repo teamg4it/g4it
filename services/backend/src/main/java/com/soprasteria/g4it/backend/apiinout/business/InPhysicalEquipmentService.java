@@ -15,14 +15,14 @@ import com.soprasteria.g4it.backend.apiinout.modeldb.InPhysicalEquipment;
 import com.soprasteria.g4it.backend.apiinout.repository.InPhysicalEquipmentRepository;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
-import com.soprasteria.g4it.backend.common.utils.BatchProcessorUtil;
 import com.soprasteria.g4it.backend.common.utils.CommonValidationUtil;
+import com.soprasteria.g4it.backend.common.utils.Constants;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InPhysicalEquipmentRest;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.AutoConfigureOrder;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -48,9 +48,6 @@ public class InPhysicalEquipmentService {
     @PersistenceContext
     private EntityManager entityManager;
 
-    @Autowired
-    private BatchProcessorUtil batchProcessorUtil;
-
     /**
      * Get the physical equipments list linked to a digital service.
      *
@@ -67,18 +64,30 @@ public class InPhysicalEquipmentService {
 
         List<InPhysicalEquipmentRest> result = new ArrayList<>();
 
-        batchProcessorUtil.processInBatches(
-                pageable -> inPhysicalEquipmentRepository
-                        .findByDigitalServiceVersionUidOrderByName(
-                                digitalServiceVersionUid,
-                                pageable),
-                5000,
-                batch -> {
-                    result.addAll(inPhysicalEquipmentMapper.toRest(batch));
+        int pageNumber = 0;
 
-                    entityManager.clear();
-                });
+        while(true){
+            Pageable page = PageRequest.of(
+                    pageNumber,
+                    Constants.BATCH_SIZE_50000
+            );
 
+            List<InPhysicalEquipment> inPhysicalEquipments = inPhysicalEquipmentRepository.findByDigitalServiceVersionUidOrderByName(
+                    digitalServiceVersionUid,page);
+            if(inPhysicalEquipments.isEmpty()){
+                break;
+            }
+            result.addAll(inPhysicalEquipmentMapper.toRest(inPhysicalEquipments));
+            log.info(
+                    "Processed in_physical_equipment page={}, records={}, totalResult={}",
+                    pageNumber,
+                    inPhysicalEquipments.size(),
+                    result.size()
+            );
+            entityManager.clear();
+            inPhysicalEquipments.clear();
+            pageNumber++;
+        }
         return result;
     }
 
@@ -181,19 +190,29 @@ public class InPhysicalEquipmentService {
 
         List<InPhysicalEquipmentRest> result = new ArrayList<>();
 
-        batchProcessorUtil.processInBatches(
-                pageable -> inPhysicalEquipmentRepository
-                        .findByInventoryIdOrderByIdAsc(inventoryId, pageable),
-                5000,
-                batch -> {
+        int pageNumber = 0;
 
-                    result.addAll(
-                            inPhysicalEquipmentMapper.toRest(batch)
-                    );
+        while(true){
+            Pageable page = PageRequest.of(
+                    pageNumber,
+                    Constants.BATCH_SIZE_50000
+            );
 
-                    entityManager.clear();
-                });
-
+            List<InPhysicalEquipment> inPhysicalEquipments = inPhysicalEquipmentRepository.findByInventoryIdOrderByIdAsc(inventoryId,page);
+            if(inPhysicalEquipments.isEmpty()){
+                break;
+            }
+            result.addAll(inPhysicalEquipmentMapper.toRest(inPhysicalEquipments));
+            log.info(
+                    "Processed in_physical_equipment page={}, records={}, totalResult={}",
+                    pageNumber,
+                    inPhysicalEquipments.size(),
+                    result.size()
+            );
+            entityManager.clear();
+            inPhysicalEquipments.clear();
+            pageNumber++;
+        }
         return result;
     }
 

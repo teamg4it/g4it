@@ -8,9 +8,7 @@
 
 package com.soprasteria.g4it.backend.apiinout.business;
 
-import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceVersion;
-import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceVersionRepository;
 import com.soprasteria.g4it.backend.apiinout.mapper.InVirtualEquipmentMapper;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InPhysicalEquipment;
@@ -19,14 +17,14 @@ import com.soprasteria.g4it.backend.apiinout.repository.InPhysicalEquipmentRepos
 import com.soprasteria.g4it.backend.apiinout.repository.InVirtualEquipmentRepository;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
-import com.soprasteria.g4it.backend.common.utils.BatchProcessorUtil;
 import com.soprasteria.g4it.backend.common.utils.CommonValidationUtil;
+import com.soprasteria.g4it.backend.common.utils.Constants;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
-import com.soprasteria.g4it.backend.server.gen.api.dto.InPhysicalEquipmentRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InVirtualEquipmentRest;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -53,9 +51,6 @@ public class InVirtualEquipmentService {
     @PersistenceContext
     private EntityManager entityManager;
 
-    @Autowired
-    private BatchProcessorUtil batchProcessorUtil;
-
     /**
      * Get the virtual equipments list linked to a digital service.
      *
@@ -72,21 +67,25 @@ public class InVirtualEquipmentService {
 
         List<InVirtualEquipmentRest> result = new ArrayList<>();
 
-        batchProcessorUtil.processInBatches(
-                pageable -> inVirtualEquipmentRepository
-                        .findByDigitalServiceVersionUidOrderByNameAscIdAsc(
-                                digitalServiceVersionUid,
-                                pageable),
-                5000,
-                batch -> {
+        int pageNumber = 0;
 
-                    result.addAll(
-                            inVirtualEquipmentMapper.toRest(batch)
-                    );
+        while(true){
+            Pageable page = PageRequest.of(
+                    pageNumber,
+                    Constants.BATCH_SIZE_50000
+            );
 
-                    entityManager.clear();
-                });
-
+            List<InVirtualEquipment> inVirtualEquipments = inVirtualEquipmentRepository
+                    .findByDigitalServiceVersionUidOrderByNameAscIdAsc(
+                            digitalServiceVersionUid, page);
+            if(inVirtualEquipments.isEmpty()){
+                break;
+            }
+            result.addAll(inVirtualEquipmentMapper.toRest(inVirtualEquipments));
+            inVirtualEquipments.clear();
+            entityManager.clear();
+            pageNumber++;
+        }
         return result;
     }
 
@@ -236,20 +235,30 @@ public class InVirtualEquipmentService {
     public List<InVirtualEquipmentRest> getByInventory(final Long inventoryId) {
 
         List<InVirtualEquipmentRest> result = new ArrayList<>();
+        int pageNumber = 0;
 
-        batchProcessorUtil.processInBatches(
-                pageable -> inVirtualEquipmentRepository
-                        .findByInventoryIdOrderByIdAsc(inventoryId, pageable),
-                5000,
-                batch -> {
+        while(true){
+            Pageable page = PageRequest.of(
+                    pageNumber,
+                    Constants.BATCH_SIZE_50000
+            );
 
-                    result.addAll(
-                            inVirtualEquipmentMapper.toRest(batch)
-                    );
-
-                    entityManager.clear();
-                });
-
+            List<InVirtualEquipment> inVirtualEquipments = inVirtualEquipmentRepository
+                    .findByInventoryIdOrderByIdAsc(inventoryId, page);
+            if(inVirtualEquipments.isEmpty()){
+                break;
+            }
+            result.addAll(inVirtualEquipmentMapper.toRest(inVirtualEquipments));
+            log.info(
+                    "Processed in_virtual_equipment page={}, records={}, totalResult={}",
+                    pageNumber,
+                    inVirtualEquipments.size(),
+                    result.size()
+            );
+            inVirtualEquipments.clear();
+            entityManager.clear();
+            pageNumber++;
+        }
         return result;
     }
 

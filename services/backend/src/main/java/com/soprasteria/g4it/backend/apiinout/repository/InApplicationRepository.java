@@ -60,7 +60,11 @@ public interface InApplicationRepository extends JpaRepository<InApplication, Lo
      * @return return a list of applications
      */
     // List<InApplication> findByInventoryId(Long inventoryId);
-    Slice<InApplication> findByInventoryId(
+    List<InApplication> findByInventoryId(
+            Long inventoryId,
+            Pageable pageable);
+
+    List<InApplication> findByInventoryIdOrderByIdAsc(
             Long inventoryId,
             Pageable pageable);
 
