@@ -16,6 +16,7 @@ import {
 } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { ActivatedRoute, Router, RouterOutlet } from "@angular/router";
+import { TranslateModule } from "@ngx-translate/core";
 import { differenceInDays } from "date-fns";
 import { MessageService } from "primeng/api";
 import { DrawerModule } from "primeng/drawer";
@@ -41,7 +42,7 @@ import { DigitalServiceTableComponent } from "../../common/digital-service-table
     templateUrl: "./digital-services-servers.component.html",
     providers: [MessageService],
     standalone: true,
-    imports: [DigitalServiceTableComponent, DrawerModule, RouterOutlet],
+    imports: [DigitalServiceTableComponent, DrawerModule, RouterOutlet, TranslateModule],
 })
 export class DigitalServicesServersComponent implements OnInit, OnDestroy {
     protected digitalServiceStore = inject(DigitalServiceStoreService);

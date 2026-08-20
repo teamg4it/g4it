@@ -400,7 +400,9 @@
         "yearlyUsageTimePerUser": "Yearly usage time per user",
         "lifespan": "Average device lifespan (years)",
         "error.terminal-already-exists": "Terminal already exists",
-        "terminal-name": "Terminal Name"
+        "terminal-name": "Terminal Name",
+        "information-step": "Step 1",
+        "information-text": "Describe the devices used by users of your digital service. This step allows you to estimate the impact of the equipment (computer, smartphone, etc.) required to use your service.<br/> If you do not have precise data, you can make an estimate to carry out a preliminary assessment. <ul> <li>If your users use multiple types of equipment → create multiple rows (1 per type of device).</li><li>If your users are located in multiple countries → create one row per country for greater accuracy or choose the main country of use for a quick estimate.</li><li>If the location is unknown, set it to 'World' by default.</li></ul>"
     },
     "digital-services-networks": {
         "new": "New Network",
@@ -415,7 +417,9 @@
         "table-yearly-go": "Yearly quantity of GB exchanged",
         "yearlyQuantityOfGbExchanged": "Yearly quantity of GB exchanged",
         "network-name": "Network Name",
-        "error.network-already-exists": "Network already exists"
+        "error.network-already-exists": "Network already exists",
+        "information-step": "Step 2",
+        "information-text": "Describe the volume of data exchanged between users and servers, or between servers, over wired (landline) and/or mobile networks.</br> <ul><li>If your service uses multiple network types (e.g., mobile and Wi-Fi), create a separate line for each type.</li><li>If you don't know the exact data usage, estimate it based on the number of users and their usage patterns.</li></ul>"
     },
     "digital-services-servers": {
         "Dedicated": "Dedicated",
@@ -476,7 +480,9 @@
         "error.disk": "The storage capacity of the VMs exceeds the capacities of the server",
         "error.quantity": "Quantity cannot be zero",
         "pue.rule": "must be >= 1",
-        "error.server-already-exists": "Server already exists"
+        "error.server-already-exists": "Server already exists",
+        "information-step": "Step 3",
+        "information-text": "Describe the infrastructure resources required for your service to operate (servers, virtual machines, containers). You can make estimates and use the provided values ​​to obtain an initial assessment.</br> You can model different scenarios:<br/> <ul><li>Dedicated servers (used only by your service),</li><li>Shared servers (shared with other services),</li><li>Dedicated servers hosted in the cloud should also be listed here.</li></ul>"
     },
     "digital-services-cloud-services": {
         "new": "New Cloud Instance",
@@ -503,7 +509,9 @@
         "configuration": "Instance configuration",
         "error.service-already-exists": "Cloud service already exists",
         "tooltip_average_workload": "Average workload",
-        "tooltip_annual_usage": "Annual usage"
+        "tooltip_annual_usage": "Annual usage",
+        "information-step": "Step 4",
+        "information-text": "Describe the IaaS servers provided by major cloud service providers."
     },
     "digital-services-ai-parameter": {
         "devices": "Algorithm",
