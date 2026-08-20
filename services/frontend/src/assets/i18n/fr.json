@@ -420,14 +420,20 @@
         "id": "#",
         "name": "Nom",
         "type": "Type",
+        "network-stream-name-tooltip": "Nom du flux réseau.",
+        "network-type-tooltip": "Type et emplacement du réseau.",
         "typeCode": "Type",
+        "data-exchanged": "Volume de données échangées",
+        "data-exchanged-tooltip": "Volume total de données échangées sur une année (en GB).",
         "yearly-go": "Quantité totale de Go échangés par an pour tous les utilisateurs",
         "table-yearly-go": "Quantité annuelle de Go échangés",
         "yearlyQuantityOfGbExchanged": "Quantité annuelle de Go échangés",
         "network-name": "Nom du réseau",
         "error.network-already-exists": "Le réseau existe déjà",
         "information-step": "ÉTAPE 2",
-        "information-text": "Décrivez le volume de données échangées entre les utilisateurs et les serveurs ou entre serveurs, sur les réseaux filaires (=fixe) et ou mobile.</br> <ul><li>Si votre service utilise plusieurs types de réseau (ex : mobile et wifi), créez une ligne par type.</li><li>Si vous ne connaissez pas le volume exact, estimez-le à partir du nombre d’utilisateurs et de leur usage.</li></ul>"
+        "information-text": "Décrivez le volume de données échangées entre les utilisateurs et les serveurs ou entre serveurs, sur les réseaux filaires (=fixe) et ou mobile.</br> <ul><li>Si votre service utilise plusieurs types de réseau (ex : mobile et wifi), créez une ligne par type.</li><li>Si vous ne connaissez pas le volume exact, estimez-le à partir du nombre d’utilisateurs et de leur usage.</li></ul>",
+        "network-description": "Descriptif du réseau",
+        "network-description-text": "Précisez le type de réseau principalement utilisé (mobile pour les connexion de type 2G/3G/4G/5G, filaire pour les autres) et le volume total de données échangées sur une année.</br> Ce volume correspond à toutes les données transférées entre les utilisateurs et votre service (requêtes + réponses).</br> Si vous ne connaissez pas ces données : estimez-les à partir du nombre d’utilisateurs et du trafic moyen par utilisateur."
     },
     "digital-services-servers": {
         "Dedicated": "Dédié",

@@ -423,14 +423,20 @@
         "id": "#",
         "name": "Name",
         "type": "Type",
+        "network-stream-name-tooltip": "Network stream name.",
+        "network-type-tooltip": "Network type and location.",
         "typeCode": "Type",
+        "data-exchanged": "Volume of data exchanged",
+        "data-exchanged-tooltip": "Total volume of data exchanged over one year (in GB).",
         "yearly-go": "Total quantity of GB exchanged by year for all users",
         "table-yearly-go": "Yearly quantity of GB exchanged",
         "yearlyQuantityOfGbExchanged": "Yearly quantity of GB exchanged",
         "network-name": "Network Name",
         "error.network-already-exists": "Network already exists",
         "information-step": "Step 2",
-        "information-text": "Describe the volume of data exchanged between users and servers, or between servers, over wired (landline) and/or mobile networks.</br> <ul><li>If your service uses multiple network types (e.g., mobile and Wi-Fi), create a separate line for each type.</li><li>If you don't know the exact data usage, estimate it based on the number of users and their usage patterns.</li></ul>"
+        "information-text": "Describe the volume of data exchanged between users and servers, or between servers, over wired (landline) and/or mobile networks.</br> <ul><li>If your service uses multiple network types (e.g., mobile and Wi-Fi), create a separate line for each type.</li><li>If you don't know the exact data usage, estimate it based on the number of users and their usage patterns.</li></ul>",
+        "network-description": "Network description",
+        "network-description-text": "Specify the type of network mainly used (mobile for 2G/3G/4G/5G connections, wired for others) and the total volume of data exchanged over a year.</br> This volume corresponds to all data transferred between users and your service (downloads + uploads).</br> If you don't know the data: estimate it from the number of users and the average traffic per user."
     },
     "digital-services-servers": {
         "Dedicated": "Dedicated",
