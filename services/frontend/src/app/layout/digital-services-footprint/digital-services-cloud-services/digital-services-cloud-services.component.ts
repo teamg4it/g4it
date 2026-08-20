@@ -7,6 +7,7 @@
  */
 import { Component, computed, inject, input, OnInit, signal } from "@angular/core";
 import { Router } from "@angular/router";
+import { TranslateModule } from "@ngx-translate/core";
 import { MessageService } from "primeng/api";
 import { DrawerModule } from "primeng/drawer";
 import { firstValueFrom, lastValueFrom } from "rxjs";
@@ -28,6 +29,7 @@ import { DigitalServicesCloudServicesSidePanelComponent } from "./digital-servic
         DigitalServiceTableComponent,
         DrawerModule,
         DigitalServicesCloudServicesSidePanelComponent,
+        TranslateModule,
     ],
 })
 export class DigitalServicesCloudServicesComponent implements OnInit {

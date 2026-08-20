@@ -2080,3 +2080,31 @@ p-sorticon {
 .inverse-axis-toggle button:hover {
     opacity: 0.9;
 }
+
+.information-section {
+    padding: 24px 16px;
+    border-radius: 4px;
+    border: 1px solid var(--Encart-stroke, #3642e5);
+    background: var(--status-blue-5, #eff0fd);
+
+    /* Thin */
+    box-shadow: 0 2px 4px 0 rgba(28, 33, 29, 0.1);
+
+    ul {
+        margin: 0;
+        li {
+            list-style-type: disc;
+            margin-left: 20px;
+            font-size: 14px;
+            line-height: 20px;
+        }
+    }
+}
+
+.terminal-side-panel,
+.network-side-panel {
+    .label-input-div label {
+        font-size: 16px;
+        font-weight: 600;
+    }
+}

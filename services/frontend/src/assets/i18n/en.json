@@ -393,14 +393,27 @@
         "country": "Country",
         "name": "Name",
         "nb-user": "Number of unique users",
+        "nb-user-tooltip": "Total number of unique users in a year.",
         "numberOfUsers": "Number of unique users",
         "yearly-usage": "Average time spent per user per year",
         "hours": "hours",
+        "usage-time": "Usage time",
         "table-yearly-usage": "Yearly usage time per user",
+        "table-yearly-usage-tooltip": "Total usage time per user over one year (in hours).",
         "yearlyUsageTimePerUser": "Yearly usage time per user",
         "lifespan": "Average device lifespan (years)",
+        "internal-usage": "Internal usage",
+        "internal-usage-tooltip": "Average usage time before replacement (in years).",
         "error.terminal-already-exists": "Terminal already exists",
-        "terminal-name": "Terminal Name"
+        "terminal-name": "Terminal Name",
+        "information-step": "Step 1",
+        "information-text": "Describe the devices used by users of your digital service. This step allows you to estimate the impact of the equipment (computer, smartphone, etc.) required to use your service.<br/> If you do not have precise data, you can make an estimate to carry out a preliminary assessment. <ul> <li>If your users use multiple types of equipment → create multiple rows (1 per type of device).</li><li>If your users are located in multiple countries → create one row per country for greater accuracy or choose the main country of use for a quick estimate.</li><li>If the location is unknown, set it to 'World' by default.</li></ul>",
+        "device-identification": "Device identification",
+        "identification-text": "Define the general characteristics of the group of devices used by your users.</br> Depending on the location of the equipment used, the impacts can vary tenfold (e.g., if the country uses coal to generate its electricity).",
+        "use-of-service": "Use of the service",
+        "use-of-service-text": "This information allows you to attribute a portion of the impact of devices to your service.</br> Note: If necessary, use daily usage (e.g., minutes/day) to estimate an annual total.",
+        "device-lifetime": "Device lifetime",
+        "device-lifetime-text": "Define the usage duration of the device within your organization."
     },
     "digital-services-networks": {
         "new": "New Network",
@@ -410,12 +423,20 @@
         "id": "#",
         "name": "Name",
         "type": "Type",
+        "network-stream-name-tooltip": "Network stream name.",
+        "network-type-tooltip": "Network type and location.",
         "typeCode": "Type",
+        "data-exchanged": "Volume of data exchanged",
+        "data-exchanged-tooltip": "Total volume of data exchanged over one year (in GB).",
         "yearly-go": "Total quantity of GB exchanged by year for all users",
         "table-yearly-go": "Yearly quantity of GB exchanged",
         "yearlyQuantityOfGbExchanged": "Yearly quantity of GB exchanged",
         "network-name": "Network Name",
-        "error.network-already-exists": "Network already exists"
+        "error.network-already-exists": "Network already exists",
+        "information-step": "Step 2",
+        "information-text": "Describe the volume of data exchanged between users and servers, or between servers, over wired (landline) and/or mobile networks.</br> <ul><li>If your service uses multiple network types (e.g., mobile and Wi-Fi), create a separate line for each type.</li><li>If you don't know the exact data usage, estimate it based on the number of users and their usage patterns.</li></ul>",
+        "network-description": "Network description",
+        "network-description-text": "Specify the type of network mainly used (mobile for 2G/3G/4G/5G connections, wired for others) and the total volume of data exchanged over a year.</br> This volume corresponds to all data transferred between users and your service (downloads + uploads).</br> If you don't know the data: estimate it from the number of users and the average traffic per user."
     },
     "digital-services-servers": {
         "Dedicated": "Dedicated",
@@ -476,7 +497,9 @@
         "error.disk": "The storage capacity of the VMs exceeds the capacities of the server",
         "error.quantity": "Quantity cannot be zero",
         "pue.rule": "must be >= 1",
-        "error.server-already-exists": "Server already exists"
+        "error.server-already-exists": "Server already exists",
+        "information-step": "Step 3",
+        "information-text": "Describe the infrastructure resources required for your service to operate (servers, virtual machines, containers). You can make estimates and use the provided values ​​to obtain an initial assessment.</br> You can model different scenarios:<br/> <ul><li>Dedicated servers (used only by your service),</li><li>Shared servers (shared with other services),</li><li>Dedicated servers hosted in the cloud should also be listed here.</li></ul>"
     },
     "digital-services-cloud-services": {
         "new": "New Cloud Instance",
@@ -503,7 +526,9 @@
         "configuration": "Instance configuration",
         "error.service-already-exists": "Cloud service already exists",
         "tooltip_average_workload": "Average workload",
-        "tooltip_annual_usage": "Annual usage"
+        "tooltip_annual_usage": "Annual usage",
+        "information-step": "Step 4",
+        "information-text": "Describe the IaaS servers provided by major cloud service providers."
     },
     "digital-services-ai-parameter": {
         "devices": "Algorithm",
