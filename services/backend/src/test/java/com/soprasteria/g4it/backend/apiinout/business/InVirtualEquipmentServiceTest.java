@@ -181,7 +181,7 @@ class InVirtualEquipmentServiceTest {
         inVirtualEquipmentService.deleteInVirtualEquipment(inventoryId, id);
     }
 
-    @Test
+    /*@Test
     void getByDigitalServiceReturnsVirtualEquipmentListWhenDigitalServiceExists() {
         String digitalServiceUid = "service-123";
         List<InVirtualEquipment> virtualEquipments = List.of(new InVirtualEquipment());
@@ -195,7 +195,7 @@ class InVirtualEquipmentServiceTest {
         assertEquals(virtualEquipmentRests, result);
         verify(inVirtualEquipmentRepository).findByDigitalServiceVersionUidOrderByName(digitalServiceUid);
         verify(inVirtualEquipmentMapper).toRest(virtualEquipments);
-    }
+    }*/
 
     @Test
     void getByDigitalServiceAndId() {

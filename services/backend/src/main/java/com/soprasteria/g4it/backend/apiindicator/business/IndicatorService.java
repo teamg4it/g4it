@@ -16,11 +16,19 @@ import com.soprasteria.g4it.backend.apiinout.modeldb.OutPhysicalEquipment;
 import com.soprasteria.g4it.backend.apiinout.repository.OutApplicationRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.OutPhysicalEquipmentRepository;
 import com.soprasteria.g4it.backend.apiuser.business.WorkspaceService;
+import com.soprasteria.g4it.backend.common.utils.StringUtils;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -58,15 +66,19 @@ public class IndicatorService {
     @Autowired
     private OutApplicationRepository outApplicationRepository;
 
+    @PersistenceContext
+    private EntityManager entityManager;
+
     /**
      * Retrieve equipment indicators.
      *
      * @param taskId the task id.
      * @return indicator by criteria.
      */
+    @Transactional(readOnly = true)
     public Map<String, EquipmentIndicatorBO> getEquipmentIndicators(final Long taskId) {
 
-        List<Object[]> results = outPhysicalEquipmentRepository.findCriterionAndEquipmentByTaskId(taskId);
+        /*List<Object[]> results = outPhysicalEquipmentRepository.findCriterionAndEquipmentByTaskId(taskId);
         Map<String, List<OutPhysicalEquipment>> grouped = results.stream()
                 .collect(Collectors.groupingBy(
                         r -> (String) r[0],
@@ -77,7 +89,63 @@ public class IndicatorService {
                 .collect(Collectors.toMap(
                         e -> com.soprasteria.g4it.backend.common.utils.StringUtils.snakeToKebabCase(e.getKey()),
                         e -> equipmentIndicatorMapper.outToDto(e.getValue())
+                ));*/
+
+        Map<String, List<OutPhysicalEquipment>> result = new HashMap<>();
+        int pageNumber = 0;
+
+        while (true) {
+            Pageable page = PageRequest.of(
+                    pageNumber,
+                    50000
+            );
+            List<Object[]> physicalEquipments =
+                    outPhysicalEquipmentRepository
+                            .findCriterionAndEquipmentByTaskId(taskId, page);
+
+            if (physicalEquipments.isEmpty()) {
+                break;
+            }
+
+            Map<String, List<OutPhysicalEquipment>> grouped =
+                    physicalEquipments.stream()
+                            .collect(Collectors.groupingBy(
+                                    r -> (String) r[0],
+                                    Collectors.mapping(
+                                            r -> (OutPhysicalEquipment) r[1],
+                                            Collectors.toList()
+                                    )
+                            ));
+
+            // Merge current page into the final result
+            grouped.forEach((criterion, equipments) ->
+                    result.merge(
+                            criterion,
+                            new ArrayList<>(equipments),
+                            (existing, current) -> {
+                                existing.addAll(current);
+                                return existing;
+                            }
+                    )
+            );
+
+            log.info(
+                    "Processed physical equipment page={}, records={}, criteria={}",
+                    pageNumber,
+                    physicalEquipments.size(),
+                    grouped.size()
+            );
+
+            pageNumber++;
+
+        }
+        return result.entrySet()
+                .stream()
+                .collect(Collectors.toMap(
+                        e -> StringUtils.snakeToKebabCase(e.getKey()),
+                        e -> equipmentIndicatorMapper.outToDto(e.getValue())
                 ));
+
     }
 
     /**
@@ -86,12 +154,39 @@ public class IndicatorService {
      * @param taskId the task id.
      * @return indicator by criteria.
      */
-    public List<ApplicationIndicatorBO<ApplicationImpactBO>> getApplicationIndicators(final Long taskId) {
+    /*public List<ApplicationIndicatorBO<ApplicationImpactBO>> getApplicationIndicators(final Long taskId) {
         List<OutApplication> outApplications = outApplicationRepository.findByTaskId(taskId);
         outApplications.forEach(app -> app.setLifecycleStep(LifecycleStepUtils.getReverse(app.getLifecycleStep())));
 
         return applicationIndicatorMapper.toOutDto(outApplications);
+    }*/
+
+    @Transactional(readOnly = true)
+    public List<ApplicationIndicatorBO<ApplicationImpactBO>> getApplicationIndicators(Long taskId) {
+
+        List<OutApplication> resultOutApplication = new ArrayList<>();
+
+        int pageNumber = 0;
+
+        while (true){
+            Pageable page = PageRequest.of(
+                    pageNumber,
+                    50000
+            );
+
+            List<OutApplication> outApplications = outApplicationRepository.findByTaskIdOrderByIdAsc(taskId, page);
+            if(outApplications.isEmpty()){
+                break;
+            }
+            resultOutApplication.addAll(outApplications);
+            outApplications.clear();
+            entityManager.clear();
+            pageNumber++;
+        }
+        resultOutApplication.forEach(app -> app.setLifecycleStep(LifecycleStepUtils.getReverse(app.getLifecycleStep())));
+        return applicationIndicatorMapper.toOutDto(resultOutApplication);
     }
+
 
     /**
      * Retrieve datacenter indicators.

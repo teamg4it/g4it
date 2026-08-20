@@ -27,6 +27,14 @@ import java.util.Map;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class IndicatorServiceTest {
@@ -56,19 +64,39 @@ class IndicatorServiceTest {
     private VirtualEquipmentIndicatorService virtualEquipmentIndicatorService;
 
 
+
     @Test
     void getApplicationIndicatorsReturnsMappedIndicatorsWhenTaskIdIsValid() {
         Long taskId = 1L;
-        List<OutApplication> applications = List.of(new OutApplication());
-        List<ApplicationIndicatorBO<ApplicationImpactBO>> mappedIndicators = List.of(new ApplicationIndicatorBO<>());
 
-        when(outApplicationRepository.findByTaskId(taskId)).thenReturn(applications);
-        when(applicationIndicatorMapper.toOutDto(applications)).thenReturn(mappedIndicators);
+        OutApplication application = new OutApplication();
+        List<OutApplication> applications = List.of(application);
 
-        List<ApplicationIndicatorBO<ApplicationImpactBO>> result = indicatorService.getApplicationIndicators(taskId);
+        List<ApplicationIndicatorBO<ApplicationImpactBO>> mappedIndicators =
+                List.of(new ApplicationIndicatorBO<>());
+
+        Slice<OutApplication> slice = new SliceImpl<>(applications);
+
+        when(outApplicationRepository.findByTaskId(
+                eq(taskId),
+                any(Pageable.class)
+        )).thenReturn(slice);
+
+        when(applicationIndicatorMapper.toOutDto(applications))
+                .thenReturn(mappedIndicators);
+
+        List<ApplicationIndicatorBO<ApplicationImpactBO>> result =
+                indicatorService.getApplicationIndicators(taskId);
 
         assertNotNull(result);
         assertEquals(mappedIndicators, result);
+
+        verify(outApplicationRepository).findByTaskId(
+                eq(taskId),
+                any(Pageable.class)
+        );
+
+        verify(applicationIndicatorMapper).toOutDto(applications);
     }
 
     @Test
