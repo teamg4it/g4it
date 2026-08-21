@@ -3,7 +3,6 @@ databaseChangeLog:
       id: add-indexes-for-coherence-checks
       author: G4IT Performance Team
       comment: Add indexes to optimize coherence validation queries that scan 200k+ equipment rows during import. This addresses the 9+ minute delay in checkMetadataInventoryFileService.
-      failOnError: false
       changes:
         # Indexes for physical equipment coherence checks
         - createIndex:
