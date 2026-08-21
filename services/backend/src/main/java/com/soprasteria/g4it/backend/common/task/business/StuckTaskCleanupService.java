@@ -90,8 +90,7 @@ public class StuckTaskCleanupService {
             // Case 1: PLCD is null - First scheduler check, initialize and skip
             if (progressLastChanged == null) {
                 try {
-                    task.setProgressLastChangedDate(lastUpdate);
-                    taskRepository.save(task);
+                    taskRepository.updateProgressLastChangedDate(task.getId(), lastUpdate);
                     initializedCount++;
                     log.info("Task {} - First check, initialized PLCD = LUD", task.getId());
                 } catch (Exception e) {
@@ -104,8 +103,7 @@ public class StuckTaskCleanupService {
             // Case 2: LUD > PLCD - Task has progressed, update and skip
             if (lastUpdate.isAfter(progressLastChanged)) {
                 try {
-                    task.setProgressLastChangedDate(lastUpdate);
-                    taskRepository.save(task);
+                    taskRepository.updateProgressLastChangedDate(task.getId(), lastUpdate);
                     updatedCount++;
                     log.info("Task {} - Progress detected, updated PLCD = LUD", task.getId());
                 } catch (Exception e) {
@@ -155,14 +153,9 @@ public class StuckTaskCleanupService {
             List<String> errors = new ArrayList<>();
             errors.add(LogUtils.error(FAILED_BY_SCHEDULER));
 
-            // Update task status
-            task.setStatus(TaskStatus.FAILED.toString());
-            task.setLastUpdateDate(now);
-            task.setDetails(details);
-            task.setErrors(errors);
-            task.setProgressPercentage(task.getProgressPercentage()); // Keep current progress
-
-            taskRepository.save(task);
+            // Update task status via a targeted update to avoid rewriting the whole entity
+            // (and avoid triggering the eager "createdBy" relation load) for every stuck task.
+            taskRepository.updateStuckTaskFailed(task.getId(), TaskStatus.FAILED.toString(), now, details, errors);
 
             log.info("Task {} (type: {}) marked as FAILED",
                     task.getId(), task.getType());
