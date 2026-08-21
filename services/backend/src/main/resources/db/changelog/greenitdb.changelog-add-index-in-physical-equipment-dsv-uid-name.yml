@@ -1,0 +1,15 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-index-in-physical-equipment-dsv-uid-name
+      author: G4IT Dev Team
+      changes:
+        - createIndex:
+            tableName: in_physical_equipment
+            indexName: idx_in_physical_equipment_dsv_uid_name
+            columns:
+              - column:
+                  name: digital_service_version_uid
+              - column:
+                  name: name
+
+

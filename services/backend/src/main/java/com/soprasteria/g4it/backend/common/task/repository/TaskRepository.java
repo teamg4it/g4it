@@ -154,5 +154,38 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
             String status
     );
 
+    /**
+     * Lightweight update used by StuckTaskCleanupService to record progress activity
+     * without loading/rewriting the whole entity (avoids the eager "createdBy" fetch
+     * and unnecessary column rewrites on every scheduler run).
+     */
+    @Modifying
+    @Transactional
+    @Query("""
+                update Task t
+                set t.progressLastChangedDate = :progressLastChangedDate
+                where t.id = :id
+            """)
+    void updateProgressLastChangedDate(@Param("id") Long id,
+                                        @Param("progressLastChangedDate") LocalDateTime progressLastChangedDate);
+
+    /**
+     * Lightweight fail update used by StuckTaskCleanupService for stuck tasks.
+     */
+    @Modifying
+    @Transactional
+    @Query("""
+                update Task t
+                set t.status = :status,
+                    t.lastUpdateDate = :lastUpdateDate,
+                    t.details = :details,
+                    t.errors = :errors
+                where t.id = :id
+            """)
+    void updateStuckTaskFailed(@Param("id") Long id,
+                               @Param("status") String status,
+                               @Param("lastUpdateDate") LocalDateTime lastUpdateDate,
+                               @Param("details") List<String> details,
+                               @Param("errors") List<String> errors);
 
 }

@@ -29,6 +29,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -82,7 +83,8 @@ class StuckTaskCleanupServiceTest {
 
         stuckTaskCleanupService.failStuckTasks();
 
-        verify(taskRepository, never()).save(any(Task.class));
+        verify(taskRepository, never()).updateProgressLastChangedDate(any(), any());
+        verify(taskRepository, never()).updateStuckTaskFailed(any(), any(), any(), any(), any());
     }
 
     // ── Case 1: PLCD is null – first scheduler check ──
@@ -97,14 +99,11 @@ class StuckTaskCleanupServiceTest {
 
         stuckTaskCleanupService.failStuckTasks();
 
-        ArgumentCaptor<Task> captor = ArgumentCaptor.forClass(Task.class);
-        verify(taskRepository, times(1)).save(captor.capture());
+        ArgumentCaptor<LocalDateTime> dateCaptor = ArgumentCaptor.forClass(LocalDateTime.class);
+        verify(taskRepository, times(1)).updateProgressLastChangedDate(eq(1L), dateCaptor.capture());
 
-        Task saved = captor.getValue();
-        assertThat(saved.getProgressLastChangedDate()).isNotNull();
-        assertThat(saved.getProgressLastChangedDate())
-                .isEqualTo(lastUpdate.truncatedTo(ChronoUnit.SECONDS));
-        assertThat(saved.getStatus()).isEqualTo(TaskStatus.IN_PROGRESS.toString());
+        assertThat(dateCaptor.getValue()).isEqualTo(lastUpdate.truncatedTo(ChronoUnit.SECONDS));
+        verify(taskRepository, never()).updateStuckTaskFailed(any(), any(), any(), any(), any());
     }
 
     @Test
@@ -116,13 +115,14 @@ class StuckTaskCleanupServiceTest {
 
         when(taskRepository.findByStatus(TaskStatus.IN_PROGRESS.toString()))
                 .thenReturn(List.of(task1, task2));
-        when(taskRepository.save(task1)).thenThrow(new RuntimeException("DB error"));
-        when(taskRepository.save(task2)).thenReturn(task2);
+        doThrow(new RuntimeException("DB error")).when(taskRepository)
+                .updateProgressLastChangedDate(eq(1L), any());
 
         // Must not propagate exception
         stuckTaskCleanupService.failStuckTasks();
 
-        verify(taskRepository, times(2)).save(any(Task.class));
+        verify(taskRepository, times(1)).updateProgressLastChangedDate(eq(1L), any());
+        verify(taskRepository, times(1)).updateStuckTaskFailed(eq(2L), any(), any(), any(), any());
     }
 
     // ── Case 2: LUD > PLCD – task is progressing ──
@@ -138,13 +138,11 @@ class StuckTaskCleanupServiceTest {
 
         stuckTaskCleanupService.failStuckTasks();
 
-        ArgumentCaptor<Task> captor = ArgumentCaptor.forClass(Task.class);
-        verify(taskRepository, times(1)).save(captor.capture());
+        ArgumentCaptor<LocalDateTime> dateCaptor = ArgumentCaptor.forClass(LocalDateTime.class);
+        verify(taskRepository, times(1)).updateProgressLastChangedDate(eq(2L), dateCaptor.capture());
 
-        Task saved = captor.getValue();
-        assertThat(saved.getStatus()).isEqualTo(TaskStatus.IN_PROGRESS.toString());
-        assertThat(saved.getProgressLastChangedDate())
-                .isEqualTo(lastUpdate.truncatedTo(ChronoUnit.SECONDS));
+        assertThat(dateCaptor.getValue()).isEqualTo(lastUpdate.truncatedTo(ChronoUnit.SECONDS));
+        verify(taskRepository, never()).updateStuckTaskFailed(any(), any(), any(), any(), any());
     }
 
     @Test
@@ -156,12 +154,13 @@ class StuckTaskCleanupServiceTest {
 
         when(taskRepository.findByStatus(TaskStatus.IN_PROGRESS.toString()))
                 .thenReturn(List.of(task1, task2));
-        when(taskRepository.save(task1)).thenThrow(new RuntimeException("DB error"));
-        when(taskRepository.save(task2)).thenReturn(task2);
+        doThrow(new RuntimeException("DB error")).when(taskRepository)
+                .updateProgressLastChangedDate(eq(1L), any());
 
         stuckTaskCleanupService.failStuckTasks();
 
-        verify(taskRepository, times(2)).save(any(Task.class));
+        verify(taskRepository, times(1)).updateProgressLastChangedDate(eq(1L), any());
+        verify(taskRepository, times(1)).updateStuckTaskFailed(eq(2L), any(), any(), any(), any());
     }
 
     // ── Case 3: LUD == PLCD – task is stuck ──
@@ -176,11 +175,10 @@ class StuckTaskCleanupServiceTest {
 
         stuckTaskCleanupService.failStuckTasks();
 
-        ArgumentCaptor<Task> captor = ArgumentCaptor.forClass(Task.class);
-        verify(taskRepository, times(1)).save(captor.capture());
+        ArgumentCaptor<String> statusCaptor = ArgumentCaptor.forClass(String.class);
+        verify(taskRepository, times(1)).updateStuckTaskFailed(eq(3L), statusCaptor.capture(), any(), any(), any());
 
-        Task saved = captor.getValue();
-        assertThat(saved.getStatus()).isEqualTo(TaskStatus.FAILED.toString());
+        assertThat(statusCaptor.getValue()).isEqualTo(TaskStatus.FAILED.toString());
     }
 
     @Test
@@ -193,12 +191,12 @@ class StuckTaskCleanupServiceTest {
 
         stuckTaskCleanupService.failStuckTasks();
 
-        ArgumentCaptor<Task> captor = ArgumentCaptor.forClass(Task.class);
-        verify(taskRepository).save(captor.capture());
+        ArgumentCaptor<List<String>> errorsCaptor = ArgumentCaptor.forClass(List.class);
+        verify(taskRepository).updateStuckTaskFailed(eq(3L), any(), any(), any(), errorsCaptor.capture());
 
-        Task saved = captor.getValue();
-        assertThat(saved.getErrors()).hasSize(1);
-        assertThat(saved.getErrors().get(0)).contains("FAILED BY SCHEDULER");
+        List<String> errors = errorsCaptor.getValue();
+        assertThat(errors).hasSize(1);
+        assertThat(errors.get(0)).contains("FAILED BY SCHEDULER");
     }
 
     @Test
@@ -211,13 +209,13 @@ class StuckTaskCleanupServiceTest {
 
         stuckTaskCleanupService.failStuckTasks();
 
-        ArgumentCaptor<Task> captor = ArgumentCaptor.forClass(Task.class);
-        verify(taskRepository).save(captor.capture());
+        ArgumentCaptor<List<String>> detailsCaptor = ArgumentCaptor.forClass(List.class);
+        verify(taskRepository).updateStuckTaskFailed(eq(3L), any(), any(), detailsCaptor.capture(), any());
 
-        Task saved = captor.getValue();
-        assertThat(saved.getDetails()).isNotEmpty();
+        List<String> details = detailsCaptor.getValue();
+        assertThat(details).isNotEmpty();
         // Detail message mentions the duration in minutes
-        assertThat(saved.getDetails().get(0)).contains("minutes");
+        assertThat(details.get(0)).contains("minutes");
     }
 
     @Test
@@ -231,10 +229,10 @@ class StuckTaskCleanupServiceTest {
 
         stuckTaskCleanupService.failStuckTasks();
 
-        ArgumentCaptor<Task> captor = ArgumentCaptor.forClass(Task.class);
-        verify(taskRepository).save(captor.capture());
+        ArgumentCaptor<LocalDateTime> lastUpdateCaptor = ArgumentCaptor.forClass(LocalDateTime.class);
+        verify(taskRepository).updateStuckTaskFailed(eq(3L), any(), lastUpdateCaptor.capture(), any(), any());
 
-        assertThat(captor.getValue().getLastUpdateDate()).isAfterOrEqualTo(before);
+        assertThat(lastUpdateCaptor.getValue()).isAfterOrEqualTo(before);
     }
 
     @Test
@@ -248,12 +246,12 @@ class StuckTaskCleanupServiceTest {
 
         stuckTaskCleanupService.failStuckTasks();
 
-        ArgumentCaptor<Task> captor = ArgumentCaptor.forClass(Task.class);
-        verify(taskRepository).save(captor.capture());
+        ArgumentCaptor<List<String>> detailsCaptor = ArgumentCaptor.forClass(List.class);
+        verify(taskRepository).updateStuckTaskFailed(eq(3L), any(), any(), detailsCaptor.capture(), any());
 
-        Task saved = captor.getValue();
-        assertThat(saved.getDetails()).hasSizeGreaterThan(1);
-        assertThat(saved.getDetails()).contains("pre-existing detail");
+        List<String> details = detailsCaptor.getValue();
+        assertThat(details).hasSizeGreaterThan(1);
+        assertThat(details).contains("pre-existing detail");
     }
 
     @Test
@@ -267,10 +265,10 @@ class StuckTaskCleanupServiceTest {
 
         stuckTaskCleanupService.failStuckTasks();
 
-        ArgumentCaptor<Task> captor = ArgumentCaptor.forClass(Task.class);
-        verify(taskRepository).save(captor.capture());
+        ArgumentCaptor<List<String>> detailsCaptor = ArgumentCaptor.forClass(List.class);
+        verify(taskRepository).updateStuckTaskFailed(eq(3L), any(), any(), detailsCaptor.capture(), any());
 
-        assertThat(captor.getValue().getDetails()).isNotNull().isNotEmpty();
+        assertThat(detailsCaptor.getValue()).isNotNull().isNotEmpty();
     }
 
     // ── Case 3 edge: LUD < PLCD ──
@@ -287,10 +285,10 @@ class StuckTaskCleanupServiceTest {
 
         stuckTaskCleanupService.failStuckTasks();
 
-        ArgumentCaptor<Task> captor = ArgumentCaptor.forClass(Task.class);
-        verify(taskRepository, times(1)).save(captor.capture());
+        ArgumentCaptor<String> statusCaptor = ArgumentCaptor.forClass(String.class);
+        verify(taskRepository, times(1)).updateStuckTaskFailed(eq(4L), statusCaptor.capture(), any(), any(), any());
 
-        assertThat(captor.getValue().getStatus()).isEqualTo(TaskStatus.FAILED.toString());
+        assertThat(statusCaptor.getValue()).isEqualTo(TaskStatus.FAILED.toString());
     }
 
     // ── failTask() save exception ──
@@ -302,7 +300,8 @@ class StuckTaskCleanupServiceTest {
 
         when(taskRepository.findByStatus(TaskStatus.IN_PROGRESS.toString()))
                 .thenReturn(List.of(task));
-        when(taskRepository.save(any(Task.class))).thenThrow(new RuntimeException("DB failure"));
+        doThrow(new RuntimeException("DB failure")).when(taskRepository)
+                .updateStuckTaskFailed(any(), any(), any(), any(), any());
 
         // Must not propagate
         stuckTaskCleanupService.failStuckTasks();
@@ -324,8 +323,9 @@ class StuckTaskCleanupServiceTest {
 
         stuckTaskCleanupService.failStuckTasks();
 
-        // One save per task
-        verify(taskRepository, times(3)).save(any(Task.class));
+        // One targeted update per task, split between progress-updates and fail-updates
+        verify(taskRepository, times(2)).updateProgressLastChangedDate(any(), any());
+        verify(taskRepository, times(1)).updateStuckTaskFailed(any(), any(), any(), any(), any());
     }
 
     // ──────────────── isStuckTaskCheckEnabled() ────────────────
