@@ -66,7 +66,5 @@ databaseChangeLog:
       file: db/changelog/greenitdb.changelog-create-audit-event.yml
   - include:
       file: db/changelog/greenitdb.changelog-add-coherence-check-indexes.yml
-  - include:
-      file: db/changelog/greenitdb.changelog-add-index-in-physical-equipment-dsv-uid-name.yml
 
 
