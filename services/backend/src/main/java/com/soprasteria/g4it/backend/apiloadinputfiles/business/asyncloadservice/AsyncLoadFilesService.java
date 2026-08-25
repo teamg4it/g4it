@@ -97,6 +97,11 @@ public class AsyncLoadFilesService implements ITaskExecute {
             //Load Metadata files
             asyncLoadMetadataService.loadInputMetadata(context);
 
+            // Refresh lastUpdateDate so the stuck-task scheduler does not kill this task
+            // while checkMetadataInventoryFile runs (which can take several minutes for large inventories).
+            task.setLastUpdateDate(LocalDateTime.now());
+            taskRepository.save(task);
+
             Map<String, Map<Integer, List<LineError>>> coherenceErrors = checkMetadataInventoryFileService.checkMetadataInventoryFile(task.getId(), context.getInventoryId(), context.getDigitalServiceVersionUid());
 
             //  Check if any file is exceeding the error threshold before processing any files.
