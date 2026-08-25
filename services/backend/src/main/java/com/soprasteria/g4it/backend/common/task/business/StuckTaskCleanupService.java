@@ -11,19 +11,13 @@ package com.soprasteria.g4it.backend.common.task.business;
 import com.soprasteria.g4it.backend.common.task.model.TaskStatus;
 import com.soprasteria.g4it.backend.common.task.modeldb.Task;
 import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
-import com.soprasteria.g4it.backend.common.utils.LogUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * Service to detect and fail tasks that are stuck in IN_PROGRESS status.
@@ -44,7 +38,8 @@ public class StuckTaskCleanupService {
     @Autowired
     private TaskRepository taskRepository;
 
-    private static final String FAILED_BY_SCHEDULER = "FAILED BY SCHEDULER";
+    @Autowired
+    private StuckTaskRowUpdater stuckTaskRowUpdater;
 
     /**
      * Find and fail all tasks that are stuck in IN_PROGRESS status.
@@ -56,7 +51,6 @@ public class StuckTaskCleanupService {
      *
      * Where PLCD = progressLastChangedDate, LUD = lastUpdateDate
      */
-    @Transactional
     public void failStuckTasks() {
         if (!stuckTaskCheckEnabled) {
             log.info("Stuck task check is disabled");
@@ -65,6 +59,7 @@ public class StuckTaskCleanupService {
 
         log.info("Starting stuck task cleanup - checking IN_PROGRESS tasks for activity");
 
+        // Read-only lookup, no transaction/lock held here.
         List<Task> inProgressTasks = taskRepository.findByStatus(TaskStatus.IN_PROGRESS.toString());
 
         if (inProgressTasks.isEmpty()) {
@@ -78,46 +73,17 @@ public class StuckTaskCleanupService {
         int updatedCount = 0;
 
         for (Task task : inProgressTasks) {
-            LocalDateTime lastUpdate = task.getLastUpdateDate();
-            LocalDateTime progressLastChanged = task.getProgressLastChangedDate();
-
-            // Truncate to seconds to avoid precision issues when comparing
-            lastUpdate = lastUpdate.truncatedTo(ChronoUnit.SECONDS);
-            if (progressLastChanged != null) {
-                progressLastChanged = progressLastChanged.truncatedTo(ChronoUnit.SECONDS);
-            }
-
-            // Case 1: PLCD is null - First scheduler check, initialize and skip
-            if (progressLastChanged == null) {
-                try {
-                    taskRepository.updateProgressLastChangedDate(task.getId(), lastUpdate);
-                    initializedCount++;
-                    log.info("Task {} - First check, initialized PLCD = LUD", task.getId());
-                } catch (Exception e) {
-                    log.error("Error while initializing progressLastChangedDate for task {}: {}",
-                            task.getId(), e.getMessage(), e);
-                }
-                continue;
-            }
-
-            // Case 2: LUD > PLCD - Task has progressed, update and skip
-            if (lastUpdate.isAfter(progressLastChanged)) {
-                try {
-                    taskRepository.updateProgressLastChangedDate(task.getId(), lastUpdate);
-                    updatedCount++;
-                    log.info("Task {} - Progress detected, updated PLCD = LUD", task.getId());
-                } catch (Exception e) {
-                    log.error("Error while updating progressLastChangedDate for task {}: {}",
-                            task.getId(), e.getMessage(), e);
-                }
-            }
-            // Case 3: LUD == PLCD - Task is stuck, KILL it
-            else if (lastUpdate.equals(progressLastChanged) || lastUpdate.isBefore(progressLastChanged)) {
-                long minutesSinceLastUpdate = ChronoUnit.MINUTES.between(task.getProgressLastChangedDate(), now);
-                log.info("Task {} (type: {}) is STUCK - LUD == PLCD, no updates for {} minutes",
-                        task.getId(), task.getType(), minutesSinceLastUpdate);
-                failTask(task, now, minutesSinceLastUpdate);
-                failedCount++;
+            // Delegate to a separate bean so each task is processed in its own
+            // short-lived REQUIRES_NEW transaction (via the injected Spring proxy).
+            // This releases the row lock immediately instead of holding it for
+            // the whole loop, which previously caused lock contention with
+            // in-flight loading/evaluating tasks updating their own task row.
+            TaskCheckResult result = stuckTaskRowUpdater.processTask(task, now);
+            switch (result) {
+                case INITIALIZED -> initializedCount++;
+                case UPDATED -> updatedCount++;
+                case FAILED -> failedCount++;
+                case NONE -> { /* nothing to do */ }
             }
         }
 
@@ -130,42 +96,6 @@ public class StuckTaskCleanupService {
     }
 
     /**
-     * Mark a task as FAILED with appropriate error message and details.
-     *
-     * @param task the task to fail
-     * @param now the current timestamp
-     * @param minutesWithoutUpdate minutes since last update
-     */
-    private void failTask(Task task, LocalDateTime now, long minutesWithoutUpdate) {
-        try {
-            // Create error message
-            String errorMessage = String.format(
-                "Task has been stuck with no updates from %d minutes and has been automatically terminated.",
-                minutesWithoutUpdate
-            );
-
-            // Update task details - LogUtils.error/info automatically truncate to fit database limit
-            List<String> details = task.getDetails() != null ? new ArrayList<>(task.getDetails()) : new ArrayList<>();
-            details.add(LogUtils.error(errorMessage));
-
-
-            // Set errors - truncate raw message to fit database limit
-            List<String> errors = new ArrayList<>();
-            errors.add(LogUtils.error(FAILED_BY_SCHEDULER));
-
-            // Update task status via a targeted update to avoid rewriting the whole entity
-            // (and avoid triggering the eager "createdBy" relation load) for every stuck task.
-            taskRepository.updateStuckTaskFailed(task.getId(), TaskStatus.FAILED.toString(), now, details, errors);
-
-            log.info("Task {} (type: {}) marked as FAILED",
-                    task.getId(), task.getType());
-
-        } catch (Exception e) {
-            log.error("Error while failing stuck task {}: {}", task.getId(), e.getMessage(), e);
-        }
-    }
-
-    /**
      * Check if stuck task cleanup is enabled.
      *
      * @return true if enabled, false otherwise
@@ -174,3 +104,6 @@ public class StuckTaskCleanupService {
         return stuckTaskCheckEnabled;
     }
 }
+
+
+
