@@ -859,7 +859,8 @@ main {
 .label-input-div label,
 .label-input-div-full label,
 .label-input-div-medium label {
-    font-size: 12px;
+    font-size: 14px;
+    font-weight: 600;
 }
 
 /* Previous Next paginator css */
@@ -2098,13 +2099,5 @@ p-sorticon {
             font-size: 14px;
             line-height: 20px;
         }
-    }
-}
-
-.terminal-side-panel,
-.network-side-panel {
-    .label-input-div label {
-        font-size: 16px;
-        font-weight: 600;
     }
 }

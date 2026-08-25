@@ -2,8 +2,11 @@
     <div class="side-panel-title" appAutofocus tabindex="-1">
         {{ server().name }}
     </div>
-    <div class="side-panel-subtitle mb-2">
-        {{ server().mutualizationType }}/{{ server().type }}
+    <div class="information-section my-3">
+        <h3 class="m-0 text-lg mb-2 font-semibold side-panel-subtitle" lang="en">
+            {{ server().mutualizationType }}/{{ server().type }}
+        </h3>
+        <p [innerHTML]="'digital-services-servers.server-vm-text' | translate"></p>
     </div>
     <app-digital-service-table
         titleText="vm"

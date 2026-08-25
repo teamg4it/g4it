@@ -21,6 +21,31 @@
             {{ "digital-services-servers.edit" | translate }}
         </div>
     }
+
+    <div class="information-section my-3">
+        <p>{{ "digital-services-servers.server-description-text1" | translate }}</p>
+        <ul>
+            <li>
+                {{ "digital-services-servers.server-description-text-li1" | translate }}
+            </li>
+            <li>
+                {{ "digital-services-servers.server-description-text-li2" | translate }}
+            </li>
+        </ul>
+        <p>{{ "digital-services-servers.server-description-text2" | translate }}</p>
+        <ul>
+            <li>
+                {{ "digital-services-servers.server-description-text-li3" | translate }}
+            </li>
+            <li>
+                {{ "digital-services-servers.server-description-text-li4" | translate }}
+            </li>
+            <li>
+                {{ "digital-services-servers.server-description-text-li5" | translate }}
+            </li>
+        </ul>
+    </div>
+
     <form [formGroup]="serverForm" (ngSubmit)="nextStep()">
         <div class="label-input-div-full">
             <label for="name">{{ "digital-services-servers.name" | translate }}</label>
@@ -123,6 +148,19 @@
                 }
             </div>
         </div>
+
+        <p
+            class="mt-3"
+            [innerHTML]="'digital-services-servers.server-example' | translate"
+        ></p>
+        <ul>
+            <li>{{ "digital-services-servers.server-example-1" | translate }}</li>
+            <li>{{ "digital-services-servers.server-example-2" | translate }}</li>
+            <li>{{ "digital-services-servers.server-example-3" | translate }}</li>
+            <li>{{ "digital-services-servers.server-example-4" | translate }}</li>
+            <li>{{ "digital-services-servers.server-example-5" | translate }}</li>
+        </ul>
+        <p>{{ "digital-services-servers.server-example-para" | translate }}</p>
 
         <div class="button-bottom-right">
             @if (serverForm.hasError("xssDetected") && serverForm.dirty) {
