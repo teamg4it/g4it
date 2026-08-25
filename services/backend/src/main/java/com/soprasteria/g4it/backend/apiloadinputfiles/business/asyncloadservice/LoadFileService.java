@@ -10,6 +10,8 @@ package com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice
 
 import com.soprasteria.g4it.backend.apiinout.modeldb.InApplication;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InVirtualEquipment;
+import com.soprasteria.g4it.backend.apiinout.repository.InDatacenterRepository;
+import com.soprasteria.g4it.backend.apiinout.repository.InPhysicalEquipmentRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.InApplicationRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.InVirtualEquipmentRepository;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
@@ -47,6 +49,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.*;
 
@@ -76,8 +79,20 @@ public class LoadFileService {
     InVirtualEquipmentRepository inVirtualEquipmentRepository;
     @Autowired
     InApplicationRepository inApplicationRepository;
+    @Autowired
+    InDatacenterRepository inDatacenterRepository;
+    @Autowired
+    InPhysicalEquipmentRepository inPhysicalEquipmentRepository;
     @Value("${local.working.folder}")
     private String localWorkingFolder;
+    @Value("${g4it.inventory.loading.limits.datacenter:10000}")
+    private long datacenterLimit;
+    @Value("${g4it.inventory.loading.limits.physical-equipment:500000}")
+    private long physicalEquipmentLimit;
+    @Value("${g4it.inventory.loading.limits.virtual-equipment:1000000}")
+    private long virtualEquipmentLimit;
+    @Value("${g4it.inventory.loading.limits.application:1000000}")
+    private long applicationLimit;
 
     @PostConstruct
     public void initFolder() throws IOException {
@@ -391,6 +406,78 @@ public class LoadFileService {
         }
 
         return errors;
+    }
+
+    /**
+     * Check that the number of rows in each inventory file (existing + new) does not exceed the configured limit.
+     * Only applies to inventory loads (inventoryId must be present in context).
+     *
+     * @param context the context
+     * @return list of error messages for files exceeding their limits
+     */
+    public List<String> checkInventoryLoadingLimits(final Context context) {
+        if (context.getInventoryId() == null) return List.of();
+
+        List<String> errors = new ArrayList<>();
+        long inventoryId = context.getInventoryId();
+
+        for (FileToLoad fileToLoad : context.getFilesToLoad()) {
+            long newCount = countCsvDataRows(fileToLoad.getConvertedFile());
+            long existingCount;
+            long limit;
+            String fileTypeName;
+
+            switch (fileToLoad.getFileType()) {
+                case DATACENTER -> {
+                    existingCount = inDatacenterRepository.countByInventoryId(inventoryId);
+                    limit = datacenterLimit;
+                    fileTypeName = "datacenter";
+                }
+                case EQUIPEMENT_PHYSIQUE -> {
+                    existingCount = inPhysicalEquipmentRepository.countByInventoryId(inventoryId);
+                    limit = physicalEquipmentLimit;
+                    fileTypeName = "physical equipment";
+                }
+                case EQUIPEMENT_VIRTUEL -> {
+                    existingCount = inVirtualEquipmentRepository.countByInventoryId(inventoryId);
+                    limit = virtualEquipmentLimit;
+                    fileTypeName = "virtual equipment";
+                }
+                case APPLICATION -> {
+                    existingCount = inApplicationRepository.countByInventoryId(inventoryId);
+                    limit = applicationLimit;
+                    fileTypeName = "application";
+                }
+                default -> { continue; }
+            }
+
+            long totalCount = existingCount + newCount;
+            if (totalCount > limit) {
+                log.warn("Inventory loading limit exceeded for {} file '{}': existing={}, new={}, total={}, limit={}",
+                        fileTypeName, fileToLoad.getOriginalFileName(), existingCount, newCount, totalCount, limit);
+                errors.add(messageSource.getMessage(
+                        "inventory.loading.limit.exceeded",
+                        new Object[]{fileToLoad.getOriginalFileName(), fileTypeName, existingCount, newCount, totalCount, limit},
+                        context.getLocale()));
+            }
+        }
+
+        return errors;
+    }
+
+    /**
+     * Count data rows in a CSV file (total lines minus the header line).
+     *
+     * @param file the CSV file
+     * @return number of data rows
+     */
+    private long countCsvDataRows(final File file) {
+        try (Stream<String> lines = Files.lines(file.toPath())) {
+            long total = lines.count();
+            return total > 0 ? total - 1 : 0;
+        } catch (IOException e) {
+            throw new AsyncTaskException("Error counting rows in file: " + file.getName(), e);
+        }
     }
 
     @Transactional

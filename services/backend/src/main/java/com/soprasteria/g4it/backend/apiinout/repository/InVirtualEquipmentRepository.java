@@ -165,6 +165,8 @@ public interface InVirtualEquipmentRepository extends JpaRepository<InVirtualEqu
     @Modifying
     void deleteByInventoryIdAndPhysicalEquipmentNameIn(Long inventoryId, Set<String> names);
 
+    long countByInventoryId(Long inventoryId);
+
     @Transactional
     @Modifying
     void deleteByInventoryId(Long inventoryId);
