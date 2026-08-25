@@ -218,21 +218,11 @@ Accessibility improvements are assessed and addressed as part of the overall dev
 
 ---
 
-## Eco-Design
+## Eco-Design Validation
 
-If your changes impact the frontend, user interface, or user journey, you must run a GreenIT Analysis before submitting your contribution.
+To help preserve the application's environmental performance, contributors should perform a manual eco-design assessment using the GreenIT Analysis Chrome extension (https://chromewebstore.google.com/detail/greenit-analysis/mofbfhffeklkbebfclfaiifefjflcpad). If your changes impact the frontend, user interface, or user journey, you must run a GreenIT Analysis before submitting your contribution. The recommended approach is to compare the user journey before and after the implementation and ensure that the environmental impact (EcoIndex and eco-design indicators) does not significantly increase. This manual verification helps identify regressions while supporting continuous eco-design improvements throughout development.
 
-- Run the GreenIT Analysis CLI to evaluate the environmental impact of your changes.
-- Review the generated report and address any significant regressions where possible.
-- Include the analysis results with your pull request when applicable.
-
-GreenIT Analysis CLI: https://github.com/cnumr/GreenIT-Analysis-cli
-
----
-
-## Ecodesgn Validation
-
-To help preserve the application's environmental performance, contributors should perform a manual eco-design assessment using the GreenIT Analysis Chrome extension (https://chromewebstore.google.com/detail/greenit-analysis/mofbfhffeklkbebfclfaiifefjflcpad). The recommended approach is to compare the user journey before and after the implementation and ensure that the environmental impact (EcoIndex and eco-design indicators) does not significantly increase. This manual verification helps identify regressions while supporting continuous eco-design improvements throughout development.
+The PR validation process also includes running automated tests using the Green IT Analysis CLI (https://github.com/cnumr/GreenIT-Analysis-cli) tool. 
 
 ---
 
