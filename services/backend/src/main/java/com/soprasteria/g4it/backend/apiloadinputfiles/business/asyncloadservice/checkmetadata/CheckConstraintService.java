@@ -245,9 +245,11 @@ public class CheckConstraintService {
             }
         } else {
             if (errorenousPhysicalEquipement.isEmpty()) {
+                log.info("checking incoherent virtual equipments without any parents");
                 incoherentVirtualEquipement = checkVirtualEqpRepository
                         .findIncoherentVirtualEquipmentsByInventory(taskId, inventoryId);
             } else {
+                log.info("checking incoherent virtual equipments with any parents and size {}", errorenousPhysicalEquipement.size());
                 incoherentVirtualEquipement = checkVirtualEqpRepository
                         .findIncoherentVirtualEquipmentsByInventory(taskId, inventoryId, errorenousPhysicalEquipement);
             }
