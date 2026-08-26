@@ -2,8 +2,16 @@
     <div class="side-panel-title" appAutofocus tabindex="-1">
         {{ server().name }}
     </div>
-    <div class="side-panel-subtitle" lang="en">
-        {{ server().mutualizationType }}/{{ server().type }}
+    <div class="information-section my-3">
+        <h3 class="m-0 text-lg mb-2 font-semibold side-panel-subtitle" lang="en">
+            {{ server().mutualizationType }}/{{ server().type }}
+        </h3>
+        <p [innerHTML]="'digital-services-servers.server-parameter-text' | translate"></p>
+        <ul>
+            <li>{{ "digital-services-servers.server-parameter-li1" | translate }}</li>
+            <li>{{ "digital-services-servers.server-parameter-li2" | translate }}</li>
+            <li>{{ "digital-services-servers.server-parameter-li3" | translate }}</li>
+        </ul>
     </div>
     <form [formGroup]="serverForm" (ngSubmit)="nextStep()">
         <div class="flex flex-column">
@@ -152,6 +160,15 @@
                                 'digital-services-servers.total.vcpu' | translate
                             "
                         />
+                        <div>
+                            <p class="flex text-xs">
+                                <i class="pi pi-exclamation-circle mr-1"></i>
+                                {{
+                                    "digital-services-servers.total.vcpu-tooltip"
+                                        | translate
+                                }}
+                            </p>
+                        </div>
                         @if (serverForm.get("vcpu")?.hasError("required")) {
                             <p class="error-text">
                                 {{ "digital-services-servers.total.vcpu" | translate }}
@@ -196,6 +213,15 @@
                             locale="fr-FR"
                             id="disk"
                         />
+                        <div>
+                            <p class="flex text-xs">
+                                <i class="pi pi-exclamation-circle mr-1"></i>
+                                {{
+                                    "digital-services-servers.total.disk-tooltip"
+                                        | translate
+                                }}
+                            </p>
+                        </div>
                         @if (serverForm.get("disk")?.hasError("required")) {
                             <p class="error-text">
                                 {{ "digital-services-servers.total.disk" | translate }}
@@ -227,6 +253,12 @@
                         ngDefaultControl
                         locale="fr-FR"
                     />
+                    <div>
+                        <p class="flex text-xs">
+                            <i class="pi pi-exclamation-circle mr-1"></i>
+                            {{ "digital-services-servers.lifespan-tooltip" | translate }}
+                        </p>
+                    </div>
                     @if (serverForm.get("lifespan")?.hasError("required")) {
                         <p class="error-text">
                             {{ "digital-services-servers.lifespan" | translate }}
@@ -252,6 +284,14 @@
                         id="electricityConsumption"
                         [ariaLabel]="'digital-services-servers.electricity' | translate"
                     />
+                    <div>
+                        <p class="flex text-xs">
+                            <i class="pi pi-exclamation-circle mr-1"></i>
+                            {{
+                                "digital-services-servers.electricity-tooltip" | translate
+                            }}
+                        </p>
+                    </div>
                     @if (serverForm.get("electricityConsumption")?.hasError("required")) {
                         <p class="error-text">
                             {{ "digital-services-servers.electricity" | translate }}
@@ -279,6 +319,15 @@
                                 'digital-services-servers.usage.time' | translate
                             "
                         />
+                        <div>
+                            <p class="flex text-xs">
+                                <i class="pi pi-exclamation-circle mr-1"></i>
+                                {{
+                                    "digital-services-servers.usage-time-tooltip"
+                                        | translate
+                                }}
+                            </p>
+                        </div>
                         @if (serverForm.get("operatingTime")?.hasError("required")) {
                             <p class="error-text">
                                 {{ "digital-services-servers.usage.time" | translate }}
