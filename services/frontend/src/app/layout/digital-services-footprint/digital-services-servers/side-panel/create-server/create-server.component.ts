@@ -5,10 +5,23 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
+import { AsyncPipe } from "@angular/common";
 import { Component, inject, OnInit } from "@angular/core";
-import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from "@angular/forms";
+import {
+    FormBuilder,
+    FormGroup,
+    FormsModule,
+    ReactiveFormsModule,
+    Validators,
+} from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
+import { TranslatePipe } from "@ngx-translate/core";
 import { MessageService } from "primeng/api";
+import { Button } from "primeng/button";
+import { DividerModule } from "primeng/divider";
+import { InputTextModule } from "primeng/inputtext";
+import { RadioButtonModule } from "primeng/radiobutton";
+import { ScrollPanel } from "primeng/scrollpanel";
 import { noWhitespaceValidator } from "src/app/core/custom-validators/no-white-space.validator";
 import { uniqueNameValidator } from "src/app/core/custom-validators/unique-name.validator";
 import { xssFormGroupValidator } from "src/app/core/custom-validators/xss-validator";
@@ -16,13 +29,7 @@ import { DigitalServiceServerConfig } from "src/app/core/interfaces/digital-serv
 import { DigitalServiceBusinessService } from "src/app/core/service/business/digital-services.service";
 import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServiceStoreService } from "src/app/core/store/digital-service.store";
-import { AsyncPipe } from "@angular/common";
 import { AutofocusDirective } from "../../../../../core/directives/auto-focus.directive";
-import { InputTextModule } from "primeng/inputtext";
-import { RadioButtonModule } from "primeng/radiobutton";
-import { DividerModule } from "primeng/divider";
-import { Button } from "primeng/button";
-import { TranslatePipe } from "@ngx-translate/core";
 
 @Component({
     selector: "app-create-server",
@@ -30,16 +37,17 @@ import { TranslatePipe } from "@ngx-translate/core";
     providers: [MessageService],
     standalone: true,
     imports: [
-    AutofocusDirective,
-    FormsModule,
-    ReactiveFormsModule,
-    InputTextModule,
-    RadioButtonModule,
-    DividerModule,
-    Button,
-    AsyncPipe,
-    TranslatePipe
-],
+        AutofocusDirective,
+        FormsModule,
+        ReactiveFormsModule,
+        InputTextModule,
+        RadioButtonModule,
+        DividerModule,
+        Button,
+        AsyncPipe,
+        TranslatePipe,
+        ScrollPanel,
+    ],
 })
 export class PanelCreateServerComponent implements OnInit {
     private readonly digitalServiceStore = inject(DigitalServiceStoreService);
