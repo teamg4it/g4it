@@ -35,8 +35,8 @@ public class StuckTaskCleanupScheduler {
      * Runs every 10 minutes to check for and fail stuck tasks.
      * Uses ShedLock to ensure only one instance runs in a distributed environment.
      */
-    /*@Scheduled(fixedDelay = 600_000, initialDelay = 60_000) // Every 10 minutes, start after 1 minute
-    @SchedulerLock(name = "failStuckTasks", lockAtMostFor = "2m", lockAtLeastFor = "9s")*/
+    @Scheduled(fixedDelay = 600_000, initialDelay = 60_000) // Every 10 minutes, start after 1 minute
+    @SchedulerLock(name = "failStuckTasks", lockAtMostFor = "2m", lockAtLeastFor = "9s")
     public void failStuckTasks() {
         log.info("Starting stuck task cleanup scheduler");
         stuckTaskCleanupService.failStuckTasks();
