@@ -42,6 +42,7 @@ import { shouldShowExpiryMessage } from "src/app/core/service/mapper/renew-time"
 import { GlobalStoreService } from "src/app/core/store/global.store";
 import * as TimeUtils from "src/app/core/utils/time";
 import { Constants } from "src/constants";
+import { environment } from "src/environments/environment";
 import { MonthYearPipe } from "../../../core/pipes/monthyear.pipe";
 import { CriteriaPopupComponent } from "../../common/criteria-popup/criteria-popup.component";
 import { BatchStatusComponent } from "../batch-status/batch-status.component";
@@ -89,13 +90,13 @@ export class InventoryItemComponent implements OnInit {
 
     equipmentLimitExceed = computed(
         () =>
-            (this.inventory().outPhysicalCount ?? 0) > this.maxOutDataLimit &&
-            (this.inventory().outVirtualCount ?? 0) > this.maxOutDataLimit,
+            (this.inventory().outPhysicalCount ?? 0) > environment.equipmentMaxLimit &&
+            (this.inventory().outVirtualCount ?? 0) > environment.equipmentMaxLimit,
     );
     applicationLimitExceed = computed(
-        () => (this.inventory().outApplicationCount ?? 0) > this.maxOutDataLimit,
+        () =>
+            (this.inventory().outApplicationCount ?? 0) > environment.applicationMaxLimit,
     );
-    maxOutDataLimit = Constants.MAX_OUT_DATA_LIMIT;
     batchStatusMapping: any = Constants.EVALUATION_BATCH_STATUS_MAPPING;
     displayPopup = false;
     selectedCriteria: string[] = [];
