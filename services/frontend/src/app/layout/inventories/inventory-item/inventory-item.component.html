@@ -22,6 +22,9 @@
                         <button
                             class="expiry-link text-xs p-0 m-0 border-none text-left cursor-pointer underline"
                             (click)="$event.stopPropagation(); isInfoVisible = true"
+                            (keydown.enter)="
+                                $event.stopPropagation(); isInfoVisible = true
+                            "
                         >
                             {{ "inventories.click-info" | translate }}
                         </button>
