@@ -684,7 +684,10 @@
         "visualisation": {
             "application": "Visualisation des applications",
             "equipment": "Visualisation des équipements"
-        }
+        },
+        "more-data-message": "Limite de résultats atteinte",
+        "click-info": "Cliquez pour plus d'informations",
+        "more-data-message-body": "Le calcul s'est terminé avec succès, mais le nombre de lignes de résultats générées dépasse la limite maximale autorisée.</br> Pour réduire le volume de résultats, veuillez sélectionner moins de critères environnementaux et relancer le calcul.</br> Si vous avez besoin d'aide ou si vous estimez que cette limite ne correspond pas à votre cas d'usage, veuillez contacter l'équipe de support à l'adresse support.g4it@soprasteria.com."
     },
     "inventories-footprint": {
         "active-filters": "Filtres activés",

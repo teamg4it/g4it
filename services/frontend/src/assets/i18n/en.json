@@ -687,7 +687,10 @@
         "visualisation": {
             "application": "Application view",
             "equipment": "Equipment view"
-        }
+        },
+        "more-data-message": "Result limit reached",
+        "click-info": "Click for more information",
+        "more-data-message-body": "The calculation was completed successfully, but the number of generated result rows exceeds the maximum supported limit.</br> To reduce the volume of results, please select fewer environmental criteria and run the calculation again.</br> If you need assistance or believe this limit does not fit your use case, please contact the support team at support.g4it@soprasteria.com"
     },
     "inventories-footprint": {
         "active-filters": "Active filters",

@@ -23,6 +23,7 @@ import { AccordionModule } from "primeng/accordion";
 import { ConfirmationService, MessageService } from "primeng/api";
 import { Button } from "primeng/button";
 import { ConfirmPopupModule } from "primeng/confirmpopup";
+import { Dialog } from "primeng/dialog";
 import { ProgressBarModule } from "primeng/progressbar";
 import { lastValueFrom } from "rxjs";
 import {
@@ -63,6 +64,7 @@ import { EquipmentsCardComponent } from "../equipments-card/equipments-card.comp
         AsyncPipe,
         UpperCasePipe,
         TranslatePipe,
+        Dialog,
     ],
 })
 export class InventoryItemComponent implements OnInit {
@@ -79,11 +81,13 @@ export class InventoryItemComponent implements OnInit {
     @Output() closeTab: EventEmitter<number> = new EventEmitter();
     @Output() saveInventory = new EventEmitter<InventoryCriteriaRest>();
     @Output() renewInventoryId = new EventEmitter<number>();
+    isInfoVisible = false;
 
     showExpiryMessage = computed(() =>
         shouldShowExpiryMessage(this.inventory().expiryDate ?? ""),
     );
 
+    maxOutDataLimit = Constants.MAX_OUT_DATA_LIMIT;
     batchStatusMapping: any = Constants.EVALUATION_BATCH_STATUS_MAPPING;
     displayPopup = false;
     selectedCriteria: string[] = [];

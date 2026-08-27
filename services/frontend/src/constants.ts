@@ -259,4 +259,6 @@ export abstract class Constants {
 
     static readonly DATA_MODEL_CONDITION = "workspace";
     static readonly MAX_NUMBER_OF_CRITERIA_RADAR = 5;
+
+    static readonly MAX_OUT_DATA_LIMIT = 300000;
 }

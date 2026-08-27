@@ -9,6 +9,30 @@
                 {{ inventory().name | monthYear }}
             </h3>
 
+            @if (
+                (inventory().outApplicationCount ?? 0) > maxOutDataLimit ||
+                ((inventory().outPhysicalCount ?? 0) > maxOutDataLimit &&
+                    (inventory().outVirtualCount ?? 0) > maxOutDataLimit)
+            ) {
+                <div
+                    class="expiry-card flex align-items-center px-3 py-2 border-round mx-3"
+                >
+                    <i class="pi pi-exclamation-triangle mr-3 expiry-icon text-xl"></i>
+
+                    <div class="flex flex-column">
+                        <span class="expiry-title text-sm font-semibold">
+                            {{ "inventories.more-data-message" | translate }}
+                        </span>
+                        <button
+                            class="expiry-link text-xs p-0 m-0 border-none text-left cursor-pointer underline"
+                            (click)="$event.stopPropagation(); isInfoVisible = true"
+                        >
+                            {{ "inventories.click-info" | translate }}
+                        </button>
+                    </div>
+                </div>
+            }
+
             <!-- Renew Service code -->
             @if (showExpiryMessage() && (userService.isAllowedInventoryWrite$ | async)) {
                 <div
@@ -307,3 +331,32 @@
         }
     </p-accordion-content>
 </p-accordion-panel>
+
+@if (isInfoVisible) {
+    <p-dialog
+        [modal]="true"
+        [(visible)]="isInfoVisible"
+        [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+        [style]="{ width: '30vw' }"
+        [draggable]="false"
+        [dismissableMask]="true"
+        (onHide)="isInfoVisible = false"
+        id="renew-service"
+        [closeAriaLabel]="'common.accessibility.close-criteria-dialog' | translate"
+    >
+        <ng-template pTemplate="header">
+            <h3 class="font-semibold ml-0 text-2xl" id="renew-service-popup-title">
+                {{ "inventories.more-data-message" | translate }}
+            </h3>
+        </ng-template>
+
+        <div class="copy-container grid mx-2">
+            <div class="share-expiry-paragraph flex">
+                <p
+                    class="text-base mt-2"
+                    [innerHTML]="'inventories.more-data-message-body' | translate"
+                ></p>
+            </div>
+        </div>
+    </p-dialog>
+}
