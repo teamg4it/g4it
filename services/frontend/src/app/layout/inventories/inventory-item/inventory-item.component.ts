@@ -34,6 +34,7 @@ import {
     Inventory,
     InventoryCriteriaRest,
 } from "src/app/core/interfaces/inventory.interfaces";
+import { Organization, Workspace } from "src/app/core/interfaces/user.interfaces";
 import { InventoryService } from "src/app/core/service/business/inventory.service";
 import { UserService } from "src/app/core/service/business/user.service";
 import { EvaluationDataService } from "src/app/core/service/data/evaluation-data.service";
@@ -113,6 +114,9 @@ export class InventoryItemComponent implements OnInit {
         criteriaDs: [],
     };
 
+    currentOrganization: Organization = {} as Organization;
+    selectedWorkspace: Workspace = {} as Workspace;
+
     taskLoading = computed(
         () => this.inventory()?.tasks?.filter((t) => t?.type === "LOADING") ?? [],
     );
@@ -133,9 +137,11 @@ export class InventoryItemComponent implements OnInit {
 
     ngOnInit() {
         this.userService.currentOrganization$.subscribe((organization) => {
+            this.currentOrganization = organization;
             this.organization.criteria = organization.criteria!;
         });
         this.userService.currentWorkspace$.subscribe((workspace) => {
+            this.selectedWorkspace = workspace;
             this.workspace.organizationId = workspace.organizationId!;
             this.workspace.name = workspace.name;
             this.workspace.status = workspace.status;
@@ -306,5 +312,12 @@ export class InventoryItemComponent implements OnInit {
 
     renewService(inventory: any) {
         this.renewInventoryId.emit(inventory.id);
+    }
+
+    composeEmail() {
+        globalThis.location.href = this.userService.composeEmail(
+            this.currentOrganization,
+            this.selectedWorkspace,
+        );
     }
 }
