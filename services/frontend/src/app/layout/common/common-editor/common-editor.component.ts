@@ -15,6 +15,7 @@ import { ConfirmationService, MessageService } from "primeng/api";
 import { Button } from "primeng/button";
 import { ConfirmPopupModule } from "primeng/confirmpopup";
 import { EditorModule } from "primeng/editor";
+import { ScrollPanel } from "primeng/scrollpanel";
 import { ToastModule } from "primeng/toast";
 import { AutofocusDirective } from "../../../core/directives/auto-focus.directive";
 
@@ -31,6 +32,7 @@ import { AutofocusDirective } from "../../../core/directives/auto-focus.directiv
         ConfirmPopupModule,
         Button,
         TranslatePipe,
+        ScrollPanel,
     ],
 })
 export class CommonEditorComponent implements OnChanges {
@@ -40,6 +42,7 @@ export class CommonEditorComponent implements OnChanges {
     @Input() isWriteRole: boolean | null = false;
     showTitle = input(true);
     showButtons = input(true);
+    isScroll = input(true);
     @Input() title = "Note";
     escape: boolean = false;
 

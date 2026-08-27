@@ -1220,7 +1220,7 @@ app-inventory-item {
 @media screen and (max-width: 1024px) {
     .drawer-lg,
     .drawer-md {
-        width: 20rem;
+        width: 100%;
     }
 }
 
@@ -1498,8 +1498,8 @@ app-top-header {
     .aboutMenuBtn.aboutMenuOpen,
     .orgNameMenuBtn.orgMenuOpen {
         background-color: var(--light-green-color) !important;
-        padding-top: 22px;
-        padding-bottom: 22px;
+        padding-top: 14px;
+        padding-bottom: 14px;
     }
 
     .p-menu .p-menuitem:not(.p-highlight):not(.p-disabled).p-focus {
@@ -1602,9 +1602,13 @@ app-top-header {
             width: 100%;
         }
 
+        .top-header {
+            z-index: 1156;
+        }
+
         .org-menu-new {
-            z-index: 1101 !important;
-            top: 135px;
+            z-index: 1156 !important;
+            top: 118px;
             right: 5%;
             width: 90%;
         }
