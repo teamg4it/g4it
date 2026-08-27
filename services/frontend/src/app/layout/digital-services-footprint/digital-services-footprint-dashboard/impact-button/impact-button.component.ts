@@ -6,11 +6,20 @@
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
 import { CommonModule } from "@angular/common";
-import { Component, EventEmitter, input, Input, OnInit, Output } from "@angular/core";
+import {
+    Component,
+    EventEmitter,
+    inject,
+    input,
+    Input,
+    OnInit,
+    Output,
+} from "@angular/core";
 import { TranslateModule, TranslateService } from "@ngx-translate/core";
 import { ButtonModule } from "primeng/button";
 import { DecimalsPipe } from "src/app/core/pipes/decimal.pipe";
 import { IntegerPipe } from "src/app/core/pipes/integer.pipe";
+import { GlobalStoreService } from "src/app/core/store/global.store";
 
 @Component({
     selector: "app-impact-button",
@@ -19,6 +28,7 @@ import { IntegerPipe } from "src/app/core/pipes/integer.pipe";
     imports: [CommonModule, ButtonModule, TranslateModule, DecimalsPipe, IntegerPipe],
 })
 export class ImpactButtonComponent implements OnInit {
+    private globalStore = inject(GlobalStoreService);
     @Input() impact: string = "...";
     @Input() impactText: string = "Other";
     @Input() impactUnite: string = "";
@@ -45,8 +55,16 @@ export class ImpactButtonComponent implements OnInit {
     changeCritere(critere: string, impactId: string) {
         const wrapper = document?.getElementById(impactId);
         const button = wrapper?.querySelector("button") as HTMLButtonElement;
+        this.globalStore.setLoading(true);
 
-        button?.blur();
-        this.selectedCriteriaChange.emit(critere);
+        // Use setTimeout to allow loader to render before heavy computation
+        setTimeout(() => {
+            // Give Angular time to render and process the new view
+            setTimeout(() => {
+                button?.blur();
+                this.globalStore.setLoading(false);
+                this.selectedCriteriaChange.emit(critere);
+            }, 10);
+        }, 10);
     }
 }

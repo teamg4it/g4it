@@ -859,7 +859,8 @@ main {
 .label-input-div label,
 .label-input-div-full label,
 .label-input-div-medium label {
-    font-size: 12px;
+    font-size: 14px;
+    font-weight: 600;
 }
 
 /* Previous Next paginator css */
@@ -1219,7 +1220,7 @@ app-inventory-item {
 @media screen and (max-width: 1024px) {
     .drawer-lg,
     .drawer-md {
-        width: 20rem;
+        width: 100%;
     }
 }
 
@@ -1497,8 +1498,8 @@ app-top-header {
     .aboutMenuBtn.aboutMenuOpen,
     .orgNameMenuBtn.orgMenuOpen {
         background-color: var(--light-green-color) !important;
-        padding-top: 22px;
-        padding-bottom: 22px;
+        padding-top: 14px;
+        padding-bottom: 14px;
     }
 
     .p-menu .p-menuitem:not(.p-highlight):not(.p-disabled).p-focus {
@@ -1601,9 +1602,13 @@ app-top-header {
             width: 100%;
         }
 
+        .top-header {
+            z-index: 1156;
+        }
+
         .org-menu-new {
-            z-index: 1101 !important;
-            top: 135px;
+            z-index: 1156 !important;
+            top: 118px;
             right: 5%;
             width: 90%;
         }
@@ -2083,4 +2088,29 @@ p-sorticon {
 
 .inverse-axis-toggle button:hover {
     opacity: 0.9;
+}
+
+.information-section {
+    padding: 24px 16px;
+    border-radius: 4px;
+    border: 1px solid var(--Encart-stroke, #3642e5);
+    background: var(--status-blue-5, #eff0fd);
+
+    /* Thin */
+    box-shadow: 0 2px 4px 0 rgba(28, 33, 29, 0.1);
+
+    ul {
+        margin: 0;
+        li {
+            list-style-type: disc;
+            margin-left: 20px;
+            font-size: 14px;
+            line-height: 20px;
+        }
+    }
+}
+
+ul.server-examples li {
+    font-size: 14px;
+    line-height: 20px;
 }
