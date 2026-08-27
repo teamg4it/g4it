@@ -90,12 +90,15 @@ export class InventoryItemComponent implements OnInit {
 
     equipmentLimitExceed = computed(
         () =>
-            (this.inventory().outPhysicalCount ?? 0) > environment.equipmentMaxLimit &&
-            (this.inventory().outVirtualCount ?? 0) > environment.equipmentMaxLimit,
+            (this.inventory().outPhysicalCount ?? 0) >
+                Number(environment.equipmentMaxLimit) &&
+            (this.inventory().outVirtualCount ?? 0) >
+                Number(environment.equipmentMaxLimit),
     );
     applicationLimitExceed = computed(
         () =>
-            (this.inventory().outApplicationCount ?? 0) > environment.applicationMaxLimit,
+            (this.inventory().outApplicationCount ?? 0) >
+            Number(environment.applicationMaxLimit),
     );
     batchStatusMapping: any = Constants.EVALUATION_BATCH_STATUS_MAPPING;
     displayPopup = false;
