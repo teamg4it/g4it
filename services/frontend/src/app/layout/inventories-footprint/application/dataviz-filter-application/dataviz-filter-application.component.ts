@@ -6,31 +6,39 @@
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
 import {
+    ChangeDetectionStrategy,
     Component,
     computed,
+    effect,
     inject,
-    Input,
-    OnChanges,
+    input,
     signal,
-    SimpleChanges,
 } from "@angular/core";
 import { TranslatePipe, TranslateService } from "@ngx-translate/core";
 import { CheckboxChangeEvent, CheckboxModule } from "primeng/checkbox";
 import { Filter, TransformedDomain } from "src/app/core/interfaces/filter.interface";
 import { FilterService } from "src/app/core/service/business/filter.service";
 
+import { ScrollingModule } from "@angular/cdk/scrolling";
 import { NgClass } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 import { AccordionModule } from "primeng/accordion";
 import { Button } from "primeng/button";
 import { FootprintStoreService } from "src/app/core/store/footprint.store";
+import { GlobalStoreService } from "src/app/core/store/global.store";
 import { Constants } from "src/constants";
 import { BaseFilterSidebarComponent } from "../../base-filter-sidebar/base-filter-sidebar.component";
+import {
+    getSimpleViewportHeight,
+    getTreeViewportHeight,
+    isFilterActive,
+} from "../../filter-helpers";
 
 @Component({
     selector: "dataviz-filter-application",
     templateUrl: "./dataviz-filter-application.component.html",
     styleUrl: "./dataviz-filter-application.component.scss",
+    changeDetection: ChangeDetectionStrategy.OnPush,
     standalone: true,
     imports: [
         Button,
@@ -40,16 +48,28 @@ import { BaseFilterSidebarComponent } from "../../base-filter-sidebar/base-filte
         FormsModule,
         NgClass,
         TranslatePipe,
+        ScrollingModule,
     ],
 })
-export class DatavizFilterApplicationComponent implements OnChanges {
-    @Input() allFilters: Filter<string | TransformedDomain> = {};
-    allUnusedFilters: Filter<TransformedDomain> = {};
+export class DatavizFilterApplicationComponent {
+    allFilters = input<Filter<string | TransformedDomain>>({});
+    allUnusedFilters = signal<Filter<TransformedDomain>>({});
     localFilters = signal<Filter<string | TransformedDomain>>({});
     private readonly filterService = inject(FilterService);
     private readonly translate = inject(TranslateService);
     protected footprintStore = inject(FootprintStoreService);
+    private readonly globalStore = inject(GlobalStoreService);
     filterSidebarVisible = false;
+
+    constructor() {
+        // React to allFilters changes using effect
+        effect(() => {
+            const filters = this.allFilters();
+            if (filters && Object.keys(filters).length > 0) {
+                this.selectedFilters();
+            }
+        });
+    }
 
     overlayVisible: boolean = false;
     tabs = Constants.APPLICATION_FILTERS;
@@ -73,67 +93,75 @@ export class DatavizFilterApplicationComponent implements OnChanges {
         );
     });
 
-    ngOnChanges(changes: SimpleChanges) {
-        if (changes["allFilters"]) {
-            this.selectedFilters();
-        }
-    }
-
     selectedFilters() {
         // Initialize with all available filters when data changes
-        this.allUnusedFilters = structuredClone(
-            this.allFilters,
-        ) as Filter<TransformedDomain>;
-        this.footprintStore.setApplicationSelectedFilters(this.allUnusedFilters);
+        // No cloning needed - just pass input directly to store
+        this.footprintStore.setApplicationSelectedFilters(this.allFilters());
+    }
+
+    // TrackBy functions for better performance
+    trackByIndex(index: number): number {
+        return index;
+    }
+
+    trackByLabel(index: number, item: TransformedDomain | string): string {
+        return typeof item === "string" ? item : item.label;
+    }
+
+    // Use shared viewport height calculations
+    getSimpleViewportHeight(field: string): string {
+        return getSimpleViewportHeight(this.allUnusedFilters()[field]);
+    }
+
+    getTreeViewportHeight(field: string): string {
+        return getTreeViewportHeight(this.allUnusedFilters()[field]);
     }
 
     filterActive(filter: any) {
-        return (
-            filter?.length === 0 ||
-            (typeof filter?.[0] === "object" && filter?.[0]?.["checked"] === false) ||
-            (typeof filter?.[0] === "string" && !filter?.includes("All"))
-        );
+        return isFilterActive(filter);
     }
 
     onFilterSelected(selectedValues: string[], tab: string, selection: string) {
         const f = { ...this.localFilters() };
         f[tab] = this.filterService.getUpdateSelectedValues(
             selectedValues,
-            this.allFilters[tab] as string[],
+            this.allFilters()[tab] as string[],
             selection,
         );
         this.localFilters.set(f);
     }
 
     onTreeChange(event: CheckboxChangeEvent, item: TransformedDomain) {
-        if (item.label === Constants.ALL) {
-            for (const domain of this.allUnusedFilters["domain"]) {
-                domain.checked = event.checked;
-                for (const child of domain["children"] ?? []) {
+        // Update signal with mutated tree for reactive change detection
+        this.allUnusedFilters.update((filters) => {
+            if (item.label === Constants.ALL) {
+                for (const domain of filters["domain"]) {
+                    domain.checked = event.checked;
+                    for (const child of domain["children"] ?? []) {
+                        child.checked = event.checked;
+                    }
+                }
+            } else {
+                for (const child of item["children"] ?? []) {
                     child.checked = event.checked;
                 }
             }
-        } else {
-            for (const child of item["children"] ?? []) {
-                child.checked = event.checked;
-            }
-        }
+            return filters;
+        });
         this.setAllCheckBox();
-        const f = { ...this.localFilters() };
-        f["domain"] = this.allUnusedFilters["domain"];
-        this.localFilters.set(f);
     }
 
     onTreeChildChanged(event: CheckboxChangeEvent, item: TransformedDomain) {
-        if (item.children?.some((child) => child.checked)) {
-            item.checked = true;
-        } else {
-            item.checked = false;
-        }
+        // Update signal with mutated tree for reactive change detection
+        this.allUnusedFilters.update((filters) => {
+            if (item.children?.some((child) => child.checked)) {
+                item.checked = true;
+            } else {
+                item.checked = false;
+            }
+            return filters;
+        });
         this.setAllCheckBox();
-        const f = { ...this.localFilters() };
-        f["domain"] = this.allUnusedFilters["domain"];
-        this.localFilters.set(f);
     }
 
     setAllCheckBox(): void {
@@ -145,46 +173,65 @@ export class DatavizFilterApplicationComponent implements OnChanges {
     }
 
     setAllCheckBoxValue(checked: boolean): void {
-        this.allUnusedFilters["domain"] = this.allUnusedFilters["domain"].map(
-            (domain) => {
-                if (domain.label === Constants.ALL) {
-                    return { ...domain, checked };
-                } else {
-                    return domain;
-                }
-            },
-        );
+        // Update signal with mutated "All" checkbox
+        this.allUnusedFilters.update((filters) => {
+            const allItem = filters["domain"]?.find(
+                (domain) => domain.label === Constants.ALL,
+            );
+            if (allItem) {
+                allItem.checked = checked;
+            }
+            return filters;
+        });
     }
 
     checkIfAllNotCheck(): boolean {
-        return this.allUnusedFilters["domain"]
-            .filter((domain) => domain.label !== Constants.ALL)
+        return this.allUnusedFilters()
+            ["domain"].filter((domain) => domain.label !== Constants.ALL)
             .some(
                 (domain) =>
                     !domain.checked || domain.children.some((child) => !child.checked),
             );
     }
 
+    toggleCollapse(item: TransformedDomain): void {
+        // Update signal to trigger change detection and height recalculation
+        this.allUnusedFilters.update((filters) => {
+            item.collapsed = !item.collapsed;
+            return { ...filters }; // Return new object reference to trigger updates
+        });
+    }
+
     openFilterSidebar(): void {
-        // Start with ALL available filters
-        this.allUnusedFilters = structuredClone(
-            this.allFilters,
+        // Show sidebar immediately
+        this.filterSidebarVisible = true;
+
+        // Clone only once for editing session - allows discard on cancel
+        const clonedFilters = structuredClone(
+            this.allFilters(),
         ) as Filter<TransformedDomain>;
+
+        // Collapse domains for better UX
+        if (clonedFilters["domain"]) {
+            for (const domain of clonedFilters["domain"]) {
+                domain.collapsed = true;
+            }
+        }
 
         // Get current selection state from store
         const currentFilters = this.footprintStore.applicationSelectedFilters();
 
         // For tree-based filters (domain), merge the checked state
-        if (this.allUnusedFilters["domain"] && currentFilters["domain"]) {
-            this.allUnusedFilters["domain"] = this.mergeFilterState(
-                this.allUnusedFilters["domain"],
+        if (clonedFilters["domain"] && currentFilters["domain"]) {
+            clonedFilters["domain"] = this.mergeFilterState(
+                clonedFilters["domain"],
                 currentFilters["domain"] as TransformedDomain[],
             );
         }
 
-        // Set local filters to current selection state
-        this.localFilters.set(structuredClone(currentFilters));
-        this.filterSidebarVisible = true;
+        // Set signal with cloned working copy
+        this.allUnusedFilters.set(clonedFilters);
+        this.localFilters.set({ ...currentFilters });
     }
 
     private mergeFilterState(
@@ -219,14 +266,30 @@ export class DatavizFilterApplicationComponent implements OnChanges {
         // Discard changes and reset
         this.filterSidebarVisible = false;
         this.localFilters.set({});
-        this.allUnusedFilters = {};
+        this.allUnusedFilters.set({});
     }
 
     applyFilters(): void {
-        // Save local changes to store
-        const filters = this.localFilters();
-        this.footprintStore.setApplicationSelectedFilters(filters);
+        // to not hang browser, we will apply the filters in a setTimeout to let the UI update first
+        // Show loader and close sidebar immediately for responsive UX
+        this.globalStore.setLoading(true);
         this.filterSidebarVisible = false;
-        this.localFilters.set({});
+
+        // Prepare final filters - sync tree state from signal
+        const workingFilters = this.allUnusedFilters();
+        const finalFilters = workingFilters["domain"]
+            ? { ...this.localFilters(), domain: workingFilters["domain"] }
+            : this.localFilters();
+
+        // Defer store update to unblock UI and allow loader/sidebar close to render
+        setTimeout(() => {
+            // Update store - triggers 17+ computed signals across components
+            this.footprintStore.setApplicationSelectedFilters(finalFilters);
+            this.localFilters.set({});
+            this.allUnusedFilters.set({});
+
+            // Keep loader visible while downstream computations complete
+            setTimeout(() => this.globalStore.setLoading(false), 10);
+        }, 10);
     }
 }
