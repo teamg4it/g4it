@@ -87,6 +87,14 @@ export class InventoryItemComponent implements OnInit {
         shouldShowExpiryMessage(this.inventory().expiryDate ?? ""),
     );
 
+    equipmentLimitExceed = computed(
+        () =>
+            (this.inventory().outPhysicalCount ?? 0) > this.maxOutDataLimit &&
+            (this.inventory().outVirtualCount ?? 0) > this.maxOutDataLimit,
+    );
+    applicationLimitExceed = computed(
+        () => (this.inventory().outApplicationCount ?? 0) > this.maxOutDataLimit,
+    );
     maxOutDataLimit = Constants.MAX_OUT_DATA_LIMIT;
     batchStatusMapping: any = Constants.EVALUATION_BATCH_STATUS_MAPPING;
     displayPopup = false;

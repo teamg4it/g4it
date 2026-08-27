@@ -9,13 +9,9 @@
                 {{ inventory().name | monthYear }}
             </h3>
 
-            @if (
-                (inventory().outApplicationCount ?? 0) > maxOutDataLimit ||
-                ((inventory().outPhysicalCount ?? 0) > maxOutDataLimit &&
-                    (inventory().outVirtualCount ?? 0) > maxOutDataLimit)
-            ) {
+            @if (equipmentLimitExceed() || applicationLimitExceed()) {
                 <div
-                    class="expiry-card flex align-items-center px-3 py-2 border-round mx-3"
+                    class="expiry-card info-card flex align-items-center px-3 py-2 border-round mx-3"
                 >
                     <i class="pi pi-exclamation-triangle mr-3 expiry-icon text-xl"></i>
 
@@ -94,7 +90,7 @@
 
                 @if (!isTaskRunning()) {
                     <p-button
-                        [disabled]="!showEquipment()"
+                        [disabled]="!showEquipment() || equipmentLimitExceed()"
                         styleClass="inventory-button-small mx-2"
                         (onClick)="
                             $event.stopPropagation(); redirectFootprint('equipment')
@@ -110,7 +106,7 @@
 
                 @if (!isTaskRunning()) {
                     <p-button
-                        [disabled]="!showApplication()"
+                        [disabled]="!showApplication() || applicationLimitExceed()"
                         styleClass="inventory-button-small ml-2 mr-3"
                         (onClick)="
                             $event.stopPropagation(); redirectFootprint('application')
