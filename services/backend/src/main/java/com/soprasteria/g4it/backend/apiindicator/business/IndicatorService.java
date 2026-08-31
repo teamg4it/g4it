@@ -16,6 +16,7 @@ import com.soprasteria.g4it.backend.apiinout.modeldb.OutPhysicalEquipment;
 import com.soprasteria.g4it.backend.apiinout.repository.OutApplicationRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.OutPhysicalEquipmentRepository;
 import com.soprasteria.g4it.backend.apiuser.business.WorkspaceService;
+import com.soprasteria.g4it.backend.common.utils.Constants;
 import com.soprasteria.g4it.backend.common.utils.StringUtils;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -91,14 +92,14 @@ public class IndicatorService {
                         e -> equipmentIndicatorMapper.outToDto(e.getValue())
                 ));*/
 
-        Map<String, List<OutPhysicalEquipment>> result = new HashMap<>();
         int pageNumber = 0;
-
+        List<Object[]> results = new ArrayList<>();
         while (true) {
             Pageable page = PageRequest.of(
                     pageNumber,
-                    50000
+                    Constants.BATCH_SIZE_50000
             );
+
             List<Object[]> physicalEquipments =
                     outPhysicalEquipmentRepository
                             .findCriterionAndEquipmentByTaskId(taskId, page);
@@ -106,43 +107,20 @@ public class IndicatorService {
             if (physicalEquipments.isEmpty()) {
                 break;
             }
-
-            Map<String, List<OutPhysicalEquipment>> grouped =
-                    physicalEquipments.stream()
-                            .collect(Collectors.groupingBy(
-                                    r -> (String) r[0],
-                                    Collectors.mapping(
-                                            r -> (OutPhysicalEquipment) r[1],
-                                            Collectors.toList()
-                                    )
-                            ));
-
-            // Merge current page into the final result
-            grouped.forEach((criterion, equipments) ->
-                    result.merge(
-                            criterion,
-                            new ArrayList<>(equipments),
-                            (existing, current) -> {
-                                existing.addAll(current);
-                                return existing;
-                            }
-                    )
-            );
-
-            log.info(
-                    "Processed physical equipment page={}, records={}, criteria={}",
-                    pageNumber,
-                    physicalEquipments.size(),
-                    grouped.size()
-            );
-
+            results.addAll(physicalEquipments);
+            physicalEquipments.clear();
+            entityManager.clear();
             pageNumber++;
-
         }
-        return result.entrySet()
-                .stream()
+        Map<String, List<OutPhysicalEquipment>> grouped = results.stream()
+                .collect(Collectors.groupingBy(
+                        r -> (String) r[0],
+                        Collectors.mapping(r -> (OutPhysicalEquipment) r[1], Collectors.toList())
+                ));
+
+        return grouped.entrySet().stream()
                 .collect(Collectors.toMap(
-                        e -> StringUtils.snakeToKebabCase(e.getKey()),
+                        e -> com.soprasteria.g4it.backend.common.utils.StringUtils.snakeToKebabCase(e.getKey()),
                         e -> equipmentIndicatorMapper.outToDto(e.getValue())
                 ));
 

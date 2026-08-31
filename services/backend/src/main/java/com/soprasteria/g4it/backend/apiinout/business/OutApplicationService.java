@@ -85,25 +85,13 @@ public class OutApplicationService {
         List<OutApplicationRest> result = new ArrayList<>();
 
         while(true){
-            Pageable page = PageRequest.of(
-                    pageNumber,
-                    Constants.BATCH_SIZE_50000
-            );
+            Pageable page = PageRequest.of(pageNumber, Constants.BATCH_SIZE_50000);
             List<OutApplication> outApplications = outApplicationRepository.findByTaskIdOrderByIdAsc(taskId, page);
             if(outApplications.isEmpty()){
                 break;
             }
-            List<OutApplicationRest> batch = outApplicationMapper.toRest(outApplications);
-            result.addAll(batch);
-            log.info(
-                    "Processed application batch: taskId={}, page={}, batchSize={}, totalResult={}",
-                    taskId,
-                    pageNumber,
-                    batch.size(),
-                    result.size()
-            );
+            result.addAll(outApplicationMapper.toRest(outApplications));
             entityManager.clear();
-            outApplications.clear();
             pageNumber++;
         }
 
@@ -154,25 +142,14 @@ public class OutApplicationService {
         List<OutApplicationRest> result = new ArrayList<>();
 
         while(true){
-            Pageable page = PageRequest.of(
-                    pageNumber,
-                    Constants.BATCH_SIZE_50000
-            );
+            Pageable page = PageRequest.of(pageNumber, Constants.BATCH_SIZE_50000);
             List<OutApplication> outApplications = outApplicationRepository.findByTaskIdOrderByIdAsc(taskId, page);
             if(outApplications.isEmpty()){
                 break;
             }
-            List<OutApplicationRest> batch = outApplicationMapper.toRest(outApplications);
-            result.addAll(batch);
-            log.info(
-                    "Processed application batch: taskId={}, page={}, batchSize={}, totalResult={}",
-                    taskId,
-                    pageNumber,
-                    batch.size(),
-                    result.size()
-            );
+
+            result.addAll(outApplicationMapper.toRest(outApplications));
             entityManager.clear();
-            outApplications.clear();
             pageNumber++;
         }
         return result;

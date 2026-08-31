@@ -88,11 +88,7 @@ public class OutPhysicalEquipmentService {
         List<OutPhysicalEquipmentRest> result = new ArrayList<>();
 
         while (true) {
-            Pageable page = PageRequest.of(
-                    pageNumber,
-                    Constants.BATCH_SIZE_50000
-            );
-
+            Pageable page = PageRequest.of(pageNumber, Constants.BATCH_SIZE_50000);
             List<OutPhysicalEquipment> physicalEquipments =
                     outPhysicalEquipmentRepository
                             .findByTaskIdOrderByIdAsc(taskId, page);
@@ -104,15 +100,8 @@ public class OutPhysicalEquipmentService {
             result.addAll(
                     outPhysicalEquipmentMapper.toRest(physicalEquipments)
             );
-            log.info(
-                    "Processed out_physical_equipment page={}, records={}, totalResult={}",
-                    pageNumber,
-                    physicalEquipments.size(),
-                    result.size()
-            );
-            physicalEquipments.clear();
-            entityManager.clear();
 
+            entityManager.clear();
             pageNumber++;
         }
         return result;

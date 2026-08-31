@@ -56,6 +56,7 @@ public class InDatacenterService {
         final List<InDatacenter> inDatacenters = inDatacenterRepository.findByDigitalServiceVersionUid(digitalServiceVersionUid);
         return inDatacenterMapper.toRest(inDatacenters);
     }*/
+    @Transactional(readOnly = true)
     public List<InDatacenterRest> getByDigitalServiceVersion(
             final String digitalServiceVersionUid) {
 
@@ -64,25 +65,14 @@ public class InDatacenterService {
         int pageNumber = 0;
 
         while(true){
-            Pageable page = PageRequest.of(
-                    pageNumber,
-                    Constants.BATCH_SIZE_50000
-            );
+            Pageable page = PageRequest.of(pageNumber, Constants.BATCH_SIZE_50000);
 
             List<InDatacenter> inDatacenters = inDatacenterRepository.findByDigitalServiceVersionUid(digitalServiceVersionUid,page);
             if(inDatacenters.isEmpty()){
                 break;
             }
             result.addAll(inDatacenterMapper.toRest(inDatacenters));
-            log.info(
-                    "Processed in_datacenter page={}, records={}, totalResult={}",
-                    pageNumber,
-                    inDatacenters.size(),
-                    result.size()
-            );
-
             entityManager.clear();
-            inDatacenters.clear();
             pageNumber++;
         }
         return result;
@@ -180,25 +170,14 @@ public class InDatacenterService {
         int pageNumber = 0;
 
         while(true){
-            Pageable page = PageRequest.of(
-                    pageNumber,
-                    Constants.BATCH_SIZE_50000
-            );
+            Pageable page = PageRequest.of(pageNumber, Constants.BATCH_SIZE_50000);
 
             List<InDatacenter> inDatacenters = inDatacenterRepository.findByInventoryIdOrderByIdAsc(inventoryId, page);
             if(inDatacenters.isEmpty()){
                 break;
             }
             result.addAll(inDatacenterMapper.toRest(inDatacenters));
-
-            log.info(
-                    "Processed in_datacenter page={}, records={}, totalResult={}",
-                    pageNumber,
-                    inDatacenters.size(),
-                    result.size()
-            );
             entityManager.clear();
-            inDatacenters.clear();
             pageNumber++;
         }
         return result;

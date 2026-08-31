@@ -81,72 +81,19 @@ public class OutVirtualEquipmentService {
 
         List<OutVirtualEquipmentRest> result = new ArrayList<>();
 
-        logMemory("START", pageNumber);
-
         while (true) {
-
-            logMemory("BEFORE_FETCH", pageNumber);
-
-            Pageable page = PageRequest.of(
-                    pageNumber,
-                    Constants.BATCH_SIZE_50000
-            );
-
+            Pageable page = PageRequest.of(pageNumber, Constants.BATCH_SIZE_50000);
             List<OutVirtualEquipment> virtualEquipments =
                     outVirtualEquipmentRepository
                             .findByTaskIdOrderByIdAsc(taskId, page);
-
-            log.info(
-                    "Fetched page={}, records={}",
-                    pageNumber,
-                    virtualEquipments.size()
-            );
-
-            logMemory("AFTER_FETCH", pageNumber);
-
             if (virtualEquipments.isEmpty()) {
                 break;
             }
 
-            List<OutVirtualEquipmentRest> mapped =
-                    outVirtualEquipmentMapper.toRest(virtualEquipments);
-
-            log.info(
-                    "out_virtual_equipment Mapped page={}, entityRecords={}, dtoRecords={}",
-                    pageNumber,
-                    virtualEquipments.size(),
-                    mapped.size()
-            );
-
-            logMemory("AFTER_MAPPING", pageNumber);
-
-            result.addAll(mapped);
-
-            log.info(
-                    "Result accumulated out_virtual_equipment: page={}, totalResultRecords={}",
-                    pageNumber,
-                    result.size()
-            );
-
-            logMemory("AFTER_ADD_TO_RESULT", pageNumber);
-
-            virtualEquipments.clear();
-            mapped.clear();
-
+            result.addAll(outVirtualEquipmentMapper.toRest(virtualEquipments));
             entityManager.clear();
-
-            logMemory("AFTER_CLEAR", pageNumber);
-
             pageNumber++;
         }
-
-        log.info(
-                "Final result size out_virtual_equipment ={}, pages={}",
-                result.size(),
-                pageNumber
-        );
-
-        logMemory("END", pageNumber);
         return result;
     }
 
@@ -194,11 +141,7 @@ public class OutVirtualEquipmentService {
         List<OutVirtualEquipmentRest> result = new ArrayList<>();
 
         while (true) {
-            Pageable page = PageRequest.of(
-                    pageNumber,
-                    Constants.BATCH_SIZE_50000
-            );
-
+            Pageable page = PageRequest.of(pageNumber, Constants.BATCH_SIZE_50000);
             List<OutVirtualEquipment> virtualEquipments =
                     outVirtualEquipmentRepository
                             .findByTaskIdOrderByIdAsc(taskId, page);
@@ -210,31 +153,9 @@ public class OutVirtualEquipmentService {
             result.addAll(
                     outVirtualEquipmentMapper.toRest(virtualEquipments)
             );
-
-            virtualEquipments.clear();
             entityManager.clear();
-
             pageNumber++;
         }
         return result;
     }
-
-    private void logMemory(String stage, int pageNumber) {
-        Runtime runtime = Runtime.getRuntime();
-
-        long usedMemory = runtime.totalMemory() - runtime.freeMemory();
-        long totalMemory = runtime.totalMemory();
-        long maxMemory = runtime.maxMemory();
-
-        log.info(
-                "Memory [{}] - page={}, used={} MB, total={} MB, max={} MB, free={} MB",
-                stage,
-                pageNumber,
-                usedMemory / (1024 * 1024),
-                totalMemory / (1024 * 1024),
-                maxMemory / (1024 * 1024),
-                runtime.freeMemory() / (1024 * 1024)
-        );
-    }
-
 }

@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -52,6 +53,7 @@ public class InApplicationService {
         final List<InApplication> inApplication = inApplicationRepository.findByInventoryId(inventoryId);
         return inApplicationMapper.toRest(inApplication);
     }*/
+    @Transactional(readOnly = true)
     public List<InApplicationRest> getByInventory(final Long inventoryId) {
 
         List<InApplicationRest> result = new ArrayList<>();
@@ -59,38 +61,17 @@ public class InApplicationService {
 
         while (true) {
 
-            Pageable page = PageRequest.of(
-                    pageNumber,
-                    Constants.BATCH_SIZE_50000
-            );
+            Pageable page = PageRequest.of(pageNumber, Constants.BATCH_SIZE_50000);
 
             List<InApplication> inApplications =
                     inApplicationRepository
-                            .findByInventoryIdOrderByIdAsc(
-                                    inventoryId,
-                                    page
-                            );
-
+                            .findByInventoryIdOrderByIdAsc(inventoryId,page);
             if (inApplications.isEmpty()) {
                 break;
             }
 
-            List<InApplicationRest> mapped =
-                    inApplicationMapper.toRest(inApplications);
-
-            result.addAll(mapped);
-
-            log.info(
-                    "Processed application page={}, records={}, totalResult={}",
-                    pageNumber,
-                    inApplications.size(),
-                    result.size()
-            );
-
-            mapped.clear();
-            inApplications.clear();
+            result.addAll(inApplicationMapper.toRest(inApplications));
             entityManager.clear();
-
             pageNumber++;
         }
 

@@ -70,10 +70,7 @@ public class InVirtualEquipmentService {
         int pageNumber = 0;
 
         while(true){
-            Pageable page = PageRequest.of(
-                    pageNumber,
-                    Constants.BATCH_SIZE_50000
-            );
+            Pageable page = PageRequest.of(pageNumber, Constants.BATCH_SIZE_50000);
 
             List<InVirtualEquipment> inVirtualEquipments = inVirtualEquipmentRepository
                     .findByDigitalServiceVersionUidOrderByNameAscIdAsc(
@@ -82,7 +79,6 @@ public class InVirtualEquipmentService {
                 break;
             }
             result.addAll(inVirtualEquipmentMapper.toRest(inVirtualEquipments));
-            inVirtualEquipments.clear();
             entityManager.clear();
             pageNumber++;
         }
@@ -238,10 +234,7 @@ public class InVirtualEquipmentService {
         int pageNumber = 0;
 
         while(true){
-            Pageable page = PageRequest.of(
-                    pageNumber,
-                    Constants.BATCH_SIZE_50000
-            );
+            Pageable page = PageRequest.of(pageNumber, Constants.BATCH_SIZE_50000);
 
             List<InVirtualEquipment> inVirtualEquipments = inVirtualEquipmentRepository
                     .findByInventoryIdOrderByIdAsc(inventoryId, page);
@@ -249,13 +242,6 @@ public class InVirtualEquipmentService {
                 break;
             }
             result.addAll(inVirtualEquipmentMapper.toRest(inVirtualEquipments));
-            log.info(
-                    "Processed in_virtual_equipment page={}, records={}, totalResult={}",
-                    pageNumber,
-                    inVirtualEquipments.size(),
-                    result.size()
-            );
-            inVirtualEquipments.clear();
             entityManager.clear();
             pageNumber++;
         }
@@ -276,7 +262,7 @@ public class InVirtualEquipmentService {
         }
 
         if (!Objects.equals(inventoryId, inVirtualEquipment.get().getInventoryId())) {
-            throw new G4itRestException("409", String.format("the inventory id provided: %s is not compatible with the inventory id : %s linked to this virtual equipment id: %d", inventoryId, inVirtualEquipment.get().getDigitalServiceVersionUid(), id));
+            throw new G4itRestException("409", String.format("the inventory id provided: %s is not compatible with the inventory id : %s linked to this virtual equipment id: %d", inventoryId, inVirtualEquipment.get().getInventoryId(), id));
         }
 
         return inVirtualEquipmentMapper.toRest(inVirtualEquipment.get());

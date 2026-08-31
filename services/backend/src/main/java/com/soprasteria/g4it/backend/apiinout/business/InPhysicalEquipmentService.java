@@ -67,10 +67,7 @@ public class InPhysicalEquipmentService {
         int pageNumber = 0;
 
         while(true){
-            Pageable page = PageRequest.of(
-                    pageNumber,
-                    Constants.BATCH_SIZE_50000
-            );
+            Pageable page = PageRequest.of(pageNumber, Constants.BATCH_SIZE_50000);
 
             List<InPhysicalEquipment> inPhysicalEquipments = inPhysicalEquipmentRepository.findByDigitalServiceVersionUidOrderByName(
                     digitalServiceVersionUid,page);
@@ -78,14 +75,7 @@ public class InPhysicalEquipmentService {
                 break;
             }
             result.addAll(inPhysicalEquipmentMapper.toRest(inPhysicalEquipments));
-            log.info(
-                    "Processed in_physical_equipment page={}, records={}, totalResult={}",
-                    pageNumber,
-                    inPhysicalEquipments.size(),
-                    result.size()
-            );
             entityManager.clear();
-            inPhysicalEquipments.clear();
             pageNumber++;
         }
         return result;
@@ -193,24 +183,13 @@ public class InPhysicalEquipmentService {
         int pageNumber = 0;
 
         while(true){
-            Pageable page = PageRequest.of(
-                    pageNumber,
-                    Constants.BATCH_SIZE_50000
-            );
-
+            Pageable page = PageRequest.of(pageNumber, Constants.BATCH_SIZE_50000);
             List<InPhysicalEquipment> inPhysicalEquipments = inPhysicalEquipmentRepository.findByInventoryIdOrderByIdAsc(inventoryId,page);
             if(inPhysicalEquipments.isEmpty()){
                 break;
             }
             result.addAll(inPhysicalEquipmentMapper.toRest(inPhysicalEquipments));
-            log.info(
-                    "Processed in_physical_equipment page={}, records={}, totalResult={}",
-                    pageNumber,
-                    inPhysicalEquipments.size(),
-                    result.size()
-            );
             entityManager.clear();
-            inPhysicalEquipments.clear();
             pageNumber++;
         }
         return result;
