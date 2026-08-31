@@ -91,10 +91,8 @@ export class InventoryItemComponent implements OnInit {
 
     equipmentLimitExceed = computed(
         () =>
-            (this.inventory().outPhysicalCount ?? 0) >
-                Number(environment.equipmentMaxLimit) &&
             (this.inventory().outVirtualCount ?? 0) >
-                Number(environment.equipmentMaxLimit),
+            Number(environment.equipmentMaxLimit),
     );
     applicationLimitExceed = computed(
         () =>
