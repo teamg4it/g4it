@@ -14,20 +14,29 @@
             <div>
                 <p-button
                     (onClick)="compareVersions()"
-                    styleClass="uppercase"
+                    styleClass="uppercase mr-2"
                     id="compare-versions"
                     icon="pi pi-chart-bar"
                     [label]="'digital-services.version.compare-versions' | translate"
                     [ariaLabel]="'digital-services.version.compare-versions' | translate"
                     [disabled]="selectedVersions.length < 2"
                 ></p-button>
-                <i
+                <button
+                    type="button"
+                    class="border-none bg-white m-1 p-1"
                     [pTooltip]="
                         'digital-services.version.compare-version-tooltip' | translate
                     "
                     tooltipPosition="bottom"
-                    class="pi pi-exclamation-circle font-bold ml-2 font-bold text-2xl mb-2 mr-4 color-tertiary"
-                ></i>
+                    [attr.aria-label]="
+                        'digital-services.version.compare-version-tooltip' | translate
+                    "
+                >
+                    <i
+                        class="pi pi-exclamation-circle font-bold text-2xl color-tertiary"
+                        aria-hidden="true"
+                    ></i>
+                </button>
             </div>
         </div>
     </ng-template>
