@@ -1,4 +1,12 @@
 # G4IT
+## 3.14.1
+
+### Major Changes
+
+### Minor Changes
+- 2232 | Redesign digital service input journey to improve clarity, guidance, and usability
+- 2376 | Resolve accessibility issues at 200% zoom
+
 ## 3.14.0
 
 ### Major Changes

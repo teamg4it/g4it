@@ -7,7 +7,7 @@
  */
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { signal } from "@angular/core";
-import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { ComponentFixture, TestBed, fakeAsync, tick } from "@angular/core/testing";
 import { ActivatedRoute, Router } from "@angular/router";
 import { TranslateModule, TranslateService } from "@ngx-translate/core";
 import { NGX_ECHARTS_CONFIG } from "ngx-echarts";
@@ -180,6 +180,7 @@ describe("ApplicationMulticriteriaFootprintComponent", () => {
                     provide: GlobalStoreService,
                     useValue: {
                         criteriaList: () => ({}),
+                        setLoading: jasmine.createSpy("setLoading"),
                     },
                 },
                 {
@@ -382,28 +383,32 @@ describe("ApplicationMulticriteriaFootprintComponent", () => {
     });
 
     describe("onChartClick", () => {
-        it("should navigate when name exists", () => {
+        it("should navigate when name exists", fakeAsync(() => {
             component.onChartClick({ name: "climate-change" });
+            tick(20);
             expect(routerSpy.navigate).toHaveBeenCalledWith(
                 ["../climate-change"],
                 jasmine.any(Object),
             );
-        });
+        }));
 
-        it("should not navigate when event is null", () => {
+        it("should not navigate when event is null", fakeAsync(() => {
             component.onChartClick(null as any);
+            tick(20);
             expect(routerSpy.navigate).not.toHaveBeenCalled();
-        });
+        }));
 
-        it("should not navigate when event has no name", () => {
+        it("should not navigate when event has no name", fakeAsync(() => {
             component.onChartClick({});
+            tick(20);
             expect(routerSpy.navigate).not.toHaveBeenCalled();
-        });
+        }));
 
-        it("should not navigate when name is empty string", () => {
+        it("should not navigate when name is empty string", fakeAsync(() => {
             component.onChartClick({ name: "" });
+            tick(20);
             expect(routerSpy.navigate).not.toHaveBeenCalled();
-        });
+        }));
     });
 
     describe("stackChartClick", () => {
@@ -421,11 +426,12 @@ describe("ApplicationMulticriteriaFootprintComponent", () => {
             expect(component.onChartClick).not.toHaveBeenCalled();
         });
 
-        it("should handle empty string", () => {
+        it("should handle empty string", fakeAsync(() => {
             spyOn(component, "onChartClick");
             component.stackChartClick("");
+            tick(20);
             expect(component.onChartClick).not.toHaveBeenCalled();
-        });
+        }));
     });
 
     describe("selectedStackBarClick", () => {

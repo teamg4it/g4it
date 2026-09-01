@@ -87,7 +87,6 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
     isCompareVersions = input<boolean>(false);
     @Output() digitalServiceChange = new EventEmitter<DigitalService>();
     @Output() digitalMobileOptionsChange = new EventEmitter<boolean>();
-    isZoom125 = computed(() => this.global.zoomLevel() >= 125);
     isMobile = computed(() => this.global.mobileView());
     sidebarVisible: boolean = false;
     importSidebarVisible = false;

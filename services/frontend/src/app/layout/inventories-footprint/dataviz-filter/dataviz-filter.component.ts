@@ -14,13 +14,14 @@ import {
     signal,
     SimpleChanges,
 } from "@angular/core";
-import { TranslateService, TranslatePipe } from "@ngx-translate/core";
+import { TranslatePipe, TranslateService } from "@ngx-translate/core";
+import { Button } from "primeng/button";
 import { debounceTime, Subject } from "rxjs";
 import { Filter } from "src/app/core/interfaces/filter.interface";
 import { FilterService } from "src/app/core/service/business/filter.service";
 import { FootprintStoreService } from "src/app/core/store/footprint.store";
+import { GlobalStoreService } from "src/app/core/store/global.store";
 import { Constants } from "src/constants";
-import { Button } from "primeng/button";
 import { BaseFilterSidebarComponent } from "../base-filter-sidebar/base-filter-sidebar.component";
 
 @Component({
@@ -28,14 +29,11 @@ import { BaseFilterSidebarComponent } from "../base-filter-sidebar/base-filter-s
     templateUrl: "./dataviz-filter.component.html",
     styleUrl: "./dataviz-filter.component.scss",
     standalone: true,
-    imports: [
-        Button,
-        BaseFilterSidebarComponent,
-        TranslatePipe,
-    ],
+    imports: [Button, BaseFilterSidebarComponent, TranslatePipe],
 })
 export class DatavizFilterComponent implements OnChanges {
     protected footprintStore = inject(FootprintStoreService);
+    private readonly globalStore = inject(GlobalStoreService);
     private readonly filterService = inject(FilterService);
     private readonly translate = inject(TranslateService);
 
@@ -106,12 +104,24 @@ export class DatavizFilterComponent implements OnChanges {
     }
 
     applyFilters(): void {
-        // Save local changes to store
-        const filters = this.localFilters();
-        Object.keys(filters).forEach((tab) => {
-            this.footprintStore.setCustomFilters(filters[tab], tab);
-        });
+        // to not hang browser, we will apply the filters in a setTimeout to let the UI update first
+        // Show loader and close sidebar immediately for responsive UX
+        this.globalStore.setLoading(true);
         this.filterSidebarVisible = false;
-        this.localFilters.set({});
+
+        // Defer filter application to unblock UI
+        setTimeout(() => {
+            // Save local changes to store - triggers computed signals
+            const filters = this.localFilters();
+            Object.keys(filters).forEach((tab) => {
+                this.footprintStore.setCustomFilters(filters[tab], tab);
+            });
+            this.localFilters.set({});
+
+            // Keep loader visible while downstream computations complete
+            setTimeout(() => {
+                this.globalStore.setLoading(false);
+            }, 10);
+        }, 10);
     }
 }
