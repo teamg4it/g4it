@@ -198,7 +198,15 @@
             "reference-title": "Références utilisées",
             "engine": "Les calculs des équipements physiques sont effectués à l'aide de <strong>NumEcoEval</strong>. </br> Les calculs des équipements virtuels (non basés sur le cloud) sont également gérés par <strong>NumEcoEval</strong>. </br> Pour les équipements virtuels basés sur le cloud, les calculs sont effectués à l'aide de <strong>Boavizta</strong>."
         },
-        "main-navigation": "Navigation principale"
+        "main-navigation": "Navigation principale",
+        "country.all": "Tous les pays",
+        "entity.all": "Toutes les entités",
+        "equipment.all": "Tous les équipements",
+        "status.all": "Tous les statuts",
+        "environment.all": "Tous les environnements",
+        "equipmentType.all": "Tous les types d'équipements",
+        "lifeCycle.all": "Tous les cycles de vie",
+        "domain.all": "Tous les domaines et sous-domaines"
     },
     "useful-information": {
         "computing-engines": "Moteurs de calcul",

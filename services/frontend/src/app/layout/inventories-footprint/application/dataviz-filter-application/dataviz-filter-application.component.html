@@ -77,7 +77,8 @@
                                             "
                                             >{{
                                                 item?.toString() === all
-                                                    ? ("common.all" | translate)
+                                                    ? (`common.${tab.field}.all`
+                                                      | translate)
                                                     : item?.toString() === empty
                                                       ? ("common.empty" | translate)
                                                       : item
@@ -139,10 +140,25 @@
                                                         : 'mb-3'
                                                 "
                                             ></p-checkbox>
-                                            <label
-                                                [attr.for]="'tree-filter-' + filter.label"
-                                                >{{ filter.label }}</label
-                                            >
+                                            @if (filter.label === all) {
+                                                <label
+                                                    [attr.for]="
+                                                        'tree-filter-' + filter.label
+                                                    "
+                                                    >{{
+                                                        `common.${tab.field}.all`
+                                                            | translate
+                                                    }}</label
+                                                >
+                                            } @else {
+                                                <label
+                                                    [attr.for]="
+                                                        'tree-filter-' + filter.label
+                                                    "
+                                                    >{{ filter.label }}</label
+                                                >
+                                            }
+
                                             <div
                                                 [ngClass]="
                                                     filter.collapsed ? 'hidden' : ''
