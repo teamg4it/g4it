@@ -64,5 +64,7 @@ databaseChangeLog:
       file: db/changelog/greenitdb.changelog-fix-digital-service-version-description-v2.yml
   - include:
       file: db/changelog/greenitdb.changelog-create-audit-event.yml
+  - include:
+      file: db/changelog/greenitdb.changelog-add-inventory-output-counts.yml
 
 
