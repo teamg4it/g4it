@@ -25,17 +25,21 @@ import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
 import com.soprasteria.g4it.backend.common.utils.CommonValidationUtil;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InVirtualEquipmentRest;
+import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Pageable;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -59,11 +63,126 @@ class InVirtualEquipmentServiceTest {
     @Mock
     private InPhysicalEquipmentRepository inPhysicalEquipmentRepository;
 
+    @Mock
+    private EntityManager entityManager;
+
     @InjectMocks
     private InVirtualEquipmentService inVirtualEquipmentService;
 
     @Mock
     private CommonValidationUtil commonValidationUtil;
+
+    // ========== getByInventory Tests ==========
+
+    @Test
+    void getByInventory_returnsEmptyList_whenNoEquipmentFound() {
+        Long inventoryId = 1L;
+
+        when(inVirtualEquipmentRepository.findByInventoryIdOrderByIdAsc(eq(inventoryId), any(Pageable.class)))
+                .thenReturn(List.of());
+
+        List<InVirtualEquipmentRest> result = inVirtualEquipmentService.getByInventory(inventoryId);
+
+        assertEquals(List.of(), result);
+        verify(inVirtualEquipmentRepository).findByInventoryIdOrderByIdAsc(eq(inventoryId), any(Pageable.class));
+        verifyNoInteractions(inVirtualEquipmentMapper);
+    }
+
+    @Test
+    void getByInventory_returnsVirtualEquipmentList_whenInventoryIdExists() {
+        Long inventoryId = 1L;
+        InVirtualEquipment equipment = new InVirtualEquipment();
+        List<InVirtualEquipmentRest> expectedRestList = List.of(new InVirtualEquipmentRest());
+
+        when(inVirtualEquipmentRepository.findByInventoryIdOrderByIdAsc(eq(inventoryId), any(Pageable.class)))
+                .thenAnswer(invocation -> new ArrayList<>(List.of(equipment)))
+                .thenReturn(List.of());
+        when(inVirtualEquipmentMapper.toRest(any(List.class))).thenReturn(expectedRestList);
+
+        List<InVirtualEquipmentRest> result = inVirtualEquipmentService.getByInventory(inventoryId);
+
+        assertEquals(expectedRestList, result);
+        verify(inVirtualEquipmentRepository, atLeast(1)).findByInventoryIdOrderByIdAsc(eq(inventoryId), any(Pageable.class));
+        verify(inVirtualEquipmentMapper).toRest(any(List.class));
+    }
+
+    @Test
+    void getByInventory_processesMultipleBatches() {
+        Long inventoryId = 1L;
+        InVirtualEquipment eq1 = new InVirtualEquipment();
+        InVirtualEquipment eq2 = new InVirtualEquipment();
+        List<InVirtualEquipmentRest> mapped1 = List.of(new InVirtualEquipmentRest());
+        List<InVirtualEquipmentRest> mapped2 = List.of(new InVirtualEquipmentRest());
+
+        when(inVirtualEquipmentRepository.findByInventoryIdOrderByIdAsc(eq(inventoryId), any(Pageable.class)))
+                .thenAnswer(invocation -> new ArrayList<>(List.of(eq1)))
+                .thenAnswer(invocation -> new ArrayList<>(List.of(eq2)))
+                .thenReturn(List.of());
+        when(inVirtualEquipmentMapper.toRest(any(List.class)))
+                .thenReturn(mapped1, mapped2);
+
+        List<InVirtualEquipmentRest> result = inVirtualEquipmentService.getByInventory(inventoryId);
+
+        assertEquals(2, result.size());
+        verify(inVirtualEquipmentRepository, times(3)).findByInventoryIdOrderByIdAsc(eq(inventoryId), any(Pageable.class));
+        verify(inVirtualEquipmentMapper, times(2)).toRest(any(List.class));
+    }
+
+    // ========== getByDigitalServiceVersion Tests ==========
+
+    @Test
+    void getByDigitalService_returnsEmptyList_whenNoVirtualEquipmentExists() {
+        String digitalServiceUid = "nonexistent-uid";
+
+        when(inVirtualEquipmentRepository.findByDigitalServiceVersionUidOrderByNameAscIdAsc(eq(digitalServiceUid), any(Pageable.class)))
+                .thenReturn(List.of());
+
+        List<InVirtualEquipmentRest> result = inVirtualEquipmentService.getByDigitalServiceVersion(digitalServiceUid);
+
+        assertEquals(0, result.size());
+        verify(inVirtualEquipmentRepository).findByDigitalServiceVersionUidOrderByNameAscIdAsc(eq(digitalServiceUid), any(Pageable.class));
+        verifyNoInteractions(inVirtualEquipmentMapper);
+    }
+
+    @Test
+    void getByDigitalService_returnsEquipments_whenEquipmentsExist() {
+        String digitalServiceUid = "test-uid";
+        InVirtualEquipment equipment = new InVirtualEquipment();
+        List<InVirtualEquipmentRest> equipmentRests = List.of(new InVirtualEquipmentRest());
+
+        when(inVirtualEquipmentRepository.findByDigitalServiceVersionUidOrderByNameAscIdAsc(eq(digitalServiceUid), any(Pageable.class)))
+                .thenAnswer(invocation -> new ArrayList<>(List.of(equipment)))
+                .thenReturn(List.of());
+        when(inVirtualEquipmentMapper.toRest(any(List.class))).thenReturn(equipmentRests);
+
+        List<InVirtualEquipmentRest> result = inVirtualEquipmentService.getByDigitalServiceVersion(digitalServiceUid);
+
+        assertEquals(equipmentRests, result);
+        verify(inVirtualEquipmentRepository, atLeast(1)).findByDigitalServiceVersionUidOrderByNameAscIdAsc(eq(digitalServiceUid), any(Pageable.class));
+        verify(inVirtualEquipmentMapper).toRest(any(List.class));
+    }
+
+    @Test
+    void getByDigitalService_processesMultipleBatches() {
+        String digitalServiceUid = "test-uid";
+        InVirtualEquipment eq1 = new InVirtualEquipment();
+        InVirtualEquipment eq2 = new InVirtualEquipment();
+        List<InVirtualEquipmentRest> mapped1 = List.of(new InVirtualEquipmentRest());
+        List<InVirtualEquipmentRest> mapped2 = List.of(new InVirtualEquipmentRest());
+
+        when(inVirtualEquipmentRepository.findByDigitalServiceVersionUidOrderByNameAscIdAsc(eq(digitalServiceUid), any(Pageable.class)))
+                .thenAnswer(invocation -> new ArrayList<>(List.of(eq1)))
+                .thenAnswer(invocation -> new ArrayList<>(List.of(eq2)))
+                .thenReturn(List.of());
+        when(inVirtualEquipmentMapper.toRest(any(List.class)))
+                .thenReturn(mapped1, mapped2);
+
+        List<InVirtualEquipmentRest> result = inVirtualEquipmentService.getByDigitalServiceVersion(digitalServiceUid);
+
+        assertEquals(2, result.size());
+        verify(inVirtualEquipmentRepository, times(3)).findByDigitalServiceVersionUidOrderByNameAscIdAsc(eq(digitalServiceUid), any(Pageable.class));
+        verify(inVirtualEquipmentMapper, times(2)).toRest(any(List.class));
+    }
 
     @Test
     void createInVirtualEquipmentInventoryTest() {

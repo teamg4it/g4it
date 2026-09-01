@@ -29,6 +29,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -61,20 +62,60 @@ class InDatacenterServiceTest {
     @InjectMocks
     private InDatacenterService inDatacenterService;
 
+    // ========== getByInventory Tests ==========
+    
+    @Test
+    void getByInventory_returnsEmptyList_whenNoDatacentersFound() {
+        Long inventoryId = 1L;
+
+        when(inDatacenterRepository.findByInventoryIdOrderByIdAsc(eq(inventoryId), any(Pageable.class)))
+                .thenReturn(List.of());
+
+        List<InDatacenterRest> result = inDatacenterService.getByInventory(inventoryId);
+
+        assertEquals(List.of(), result);
+        verify(inDatacenterRepository).findByInventoryIdOrderByIdAsc(eq(inventoryId), any(Pageable.class));
+        verifyNoInteractions(inDatacenterMapper);
+    }
+
     @Test
     void getByInventory_returnsDatacenters_whenInventoryExists() {
         Long inventoryId = 1L;
-        List<InDatacenter> datacenters = List.of(new InDatacenter());
+        InDatacenter datacenter = new InDatacenter();
         List<InDatacenterRest> datacenterRests = List.of(new InDatacenterRest());
 
-        doReturn(datacenters, List.of()).when(inDatacenterRepository).findByInventoryIdOrderByIdAsc(eq(inventoryId), any(Pageable.class));
-        when(inDatacenterMapper.toRest(datacenters)).thenReturn(datacenterRests);
+        when(inDatacenterRepository.findByInventoryIdOrderByIdAsc(eq(inventoryId), any(Pageable.class)))
+                .thenAnswer(invocation -> new ArrayList<>(List.of(datacenter)))
+                .thenReturn(List.of());
+        when(inDatacenterMapper.toRest(any(List.class))).thenReturn(datacenterRests);
 
         List<InDatacenterRest> result = inDatacenterService.getByInventory(inventoryId);
 
         assertEquals(datacenterRests, result);
         verify(inDatacenterRepository, atLeast(1)).findByInventoryIdOrderByIdAsc(eq(inventoryId), any(Pageable.class));
-        verify(inDatacenterMapper).toRest(datacenters);
+        verify(inDatacenterMapper).toRest(any(List.class));
+    }
+
+    @Test
+    void getByInventory_processesMultipleBatches() {
+        Long inventoryId = 1L;
+        InDatacenter dc1 = new InDatacenter();
+        InDatacenter dc2 = new InDatacenter();
+        List<InDatacenterRest> mapped1 = List.of(new InDatacenterRest());
+        List<InDatacenterRest> mapped2 = List.of(new InDatacenterRest());
+
+        when(inDatacenterRepository.findByInventoryIdOrderByIdAsc(eq(inventoryId), any(Pageable.class)))
+                .thenAnswer(invocation -> new ArrayList<>(List.of(dc1)))
+                .thenAnswer(invocation -> new ArrayList<>(List.of(dc2)))
+                .thenReturn(List.of());
+        when(inDatacenterMapper.toRest(any(List.class)))
+                .thenReturn(mapped1, mapped2);
+
+        List<InDatacenterRest> result = inDatacenterService.getByInventory(inventoryId);
+
+        assertEquals(2, result.size());
+        verify(inDatacenterRepository, times(3)).findByInventoryIdOrderByIdAsc(eq(inventoryId), any(Pageable.class));
+        verify(inDatacenterMapper, times(2)).toRest(any(List.class));
     }
 
     @Test
@@ -159,16 +200,60 @@ class InDatacenterServiceTest {
         assertEquals("409", exception2.getCode());
     }
 
+    // ========== getByDigitalServiceVersion Tests ==========
+
     @Test
     void getByDigitalService_returnsEmptyList_whenNoDatacentersExist() {
         String digitalServiceUid = "nonexistent-uid";
 
-        when(inDatacenterRepository.findByDigitalServiceVersionUid(eq(digitalServiceUid), any(Pageable.class))).thenReturn(List.of());
+        when(inDatacenterRepository.findByDigitalServiceVersionUid(eq(digitalServiceUid), any(Pageable.class)))
+                .thenReturn(List.of());
 
         List<InDatacenterRest> result = inDatacenterService.getByDigitalServiceVersion(digitalServiceUid);
 
         assertEquals(0, result.size());
         verify(inDatacenterRepository).findByDigitalServiceVersionUid(eq(digitalServiceUid), any(Pageable.class));
+        verifyNoInteractions(inDatacenterMapper);
+    }
+
+    @Test
+    void getByDigitalService_returnsDatacenters_whenDatacentersExist() {
+        String digitalServiceUid = "test-uid";
+        InDatacenter datacenter = new InDatacenter();
+        List<InDatacenterRest> datacenterRests = List.of(new InDatacenterRest());
+
+        when(inDatacenterRepository.findByDigitalServiceVersionUid(eq(digitalServiceUid), any(Pageable.class)))
+                .thenAnswer(invocation -> new ArrayList<>(List.of(datacenter)))
+                .thenReturn(List.of());
+        when(inDatacenterMapper.toRest(any(List.class))).thenReturn(datacenterRests);
+
+        List<InDatacenterRest> result = inDatacenterService.getByDigitalServiceVersion(digitalServiceUid);
+
+        assertEquals(datacenterRests, result);
+        verify(inDatacenterRepository, atLeast(1)).findByDigitalServiceVersionUid(eq(digitalServiceUid), any(Pageable.class));
+        verify(inDatacenterMapper).toRest(any(List.class));
+    }
+
+    @Test
+    void getByDigitalService_processesMultipleBatches() {
+        String digitalServiceUid = "test-uid";
+        InDatacenter dc1 = new InDatacenter();
+        InDatacenter dc2 = new InDatacenter();
+        List<InDatacenterRest> mapped1 = List.of(new InDatacenterRest());
+        List<InDatacenterRest> mapped2 = List.of(new InDatacenterRest());
+
+        when(inDatacenterRepository.findByDigitalServiceVersionUid(eq(digitalServiceUid), any(Pageable.class)))
+                .thenAnswer(invocation -> new ArrayList<>(List.of(dc1)))
+                .thenAnswer(invocation -> new ArrayList<>(List.of(dc2)))
+                .thenReturn(List.of());
+        when(inDatacenterMapper.toRest(any(List.class)))
+                .thenReturn(mapped1, mapped2);
+
+        List<InDatacenterRest> result = inDatacenterService.getByDigitalServiceVersion(digitalServiceUid);
+
+        assertEquals(2, result.size());
+        verify(inDatacenterRepository, times(3)).findByDigitalServiceVersionUid(eq(digitalServiceUid), any(Pageable.class));
+        verify(inDatacenterMapper, times(2)).toRest(any(List.class));
     }
 
 
