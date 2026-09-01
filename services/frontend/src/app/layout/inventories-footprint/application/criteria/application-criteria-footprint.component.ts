@@ -196,49 +196,65 @@ export class ApplicationCriteriaFootprintComponent
     }
 
     onChartClick(event: any) {
-        if (this.footprintStore.appGraphType() === "global") {
-            const domainSelected: any = this.footprintStore
-                .applicationSelectedFilters()
-                ["domain"].find((d) => (d as TransformedDomain).label === event.name);
-            if (domainSelected?.children.length <= 1) {
-                this.footprintStore.setDomain(event.name);
-                this.footprintStore.setSubDomain(domainSelected?.children[0].label);
+        if (this.footprintStore.appGraphType() === "application") return;
+        this.globalStore.setLoading(true);
+        setTimeout(() => {
+            if (this.footprintStore.appGraphType() === "global") {
+                const domainSelected: any = this.footprintStore
+                    .applicationSelectedFilters()
+                    ["domain"].find((d) => (d as TransformedDomain).label === event.name);
+                if (domainSelected?.children.length <= 1) {
+                    this.footprintStore.setDomain(event.name);
+                    this.footprintStore.setSubDomain(domainSelected?.children[0].label);
+                    this.footprintStore.setGraphType("subdomain");
+                } else {
+                    this.footprintStore.setGraphType("domain");
+                    this.footprintStore.setDomain(event.name);
+                    this.footprintStore.setSubDomain("");
+                }
+            } else if (this.footprintStore.appGraphType() === "domain") {
                 this.footprintStore.setGraphType("subdomain");
-            } else {
-                this.footprintStore.setGraphType("domain");
-                this.footprintStore.setDomain(event.name);
-                this.footprintStore.setSubDomain("");
+                this.footprintStore.setSubDomain(event.name);
+            } else if (this.footprintStore.appGraphType() === "subdomain") {
+                this.footprintStore.setGraphType("application");
+                this.footprintStore.setApplication(event.name);
             }
-        } else if (this.footprintStore.appGraphType() === "domain") {
-            this.footprintStore.setGraphType("subdomain");
-            this.footprintStore.setSubDomain(event.name);
-        } else if (this.footprintStore.appGraphType() === "subdomain") {
-            this.footprintStore.setGraphType("application");
-            this.footprintStore.setApplication(event.name);
-        }
+            setTimeout(() => {
+                this.globalStore.setLoading(false);
+            }, 10);
+        }, 10);
     }
 
     onArrowClick() {
-        if (this.footprintStore.appGraphType() === "application") {
-            this.footprintStore.setGraphType("subdomain");
-            this.footprintStore.setApplication("");
-        } else if (this.footprintStore.appGraphType() === "subdomain") {
-            const domainSelected: any = this.allUnmodifiedFilters()["domain"].find(
-                (d) => (d as TransformedDomain).label === this.footprintStore.appDomain(),
-            );
-            if (domainSelected?.children.length <= 1) {
+        this.globalStore.setLoading(true);
+        setTimeout(() => {
+            if (this.footprintStore.appGraphType() === "application") {
+                this.footprintStore.setGraphType("subdomain");
+                this.footprintStore.setApplication("");
+            } else if (this.footprintStore.appGraphType() === "subdomain") {
+                const domainSelected: any = this.allUnmodifiedFilters()["domain"].find(
+                    (d) =>
+                        (d as TransformedDomain).label ===
+                        this.footprintStore.appDomain(),
+                );
+                if (domainSelected?.children.length <= 1) {
+                    this.footprintStore.setGraphType("global");
+                    this.footprintStore.setDomain("");
+                    this.footprintStore.setSubDomain("");
+                } else {
+                    this.footprintStore.setGraphType("domain");
+                    this.footprintStore.setSubDomain("");
+                }
+            } else if (this.footprintStore.appGraphType() === "domain") {
                 this.footprintStore.setGraphType("global");
                 this.footprintStore.setDomain("");
                 this.footprintStore.setSubDomain("");
-            } else {
-                this.footprintStore.setGraphType("domain");
-                this.footprintStore.setSubDomain("");
             }
-        } else if (this.footprintStore.appGraphType() === "domain") {
-            this.footprintStore.setGraphType("global");
-            this.footprintStore.setDomain("");
-            this.footprintStore.setSubDomain("");
-        }
+            // Give Angular time to render and process the new view
+            setTimeout(() => {
+                this.globalStore.setLoading(false);
+            }, 10);
+        }, 10);
     }
 
     checkIfNoData(selectedFilters: Filter) {
@@ -512,18 +528,27 @@ export class ApplicationCriteriaFootprintComponent
     }
 
     private addYAxisEntry(yAxis: any[], key: string, data: any[]): void {
-        yAxis.push({
-            name: key,
-            data: [data],
-            type: "bar",
-            stack: "Ad",
-            emphasis: {
-                focus: "series",
-            },
-            itemStyle: {
-                color: getUniqueColorFromText(key),
-            },
-        });
+        // Find existing series for this lifecycle phase
+        let existingSeries = yAxis.find((series) => series.name === key);
+
+        if (existingSeries) {
+            // Append data to existing series
+            existingSeries.data.push(data);
+        } else {
+            // Create new series for this lifecycle phase
+            yAxis.push({
+                name: key,
+                data: [data],
+                type: "bar",
+                stack: "Ad",
+                emphasis: {
+                    focus: "series",
+                },
+                itemStyle: {
+                    color: getUniqueColorFromText(key),
+                },
+            });
+        }
     }
 
     private processGlobalGraph(
@@ -645,71 +670,61 @@ export class ApplicationCriteriaFootprintComponent
         if (result.xAxis.length < Constants.TOTAL_VISIBLE_GRAPH_ITEMS) {
             showZoom = false;
         }
+
+        // Pre-cache translations for tooltip performance
+        const tooltipTranslations = {
+            peopleEqMin: this.translate.instant("common.peopleeq-min"),
+            nbSd: this.translate.instant(
+                "inventories-footprint.application.tooltip.nb-sd",
+            ),
+            nbApp: this.translate.instant(
+                "inventories-footprint.application.tooltip.nb-app",
+            ),
+            cluster: this.translate.instant(
+                "inventories-footprint.application.tooltip.cluster",
+            ),
+            equipment: this.translate.instant(
+                "inventories-footprint.application.tooltip.equipment",
+            ),
+            environment: this.translate.instant(
+                "inventories-footprint.application.tooltip.environnement",
+            ),
+        };
+
         return {
+            animation: false, // Disable animations for faster rendering
+            // Performance optimizations for large datasets
+            progressive: 400, // Render progressively in chunks of 400
+            progressiveThreshold: 1000, // Enable progressive rendering if data > 1000
+            hoverLayerThreshold: 3000, // Optimize hover layer for large datasets
             tooltip: {
                 show: true,
                 formatter: (params: any) => {
                     let impact = "";
                     if (params.data[1]) {
+                        // Use pre-cached translations for better performance
+                        const graphType = this.footprintStore.appGraphType();
+                        let extraInfo = "";
+
+                        if (graphType === "global") {
+                            extraInfo = `<br>${tooltipTranslations.nbSd} : ${params.data[4]?.length}<br>${tooltipTranslations.nbApp} : ${params.data[3]?.length}`;
+                        } else if (graphType === "domain") {
+                            extraInfo = `<br>${tooltipTranslations.nbApp} : ${params.data[3]?.length}`;
+                        } else if (graphType === "application") {
+                            extraInfo = `<br>${tooltipTranslations.cluster} : ${params.data[5]}<br>${tooltipTranslations.equipment} : ${params.data[7]}<br>${tooltipTranslations.environment} : ${params.data[6]}`;
+                        }
+
                         impact = `
                         <span>
                             Impact : ${this.integerPipe.transform(params.data[2])}
-                                    ${this.translate.instant("common.peopleeq-min")}
+                                    ${tooltipTranslations.peopleEqMin}
                                 <br>
                             Impact : ${
                                 params.data[1] < 1
                                     ? "< 1"
                                     : this.decimalsPipe.transform(params.data[1])
                             }
-                                ${unit}
-                                ${
-                                    this.footprintStore.appGraphType() === "global"
-                                        ? "<br>" +
-                                          this.translate.instant(
-                                              "inventories-footprint.application.tooltip.nb-sd",
-                                          ) +
-                                          " : " +
-                                          params.data[4]?.length +
-                                          "<br>" +
-                                          this.translate.instant(
-                                              "inventories-footprint.application.tooltip.nb-app",
-                                          ) +
-                                          " : " +
-                                          params.data[3]?.length
-                                        : ""
-                                }
-                                ${
-                                    this.footprintStore.appGraphType() === "domain"
-                                        ? "<br>" +
-                                          this.translate.instant(
-                                              "inventories-footprint.application.tooltip.nb-app",
-                                          ) +
-                                          " : " +
-                                          params.data[3]?.length
-                                        : ""
-                                }
-                                ${
-                                    this.footprintStore.appGraphType() === "application"
-                                        ? "<br>" +
-                                          this.translate.instant(
-                                              "inventories-footprint.application.tooltip.cluster",
-                                          ) +
-                                          " : " +
-                                          params.data[5] +
-                                          "<br>" +
-                                          this.translate.instant(
-                                              "inventories-footprint.application.tooltip.equipment",
-                                          ) +
-                                          " : " +
-                                          params.data[7] +
-                                          "<br>" +
-                                          this.translate.instant(
-                                              "inventories-footprint.application.tooltip.environnement",
-                                          ) +
-                                          " : " +
-                                          params.data[6]
-                                        : ""
-                                }
+                                ${unit}${extraInfo}
                                 <span>
                         `;
                     }
@@ -768,7 +783,14 @@ export class ApplicationCriteriaFootprintComponent
                     type: "value",
                 },
             ],
-            series: result.yAxis,
+            series: result.yAxis.map((serie: any) => ({
+                ...serie,
+                // Large dataset optimization - only if this series has many data points
+                large: serie.data.length > 1000,
+                largeThreshold: 1000,
+                // Improve rendering performance with downsampling for huge datasets
+                sampling: serie.data.length > 2000 ? "lttb" : undefined,
+            })),
             color: Constants.BLUE_COLOR,
         };
     }
@@ -783,9 +805,18 @@ export class ApplicationCriteriaFootprintComponent
     }
 
     moveToMultiCriteria() {
-        this.router.navigate(["../", "multi-criteria"], {
-            relativeTo: this.route,
-        });
+        this.globalStore.setLoading(true);
+        setTimeout(() => {
+            // Switch view - this triggers the computed signals
+            this.router.navigate(["../", "multi-criteria"], {
+                relativeTo: this.route,
+            });
+
+            // Give Angular time to render and process the new view
+            setTimeout(() => {
+                this.globalStore.setLoading(false);
+            }, 10);
+        }, 10);
     }
 
     getContentText = computed((): GraphDescriptionContent => {

@@ -12,6 +12,7 @@ import {
 } from "src/app/core/interfaces/digital-service.interfaces";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
 
+import { TranslateModule } from "@ngx-translate/core";
 import { addDays, differenceInDays } from "date-fns";
 import { MessageService } from "primeng/api";
 import { DrawerModule } from "primeng/drawer";
@@ -31,6 +32,7 @@ import { DigitalServicesTerminalsSidePanelComponent } from "./digital-services-t
         DigitalServiceTableComponent,
         DrawerModule,
         DigitalServicesTerminalsSidePanelComponent,
+        TranslateModule,
     ],
 })
 export class DigitalServicesTerminalsComponent implements OnInit {

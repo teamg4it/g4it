@@ -40,6 +40,17 @@ export class FilterService {
     }
 
     getFilterincludes(selectedFilters: Filter, impact: ApplicationImpact): boolean {
+        // Optimization: If ALL is selected in domain, return true immediately
+        const domainFilters = selectedFilters["domain"];
+        if (domainFilters) {
+            const allDomain = domainFilters.find(
+                (d) => (d as TransformedDomain)?.label === Constants.ALL
+            ) as TransformedDomain;
+            if (allDomain?.checked) {
+                return this.isAllFiltersMatch(selectedFilters, impact, true);
+            }
+        }
+        
         const domain = selectedFilters["domain"]?.find(
             (d) => (d as TransformedDomain)?.label === impact.domain,
         ) as TransformedDomain;
@@ -64,8 +75,14 @@ export class FilterService {
                 : Constants.APPLICATION_FILTERS
         ).every((filter) => {
             const field = filter.field;
-            let impactValue = impact[field as any];
             let filterValue: any = selectedFilters[field];
+            
+            // Optimization: If ALL is selected, skip checking this field
+            if (filterValue?.includes(Constants.ALL)) {
+                return true;
+            }
+            
+            let impactValue = impact[field as any];
             if (!filterValue) filterValue = [Constants.EMPTY];
             if (!impactValue) impactValue = Constants.EMPTY;
             return filterValue?.some((value: string) =>
@@ -77,6 +94,12 @@ export class FilterService {
     equipmentAllFilterMatch(selectedFilters: Filter, impact: any) {
         return Constants.EQUIPMENT_FILTERS.every((field) => {
             let filterValue: any = selectedFilters[field];
+            
+            // Optimization: If ALL is selected, skip checking this field
+            if (filterValue === Constants.ALL || filterValue?.includes?.(Constants.ALL)) {
+                return true;
+            }
+            
             let impactValue = impact[field as any];
             if (!filterValue) filterValue = Constants.EMPTY;
             if (!impactValue) impactValue = Constants.EMPTY;

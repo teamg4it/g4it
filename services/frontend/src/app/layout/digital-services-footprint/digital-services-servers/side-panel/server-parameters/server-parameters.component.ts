@@ -19,6 +19,7 @@ import { MessageService } from "primeng/api";
 import { Button } from "primeng/button";
 import { DrawerModule } from "primeng/drawer";
 import { InputNumberModule } from "primeng/inputnumber";
+import { ScrollPanel } from "primeng/scrollpanel";
 import { SelectModule } from "primeng/select";
 import { firstValueFrom } from "rxjs";
 import { xssFormGroupValidator } from "src/app/core/custom-validators/xss-validator";
@@ -52,6 +53,7 @@ import { PanelDatacenterComponent } from "../add-datacenter/datacenter.component
         InputNumberModule,
         AsyncPipe,
         TranslatePipe,
+        ScrollPanel,
     ],
 })
 export class PanelServerParametersComponent {
