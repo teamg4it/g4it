@@ -8,6 +8,15 @@
         [attr.aria-label]="'common.skip-to-main-content' | translate"
     ></button>
 
+    @if (!isMobile()) {
+        <aside
+            class="left-sidebar hidden lg:block"
+            [attr.aria-label]="'common.main-navigation' | translate"
+        >
+            <app-left-sidebar />
+        </aside>
+    }
+
     <!-- Header -->
     <header class="header w-full fixed top-0 left-0 z-10 flex items-center" role="banner">
         <app-top-header />
@@ -16,14 +25,7 @@
     <!-- Sidebar + Main content container -->
     <div class="flex w-full">
         <!-- Sidebar -->
-        @if (!isMobile()) {
-            <aside
-                class="left-sidebar hidden lg:block"
-                [attr.aria-label]="'common.main-navigation' | translate"
-            >
-                <app-left-sidebar />
-            </aside>
-        }
+
         <!-- Main content area -->
         <main class="flex-1" #mainContent>
             <router-outlet></router-outlet>
