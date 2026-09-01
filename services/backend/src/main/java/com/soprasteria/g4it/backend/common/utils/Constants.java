@@ -105,6 +105,7 @@ public final class Constants {
      * BATCH SIZE
      */
     public static final int BATCH_SIZE = 10000;
+    public static final int BATCH_SIZE_50000 = 10000;
     /**
      * CSV EXTENSION
      */

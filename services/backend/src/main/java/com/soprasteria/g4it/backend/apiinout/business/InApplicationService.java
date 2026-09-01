@@ -13,13 +13,20 @@ import com.soprasteria.g4it.backend.apiinout.modeldb.InApplication;
 import com.soprasteria.g4it.backend.apiinout.repository.InApplicationRepository;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
+import com.soprasteria.g4it.backend.common.utils.Constants;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InApplicationRest;
+import jakarta.persistence.EntityManager;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -33,15 +40,42 @@ public class InApplicationService {
     private InApplicationMapper inApplicationMapper;
     private InventoryRepository inventoryRepository;
 
+    @Autowired
+    private EntityManager entityManager;
+
     /**
      * Get the applications list linked to an inventory
      *
      * @param inventoryId the inventory id
      * @return the application list.
      */
-    public List<InApplicationRest> getByInventory(final Long inventoryId) {
+    /*public List<InApplicationRest> getByInventory(final Long inventoryId) {
         final List<InApplication> inApplication = inApplicationRepository.findByInventoryId(inventoryId);
         return inApplicationMapper.toRest(inApplication);
+    }*/
+    @Transactional(readOnly = true)
+    public List<InApplicationRest> getByInventory(final Long inventoryId) {
+
+        List<InApplicationRest> result = new ArrayList<>();
+        int pageNumber = 0;
+
+        while (true) {
+
+            Pageable page = PageRequest.of(pageNumber, Constants.BATCH_SIZE_50000);
+
+            List<InApplication> inApplications =
+                    inApplicationRepository
+                            .findByInventoryIdOrderByIdAsc(inventoryId,page);
+            if (inApplications.isEmpty()) {
+                break;
+            }
+
+            result.addAll(inApplicationMapper.toRest(inApplications));
+            entityManager.clear();
+            pageNumber++;
+        }
+
+        return result;
     }
 
     /**
