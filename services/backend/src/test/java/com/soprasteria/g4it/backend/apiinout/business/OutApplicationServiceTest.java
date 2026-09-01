@@ -16,6 +16,7 @@ import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.common.task.modeldb.Task;
 import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
 import com.soprasteria.g4it.backend.server.gen.api.dto.OutApplicationRest;
+import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -23,7 +24,6 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.SliceImpl;
 
 import java.util.List;
 import java.util.Optional;
@@ -49,6 +49,9 @@ class OutApplicationServiceTest {
 
     @Mock
     private OutApplicationMapper outApplicationMapper;
+
+    @Mock
+    private EntityManager entityManager;
 
     @Test
     void getByInventory_returnsEmptyList_whenNoTaskFound() {
@@ -87,10 +90,10 @@ class OutApplicationServiceTest {
         when(taskRepository.findByInventoryAndLastCreationDate(inventory))
                 .thenReturn(Optional.of(task));
 
-        when(outApplicationRepository.findByTaskId(
+        doReturn(applications, List.of()).when(outApplicationRepository).findByTaskIdOrderByIdAsc(
                 eq(1L),
                 any(Pageable.class)
-        )).thenReturn(new SliceImpl<>(applications));
+        );
 
         when(outApplicationMapper.toRest(applications))
                 .thenReturn(mapped);
@@ -103,8 +106,8 @@ class OutApplicationServiceTest {
         verify(taskRepository)
                 .findByInventoryAndLastCreationDate(inventory);
 
-        verify(outApplicationRepository)
-                .findByTaskId(eq(1L), any(Pageable.class));
+        verify(outApplicationRepository, atLeast(1))
+                .findByTaskIdOrderByIdAsc(eq(1L), any(Pageable.class));
 
         verify(outApplicationMapper)
                 .toRest(applications);
@@ -132,10 +135,10 @@ class OutApplicationServiceTest {
         when(taskRepository.findTopByDigitalServiceVersionOrderByIdDesc(dsv))
                 .thenReturn(Optional.of(task));
 
-        when(outApplicationRepository.findByTaskId(
+        doReturn(applications, List.of()).when(outApplicationRepository).findByTaskIdOrderByIdAsc(
                 eq(1L),
                 any(Pageable.class)
-        )).thenReturn(new SliceImpl<>(applications));
+        );
 
         when(outApplicationMapper.toRest(applications))
                 .thenReturn(mapped);
@@ -151,8 +154,8 @@ class OutApplicationServiceTest {
         verify(taskRepository)
                 .findTopByDigitalServiceVersionOrderByIdDesc(dsv);
 
-        verify(outApplicationRepository)
-                .findByTaskId(eq(1L), any(Pageable.class));
+        verify(outApplicationRepository, atLeast(1))
+                .findByTaskIdOrderByIdAsc(eq(1L), any(Pageable.class));
 
         verify(outApplicationMapper)
                 .toRest(applications);
@@ -180,28 +183,20 @@ class OutApplicationServiceTest {
         when(taskRepository.findByInventoryAndLastCreationDate(inventory))
                 .thenReturn(Optional.of(task));
 
-        when(outApplicationRepository.findByTaskId(
-                eq(1L), any(Pageable.class)))
-                .thenReturn(
-                        new SliceImpl<>(batch1, Pageable.ofSize(5000), true),
-                        new SliceImpl<>(batch2)
-                );
+        doReturn(batch1, batch2, List.of()).when(outApplicationRepository).findByTaskIdOrderByIdAsc(
+                eq(1L), any(Pageable.class));
 
-        when(outApplicationMapper.toRest(batch1))
-                .thenReturn(mapped1);
-
-        when(outApplicationMapper.toRest(batch2))
-                .thenReturn(mapped2);
+        when(outApplicationMapper.toRest(any(List.class)))
+                .thenReturn(mapped1, mapped2);
 
         List<OutApplicationRest> result =
                 outApplicationService.getByInventory(inventory);
 
         assertEquals(2, result.size());
 
-        verify(outApplicationRepository, times(2))
-                .findByTaskId(eq(1L), any(Pageable.class));
+        verify(outApplicationRepository, times(3))
+                .findByTaskIdOrderByIdAsc(eq(1L), any(Pageable.class));
 
-        verify(outApplicationMapper).toRest(batch1);
-        verify(outApplicationMapper).toRest(batch2);
+        verify(outApplicationMapper, times(2)).toRest(any(List.class));
     }
 }
