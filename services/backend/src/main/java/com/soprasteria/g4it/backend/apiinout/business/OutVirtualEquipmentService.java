@@ -28,7 +28,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import org.springframework.transaction.annotation.Transactional;
 
 
@@ -41,8 +40,6 @@ public class OutVirtualEquipmentService {
     private DigitalServiceVersionRepository digitalServiceVersionRepository;
     private TaskRepository taskRepository;
     private OutVirtualEquipmentMapper outVirtualEquipmentMapper;
-
-    @PersistenceContext
     private EntityManager entityManager;
 
     /**
@@ -52,72 +49,19 @@ public class OutVirtualEquipmentService {
      * @param inventory the inventory
      * @return list of aggregated virtual equipments
      */
-    /*public List<OutVirtualEquipmentRest> getByInventory(final Inventory inventory) {
-
-        Optional<Task> task = taskRepository.findByInventoryAndLastCreationDate(inventory);
-
-        if (task.isEmpty()) {
-            return List.of();
-        }
-
-        return outVirtualEquipmentMapper.toRest(
-                outVirtualEquipmentRepository.findByTaskId(task.get().getId())
-        );
-
-    }*/
     @Transactional(readOnly = true)
     public List<OutVirtualEquipmentRest> getByInventory(final Inventory inventory) {
-
-        Optional<Task> task =
-                taskRepository.findByInventoryAndLastCreationDate(inventory);
-
-        if (task.isEmpty()) {
-            return List.of();
-        }
-
-        final Long taskId = task.get().getId();
-
-        int pageNumber = 0;
-
-        List<OutVirtualEquipmentRest> result = new ArrayList<>();
-
-        while (true) {
-            Pageable page = PageRequest.of(pageNumber, Constants.BATCH_SIZE_50000);
-            List<OutVirtualEquipment> virtualEquipments =
-                    outVirtualEquipmentRepository
-                            .findByTaskIdOrderByIdAsc(taskId, page);
-            if (virtualEquipments.isEmpty()) {
-                break;
-            }
-
-            result.addAll(outVirtualEquipmentMapper.toRest(virtualEquipments));
-            entityManager.clear();
-            pageNumber++;
-        }
-        return result;
+        Optional<Task> task = taskRepository.findByInventoryAndLastCreationDate(inventory);
+        return task.map(t -> getVirtualEquipmentsByTaskId(t.getId())).orElse(List.of());
     }
 
-
     /**
-     * Get virtual  equipments by digital service uid
+     * Get virtual equipments by digital service uid
      * Find by last task
      *
      * @param digitalServiceVersionUid the digital service uid
      * @return list of aggregated virtual equipments
      */
-    /*public List<OutVirtualEquipmentRest> getByDigitalServiceVersionUid(final String digitalServiceVersionUid) {
-        DigitalServiceVersion digitalServiceVersion = digitalServiceVersionRepository.findById(digitalServiceVersionUid).orElseThrow();
-
-        Optional<Task> task = taskRepository.findTopByDigitalServiceVersionOrderByIdDesc(digitalServiceVersion);
-        if (task.isEmpty()) {
-            return List.of();
-        }
-
-        return outVirtualEquipmentMapper.toRest(
-                outVirtualEquipmentRepository.findByTaskId(task.get().getId())
-        );
-
-    }*/
     @Transactional(readOnly = true)
     public List<OutVirtualEquipmentRest> getByDigitalServiceVersionUid(
             final String digitalServiceVersionUid) {
@@ -128,31 +72,31 @@ public class OutVirtualEquipmentService {
                         .orElseThrow();
 
         Optional<Task> task =
-                taskRepository.findTopByDigitalServiceVersionOrderByIdDesc(
-                        digitalServiceVersion);
+                taskRepository.findTopByDigitalServiceVersionOrderByIdDesc(digitalServiceVersion);
+        
+        return task.map(t -> getVirtualEquipmentsByTaskId(t.getId())).orElse(List.of());
+    }
 
-        if (task.isEmpty()) {
-            return List.of();
-        }
-
-        final Long taskId = task.get().getId();
-
+    /**
+     * Fetch virtual equipments by task id with pagination
+     *
+     * @param taskId the task id
+     * @return list of aggregated virtual equipments
+     */
+    private List<OutVirtualEquipmentRest> getVirtualEquipmentsByTaskId(final Long taskId) {
         int pageNumber = 0;
         List<OutVirtualEquipmentRest> result = new ArrayList<>();
 
         while (true) {
             Pageable page = PageRequest.of(pageNumber, Constants.BATCH_SIZE_50000);
             List<OutVirtualEquipment> virtualEquipments =
-                    outVirtualEquipmentRepository
-                            .findByTaskIdOrderByIdAsc(taskId, page);
+                    outVirtualEquipmentRepository.findByTaskIdOrderByIdAsc(taskId, page);
 
             if (virtualEquipments.isEmpty()) {
                 break;
             }
 
-            result.addAll(
-                    outVirtualEquipmentMapper.toRest(virtualEquipments)
-            );
+            result.addAll(outVirtualEquipmentMapper.toRest(virtualEquipments));
             entityManager.clear();
             pageNumber++;
         }

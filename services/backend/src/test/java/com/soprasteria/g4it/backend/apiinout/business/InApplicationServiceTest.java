@@ -18,13 +18,16 @@ import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InApplicationRest;
+import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Pageable;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,24 +46,101 @@ class InApplicationServiceTest {
     @Mock
     private InventoryRepository inventoryRepository;
 
+    @Mock
+    private EntityManager entityManager;
+
     @InjectMocks
     private InApplicationService inApplicationService;
 
-    /*@Test
-    void getByInventoryReturnsApplicationsWhenInventoryExists() {
+    @Test
+    void getByInventory_returnsEmptyList_whenNoApplicationsFound() {
         Long inventoryId = 1L;
-        List<InApplication> applications = List.of(new InApplication());
-        List<InApplicationRest> applicationRests = List.of(new InApplicationRest());
 
-        when(inApplicationRepository.findByInventoryId(inventoryId)).thenReturn(applications);
-        when(inApplicationMapper.toRest(applications)).thenReturn(applicationRests);
+        when(inApplicationRepository.findByInventoryIdOrderByIdAsc(eq(inventoryId), any(Pageable.class)))
+                .thenReturn(List.of());
 
         List<InApplicationRest> result = inApplicationService.getByInventory(inventoryId);
 
-        assertEquals(applicationRests, result);
-        verify(inApplicationRepository).findByInventoryId(inventoryId);
-        verify(inApplicationMapper).toRest(applications);
-    }*/
+        assertEquals(List.of(), result);
+        verify(inApplicationRepository).findByInventoryIdOrderByIdAsc(eq(inventoryId), any(Pageable.class));
+        verifyNoInteractions(inApplicationMapper);
+    }
+
+    @Test
+    void getByInventory_returnsMappedApplications_whenApplicationsFound() {
+        Long inventoryId = 1L;
+
+        InApplication application = new InApplication();
+        application.setId(1L);
+        application.setInventoryId(inventoryId);
+
+        List<InApplicationRest> mappedRest = List.of(InApplicationRest.builder().id(1L).build());
+
+        when(inApplicationRepository.findByInventoryIdOrderByIdAsc(eq(inventoryId), any(Pageable.class)))
+                .thenAnswer(invocation -> new ArrayList<>(List.of(application)))
+                .thenReturn(List.of());
+
+        when(inApplicationMapper.toRest(any(List.class)))
+                .thenReturn(mappedRest);
+
+        List<InApplicationRest> result = inApplicationService.getByInventory(inventoryId);
+
+        assertEquals(mappedRest, result);
+        verify(inApplicationRepository, atLeast(1))
+                .findByInventoryIdOrderByIdAsc(eq(inventoryId), any(Pageable.class));
+        verify(inApplicationMapper).toRest(any(List.class));
+    }
+
+    @Test
+    void getByInventory_processesMultipleBatches() {
+        Long inventoryId = 1L;
+
+        InApplication app1 = new InApplication();
+        app1.setId(1L);
+        InApplication app2 = new InApplication();
+        app2.setId(2L);
+
+        List<InApplicationRest> mapped1 = List.of(InApplicationRest.builder().id(1L).build());
+        List<InApplicationRest> mapped2 = List.of(InApplicationRest.builder().id(2L).build());
+
+        when(inApplicationRepository.findByInventoryIdOrderByIdAsc(eq(inventoryId), any(Pageable.class)))
+                .thenAnswer(invocation -> new ArrayList<>(List.of(app1)))
+                .thenAnswer(invocation -> new ArrayList<>(List.of(app2)))
+                .thenReturn(List.of());
+
+        when(inApplicationMapper.toRest(any(List.class)))
+                .thenReturn(mapped1, mapped2);
+
+        List<InApplicationRest> result = inApplicationService.getByInventory(inventoryId);
+
+        assertEquals(2, result.size());
+        verify(inApplicationRepository, times(3))
+                .findByInventoryIdOrderByIdAsc(eq(inventoryId), any(Pageable.class));
+        verify(inApplicationMapper, times(2))
+                .toRest(any(List.class));
+    }
+
+    @Test
+    void getByInventoryAndId_returnsApplication_whenFound() {
+        Long inventoryId = 1L;
+        Long applicationId = 2L;
+        InApplication application = new InApplication();
+        application.setInventoryId(inventoryId);
+        application.setId(applicationId);
+        InApplicationRest applicationRest = InApplicationRest.builder().id(applicationId).build();
+
+        when(inApplicationRepository.findByInventoryIdAndId(inventoryId, applicationId))
+                .thenReturn(Optional.of(application));
+        when(inApplicationMapper.toRest(application))
+                .thenReturn(applicationRest);
+
+        InApplicationRest result = inApplicationService.getByInventoryAndId(inventoryId, applicationId);
+
+        assertNotNull(result);
+        assertEquals(applicationId, result.getId());
+        verify(inApplicationRepository).findByInventoryIdAndId(inventoryId, applicationId);
+        verify(inApplicationMapper).toRest(application);
+    }
 
     @Test
     void getByInventoryAndIdThrowsException() {

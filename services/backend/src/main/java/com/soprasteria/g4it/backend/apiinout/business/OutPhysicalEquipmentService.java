@@ -19,7 +19,6 @@ import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
 import com.soprasteria.g4it.backend.common.utils.Constants;
 import com.soprasteria.g4it.backend.server.gen.api.dto.OutPhysicalEquipmentRest;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -43,8 +42,6 @@ public class OutPhysicalEquipmentService {
     private DigitalServiceVersionRepository digitalServiceVersionRepository;
     private TaskRepository taskRepository;
     private OutPhysicalEquipmentMapper outPhysicalEquipmentMapper;
-
-    @PersistenceContext
     private EntityManager entityManager;
 
     /**
@@ -54,104 +51,67 @@ public class OutPhysicalEquipmentService {
      * @param digitalServiceVersionUid the digital service uid
      * @return the list of aggregated physical equipments
      */
-    /*public List<OutPhysicalEquipmentRest> getByDigitalServiceVersionUid(final String digitalServiceVersionUid) {
-
-        DigitalServiceVersion digitalServiceVersion = digitalServiceVersionRepository.findById(digitalServiceVersionUid).orElseThrow();
-        Optional<Task> task = taskRepository.findTopByDigitalServiceVersionOrderByIdDesc(digitalServiceVersion);
-        if (task.isEmpty()) {
-            return List.of();
-        }
-        return outPhysicalEquipmentMapper.toRest(
-                outPhysicalEquipmentRepository.findByTaskId(task.get().getId())
-        );
-
-    }*/
-
     @Transactional(readOnly = true)
     public List<OutPhysicalEquipmentRest> getByDigitalServiceVersionUid(
             final String digitalServiceVersionUid) {
-
         DigitalServiceVersion digitalServiceVersion = digitalServiceVersionRepository
-                        .findById(digitalServiceVersionUid)
-                        .orElseThrow();
+                .findById(digitalServiceVersionUid)
+                .orElseThrow();
 
-        Optional<Task> task = taskRepository.findTopByDigitalServiceVersionOrderByIdDesc(
-                        digitalServiceVersion);
-
-        if (task.isEmpty()) {
-            return List.of();
-        }
-
-        final Long taskId = task.get().getId();
-
-        int pageNumber = 0;
-        List<OutPhysicalEquipmentRest> result = new ArrayList<>();
-
-        while (true) {
-            Pageable page = PageRequest.of(pageNumber, Constants.BATCH_SIZE_50000);
-            List<OutPhysicalEquipment> physicalEquipments =
-                    outPhysicalEquipmentRepository
-                            .findByTaskIdOrderByIdAsc(taskId, page);
-
-            if (physicalEquipments.isEmpty()) {
-                break;
-            }
-
-            result.addAll(
-                    outPhysicalEquipmentMapper.toRest(physicalEquipments)
-            );
-
-            entityManager.clear();
-            pageNumber++;
-        }
-        return result;
+        Optional<Task> task = taskRepository.findTopByDigitalServiceVersionOrderByIdDesc(digitalServiceVersion);
+        
+        return task.map(t -> getPhysicalEquipmentsByTaskId(t.getId(), true)).orElse(List.of());
     }
 
     /**
-     * Get physical equipments by digital service uid
+     * Get physical equipments by inventory
      * Find by last task
      *
      * @param inventory the inventory
      * @return the list of aggregated physical equipments
      */
+    @Transactional(readOnly = true)
     public List<OutPhysicalEquipmentRest> getByInventory(final Inventory inventory) {
-
         Optional<Task> task = taskRepository.findByInventoryAndLastCreationDate(inventory);
+        return task.map(t -> getPhysicalEquipmentsByTaskId(t.getId(), false)).orElse(List.of());
+    }
 
-        if (task.isEmpty()) {
-            return List.of();
-        }
-
-        final Long taskId = task.get().getId();
+    /**
+     * Fetch physical equipments by task id with pagination
+     *
+     * @param taskId the task id
+     * @param useOrderedQuery whether to use the ordered query (findByTaskIdOrderByIdAsc)
+     * @return list of aggregated physical equipments
+     */
+    private List<OutPhysicalEquipmentRest> getPhysicalEquipmentsByTaskId(
+            final Long taskId, 
+            final boolean useOrderedQuery) {
         int pageNumber = 0;
         List<OutPhysicalEquipmentRest> result = new ArrayList<>();
 
         while (true) {
-            Pageable page = PageRequest.of(
-                    pageNumber,
-                    Constants.BATCH_SIZE_50000
-            );
-
-            List<OutPhysicalEquipment> physicalEquipments =
-                    outPhysicalEquipmentRepository
-                            .findByTaskId(taskId, page);
+            Pageable page = PageRequest.of(pageNumber, Constants.BATCH_SIZE_50000);
+            List<OutPhysicalEquipment> physicalEquipments = useOrderedQuery
+                    ? outPhysicalEquipmentRepository.findByTaskIdOrderByIdAsc(taskId, page)
+                    : outPhysicalEquipmentRepository.findByTaskId(taskId, page);
 
             if (physicalEquipments.isEmpty()) {
                 break;
             }
 
-            result.addAll(
-                    outPhysicalEquipmentMapper.toRest(physicalEquipments)
-            );
-            log.info(
-                    "Processed  out_physical_equipment  page={}, records={}, totalResult={}",
-                    pageNumber,
-                    physicalEquipments.size(),
-                    result.size()
-            );
-            physicalEquipments.clear();
+            result.addAll(outPhysicalEquipmentMapper.toRest(physicalEquipments));
+            
+            if (!useOrderedQuery) {
+                log.info(
+                        "Processed out_physical_equipment page={}, records={}, totalResult={}",
+                        pageNumber,
+                        physicalEquipments.size(),
+                        result.size()
+                );
+                physicalEquipments.clear();
+            }
+            
             entityManager.clear();
-
             pageNumber++;
         }
         return result;

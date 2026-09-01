@@ -21,7 +21,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Pageable;
 
@@ -114,6 +113,36 @@ class OutApplicationServiceTest {
     }
 
     @Test
+    void getByDigitalServiceVersionUid_returnsEmptyList_whenNoTaskFound() {
+        String uid = "uid123";
+
+        DigitalServiceVersion dsv = new DigitalServiceVersion();
+        dsv.setUid(uid);
+
+        when(digitalServiceVersionRepository.findById(uid))
+                .thenReturn(Optional.of(dsv));
+
+        when(taskRepository.findTopByDigitalServiceVersionOrderByIdDesc(dsv))
+                .thenReturn(Optional.empty());
+
+        List<OutApplicationRest> result =
+                outApplicationService.getByDigitalServiceVersionUid(uid);
+
+        assertEquals(List.of(), result);
+
+        verify(digitalServiceVersionRepository)
+                .findById(uid);
+
+        verify(taskRepository)
+                .findTopByDigitalServiceVersionOrderByIdDesc(dsv);
+
+        verifyNoInteractions(
+                outApplicationRepository,
+                outApplicationMapper
+        );
+    }
+
+    @Test
     void getByDigitalServiceVersionUid_returnsMappedApplications_whenTaskFound() {
         String uid = "uid123";
 
@@ -183,8 +212,8 @@ class OutApplicationServiceTest {
         when(taskRepository.findByInventoryAndLastCreationDate(inventory))
                 .thenReturn(Optional.of(task));
 
-        doReturn(batch1, batch2, List.of()).when(outApplicationRepository).findByTaskIdOrderByIdAsc(
-                eq(1L), any(Pageable.class));
+        doReturn(batch1, batch2, List.of()).when(outApplicationRepository)
+                .findByTaskIdOrderByIdAsc(eq(1L), any(Pageable.class));
 
         when(outApplicationMapper.toRest(any(List.class)))
                 .thenReturn(mapped1, mapped2);
@@ -197,6 +226,53 @@ class OutApplicationServiceTest {
         verify(outApplicationRepository, times(3))
                 .findByTaskIdOrderByIdAsc(eq(1L), any(Pageable.class));
 
-        verify(outApplicationMapper, times(2)).toRest(any(List.class));
+        verify(outApplicationMapper, times(2))
+                .toRest(any(List.class));
+    }
+
+    @Test
+    void getByDigitalServiceVersionUid_processesMultipleBatches() {
+        String uid = "uid123";
+
+        DigitalServiceVersion dsv = new DigitalServiceVersion();
+        dsv.setUid(uid);
+
+        Task task = new Task();
+        task.setId(1L);
+
+        List<OutApplication> batch1 =
+                List.of(new OutApplication());
+
+        List<OutApplication> batch2 =
+                List.of(new OutApplication());
+
+        List<OutApplicationRest> mapped1 =
+                List.of(OutApplicationRest.builder().build());
+
+        List<OutApplicationRest> mapped2 =
+                List.of(OutApplicationRest.builder().build());
+
+        when(digitalServiceVersionRepository.findById(uid))
+                .thenReturn(Optional.of(dsv));
+
+        when(taskRepository.findTopByDigitalServiceVersionOrderByIdDesc(dsv))
+                .thenReturn(Optional.of(task));
+
+        doReturn(batch1, batch2, List.of()).when(outApplicationRepository)
+                .findByTaskIdOrderByIdAsc(eq(1L), any(Pageable.class));
+
+        when(outApplicationMapper.toRest(any(List.class)))
+                .thenReturn(mapped1, mapped2);
+
+        List<OutApplicationRest> result =
+                outApplicationService.getByDigitalServiceVersionUid(uid);
+
+        assertEquals(2, result.size());
+
+        verify(outApplicationRepository, times(3))
+                .findByTaskIdOrderByIdAsc(eq(1L), any(Pageable.class));
+
+        verify(outApplicationMapper, times(2))
+                .toRest(any(List.class));
     }
 }
