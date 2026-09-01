@@ -15,6 +15,7 @@ import com.soprasteria.g4it.backend.apiloadinputfiles.repository.CheckDatacenter
 import com.soprasteria.g4it.backend.apiloadinputfiles.repository.CheckPhysicalEquipmentRepository;
 import com.soprasteria.g4it.backend.apiloadinputfiles.repository.CheckVirtualEquipmentRepository;
 import com.soprasteria.g4it.backend.common.model.LineError;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class CheckConstraintService {
     @Autowired
@@ -230,13 +232,30 @@ public class CheckConstraintService {
                 .collect(Collectors.toList());
 
         List<CoherenceParentDTO> incoherentVirtualEquipement = new ArrayList<>();
+        long startTime = System.currentTimeMillis();
+        log.info("Start Check metadata inventory file for taskId {} and inventoryId {} ", taskId, inventoryId);
 
-        if (errorenousPhysicalEquipement.isEmpty()) {
-            incoherentVirtualEquipement = checkVirtualEqpRepository.findIncoherentVirtualEquipments(taskId, inventoryId, digitalServiceVersionUid);
+        if (digitalServiceVersionUid != null) {
+            if (errorenousPhysicalEquipement.isEmpty()) {
+                incoherentVirtualEquipement = checkVirtualEqpRepository
+                        .findIncoherentVirtualEquipmentsByDsv(taskId, digitalServiceVersionUid);
+            } else {
+                incoherentVirtualEquipement = checkVirtualEqpRepository
+                        .findIncoherentVirtualEquipmentsByDsv(taskId, digitalServiceVersionUid, errorenousPhysicalEquipement);
+            }
         } else {
-            incoherentVirtualEquipement = checkVirtualEqpRepository.findIncoherentVirtualEquipments(taskId, inventoryId, digitalServiceVersionUid, errorenousPhysicalEquipement);
+            if (errorenousPhysicalEquipement.isEmpty()) {
+                log.info("checking incoherent virtual equipments without any parents");
+                incoherentVirtualEquipement = checkVirtualEqpRepository
+                        .findIncoherentVirtualEquipmentsByInventory(taskId, inventoryId);
+            } else {
+                log.info("checking incoherent virtual equipments with any parents and size {}", errorenousPhysicalEquipement.size());
+                incoherentVirtualEquipement = checkVirtualEqpRepository
+                        .findIncoherentVirtualEquipmentsByInventory(taskId, inventoryId, errorenousPhysicalEquipement);
+            }
         }
-
+        long endTime = System.currentTimeMillis();
+        log.info("checkMetadataInventoryFile ends Time taken: {}s", (endTime - startTime)/1000);
 
         for (CoherenceParentDTO coherenceParentDTO : incoherentVirtualEquipement) {
 
