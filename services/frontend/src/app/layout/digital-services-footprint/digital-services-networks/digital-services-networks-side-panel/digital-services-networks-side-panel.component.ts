@@ -19,6 +19,7 @@ import { MessageService } from "primeng/api";
 import { Button } from "primeng/button";
 import { InputNumberModule } from "primeng/inputnumber";
 import { InputTextModule } from "primeng/inputtext";
+import { ScrollPanel } from "primeng/scrollpanel";
 import { SelectModule } from "primeng/select";
 import { noWhitespaceValidator } from "src/app/core/custom-validators/no-white-space.validator";
 import { uniqueNameValidator } from "src/app/core/custom-validators/unique-name.validator";
@@ -43,6 +44,7 @@ import { AutofocusDirective } from "../../../../core/directives/auto-focus.direc
         Button,
         AsyncPipe,
         TranslatePipe,
+        ScrollPanel,
     ],
 })
 export class DigitalServicesNetworksSidePanelComponent implements OnInit {

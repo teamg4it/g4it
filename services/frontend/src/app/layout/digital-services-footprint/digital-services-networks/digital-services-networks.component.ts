@@ -14,6 +14,7 @@ import {
     signal,
     ViewChild,
 } from "@angular/core";
+import { TranslateModule } from "@ngx-translate/core";
 import { addYears } from "date-fns";
 import { MessageService } from "primeng/api";
 import { DrawerModule } from "primeng/drawer";
@@ -40,6 +41,7 @@ import { DigitalServicesNetworksSidePanelComponent } from "./digital-services-ne
         DigitalServiceTableComponent,
         DrawerModule,
         DigitalServicesNetworksSidePanelComponent,
+        TranslateModule,
     ],
 })
 export class DigitalServicesNetworksComponent implements OnInit {
