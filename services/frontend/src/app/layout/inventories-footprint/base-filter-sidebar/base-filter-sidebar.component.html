@@ -4,15 +4,17 @@
         (visibleChange)="visibleChange.emit($event)"
         position="right"
         appendTo="body"
-        [baseZIndex]="10000"
         styleClass="w-5"
         (onHide)="closeFilterSidebar()"
     >
         <ng-template #headless>
             <div pFocusTrap class="create-ds-sidebar">
                 <div class="space-form">
-                    <h2>{{ "inventories-footprint.filter-view" | translate }}</h2>
+                    <h2>
+                        {{ "inventories-footprint.filter-view" | translate }}
+                    </h2>
                     <p-button
+                        appAutofocus
                         id="close-filter-sidebar-button"
                         (onClick)="closeFilterSidebar()"
                         [link]="true"
