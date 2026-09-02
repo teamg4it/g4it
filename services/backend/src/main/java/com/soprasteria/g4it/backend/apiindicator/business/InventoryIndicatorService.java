@@ -99,12 +99,93 @@ public class InventoryIndicatorService {
     }
 
     /**
+     * §4.4 - get a single DB-side page of application indicators for the table view.
+     *
+     * @param organization the organization.
+     * @param workspaceId  the workspaceId.
+     * @param inventoryId  the inventory id.
+     * @param pageable     the page/size request.
+     * @return the requested page.
+     */
+    public ApplicationIndicatorsPageBO getApplicationIndicatorsPage(final String organization, final Long workspaceId,
+                                                                     final Long inventoryId,
+                                                                     final org.springframework.data.domain.Pageable pageable) {
+        final InventoryBO inventory = inventoryService.getInventory(organization, workspaceId, inventoryId);
+        return indicatorService.getApplicationIndicatorsPage(getLastTaskId(inventory), pageable);
+    }
+
+    /**
+     * §4.1 - get aggregated impact totals per criterion, filtered by the shared
+     * dimensions.
+     *
+     * @param organization the organization.
+     * @param workspaceId  the workspaceId.
+     * @param inventoryId  the inventory id.
+     * @param filters      the shared filter dimensions.
+     * @return one aggregated entry per matching criterion.
+     */
+    public List<ApplicationMultiCriteriaImpactBO> getApplicationMultiCriteriaImpacts(final String organization,
+                                                                                      final Long workspaceId,
+                                                                                      final Long inventoryId,
+                                                                                      final ApplicationCriteriaFilterBO filters) {
+        final InventoryBO inventory = inventoryService.getInventory(organization, workspaceId, inventoryId);
+        return indicatorService.getApplicationMultiCriteriaImpacts(getLastTaskId(inventory), filters);
+    }
+
+    /**
+     * §4.2/§4.3 - get the dual-axis (graphLevel x repartition) aggregation for
+     * the graph view, including drill-down navigation.
+     *
+     * @param organization the organization.
+     * @param workspaceId  the workspaceId.
+     * @param inventoryId  the inventory id.
+     * @param criteria     the criteria to aggregate.
+     * @param graphLevel   the current drill/tree position.
+     * @param repartition  the fixed secondary breakdown axis.
+     * @param filters      the shared + click-path filter dimensions.
+     * @return one entry per requested criterion, with nested nodes/repartitions.
+     */
+    public List<ApplicationMultiCriteriaBO> getApplicationMultiCriteriaIndicators(final String organization,
+                                                                                   final Long workspaceId,
+                                                                                   final Long inventoryId,
+                                                                                   final List<String> criteria,
+                                                                                   final GraphLevel graphLevel,
+                                                                                   final RepartitionType repartition,
+                                                                                   final ApplicationCriteriaFilterBO filters) {
+        final InventoryBO inventory = inventoryService.getInventory(organization, workspaceId, inventoryId);
+        return indicatorService.getApplicationMultiCriteriaIndicators(getLastTaskId(inventory), criteria, graphLevel, repartition, filters);
+    }
+
+    /**
+     * §4.3 (optional) - get standing hierarchy counts (header KPIs) for the whole
+     * current filter scope.
+     *
+     * @param organization the organization.
+     * @param workspaceId  the workspaceId.
+     * @param inventoryId  the inventory id.
+     * @param filters      the shared filter dimensions.
+     * @return the aggregated hierarchy counts.
+     */
+    public ApplicationHierarchyCountsBO getApplicationHierarchyCounts(final String organization,
+                                                                       final Long workspaceId,
+                                                                       final Long inventoryId,
+                                                                       final ApplicationCriteriaFilterBO filters) {
+        final InventoryBO inventory = inventoryService.getInventory(organization, workspaceId, inventoryId);
+        return indicatorService.getApplicationHierarchyCounts(getLastTaskId(inventory), filters);
+    }
+
+    /**
      * Delete inventory indicators.
      *
      * @param organization the organization.
      * @param workspaceId  the workspaceId.
      * @param inventoryId  the inventory id.
      */
+    @org.springframework.cache.annotation.Caching(evict = {
+            @org.springframework.cache.annotation.CacheEvict(value = "applicationMultiCriteriaImpacts", allEntries = true),
+            @org.springframework.cache.annotation.CacheEvict(value = "applicationMultiCriteria", allEntries = true),
+            @org.springframework.cache.annotation.CacheEvict(value = "applicationHierarchyCounts", allEntries = true)
+    })
     public void deleteIndicators(final String organization, final Long workspaceId, final Long inventoryId) {
         // clean all evaluating tasks
         taskService.deleteEvaluatingTasksByInventoryId(organization, workspaceId, inventoryId);

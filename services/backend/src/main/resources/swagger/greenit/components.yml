@@ -563,6 +563,254 @@ components:
           type: number
           format: double
 
+    # --- Application View Optimization Feature (see spec/applicationViewOptimizationFeature/solution.md) ---
+
+    ApplicationCriteriaFilterRest:
+      type: object
+      description: Shared, optional filter dimensions for the application aggregation endpoints. Multiple values on the same dimension are combined with OR, different dimensions with AND.
+      properties:
+        environment:
+          type: array
+          items:
+            type: string
+        equipmentType:
+          type: array
+          items:
+            type: string
+        lifeCycle:
+          type: array
+          items:
+            type: string
+        domain:
+          type: array
+          items:
+            type: string
+        subDomain:
+          type: array
+          items:
+            type: string
+        applicationName:
+          type: array
+          items:
+            type: string
+
+    ApplicationMultiCriteriaImpactsRequestRest:
+      type: object
+      description: Same filter dimensions as ApplicationCriteriaFilterRest, excluding applicationName (not applicable to §4.1).
+      properties:
+        environment:
+          type: array
+          items:
+            type: string
+        equipmentType:
+          type: array
+          items:
+            type: string
+        lifeCycle:
+          type: array
+          items:
+            type: string
+        domain:
+          type: array
+          items:
+            type: string
+        subDomain:
+          type: array
+          items:
+            type: string
+
+    ApplicationMultiCriteriaImpactRest:
+      type: object
+      properties:
+        criteria:
+          type: string
+        unit:
+          type: string
+        impact:
+          type: number
+          format: double
+        sip:
+          type: number
+          format: double
+        countValue:
+          type: integer
+          format: int64
+
+    GraphLevelRest:
+      type: string
+      description: Current position in the graph drill-down tree. GLOBAL performs no node/hierarchy grouping (initial page load, no click yet).
+      enum: [ global, domain, subDomain, application, virtualEquipment ]
+
+    RepartitionTypeRest:
+      type: string
+      description: Fixed, flat secondary breakdown axis, independent of graphLevel.
+      enum: [ lifeCycle, environment, equipmentType ]
+
+    ApplicationMultiCriteriaRequestRest:
+      type: object
+      required: [ criteria, graphLevel, repartition ]
+      properties:
+        criteria:
+          type: array
+          items:
+            type: string
+        graphLevel:
+          $ref: "#/components/schemas/GraphLevelRest"
+        repartition:
+          $ref: "#/components/schemas/RepartitionTypeRest"
+        filters:
+          $ref: "#/components/schemas/ApplicationCriteriaFilterRest"
+
+    ApplicationRepartitionImpactRest:
+      type: object
+      properties:
+        label:
+          type: string
+        impact:
+          type: number
+          format: double
+        sip:
+          type: number
+          format: double
+        countValue:
+          type: integer
+          format: int64
+        consistentCount:
+          type: integer
+          format: int64
+          description: Count of rows where statusIndicator = 'OK' (data consistent)
+        inconsistentCount:
+          type: integer
+          format: int64
+          description: Count of rows where statusIndicator = 'ERREUR' (data inconsistent)
+
+    ApplicationNodeRest:
+      type: object
+      description: One node of the graph tree at the requested graphLevel. Absent label at GLOBAL. Each level exposes only the extra fields it needs (see solution.md §4.3).
+      properties:
+        label:
+          type: string
+        impact:
+          type: number
+          format: double
+        sip:
+          type: number
+          format: double
+        countValue:
+          type: integer
+          format: int64
+        consistentCount:
+          type: integer
+          format: int64
+        inconsistentCount:
+          type: integer
+          format: int64
+        subDomainCount:
+          type: integer
+          format: int64
+          description: Present only when graphLevel = domain
+        applicationCount:
+          type: integer
+          format: int64
+          description: Present only when graphLevel = domain | subDomain
+        cluster:
+          type: string
+          description: Present only when graphLevel = virtualEquipment
+        equipmentType:
+          type: string
+          description: Present only when graphLevel = virtualEquipment
+        environment:
+          type: string
+          description: Present only when graphLevel = virtualEquipment
+        repartitions:
+          type: array
+          items:
+            $ref: "#/components/schemas/ApplicationRepartitionImpactRest"
+
+    ApplicationMultiCriteriaRest:
+      type: object
+      properties:
+        criteria:
+          type: string
+        unit:
+          type: string
+        nodes:
+          type: array
+          items:
+            $ref: "#/components/schemas/ApplicationNodeRest"
+
+    ApplicationHierarchyCountsRest:
+      type: object
+      properties:
+        domainCount:
+          type: integer
+          format: int64
+        subDomainCount:
+          type: integer
+          format: int64
+        applicationCount:
+          type: integer
+          format: int64
+        virtualEquipmentCount:
+          type: integer
+          format: int64
+
+    ApplicationIndicatorRowRest:
+      type: object
+      description: Flattened row (one per application/criterion) for the §4.4 paginated table view.
+      properties:
+        criteria:
+          type: string
+        unit:
+          type: string
+        lifeCycle:
+          type: string
+        domain:
+          type: string
+        subDomain:
+          type: string
+        environment:
+          type: string
+        equipmentType:
+          type: string
+        applicationName:
+          type: string
+        virtualEquipmentName:
+          type: string
+        cluster:
+          type: string
+        impact:
+          type: number
+          format: double
+        sip:
+          type: number
+          format: double
+        statusIndicator:
+          type: string
+        provider:
+          type: string
+        location:
+          type: string
+
+    ApplicationIndicatorsPageRest:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/ApplicationIndicatorRowRest"
+        pageNumber:
+          type: integer
+        pageSize:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+
+    # --- end Application View Optimization Feature ---
+
     DataCentersIndicatorsRest:
       type: array
       items:

@@ -67,15 +67,135 @@ paths:
         - inventory-indicator
       operationId: getApplicationIndicators
       x-custom-role: "hasRole('INVENTORY_READ')"
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 0
+          required: false
+        - in: query
+          name: size
+          schema:
+            type: integer
+            default: 10
+          required: false
       responses:
         "200":
-          description: Return application indicators
+          description: Return a page of flattened application indicator rows
+          content:
+            'application/json':
+              schema:
+                $ref: "#/components/schemas/ApplicationIndicatorsPageRest"
+        "400":
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        "500":
+          $ref: '#/components/responses/InternalServerError'
+
+  /organizations/{organization}/workspaces/{workspace}/inventories/{inventoryId}/indicators/applications/multi-criteria-impacts:
+    parameters:
+      - $ref: '#/components/parameters/organizationPathParam'
+      - $ref: '#/components/parameters/workspacePathParam'
+      - $ref: '#/components/parameters/inventoryIdPathParam'
+    post:
+      description: >
+        Endpoint to retrieve, for each matching criterion, aggregated impact totals
+        (impact/sip/countValue) filtered by Environment/EquipmentType/Lifecycle/Domain/SubDomain.
+        POST + JSON body is used because domain/subDomain filter lists may contain several
+        thousand values (see solution.md §4.1).
+      tags:
+        - inventory-indicator
+      operationId: getApplicationMultiCriteriaImpacts
+      x-custom-role: "hasRole('INVENTORY_READ')"
+      requestBody:
+        description: shared filter dimensions
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ApplicationMultiCriteriaImpactsRequestRest"
+      responses:
+        "200":
+          description: Return the aggregated impact totals per criterion
           content:
             'application/json':
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/ApplicationIndicatorRest"
+                  $ref: "#/components/schemas/ApplicationMultiCriteriaImpactRest"
+        "400":
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        "500":
+          $ref: '#/components/responses/InternalServerError'
+
+  /organizations/{organization}/workspaces/{workspace}/inventories/{inventoryId}/indicators/applications/multi-criteria:
+    parameters:
+      - $ref: '#/components/parameters/organizationPathParam'
+      - $ref: '#/components/parameters/workspacePathParam'
+      - $ref: '#/components/parameters/inventoryIdPathParam'
+    post:
+      description: >
+        Endpoint to retrieve the dual-axis (graphLevel x repartition) aggregation powering the
+        graph view and its click-through drill-down (Global -> Domain -> SubDomain -> Application -> VM).
+        graphLevel=global performs no node/hierarchy grouping (see solution.md §4.2/§4.3).
+      tags:
+        - inventory-indicator
+      operationId: getApplicationMultiCriteriaIndicators
+      x-custom-role: "hasRole('INVENTORY_READ')"
+      requestBody:
+        description: criteria, drill/repartition selection and shared + click-path filters
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ApplicationMultiCriteriaRequestRest"
+      responses:
+        "200":
+          description: Return the dual-axis aggregated graph data
+          content:
+            'application/json':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApplicationMultiCriteriaRest"
+        "400":
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        "500":
+          $ref: '#/components/responses/InternalServerError'
+
+  /organizations/{organization}/workspaces/{workspace}/inventories/{inventoryId}/indicators/applications/multi-criteria/counts:
+    parameters:
+      - $ref: '#/components/parameters/organizationPathParam'
+      - $ref: '#/components/parameters/workspacePathParam'
+      - $ref: '#/components/parameters/inventoryIdPathParam'
+    post:
+      description: >
+        Optional endpoint to retrieve standing hierarchy counts (header KPIs) for the whole
+        current filter scope, independent of any single drill node (see solution.md §4.3).
+      tags:
+        - inventory-indicator
+      operationId: getApplicationHierarchyCounts
+      x-custom-role: "hasRole('INVENTORY_READ')"
+      requestBody:
+        description: shared filter dimensions
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ApplicationCriteriaFilterRest"
+      responses:
+        "200":
+          description: Return the standing hierarchy counts
+          content:
+            'application/json':
+              schema:
+                $ref: "#/components/schemas/ApplicationHierarchyCountsRest"
         "400":
           $ref: '#/components/responses/BadRequestError'
         '401':

@@ -9,8 +9,11 @@ package com.soprasteria.g4it.backend.apiindicator.controller;
 
 import com.azure.storage.blob.models.BlobErrorCode;
 import com.azure.storage.blob.models.BlobStorageException;
+import com.soprasteria.g4it.backend.apiindicator.model.GraphLevel;
+import com.soprasteria.g4it.backend.apiindicator.model.RepartitionType;
 import com.soprasteria.g4it.backend.apifiles.business.FileSystemService;
 import com.soprasteria.g4it.backend.apiindicator.business.InventoryIndicatorService;
+import com.soprasteria.g4it.backend.apiindicator.mapper.ApplicationIndicatorMapper;
 import com.soprasteria.g4it.backend.apiindicator.mapper.IndicatorRestMapper;
 import com.soprasteria.g4it.backend.apiindicator.model.ApplicationImpactBO;
 import com.soprasteria.g4it.backend.apiindicator.model.ApplicationIndicatorBO;
@@ -33,6 +36,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -59,6 +63,8 @@ public class InventoryIndicatorController implements InventoryIndicatorApiDelega
     @Autowired
     private IndicatorRestMapper indicatorRestMapper;
     @Autowired
+    private ApplicationIndicatorMapper applicationIndicatorMapper;
+    @Autowired
     private FileSystemService fileSystemService;
     @Autowired
     private AuthService authService;
@@ -84,11 +90,65 @@ public class InventoryIndicatorController implements InventoryIndicatorApiDelega
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<List<ApplicationIndicatorRest>> getApplicationIndicators(final String organization,
+    public ResponseEntity<ApplicationIndicatorsPageRest> getApplicationIndicators(final String organization,
                                                                                    final Long workspace,
-                                                                                   final Long inventoryId) {
-        final List<ApplicationIndicatorBO<ApplicationImpactBO>> indicators = inventoryIndicatorService.getApplicationIndicators(organization, workspace, inventoryId);
-        return ResponseEntity.ok().body(this.indicatorRestMapper.toApplicationIndicatorDto(indicators));
+                                                                                   final Long inventoryId,
+                                                                                   final Integer page,
+                                                                                   final Integer size) {
+        final int pageNumber = page == null ? 0 : page;
+        final int pageSize = size == null || size < 1 ? 20 : size;
+        return ResponseEntity.ok().body(indicatorRestMapper.toApplicationIndicatorsPageDto(
+                inventoryIndicatorService.getApplicationIndicatorsPage(organization, workspace, inventoryId,
+                        PageRequest.of(pageNumber, pageSize))));
+    }
+
+    /**
+     * {@inheritDoc}
+     * §4.1 - aggregated impact totals per criterion, filtered by the shared dimensions.
+     */
+    @Override
+    public ResponseEntity<List<ApplicationMultiCriteriaImpactRest>> getApplicationMultiCriteriaImpacts(
+            final String organization,
+            final Long workspace,
+            final Long inventoryId,
+            final ApplicationMultiCriteriaImpactsRequestRest requestRest) {
+        final var filters = requestRest == null ? null : applicationIndicatorMapper.toFilterBO(requestRest);
+        return ResponseEntity.ok().body(indicatorRestMapper.toApplicationMultiCriteriaImpactDto(
+                inventoryIndicatorService.getApplicationMultiCriteriaImpacts(organization, workspace, inventoryId, filters)));
+    }
+
+    /**
+     * {@inheritDoc}
+     * §4.2/§4.3 - dual-axis (graphLevel x repartition) graph aggregation, including drill-down.
+     */
+    @Override
+    public ResponseEntity<List<ApplicationMultiCriteriaRest>> getApplicationMultiCriteriaIndicators(
+            final String organization,
+            final Long workspace,
+            final Long inventoryId,
+            final ApplicationMultiCriteriaRequestRest requestRest) {
+        final GraphLevel graphLevel = GraphLevel.valueOf(requestRest.getGraphLevel().name());
+        final RepartitionType repartition = RepartitionType.valueOf(requestRest.getRepartition().name());
+        final var filters = requestRest.getFilters() == null ? null : applicationIndicatorMapper.toFilterBO(requestRest.getFilters());
+
+        return ResponseEntity.ok().body(indicatorRestMapper.toApplicationMultiCriteriaDto(
+                inventoryIndicatorService.getApplicationMultiCriteriaIndicators(organization, workspace, inventoryId,
+                        requestRest.getCriteria(), graphLevel, repartition, filters)));
+    }
+
+    /**
+     * {@inheritDoc}
+     * §4.3 (optional) - standing hierarchy counts (header KPIs) for the current filter scope.
+     */
+    @Override
+    public ResponseEntity<ApplicationHierarchyCountsRest> getApplicationHierarchyCounts(
+            final String organization,
+            final Long workspace,
+            final Long inventoryId,
+            final ApplicationCriteriaFilterRest requestRest) {
+        final var filters = requestRest == null ? null : applicationIndicatorMapper.toFilterBO(requestRest);
+        return ResponseEntity.ok().body(indicatorRestMapper.toApplicationHierarchyCountsDto(
+                inventoryIndicatorService.getApplicationHierarchyCounts(organization, workspace, inventoryId, filters)));
     }
 
     /**
@@ -100,6 +160,7 @@ public class InventoryIndicatorController implements InventoryIndicatorApiDelega
                                                                                                final Long inventoryId) {
         return ResponseEntity.ok(indicatorRestMapper.toLowImpactDto(inventoryIndicatorService.getPhysicalEquipmentsLowImpact(organization, workspace, inventoryId)));
     }
+
 
     /**
      * {@inheritDoc}

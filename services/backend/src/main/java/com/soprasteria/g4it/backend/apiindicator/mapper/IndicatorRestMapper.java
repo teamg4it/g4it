@@ -63,5 +63,12 @@ public interface IndicatorRestMapper {
     List<VirtualEquipmentElecConsumptionRest>
     toVirtualElecConsumptionDto(List<VirtualEquipmentElecConsumptionBO> bos);
 
+    List<ApplicationMultiCriteriaImpactRest> toApplicationMultiCriteriaImpactDto(final List<ApplicationMultiCriteriaImpactBO> source);
+
+    List<ApplicationMultiCriteriaRest> toApplicationMultiCriteriaDto(final List<ApplicationMultiCriteriaBO> source);
+
+    ApplicationHierarchyCountsRest toApplicationHierarchyCountsDto(final ApplicationHierarchyCountsBO source);
+
+    ApplicationIndicatorsPageRest toApplicationIndicatorsPageDto(final ApplicationIndicatorsPageBO source);
 
 }

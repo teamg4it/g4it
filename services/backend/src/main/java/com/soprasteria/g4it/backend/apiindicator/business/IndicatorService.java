@@ -94,6 +94,82 @@ public class IndicatorService {
     }
 
     /**
+     * §4.4 - retrieve a single DB-side page (LIMIT/OFFSET) of flattened
+     * application indicator rows, for the table view.
+     *
+     * @param taskId   the task id.
+     * @param pageable the page/size request.
+     * @return the requested page.
+     */
+    public ApplicationIndicatorsPageBO getApplicationIndicatorsPage(final Long taskId,
+                                                                     final org.springframework.data.domain.Pageable pageable) {
+        final org.springframework.data.domain.Page<OutApplication> page = outApplicationRepository.findByTaskId(taskId, pageable);
+        page.getContent().forEach(app -> app.setLifecycleStep(LifecycleStepUtils.getReverse(app.getLifecycleStep())));
+
+        return ApplicationIndicatorsPageBO.builder()
+                .content(applicationIndicatorMapper.toRowBO(page.getContent()))
+                .pageNumber(page.getNumber())
+                .pageSize(page.getSize())
+                .totalElements(page.getTotalElements())
+                .totalPages(page.getTotalPages())
+                .build();
+    }
+
+    /**
+     * §4.1 - retrieve aggregated impact totals per criterion, filtered by the
+     * shared dimensions. 100% database-side aggregation - see
+     * spec/applicationViewOptimizationFeature/solution.md §4.1.
+     *
+     * @param taskId  the task id.
+     * @param filters the shared filter dimensions.
+     * @return one aggregated entry per matching criterion.
+     */
+    @org.springframework.cache.annotation.Cacheable(value = "applicationMultiCriteriaImpacts", key = "{#taskId, #filters}")
+    public List<ApplicationMultiCriteriaImpactBO> getApplicationMultiCriteriaImpacts(final Long taskId,
+                                                                                      final ApplicationCriteriaFilterBO filters) {
+        return applicationIndicatorMapper.toMultiCriteriaImpactBO(
+                outApplicationRepository.aggregateMultiCriteriaImpacts(taskId, filters));
+    }
+
+    /**
+     * §4.2/§4.3 - retrieve the dual-axis (graphLevel x repartition) aggregation
+     * for the graph view, including drill-down navigation. 100% database-side
+     * aggregation - see spec/applicationViewOptimizationFeature/solution.md
+     * §4.2/§4.3.
+     *
+     * @param taskId      the task id.
+     * @param criteria    the criteria to aggregate.
+     * @param graphLevel  the current drill/tree position (primary grouping).
+     * @param repartition the fixed secondary breakdown axis.
+     * @param filters     the shared + click-path filter dimensions.
+     * @return one entry per requested criterion, with nested nodes/repartitions.
+     */
+    @org.springframework.cache.annotation.Cacheable(value = "applicationMultiCriteria",
+            key = "{#taskId, #criteria, #graphLevel, #repartition, #filters}")
+    public List<ApplicationMultiCriteriaBO> getApplicationMultiCriteriaIndicators(final Long taskId,
+                                                                                   final List<String> criteria,
+                                                                                   final GraphLevel graphLevel,
+                                                                                   final RepartitionType repartition,
+                                                                                   final ApplicationCriteriaFilterBO filters) {
+        return applicationIndicatorMapper.toMultiCriteriaBO(
+                outApplicationRepository.aggregateMultiCriteria(taskId, criteria, graphLevel, repartition, filters));
+    }
+
+    /**
+     * §4.3 (optional) - retrieve standing hierarchy counts (header KPIs) for the
+     * whole current filter scope.
+     *
+     * @param taskId  the task id.
+     * @param filters the shared filter dimensions.
+     * @return the aggregated hierarchy counts.
+     */
+    @org.springframework.cache.annotation.Cacheable(value = "applicationHierarchyCounts", key = "{#taskId, #filters}")
+    public ApplicationHierarchyCountsBO getApplicationHierarchyCounts(final Long taskId,
+                                                                       final ApplicationCriteriaFilterBO filters) {
+        return applicationIndicatorMapper.toHierarchyCountsBO(outApplicationRepository.countHierarchy(taskId, filters));
+    }
+
+    /**
      * Retrieve datacenter indicators.
      *
      * @param inventoryId the inventory id.
