@@ -87,6 +87,7 @@ export class UsersComponent implements OnInit {
     sidebarCreateMode = false; // true for create mode, false for update mode
     sidebarVisible = false;
     errorMessageVisible = false;
+    private drawerTriggerRowIndex: number | null = null;
 
     displayPopup = false;
     selectedCriteriaIS: string[] = [];
@@ -281,11 +282,29 @@ export class UsersComponent implements OnInit {
     openSidepanelForAddORUpdateOrg(
         user: UserDetails,
         isEcoMindEnabledForCurrentOrganizationSelected: boolean,
+        rowIndex: number,
     ) {
+        this.drawerTriggerRowIndex = rowIndex;
         this.sidebarVisible = true;
         this.sidebarCreateMode = user.roles.length === 0;
         this.userDetail = user;
         this.userDetailEcoMind = isEcoMindEnabledForCurrentOrganizationSelected;
+    }
+
+    closeSidebar(): void {
+        this.clearForm = true;
+        this.searchList();
+        this.sidebarVisible = false;
+
+        const rowIndex = this.drawerTriggerRowIndex;
+        this.drawerTriggerRowIndex = null;
+        // get focus on edit/add after drawer close
+        setTimeout(() => {
+            document
+                .getElementById(`user-actions-${rowIndex}`)
+                ?.querySelector<HTMLElement>("button")
+                ?.focus();
+        }, 200);
     }
 
     displayPopupFct() {

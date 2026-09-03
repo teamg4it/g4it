@@ -195,4 +195,17 @@ export class DigitalServicesNetworksComponent implements OnInit {
         }
         return 0;
     }
+
+    focusNetworkButton() {
+        setTimeout(() => {
+            if (this.network.idFront !== undefined) {
+                document
+                    .getElementById("add-networks" + this.network.idFront)
+                    ?.querySelector("button")
+                    ?.focus();
+            } else {
+                document.getElementById("add-networks")?.querySelector("button")?.focus();
+            }
+        }, 400);
+    }
 }

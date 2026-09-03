@@ -89,6 +89,7 @@
             <div class="flex">
                 @if (userService.isAllowedDigitalServiceWrite$ | async) {
                     <p-button
+                        [id]="addButtonId + (rowIndex + 1)"
                         (onClick)="doSetItem(data, rowIndex + 1); sidebarVisible(true)"
                         styleClass="p-button-text mx-1 p-1 pt-2"
                         ariaLabel="{{ 'common.edit' | translate }} {{

@@ -176,4 +176,15 @@ export class DigitalServicesCloudServicesComponent implements OnInit {
             averageWorkload: virtualEq.workload! * 100,
         };
     }
+
+    focusCloudButton() {
+        setTimeout(() => {
+            const id =
+                this.cloud.idFront !== undefined
+                    ? `add-cloud${this.cloud.idFront}`
+                    : "add-cloud";
+
+            document.getElementById(id)?.querySelector("button")?.focus();
+        }, 400);
+    }
 }
