@@ -200,11 +200,11 @@
                             [value]="workspace.id.toString()"
                             [(ngModel)]="modelWorkspace"
                             (onClick)="selectCompany(workspace)"
-                            [attr.aria-labelledby]="'work-' + workspace.id"
+                            [attr.aria-labelledby]="'work-label-' + workspace.id"
                         ></p-radiobutton>
                         <label
                             [for]="'work-' + workspace.id"
-                            [id]="'work-' + workspace.id"
+                            [id]="'work-label-' + workspace.id"
                             class="ml-2"
                             [attr.aria-label]="
                                 ('common.workspace-name' | translate) +
