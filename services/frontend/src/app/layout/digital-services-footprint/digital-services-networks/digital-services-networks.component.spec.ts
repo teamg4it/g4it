@@ -22,7 +22,7 @@ import { SharedModule } from "./../../../core/shared/shared.module";
 import { DigitalServicesNetworksSidePanelComponent } from "./digital-services-networks-side-panel/digital-services-networks-side-panel.component";
 import { DigitalServicesNetworksComponent } from "./digital-services-networks.component";
 
-fdescribe("DigitalServicesNetworksComponent", () => {
+describe("DigitalServicesNetworksComponent", () => {
     let component: DigitalServicesNetworksComponent;
     let fixture: ComponentFixture<DigitalServicesNetworksComponent>;
     let mockDigitalServiceDataService: any;
