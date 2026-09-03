@@ -68,6 +68,7 @@
                         [ariaLabel]="'common.accessibility.addNote' | translate"
                         icon="pi pi-plus-circle"
                         [label]="'common.note.add' | translate"
+                        [id]="'note' + inventory().id"
                     />
                 }
 
@@ -79,6 +80,7 @@
                         [ariaLabel]="'common.accessibility.attachedNote' | translate"
                         icon="pi pi-clipboard"
                         [label]="'common.note.attached' | translate"
+                        [id]="'note' + inventory().id"
                     />
                 }
 
@@ -162,6 +164,7 @@
                         </h4>
                         @if (userService.isAllowedInventoryWrite$ | async) {
                             <p-button
+                                [id]="'load' + inventory().id"
                                 styleClass="black-button-small vertical-align-top uppercase"
                                 (onClick)="openSidebarUploadFile()"
                                 >{{

@@ -10,6 +10,7 @@
             <p [innerHTML]="'digital-services-servers.server-vm-text' | translate"></p>
         </div>
         <app-digital-service-table
+            addButtonId="add-vm"
             titleText="vm"
             accessibilityText="accessibility.vm"
             translationPrefix="digital-services-servers"
@@ -55,14 +56,14 @@
         styleClass="drawer-lg"
         position="right"
         [modal]="false"
-        (onHide)="vmSidePanel.close()"
+        (onHide)="focusVmButton(); vmSidePanel.close()"
     >
         @if (addVMPanelVisible) {
             <app-panel-add-vm
                 #vmSidePanel
                 [index]="index"
                 [addVMPanelVisible]="addVMPanelVisible"
-                (addVMPanelVisibleChange)="addVMPanelVisible = $event"
+                (addVMPanelVisibleChange)="focusVmButton(); addVMPanelVisible = $event"
             >
             </app-panel-add-vm>
         }

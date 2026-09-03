@@ -106,14 +106,10 @@ describe("UsersComponent", () => {
             },
         );
 
-        mockUserService = jasmine.createSpyObj(
-            "UserService",
-            [],
-            {
-                user$: of(mockUser),
-                currentOrganization$: of(mockOrganization),
-            },
-        );
+        mockUserService = jasmine.createSpyObj("UserService", [], {
+            user$: of(mockUser),
+            currentOrganization$: of(mockOrganization),
+        });
 
         mockUserDataService = jasmine.createSpyObj("UserDataService", ["fetchUserInfo"]);
         mockGlobalStore = jasmine.createSpyObj("GlobalStoreService", ["criteriaList"]);
@@ -136,7 +132,7 @@ describe("UsersComponent", () => {
         });
 
         mockTranslateService.get.and.callFake((key: string | string[]) => {
-            if (typeof key === 'string') {
+            if (typeof key === "string") {
                 return of(key);
             }
             return of(key);
@@ -146,7 +142,7 @@ describe("UsersComponent", () => {
         mockTranslateService.setDefaultLang.and.stub();
 
         // Add properties that TranslatePipe needs
-        (mockTranslateService as any).currentLang = 'en';
+        (mockTranslateService as any).currentLang = "en";
         (mockTranslateService as any).onLangChange = new Subject();
         (mockTranslateService as any).onTranslationChange = new Subject();
         (mockTranslateService as any).onDefaultLangChange = new Subject();
@@ -250,7 +246,9 @@ describe("UsersComponent", () => {
     describe("getUsersDetails", () => {
         it("should fetch user details and set membersList", () => {
             component.workspace = mockWorkspace;
-            const mockUsers = [{ id: 1, email: "test@test.com", roles: [Role.InventoryRead] }];
+            const mockUsers = [
+                { id: 1, email: "test@test.com", roles: [Role.InventoryRead] },
+            ];
             mockAdministrationService.getUserDetails.and.returnValue(of(mockUsers));
 
             component.getUsersDetails();
@@ -273,17 +271,23 @@ describe("UsersComponent", () => {
 
     describe("getRole", () => {
         it("should return correct role for module types", () => {
-            expect(component.getRole([Role.EcoMindAiWrite], "ECO_MIND_AI_")).toBe("administration.role.write");
-            expect(component.getRole([Role.EcoMindAiRead], "ECO_MIND_AI_")).toBe("administration.role.read");
+            expect(component.getRole([Role.EcoMindAiWrite], "ECO_MIND_AI_")).toBe(
+                "administration.role.write",
+            );
+            expect(component.getRole([Role.EcoMindAiRead], "ECO_MIND_AI_")).toBe(
+                "administration.role.read",
+            );
         });
 
         it("should return admin or user for ADMINISTRATOR type", () => {
-            expect(component.getRole([Role.WorkspaceAdmin], "ADMINISTRATOR")).toBe("administration.role.admin");
-            expect(component.getRole([Role.InventoryRead], "ADMINISTRATOR")).toBe("administration.role.user");
+            expect(component.getRole([Role.WorkspaceAdmin], "ADMINISTRATOR")).toBe(
+                "administration.role.admin",
+            );
+            expect(component.getRole([Role.InventoryRead], "ADMINISTRATOR")).toBe(
+                "administration.role.user",
+            );
         });
     });
-
-
 
     describe("handleAcceptEvent", () => {
         it("should call deleteUserDetails and searchList", () => {
@@ -300,13 +304,15 @@ describe("UsersComponent", () => {
     });
 
     describe("openSidepanelForAddORUpdateOrg", () => {
-        it("should set sidebar visibility and user details", () => {
+        it("should set sidebar visibility, user details, and trigger row", () => {
             component.sidebarVisible = false;
+            const rowIndex = 2;
 
-            component.openSidepanelForAddORUpdateOrg(mockUser, false);
+            component.openSidepanelForAddORUpdateOrg(mockUser, false, rowIndex);
 
             expect(component.sidebarVisible).toBe(true);
             expect(component.userDetail).toEqual(mockUser);
+            expect((component as any).drawerTriggerRowIndex).toBe(rowIndex);
         });
     });
 
@@ -335,7 +341,9 @@ describe("UsersComponent", () => {
                 criteriaDs: ["criteria1"],
                 criteriaIs: ["criteria2"],
             };
-            mockAdministrationService.updateWorkspaceCriteria.and.returnValue(of(criteria));
+            mockAdministrationService.updateWorkspaceCriteria.and.returnValue(
+                of(criteria),
+            );
 
             component.handleSaveWorkspace(criteria);
 
@@ -348,7 +356,9 @@ describe("UsersComponent", () => {
         it("should fetch organization and set ecomind status", () => {
             component.workspace = mockWorkspace;
             const orgWithEcomind = { ...mockAdminOrganization, ecomindai: true };
-            mockAdministrationService.getOrganizationById.and.returnValue(of(orgWithEcomind));
+            mockAdministrationService.getOrganizationById.and.returnValue(
+                of(orgWithEcomind),
+            );
 
             component.getSelectedOrganization();
 

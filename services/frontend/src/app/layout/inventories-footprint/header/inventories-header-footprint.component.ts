@@ -6,7 +6,7 @@
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
 import { AsyncPipe } from "@angular/common";
-import { Component, Input, OnDestroy, OnInit } from "@angular/core";
+import { Component, Input, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { Router } from "@angular/router";
 import { TranslatePipe, TranslateService } from "@ngx-translate/core";
 import { saveAs } from "file-saver";
@@ -55,6 +55,7 @@ export class InventoriesHeaderFootprintComponent implements OnInit, OnDestroy {
 
     selectedWorkspace = "";
     selectedOrganization = "";
+    @ViewChild("noteButton") noteButton?: Button;
 
     constructor(
         private readonly inventoryService: InventoryService,
@@ -123,6 +124,7 @@ export class InventoriesHeaderFootprintComponent implements OnInit, OnDestroy {
             .updateInventory(this.inventory)
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe((res) => {
+                this.focusNewInvButton();
                 this.sidebarVisible = false;
                 this.messageService.add({
                     severity: "success",
@@ -144,6 +146,12 @@ export class InventoriesHeaderFootprintComponent implements OnInit, OnDestroy {
                     sticky: false,
                 });
             });
+    }
+
+    focusNewInvButton(): void {
+        setTimeout(() => {
+            this.noteButton?.el?.nativeElement?.querySelector("button")?.focus();
+        }, 200);
     }
 
     ngOnDestroy() {
