@@ -315,6 +315,7 @@ export class InventoriesComponent implements OnInit, OnDestroy {
             .updateInventory(this.selectedInventory)
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe((res) => {
+                this.focusNoteButton();
                 this.sidebarVisible = false;
                 this.messageService.add({
                     severity: "success",
@@ -420,5 +421,29 @@ export class InventoriesComponent implements OnInit, OnDestroy {
                     }
                 }
             });
+    }
+
+    focusNoteButton() {
+        setTimeout(() => {
+            const noteButton = document.getElementById(`note${this.id}`);
+
+            noteButton?.querySelector("button")?.focus();
+        }, 200);
+    }
+
+    focusLoadButton() {
+        if (this.sidebarPurpose === "new") {
+            setTimeout(() => {
+                const loadButton = document.getElementById(`new${this.id}`);
+
+                loadButton?.querySelector("button")?.focus();
+            }, 200);
+        } else {
+            setTimeout(() => {
+                const loadButton = document.getElementById(`load${this.id}`);
+
+                loadButton?.querySelector("button")?.focus();
+            }, 200);
+        }
     }
 }

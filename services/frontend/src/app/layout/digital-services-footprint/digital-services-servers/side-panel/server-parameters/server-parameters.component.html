@@ -89,30 +89,41 @@
                         }
                         @if (userService.isAllowedDigitalServiceWrite$ | async) {
                             <p-button
+                                #addDcButton
                                 (onClick)="addSidebarVisible = true"
                                 styleClass="black-button white-space-nowrap"
                             >
                                 {{ "common.add" | translate }}
                                 {{ "digital-services-servers.datacenter" | translate }}
                             </p-button>
-                        }
-                        @if (addSidebarVisible) {
-                            <p-drawer
-                                styleClass="drawer-lg"
-                                [visible]="true"
-                                position="right"
-                                appendTo="body"
-                                (onHide)="childSidePanel.close()"
-                            >
-                                <app-panel-datacenter
-                                    #childSidePanel
-                                    [server]="server()"
-                                    [addSidebarVisible]="addSidebarVisible"
-                                    (addSidebarVisibleChange)="addSidebarVisible = $event"
-                                    (serverChange)="addDatacenter($event)"
+                            @if (addSidebarVisible) {
+                                <p-drawer
+                                    styleClass="drawer-lg"
+                                    [visible]="true"
+                                    position="right"
+                                    appendTo="body"
+                                    (onHide)="
+                                        addDcButton?.el?.nativeElement
+                                            ?.querySelector('button')
+                                            ?.focus();
+                                        childSidePanel.close()
+                                    "
                                 >
-                                </app-panel-datacenter>
-                            </p-drawer>
+                                    <app-panel-datacenter
+                                        #childSidePanel
+                                        [server]="server()"
+                                        [addSidebarVisible]="addSidebarVisible"
+                                        (addSidebarVisibleChange)="
+                                            addDcButton?.el?.nativeElement
+                                                ?.querySelector('button')
+                                                ?.focus();
+                                            addSidebarVisible = $event
+                                        "
+                                        (serverChange)="addDatacenter($event)"
+                                    >
+                                    </app-panel-datacenter>
+                                </p-drawer>
+                            }
                         }
                     </div>
                 </div>
