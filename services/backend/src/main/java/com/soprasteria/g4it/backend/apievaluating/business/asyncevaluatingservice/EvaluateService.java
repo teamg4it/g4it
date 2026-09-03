@@ -418,10 +418,6 @@ public class EvaluateService {
             aggregationApplications.clear();
         }
 
-        log.info("End evaluating impacts for {}/{} in {}s and sizes: {}/{}/{}", context.log(), taskId,
-                (System.currentTimeMillis() - start) / 1000,
-                outPhysicalEquipmentSize, outVirtualEquipmentSize, outApplicationSize);
-
         // Save output counts to inventory
         if (inventory != null) {
             inventory.setOutPhysicalCount((long) outPhysicalEquipmentSize);
@@ -431,6 +427,12 @@ public class EvaluateService {
             log.info("Saved output counts to inventory: physical={}, virtual={}, application={}",
                     outPhysicalEquipmentSize, outVirtualEquipmentSize, outApplicationSize);
         }
+
+        log.info("End evaluating impacts for {}/{} in {}s and sizes: {}/{}/{}", context.log(), taskId,
+                (System.currentTimeMillis() - start) / 1000,
+                outPhysicalEquipmentSize, outVirtualEquipmentSize, outApplicationSize);
+
+
 
         // clean files if empty
         try {
