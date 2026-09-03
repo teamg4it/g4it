@@ -62,4 +62,32 @@ public interface InventoryRepository extends JpaRepository<Inventory, Long> {
      */
     Optional<Inventory> findByWorkspaceAndName(final Workspace workspace, final String name);
 
+    /**
+     * Update the output counts of an inventory without loading/saving the full entity graph.
+     * <p>
+     * NB: {@code Inventory.tasks} is mapped as EAGER + CascadeType.ALL, so using
+     * {@code inventoryRepository.save(inventory)} here would cascade-save any stale
+     * {@code Task} entities still referenced in memory (e.g. loaded before an evaluation
+     * started), overwriting concurrent progress updates made via bulk queries
+     * (see {@code TaskRepository.updateProgress}). This targeted update avoids that.
+     *
+     * @param inventoryId          the unique inventory identifier
+     * @param outPhysicalCount     the output physical equipment count
+     * @param outVirtualCount      the output virtual equipment count
+     * @param outApplicationCount  the output application count
+     */
+    @Transactional
+    @Modifying
+    @Query("""
+            update Inventory i
+            set i.outPhysicalCount = :outPhysicalCount,
+                i.outVirtualCount = :outVirtualCount,
+                i.outApplicationCount = :outApplicationCount
+            where i.id = :inventoryId
+            """)
+    void updateOutputCounts(@Param("inventoryId") final Long inventoryId,
+                            @Param("outPhysicalCount") final Long outPhysicalCount,
+                            @Param("outVirtualCount") final Long outVirtualCount,
+                            @Param("outApplicationCount") final Long outApplicationCount);
+
 }

@@ -420,10 +420,17 @@ public class EvaluateService {
 
         // Save output counts to inventory
         if (inventory != null) {
-            inventory.setOutPhysicalCount((long) outPhysicalEquipmentSize);
-            inventory.setOutVirtualCount((long) outVirtualEquipmentSize);
-            inventory.setOutApplicationCount((long) outApplicationSize);
-            inventoryRepository.save(inventory);
+            // Use a targeted update instead of inventoryRepository.save(inventory):
+            // Inventory.tasks is EAGER + CascadeType.ALL, so saving the full entity here
+            // would cascade-save the stale in-memory Task snapshot loaded earlier in this
+            // method, overwriting the progress/status updates made concurrently via
+            // TaskRepository's bulk @Modifying queries (updateProgress, updateTaskState, ...).
+            inventoryRepository.updateOutputCounts(
+                    inventory.getId(),
+                    (long) outPhysicalEquipmentSize,
+                    (long) outVirtualEquipmentSize,
+                    (long) outApplicationSize
+            );
             log.info("Saved output counts to inventory: physical={}, virtual={}, application={}",
                     outPhysicalEquipmentSize, outVirtualEquipmentSize, outApplicationSize);
         }
