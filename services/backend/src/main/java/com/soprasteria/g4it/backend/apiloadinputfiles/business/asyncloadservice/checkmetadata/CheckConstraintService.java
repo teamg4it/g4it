@@ -232,8 +232,6 @@ public class CheckConstraintService {
                 .collect(Collectors.toList());
 
         List<CoherenceParentDTO> incoherentVirtualEquipement = new ArrayList<>();
-        long startTime = System.currentTimeMillis();
-        log.info("Start Check metadata inventory file for taskId {} and inventoryId {} ", taskId, inventoryId);
 
         if (digitalServiceVersionUid != null) {
             if (errorenousPhysicalEquipement.isEmpty()) {
@@ -245,17 +243,13 @@ public class CheckConstraintService {
             }
         } else {
             if (errorenousPhysicalEquipement.isEmpty()) {
-                log.info("checking incoherent virtual equipments without any parents");
                 incoherentVirtualEquipement = checkVirtualEqpRepository
                         .findIncoherentVirtualEquipmentsByInventory(taskId, inventoryId);
             } else {
-                log.info("checking incoherent virtual equipments with any parents and size {}", errorenousPhysicalEquipement.size());
                 incoherentVirtualEquipement = checkVirtualEqpRepository
                         .findIncoherentVirtualEquipmentsByInventory(taskId, inventoryId, errorenousPhysicalEquipement);
             }
         }
-        long endTime = System.currentTimeMillis();
-        log.info("checkMetadataInventoryFile ends Time taken: {}s", (endTime - startTime)/1000);
 
         for (CoherenceParentDTO coherenceParentDTO : incoherentVirtualEquipement) {
 

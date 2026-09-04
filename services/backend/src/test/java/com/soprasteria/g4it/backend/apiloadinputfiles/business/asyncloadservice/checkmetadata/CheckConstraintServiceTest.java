@@ -95,58 +95,6 @@ class CheckConstraintServiceTest {
         // Since NO duplicates → map MUST be empty
         assertTrue(result.isEmpty(), "Unicity map must be empty");
     }
-
-    // -------------------------------------------------------------
-    // 3️⃣ Test: physical coherence
-    // -------------------------------------------------------------
-    /*@Test
-    void testCheckCoherence_physical() {
-
-        CoherenceParentDTO dto = mock(CoherenceParentDTO.class);
-        when(dto.getFilename()).thenReturn("fileA");
-        when(dto.getLineNb()).thenReturn(2);
-        when(dto.getParentEquipmentName()).thenReturn("DatacenterX");
-
-        when(physicalRepo.findIncoherentPhysicalEquipments(anyLong(), anyString()))
-                .thenReturn(List.of(dto));
-
-        when(messageSource.getMessage(eq("nomCourtDatacenter.should.exist"), any(), any()))
-                .thenReturn("Parent Datacenter missing");
-
-        Map<String, Map<Integer, List<LineError>>> coherence =
-                service.checkCoherence(1L, 1L, "DS1", new HashMap<>());
-
-        LineError error = coherence.get("fileA").get(2).get(0);
-        assertEquals("Parent Datacenter missing", error.error());
-        assertEquals("fileA", error.filename());
-        assertEquals(2, error.line());
-    }
-
-    // -------------------------------------------------------------
-    // 4️⃣ Test: virtual coherence
-    // -------------------------------------------------------------
-    @Test
-    void testCheckCoherence_virtual() {
-
-        CoherenceParentDTO dto = mock(CoherenceParentDTO.class);
-        when(dto.getFilename()).thenReturn("fileV");
-        when(dto.getLineNb()).thenReturn(10);
-        when(dto.getParentEquipmentName()).thenReturn("PhysicalY");
-
-        when(virtualRepo.findIncoherentVirtualEquipments(anyLong(), anyLong(), anyString()))
-                .thenReturn(List.of(dto));
-
-        when(messageSource.getMessage(eq("equipementphysique.should.exist"), any(), any()))
-                .thenReturn("Parent Physical missing");
-
-        Map<String, Map<Integer, List<LineError>>> coherence =
-                service.checkCoherence(2L, 2L, "DS1", new HashMap<>());
-
-        LineError error = coherence.get("fileV").get(10).get(0);
-        assertEquals("Parent Physical missing", error.error());
-        assertEquals(10, error.line());
-    }*/
-
     // -------------------------------------------------------------
     // 5️⃣ Test: application coherence
     // -------------------------------------------------------------

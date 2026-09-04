@@ -31,7 +31,6 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 @ExtendWith(MockitoExtension.class)
 class StuckTaskRowUpdaterTest {
@@ -68,7 +67,7 @@ class StuckTaskRowUpdaterTest {
 
         assertThat(result).isEqualTo(TaskCheckResult.INITIALIZED);
         verify(taskRepository).updateProgressLastChangedDate(
-                eq(task.getId()), eq(lastUpdate.truncatedTo(ChronoUnit.SECONDS)));
+                task.getId(), lastUpdate.truncatedTo(ChronoUnit.SECONDS));
         verify(taskRepository, never()).updateStuckTaskFailed(any(), any(), any(), anyList(), anyList());
     }
 
@@ -99,7 +98,7 @@ class StuckTaskRowUpdaterTest {
 
         assertThat(result).isEqualTo(TaskCheckResult.UPDATED);
         verify(taskRepository).updateProgressLastChangedDate(
-                eq(task.getId()), eq(lastUpdate.truncatedTo(ChronoUnit.SECONDS)));
+                task.getId(), lastUpdate.truncatedTo(ChronoUnit.SECONDS));
         verify(taskRepository, never()).updateStuckTaskFailed(any(), any(), any(), anyList(), anyList());
     }
 
