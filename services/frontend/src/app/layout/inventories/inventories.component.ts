@@ -432,18 +432,11 @@ export class InventoriesComponent implements OnInit, OnDestroy {
     }
 
     focusLoadButton() {
-        if (this.sidebarPurpose === "new") {
-            setTimeout(() => {
-                const loadButton = document.getElementById(`new${this.id}`);
+        const buttonId =
+            this.sidebarPurpose === "new" ? "new-inventory" : `load${this.id}`;
 
-                loadButton?.querySelector("button")?.focus();
-            }, 200);
-        } else {
-            setTimeout(() => {
-                const loadButton = document.getElementById(`load${this.id}`);
-
-                loadButton?.querySelector("button")?.focus();
-            }, 200);
-        }
+        setTimeout(() => {
+            document.getElementById(buttonId)?.querySelector("button")?.focus();
+        }, 200);
     }
 }

@@ -2,10 +2,12 @@
 ## 3.14.1
 
 ### Major Changes
+- 2384 | Improve performances and scalability for large datasets
 
 ### Minor Changes
 - 2232 | Redesign digital service input journey to improve clarity, guidance, and usability
 - 2376 | Resolve accessibility issues at 200% zoom
+- 2371 | Resolve accessibility fixes for drawer and other issues
 
 ## 3.14.0
 

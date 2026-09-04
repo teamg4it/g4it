@@ -47,7 +47,6 @@
     }
     @if (userService.isAllowedInventoryWrite$ | async) {
         <p-button
-            [id]="'new' + id"
             styleClass="black-button"
             (onClick)="
                 name = '';
