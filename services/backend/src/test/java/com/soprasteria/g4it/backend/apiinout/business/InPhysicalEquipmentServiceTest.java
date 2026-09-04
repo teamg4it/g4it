@@ -22,18 +22,22 @@ import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
 import com.soprasteria.g4it.backend.common.utils.CommonValidationUtil;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InPhysicalEquipmentRest;
+import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Pageable;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.*;
 
 @ExtendWith(MockitoExtension.class)
 class InPhysicalEquipmentServiceTest {
@@ -50,27 +54,125 @@ class InPhysicalEquipmentServiceTest {
     @Mock
     private InventoryRepository inventoryRepository;
 
+    @Mock
+    private EntityManager entityManager;
+
     @InjectMocks
     private InPhysicalEquipmentService inPhysicalEquipmentService;
 
     @Mock
     private CommonValidationUtil commonValidationUtil;
 
+    // ========== getByInventory Tests ==========
+
+    @Test
+    void getByInventory_returnsEmptyList_whenNoEquipmentFound() {
+        Long inventoryId = 1L;
+
+        when(inPhysicalEquipmentRepository.findByInventoryIdOrderByIdAsc(eq(inventoryId), any(Pageable.class)))
+                .thenReturn(List.of());
+
+        List<InPhysicalEquipmentRest> result = inPhysicalEquipmentService.getByInventory(inventoryId);
+
+        assertEquals(List.of(), result);
+        verify(inPhysicalEquipmentRepository).findByInventoryIdOrderByIdAsc(eq(inventoryId), any(Pageable.class));
+        verifyNoInteractions(inPhysicalEquipmentMapper);
+    }
 
     @Test
     void getByInventory_returnsPhysicalEquipmentList_whenInventoryIdExists() {
         Long inventoryId = 1L;
-        List<InPhysicalEquipment> equipmentList = List.of(new InPhysicalEquipment());
+        InPhysicalEquipment equipment = new InPhysicalEquipment();
         List<InPhysicalEquipmentRest> expectedRestList = List.of(new InPhysicalEquipmentRest());
 
-        when(inPhysicalEquipmentRepository.findByInventoryId(inventoryId)).thenReturn(equipmentList);
-        when(inPhysicalEquipmentMapper.toRest(equipmentList)).thenReturn(expectedRestList);
+        when(inPhysicalEquipmentRepository.findByInventoryIdOrderByIdAsc(eq(inventoryId), any(Pageable.class)))
+                .thenAnswer(invocation -> new ArrayList<>(List.of(equipment)))
+                .thenReturn(List.of());
+        when(inPhysicalEquipmentMapper.toRest(any(List.class))).thenReturn(expectedRestList);
 
         List<InPhysicalEquipmentRest> result = inPhysicalEquipmentService.getByInventory(inventoryId);
 
         assertEquals(expectedRestList, result);
-        verify(inPhysicalEquipmentRepository).findByInventoryId(inventoryId);
-        verify(inPhysicalEquipmentMapper).toRest(equipmentList);
+        verify(inPhysicalEquipmentRepository, atLeast(1)).findByInventoryIdOrderByIdAsc(eq(inventoryId), any(Pageable.class));
+        verify(inPhysicalEquipmentMapper).toRest(any(List.class));
+    }
+
+    @Test
+    void getByInventory_processesMultipleBatches() {
+        Long inventoryId = 1L;
+        InPhysicalEquipment eq1 = new InPhysicalEquipment();
+        InPhysicalEquipment eq2 = new InPhysicalEquipment();
+        List<InPhysicalEquipmentRest> mapped1 = List.of(new InPhysicalEquipmentRest());
+        List<InPhysicalEquipmentRest> mapped2 = List.of(new InPhysicalEquipmentRest());
+
+        when(inPhysicalEquipmentRepository.findByInventoryIdOrderByIdAsc(eq(inventoryId), any(Pageable.class)))
+                .thenAnswer(invocation -> new ArrayList<>(List.of(eq1)))
+                .thenAnswer(invocation -> new ArrayList<>(List.of(eq2)))
+                .thenReturn(List.of());
+        when(inPhysicalEquipmentMapper.toRest(any(List.class)))
+                .thenReturn(mapped1, mapped2);
+
+        List<InPhysicalEquipmentRest> result = inPhysicalEquipmentService.getByInventory(inventoryId);
+
+        assertEquals(2, result.size());
+        verify(inPhysicalEquipmentRepository, times(3)).findByInventoryIdOrderByIdAsc(eq(inventoryId), any(Pageable.class));
+        verify(inPhysicalEquipmentMapper, times(2)).toRest(any(List.class));
+    }
+
+    // ========== getByDigitalServiceVersion Tests ==========
+
+    @Test
+    void getByDigitalService_returnsEmptyList_whenNoPhysicalEquipmentExists() {
+        String digitalServiceUid = "nonexistent-uid";
+
+        when(inPhysicalEquipmentRepository.findByDigitalServiceVersionUidOrderByName(eq(digitalServiceUid), any(Pageable.class)))
+                .thenReturn(List.of());
+
+        List<InPhysicalEquipmentRest> result = inPhysicalEquipmentService.getByDigitalServiceVersion(digitalServiceUid);
+
+        assertEquals(0, result.size());
+        verify(inPhysicalEquipmentRepository).findByDigitalServiceVersionUidOrderByName(eq(digitalServiceUid), any(Pageable.class));
+        verifyNoInteractions(inPhysicalEquipmentMapper);
+    }
+
+    @Test
+    void getByDigitalService_returnsEquipments_whenEquipmentsExist() {
+        String digitalServiceUid = "test-uid";
+        InPhysicalEquipment equipment = new InPhysicalEquipment();
+        List<InPhysicalEquipmentRest> equipmentRests = List.of(new InPhysicalEquipmentRest());
+
+        when(inPhysicalEquipmentRepository.findByDigitalServiceVersionUidOrderByName(eq(digitalServiceUid), any(Pageable.class)))
+                .thenAnswer(invocation -> new ArrayList<>(List.of(equipment)))
+                .thenReturn(List.of());
+        when(inPhysicalEquipmentMapper.toRest(any(List.class))).thenReturn(equipmentRests);
+
+        List<InPhysicalEquipmentRest> result = inPhysicalEquipmentService.getByDigitalServiceVersion(digitalServiceUid);
+
+        assertEquals(equipmentRests, result);
+        verify(inPhysicalEquipmentRepository, atLeast(1)).findByDigitalServiceVersionUidOrderByName(eq(digitalServiceUid), any(Pageable.class));
+        verify(inPhysicalEquipmentMapper).toRest(any(List.class));
+    }
+
+    @Test
+    void getByDigitalService_processesMultipleBatches() {
+        String digitalServiceUid = "test-uid";
+        InPhysicalEquipment eq1 = new InPhysicalEquipment();
+        InPhysicalEquipment eq2 = new InPhysicalEquipment();
+        List<InPhysicalEquipmentRest> mapped1 = List.of(new InPhysicalEquipmentRest());
+        List<InPhysicalEquipmentRest> mapped2 = List.of(new InPhysicalEquipmentRest());
+
+        when(inPhysicalEquipmentRepository.findByDigitalServiceVersionUidOrderByName(eq(digitalServiceUid), any(Pageable.class)))
+                .thenAnswer(invocation -> new ArrayList<>(List.of(eq1)))
+                .thenAnswer(invocation -> new ArrayList<>(List.of(eq2)))
+                .thenReturn(List.of());
+        when(inPhysicalEquipmentMapper.toRest(any(List.class)))
+                .thenReturn(mapped1, mapped2);
+
+        List<InPhysicalEquipmentRest> result = inPhysicalEquipmentService.getByDigitalServiceVersion(digitalServiceUid);
+
+        assertEquals(2, result.size());
+        verify(inPhysicalEquipmentRepository, times(3)).findByDigitalServiceVersionUidOrderByName(eq(digitalServiceUid), any(Pageable.class));
+        verify(inPhysicalEquipmentMapper, times(2)).toRest(any(List.class));
     }
 
     @Test
@@ -196,7 +298,7 @@ class InPhysicalEquipmentServiceTest {
         assertEquals("the inventory id provided: 1 is not compatible with the inventory id : null linked to this physical equipment id: 2", exception.getMessage());
     }
 
-    @Test
+    /*@Test
     void getByDigitalService_returnsEmptyList_whenNoPhysicalEquipmentExists() {
         String digitalServiceUid = "service-123";
 
@@ -206,7 +308,7 @@ class InPhysicalEquipmentServiceTest {
 
         assertEquals(0, result.size());
         verify(inPhysicalEquipmentRepository).findByDigitalServiceVersionUidOrderByName(digitalServiceUid);
-    }
+    }*/
 
     @Test
     void getByDigitalServiceAndId() {

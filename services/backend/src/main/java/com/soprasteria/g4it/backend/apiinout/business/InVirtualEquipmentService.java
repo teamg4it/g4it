@@ -8,9 +8,7 @@
 
 package com.soprasteria.g4it.backend.apiinout.business;
 
-import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceVersion;
-import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceVersionRepository;
 import com.soprasteria.g4it.backend.apiinout.mapper.InVirtualEquipmentMapper;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InPhysicalEquipment;
@@ -20,11 +18,13 @@ import com.soprasteria.g4it.backend.apiinout.repository.InVirtualEquipmentReposi
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
 import com.soprasteria.g4it.backend.common.utils.CommonValidationUtil;
+import com.soprasteria.g4it.backend.common.utils.Constants;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
-import com.soprasteria.g4it.backend.server.gen.api.dto.InPhysicalEquipmentRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InVirtualEquipmentRest;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -32,6 +32,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @AllArgsConstructor
@@ -45,15 +48,41 @@ public class InVirtualEquipmentService {
     private InPhysicalEquipmentRepository inPhysicalEquipmentRepository;
     private CommonValidationUtil commonValidationUtil;
 
+    @PersistenceContext
+    private EntityManager entityManager;
+
     /**
      * Get the virtual equipments list linked to a digital service.
      *
      * @param digitalServiceVersionUid the digital service UID.
      * @return the virtual equipment list.
      */
-    public List<InVirtualEquipmentRest> getByDigitalServiceVersion(final String digitalServiceVersionUid) {
+    /*public List<InVirtualEquipmentRest> getByDigitalServiceVersion(final String digitalServiceVersionUid) {
         final List<InVirtualEquipment> inVirtualEquipment = inVirtualEquipmentRepository.findByDigitalServiceVersionUidOrderByName(digitalServiceVersionUid);
         return inVirtualEquipmentMapper.toRest(inVirtualEquipment);
+    }*/
+    @Transactional(readOnly = true)
+    public List<InVirtualEquipmentRest> getByDigitalServiceVersion(
+            final String digitalServiceVersionUid) {
+
+        List<InVirtualEquipmentRest> result = new ArrayList<>();
+
+        int pageNumber = 0;
+
+        while(true){
+            Pageable page = PageRequest.of(pageNumber, Constants.BATCH_SIZE_10000);
+
+            List<InVirtualEquipment> inVirtualEquipments = inVirtualEquipmentRepository
+                    .findByDigitalServiceVersionUidOrderByNameAscIdAsc(
+                            digitalServiceVersionUid, page);
+            if(inVirtualEquipments.isEmpty()){
+                break;
+            }
+            result.addAll(inVirtualEquipmentMapper.toRest(inVirtualEquipments));
+            entityManager.clear();
+            pageNumber++;
+        }
+        return result;
     }
 
     /**
@@ -194,9 +223,29 @@ public class InVirtualEquipmentService {
      * @param inventoryId the inventory id
      * @return the virtual equipment list.
      */
-    public List<InVirtualEquipmentRest> getByInventory(final Long inventoryId) {
+    /*public List<InVirtualEquipmentRest> getByInventory(final Long inventoryId) {
         final List<InVirtualEquipment> inVirtualEquipment = inVirtualEquipmentRepository.findByInventoryId(inventoryId);
         return inVirtualEquipmentMapper.toRest(inVirtualEquipment);
+    }*/
+    @Transactional(readOnly = true)
+    public List<InVirtualEquipmentRest> getByInventory(final Long inventoryId) {
+
+        List<InVirtualEquipmentRest> result = new ArrayList<>();
+        int pageNumber = 0;
+
+        while(true){
+            Pageable page = PageRequest.of(pageNumber, Constants.BATCH_SIZE_10000);
+
+            List<InVirtualEquipment> inVirtualEquipments = inVirtualEquipmentRepository
+                    .findByInventoryIdOrderByIdAsc(inventoryId, page);
+            if(inVirtualEquipments.isEmpty()){
+                break;
+            }
+            result.addAll(inVirtualEquipmentMapper.toRest(inVirtualEquipments));
+            entityManager.clear();
+            pageNumber++;
+        }
+        return result;
     }
 
     /**
@@ -213,7 +262,7 @@ public class InVirtualEquipmentService {
         }
 
         if (!Objects.equals(inventoryId, inVirtualEquipment.get().getInventoryId())) {
-            throw new G4itRestException("409", String.format("the inventory id provided: %s is not compatible with the inventory id : %s linked to this virtual equipment id: %d", inventoryId, inVirtualEquipment.get().getDigitalServiceVersionUid(), id));
+            throw new G4itRestException("409", String.format("the inventory id provided: %s is not compatible with the inventory id : %s linked to this virtual equipment id: %d", inventoryId, inVirtualEquipment.get().getInventoryId(), id));
         }
 
         return inVirtualEquipmentMapper.toRest(inVirtualEquipment.get());

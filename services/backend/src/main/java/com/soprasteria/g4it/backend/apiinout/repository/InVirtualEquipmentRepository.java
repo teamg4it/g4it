@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import org.springframework.data.domain.Slice;
 
 /**
  * In Virtual Equipment JPA repository.
@@ -58,7 +59,10 @@ public interface InVirtualEquipmentRepository extends JpaRepository<InVirtualEqu
      * @param digitalServiceVersionUid digital service Identifier
      * @return return a list of virtual equipments
      */
-    List<InVirtualEquipment> findByDigitalServiceVersionUidOrderByName(String digitalServiceVersionUid);
+    // List<InVirtualEquipment> findByDigitalServiceVersionUidOrderByName(String digitalServiceVersionUid);
+    List<InVirtualEquipment> findByDigitalServiceVersionUidOrderByNameAscIdAsc(
+            String digitalServiceVersionUid,
+            Pageable pageable);
 
     /**
      * Find virtual equipment by the functionally unique fields
@@ -76,6 +80,10 @@ public interface InVirtualEquipmentRepository extends JpaRepository<InVirtualEqu
      * @return return a list of virtual equipments
      */
     List<InVirtualEquipment> findByInventoryId(Long inventoryId);
+
+    List<InVirtualEquipment> findByInventoryIdOrderByIdAsc(
+            Long inventoryId,
+            Pageable pageable);
 
     /**
      * Find virtual equipments of one inventory and one physical equipment name
