@@ -88,7 +88,7 @@ public class OutVirtualEquipmentService {
         List<OutVirtualEquipmentRest> result = new ArrayList<>();
 
         while (true) {
-            Pageable page = PageRequest.of(pageNumber, Constants.BATCH_SIZE_50000);
+            Pageable page = PageRequest.of(pageNumber, Constants.BATCH_SIZE_10000);
             List<OutVirtualEquipment> virtualEquipments =
                     outVirtualEquipmentRepository.findByTaskIdOrderByIdAsc(taskId, page);
 

@@ -70,7 +70,7 @@ public class InVirtualEquipmentService {
         int pageNumber = 0;
 
         while(true){
-            Pageable page = PageRequest.of(pageNumber, Constants.BATCH_SIZE_50000);
+            Pageable page = PageRequest.of(pageNumber, Constants.BATCH_SIZE_10000);
 
             List<InVirtualEquipment> inVirtualEquipments = inVirtualEquipmentRepository
                     .findByDigitalServiceVersionUidOrderByNameAscIdAsc(
@@ -234,7 +234,7 @@ public class InVirtualEquipmentService {
         int pageNumber = 0;
 
         while(true){
-            Pageable page = PageRequest.of(pageNumber, Constants.BATCH_SIZE_50000);
+            Pageable page = PageRequest.of(pageNumber, Constants.BATCH_SIZE_10000);
 
             List<InVirtualEquipment> inVirtualEquipments = inVirtualEquipmentRepository
                     .findByInventoryIdOrderByIdAsc(inventoryId, page);

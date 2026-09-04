@@ -65,7 +65,7 @@ public class InDatacenterService {
         int pageNumber = 0;
 
         while(true){
-            Pageable page = PageRequest.of(pageNumber, Constants.BATCH_SIZE_50000);
+            Pageable page = PageRequest.of(pageNumber, Constants.BATCH_SIZE_10000);
 
             List<InDatacenter> inDatacenters = inDatacenterRepository.findByDigitalServiceVersionUid(digitalServiceVersionUid,page);
             if(inDatacenters.isEmpty()){
@@ -170,7 +170,7 @@ public class InDatacenterService {
         int pageNumber = 0;
 
         while(true){
-            Pageable page = PageRequest.of(pageNumber, Constants.BATCH_SIZE_50000);
+            Pageable page = PageRequest.of(pageNumber, Constants.BATCH_SIZE_10000);
 
             List<InDatacenter> inDatacenters = inDatacenterRepository.findByInventoryIdOrderByIdAsc(inventoryId, page);
             if(inDatacenters.isEmpty()){

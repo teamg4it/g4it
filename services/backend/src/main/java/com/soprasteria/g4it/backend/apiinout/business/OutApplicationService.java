@@ -86,7 +86,7 @@ public class OutApplicationService {
         List<OutApplicationRest> result = new ArrayList<>();
 
         while (true) {
-            Pageable page = PageRequest.of(pageNumber, Constants.BATCH_SIZE_50000);
+            Pageable page = PageRequest.of(pageNumber, Constants.BATCH_SIZE_10000);
             List<OutApplication> outApplications = 
                     outApplicationRepository.findByTaskIdOrderByIdAsc(taskId, page);
 

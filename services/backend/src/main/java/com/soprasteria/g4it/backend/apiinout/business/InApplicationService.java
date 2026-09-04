@@ -53,6 +53,7 @@ public class InApplicationService {
         final List<InApplication> inApplication = inApplicationRepository.findByInventoryId(inventoryId);
         return inApplicationMapper.toRest(inApplication);
     }*/
+    
     @Transactional(readOnly = true)
     public List<InApplicationRest> getByInventory(final Long inventoryId) {
 
@@ -61,7 +62,7 @@ public class InApplicationService {
 
         while (true) {
 
-            Pageable page = PageRequest.of(pageNumber, Constants.BATCH_SIZE_50000);
+            Pageable page = PageRequest.of(pageNumber, Constants.BATCH_SIZE_10000);
 
             List<InApplication> inApplications =
                     inApplicationRepository

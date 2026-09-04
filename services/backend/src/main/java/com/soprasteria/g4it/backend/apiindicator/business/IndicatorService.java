@@ -17,7 +17,6 @@ import com.soprasteria.g4it.backend.apiinout.repository.OutApplicationRepository
 import com.soprasteria.g4it.backend.apiinout.repository.OutPhysicalEquipmentRepository;
 import com.soprasteria.g4it.backend.apiuser.business.WorkspaceService;
 import com.soprasteria.g4it.backend.common.utils.Constants;
-import com.soprasteria.g4it.backend.common.utils.StringUtils;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import lombok.AllArgsConstructor;
@@ -29,7 +28,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -97,7 +95,7 @@ public class IndicatorService {
         while (true) {
             Pageable page = PageRequest.of(
                     pageNumber,
-                    Constants.BATCH_SIZE_50000
+                    Constants.BATCH_SIZE_10000
             );
 
             List<Object[]> physicalEquipments =
@@ -149,7 +147,7 @@ public class IndicatorService {
         while (true){
             Pageable page = PageRequest.of(
                     pageNumber,
-                    50000
+                    Constants.BATCH_SIZE_10000
             );
 
             List<OutApplication> outApplications = outApplicationRepository.findByTaskIdOrderByIdAsc(taskId, page);
