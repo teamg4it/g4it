@@ -126,15 +126,7 @@ export class DigitalServicesNetworksComponent implements OnInit {
     }
 
     resetNetwork() {
-        this.existingNames.set(
-            this.networkData()
-                .filter((c) =>
-                    this.network.idFront === undefined
-                        ? true
-                        : this.network.name !== c.name,
-                )
-                .map((network) => network.name),
-        );
+        this.existingNames.set(this.networkData().map((network) => network.name));
         this.network = {
             name: this.digitalServicesBusiness.getNextAvailableName(
                 this.existingNames(),

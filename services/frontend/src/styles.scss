@@ -1706,6 +1706,10 @@ app-left-sidebar {
         color: #c7c7c7;
     }
 
+    .logo-z-index {
+        z-index: 1002;
+    }
+
     a.bg-light-green .color-transparent {
         background: none;
         color: #ffffff;
@@ -1881,6 +1885,10 @@ app-digital-services-item {
         border-left: 5px solid var(--red-color);
         min-width: 310px;
         transition: all 0.2s ease;
+    }
+
+    .info-card {
+        min-width: 220px;
     }
 
     .expiry-card:hover {

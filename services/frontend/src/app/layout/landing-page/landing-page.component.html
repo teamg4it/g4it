@@ -27,7 +27,7 @@
         <!-- Sidebar -->
 
         <!-- Main content area -->
-        <main class="flex-1" #mainContent>
+        <main role="main" class="flex-1" #mainContent>
             <router-outlet></router-outlet>
         </main>
         @if (spaceSidebarVisible) {
@@ -47,6 +47,6 @@
                 </ng-template>
             </p-drawer>
         }
-        <footer></footer>
+        <footer role="contentinfo"></footer>
     </div>
 </div>
