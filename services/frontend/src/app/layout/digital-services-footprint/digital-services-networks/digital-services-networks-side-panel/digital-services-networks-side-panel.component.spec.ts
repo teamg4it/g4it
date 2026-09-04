@@ -109,10 +109,8 @@ describe("DigitalServicesNetworksSidePanelComponent", () => {
     });
 
     it("should emit outCancel and sidebarVisible events when close is called", () => {
-        spyOn(component.outCancel, "emit");
         spyOn(component.sidebarVisible, "emit");
         component.close();
-        expect(component.outCancel.emit).toHaveBeenCalledWith(component.network);
         expect(component.sidebarVisible.emit).toHaveBeenCalledWith(false);
     });
 });

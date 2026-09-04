@@ -113,4 +113,17 @@ export class PanelListVmComponent {
     openSidePanel() {
         this.digitalServiceBusiness.openPanel();
     }
+
+    focusVmButton() {
+        setTimeout(() => {
+            if (this.index !== undefined) {
+                document
+                    .getElementById("add-vm" + (this.index + 1))
+                    ?.querySelector("button")
+                    ?.focus();
+            } else {
+                document.getElementById("add-vm")?.querySelector("button")?.focus();
+            }
+        }, 400);
+    }
 }

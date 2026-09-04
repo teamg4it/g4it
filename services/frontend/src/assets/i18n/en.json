@@ -148,7 +148,7 @@
         "digital-services": "Digital services",
         "eco-mind-ai": "EcoMind AI (Beta)",
         "skip-to-main-content": "Skip to Main Content",
-        "overgreen-logo": "Overgreen Logo",
+        "overgreen-logo": "G4IT Logo",
         "soprasteria-logo": "Sopra Steria logo",
         "no-document-upload": "No document uploaded",
         "workspace": {
@@ -199,7 +199,15 @@
             "reference-title": "References used",
             "engine": "Physical equipment calculations are performed using <strong>NumEcoEval</strong>. </br> Virtual equipment calculations (non-cloud-based) are also handled by <strong>NumEcoEval</strong>. </br> For cloud-based virtual equipment, calculations are performed using <strong>Boavizta</strong>."
         },
-        "main-navigation": "Main navigation"
+        "main-navigation": "Main navigation",
+        "country.all": "All Countries",
+        "entity.all": "All Entities",
+        "equipment.all": "All Equipments",
+        "status.all": "All Statuses",
+        "environment.all": "All Environments",
+        "equipmentType.all": "All Equipment Types",
+        "lifeCycle.all": "All Lifecycles",
+        "domain.all": "All Domains and Subdomains"
     },
     "useful-information": {
         "computing-engines": "Computing engines",
