@@ -1706,6 +1706,10 @@ app-left-sidebar {
         color: #c7c7c7;
     }
 
+    .logo-z-index {
+        z-index: 1002;
+    }
+
     a.bg-light-green .color-transparent {
         background: none;
         color: #ffffff;
