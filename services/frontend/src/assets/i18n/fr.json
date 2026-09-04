@@ -147,7 +147,7 @@
         "digital-services": "Services numériques",
         "eco-mind-ai": "EcoMind AI (Bêta)",
         "skip-to-main-content": "Accéder au contenu principal",
-        "overgreen-logo": "Overgreen Logo",
+        "overgreen-logo": "G4IT Logo",
         "soprasteria-logo": "Sopra Steria Logo",
         "no-document-upload": "Aucun document téléchargé",
         "workspace": {
@@ -198,7 +198,15 @@
             "reference-title": "Références utilisées",
             "engine": "Les calculs des équipements physiques sont effectués à l'aide de <strong>NumEcoEval</strong>. </br> Les calculs des équipements virtuels (non basés sur le cloud) sont également gérés par <strong>NumEcoEval</strong>. </br> Pour les équipements virtuels basés sur le cloud, les calculs sont effectués à l'aide de <strong>Boavizta</strong>."
         },
-        "main-navigation": "Navigation principale"
+        "main-navigation": "Navigation principale",
+        "country.all": "Tous les pays",
+        "entity.all": "Toutes les entités",
+        "equipment.all": "Tous les équipements",
+        "status.all": "Tous les statuts",
+        "environment.all": "Tous les environnements",
+        "equipmentType.all": "Tous les types d'équipements",
+        "lifeCycle.all": "Tous les cycles de vie",
+        "domain.all": "Tous les domaines et sous-domaines"
     },
     "useful-information": {
         "computing-engines": "Moteurs de calcul",
@@ -741,7 +749,11 @@
         "visualisation": {
             "application": "Visualisation des applications",
             "equipment": "Visualisation des équipements"
-        }
+        },
+        "more-data-message": "Limite de résultats atteinte",
+        "click-info": "Cliquez pour plus d'informations",
+        "more-data-message-body": "Le calcul s'est terminé avec succès, mais le nombre de lignes de résultats générées dépasse la limite maximale autorisée.</br> Pour réduire le volume de résultats, veuillez sélectionner moins de critères environnementaux et relancer le calcul.",
+        "more-data-message-email": "Si vous avez besoin d'aide ou si vous estimez que cette limite ne correspond pas à votre cas d'usage, veuillez contacter l'équipe de support à l'adresse "
     },
     "inventories-footprint": {
         "active-filters": "Filtres activés",

@@ -96,18 +96,20 @@ export class DigitalServicesNetworksSidePanelComponent implements OnInit {
 
     deleteNetwork() {
         this.delete.emit(this.network);
+        this.close();
     }
 
     submitFormData() {
         this.network.type = { ...this.networksForm.get("type")!.value! };
         this.update.emit(this.network);
+        this.close();
     }
 
     cancelNetwork() {
         this.outCancel.emit(this.network);
+        this.close();
     }
     close() {
-        this.outCancel.emit(this.network);
         this.sidebarVisible.emit(false);
     }
 }

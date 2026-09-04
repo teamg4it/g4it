@@ -126,15 +126,7 @@ export class DigitalServicesNetworksComponent implements OnInit {
     }
 
     resetNetwork() {
-        this.existingNames.set(
-            this.networkData()
-                .filter((c) =>
-                    this.network.idFront === undefined
-                        ? true
-                        : this.network.name !== c.name,
-                )
-                .map((network) => network.name),
-        );
+        this.existingNames.set(this.networkData().map((network) => network.name));
         this.network = {
             name: this.digitalServicesBusiness.getNextAvailableName(
                 this.existingNames(),
@@ -194,5 +186,18 @@ export class DigitalServicesNetworksComponent implements OnInit {
             return yearlyQuantityOfGbExchanged / type.annualQuantityOfGo;
         }
         return 0;
+    }
+
+    focusNetworkButton() {
+        setTimeout(() => {
+            if (this.network.idFront !== undefined) {
+                document
+                    .getElementById("add-networks" + this.network.idFront)
+                    ?.querySelector("button")
+                    ?.focus();
+            } else {
+                document.getElementById("add-networks")?.querySelector("button")?.focus();
+            }
+        }, 400);
     }
 }

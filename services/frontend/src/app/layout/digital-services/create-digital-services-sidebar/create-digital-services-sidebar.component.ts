@@ -22,6 +22,7 @@ import { InputTextModule } from "primeng/inputtext";
 import { ScrollPanelModule } from "primeng/scrollpanel";
 import { noWhitespaceValidator } from "src/app/core/custom-validators/no-white-space.validator";
 import { uniqueNameValidator } from "src/app/core/custom-validators/unique-name.validator";
+import { AutofocusDirective } from "src/app/core/directives/auto-focus.directive";
 import { DigitalService } from "src/app/core/interfaces/digital-service.interfaces";
 import { CustomSidebarMenuForm } from "src/app/core/interfaces/sidebar-menu-form.interface";
 import { DigitalServiceBusinessService } from "src/app/core/service/business/digital-services.service";
@@ -42,6 +43,7 @@ import { FormNavComponent } from "../../common/form-nav/form-nav.component";
         InputTextModule,
         TranslatePipe,
         CommonEditorComponent,
+        AutofocusDirective,
     ],
 })
 export class CreateDigitalServicesSidebarComponent implements OnInit {

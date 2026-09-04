@@ -17,6 +17,7 @@
             }
         </h3>
         <p-button
+            #dsConfigureButton
             (onClick)="filterSidebarVisible = true"
             styleClass="p-button-secondary-blue uppercase mr-3"
             icon="pi pi-filter"
@@ -221,12 +222,16 @@
         position="right"
         styleClass="w-5"
         appendTo="body"
-        (onHide)="filterSidebarVisible = false"
     >
         <ng-template #headless>
             <app-configure-view-filters
                 (filtersApplied)="handleFilters($event)"
-                (sidebarVisibleChange)="filterSidebarVisible = $event"
+                (sidebarVisibleChange)="
+                    dsConfigureButton?.el?.nativeElement
+                        ?.querySelector('button')
+                        ?.focus();
+                    filterSidebarVisible = $event
+                "
                 [enableDataInconsistency]="digitalService.enableDataInconsistency"
                 [selectedUnit]="selectedUnit"
             ></app-configure-view-filters>

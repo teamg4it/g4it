@@ -167,4 +167,15 @@ export class DigitalServicesTerminalsComponent implements OnInit {
             this.digitalServicesData.get(this.dsVersionUid()),
         );
     }
+
+    focusTerminalButton() {
+        setTimeout(() => {
+            const id =
+                this.terminal.idFront !== undefined
+                    ? `add-terminals${this.terminal.idFront}`
+                    : "add-terminals";
+
+            document.getElementById(id)?.querySelector("button")?.focus();
+        }, 400);
+    }
 }

@@ -9,7 +9,7 @@
             [(visible)]="sidebarVisible"
             position="right"
             styleClass="drawer-md"
-            (onHide)="filePanel.close()"
+            (onHide)="focusLoadButton(); filePanel.close()"
             ariaCloseLabel="Close"
         >
             <app-file-panel
@@ -20,7 +20,7 @@
                 [allSimulations]="inventoriesForSimulationsAll"
                 [inventories]="inventories.get('INFORMATION_SYSTEM')!"
                 (sidebarPurposeChange)="sidebarPurpose = $event"
-                (sidebarVisibleChange)="sidebarVisible = $event"
+                (sidebarVisibleChange)="focusLoadButton(); sidebarVisible = $event"
                 (reloadInventoriesAndLoop)="reloadInventoriesAndLoop($event)"
             ></app-file-panel>
         </p-drawer>
@@ -30,7 +30,7 @@
             [(visible)]="sidebarVisible"
             position="right"
             styleClass=" w-7"
-            (onHide)="sidebarVisible = false"
+            (onHide)="focusNoteButton(); sidebarVisible = false"
             ariaCloseLabel="Close"
         >
             <app-common-editor
@@ -38,8 +38,8 @@
                 [title]="'Note - ' + selectedInventory.name"
                 [isWriteRole]="userService.isAllowedInventoryWrite$ | async"
                 (saveValue)="noteSaveValue($event)"
-                (outClose)="sidebarVisible = $event"
-                (delete)="noteDelete($event); sidebarVisible = $event"
+                (outClose)="focusNoteButton(); sidebarVisible = $event"
+                (delete)="noteDelete($event); focusNoteButton(); sidebarVisible = $event"
                 styleClass="m-0"
             >
             </app-common-editor>
@@ -47,6 +47,7 @@
     }
     @if (userService.isAllowedInventoryWrite$ | async) {
         <p-button
+            [id]="'new' + id"
             styleClass="black-button"
             (onClick)="
                 name = '';

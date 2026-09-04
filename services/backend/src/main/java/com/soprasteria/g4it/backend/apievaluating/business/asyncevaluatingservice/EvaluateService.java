@@ -422,6 +422,16 @@ public class EvaluateService {
                 (System.currentTimeMillis() - start) / 1000,
                 outPhysicalEquipmentSize, outVirtualEquipmentSize, outApplicationSize);
 
+        // Save output counts to inventory
+        if (inventory != null) {
+            inventory.setOutPhysicalCount((long) outPhysicalEquipmentSize);
+            inventory.setOutVirtualCount((long) outVirtualEquipmentSize);
+            inventory.setOutApplicationCount((long) outApplicationSize);
+            inventoryRepository.save(inventory);
+            log.info("Saved output counts to inventory: physical={}, virtual={}, application={}",
+                    outPhysicalEquipmentSize, outVirtualEquipmentSize, outApplicationSize);
+        }
+
         // clean files if empty
         try {
             if (!evaluateReportBO.isExport()) {

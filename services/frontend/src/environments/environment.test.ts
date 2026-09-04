@@ -36,4 +36,6 @@ export const environment = {
             containerUrl: "",
         },
     },
+    applicationMaxLimit: 300000,
+    equipmentMaxLimit: 300000,
 };
