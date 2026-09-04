@@ -81,6 +81,8 @@ public interface InDatacenterRepository extends JpaRepository<InDatacenter, Long
     @Query("select count(distinct d.name) from InDatacenter d where d.inventoryId = :inventoryId")
     Long countDistinctNameByInventoryId(@Param("inventoryId") final Long inventoryId);
 
+    long countByInventoryId(Long inventoryId);
+
     @Transactional
     @Modifying
     void deleteByInventoryId(Long inventoryId);

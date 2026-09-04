@@ -55,6 +55,13 @@ g4it:
       oninit: "false"
       cron: "0 0 0 * * *"
       day: "7"
+  inventory:
+    loading:
+      limits:
+        datacenter: 100
+        physical-equipment: 5000
+        virtual-equipment: 1000
+        application: 1000
   digitalServiceLink:
     deletion:
       oninit: "false"

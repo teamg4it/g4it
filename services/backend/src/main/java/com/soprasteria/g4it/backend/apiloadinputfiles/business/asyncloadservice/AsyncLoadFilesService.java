@@ -94,6 +94,21 @@ public class AsyncLoadFilesService implements ITaskExecute {
                 return;
             }
 
+            // Task fails if any file exceeds the configured inventory loading limits
+            if (isInventory) {
+                List<String> limitErrors = loadFileService.checkInventoryLoadingLimits(context);
+                if (!limitErrors.isEmpty()) {
+                    task.setErrors(limitErrors);
+                    task.setStatus(TaskStatus.FAILED.toString());
+                    details.addAll(limitErrors.stream().map(LogUtils::error).toList());
+                    details.add(LogUtils.info("Task failed"));
+                    task.setDetails(details);
+                    taskRepository.save(task);
+                    log.error("Task with id '{}' failed due to inventory loading limits exceeded: {}", task.getId(), limitErrors);
+                    return;
+                }
+            }
+
             //Load Metadata files
             asyncLoadMetadataService.loadInputMetadata(context);
 
