@@ -5,7 +5,7 @@
         position="right"
         styleClass="drawer-lg"
         [showCloseIcon]="true"
-        (onHide)="sidebarVisible = false"
+        (onHide)="focusPrevButton(); sidebarVisible = false"
         ariaCloseLabel="Close"
     >
         <app-common-editor
@@ -13,29 +13,11 @@
             [title]="'digital-services.version.context-and-assumptions' | translate"
             [isWriteRole]="userService.isAllowedDigitalServiceWrite$ | async"
             (saveValue)="noteSaveValue($event)"
-            (outClose)="sidebarVisible = $event"
+            (outClose)="focusPrevButton(); sidebarVisible = $event"
             (delete)="noteDelete(); sidebarVisible = $event"
-            styleClass="mx-7"
+            styleClass="m-0"
         >
         </app-common-editor>
-    </p-drawer>
-}
-<!-- Import Sidebar -->
-@if (importSidebarVisible) {
-    <p-drawer
-        [(visible)]="importSidebarVisible"
-        position="right"
-        [showCloseIcon]="true"
-        (onHide)="importSidebarVisible = false"
-        ariaCloseLabel="Close"
-        [fullScreen]="isZoom125()"
-        styleClass="drawer-lg"
-    >
-        <ng-template #headless>
-            <app-digital-services-import
-                (sidebarVisibleChange)="importSidebarVisible = $event"
-            />
-        </ng-template>
     </p-drawer>
 }
 
@@ -222,6 +204,7 @@
                 (userService.isAllowedDigitalServiceWrite$ | async)
             ) {
                 <p-button
+                    #noteBtn
                     (onClick)="sidebarVisible = true"
                     styleClass="cancel-creation-button uppercase mx-2 mb-3 lg:mb-0"
                     [ariaLabel]="'common.accessibility.add-context' | translate"
@@ -236,6 +219,7 @@
 
             @if (!isEcoMindAi() && digitalService.note) {
                 <p-button
+                    #noteBtn
                     (onClick)="sidebarVisible = true"
                     styleClass="cancel-creation-button uppercase mx-2 mb-3 lg:mb-0"
                     [ariaLabel]="'common.accessibility.edit-context' | translate"
@@ -268,6 +252,7 @@
                 />
 
                 <p-button
+                    #importBtn
                     [ariaLabel]="'common.accessibility.import' | translate"
                     styleClass="p-button-secondary-blue uppercase mx-2 mb-3 lg:mb-0"
                     (onClick)="importData()"
@@ -275,6 +260,34 @@
                     [pTooltip]="'digital-services.import' | translate"
                     tooltipPosition="bottom"
                 />
+
+                <!-- Import Sidebar -->
+                @if (importSidebarVisible) {
+                    <p-drawer
+                        [(visible)]="importSidebarVisible"
+                        position="right"
+                        [showCloseIcon]="true"
+                        (onHide)="
+                            importBtn?.el?.nativeElement
+                                ?.querySelector('button')
+                                ?.focus();
+                            importSidebarVisible = false
+                        "
+                        ariaCloseLabel="Close"
+                        styleClass="drawer-lg"
+                    >
+                        <ng-template #headless>
+                            <app-digital-services-import
+                                (sidebarVisibleChange)="
+                                    importBtn?.el?.nativeElement
+                                        ?.querySelector('button')
+                                        ?.focus();
+                                    importSidebarVisible = $event
+                                "
+                            />
+                        </ng-template>
+                    </p-drawer>
+                }
             }
 
             @if (userService.isAllowedDigitalServiceRead$ | async) {

@@ -25,6 +25,7 @@
     <div>
         @if (!inventory.note && (userService.isAllowedInventoryWrite$ | async)) {
             <p-button
+                #noteButton
                 (onClick)="sidebarVisible = true"
                 styleClass="text-gray-900 header-button"
                 [text]="true"
@@ -37,6 +38,7 @@
 
         @if (inventory.note) {
             <p-button
+                #noteButton
                 (onClick)="sidebarVisible = true"
                 styleClass="text-gray-900 header-button"
                 [text]="true"
@@ -66,7 +68,7 @@
             position="right"
             tabIndex="0"
             styleClass="w-7"
-            (onHide)="sidebarVisible = false"
+            (onHide)="focusNewInvButton(); sidebarVisible = false"
             ariaCloseLabel="Close"
         >
             <app-common-editor
@@ -74,9 +76,11 @@
                 [title]="'Note - ' + inventory.name"
                 [isWriteRole]="userService.isAllowedInventoryWrite$ | async"
                 (saveValue)="noteSaveValue($event)"
-                (outClose)="sidebarVisible = $event"
-                (delete)="noteDelete($event); sidebarVisible = $event"
-                styleClass="mx-7"
+                (outClose)="focusNewInvButton(); sidebarVisible = $event"
+                (delete)="
+                    noteDelete($event); focusNewInvButton(); sidebarVisible = $event
+                "
+                styleClass="m-0"
             >
             </app-common-editor>
         </p-drawer>

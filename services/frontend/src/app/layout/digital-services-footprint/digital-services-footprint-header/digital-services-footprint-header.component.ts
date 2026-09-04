@@ -16,6 +16,7 @@ import {
     Input,
     OnInit,
     Output,
+    ViewChild,
 } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormsModule } from "@angular/forms";
@@ -87,7 +88,6 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
     isCompareVersions = input<boolean>(false);
     @Output() digitalServiceChange = new EventEmitter<DigitalService>();
     @Output() digitalMobileOptionsChange = new EventEmitter<boolean>();
-    isZoom125 = computed(() => this.global.zoomLevel() >= 125);
     isMobile = computed(() => this.global.mobileView());
     sidebarVisible: boolean = false;
     importSidebarVisible = false;
@@ -113,6 +113,7 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
     firstDsVersionCall = true;
     private readonly destroyRef = inject(DestroyRef);
     displayRenewServicePopup = false;
+    @ViewChild("noteBtn") noteBtn?: Button;
 
     constructor(
         private readonly digitalServicesData: DigitalServicesDataService,
@@ -234,11 +235,13 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
         };
         this.digitalServicesData.update(this.digitalService).subscribe((res) => {
             this.sidebarVisible = false;
+
             this.messageService.add({
                 severity: "success",
                 summary: this.translate.instant("common.note.save"),
                 sticky: false,
             });
+            this.focusPrevButton();
         });
     }
 
@@ -250,6 +253,7 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
                 summary: this.translate.instant("common.note.delete"),
                 sticky: false,
             });
+            this.focusPrevButton();
         });
     }
 
@@ -388,5 +392,11 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
 
     renewService(): void {
         this.displayRenewServicePopup = !this.displayRenewServicePopup;
+    }
+
+    focusPrevButton(): void {
+        setTimeout(() => {
+            this.noteBtn?.el?.nativeElement?.querySelector("button")?.focus();
+        }, 200);
     }
 }

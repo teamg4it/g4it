@@ -13,6 +13,7 @@ import { AsyncPipe } from "@angular/common";
 import { TranslatePipe } from "@ngx-translate/core";
 import { Button } from "primeng/button";
 import { DrawerModule } from "primeng/drawer";
+import { ScrollPanel } from "primeng/scrollpanel";
 import { DigitalServiceBusinessService } from "src/app/core/service/business/digital-services.service";
 import { DigitalServiceStoreService } from "src/app/core/store/digital-service.store";
 import { AutofocusDirective } from "../../../../../core/directives/auto-focus.directive";
@@ -31,6 +32,7 @@ import { PanelAddVmComponent } from "../add-vm/add-vm.component";
         PanelAddVmComponent,
         AsyncPipe,
         TranslatePipe,
+        ScrollPanel,
     ],
 })
 export class PanelListVmComponent {
@@ -110,5 +112,18 @@ export class PanelListVmComponent {
 
     openSidePanel() {
         this.digitalServiceBusiness.openPanel();
+    }
+
+    focusVmButton() {
+        setTimeout(() => {
+            if (this.index !== undefined) {
+                document
+                    .getElementById("add-vm" + (this.index + 1))
+                    ?.querySelector("button")
+                    ?.focus();
+            } else {
+                document.getElementById("add-vm")?.querySelector("button")?.focus();
+            }
+        }, 400);
     }
 }

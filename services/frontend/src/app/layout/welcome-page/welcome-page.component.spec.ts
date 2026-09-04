@@ -28,6 +28,7 @@ describe("WelcomePageComponent", () => {
         // Mock WorkspaceService
         workspaceServiceMock = {
             setOpen: jasmine.createSpy("setOpen"),
+            getIsOpen: jasmine.createSpy("getIsOpen").and.returnValue(of(true)),
         };
 
         await TestBed.configureTestingModule({

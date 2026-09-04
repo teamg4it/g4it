@@ -6,11 +6,11 @@
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
 import { CommonModule } from "@angular/common";
-import { Component, DestroyRef, inject, OnInit, signal } from "@angular/core";
+import { Component, DestroyRef, inject, OnInit, signal, ViewChild } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { Router, RouterModule } from "@angular/router";
 import { TranslateModule } from "@ngx-translate/core";
-import { ButtonModule } from "primeng/button";
+import { Button, ButtonModule } from "primeng/button";
 import { CardModule } from "primeng/card";
 import { ScrollPanelModule } from "primeng/scrollpanel";
 import { take } from "rxjs";
@@ -47,6 +47,8 @@ export class WelcomePageComponent implements OnInit {
     private readonly destroyRef = inject(DestroyRef);
     public userService = inject(UserService);
     ecoDesignPercent = this.userService.ecoDesignPercent;
+    @ViewChild("createWorkspaceButton")
+    createWorkspaceButton?: Button;
 
     externalLinks = [
         {
@@ -98,6 +100,19 @@ export class WelcomePageComponent implements OnInit {
             .subscribe((workspace: any) => {
                 this.currentWorkspace = workspace;
                 this.selectedPath = `/organizations/${this.currentOrganization.name}/workspaces/${workspace?.id}`;
+            });
+
+        this.workspaceService
+            .getIsOpen()
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe((isOpen: boolean) => {
+                if (!isOpen) {
+                    setTimeout(() => {
+                        this.createWorkspaceButton?.el?.nativeElement
+                            ?.querySelector("button")
+                            ?.focus();
+                    }, 200);
+                }
             });
     }
 

@@ -11,13 +11,14 @@
                 <form [formGroup]="createForm">
                     <h2>{{ "digital-services.version.add-ds" | translate }}</h2>
                     <p-button
+                        appAutofocus
                         (onClick)="closeSidebar()"
                         [link]="true"
                         [rounded]="true"
                         ariaLabel="Outlined Close Button"
                         icon="pi pi-times"
                         class="space-sidebar-close"
-                        styleClass="space-sidebar-close-button text-black-alpha-60"
+                        styleClass="space-sidebar-close-button text-black-alpha-60 mr-3 mt-1"
                     ></p-button>
                     @if (selectedMenuIndex === 0) {
                         <h3 class="blue-color ml-0 font-semibold">
@@ -137,6 +138,7 @@
                             [isWriteRole]="true"
                             [showButtons]="false"
                             [showTitle]="false"
+                            [isScroll]="false"
                             (contentChange)="onEditorContentChange($event)"
                             styleClass="m-0 mt-4 p-0 hide-editor-buttons"
                         >

@@ -5,6 +5,7 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
+import { ScrollingModule } from "@angular/cdk/scrolling";
 import { Component, computed, EventEmitter, Input, Output, signal } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { TranslatePipe } from "@ngx-translate/core";
@@ -15,10 +16,12 @@ import { CheckboxModule } from "primeng/checkbox";
 import { DrawerModule } from "primeng/drawer";
 import { FocusTrapModule } from "primeng/focustrap";
 import { ScrollPanelModule } from "primeng/scrollpanel";
+import { AutofocusDirective } from "src/app/core/directives/auto-focus.directive";
 import { Filter } from "src/app/core/interfaces/filter.interface";
 import { Constants } from "src/constants";
 import {
     getActiveFilterNames,
+    getSimpleViewportHeight,
     isFilterActive,
     mapFilterActiveStatus,
 } from "../filter-helpers";
@@ -31,6 +34,7 @@ export type FilterTab = string | { field: string; children?: any[] };
     styleUrls: ["./base-filter-sidebar.component.scss"],
     standalone: true,
     imports: [
+        AutofocusDirective,
         DrawerModule,
         FocusTrapModule,
         Button,
@@ -40,6 +44,7 @@ export type FilterTab = string | { field: string; children?: any[] };
         CheckboxModule,
         FormsModule,
         TranslatePipe,
+        ScrollingModule,
     ],
 })
 export class BaseFilterSidebarComponent {
@@ -86,6 +91,11 @@ export class BaseFilterSidebarComponent {
 
     hasChildren(tab: FilterTab): boolean {
         return typeof tab !== "string" && !!tab.children?.length;
+    }
+
+    // Use shared viewport height calculation
+    getSimpleViewportHeight(field: string): string {
+        return getSimpleViewportHeight(this.allFilters[field]);
     }
 
     closeFilterSidebar(): void {

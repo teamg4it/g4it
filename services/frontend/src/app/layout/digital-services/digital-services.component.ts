@@ -70,6 +70,7 @@ export class DigitalServicesComponent implements OnInit {
     firstCall = true;
     displayRenewServicePopup = false;
     digitalServiceUid = "";
+    private newDsDrawerTrigger: HTMLElement | null = null;
     private readonly destroyRef = inject(DestroyRef);
 
     constructor(
@@ -213,5 +214,16 @@ export class DigitalServicesComponent implements OnInit {
                 }),
             )
             .subscribe(() => this.retrieveDigitalServices());
+    }
+
+    openNewDsDrawer(event: Event): void {
+        this.newDsDrawerTrigger = event.currentTarget as HTMLElement;
+    }
+
+    focusNewDsButton(): void {
+        setTimeout(() => {
+            this.newDsDrawerTrigger?.focus();
+            this.newDsDrawerTrigger = null;
+        }, 10);
     }
 }
