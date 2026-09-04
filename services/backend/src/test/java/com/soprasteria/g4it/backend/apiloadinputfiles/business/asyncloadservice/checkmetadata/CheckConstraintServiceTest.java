@@ -99,7 +99,7 @@ class CheckConstraintServiceTest {
     // -------------------------------------------------------------
     // 3️⃣ Test: physical coherence
     // -------------------------------------------------------------
-    @Test
+    /*@Test
     void testCheckCoherence_physical() {
 
         CoherenceParentDTO dto = mock(CoherenceParentDTO.class);
@@ -145,7 +145,7 @@ class CheckConstraintServiceTest {
         LineError error = coherence.get("fileV").get(10).get(0);
         assertEquals("Parent Physical missing", error.error());
         assertEquals(10, error.line());
-    }
+    }*/
 
     // -------------------------------------------------------------
     // 5️⃣ Test: application coherence

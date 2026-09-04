@@ -21,12 +21,20 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import jakarta.persistence.EntityManager;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+import org.springframework.data.domain.Pageable;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class IndicatorServiceTest {
@@ -55,20 +63,40 @@ class IndicatorServiceTest {
     @Mock
     private VirtualEquipmentIndicatorService virtualEquipmentIndicatorService;
 
+    @Mock
+    private EntityManager entityManager;
+
 
     @Test
     void getApplicationIndicatorsReturnsMappedIndicatorsWhenTaskIdIsValid() {
         Long taskId = 1L;
-        List<OutApplication> applications = List.of(new OutApplication());
-        List<ApplicationIndicatorBO<ApplicationImpactBO>> mappedIndicators = List.of(new ApplicationIndicatorBO<>());
 
-        when(outApplicationRepository.findByTaskId(taskId)).thenReturn(applications);
-        when(applicationIndicatorMapper.toOutDto(applications)).thenReturn(mappedIndicators);
+        OutApplication application = new OutApplication();
+        List<OutApplication> applications = new ArrayList<>(List.of(application));
 
-        List<ApplicationIndicatorBO<ApplicationImpactBO>> result = indicatorService.getApplicationIndicators(taskId);
+        List<ApplicationIndicatorBO<ApplicationImpactBO>> mappedIndicators =
+                List.of(new ApplicationIndicatorBO<>());
+
+        doReturn(applications, new ArrayList<>()).when(outApplicationRepository).findByTaskIdOrderByIdAsc(
+                eq(taskId),
+                any(Pageable.class)
+        );
+
+        when(applicationIndicatorMapper.toOutDto(any(List.class)))
+                .thenReturn(mappedIndicators);
+
+        List<ApplicationIndicatorBO<ApplicationImpactBO>> result =
+                indicatorService.getApplicationIndicators(taskId);
 
         assertNotNull(result);
         assertEquals(mappedIndicators, result);
+
+        verify(outApplicationRepository, atLeast(1)).findByTaskIdOrderByIdAsc(
+                eq(taskId),
+                any(Pageable.class)
+        );
+
+        verify(applicationIndicatorMapper).toOutDto(any(List.class));
     }
 
     @Test
@@ -164,16 +192,15 @@ class IndicatorServiceTest {
                         .id(2L)
                         .build();
 
-        List<Object[]> repositoryResult = List.of(
+        List<Object[]> repositoryResult = new ArrayList<>(List.of(
                 new Object[]{"resource_group", equipment1},
                 new Object[]{"resource_group", equipment2}
-        );
+        ));
 
         EquipmentIndicatorBO indicatorBO =
                 EquipmentIndicatorBO.builder().build();
 
-        when(outPhysicalEquipmentRepository.findCriterionAndEquipmentByTaskId(taskId))
-                .thenReturn(repositoryResult);
+        doReturn(repositoryResult, new ArrayList<>()).when(outPhysicalEquipmentRepository).findCriterionAndEquipmentByTaskId(eq(taskId), any());
 
         when(equipmentIndicatorMapper.outToDto(List.of(equipment1, equipment2)))
                 .thenReturn(indicatorBO);
@@ -186,8 +213,8 @@ class IndicatorServiceTest {
         assertTrue(result.containsKey("resource-group"));
         assertEquals(indicatorBO, result.get("resource-group"));
 
-        verify(outPhysicalEquipmentRepository)
-                .findCriterionAndEquipmentByTaskId(taskId);
+        verify(outPhysicalEquipmentRepository, atLeast(1))
+                .findCriterionAndEquipmentByTaskId(eq(taskId), any());
 
         verify(equipmentIndicatorMapper)
                 .outToDto(List.of(equipment1, equipment2));
@@ -210,11 +237,10 @@ class IndicatorServiceTest {
         EquipmentIndicatorBO indicator2 =
                 EquipmentIndicatorBO.builder().build();
 
-        when(outPhysicalEquipmentRepository.findCriterionAndEquipmentByTaskId(taskId))
-                .thenReturn(List.of(
-                        new Object[]{"resource_group", equipment1},
-                        new Object[]{"climate_change", equipment2}
-                ));
+        doReturn(new ArrayList<>(List.of(
+                new Object[]{"resource_group", equipment1},
+                new Object[]{"climate_change", equipment2}
+        )), new ArrayList<>()).when(outPhysicalEquipmentRepository).findCriterionAndEquipmentByTaskId(eq(taskId), any());
 
         when(equipmentIndicatorMapper.outToDto(List.of(equipment1)))
                 .thenReturn(indicator1);
@@ -241,8 +267,8 @@ class IndicatorServiceTest {
 
         Long taskId = 1L;
 
-        when(outPhysicalEquipmentRepository.findCriterionAndEquipmentByTaskId(taskId))
-                .thenReturn(List.of());
+        when(outPhysicalEquipmentRepository.findCriterionAndEquipmentByTaskId(eq(taskId), any()))
+                .thenReturn(new ArrayList<>());
 
         Map<String, EquipmentIndicatorBO> result =
                 indicatorService.getEquipmentIndicators(taskId);
@@ -251,7 +277,7 @@ class IndicatorServiceTest {
         assertTrue(result.isEmpty());
 
         verify(outPhysicalEquipmentRepository)
-                .findCriterionAndEquipmentByTaskId(taskId);
+                .findCriterionAndEquipmentByTaskId(eq(taskId), any());
 
         verifyNoInteractions(equipmentIndicatorMapper);
     }

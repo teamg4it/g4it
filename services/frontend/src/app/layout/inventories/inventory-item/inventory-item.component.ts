@@ -23,6 +23,7 @@ import { AccordionModule } from "primeng/accordion";
 import { ConfirmationService, MessageService } from "primeng/api";
 import { Button } from "primeng/button";
 import { ConfirmPopupModule } from "primeng/confirmpopup";
+import { Dialog } from "primeng/dialog";
 import { ProgressBarModule } from "primeng/progressbar";
 import { lastValueFrom } from "rxjs";
 import {
@@ -33,6 +34,7 @@ import {
     Inventory,
     InventoryCriteriaRest,
 } from "src/app/core/interfaces/inventory.interfaces";
+import { Organization, Workspace } from "src/app/core/interfaces/user.interfaces";
 import { InventoryService } from "src/app/core/service/business/inventory.service";
 import { UserService } from "src/app/core/service/business/user.service";
 import { EvaluationDataService } from "src/app/core/service/data/evaluation-data.service";
@@ -41,6 +43,7 @@ import { shouldShowExpiryMessage } from "src/app/core/service/mapper/renew-time"
 import { GlobalStoreService } from "src/app/core/store/global.store";
 import * as TimeUtils from "src/app/core/utils/time";
 import { Constants } from "src/constants";
+import { environment } from "src/environments/environment";
 import { MonthYearPipe } from "../../../core/pipes/monthyear.pipe";
 import { CriteriaPopupComponent } from "../../common/criteria-popup/criteria-popup.component";
 import { BatchStatusComponent } from "../batch-status/batch-status.component";
@@ -63,6 +66,7 @@ import { EquipmentsCardComponent } from "../equipments-card/equipments-card.comp
         AsyncPipe,
         UpperCasePipe,
         TranslatePipe,
+        Dialog,
     ],
 })
 export class InventoryItemComponent implements OnInit {
@@ -79,11 +83,22 @@ export class InventoryItemComponent implements OnInit {
     @Output() closeTab: EventEmitter<number> = new EventEmitter();
     @Output() saveInventory = new EventEmitter<InventoryCriteriaRest>();
     @Output() renewInventoryId = new EventEmitter<number>();
+    isInfoVisible = false;
 
     showExpiryMessage = computed(() =>
         shouldShowExpiryMessage(this.inventory().expiryDate ?? ""),
     );
 
+    equipmentLimitExceed = computed(
+        () =>
+            (this.inventory().outVirtualCount ?? 0) >
+            Number(environment.equipmentMaxLimit),
+    );
+    applicationLimitExceed = computed(
+        () =>
+            (this.inventory().outApplicationCount ?? 0) >
+            Number(environment.applicationMaxLimit),
+    );
     batchStatusMapping: any = Constants.EVALUATION_BATCH_STATUS_MAPPING;
     displayPopup = false;
     selectedCriteria: string[] = [];
@@ -96,6 +111,9 @@ export class InventoryItemComponent implements OnInit {
         criteriaIs: [],
         criteriaDs: [],
     };
+
+    currentOrganization: Organization = {} as Organization;
+    selectedWorkspace: Workspace = {} as Workspace;
 
     taskLoading = computed(
         () => this.inventory()?.tasks?.filter((t) => t?.type === "LOADING") ?? [],
@@ -117,9 +135,11 @@ export class InventoryItemComponent implements OnInit {
 
     ngOnInit() {
         this.userService.currentOrganization$.subscribe((organization) => {
+            this.currentOrganization = organization;
             this.organization.criteria = organization.criteria!;
         });
         this.userService.currentWorkspace$.subscribe((workspace) => {
+            this.selectedWorkspace = workspace;
             this.workspace.organizationId = workspace.organizationId!;
             this.workspace.name = workspace.name;
             this.workspace.status = workspace.status;
@@ -290,5 +310,12 @@ export class InventoryItemComponent implements OnInit {
 
     renewService(inventory: any) {
         this.renewInventoryId.emit(inventory.id);
+    }
+
+    composeEmail() {
+        globalThis.location.href = this.userService.composeEmail(
+            this.currentOrganization,
+            this.selectedWorkspace,
+        );
     }
 }

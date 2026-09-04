@@ -418,9 +418,28 @@ public class EvaluateService {
             aggregationApplications.clear();
         }
 
+        // Save output counts to inventory
+        if (inventory != null) {
+            // Use a targeted update instead of inventoryRepository.save(inventory):
+            // Inventory.tasks is EAGER + CascadeType.ALL, so saving the full entity here
+            // would cascade-save the stale in-memory Task snapshot loaded earlier in this
+            // method, overwriting the progress/status updates made concurrently via
+            // TaskRepository's bulk @Modifying queries (updateProgress, updateTaskState, ...).
+            inventoryRepository.updateOutputCounts(
+                    inventory.getId(),
+                    (long) outPhysicalEquipmentSize,
+                    (long) outVirtualEquipmentSize,
+                    (long) outApplicationSize
+            );
+            log.info("Saved output counts to inventory: physical={}, virtual={}, application={}",
+                    outPhysicalEquipmentSize, outVirtualEquipmentSize, outApplicationSize);
+        }
+
         log.info("End evaluating impacts for {}/{} in {}s and sizes: {}/{}/{}", context.log(), taskId,
                 (System.currentTimeMillis() - start) / 1000,
                 outPhysicalEquipmentSize, outVirtualEquipmentSize, outApplicationSize);
+
+
 
         // clean files if empty
         try {

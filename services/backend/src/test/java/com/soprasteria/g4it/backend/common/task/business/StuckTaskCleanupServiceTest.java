@@ -18,18 +18,21 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.context.MessageSource;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class StuckTaskCleanupServiceTest {
@@ -38,7 +41,7 @@ class StuckTaskCleanupServiceTest {
     private TaskRepository taskRepository;
 
     @Mock
-    private MessageSource messageSource;
+    private StuckTaskRowUpdater stuckTaskRowUpdater;
 
     @InjectMocks
     private StuckTaskCleanupService stuckTaskCleanupService;
@@ -73,272 +76,128 @@ class StuckTaskCleanupServiceTest {
         stuckTaskCleanupService.failStuckTasks();
 
         verifyNoInteractions(taskRepository);
+        verifyNoInteractions(stuckTaskRowUpdater);
     }
 
     @Test
-    void failStuckTasks_whenNoInProgressTasks_shouldNotSaveAnything() {
+    void failStuckTasks_whenNoInProgressTasks_shouldNotDelegateToRowUpdater() {
         when(taskRepository.findByStatus(TaskStatus.IN_PROGRESS.toString()))
                 .thenReturn(Collections.emptyList());
 
         stuckTaskCleanupService.failStuckTasks();
 
-        verify(taskRepository, never()).save(any(Task.class));
-    }
-
-    // ── Case 1: PLCD is null – first scheduler check ──
-
-    @Test
-    void failStuckTasks_whenPlcdIsNull_shouldInitializePlcdAndKeepInProgress() {
-        LocalDateTime lastUpdate = LocalDateTime.now().minusMinutes(30);
-        Task task = createTask(1L, "EVALUATING", lastUpdate, null);
-
-        when(taskRepository.findByStatus(TaskStatus.IN_PROGRESS.toString()))
-                .thenReturn(List.of(task));
-
-        stuckTaskCleanupService.failStuckTasks();
-
-        ArgumentCaptor<Task> captor = ArgumentCaptor.forClass(Task.class);
-        verify(taskRepository, times(1)).save(captor.capture());
-
-        Task saved = captor.getValue();
-        assertThat(saved.getProgressLastChangedDate()).isNotNull();
-        assertThat(saved.getProgressLastChangedDate())
-                .isEqualTo(lastUpdate.truncatedTo(ChronoUnit.SECONDS));
-        assertThat(saved.getStatus()).isEqualTo(TaskStatus.IN_PROGRESS.toString());
+        verify(stuckTaskRowUpdater, never()).processTask(any(), any());
     }
 
     @Test
-    void failStuckTasks_whenPlcdIsNull_saveShouldThrow_shouldContinueProcessingOtherTasks() {
+    void failStuckTasks_shouldDelegateEachTaskToRowUpdaterInOrder() {
         LocalDateTime now = LocalDateTime.now();
         Task task1 = createTask(1L, "EVALUATING", now.minusMinutes(10), null);
-        LocalDateTime stuckDate = now.minusMinutes(90);
-        Task task2 = createTask(2L, "EVALUATING", stuckDate, stuckDate);
+        Task task2 = createTask(2L, "EVALUATING", now.minusMinutes(10), now.minusMinutes(30));
 
         when(taskRepository.findByStatus(TaskStatus.IN_PROGRESS.toString()))
                 .thenReturn(List.of(task1, task2));
-        when(taskRepository.save(task1)).thenThrow(new RuntimeException("DB error"));
-        when(taskRepository.save(task2)).thenReturn(task2);
-
-        // Must not propagate exception
-        stuckTaskCleanupService.failStuckTasks();
-
-        verify(taskRepository, times(2)).save(any(Task.class));
-    }
-
-    // ── Case 2: LUD > PLCD – task is progressing ──
-
-    @Test
-    void failStuckTasks_whenTaskHasProgressed_shouldUpdatePlcdAndKeepInProgress() {
-        LocalDateTime plcd = LocalDateTime.now().minusMinutes(60);
-        LocalDateTime lastUpdate = LocalDateTime.now().minusMinutes(20);
-        Task task = createTask(2L, "EVALUATING", lastUpdate, plcd);
-
-        when(taskRepository.findByStatus(TaskStatus.IN_PROGRESS.toString()))
-                .thenReturn(List.of(task));
+        when(stuckTaskRowUpdater.processTask(any(Task.class), any(LocalDateTime.class)))
+                .thenReturn(TaskCheckResult.INITIALIZED);
 
         stuckTaskCleanupService.failStuckTasks();
 
-        ArgumentCaptor<Task> captor = ArgumentCaptor.forClass(Task.class);
-        verify(taskRepository, times(1)).save(captor.capture());
-
-        Task saved = captor.getValue();
-        assertThat(saved.getStatus()).isEqualTo(TaskStatus.IN_PROGRESS.toString());
-        assertThat(saved.getProgressLastChangedDate())
-                .isEqualTo(lastUpdate.truncatedTo(ChronoUnit.SECONDS));
+        ArgumentCaptor<Task> taskCaptor = ArgumentCaptor.forClass(Task.class);
+        verify(stuckTaskRowUpdater, times(2)).processTask(taskCaptor.capture(), any(LocalDateTime.class));
+        assertThat(taskCaptor.getAllValues()).extracting(Task::getId).containsExactly(1L, 2L);
     }
 
     @Test
-    void failStuckTasks_whenProgressUpdateSaveThrows_shouldContinueProcessingOtherTasks() {
-        LocalDateTime now = LocalDateTime.now();
-        Task task1 = createTask(1L, "EVALUATING", now.minusMinutes(10), now.minusMinutes(30));
-        LocalDateTime stuckDate = now.minusMinutes(90);
-        Task task2 = createTask(2L, "EVALUATING", stuckDate, stuckDate);
+    void failStuckTasks_shouldPassTheSameNowInstantToEveryTask() {
+        Task task1 = createTask(1L, "EVALUATING", LocalDateTime.now(), null);
+        Task task2 = createTask(2L, "EVALUATING", LocalDateTime.now(), LocalDateTime.now().minusMinutes(30));
 
         when(taskRepository.findByStatus(TaskStatus.IN_PROGRESS.toString()))
                 .thenReturn(List.of(task1, task2));
-        when(taskRepository.save(task1)).thenThrow(new RuntimeException("DB error"));
-        when(taskRepository.save(task2)).thenReturn(task2);
+        when(stuckTaskRowUpdater.processTask(any(Task.class), any(LocalDateTime.class)))
+                .thenReturn(TaskCheckResult.NONE);
 
         stuckTaskCleanupService.failStuckTasks();
 
-        verify(taskRepository, times(2)).save(any(Task.class));
+        ArgumentCaptor<LocalDateTime> nowCaptor = ArgumentCaptor.forClass(LocalDateTime.class);
+        verify(stuckTaskRowUpdater, times(2)).processTask(any(Task.class), nowCaptor.capture());
+        assertThat(nowCaptor.getAllValues()).hasSize(2);
+        assertThat(nowCaptor.getAllValues().get(0)).isEqualTo(nowCaptor.getAllValues().get(1));
     }
 
-    // ── Case 3: LUD == PLCD – task is stuck ──
+    @Test
+    void failStuckTasks_whenRowUpdaterReturnsInitialized_shouldCompleteWithoutError() {
+        Task task = createTask(1L, "EVALUATING", LocalDateTime.now(), null);
+        when(taskRepository.findByStatus(TaskStatus.IN_PROGRESS.toString()))
+                .thenReturn(List.of(task));
+        when(stuckTaskRowUpdater.processTask(eq(task), any(LocalDateTime.class)))
+                .thenReturn(TaskCheckResult.INITIALIZED);
+
+        stuckTaskCleanupService.failStuckTasks();
+
+        verify(stuckTaskRowUpdater).processTask(eq(task), any(LocalDateTime.class));
+    }
 
     @Test
-    void failStuckTasks_whenTaskIsStuck_shouldMarkAsFailed() {
+    void failStuckTasks_whenRowUpdaterReturnsUpdated_shouldCompleteWithoutError() {
+        Task task = createTask(2L, "EVALUATING", LocalDateTime.now(), LocalDateTime.now().minusMinutes(30));
+        when(taskRepository.findByStatus(TaskStatus.IN_PROGRESS.toString()))
+                .thenReturn(List.of(task));
+        when(stuckTaskRowUpdater.processTask(eq(task), any(LocalDateTime.class)))
+                .thenReturn(TaskCheckResult.UPDATED);
+
+        stuckTaskCleanupService.failStuckTasks();
+
+        verify(stuckTaskRowUpdater).processTask(eq(task), any(LocalDateTime.class));
+    }
+
+    @Test
+    void failStuckTasks_whenRowUpdaterReturnsFailed_shouldCompleteWithoutError() {
         LocalDateTime stuckDate = LocalDateTime.now().minusMinutes(90);
         Task task = createTask(3L, "EVALUATING", stuckDate, stuckDate);
-
         when(taskRepository.findByStatus(TaskStatus.IN_PROGRESS.toString()))
                 .thenReturn(List.of(task));
+        when(stuckTaskRowUpdater.processTask(eq(task), any(LocalDateTime.class)))
+                .thenReturn(TaskCheckResult.FAILED);
 
         stuckTaskCleanupService.failStuckTasks();
 
-        ArgumentCaptor<Task> captor = ArgumentCaptor.forClass(Task.class);
-        verify(taskRepository, times(1)).save(captor.capture());
-
-        Task saved = captor.getValue();
-        assertThat(saved.getStatus()).isEqualTo(TaskStatus.FAILED.toString());
+        verify(stuckTaskRowUpdater).processTask(eq(task), any(LocalDateTime.class));
     }
 
     @Test
-    void failStuckTasks_whenTaskIsStuck_shouldPopulateErrorsWithSchedulerMarker() {
-        LocalDateTime stuckDate = LocalDateTime.now().minusMinutes(90);
-        Task task = createTask(3L, "EVALUATING", stuckDate, stuckDate);
-
+    void failStuckTasks_whenRowUpdaterReturnsNone_shouldCompleteWithoutError() {
+        Task task = createTask(4L, "EVALUATING", LocalDateTime.now(), LocalDateTime.now());
         when(taskRepository.findByStatus(TaskStatus.IN_PROGRESS.toString()))
                 .thenReturn(List.of(task));
+        when(stuckTaskRowUpdater.processTask(eq(task), any(LocalDateTime.class)))
+                .thenReturn(TaskCheckResult.NONE);
 
         stuckTaskCleanupService.failStuckTasks();
 
-        ArgumentCaptor<Task> captor = ArgumentCaptor.forClass(Task.class);
-        verify(taskRepository).save(captor.capture());
-
-        Task saved = captor.getValue();
-        assertThat(saved.getErrors()).hasSize(1);
-        assertThat(saved.getErrors().get(0)).contains("FAILED BY SCHEDULER");
+        verify(stuckTaskRowUpdater).processTask(eq(task), any(LocalDateTime.class));
     }
 
     @Test
-    void failStuckTasks_whenTaskIsStuck_detailsShouldContainStuckMinutes() {
-        LocalDateTime stuckDate = LocalDateTime.now().minusMinutes(90);
-        Task task = createTask(3L, "EVALUATING", stuckDate, stuckDate);
-
-        when(taskRepository.findByStatus(TaskStatus.IN_PROGRESS.toString()))
-                .thenReturn(List.of(task));
-
-        stuckTaskCleanupService.failStuckTasks();
-
-        ArgumentCaptor<Task> captor = ArgumentCaptor.forClass(Task.class);
-        verify(taskRepository).save(captor.capture());
-
-        Task saved = captor.getValue();
-        assertThat(saved.getDetails()).isNotEmpty();
-        // Detail message mentions the duration in minutes
-        assertThat(saved.getDetails().get(0)).contains("minutes");
-    }
-
-    @Test
-    void failStuckTasks_whenTaskIsStuck_lastUpdateDateShouldBeRefreshed() {
-        LocalDateTime stuckDate = LocalDateTime.now().minusHours(2);
-        Task task = createTask(3L, "EVALUATING", stuckDate, stuckDate);
-        LocalDateTime before = LocalDateTime.now().minusSeconds(1);
-
-        when(taskRepository.findByStatus(TaskStatus.IN_PROGRESS.toString()))
-                .thenReturn(List.of(task));
-
-        stuckTaskCleanupService.failStuckTasks();
-
-        ArgumentCaptor<Task> captor = ArgumentCaptor.forClass(Task.class);
-        verify(taskRepository).save(captor.capture());
-
-        assertThat(captor.getValue().getLastUpdateDate()).isAfterOrEqualTo(before);
-    }
-
-    @Test
-    void failStuckTasks_whenTaskIsStuck_existingDetailsShouldBePreserved() {
-        LocalDateTime stuckDate = LocalDateTime.now().minusMinutes(90);
-        Task task = createTask(3L, "EVALUATING", stuckDate, stuckDate);
-        task.setDetails(new ArrayList<>(List.of("pre-existing detail")));
-
-        when(taskRepository.findByStatus(TaskStatus.IN_PROGRESS.toString()))
-                .thenReturn(List.of(task));
-
-        stuckTaskCleanupService.failStuckTasks();
-
-        ArgumentCaptor<Task> captor = ArgumentCaptor.forClass(Task.class);
-        verify(taskRepository).save(captor.capture());
-
-        Task saved = captor.getValue();
-        assertThat(saved.getDetails()).hasSizeGreaterThan(1);
-        assertThat(saved.getDetails()).contains("pre-existing detail");
-    }
-
-    @Test
-    void failStuckTasks_whenTaskIsStuck_nullDetailsShouldBeHandledGracefully() {
-        LocalDateTime stuckDate = LocalDateTime.now().minusMinutes(90);
-        Task task = createTask(3L, "EVALUATING", stuckDate, stuckDate);
-        task.setDetails(null);
-
-        when(taskRepository.findByStatus(TaskStatus.IN_PROGRESS.toString()))
-                .thenReturn(List.of(task));
-
-        stuckTaskCleanupService.failStuckTasks();
-
-        ArgumentCaptor<Task> captor = ArgumentCaptor.forClass(Task.class);
-        verify(taskRepository).save(captor.capture());
-
-        assertThat(captor.getValue().getDetails()).isNotNull().isNotEmpty();
-    }
-
-    // ── Case 3 edge: LUD < PLCD ──
-
-    @Test
-    void failStuckTasks_whenLastUpdateBeforePlcd_shouldAlsoMarkAsFailed() {
-        // Unusual edge case: LUD < PLCD – service treats this the same as stuck
-        LocalDateTime plcd = LocalDateTime.now().minusMinutes(30);
-        LocalDateTime lastUpdate = LocalDateTime.now().minusMinutes(60); // LUD < PLCD
-        Task task = createTask(4L, "EVALUATING", lastUpdate, plcd);
-
-        when(taskRepository.findByStatus(TaskStatus.IN_PROGRESS.toString()))
-                .thenReturn(List.of(task));
-
-        stuckTaskCleanupService.failStuckTasks();
-
-        ArgumentCaptor<Task> captor = ArgumentCaptor.forClass(Task.class);
-        verify(taskRepository, times(1)).save(captor.capture());
-
-        assertThat(captor.getValue().getStatus()).isEqualTo(TaskStatus.FAILED.toString());
-    }
-
-    // ── failTask() save exception ──
-
-    @Test
-    void failStuckTasks_whenFailTaskSaveThrows_shouldNotPropagateException() {
-        LocalDateTime stuckDate = LocalDateTime.now().minusMinutes(90);
-        Task task = createTask(3L, "EVALUATING", stuckDate, stuckDate);
-
-        when(taskRepository.findByStatus(TaskStatus.IN_PROGRESS.toString()))
-                .thenReturn(List.of(task));
-        when(taskRepository.save(any(Task.class))).thenThrow(new RuntimeException("DB failure"));
-
-        // Must not propagate
-        stuckTaskCleanupService.failStuckTasks();
-    }
-
-    // ── Mixed scenario ──
-
-    @Test
-    void failStuckTasks_withMixedTasks_shouldHandleEachCaseIndependently() {
+    void failStuckTasks_withMixedResults_shouldProcessEachTaskIndependently() {
         LocalDateTime now = LocalDateTime.now();
 
-        Task taskInit    = createTask(1L, "EVALUATING", now.minusMinutes(10), null);
+        Task taskInit = createTask(1L, "EVALUATING", now.minusMinutes(10), null);
         Task taskProgress = createTask(2L, "EVALUATING", now.minusMinutes(10), now.minusMinutes(30));
         LocalDateTime stuckDate = now.minusMinutes(90);
-        Task taskStuck   = createTask(3L, "EVALUATING", stuckDate, stuckDate);
+        Task taskStuck = createTask(3L, "EVALUATING", stuckDate, stuckDate);
 
         when(taskRepository.findByStatus(TaskStatus.IN_PROGRESS.toString()))
                 .thenReturn(List.of(taskInit, taskProgress, taskStuck));
+        when(stuckTaskRowUpdater.processTask(eq(taskInit), any(LocalDateTime.class)))
+                .thenReturn(TaskCheckResult.INITIALIZED);
+        when(stuckTaskRowUpdater.processTask(eq(taskProgress), any(LocalDateTime.class)))
+                .thenReturn(TaskCheckResult.UPDATED);
+        when(stuckTaskRowUpdater.processTask(eq(taskStuck), any(LocalDateTime.class)))
+                .thenReturn(TaskCheckResult.FAILED);
 
         stuckTaskCleanupService.failStuckTasks();
 
-        // One save per task
-        verify(taskRepository, times(3)).save(any(Task.class));
-    }
-
-    // ──────────────── isStuckTaskCheckEnabled() ────────────────
-
-    @Test
-    void isStuckTaskCheckEnabled_whenTrue_shouldReturnTrue() {
-        ReflectionTestUtils.setField(stuckTaskCleanupService, "stuckTaskCheckEnabled", true);
-        assertThat(stuckTaskCleanupService.isStuckTaskCheckEnabled()).isTrue();
-    }
-
-    @Test
-    void isStuckTaskCheckEnabled_whenFalse_shouldReturnFalse() {
-        ReflectionTestUtils.setField(stuckTaskCleanupService, "stuckTaskCheckEnabled", false);
-        assertThat(stuckTaskCleanupService.isStuckTaskCheckEnabled()).isFalse();
+        verify(stuckTaskRowUpdater, times(3)).processTask(any(Task.class), any(LocalDateTime.class));
     }
 }
