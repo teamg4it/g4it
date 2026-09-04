@@ -65,6 +65,8 @@ databaseChangeLog:
   - include:
       file: db/changelog/greenitdb.changelog-create-audit-event.yml
   - include:
+      file: db/changelog/greenitdb.changelog-add-inventory-output-counts.yml
+  - include:
       file: db/changelog/greenitdb.changelog-add-coherence-check-indexes.yml
 
 
