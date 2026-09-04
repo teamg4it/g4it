@@ -1,0 +1,164 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-indexes-for-coherence-checks
+      author: G4IT Performance Team
+      comment: Add indexes to optimize coherence validation queries that scan 200k+ equipment rows during import. This addresses the 9+ minute delay in checkMetadataInventoryFileService.
+      changes:
+        # Indexes for physical equipment coherence checks
+        - createIndex:
+            tableName: check_inv_load_physical_equipment
+            indexName: idx_check_inv_phys_eq_task_datacenter
+            columns:
+              - column:
+                  name: task_id
+              - column:
+                  name: datacenter_name
+            where: "datacenter_name IS NOT NULL"
+
+        - createIndex:
+            tableName: check_inv_load_physical_equipment
+            indexName: idx_check_inv_phys_eq_task_type
+            columns:
+              - column:
+                  name: task_id
+              - column:
+                  name: type
+            where: "type IN ('Dedicated Server', 'Shared Server')"
+
+        # Indexes for datacenter lookups in coherence checks
+        - createIndex:
+            tableName: in_datacenter
+            indexName: idx_in_datacenter_dsv_name
+            columns:
+              - column:
+                  name: digital_service_version_uid
+              - column:
+                  name: name
+
+        - createIndex:
+            tableName: in_datacenter
+            indexName: idx_in_datacenter_inventory_name
+            columns:
+              - column:
+                  name: inventory_id
+              - column:
+                  name: name
+
+        # Indexes for check datacenter lookups
+        - createIndex:
+            tableName: check_inv_load_datacenter
+            indexName: idx_check_inv_datacenter_task_name
+            columns:
+              - column:
+                  name: task_id
+              - column:
+                  name: datacenter_name
+
+        # Indexes for virtual equipment coherence checks
+        - createIndex:
+            tableName: check_inv_load_virtual_equipment
+            indexName: idx_check_inv_virt_eq_task_parent
+            columns:
+              - column:
+                  name: task_id
+              - column:
+                  name: physical_equipment_name
+            where: "physical_equipment_name IS NOT NULL"
+
+        # Indexes for physical equipment lookups
+        - createIndex:
+            tableName: in_physical_equipment
+            indexName: idx_in_physical_eq_dsv_name
+            columns:
+              - column:
+                  name: digital_service_version_uid
+              - column:
+                  name: name
+
+        - createIndex:
+            tableName: in_physical_equipment
+            indexName: idx_in_physical_eq_inventory_name
+            columns:
+              - column:
+                  name: inventory_id
+              - column:
+                  name: name
+
+        # Indexes for check physical equipment lookups
+        - createIndex:
+            tableName: check_inv_load_physical_equipment
+            indexName: idx_check_inv_phys_eq_name
+            columns:
+              - column:
+                  name: task_id
+              - column:
+                  name: physical_equipment_name
+
+        # Indexes for application coherence checks
+        - createIndex:
+            tableName: check_inv_load_application
+            indexName: idx_check_inv_app_task_parent
+            columns:
+              - column:
+                  name: task_id
+              - column:
+                  name: virtual_equipment_name
+            where: "virtual_equipment_name IS NOT NULL"
+
+        # Indexes for virtual equipment lookups
+        - createIndex:
+            tableName: in_virtual_equipment
+            indexName: idx_in_virtual_eq_dsv_name
+            columns:
+              - column:
+                  name: digital_service_version_uid
+              - column:
+                  name: name
+
+        - createIndex:
+            tableName: in_virtual_equipment
+            indexName: idx_in_virtual_eq_inventory_name
+            columns:
+              - column:
+                  name: inventory_id
+              - column:
+                  name: name
+
+        # Indexes for check virtual equipment lookups
+        - createIndex:
+            tableName: check_inv_load_virtual_equipment
+            indexName: idx_check_inv_virt_eq_name
+            columns:
+              - column:
+                  name: task_id
+              - column:
+                  name: virtual_equipment_name
+
+        # Indexes for application lookups
+        - createIndex:
+            tableName: in_application
+            indexName: idx_in_application_dsv_name
+            columns:
+              - column:
+                  name: digital_service_version_uid
+              - column:
+                  name: name
+
+        - createIndex:
+            tableName: in_application
+            indexName: idx_in_application_inventory_name
+            columns:
+              - column:
+                  name: inventory_id
+              - column:
+                  name: name
+
+        # Indexes for check application lookups
+        - createIndex:
+            tableName: check_inv_load_application
+            indexName: idx_check_inv_app_name
+            columns:
+              - column:
+                  name: task_id
+              - column:
+                  name: application_name
