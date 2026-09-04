@@ -1887,6 +1887,10 @@ app-digital-services-item {
         transition: all 0.2s ease;
     }
 
+    .info-card {
+        min-width: 220px;
+    }
+
     .expiry-card:hover {
         background: var(--red-hover-bg);
         transform: translateY(-1px);
