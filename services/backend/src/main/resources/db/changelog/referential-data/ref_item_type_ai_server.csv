@@ -1,6 +1,3 @@
 type;category;comment;default_lifespan;is_server;source;ref_default_item;subscriber;version
-Small AI Server;EquipementPhysique;Lifetime par defaut;5.0;true;;Small AI Server (2 × NVIDIA L4);NULL;NULL
-Medium AI Server;EquipementPhysique;Lifetime par defaut;5.0;true;;Medium AI Server (2 × NVIDIA L4);NULL;NULL
-Large Old AI Server;EquipementPhysique;Lifetime par defaut;5.0;true;;Large Old AI Server (2 × NVIDIA L4);NULL;NULL
-Large Recent AI Server;EquipementPhysique;Lifetime par defaut;5.0;true;;Large Recent AI Server (2 × NVIDIA L4);NULL;NULL
+AI server;EquipementPhysique;Lifetime par defaut;5.0;true;;Medium AI Server (2 × NVIDIA L4);NULL;NULL
 
