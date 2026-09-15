@@ -19,7 +19,7 @@ databaseChangeLog:
                   value: Small AI Server (2 × NVIDIA L4)
               - column:
                   name: external_referential_description
-                  value: Small AI Server (2 × NVIDIA L4)
+                  value: Rack server NO, 2 processor high-end, 4 SSD 2048 GB each, 0 HDD, 48 RAM, 64 GB each, 2 GPUs Nvidia L4 (Hubblo), electricty consumption based on NegaOctet server with only 1 GPU
               - column:
                   name: type
                   value: AI
@@ -57,7 +57,7 @@ databaseChangeLog:
                   value: Medium AI Server (4 × H100 PCIe 80G)
               - column:
                   name: external_referential_description
-                  value: Medium AI Server (4 × H100 PCIe 80G)
+                  value: Rack server NO, 2 processor high-end, 4 SSD- 2048 GB each, 0 HDD, 48 RAM, 64 GB each, 4 GPUs Nvidia H100 PCIe 80 GB (Hubblo), electricty consumption based on NegaOctet server with only 1 GPU
               - column:
                   name: type
                   value: AI
@@ -95,7 +95,7 @@ databaseChangeLog:
                   value: Large Old AI Server (8 × A100 SXM4 40Go)
               - column:
                   name: external_referential_description
-                  value: Large Old AI Server (8 × A100 SXM4 40Go)
+                  value: Rack server NO, 2 processor high-end, 4 SSD- 2048 GB each, 0 HDD, 48 RAM, 64 GB each, 8 GPUs Nvidia A100 SXM4 40 GB (Hubblo), electricty consumption based on NegaOctet server with only 1 GPU
               - column:
                   name: type
                   value: AI
@@ -133,7 +133,7 @@ databaseChangeLog:
                   value: Large Recent AI Server (8 × H100 PCIe 40Go)
               - column:
                   name: external_referential_description
-                  value: Large Recent AI Server (8 × H100 PCIe 40Go)
+                  value: Rack server NO, 2 processor high-end, 4 SSD- 2048 GB each, 0 HDD, 48 RAM, 64 GB each, 8 GPUs Nvidia H100 PCIe 80 GB (Hubblo), electricty consumption based on NegaOctet server with only 1 GPU
               - column:
                   name: type
                   value: AI

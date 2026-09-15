@@ -1,0 +1,6 @@
+item_source;ref_item_target
+ai-server-S;Small AI Server (2 × NVIDIA L4)
+ai-server-M;Medium AI Server (4 × H100 PCIe 80G)
+ai-server-L (old);Large Old AI Server (8 × A100 SXM4 40Go)
+ai-server-L (recent);Large Recent AI Server (8 × H100 PCIe 40Go)
+
