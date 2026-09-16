@@ -14,7 +14,7 @@ public enum DigitalServiceType {
     DEDICATED_SERVER("Dedicated Server"),
     TERMINAL("Terminal"),
     NETWORK("Network"),
-    AI_SERVER ("AI Server");
+    AI_SERVER ("AI server");
 
     private final String value;
 
