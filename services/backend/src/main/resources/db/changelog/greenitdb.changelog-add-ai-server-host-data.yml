@@ -16,7 +16,7 @@ databaseChangeLog:
                   value: Small AI Server
               - column:
                   name: reference
-                  value: Small AI Server (2 × NVIDIA L4)
+                  value: ai-server-S
               - column:
                   name: external_referential_description
                   value: Rack server NO, 2 processor high-end, 4 SSD 2048 GB each, 0 HDD, 48 RAM, 64 GB each, 2 GPUs Nvidia L4 (Hubblo), electricty consumption based on NegaOctet server with only 1 GPU
@@ -54,7 +54,7 @@ databaseChangeLog:
                   value: Medium AI Server
               - column:
                   name: reference
-                  value: Medium AI Server (4 × H100 PCIe 80G)
+                  value: ai-server-M
               - column:
                   name: external_referential_description
                   value: Rack server NO, 2 processor high-end, 4 SSD- 2048 GB each, 0 HDD, 48 RAM, 64 GB each, 4 GPUs Nvidia H100 PCIe 80 GB (Hubblo), electricty consumption based on NegaOctet server with only 1 GPU
@@ -92,7 +92,7 @@ databaseChangeLog:
                   value: Large Old AI Server
               - column:
                   name: reference
-                  value: Large Old AI Server (8 × A100 SXM4 40Go)
+                  value: ai-server-L (old)
               - column:
                   name: external_referential_description
                   value: Rack server NO, 2 processor high-end, 4 SSD- 2048 GB each, 0 HDD, 48 RAM, 64 GB each, 8 GPUs Nvidia A100 SXM4 40 GB (Hubblo), electricty consumption based on NegaOctet server with only 1 GPU
@@ -130,7 +130,7 @@ databaseChangeLog:
                   value: Large Recent AI Server
               - column:
                   name: reference
-                  value: Large Recent AI Server (8 × H100 PCIe 40Go)
+                  value: ai-server-L (recent)
               - column:
                   name: external_referential_description
                   value: Rack server NO, 2 processor high-end, 4 SSD- 2048 GB each, 0 HDD, 48 RAM, 64 GB each, 8 GPUs Nvidia H100 PCIe 80 GB (Hubblo), electricty consumption based on NegaOctet server with only 1 GPU
