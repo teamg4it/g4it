@@ -45,29 +45,7 @@ export class PanelListVmComponent {
     index: number | undefined;
     headerFields = computed(() => {
         const { type } = this.digitalServiceStore.server();
-        return type === "Compute"
-            ? [
-                  "name",
-                  "quantity",
-                  "vCpu",
-                  "annualOperatingTime",
-                  "electricityConsumption",
-              ]
-            : type === "AI"
-              ? [
-                    "name",
-                    "quantity",
-                    "vRam",
-                    "annualOperatingTime",
-                    "electricityConsumption",
-                ]
-              : [
-                    "name",
-                    "quantity",
-                    "disk",
-                    "annualOperatingTime",
-                    "electricityConsumption",
-                ];
+        return this.getHeaderFields(type);
     });
     vmData = computed(() => {
         return [...this.digitalServiceStore.server().vm];
@@ -82,6 +60,34 @@ export class PanelListVmComponent {
         private readonly route: ActivatedRoute,
         public userService: UserService,
     ) {}
+
+    private getHeaderFields(type: string | undefined): string[] {
+        if (type === "Compute") {
+            return [
+                "name",
+                "quantity",
+                "vCpu",
+                "annualOperatingTime",
+                "electricityConsumption",
+            ];
+        } else if (type === "AI") {
+            return [
+                "name",
+                "quantity",
+                "vRam",
+                "annualOperatingTime",
+                "electricityConsumption",
+            ];
+        } else {
+            return [
+                "name",
+                "quantity",
+                "disk",
+                "annualOperatingTime",
+                "electricityConsumption",
+            ];
+        }
+    }
 
     resetIndex() {
         this.index = undefined;

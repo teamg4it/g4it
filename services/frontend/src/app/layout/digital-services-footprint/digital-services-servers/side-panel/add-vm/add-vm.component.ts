@@ -167,20 +167,20 @@ export class PanelAddVmComponent implements OnInit {
         hasError: boolean,
     ) {
         const { [errorKey]: _removed, ...remainingErrors } = control.errors ?? {};
-        control.setErrors(
-            hasError
-                ? { ...remainingErrors, [errorKey]: true }
-                : Object.keys(remainingErrors).length
-                  ? remainingErrors
-                  : null,
-        );
+        if (hasError) {
+            control.setErrors({ ...remainingErrors, [errorKey]: true });
+        } else if (Object.keys(remainingErrors).length) {
+            control.setErrors(remainingErrors);
+        } else {
+            control.setErrors(null);
+        }
     }
 
     sum() {
         let sum: number = 0;
         const type = this.server().type;
 
-        const field = type === "Compute" ? "vCpu" : type === "Storage" ? "disk" : "vRam";
+        const field = this.getVmField(type);
 
         for (const vm of this.server().vm) {
             if (this.vm.name !== vm.name) {
@@ -188,6 +188,16 @@ export class PanelAddVmComponent implements OnInit {
             }
         }
         return sum;
+    }
+
+    private getVmField(type: string | undefined): "vCpu" | "disk" | "vRam" {
+        if (type === "Compute") {
+            return "vCpu";
+        } else if (type === "Storage") {
+            return "disk";
+        } else {
+            return "vRam";
+        }
     }
 
     submitFormData() {

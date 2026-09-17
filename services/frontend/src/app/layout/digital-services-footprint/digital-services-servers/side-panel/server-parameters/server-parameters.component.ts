@@ -28,6 +28,7 @@ import {
     DigitalServiceServerConfig,
     Host,
     ServerDC,
+    ServerVM,
 } from "src/app/core/interfaces/digital-service.interfaces";
 import { DigitalServiceBusinessService } from "src/app/core/service/business/digital-services.service";
 import { UserService } from "src/app/core/service/business/user.service";
@@ -179,9 +180,12 @@ export class PanelServerParametersComponent {
         srv: DigitalServiceServerConfig,
         datacenters: ServerDC[],
     ): ServerDC {
-        const datacenterName = this.current.datacenter.name
-            ? srv.datacenter?.name
-            : "Default DC";
+        let datacenterName: string | undefined;
+        if (this.current.datacenter.name) {
+            datacenterName = srv.datacenter?.name;
+        } else {
+            datacenterName = "Default DC";
+        }
         return datacenters.find((x) => x.name === datacenterName)!;
     }
 
@@ -240,37 +244,47 @@ export class PanelServerParametersComponent {
 
     verifyValue(server: DigitalServiceServerConfig) {
         this.totalVmvCpu = 0;
-        const vcputControl =
-            server.type === "Compute"
-                ? this.serverForm.get("vcpu")
-                : server.type === "Storage"
-                  ? this.serverForm.get("disk")
-                  : this.serverForm.get("vram");
+        let vcputControl: AbstractControl | null;
+        if (server.type === "Compute") {
+            vcputControl = this.serverForm.get("vcpu");
+        } else if (server.type === "Storage") {
+            vcputControl = this.serverForm.get("disk");
+        } else {
+            vcputControl = this.serverForm.get("vram");
+        }
         if (!vcputControl) return;
 
         let isValueTooHigh = false;
         if (server.vm?.length) {
             this.totalVmvCpu = server.vm.reduce(
-                (acc, vm) =>
-                    acc +
-                    (server.type === "Compute"
-                        ? vm.vCpu
-                        : server.type === "Storage"
-                          ? vm.disk
-                          : vm.vRam!) *
-                        vm.quantity,
+                (acc, vm) => acc + this.getVmValue(server, vm) * vm.quantity,
                 0,
             );
-            isValueTooHigh =
-                ((server.type === "Compute"
-                    ? server.totalVCpu
-                    : server.type === "Storage"
-                      ? server.totalDisk
-                      : server.totalVram) ?? 0) < this.totalVmvCpu;
+            isValueTooHigh = (this.getServerTotal(server) ?? 0) < this.totalVmvCpu;
         }
         this.setControlError(vcputControl, "isValueTooHigh", isValueTooHigh);
         if (isValueTooHigh) {
             vcputControl.markAsDirty();
+        }
+    }
+
+    private getServerTotal(server: DigitalServiceServerConfig): number | undefined {
+        if (server.type === "Compute") {
+            return server.totalVCpu;
+        } else if (server.type === "Storage") {
+            return server.totalDisk;
+        } else {
+            return server.totalVram;
+        }
+    }
+
+    private getVmValue(server: DigitalServiceServerConfig, vm: ServerVM): number {
+        if (server.type === "Compute") {
+            return vm.vCpu;
+        } else if (server.type === "Storage") {
+            return vm.disk;
+        } else {
+            return vm.vRam!;
         }
     }
 
@@ -281,13 +295,13 @@ export class PanelServerParametersComponent {
         hasError: boolean,
     ) {
         const { [errorKey]: _removed, ...remainingErrors } = control.errors ?? {};
-        control.setErrors(
-            hasError
-                ? { ...remainingErrors, [errorKey]: true }
-                : Object.keys(remainingErrors).length
-                  ? remainingErrors
-                  : null,
-        );
+        if (hasError) {
+            control.setErrors({ ...remainingErrors, [errorKey]: true });
+        } else if (Object.keys(remainingErrors).length) {
+            control.setErrors(remainingErrors);
+        } else {
+            control.setErrors(null);
+        }
     }
 
     async addDatacenter(event: ServerDC) {
