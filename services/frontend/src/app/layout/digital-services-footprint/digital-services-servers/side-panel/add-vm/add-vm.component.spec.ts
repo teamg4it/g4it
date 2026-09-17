@@ -1,4 +1,3 @@
-import { signal } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import {
     DigitalServiceServerConfig,
@@ -29,6 +28,7 @@ describe("PanelAddVmComponent", () => {
                 name: "Base VM",
                 vCpu: 2,
                 disk: 50,
+                vRam: 5,
                 quantity: 1,
                 annualOperatingTime: 8760,
                 electricityConsumption: 30,
@@ -56,8 +56,6 @@ describe("PanelAddVmComponent", () => {
 
         fixture = TestBed.createComponent(PanelAddVmComponent);
         component = fixture.componentInstance;
-
-        (component as any).server = signal(serverConfig);
     });
 
     it("should create", () => {
@@ -120,7 +118,22 @@ describe("PanelAddVmComponent", () => {
         expect(component.diskControl.errors?.["isValueTooHigh"]).toBeUndefined();
     });
 
-    it("should calculate capacity sums for Compute and Storage while excluding the edited VM", () => {
+    it("should validate AI vRAM capacity", () => {
+        serverConfig.type = "AI";
+        serverConfig.totalVram = 20;
+        component.addVmForm.patchValue({ vram: 16, quantity: 1 });
+
+        component.verifyValue();
+
+        expect(component.vramControl.errors?.["isValueTooHigh"]).toBeTrue();
+
+        component.addVmForm.patchValue({ vram: 14, quantity: 1 });
+        component.verifyValue();
+
+        expect(component.vramControl.errors?.["isValueTooHigh"]).toBeUndefined();
+    });
+
+    it("should calculate capacity sums for Compute, Storage and AI while excluding the edited VM", () => {
         component.vm = serverConfig.vm[0];
 
         expect(component.sum()).toBe(0);
@@ -130,6 +143,9 @@ describe("PanelAddVmComponent", () => {
 
         serverConfig.type = "Storage";
         expect(component.sum()).toBe(50);
+
+        serverConfig.type = "AI";
+        expect(component.sum()).toBe(5);
     });
 
     it("should validate electricity consumption against remaining server capacity", () => {
@@ -178,5 +194,32 @@ describe("PanelAddVmComponent", () => {
         const emitSpy = spyOn(component.addVMPanelVisibleChange, "emit");
         component.close();
         expect(emitSpy).toHaveBeenCalledWith(false);
+    });
+
+    it("should merge a new error while keeping other existing errors", () => {
+        const control = component.quantityControl;
+        control.setErrors({ otherError: true });
+
+        (component as any).setControlError(control, "isValueTooHigh", true);
+
+        expect(control.errors).toEqual({ otherError: true, isValueTooHigh: true });
+    });
+
+    it("should remove only the given error while keeping other existing errors", () => {
+        const control = component.quantityControl;
+        control.setErrors({ otherError: true, isValueTooHigh: true });
+
+        (component as any).setControlError(control, "isValueTooHigh", false);
+
+        expect(control.errors).toEqual({ otherError: true });
+    });
+
+    it("should clear all errors when none remain", () => {
+        const control = component.quantityControl;
+        control.setErrors({ isValueTooHigh: true });
+
+        (component as any).setControlError(control, "isValueTooHigh", false);
+
+        expect(control.errors).toBeNull();
     });
 });
