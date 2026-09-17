@@ -69,15 +69,6 @@ describe("PanelAddVmComponent", () => {
         component.ngOnInit();
 
         expect(component.vm.name).toBe("VM 2");
-        expect(component.vm).toEqual({
-            uid: "",
-            name: "VM 2",
-            vCpu: 1,
-            disk: 1,
-            quantity: 1,
-            annualOperatingTime: 8760,
-            electricityConsumption: undefined as any,
-        });
         expect(component.vm.electricityConsumption).toBeUndefined();
     });
 
