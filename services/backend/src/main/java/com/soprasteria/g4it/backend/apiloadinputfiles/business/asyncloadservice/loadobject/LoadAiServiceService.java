@@ -27,6 +27,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -71,6 +73,14 @@ public class LoadAiServiceService {
             } else {
                 errors.addAll(mandatoryErrors);
             }
+        }
+
+        // Delete existing AI services with the same service names to avoid duplicates on reload
+        final Set<String> serviceNames = aiServicesToSave.stream()
+                .map(InAiService::getServiceName)
+                .collect(Collectors.toSet());
+        if (!serviceNames.isEmpty() && context.getInventoryId() != null) {
+            inAiServiceRepository.deleteByInventoryIdAndServiceNameIn(context.getInventoryId(), serviceNames);
         }
 
         inAiServiceRepository.saveAll(aiServicesToSave);

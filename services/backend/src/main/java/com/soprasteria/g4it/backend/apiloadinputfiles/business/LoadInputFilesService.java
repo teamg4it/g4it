@@ -107,6 +107,7 @@ public class LoadInputFilesService {
                           final List<MultipartFile> virtualEquipments,
                           final List<MultipartFile> applications,
                           final List<MultipartFile> aiServices) {
+
         final Map<FileType, List<MultipartFile>> allFiles =
                 new EnumMap<>(FileType.class);
 

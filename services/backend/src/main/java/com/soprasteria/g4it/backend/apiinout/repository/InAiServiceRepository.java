@@ -14,6 +14,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * In AI Service JPA repository.
@@ -37,4 +38,14 @@ public interface InAiServiceRepository extends JpaRepository<InAiService, Long> 
     @Transactional
     @Modifying
     void deleteByInventoryId(Long inventoryId);
+
+    /**
+     * Delete AI services of one inventory matching the given service names.
+     *
+     * @param inventoryId  inventory id
+     * @param serviceNames the service names
+     */
+    @Transactional
+    @Modifying
+    void deleteByInventoryIdAndServiceNameIn(Long inventoryId, Set<String> serviceNames);
 }

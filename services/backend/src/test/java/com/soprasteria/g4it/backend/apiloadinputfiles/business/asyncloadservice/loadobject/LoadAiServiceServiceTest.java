@@ -424,6 +424,49 @@ class LoadAiServiceServiceTest {
     }
 
     @Test
+    void execute_shouldDeleteExistingAiServicesWithSameServiceName_beforeSaving() {
+        // Given
+        Long inventoryId = 42L;
+        when(context.getInventoryId()).thenReturn(inventoryId);
+
+        InAiServiceRest aiService = createValidAiService();
+        InAiService entity = mock(InAiService.class);
+        when(entity.getServiceName()).thenReturn(aiService.getServiceName());
+
+        when(inAiServiceMapper.toEntity(aiService)).thenReturn(entity);
+
+        // When
+        loadAiServiceService.execute(context, fileToLoad, 0, List.of(aiService));
+
+        // Then
+        verify(inAiServiceRepository).deleteByInventoryIdAndServiceNameIn(
+                eq(inventoryId), eq(java.util.Set.of(aiService.getServiceName())));
+
+        // Delete must happen before save to avoid duplicate rows on reload
+        var inOrder = inOrder(inAiServiceRepository);
+        inOrder.verify(inAiServiceRepository).deleteByInventoryIdAndServiceNameIn(any(), any());
+        inOrder.verify(inAiServiceRepository).saveAll(anyList());
+    }
+
+    @Test
+    void execute_shouldNotDeleteAiServices_whenInventoryIdIsNull() {
+        // Given
+        when(context.getInventoryId()).thenReturn(null);
+
+        InAiServiceRest aiService = createValidAiService();
+        InAiService entity = mock(InAiService.class);
+
+        when(inAiServiceMapper.toEntity(aiService)).thenReturn(entity);
+
+        // When
+        loadAiServiceService.execute(context, fileToLoad, 0, List.of(aiService));
+
+        // Then
+        verify(inAiServiceRepository, never()).deleteByInventoryIdAndServiceNameIn(any(), any());
+        verify(inAiServiceRepository).saveAll(List.of(entity));
+    }
+
+    @Test
     void getAiServiceCount_shouldReturnNumberOfAiServices() {
         // Given
         Long inventoryId = 123L;
