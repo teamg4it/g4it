@@ -8,6 +8,7 @@
 import { AsyncPipe, NgClass } from "@angular/common";
 import { Component, computed, inject, ViewChild } from "@angular/core";
 import {
+    AbstractControl,
     FormBuilder,
     FormsModule,
     ReactiveFormsModule,
@@ -74,6 +75,7 @@ export class PanelServerParametersComponent {
             quantity: [0, [Validators.required]],
             vcpu: [0, [Validators.required]],
             disk: [0, [Validators.required]],
+            vram: [0, [Validators.required]],
             lifespan: [0, [Validators.required]],
             electricityConsumption: [0, [Validators.required]],
             operatingTime: [8760, [Validators.required]],
@@ -125,6 +127,11 @@ export class PanelServerParametersComponent {
                     serverTypes[
                         serverTypes.findIndex((x) => x.value === "Server Storage M")
                     ];
+            } else {
+                srv.host =
+                    serverTypes[
+                        serverTypes.findIndex((x) => x.value === "Medium AI Server")
+                    ];
             }
         }
         this.current.host = srv.host!;
@@ -132,6 +139,11 @@ export class PanelServerParametersComponent {
 
         if (!srv.totalVCpu && srv.type === "Compute") {
             srv.totalVCpu = srv.host?.characteristic.find(
+                (c) => c.code === "vCPU",
+            )?.value;
+        }
+        if (!srv.totalVram && srv.type === "AI") {
+            srv.totalVram = srv.host?.characteristic.find(
                 (c) => c.code === "vCPU",
             )?.value;
         }
@@ -202,7 +214,7 @@ export class PanelServerParametersComponent {
             this.current.host.characteristic.find((c) => c.code === "lifespan")?.value!,
         );
 
-        if (type === "Compute") {
+        if (type === "Compute" || type === "AI") {
             this.serverForm.controls["vcpu"].setValue(
                 this.current.host.characteristic.find((c) => c.code === "vCPU")?.value!,
             );
@@ -219,35 +231,59 @@ export class PanelServerParametersComponent {
         this.setDefaultForm(server.type);
 
         server.host = this.current.host;
-
         this.digitalServiceStore.setServer(server);
     }
 
     verifyValue(server: DigitalServiceServerConfig) {
         this.totalVmvCpu = 0;
-        const vcputControl = this.serverForm.get("vcpu");
+        const vcputControl =
+            server.type === "Compute"
+                ? this.serverForm.get("vcpu")
+                : server.type === "Storage"
+                  ? this.serverForm.get("disk")
+                  : this.serverForm.get("vram");
+        if (!vcputControl) return;
+
+        let isValueTooHigh = false;
         if (server.vm?.length) {
             this.totalVmvCpu = server.vm.reduce(
-                (acc, vm) => acc + vm.vCpu * vm.quantity,
+                (acc, vm) =>
+                    acc +
+                    (server.type === "Compute"
+                        ? vm.vCpu
+                        : server.type === "Storage"
+                          ? vm.disk
+                          : vm.vRam!) *
+                        vm.quantity,
                 0,
             );
-            if (
-                server?.totalVCpu !== null &&
-                (server.totalVCpu ?? 0) < this.totalVmvCpu
-            ) {
-                vcputControl?.setErrors({
-                    ...vcputControl?.errors,
-                    isValueTooHigh: true,
-                });
-                vcputControl?.markAsDirty();
-            } else {
-                delete vcputControl?.errors?.["isValueTooHigh"];
-                vcputControl?.updateValueAndValidity();
-            }
-        } else {
-            delete vcputControl?.errors?.["isValueTooHigh"];
-            vcputControl?.updateValueAndValidity();
+            isValueTooHigh =
+                ((server.type === "Compute"
+                    ? server.totalVCpu
+                    : server.type === "Storage"
+                      ? server.totalDisk
+                      : server.totalVram) ?? 0) < this.totalVmvCpu;
         }
+        this.setControlError(vcputControl, "isValueTooHigh", isValueTooHigh);
+        if (isValueTooHigh) {
+            vcputControl.markAsDirty();
+        }
+    }
+
+    // Merges/clears a single custom error key without wiping errors set by the control's own validators.
+    private setControlError(
+        control: AbstractControl,
+        errorKey: string,
+        hasError: boolean,
+    ) {
+        const { [errorKey]: _removed, ...remainingErrors } = control.errors ?? {};
+        control.setErrors(
+            hasError
+                ? { ...remainingErrors, [errorKey]: true }
+                : Object.keys(remainingErrors).length
+                  ? remainingErrors
+                  : null,
+        );
     }
 
     async addDatacenter(event: ServerDC) {
@@ -273,7 +309,15 @@ export class PanelServerParametersComponent {
     }
 
     previousStep() {
-        this.digitalServiceStore.setServer(this.server());
+        this.digitalServiceStore.setServer({
+            ...this.server(),
+            annualElectricConsumption: undefined,
+            lifespan: undefined,
+            totalDisk: undefined,
+            totalVCpu: undefined,
+            totalVram: undefined,
+        });
+
         this.router.navigate(["../panel-create"], { relativeTo: this.route });
     }
 

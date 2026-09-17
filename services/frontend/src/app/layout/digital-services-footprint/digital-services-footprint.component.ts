@@ -135,6 +135,9 @@ export class DigitalServicesFootprintComponent
             const serverHostRefStorage = await firstValueFrom(
                 this.digitalServicesData.getHostServerReferential("Storage"),
             );
+            const serverHostRefAi = await firstValueFrom(
+                this.digitalServicesData.getHostServerReferential("AI"),
+            );
             const shortCuts = [
                 ...serverHostRefCompute.filter((item) =>
                     item.value.startsWith("Server "),
@@ -152,6 +155,7 @@ export class DigitalServicesFootprintComponent
                 ...serverHostRefStorage
                     .filter((item) => !item.value.startsWith("Server "))
                     .sort(sortByProperty("value", "asc")),
+                ...serverHostRefAi.sort(sortByProperty("value", "asc")),
             ]);
         }
         this.global.setLoading(false);

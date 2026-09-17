@@ -144,6 +144,7 @@ export class DigitalServiceBusinessService {
             durationHour: server.annualOperatingTime,
             cpuCoreNumber: server.totalVCpu,
             sizeDiskGb: server.totalDisk,
+            sizeMemoryGb: server.totalVram,
             description: server.host?.value,
         } as InPhysicalEquipmentRest;
     }
@@ -162,8 +163,14 @@ export class DigitalServiceBusinessService {
             name: vm.name,
             quantity: vm.quantity,
             vcpuCoreNumber: vm.vCpu,
+            sizeMemoryGb: vm.vRam,
             sizeDiskGb: vm.disk,
-            type: server.type === "Compute" ? "calcul" : "stockage",
+            type:
+                server.type === "Compute"
+                    ? "calcul"
+                    : server.type === "Storage"
+                      ? "stockage"
+                      : "AI",
             physicalEquipmentName: server.name,
             electricityConsumption: vm?.electricityConsumption,
             allocationFactor:
@@ -171,9 +178,13 @@ export class DigitalServiceBusinessService {
                     ? (vm.vCpu / server.totalVCpu!) *
                       (vm.annualOperatingTime / 8760) *
                       vm.quantity
-                    : (vm.disk / server.totalDisk!) *
-                      (vm.annualOperatingTime / 8760) *
-                      vm.quantity,
+                    : server.type === "Storage" && server.mutualizationType === "Shared"
+                      ? (vm.disk / server.totalDisk!) *
+                        (vm.annualOperatingTime / 8760) *
+                        vm.quantity
+                      : (vm.vRam! / server.totalVram!) *
+                        (vm.annualOperatingTime / 8760) *
+                        vm.quantity,
         } as InVirtualEquipmentRest;
     }
 

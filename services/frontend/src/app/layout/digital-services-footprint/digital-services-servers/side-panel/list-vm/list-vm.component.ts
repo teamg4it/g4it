@@ -53,13 +53,21 @@ export class PanelListVmComponent {
                   "annualOperatingTime",
                   "electricityConsumption",
               ]
-            : [
-                  "name",
-                  "quantity",
-                  "disk",
-                  "annualOperatingTime",
-                  "electricityConsumption",
-              ];
+            : type === "AI"
+              ? [
+                    "name",
+                    "quantity",
+                    "vRam",
+                    "annualOperatingTime",
+                    "electricityConsumption",
+                ]
+              : [
+                    "name",
+                    "quantity",
+                    "disk",
+                    "annualOperatingTime",
+                    "electricityConsumption",
+                ];
     });
     vmData = computed(() => {
         return [...this.digitalServiceStore.server().vm];
