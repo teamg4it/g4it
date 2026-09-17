@@ -139,12 +139,14 @@ export class PanelServerParametersComponent {
     });
 
     private defaultHostForType(type: string | undefined, serverTypes: Host[]): Host {
-        const hostName =
-            type === "Compute"
-                ? "Server Compute M"
-                : type === "Storage"
-                  ? "Server Storage M"
-                  : "Medium AI Server";
+        let hostName: string;
+        if (type === "Compute") {
+            hostName = "Server Compute M";
+        } else if (type === "Storage") {
+            hostName = "Server Storage M";
+        } else {
+            hostName = "Medium AI Server";
+        }
         return serverTypes[serverTypes.findIndex((x) => x.value === hostName)];
     }
 

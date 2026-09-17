@@ -147,6 +147,10 @@ export class DigitalServicesFootprintComponent
                 ),
             ].sort(sortByProperty("value", "desc"));
 
+            const sortedServerHostRefAi = [...serverHostRefAi].sort(
+                sortByProperty("value", "asc"),
+            );
+
             this.digitalServiceStore.setServerTypes([
                 ...shortCuts,
                 ...serverHostRefCompute
@@ -155,7 +159,7 @@ export class DigitalServicesFootprintComponent
                 ...serverHostRefStorage
                     .filter((item) => !item.value.startsWith("Server "))
                     .sort(sortByProperty("value", "asc")),
-                ...serverHostRefAi.sort(sortByProperty("value", "asc")),
+                ...sortedServerHostRefAi,
             ]);
         }
         this.global.setLoading(false);
