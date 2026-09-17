@@ -293,9 +293,7 @@ describe("PanelServerParametersComponent", () => {
         });
 
         it("should return vRam for any other type", () => {
-            expect((component as any).getVmValue(baseServer({ type: "AI" }), vm)).toBe(
-                5,
-            );
+            expect((component as any).getVmValue(baseServer({ type: "AI" }), vm)).toBe(5);
         });
     });
 
@@ -412,7 +410,9 @@ describe("PanelServerParametersComponent", () => {
             component.verifyValue(baseServer({ type: "Compute", vm: [] }));
 
             expect(component.totalVmvCpu).toBe(0);
-            expect(component.serverForm.controls["vcpu"].errors?.["isValueTooHigh"]).toBeFalsy();
+            expect(
+                component.serverForm.controls["vcpu"].errors?.["isValueTooHigh"],
+            ).toBeFalsy();
         });
 
         it("should mark the control dirty when the VM total exceeds capacity", () => {
