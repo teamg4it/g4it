@@ -154,6 +154,26 @@ export class DigitalServiceBusinessService {
         server: DigitalServiceServerConfig,
         digitalServiceVersionUid: string,
     ): InVirtualEquipmentRest {
+        const type =
+            server.type === "Compute"
+                ? "calcul"
+                : server.type === "Storage"
+                  ? "stockage"
+                  : "AI";
+
+        const allocationFactor =
+            server.type === "Compute" && server.mutualizationType === "Shared"
+                ? (vm.vCpu / server.totalVCpu!) *
+                  (vm.annualOperatingTime / 8760) *
+                  vm.quantity
+                : server.type === "Storage" && server.mutualizationType === "Shared"
+                  ? (vm.disk / server.totalDisk!) *
+                    (vm.annualOperatingTime / 8760) *
+                    vm.quantity
+                  : (vm.vRam! / server.totalVram!) *
+                    (vm.annualOperatingTime / 8760) *
+                    vm.quantity;
+
         return {
             id: vm.uid ? Number(vm.uid) : undefined,
             digitalServiceUid: vm.digitalServiceUid,
@@ -165,26 +185,10 @@ export class DigitalServiceBusinessService {
             vcpuCoreNumber: vm.vCpu,
             sizeMemoryGb: vm.vRam,
             sizeDiskGb: vm.disk,
-            type:
-                server.type === "Compute"
-                    ? "calcul"
-                    : server.type === "Storage"
-                      ? "stockage"
-                      : "AI",
+            type,
             physicalEquipmentName: server.name,
             electricityConsumption: vm?.electricityConsumption,
-            allocationFactor:
-                server.type === "Compute" && server.mutualizationType === "Shared"
-                    ? (vm.vCpu / server.totalVCpu!) *
-                      (vm.annualOperatingTime / 8760) *
-                      vm.quantity
-                    : server.type === "Storage" && server.mutualizationType === "Shared"
-                      ? (vm.disk / server.totalDisk!) *
-                        (vm.annualOperatingTime / 8760) *
-                        vm.quantity
-                      : (vm.vRam! / server.totalVram!) *
-                        (vm.annualOperatingTime / 8760) *
-                        vm.quantity,
+            allocationFactor,
         } as InVirtualEquipmentRest;
     }
 

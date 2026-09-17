@@ -117,26 +117,37 @@ export class PanelServerParametersComponent {
 
         const hostfound = this.serverTypes().find((st) => st.value === srv.host?.value);
         if ((srv.id === undefined && srv.host === undefined) || !hostfound) {
-            if (srv.type === "Compute") {
-                srv.host =
-                    serverTypes[
-                        serverTypes.findIndex((x) => x.value === "Server Compute M")
-                    ];
-            } else if (srv.type === "Storage") {
-                srv.host =
-                    serverTypes[
-                        serverTypes.findIndex((x) => x.value === "Server Storage M")
-                    ];
-            } else {
-                srv.host =
-                    serverTypes[
-                        serverTypes.findIndex((x) => x.value === "Medium AI Server")
-                    ];
-            }
+            srv.host = this.defaultHostForType(srv.type, serverTypes);
         }
         this.current.host = srv.host!;
         this.current.datacenter = srv.datacenter!;
 
+        this.applyDefaultCharacteristics(srv);
+
+        const datacenter = this.resolveDatacenter(srv, datacenters);
+        srv.datacenter = datacenter;
+        this.current.datacenter = datacenter!;
+
+        if (srv.quantity === -1) {
+            srv.quantity = 1;
+            srv.annualOperatingTime = 8760;
+        }
+
+        this.verifyValue(srv);
+        return srv;
+    });
+
+    private defaultHostForType(type: string | undefined, serverTypes: Host[]): Host {
+        const hostName =
+            type === "Compute"
+                ? "Server Compute M"
+                : type === "Storage"
+                  ? "Server Storage M"
+                  : "Medium AI Server";
+        return serverTypes[serverTypes.findIndex((x) => x.value === hostName)];
+    }
+
+    private applyDefaultCharacteristics(srv: DigitalServiceServerConfig) {
         if (!srv.totalVCpu && srv.type === "Compute") {
             srv.totalVCpu = srv.host?.characteristic.find(
                 (c) => c.code === "vCPU",
@@ -162,24 +173,17 @@ export class PanelServerParametersComponent {
                 (c) => c.code === "disk",
             )?.value;
         }
+    }
 
-        let datacenterName = this.current.datacenter.name
+    private resolveDatacenter(
+        srv: DigitalServiceServerConfig,
+        datacenters: ServerDC[],
+    ): ServerDC {
+        const datacenterName = this.current.datacenter.name
             ? srv.datacenter?.name
             : "Default DC";
-
-        const datacenter = datacenters.find((x) => x.name === datacenterName);
-        srv.datacenter = datacenter;
-
-        this.current.datacenter = datacenter!;
-
-        if (srv.quantity === -1) {
-            srv.quantity = 1;
-            srv.annualOperatingTime = 8760;
-        }
-
-        this.verifyValue(srv);
-        return srv;
-    });
+        return datacenters.find((x) => x.name === datacenterName)!;
+    }
 
     createLabelKey = computed(() => {
         if (this.server().mutualizationType === "Dedicated" && !this.server().id) {
