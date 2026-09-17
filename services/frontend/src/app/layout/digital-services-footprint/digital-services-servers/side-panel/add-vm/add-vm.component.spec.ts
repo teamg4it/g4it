@@ -103,6 +103,15 @@ describe("PanelAddVmComponent", () => {
         expect(component.quantityControl.errors?.["isQuantityTooLow"]).toBeTrue();
     });
 
+    it("should default missing total vCPU and vcpu value to zero", () => {
+        serverConfig.totalVCpu = undefined;
+        component.addVmForm.patchValue({ vcpu: 0, quantity: 1 });
+
+        component.verifyValue();
+
+        expect(component.vcpuControl.errors?.["isValueTooHigh"]).toBeTrue();
+    });
+
     it("should validate Storage disk capacity", () => {
         serverConfig.type = "Storage";
         serverConfig.totalDisk = 100;
@@ -118,6 +127,16 @@ describe("PanelAddVmComponent", () => {
         expect(component.diskControl.errors?.["isValueTooHigh"]).toBeUndefined();
     });
 
+    it("should default missing total disk and disk/quantity values to zero", () => {
+        serverConfig.type = "Storage";
+        serverConfig.totalDisk = undefined;
+        component.addVmForm.patchValue({ disk: 0, quantity: 0 });
+
+        component.verifyValue();
+
+        expect(component.diskControl.errors?.["isValueTooHigh"]).toBeTrue();
+    });
+
     it("should validate AI vRAM capacity", () => {
         serverConfig.type = "AI";
         serverConfig.totalVram = 20;
@@ -131,6 +150,16 @@ describe("PanelAddVmComponent", () => {
         component.verifyValue();
 
         expect(component.vramControl.errors?.["isValueTooHigh"]).toBeUndefined();
+    });
+
+    it("should default missing total vRAM and vram/quantity values to zero", () => {
+        serverConfig.type = "AI";
+        serverConfig.totalVram = undefined;
+        component.addVmForm.patchValue({ vram: 0, quantity: 0 });
+
+        component.verifyValue();
+
+        expect(component.vramControl.errors?.["isValueTooHigh"]).toBeTrue();
     });
 
     it("should calculate capacity sums for Compute, Storage and AI while excluding the edited VM", () => {
@@ -163,6 +192,27 @@ describe("PanelAddVmComponent", () => {
         expect(
             component.electricityConsumptionControl.errors?.["isElecValueTooHigh"],
         ).toBeUndefined();
+    });
+
+    it("should default missing annual electricity consumption and per-VM values to zero", () => {
+        serverConfig.annualElectricConsumption = undefined;
+        serverConfig.vm.push({
+            uid: "VM2",
+            name: "No Consumption VM",
+            vCpu: 1,
+            disk: 1,
+            vRam: 1,
+            quantity: 1,
+            annualOperatingTime: 8760,
+            electricityConsumption: undefined as any,
+        });
+        component.vm = { name: "Different VM" } as ServerVM;
+
+        component.verifyElectricityValue();
+
+        expect(
+            component.electricityConsumptionControl.errors?.["isElecValueTooHigh"],
+        ).toBeTrue();
     });
 
     it("should add a new VM and close the panel on submission", () => {
