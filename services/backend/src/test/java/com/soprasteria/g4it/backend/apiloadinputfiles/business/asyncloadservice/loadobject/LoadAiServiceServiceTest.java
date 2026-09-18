@@ -10,6 +10,7 @@ import com.soprasteria.g4it.backend.common.utils.Constants;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InAiServiceRest;
 
 import jakarta.persistence.EntityManager;
+import org.junit.jupiter.api.BeforeEach;
 import org.mockito.ArgumentCaptor;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,6 +18,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.MessageSource;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.List;
 import java.util.Locale;
@@ -48,6 +50,14 @@ class LoadAiServiceServiceTest {
 
     @InjectMocks
     private LoadAiServiceService loadAiServiceService;
+
+    @BeforeEach
+    void setUp() {
+        ReflectionTestUtils.setField(
+                loadAiServiceService,
+                "entityManager",
+                entityManager);
+    }
 
 
     @Test
@@ -364,16 +374,6 @@ class LoadAiServiceServiceTest {
         // Then
         assertEquals(4, result.size());
 
-        int expectedLine =
-                Constants.BATCH_SIZE * pageNumber + 2;
-
-        /*
-         * If LineError exposes getters:
-         *
-         * assertEquals(FILENAME, result.get(0).getFilename());
-         * assertEquals(expectedLine, result.get(0).getLine());
-         */
-
         verify(messageSource, times(4)).getMessage(
                 eq("field.mandatory"),
                 any(Object[].class),
@@ -408,16 +408,6 @@ class LoadAiServiceServiceTest {
 
         // Then
         assertEquals(4, result.size());
-
-        int expectedLine =
-                Constants.BATCH_SIZE * pageNumber + 3;
-
-        /*
-         * If LineError exposes getters:
-         *
-         * assertEquals(FILENAME, result.get(0).getFilename());
-         * assertEquals(expectedLine, result.get(0).getLine());
-         */
 
         verify(inAiServiceMapper).toEntity(validService);
         verify(inAiServiceMapper, never()).toEntity(invalidService);

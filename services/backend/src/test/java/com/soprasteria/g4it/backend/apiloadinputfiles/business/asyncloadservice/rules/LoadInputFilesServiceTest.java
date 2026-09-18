@@ -52,6 +52,8 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+import java.time.Clock;
+import java.time.ZoneId;
 
 @ExtendWith(MockitoExtension.class)
 class LoadInputFilesServiceTest {
@@ -88,8 +90,19 @@ class LoadInputFilesServiceTest {
     private static final LocalDateTime referenceTime =
             LocalDateTime.of(2025, Month.JANUARY, 1, 12, 0);
 
+    private Clock clock;
+
     @BeforeEach
     void setup() throws Exception {
+
+        clock = Clock.fixed(
+                referenceTime.atZone(ZoneId.systemDefault()).toInstant(),
+                ZoneId.systemDefault());
+
+        ReflectionTestUtils.setField(
+                loadInputFilesService,
+                "clock",
+                clock);
 
         String tempDir = System.getProperty("java.io.tmpdir");
 
@@ -104,103 +117,6 @@ class LoadInputFilesServiceTest {
         Files.createDirectories(
                 Path.of(tempDir, "input", "digital-service"));
     }
-
-    /*@Test
-    void loadFiles_createsTaskAndExecutesAsyncTask_whenValidInputProvided() {
-        String organization = "testOrganization";
-        Long workspaceId = 1L;
-        Long inventoryId = 1L;
-
-        List<MultipartFile> datacenters = List.of(
-                new MockMultipartFile(
-                        "datacenters",
-                        "datacenters.csv",
-                        "text/csv",
-                        "header1,header2\nvalue1,value2".getBytes()
-                ));
-
-        List<MultipartFile> physicalEquipments = List.of(
-                new MockMultipartFile(
-                        "physicalEquipments",
-                        "physical.csv",
-                        "text/csv",
-                        "header1,header2\nvalue1,value2".getBytes()
-                ));
-
-        List<MultipartFile> virtualEquipments = List.of(
-                new MockMultipartFile(
-                        "virtualEquipments",
-                        "virtual.csv",
-                        "text/csv",
-                        "header1,header2\nvalue1,value2".getBytes()
-                ));
-
-        List<MultipartFile> applications = List.of(
-                new MockMultipartFile(
-                        "applications",
-                        "applications.csv",
-                        "text/csv",
-                        "header1,header2\nvalue1,value2".getBytes()
-                ));
-
-        Inventory inventory = Inventory.builder()
-                .id(inventoryId)
-                .virtualEquipmentCount(1L)
-                .applicationCount(1L)
-                .createdBy(User.builder()
-                        .id(1L)
-                        .firstName("test")
-                        .lastName("user")
-                        .email("test.user@gmail.com")
-                        .build())
-                .build();
-
-        Workspace workspace = Workspace.builder()
-                .id(workspaceId)
-                .name("Test Workspace")
-                .build();
-
-        UserBO userBO = UserBO.builder()
-                .email("testuser@soprasteria.com")
-                .domain("soprasteria.com")
-                .id(1L)
-                .firstName("fname")
-                .build();
-
-        User user = User.builder()
-                .email("testuser@soprasteria.com")
-                .domain("soprasteria.com")
-                .id(1L)
-                .firstName("fname")
-                .build();
-
-        when(inventoryRepository.findById(inventoryId))
-                .thenReturn(Optional.of(inventory));
-        when(workspaceService.getWorkspaceById(workspaceId))
-                .thenReturn(workspace);
-        when(taskRepository.findByInventoryAndStatusAndType(any(), any(), any()))
-                .thenReturn(Collections.emptyList());
-        when(authService.getUser())
-                .thenReturn(userBO);
-        when(userRepository.findById(userBO.getId()))
-                .thenReturn(Optional.of(user));
-
-        Task result = loadInputFilesService.loadFiles(
-                organization,
-                workspaceId,
-                inventoryId,
-                datacenters,
-                physicalEquipments,
-                virtualEquipments,
-                applications);
-
-        assertNotNull(result);
-        verify(taskRepository).save(any(Task.class));
-        ArgumentCaptor<Runnable> runnableCaptor = ArgumentCaptor.forClass(Runnable.class);
-        verify(taskExecutor).execute(runnableCaptor.capture());
-        runnableCaptor.getValue().run();
-        verify(asyncLoadFilesService).execute(any(), any());
-    }*/
 
     @Test
     void digitalServiceLoadFiles_createsTaskAndExecutesAsyncTask_whenValidInputProvided() {
@@ -281,19 +197,6 @@ class LoadInputFilesServiceTest {
         runnableCaptor.getValue().run();
         verify(asyncLoadFilesService).execute(any(), any());
     }
-
-    /*@Test
-    void loadFiles_returnsEmptyTask_whenNoFilesProvided() {
-        String organization = "testOrganization";
-        Long workspaceId = 1L;
-        Long inventoryId = 1L;
-
-        Task result = loadInputFilesService.loadFiles(organization, workspaceId, inventoryId, null, null, null, null,null);
-
-        assertNotNull(result);
-        assertNull(result.getId());
-        verifyNoInteractions(taskRepository, taskExecutor);
-    }*/
 
     @Test
     void restartInventory_LoadingFiles_restartsTasks_whenTasksAreStale() {
@@ -420,7 +323,7 @@ class LoadInputFilesServiceTest {
         // Given
         Task recentTask = Task.builder()
                 .id(1L)
-                .lastUpdateDate(LocalDateTime.now().minusMinutes(5))
+                .lastUpdateDate(referenceTime.minusMinutes(5))
                 .status(TaskStatus.IN_PROGRESS.toString())
                 .type(TaskType.LOADING.toString())
                 .build();

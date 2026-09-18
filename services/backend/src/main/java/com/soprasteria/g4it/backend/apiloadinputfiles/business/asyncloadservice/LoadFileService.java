@@ -35,6 +35,7 @@ import com.soprasteria.g4it.backend.server.gen.api.dto.InPhysicalEquipmentRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InVirtualEquipmentRest;
 import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
@@ -54,32 +55,24 @@ import static java.util.stream.Collectors.*;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class LoadFileService {
 
     private static final String REJECTED = "rejected";
 
-    @Autowired
-    CsvFileMapperInfo csvFileMapperInfo;
-    @Autowired
-    MessageSource messageSource;
-    @Autowired
-    LoadDatacenterService loadDatacenterService;
-    @Autowired
-    LoadPhysicalEquipmentService loadPhysicalEquipmentService;
-    @Autowired
-    LoadVirtualEquipmentService loadVirtualEquipmentService;
-    @Autowired
-    LoadApplicationService loadApplicationService;
-    @Autowired
-    LoadAiServiceService loadAiServiceService;
-    @Autowired
-    CsvToInMapper csvToInMapper;
-    @Autowired
-    InventoryRepository inventoryRepository;
-    @Autowired
-    InVirtualEquipmentRepository inVirtualEquipmentRepository;
-    @Autowired
-    InApplicationRepository inApplicationRepository;
+    private final CsvFileMapperInfo csvFileMapperInfo;
+    private final MessageSource messageSource;
+    private final LoadDatacenterService loadDatacenterService;
+
+    private final LoadPhysicalEquipmentService loadPhysicalEquipmentService;
+    private final LoadVirtualEquipmentService loadVirtualEquipmentService;
+    private final LoadApplicationService loadApplicationService;
+    private final LoadAiServiceService loadAiServiceService;
+    private final CsvToInMapper csvToInMapper;
+    private final InventoryRepository inventoryRepository;
+    private final InVirtualEquipmentRepository inVirtualEquipmentRepository;
+    private final InApplicationRepository inApplicationRepository;
+
     @Value("${local.working.folder}")
     private String localWorkingFolder;
 

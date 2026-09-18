@@ -33,6 +33,7 @@ import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
 import com.soprasteria.g4it.backend.common.utils.StringUtils;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -48,6 +49,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -55,34 +57,24 @@ import java.util.stream.Stream;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class LoadInputFilesService {
 
-    @Autowired
-    WorkspaceService workspaceService;
-
-    @Autowired
-    TaskRepository taskRepository;
-
-    @Autowired
-    InventoryRepository inventoryRepository;
-    @Autowired
-    DigitalServiceVersionRepository digitalServiceVersionRepository;
-    @Autowired
-    InVirtualEquipmentRepository inVirtualEquipmentRepository;
-    @Autowired
-    UserRepository userRepository;
-    @Autowired
-    @Qualifier("taskExecutorLoading")
-    TaskExecutor taskExecutor;
+    private final WorkspaceService workspaceService;
+    private final TaskRepository taskRepository;
+    private final InventoryRepository inventoryRepository;
+    private final DigitalServiceVersionRepository digitalServiceVersionRepository;
+    private final InVirtualEquipmentRepository inVirtualEquipmentRepository;
+    private final UserRepository userRepository;
+    private final TaskExecutor taskExecutor;
+    private final Clock clock;
     /**
      * Async Service where is executed the file loading
      */
-    @Autowired
-    AsyncLoadFilesService asyncLoadFilesService;
-    @Autowired
-    private FileSystemService fileSystemService;
-    @Autowired
-    AuthService authService;
+    private final AsyncLoadFilesService asyncLoadFilesService;
+    private final FileSystemService fileSystemService;
+    private final AuthService authService;
+
 
     @Value("${local.working.folder}")
     private String localWorkingFolder;
@@ -97,6 +89,7 @@ public class LoadInputFilesService {
      * @param physicalEquipments the physical equipment files
      * @param virtualEquipments  the virtual equipment files
      * @param applications       the application files
+     * @param aiServices         the AI service files
      * @return the Task created
      */
     public Task loadFiles(final String organization,
@@ -152,7 +145,7 @@ public class LoadInputFilesService {
                 .workspaceId(workspaceId)
                 .workspaceName(workspaceService.getWorkspaceById(workspaceId).getName())
                 .inventoryId(inventoryId)
-                .datetime(LocalDateTime.now())
+                .datetime(LocalDateTime.now(clock))
                 .hasVirtualEquipments(inventory.getVirtualEquipmentCount() > 0)
                 .hasApplications(inventory.getApplicationCount() > 0)
                 .build();
@@ -237,7 +230,7 @@ public class LoadInputFilesService {
                 .workspaceId(workspaceId)
                 .workspaceName(workspaceService.getWorkspaceById(workspaceId).getName())
                 .digitalServiceVersionUid(digitalServiceVersionUid)
-                .datetime(LocalDateTime.now())
+                .datetime(LocalDateTime.now(clock))
                 .build();
         final Map<FileType, List<StoredFile>> storedFiles =
                 detachFiles(allFiles, false);
@@ -272,7 +265,7 @@ public class LoadInputFilesService {
     public void restartLoadingFiles() {
         List<Task> inProgressLoadingTasks = taskRepository.findByStatusAndType(TaskStatus.IN_PROGRESS.toString(), TaskType.LOADING.toString());
         if (inProgressLoadingTasks.isEmpty()) return;
-        final LocalDateTime now = LocalDateTime.now();
+        final LocalDateTime now = LocalDateTime.now(clock);
         // check tasks to restart
         inProgressLoadingTasks.stream()
                 .filter(task -> task.getLastUpdateDate().plusMinutes(15).isBefore(now))

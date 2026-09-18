@@ -19,6 +19,7 @@ import com.soprasteria.g4it.backend.server.gen.api.dto.InAiServiceRest;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,16 +33,12 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class LoadAiServiceService {
 
-    @Autowired
-    InAiServiceMapper inAiServiceMapper;
-
-    @Autowired
-    InAiServiceRepository inAiServiceRepository;
-
-    @Autowired
-    MessageSource messageSource;
+    private final InAiServiceMapper inAiServiceMapper;
+    private final InAiServiceRepository inAiServiceRepository;
+    private final MessageSource messageSource;
 
     @PersistenceContext
     private EntityManager entityManager;

@@ -9,6 +9,11 @@
 package com.soprasteria.g4it.backend.common.error;
 
 public class ErrorConstants {
+
+    private ErrorConstants() {
+        // Utility class
+    }
+
     public static final String ORGANIZATION_NOT_FOUND =
             "Organization %s not found";
 

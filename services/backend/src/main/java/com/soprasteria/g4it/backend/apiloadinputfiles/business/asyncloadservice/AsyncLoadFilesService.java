@@ -23,10 +23,12 @@ import com.soprasteria.g4it.backend.common.task.modeldb.Task;
 import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
 import com.soprasteria.g4it.backend.common.utils.LogUtils;
 import com.soprasteria.g4it.backend.exception.AsyncTaskException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,21 +36,17 @@ import java.util.Map;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class AsyncLoadFilesService implements ITaskExecute {
 
     public static final String TOO_MANY_ERRORS_MESSAGE = "Too many errors in the file ";
-    @Autowired
-    private TaskRepository taskRepository;
-    @Autowired
-    private LoadFileService loadFileService;
-    @Autowired
-    private DigitalServiceVersionService digitalServiceVersionService;
-    @Autowired
-    private AsyncLoadMetadataService asyncLoadMetadataService;
-    @Autowired
-    private CheckMetadataInventoryFileService checkMetadataInventoryFileService;
-    @Autowired
-    private FileLoadingUtils fileLoadingUtils;
+    private final TaskRepository taskRepository;
+    private final LoadFileService loadFileService;
+    private final DigitalServiceVersionService digitalServiceVersionService;
+    private final AsyncLoadMetadataService asyncLoadMetadataService;
+    private final CheckMetadataInventoryFileService checkMetadataInventoryFileService;
+    private final FileLoadingUtils fileLoadingUtils;
+    private final Clock clock;
 
     /**
      * Execute the Task of type LOADING
@@ -139,7 +137,7 @@ public class AsyncLoadFilesService implements ITaskExecute {
                         fileNumber++;
 
                         task.setProgressPercentage(fileNumber * 100 / task.getFilenames().size() + "%");
-                        task.setLastUpdateDate(LocalDateTime.now());
+                        task.setLastUpdateDate(LocalDateTime.now(clock));
                         taskRepository.save(task);
 
                     }
@@ -156,7 +154,7 @@ public class AsyncLoadFilesService implements ITaskExecute {
 
             task.setStatus(hasRejectedFile ? TaskStatus.COMPLETED_WITH_ERRORS.toString() : TaskStatus.COMPLETED.toString());
             task.setProgressPercentage("100%");
-            task.setProgressLastChangedDate(LocalDateTime.now());
+            task.setProgressLastChangedDate(LocalDateTime.now(clock));
 
         } catch (AsyncTaskException e) {
             log.error("Async task with id '{}' failed for '{}' with error: ", task.getId(), context.log(), e);
