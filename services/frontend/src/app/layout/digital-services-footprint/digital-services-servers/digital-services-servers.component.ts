@@ -125,6 +125,7 @@ export class DigitalServicesServersComponent implements OnInit, OnDestroy {
                     differenceInDays(item.dateWithdrawal!, item.datePurchase!) / 365,
                 totalVCpu: item.cpuCoreNumber,
                 totalDisk: item.sizeDiskGb,
+                totalVram: item.sizeMemoryGb,
                 vm: vms.map((vm: InVirtualEquipmentRest) => {
                     return {
                         name: vm.name,
@@ -133,6 +134,7 @@ export class DigitalServicesServersComponent implements OnInit, OnDestroy {
                         quantity: vm.quantity,
                         uid: vm.id.toString(),
                         vCpu: vm.vcpuCoreNumber,
+                        vRam: vm.sizeMemoryGb,
                         electricityConsumption: vm.electricityConsumption,
                         digitalServiceUid: item.digitalServiceUid,
                     } as ServerVM;
