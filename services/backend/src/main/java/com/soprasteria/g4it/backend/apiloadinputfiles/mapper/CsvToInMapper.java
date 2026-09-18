@@ -73,6 +73,7 @@ public interface CsvToInMapper {
                 .creationDate(LocalDateTime.now())
                 .filters(List.of(read(csvRecord, "statut", "")))
                 .commonFilters(List.of(read(csvRecord, "nomEntite", "")))
+                .sizeMemoryGb(readDouble(csvRecord, "tailleMemoire"))
                 .build();
     }
 
