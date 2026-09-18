@@ -11,6 +11,7 @@ package com.soprasteria.g4it.backend.apiloadinputfiles.mapper;
 import com.soprasteria.g4it.backend.common.error.ErrorConstants;
 import com.soprasteria.g4it.backend.common.utils.InfrastructureType;
 import com.soprasteria.g4it.backend.exception.AsyncTaskException;
+import com.soprasteria.g4it.backend.server.gen.api.dto.InAiServiceRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InApplicationRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InDatacenterRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InPhysicalEquipmentRest;
@@ -131,6 +132,27 @@ public interface CsvToInMapper {
                         read(csvRecord, "sousDomaine", "Unknown")
                 ))
                 .commonFilters(List.of(read(csvRecord, "nomEntite", "")))
+                .build();
+    }
+
+    default InAiServiceRest csvInAiServiceToRest(CSVRecord csvRecord, final Long inventoryId) {
+        final String outputTokensValue = read(csvRecord, "outputTokens");
+        Long outputTokens = null;
+        if (outputTokensValue != null) {
+            try {
+                outputTokens = Long.valueOf(outputTokensValue.trim());
+            } catch (NumberFormatException e) {
+                throw new AsyncTaskException(ErrorConstants.INVALID_INTEGER_NUMBER_FORMAT);
+            }
+        }
+
+        return InAiServiceRest.builder()
+                .serviceName(read(csvRecord, "serviceName"))
+                .inventoryId(inventoryId)
+                .provider(read(csvRecord, "provider"))
+                .model(read(csvRecord, "model"))
+                .outputTokens(outputTokens)
+                .location(read(csvRecord, "location"))
                 .build();
     }
 }

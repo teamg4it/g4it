@@ -716,6 +716,7 @@
             "eq-phys": "Équipement Physique",
             "eq-virt": "Équipement Virtuel",
             "app": "Application",
+            "ai-service": "Services IA",
             "name": "Type d'inventaire"
         },
         "popup": {
@@ -736,6 +737,7 @@
             "physical-template-file": "Fichier modèle d'équipement physique ({{type}}, {{size}} Ko )",
             "virtual-template-file": "Fichier de modèle d'équipement virtuel ({{type}}, {{size}} Ko )",
             "application-template-file": "Fichier de modèle d'application ({{type}}, {{size}} Ko )",
+            "AIservices-template-file": "Fichier de modèle de services IA ({{type}}, {{size}} Ko )",
             "all-template-files": "Tous les fichiers modèles ({{type}}, {{size}} Ko )",
             "data-model": "Modèle de données de la plateforme ({{type}}, {{size}} Ko )",
             "starter-pack": "Kit de départ",

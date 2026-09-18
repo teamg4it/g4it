@@ -1,0 +1,53 @@
+databaseChangeLog:
+  - changeSet:
+      id: in-out-create-in-table-aiservices
+      author: G4IT Dev Team
+      changes:
+        - createTable:
+            tableName: in_aiservices
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  incrementBy: 100
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: in_aiservices_pk
+              - column:
+                  name: service_name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: inventory_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: in_aiservices_inventory_id_fk
+                    references: inventory(id)
+                    deleteCascade: true
+              - column:
+                  name: provider
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: model
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: output_tokens
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: location
+                  type: varchar(255)
+        - createIndex:
+            tableName: in_aiservices
+            indexName: idx_in_aiservices_inventory_id
+            columns:
+              - column:
+                  name: inventory_id
