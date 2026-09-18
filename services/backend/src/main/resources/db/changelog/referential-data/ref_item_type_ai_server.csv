@@ -1,3 +1,3 @@
 type;category;comment;default_lifespan;is_server;source;ref_default_item;subscriber;version
-AI server;EquipementPhysique;Lifetime par defaut;5.0;true;;Medium AI Server (2 × NVIDIA L4);NULL;NULL
+AI server;EquipementPhysique;Lifetime par defaut;5.0;true;;Medium AI Server (4 × H100 PCIe 80G);NULL;NULL
 
