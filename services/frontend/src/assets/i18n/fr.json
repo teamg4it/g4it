@@ -487,7 +487,7 @@
         "total.disk": "Capacité totale du disque",
         "total.disk-tooltip": "Capacité totale de stockage disponible sur le serveur (en Gb).",
         "total.vram": "Total vRAM",
-        "total.vram-tooltip": "Server computing power.",
+        "total.vram-tooltip": "Puissance de calcul du serveur.",
         "lifespan": "Durée de vie du serveur",
         "lifespan-tooltip": "Durée d'utilisation du serveur (en années)",
         "electricity": "Consommation d'électricité",
