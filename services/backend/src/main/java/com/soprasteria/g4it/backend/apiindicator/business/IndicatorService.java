@@ -143,11 +143,12 @@ public class IndicatorService {
         List<OutApplication> resultOutApplication = new ArrayList<>();
 
         int pageNumber = 0;
+        log.info("Fetching application indicators for taskId: {} batchsize: {}", taskId, Constants.BATCH_SIZE_50000);
 
         while (true){
             Pageable page = PageRequest.of(
                     pageNumber,
-                    Constants.BATCH_SIZE_10000
+                    Constants.BATCH_SIZE_50000
             );
 
             List<OutApplication> outApplications = outApplicationRepository.findByTaskIdOrderByIdAsc(taskId, page);
