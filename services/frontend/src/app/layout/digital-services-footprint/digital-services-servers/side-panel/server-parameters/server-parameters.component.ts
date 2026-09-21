@@ -224,13 +224,17 @@ export class PanelServerParametersComponent {
             this.current.host.characteristic.find((c) => c.code === "lifespan")?.value!,
         );
 
-        if (type === "Compute" || type === "AI") {
+        if (type === "Compute") {
             this.serverForm.controls["vcpu"].setValue(
                 this.current.host.characteristic.find((c) => c.code === "vCPU")?.value!,
             );
         } else if (type === "Storage") {
             this.serverForm.controls["disk"].setValue(
                 this.current.host.characteristic.find((c) => c.code === "disk")?.value!,
+            );
+        } else {
+            this.serverForm.controls["vram"].setValue(
+                this.current.host.characteristic.find((c) => c.code === "vCPU")?.value!,
             );
         }
     }
