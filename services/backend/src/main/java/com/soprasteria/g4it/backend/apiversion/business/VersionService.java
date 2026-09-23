@@ -32,6 +32,9 @@ public class VersionService {
     @Value("${numecoevalmodule.version}")
     private String numecoeval;
 
+    @Value("${ecologits.version}")
+    private String ecologits;
+
     /**
      * Get the NumEcoEval version
      *
@@ -44,6 +47,7 @@ public class VersionService {
                 .g4it(version)
                 .ecomindai(ecomindai)
                 .numecoeval(numecoeval)
+                .ecologits(ecologits)
                 .build();
     }
 }
