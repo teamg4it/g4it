@@ -90,7 +90,13 @@ export abstract class Constants {
         404: "not-found",
     };
 
-    static readonly FILE_TYPES = ["datacenter", "physical", "virtual", "application"];
+    static readonly FILE_TYPES = [
+        "datacenter",
+        "physical",
+        "virtual",
+        "application",
+        "AIservices",
+    ];
 
     static readonly INTEGRATION_BATCH_COMPLETED_FAILED_STATUSES = [
         "COMPLETED",

@@ -719,6 +719,7 @@
             "eq-phys": "Physical Equipment",
             "eq-virt": "Virtual Equipment",
             "app": "Application",
+            "ai-service": "AI services",
             "name": "Type of inventories"
         },
         "popup": {
@@ -739,6 +740,7 @@
             "physical-template-file": "Physical equipment template file ({{type}}, {{size}} KB)",
             "virtual-template-file": "Virtual equipment template file ({{type}}, {{size}} KB)",
             "application-template-file": "Application template file ({{type}}, {{size}} KB)",
+            "AIservices-template-file": "AI services template file ({{type}}, {{size}} KB)",
             "all-template-files": "All template files ({{type}}, {{size}} KB)",
             "data-model": "Platform DataModel ({{type}}, {{size}} KB)",
             "starter-pack": "Starter pack",

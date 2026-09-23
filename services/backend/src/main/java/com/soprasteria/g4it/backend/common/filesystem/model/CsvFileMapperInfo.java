@@ -53,6 +53,14 @@ public class CsvFileMapperInfo implements FileMapperInfo {
     private List<Header> aiParameters;
     private List<Header> aiInfrastructure;
 
+    private List<Header> aiService = List.of(
+            Header.builder().name("serviceName").optional(false).build(),
+            Header.builder().name("provider").optional(false).build(),
+            Header.builder().name("model").optional(false).build(),
+            Header.builder().name("outputTokens").optional(false).build(),
+            Header.builder().name("location").optional(true).build()
+    );
+
     @Override
     public List<Header> getMapping(final FileType type) {
         return switch (type) {
@@ -73,6 +81,7 @@ public class CsvFileMapperInfo implements FileMapperInfo {
             case OUT_AI_RECO -> new ArrayList<>(safe(outAiReco));
             case IN_AI_PARAMETERS -> new ArrayList<>(safe(aiParameters));
             case IN_AI_INFRASTRUCTURE -> new ArrayList<>(safe(aiInfrastructure));
+            case AI_SERVICE -> new ArrayList<>(safe(aiService));
         };
     }
 
