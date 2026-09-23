@@ -1,4 +1,11 @@
 # G4IT
+## 3.15.0
+
+### Major Changes
+- 2329 | Digital Services - Add new AI server type into G4IT
+
+### Minor Changes
+
 ## 3.14.1
 
 ### Major Changes
