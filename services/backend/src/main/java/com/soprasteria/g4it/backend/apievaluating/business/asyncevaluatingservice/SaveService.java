@@ -8,6 +8,8 @@
 
 package com.soprasteria.g4it.backend.apievaluating.business.asyncevaluatingservice;
 
+import com.soprasteria.g4it.backend.apiinout.modeldb.OutAiService;
+import com.soprasteria.g4it.backend.apiinout.repository.OutAiServiceRepository;
 import com.soprasteria.g4it.backend.apievaluating.mapper.AggregationToOutput;
 import com.soprasteria.g4it.backend.apievaluating.model.AggValuesBO;
 import com.soprasteria.g4it.backend.apievaluating.model.RefShortcutBO;
@@ -42,6 +44,9 @@ public class SaveService {
 
     @Autowired
     OutVirtualEquipmentRepository outVirtualEquipmentRepository;
+
+    @Autowired
+    OutAiServiceRepository outAiServiceRepository;
 
     @Autowired
     OutApplicationRepository outApplicationRepository;
@@ -179,5 +184,21 @@ public class SaveService {
         outVirtualEquipmentRepository.saveAll(outVirtualEquipments);
         outVirtualEquipments.clear();
         return finalizeSaveAndCleanup(aggregation);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public int saveOutAiServices(final List<OutAiService> outAiServices) {
+        if (outAiServices.isEmpty()) {
+            return 0;
+        }
+
+        int fromIndex = 0;
+        while (fromIndex < outAiServices.size()) {
+            int toIndex = Math.min(fromIndex + Constants.BATCH_SIZE, outAiServices.size());
+            outAiServiceRepository.saveAll(outAiServices.subList(fromIndex, toIndex));
+            flushAndClearEntityManager();
+            fromIndex = toIndex;
+        }
+        return outAiServices.size();
     }
 }

@@ -143,6 +143,12 @@
                 </p>
             }
 
+            @if (type === "inventory") {
+            <p class="ml-3 mt-2">
+                {{ "inventories.ai-services-criteria-note" | translate }}
+            </p>
+            }
+
             <ng-template pTemplate="footer">
                 <div
                     class="w-full block text-left sm:text-right sm:flex align-items-center justify-content-between"

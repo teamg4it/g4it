@@ -44,6 +44,7 @@ public class CsvFileMapperInfo implements FileMapperInfo {
     private List<Header> physicalEquipmentIndicator;
     private List<Header> virtualEquipmentIndicator;
     private List<Header> applicationIndicator;
+    private List<Header> aiServiceIndicator;
 
     private List<Header> physicalEquipmentIndicatorDigitalService;
 
@@ -73,6 +74,7 @@ public class CsvFileMapperInfo implements FileMapperInfo {
             case PHYSICAL_EQUIPMENT_INDICATOR -> new ArrayList<>(safe(physicalEquipmentIndicator));
             case VIRTUAL_EQUIPMENT_INDICATOR -> new ArrayList<>(safe(virtualEquipmentIndicator));
             case APPLICATION_INDICATOR -> new ArrayList<>(safe(applicationIndicator));
+            case AI_SERVICE_INDICATOR -> new ArrayList<>(safe(aiServiceIndicator));
             case INVENTORY -> new ArrayList<>(safe(inventory));
             case PHYSICAL_EQUIPMENT_INDICATOR_DIGITAL_SERVICE ->
                     new ArrayList<>(safe(physicalEquipmentIndicatorDigitalService));

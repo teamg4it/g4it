@@ -62,6 +62,11 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.soprasteria.g4it.backend.common.utils.InfrastructureType.CLOUD_SERVICES;
+import com.soprasteria.g4it.backend.apievaluating.business.asyncevaluatingservice.engine.ecologits.EvaluateEcologitsService;
+import com.soprasteria.g4it.backend.apievaluating.mapper.AiServiceImpactToCsvRecord;
+import com.soprasteria.g4it.backend.apiinout.mapper.AiServiceToCsvRecord;
+import com.soprasteria.g4it.backend.apiinout.modeldb.InAiService;
+import com.soprasteria.g4it.backend.apiinout.modeldb.OutAiService;
 
 @Service
 @Slf4j
@@ -109,24 +114,48 @@ public class EvaluateService {
     BoaviztapiService boaviztapiService;
     @Autowired
     InventoryRepository inventoryRepository;
+    @Autowired
+    InAiServiceRepository inAiServiceRepository;
+    @Autowired
+    AiServiceImpactToCsvRecord aiServiceImpactToCsvRecord;
+    @Autowired
+    AiServiceToCsvRecord aiServiceToCsvRecord;
+    @Autowired
+    EvaluateEcologitsService evaluateEcologitsService;
 
     @Value("${local.working.folder}")
     private String localWorkingFolder;
+    @Value("${ecologits.version}")
+    private String ecologitsVersion;
+
     private Map<String, String> codeToCountryMapCache;
     private List<String> lifecycleStepsCache;
     private Map<Pair<String, String>, Integer> electricityMixQuartilesCache;
+    private Map<String, String> countryNameToCodeMapCache;
     @Autowired
     ReferentialGetService referentialGetService;
 
     @PostConstruct
     public void init() {
+        Map<String, String> countryMap = boaviztapiService.getCountryMap();
         codeToCountryMapCache =
-                boaviztapiService.getCountryMap()
+                countryMap
                         .entrySet()
                         .stream()
                         .collect(Collectors.toMap(
                                 Map.Entry::getValue,
                                 Map.Entry::getKey
+                        ));
+        // country name (case-insensitive) -> ISO alpha-3 zone code, used to resolve AI service
+        // locations (e.g. "France") into the codes expected by the EcoLogits API (e.g. "FRA").
+        countryNameToCodeMapCache =
+                countryMap
+                        .entrySet()
+                        .stream()
+                        .collect(Collectors.toMap(
+                                entry -> entry.getKey().toLowerCase(Locale.ROOT),
+                                Map.Entry::getValue,
+                                (existing, duplicate) -> existing
                         ));
         lifecycleStepsCache = referentialService.getLifecycleSteps();
         electricityMixQuartilesCache = referentialService.getElectricityMixQuartiles(null);
@@ -222,6 +251,7 @@ public class EvaluateService {
                 .nbPhysicalEquipmentLines(0)
                 .nbVirtualEquipmentLines(0)
                 .nbApplicationLines(0)
+                .nbAiServiceLines(0)
                 .taskId(taskId)
                 .name(inventoryName)
                 .build();
@@ -235,7 +265,9 @@ public class EvaluateService {
                 inVirtualEquipmentRepository.countByDigitalServiceVersionUidAndInfrastructureType(context.getDigitalServiceVersionUid(), CLOUD_SERVICES.name()) :
                 inVirtualEquipmentRepository.countByInventoryIdAndInfrastructureType(context.getInventoryId(), CLOUD_SERVICES.name());
 
-        long totalEquipments = totalPhysicalEquipments + totalCloudVirtualEquipments;
+        //long totalEquipments = totalPhysicalEquipments + totalCloudVirtualEquipments;
+        long totalAiServices = context.getInventoryId() == null ? 0L : inAiServiceRepository.countByInventoryId(context.getInventoryId());
+        long totalEquipments = totalPhysicalEquipments + totalCloudVirtualEquipments + totalAiServices;
         FileType physicalEquipmentIndicator = context.getDigitalServiceVersionUid() == null ? FileType.PHYSICAL_EQUIPMENT_INDICATOR :
                 FileType.PHYSICAL_EQUIPMENT_INDICATOR_DIGITAL_SERVICE;
         FileType virtualEquipmentIndicator = context.getDigitalServiceVersionUid() == null ? FileType.VIRTUAL_EQUIPMENT_INDICATOR :
@@ -243,12 +275,15 @@ public class EvaluateService {
         int outPhysicalEquipmentSize = 0;
         int outVirtualEquipmentSize = 0;
         int outApplicationSize = 0;
+        int outAiServiceSize = 0;
         try (CSVPrinter csvPhysicalEquipment = csvFileService.getPrinter(physicalEquipmentIndicator, exportDirectory);
              CSVPrinter csvVirtualEquipment = csvFileService.getPrinter(virtualEquipmentIndicator, exportDirectory);
+             CSVPrinter csvAiService = csvFileService.getPrinter(FileType.AI_SERVICE_INDICATOR, exportDirectory);
              CSVPrinter csvApplication = csvFileService.getPrinter(FileType.APPLICATION_INDICATOR, exportDirectory);
              CSVPrinter csvInDatacenter = csvFileService.getPrinter(FileType.DATACENTER, exportDirectory);
              CSVPrinter csvInPhysicalEquipment = csvFileService.getPrinter(FileType.EQUIPEMENT_PHYSIQUE, exportDirectory);
              CSVPrinter csvInVirtualEquipment = csvFileService.getPrinter(FileType.VIRTUAL_EQUIPMENT, exportDirectory);
+             CSVPrinter csvInAiService = csvFileService.getPrinter(FileType.AI_SERVICE, exportDirectory);
              CSVPrinter csvInApplication = csvFileService.getPrinter(FileType.APPLICATION, exportDirectory);
         ) {
 
@@ -352,13 +387,14 @@ public class EvaluateService {
 
                     if (processed % 20 == 0 || processed == totalEquipments) {
 
-                        int progress =
+                        /*int progress =
                                 (int) ((processed * 100.0 * processFactor) / totalEquipments);
 
                         taskRepository.updateProgress(taskId,
                                 progress + "%",
                                 LocalDateTime.now()
-                        );
+                        );*/
+                        updateProgress(taskId, processed, totalEquipments, processFactor);
                     }
                     /**
                      * ------------------------------------------------------------------
@@ -397,6 +433,45 @@ public class EvaluateService {
                 physicalEquipments.clear();
             }
 
+            if (context.getInventoryId() != null) {
+                final Sort sortById = Sort.by("id");
+                int aiPageNumber = 0;
+                while (true) {
+                    Pageable page = PageRequest.of(aiPageNumber, Constants.BATCH_SIZE, sortById);
+                    List<InAiService> aiServices = inAiServiceRepository.findByInventoryIdOrderByIdAsc(context.getInventoryId(), page);
+                    if (aiServices.isEmpty()) {
+                        break;
+                    }
+
+                    List<OutAiService> outAiServices = new ArrayList<>(aiServices.size() * Math.max(criteriaCodes.size(), 1) * Math.max(lifecycleSteps.size(), 1));
+                    for (InAiService aiService : aiServices) {
+                        if (evaluateReportBO.isExport()) {
+                            csvInAiService.printRecord(aiServiceToCsvRecord.toCsv(aiService));
+                        }
+
+                        List<ImpactBO> aiImpacts = evaluateEcologitsService.evaluate(aiService, criteriaCodes, lifecycleSteps, countryNameToCodeMapCache);
+                        for (ImpactBO impact : aiImpacts) {
+                            OutAiService outAiService = toOutAiService(taskId, aiService, impact, criteriaUnitMap, refSip);
+                            outAiServices.add(outAiService);
+                            if (evaluateReportBO.isExport()) {
+                                csvAiService.printRecord(aiServiceImpactToCsvRecord.toCsv(context, taskId, inventoryName, aiService, outAiService));
+                            }
+                            evaluateReportBO.setNbAiServiceLines(evaluateReportBO.getNbAiServiceLines() + 1);
+                        }
+
+                        processed++;
+                        if (processed % 20 == 0 || processed == totalEquipments) {
+                            updateProgress(taskId, processed, totalEquipments, processFactor);
+                        }
+                    }
+
+                    outAiServiceSize += saveService.saveOutAiServices(outAiServices);
+                    csvAiService.flush();
+                    aiPageNumber++;
+                    aiServices.clear();
+                }
+            }
+
         } catch (IOException e) {
             log.error("Cannot write csv output files", e);
             throw new AsyncTaskException("An error occurred on writing csv files", e);
@@ -418,9 +493,9 @@ public class EvaluateService {
             aggregationApplications.clear();
         }
 
-        log.info("End evaluating impacts for {}/{} in {}s and sizes: {}/{}/{}", context.log(), taskId,
+        log.info("End evaluating impacts for {}/{} in {}s and sizes: {}/{}/{}/{}", context.log(), taskId,
                 (System.currentTimeMillis() - start) / 1000,
-                outPhysicalEquipmentSize, outVirtualEquipmentSize, outApplicationSize);
+                outPhysicalEquipmentSize, outVirtualEquipmentSize, outApplicationSize, outAiServiceSize);
 
         // Save output counts to inventory
         if (inventory != null) {
@@ -450,6 +525,10 @@ public class EvaluateService {
             if (evaluateReportBO.getNbApplicationLines() == 0 || !evaluateReportBO.isExport()) {
                 Files.deleteIfExists(exportDirectory.resolve(FileType.APPLICATION_INDICATOR.getFileName() + Constants.CSV));
                 Files.deleteIfExists(exportDirectory.resolve(FileType.APPLICATION.getFileName() + Constants.CSV));
+            }
+            if (evaluateReportBO.getNbAiServiceLines() == 0 || !evaluateReportBO.isExport()) {
+                Files.deleteIfExists(exportDirectory.resolve(FileType.AI_SERVICE_INDICATOR.getFileName() + Constants.CSV));
+                Files.deleteIfExists(exportDirectory.resolve(FileType.AI_SERVICE.getFileName() + Constants.CSV));
             }
         } catch (IOException e) {
             log.error("Cannot delete export local files", e);
@@ -718,6 +797,51 @@ public class EvaluateService {
                 .workload(workload == null ? 0d : workload)
                 .errors(error == null ? Collections.emptySet() : Collections.singleton(error))
                 .source(source)
+                .build();
+    }
+
+    private void updateProgress(final Long taskId,
+                                final long processed,
+                                final long totalEquipments,
+                                final double processFactor) {
+        if (totalEquipments == 0) {
+            return;
+        }
+        int progress = (int) ((processed * 100.0 * processFactor) / totalEquipments);
+        taskRepository.updateProgress(taskId, progress + "%", LocalDateTime.now());
+    }
+
+    private OutAiService toOutAiService(final Long taskId,
+                                        final InAiService aiService,
+                                        final ImpactBO impact,
+                                        final Map<String, String> criteriaUnitMap,
+                                        final Map<String, Double> refSip) {
+        final boolean isOk = "OK".equals(impact.getIndicatorStatus());
+        final Double unitImpact = isOk && impact.getUnitImpact() != null ? impact.getUnitImpact() : 0d;
+        final Double sipValue = refSip.get(impact.getCriterion());
+        final Double peopleEqImpact = isOk && sipValue != null && sipValue != 0 ? unitImpact / sipValue : 0d;
+        final Set<String> errors = isOk || impact.getTrace() == null ? null : Set.of(impact.getTrace());
+
+        return OutAiService.builder()
+                .taskId(taskId)
+                .name(aiService.getServiceName())
+                .criterion(impact.getCriterion())
+                .lifecycleStep(impact.getLifecycleStep())
+                .provider(aiService.getProvider())
+                .model(aiService.getModel())
+                .location(org.apache.commons.lang3.StringUtils.defaultIfBlank(aiService.getLocation(), "WOR"))
+                .engineName(com.soprasteria.g4it.backend.external.ecologits.business.EcologitsService.ECOLOGITS_ENGINE)
+                .engineVersion(ecologitsVersion)
+                .referentialVersion(ecologitsVersion)
+                .statusIndicator(impact.getIndicatorStatus())
+                .quantity(1d)
+                .unitImpact(unitImpact)
+                .peopleEqImpact(peopleEqImpact)
+                .countValue(1L)
+                .unit(criteriaUnitMap.getOrDefault(impact.getCriterion(), impact.getUnit()))
+                .commonFilters(List.of(aiService.getServiceName()))
+                .filters(List.of(aiService.getProvider()))
+                .errors(errors)
                 .build();
     }
 

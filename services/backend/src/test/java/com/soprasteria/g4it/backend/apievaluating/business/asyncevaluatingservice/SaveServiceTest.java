@@ -11,9 +11,11 @@ package com.soprasteria.g4it.backend.apievaluating.business.asyncevaluatingservi
 import com.soprasteria.g4it.backend.apievaluating.mapper.AggregationToOutput;
 import com.soprasteria.g4it.backend.apievaluating.model.AggValuesBO;
 import com.soprasteria.g4it.backend.apievaluating.model.RefShortcutBO;
+import com.soprasteria.g4it.backend.apiinout.modeldb.OutAiService;
 import com.soprasteria.g4it.backend.apiinout.modeldb.OutApplication;
 import com.soprasteria.g4it.backend.apiinout.modeldb.OutPhysicalEquipment;
 import com.soprasteria.g4it.backend.apiinout.modeldb.OutVirtualEquipment;
+import com.soprasteria.g4it.backend.apiinout.repository.OutAiServiceRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.OutApplicationRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.OutPhysicalEquipmentRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.OutVirtualEquipmentRepository;
@@ -27,14 +29,21 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class SaveServiceTest {
@@ -44,6 +53,9 @@ class SaveServiceTest {
 
     @Mock
     private OutVirtualEquipmentRepository outVirtualEquipmentRepository;
+
+    @Mock
+    private OutAiServiceRepository outAiServiceRepository;
 
     @Mock
     private OutApplicationRepository outApplicationRepository;
@@ -61,171 +73,382 @@ class SaveServiceTest {
     private SaveService saveService;
 
     @Test
-    void saveOutPhysicalEquipments_savesAllEntriesWhenAggregationIsNotEmpty() {
+    void saveOutPhysicalEquipments_shouldSaveAllEntries() {
         Map<List<String>, AggValuesBO> aggregation = new HashMap<>(Map.of(
                 List.of("key1"), new AggValuesBO(),
                 List.of("key2"), new AggValuesBO()
         ));
 
-        RefShortcutBO refShortcutBO = new RefShortcutBO(
-                null, null,
-                null,
-                null, null
-        );
+        RefShortcutBO refShortcutBO =
+                new RefShortcutBO(null, null, null, null, null);
+
         Long taskId = 1L;
 
-        when(aggregationToOutput.mapPhysicalEquipment(any(), any(), eq(taskId), eq(refShortcutBO)))
-                .thenReturn(new OutPhysicalEquipment());
+        when(aggregationToOutput.mapPhysicalEquipment(
+                any(),
+                any(),
+                eq(taskId),
+                eq(refShortcutBO)
+        )).thenReturn(new OutPhysicalEquipment());
 
-        int result = saveService.saveOutPhysicalEquipments(aggregation, taskId, refShortcutBO);
+        int result = saveService.saveOutPhysicalEquipments(
+                aggregation,
+                taskId,
+                refShortcutBO
+        );
 
-        verify(outPhysicalEquipmentRepository, times(1)).saveAll(anyList());
+        verify(outPhysicalEquipmentRepository, times(1))
+                .saveAll(anyList());
+
+        verify(entityManager, atLeastOnce()).flush();
+        verify(entityManager, atLeastOnce()).clear();
+
         assertEquals(2, result);
+        assertEquals(0, aggregation.size());
     }
 
     @Test
-    void saveOutPhysicalEquipments_doesNotSaveWhenAggregationIsEmpty() {
+    void saveOutPhysicalEquipments_shouldNotUpdateLastUpdateDate_whenAggregationIsEmpty() {
         Map<List<String>, AggValuesBO> aggregation = new HashMap<>();
 
-        RefShortcutBO refShortcutBO = new RefShortcutBO(
-                null, null,
-                null,
-                null, null
-        );
+        RefShortcutBO refShortcutBO =
+                new RefShortcutBO(null, null, null, null, null);
+
         Long taskId = 1L;
 
-        int result = saveService.saveOutPhysicalEquipments(aggregation, taskId, refShortcutBO);
+        int result = saveService.saveOutPhysicalEquipments(
+                aggregation,
+                taskId,
+                refShortcutBO
+        );
 
-        verify(taskRepository, never()).updateLastUpdateDate(anyLong(), any(LocalDateTime.class));
+        verify(outPhysicalEquipmentRepository, times(1))
+                .saveAll(anyList());
+
+        verify(taskRepository, never())
+                .updateLastUpdateDate(
+                        anyLong(),
+                        any(LocalDateTime.class)
+                );
+
+        verify(entityManager, atLeastOnce()).flush();
+        verify(entityManager, atLeastOnce()).clear();
+
         assertEquals(0, result);
     }
 
     @Test
-    void saveOutVirtualEquipments_handlesBatchProcessingCorrectly() {
+    void saveOutPhysicalEquipments_shouldFlushWhenBatchSizeIsReached() {
+        int batch = Constants.BATCH_SIZE;
+
         Map<List<String>, AggValuesBO> aggregation = new HashMap<>();
-        for (int i = 0; i < Constants.BATCH_SIZE + 1; i++) {
-            aggregation.put(List.of("key" + i), new AggValuesBO());
+
+        for (int i = 0; i < batch + 1; i++) {
+            aggregation.put(
+                    List.of("key" + i),
+                    new AggValuesBO()
+            );
         }
-        RefShortcutBO refShortcutBO = new RefShortcutBO(
-                null, null,
-                null,
-                null, null
-        );
+
+        RefShortcutBO refShortcutBO =
+                new RefShortcutBO(null, null, null, null, null);
+
         Long taskId = 1L;
 
-        when(aggregationToOutput.mapVirtualEquipment(any(), any(), eq(taskId), eq(refShortcutBO)))
-                .thenReturn(new OutVirtualEquipment());
+        when(aggregationToOutput.mapPhysicalEquipment(
+                any(),
+                any(),
+                eq(taskId),
+                eq(refShortcutBO)
+        )).thenReturn(new OutPhysicalEquipment());
 
-        int result = saveService.saveOutVirtualEquipments(aggregation, taskId, refShortcutBO);
+        int result = saveService.saveOutPhysicalEquipments(
+                aggregation,
+                taskId,
+                refShortcutBO
+        );
 
-        verify(outVirtualEquipmentRepository, times(2)).saveAll(anyList());
+        // One batch + remaining entry
+        verify(outPhysicalEquipmentRepository, times(2))
+                .saveAll(anyList());
+
+        verify(taskRepository, times(1))
+                .updateLastUpdateDate(
+                        eq(taskId),
+                        any(LocalDateTime.class)
+                );
+
+        verify(entityManager, atLeastOnce()).flush();
+        verify(entityManager, atLeastOnce()).clear();
+
+        assertEquals(batch + 1, result);
+        assertEquals(0, aggregation.size());
+    }
+
+    @Test
+    void saveOutVirtualEquipments_shouldSaveAllEntries() {
+        Map<List<String>, AggValuesBO> aggregation = new HashMap<>(Map.of(
+                List.of("key1"), new AggValuesBO(),
+                List.of("key2"), new AggValuesBO()
+        ));
+
+        RefShortcutBO refShortcutBO =
+                new RefShortcutBO(null, null, null, null, null);
+
+        Long taskId = 1L;
+
+        when(aggregationToOutput.mapVirtualEquipment(
+                any(),
+                any(),
+                eq(taskId),
+                eq(refShortcutBO)
+        )).thenReturn(new OutVirtualEquipment());
+
+        int result = saveService.saveOutVirtualEquipments(
+                aggregation,
+                taskId,
+                refShortcutBO
+        );
+
+        verify(outVirtualEquipmentRepository, times(1))
+                .saveAll(anyList());
+
+        verify(entityManager, atLeastOnce()).flush();
+        verify(entityManager, atLeastOnce()).clear();
+
+        assertEquals(2, result);
+        assertEquals(0, aggregation.size());
+    }
+
+    @Test
+    void saveOutVirtualEquipments_shouldFlushWhenBatchSizeIsReached() {
+        int batch = Constants.BATCH_SIZE;
+
+        Map<List<String>, AggValuesBO> aggregation = new HashMap<>();
+
+        for (int i = 0; i < batch + 1; i++) {
+            aggregation.put(
+                    List.of("key" + i),
+                    new AggValuesBO()
+            );
+        }
+
+        RefShortcutBO refShortcutBO =
+                new RefShortcutBO(null, null, null, null, null);
+
+        Long taskId = 1L;
+
+        when(aggregationToOutput.mapVirtualEquipment(
+                any(),
+                any(),
+                eq(taskId),
+                eq(refShortcutBO)
+        )).thenReturn(new OutVirtualEquipment());
+
+        int result = saveService.saveOutVirtualEquipments(
+                aggregation,
+                taskId,
+                refShortcutBO
+        );
+
+        verify(outVirtualEquipmentRepository, times(2))
+                .saveAll(anyList());
+
+        verify(entityManager, atLeastOnce()).flush();
+        verify(entityManager, atLeastOnce()).clear();
+
+        assertEquals(batch + 1, result);
+        assertEquals(0, aggregation.size());
+    }
+
+    @Test
+    void saveOutApplications_shouldSaveAllEntries() {
+        Map<List<String>, AggValuesBO> aggregation = new HashMap<>(Map.of(
+                List.of("key1"), new AggValuesBO(),
+                List.of("key2"), new AggValuesBO()
+        ));
+
+        RefShortcutBO refShortcutBO =
+                new RefShortcutBO(null, null, null, null, null);
+
+        Long taskId = 1L;
+
+        when(aggregationToOutput.mapApplication(
+                any(),
+                any(),
+                eq(taskId),
+                eq(refShortcutBO)
+        )).thenReturn(new OutApplication());
+
+        int result = saveService.saveOutApplications(
+                aggregation,
+                taskId,
+                refShortcutBO
+        );
+
+        verify(outApplicationRepository, times(1))
+                .saveAll(anyList());
+
+        verify(entityManager, atLeastOnce()).flush();
+        verify(entityManager, atLeastOnce()).clear();
+
+        assertEquals(2, result);
+        assertEquals(0, aggregation.size());
+    }
+
+    @Test
+    void saveOutApplications_shouldFlushWhenBatchSizeIsReached() {
+        int batch = Constants.BATCH_SIZE;
+
+        Map<List<String>, AggValuesBO> aggregation = new HashMap<>();
+
+        for (int i = 0; i < batch + 1; i++) {
+            aggregation.put(
+                    List.of("key" + i),
+                    new AggValuesBO()
+            );
+        }
+
+        RefShortcutBO refShortcutBO =
+                new RefShortcutBO(null, null, null, null, null);
+
+        Long taskId = 1L;
+
+        when(aggregationToOutput.mapApplication(
+                any(),
+                any(),
+                eq(taskId),
+                eq(refShortcutBO)
+        )).thenReturn(new OutApplication());
+
+        int result = saveService.saveOutApplications(
+                aggregation,
+                taskId,
+                refShortcutBO
+        );
+
+        verify(outApplicationRepository, times(2))
+                .saveAll(anyList());
+
+        verify(entityManager, atLeastOnce()).flush();
+        verify(entityManager, atLeastOnce()).clear();
+
+        assertEquals(batch + 1, result);
+        assertEquals(0, aggregation.size());
+    }
+
+    @Test
+    void saveOutCloudVirtualEquipments_shouldSaveAllEntries() {
+        Map<List<String>, AggValuesBO> aggregation = new HashMap<>(Map.of(
+                List.of("key1"), new AggValuesBO(),
+                List.of("key2"), new AggValuesBO()
+        ));
+
+        Long taskId = 1L;
+
+        when(aggregationToOutput.mapCloudVirtualEquipment(
+                any(),
+                any(),
+                eq(taskId)
+        )).thenReturn(new OutVirtualEquipment());
+
+        int result = saveService.saveOutCloudVirtualEquipments(
+                aggregation,
+                taskId
+        );
+
+        verify(outVirtualEquipmentRepository, times(1))
+                .saveAll(anyList());
+
+        verify(entityManager, atLeastOnce()).flush();
+        verify(entityManager, atLeastOnce()).clear();
+
+        assertEquals(2, result);
+        assertEquals(0, aggregation.size());
+    }
+
+    @Test
+    void saveOutCloudVirtualEquipments_shouldFlushWhenBatchSizeIsReached() {
+        int batch = Constants.BATCH_SIZE;
+
+        Map<List<String>, AggValuesBO> aggregation = new HashMap<>();
+
+        for (int i = 0; i < batch + 1; i++) {
+            aggregation.put(
+                    List.of("key" + i),
+                    new AggValuesBO()
+            );
+        }
+
+        Long taskId = 1L;
+
+        when(aggregationToOutput.mapCloudVirtualEquipment(
+                any(),
+                any(),
+                eq(taskId)
+        )).thenReturn(new OutVirtualEquipment());
+
+        int result = saveService.saveOutCloudVirtualEquipments(
+                aggregation,
+                taskId
+        );
+
+        verify(outVirtualEquipmentRepository, times(2))
+                .saveAll(anyList());
+
+        verify(entityManager, atLeastOnce()).flush();
+        verify(entityManager, atLeastOnce()).clear();
+
+        assertEquals(batch + 1, result);
+        assertEquals(0, aggregation.size());
+    }
+
+    @Test
+    void saveOutAiServices_shouldReturnZero_whenListIsEmpty() {
+        List<OutAiService> outAiServices = new ArrayList<>();
+
+        int result = saveService.saveOutAiServices(outAiServices);
+
+        verify(outAiServiceRepository, never()).saveAll(anyList());
+        verify(entityManager, never()).flush();
+        verify(entityManager, never()).clear();
+
+        assertEquals(0, result);
+    }
+
+    @Test
+    void saveOutAiServices_shouldSaveAllEntries_whenListIsNotEmpty() {
+        List<OutAiService> outAiServices = new ArrayList<>();
+        outAiServices.add(new OutAiService());
+        outAiServices.add(new OutAiService());
+
+        int result = saveService.saveOutAiServices(outAiServices);
+
+        verify(outAiServiceRepository, times(1))
+                .saveAll(anyList());
+
+        verify(entityManager, times(1)).flush();
+        verify(entityManager, times(1)).clear();
+
+        assertEquals(2, result);
+    }
+
+    @Test
+    void saveOutAiServices_shouldFlushWhenBatchSizeIsReached() {
+        List<OutAiService> outAiServices = new ArrayList<>();
+
+        for (int i = 0; i < Constants.BATCH_SIZE + 1; i++) {
+            outAiServices.add(new OutAiService());
+        }
+
+        int result = saveService.saveOutAiServices(outAiServices);
+
+        verify(outAiServiceRepository, times(2))
+                .saveAll(anyList());
+
+        verify(entityManager, times(2)).flush();
+        verify(entityManager, times(2)).clear();
+
         assertEquals(Constants.BATCH_SIZE + 1, result);
     }
-
-    @Test
-    void saveOutApplications_savesAllEntriesWhenAggregationIsNotEmpty() {
-        Map<List<String>, AggValuesBO> aggregation = new HashMap<>(Map.of(
-                List.of("key1"), new AggValuesBO(),
-                List.of("key2"), new AggValuesBO()
-        ));
-
-        RefShortcutBO refShortcutBO = new RefShortcutBO(null, null, null, null, null);
-        Long taskId = 1L;
-
-        when(aggregationToOutput.mapApplication(any(), any(), eq(taskId), eq(refShortcutBO)))
-                .thenReturn(new OutApplication());
-
-        int result = saveService.saveOutApplications(aggregation, taskId, refShortcutBO);
-
-        verify(outApplicationRepository, times(1)).saveAll(anyList());
-        assertEquals(2, result);
-    }
-
-    @Test
-    void saveOutCloudVirtualEquipments_savesAllEntriesWhenAggregationIsNotEmpty() {
-        Map<List<String>, AggValuesBO> aggregation = new HashMap<>(Map.of(
-                List.of("key1"), new AggValuesBO(),
-                List.of("key2"), new AggValuesBO()
-        ));
-
-        Long taskId = 1L;
-
-        when(aggregationToOutput.mapCloudVirtualEquipment(any(), any(), eq(taskId)))
-                .thenReturn(new OutVirtualEquipment());
-
-        int result = saveService.saveOutCloudVirtualEquipments(aggregation, taskId);
-
-        verify(outVirtualEquipmentRepository, times(1)).saveAll(anyList());
-        assertEquals(2, result);
-    }
-
-    @Test
-    void saveOutPhysicalEquipments_triggersBatchFlush() {
-        int batch = Constants.BATCH_SIZE;                       // e.g. 1000
-        Map<List<String>, AggValuesBO> aggregation = new HashMap<>();
-
-        for (int i = 0; i < batch + 1; i++) {
-            aggregation.put(List.of("k" + i), new AggValuesBO());
-        }
-
-        RefShortcutBO ref = new RefShortcutBO(null, null, null, null, null);
-        Long taskId = 1L;
-
-        when(aggregationToOutput.mapPhysicalEquipment(any(), any(), eq(taskId), eq(ref)))
-                .thenReturn(new OutPhysicalEquipment());
-
-        int result = saveService.saveOutPhysicalEquipments(aggregation, taskId, ref);
-
-        verify(outPhysicalEquipmentRepository, times(2)).saveAll(anyList());
-        verify(taskRepository, atLeastOnce()).updateLastUpdateDate(eq(taskId), any(LocalDateTime.class));
-        verify(entityManager, atLeastOnce()).flush();
-        verify(entityManager, atLeastOnce()).clear();
-        assertEquals(batch + 1, result);
-    }
-
-    @Test
-    void saveOutApplications_triggersBatchFlush() {
-        int batch = Constants.BATCH_SIZE;
-        Map<List<String>, AggValuesBO> aggregation = new HashMap<>();
-        for (int i = 0; i < batch + 1; i++) {
-            aggregation.put(List.of("k" + i), new AggValuesBO());
-        }
-
-        RefShortcutBO ref = new RefShortcutBO(null, null, null, null, null);
-        Long taskId = 1L;
-
-        when(aggregationToOutput.mapApplication(any(), any(), eq(taskId), eq(ref)))
-                .thenReturn(new OutApplication());
-
-        int result = saveService.saveOutApplications(aggregation, taskId, ref);
-
-        verify(outApplicationRepository, times(2)).saveAll(anyList());
-        verify(entityManager, atLeastOnce()).flush();
-        verify(entityManager, atLeastOnce()).clear();
-        assertEquals(batch + 1, result);
-    }
-
-    @Test
-    void saveOutVirtualEquipments_triggersBatchFlush() {
-        int batch = Constants.BATCH_SIZE;
-        Map<List<String>, AggValuesBO> aggregation = new HashMap<>();
-        for (int i = 0; i < batch + 1; i++) {
-            aggregation.put(List.of("k" + i), new AggValuesBO());
-        }
-
-        RefShortcutBO ref = new RefShortcutBO(null, null, null, null, null);
-        Long taskId = 1L;
-
-        when(aggregationToOutput.mapVirtualEquipment(any(), any(), eq(taskId), eq(ref)))
-                .thenReturn(new OutVirtualEquipment());
-
-        int result = saveService.saveOutVirtualEquipments(aggregation, taskId, ref);
-
-        verify(outVirtualEquipmentRepository, times(2)).saveAll(anyList());
-        verify(entityManager, atLeastOnce()).flush();
-        verify(entityManager, atLeastOnce()).clear();
-        assertEquals(batch + 1, result);
-    }
-
-
 }

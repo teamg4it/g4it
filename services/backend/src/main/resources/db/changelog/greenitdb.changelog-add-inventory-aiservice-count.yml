@@ -1,0 +1,33 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-inventory-aiservice-count
+      author: G4IT Dev Team
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - columnExists:
+                tableName: inventory
+                columnName: ai_service_count
+      changes:
+        - addColumn:
+            tableName: inventory
+            columns:
+              - column:
+                  name: ai_service_count
+                  type: bigint
+                  defaultValueNumeric: 0
+                  constraints:
+                    nullable: true
+        - sql:
+            comment: Backfill AI service counts for existing inventories from in_aiservices table
+            sql: >
+              UPDATE inventory
+              SET ai_service_count = COALESCE((
+                SELECT COUNT(*)
+                FROM in_aiservices
+                WHERE in_aiservices.inventory_id = inventory.id
+              ), 0)
+      rollback:
+        - dropColumn:
+            tableName: inventory
+            columnName: ai_service_count
