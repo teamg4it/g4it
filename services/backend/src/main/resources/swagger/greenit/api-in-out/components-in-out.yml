@@ -32,6 +32,12 @@ components:
         location:
           type: string
           maxLength: 255
+        creationDate:
+          type: string
+          format: date-time
+        lastUpdateDate:
+          type: string
+          format: date-time
     InDatacenterRest:
       description: Version
       type: object

@@ -14,6 +14,8 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
+import java.time.LocalDateTime;
+
 @Data
 @EqualsAndHashCode(callSuper = false)
 @ToString(callSuper = true)
@@ -53,5 +55,13 @@ public class InAiService {
 
     @Column(name = "location")
     private String location;
+
+    @EqualsAndHashCode.Exclude
+    @Column(name = "creation_date")
+    private LocalDateTime creationDate;
+
+    @EqualsAndHashCode.Exclude
+    @Column(name = "last_update_date")
+    private LocalDateTime lastUpdateDate;
 
 }

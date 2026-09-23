@@ -153,6 +153,8 @@ public interface CsvToInMapper {
                 .model(read(csvRecord, "model"))
                 .outputTokens(outputTokens)
                 .location(read(csvRecord, "location"))
+                .creationDate(LocalDateTime.now())
+                .lastUpdateDate(LocalDateTime.now())
                 .build();
     }
 }

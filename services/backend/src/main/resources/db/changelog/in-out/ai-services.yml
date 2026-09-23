@@ -51,3 +51,16 @@ databaseChangeLog:
             columns:
               - column:
                   name: inventory_id
+  - changeSet:
+      id: in-aiservices-add-date-columns
+      author: G4IT Dev Team
+      changes:
+        - addColumn:
+            tableName: in_aiservices
+            columns:
+              - column:
+                  name: creation_date
+                  type: timestamp
+              - column:
+                  name: last_update_date
+                  type: timestamp
