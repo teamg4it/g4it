@@ -178,7 +178,7 @@
                                 [min]="0"
                                 styleClass="inputnumber-small"
                                 [(ngModel)]="server().totalVCpu"
-                                (onInput)="verifyValue(server())"
+                                (onBlur)="verifyValue(server())"
                                 name="vcpu"
                                 ngDefaultControl
                                 locale="fr-FR"
@@ -237,6 +237,7 @@
                                 [min]="0"
                                 styleClass="inputnumber-small"
                                 [(ngModel)]="server().totalDisk"
+                                (onBlur)="verifyValue(server())"
                                 name="disk"
                                 ngDefaultControl
                                 locale="fr-FR"
@@ -257,6 +258,76 @@
                                         "digital-services-servers.total.disk" | translate
                                     }}
                                     {{ "common.mandatory" | translate }}
+                                </p>
+                            }
+                            @if (serverForm.get("disk")?.hasError("isValueTooHigh")) {
+                                <p class="error-text">
+                                    {{
+                                        "digital-services-servers.error.totaldisk"
+                                            | translate
+                                                : {
+                                                      totalVmvCpu: totalVmvCpu,
+                                                      totalVmvCpuUnit:
+                                                          "digital-services-servers.disk"
+                                                          | translate,
+                                                  }
+                                    }}
+                                </p>
+                            }
+                        </div>
+                    }
+                    @if (server().type === "AI") {
+                        <div
+                            [ngClass]="
+                                server().mutualizationType == 'Dedicated'
+                                    ? 'label-input-div label-input-div-server'
+                                    : 'label-input-div-medium'
+                            "
+                        >
+                            <label for="disk">
+                                {{ "digital-services-servers.total.vram" | translate }}
+                            </label>
+                            <p-inputNumber
+                                formControlName="vram"
+                                [required]="true"
+                                [min]="0"
+                                styleClass="inputnumber-small"
+                                [(ngModel)]="server().totalVram"
+                                (onBlur)="verifyValue(server())"
+                                name="vram"
+                                ngDefaultControl
+                                locale="fr-FR"
+                                id="vram"
+                            />
+                            <div>
+                                <p class="flex text-xs">
+                                    <i class="pi pi-exclamation-circle mr-1"></i>
+                                    {{
+                                        "digital-services-servers.total.vram-tooltip"
+                                            | translate
+                                    }}
+                                </p>
+                            </div>
+                            @if (serverForm.get("vram")?.hasError("required")) {
+                                <p class="error-text">
+                                    {{
+                                        "digital-services-servers.total.vram" | translate
+                                    }}
+                                    {{ "common.mandatory" | translate }}
+                                </p>
+                            }
+                            @if (serverForm.get("vram")?.hasError("isValueTooHigh")) {
+                                <p class="error-text">
+                                    {{
+                                        "digital-services-servers.error.totalvram"
+                                            | translate
+                                                : {
+                                                      totalVmvCpu: totalVmvCpu,
+                                                      totalVmvCpuUnit:
+                                                          "digital-services-servers.vcpu"
+                                                          | translate,
+                                                  }
+                                    }}
                                 </p>
                             }
                         </div>

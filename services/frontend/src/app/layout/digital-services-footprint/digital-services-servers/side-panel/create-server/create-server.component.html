@@ -166,6 +166,18 @@
                             value="Storage"
                             inputId="Storage"
                         ></p-radiobutton>
+                        <p-divider layout="vertical"></p-divider>
+                        <label for="AI" class="ml-2 cursor-pointer py-2 pl-2 pr-4">{{
+                            "digital-services-servers.AI" | translate
+                        }}</label>
+                        <p-radiobutton
+                            class="relative radio-button-right"
+                            name="type"
+                            [(ngModel)]="server.type"
+                            formControlName="type"
+                            value="AI"
+                            inputId="AI"
+                        ></p-radiobutton>
                     </div>
                     @if (serverForm.get("type")?.hasError("required")) {
                         <p class="error-text">

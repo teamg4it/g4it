@@ -8,6 +8,7 @@
 import { AsyncPipe, NgClass } from "@angular/common";
 import { Component, computed, inject, ViewChild } from "@angular/core";
 import {
+    AbstractControl,
     FormBuilder,
     FormsModule,
     ReactiveFormsModule,
@@ -27,6 +28,7 @@ import {
     DigitalServiceServerConfig,
     Host,
     ServerDC,
+    ServerVM,
 } from "src/app/core/interfaces/digital-service.interfaces";
 import { DigitalServiceBusinessService } from "src/app/core/service/business/digital-services.service";
 import { UserService } from "src/app/core/service/business/user.service";
@@ -74,6 +76,7 @@ export class PanelServerParametersComponent {
             quantity: [0, [Validators.required]],
             vcpu: [0, [Validators.required]],
             disk: [0, [Validators.required]],
+            vram: [0, [Validators.required]],
             lifespan: [0, [Validators.required]],
             electricityConsumption: [0, [Validators.required]],
             operatingTime: [8760, [Validators.required]],
@@ -115,23 +118,46 @@ export class PanelServerParametersComponent {
 
         const hostfound = this.serverTypes().find((st) => st.value === srv.host?.value);
         if ((srv.id === undefined && srv.host === undefined) || !hostfound) {
-            if (srv.type === "Compute") {
-                srv.host =
-                    serverTypes[
-                        serverTypes.findIndex((x) => x.value === "Server Compute M")
-                    ];
-            } else if (srv.type === "Storage") {
-                srv.host =
-                    serverTypes[
-                        serverTypes.findIndex((x) => x.value === "Server Storage M")
-                    ];
-            }
+            srv.host = this.defaultHostForType(srv.type, serverTypes);
         }
         this.current.host = srv.host!;
         this.current.datacenter = srv.datacenter!;
 
+        this.applyDefaultCharacteristics(srv);
+
+        const datacenter = this.resolveDatacenter(srv, datacenters);
+        srv.datacenter = datacenter;
+        this.current.datacenter = datacenter!;
+
+        if (srv.quantity === -1) {
+            srv.quantity = 1;
+            srv.annualOperatingTime = 8760;
+        }
+
+        this.verifyValue(srv);
+        return srv;
+    });
+
+    private defaultHostForType(type: string | undefined, serverTypes: Host[]): Host {
+        let hostName: string;
+        if (type === "Compute") {
+            hostName = "Server Compute M";
+        } else if (type === "Storage") {
+            hostName = "Server Storage M";
+        } else {
+            hostName = "Medium AI Server";
+        }
+        return serverTypes[serverTypes.findIndex((x) => x.value === hostName)];
+    }
+
+    private applyDefaultCharacteristics(srv: DigitalServiceServerConfig) {
         if (!srv.totalVCpu && srv.type === "Compute") {
             srv.totalVCpu = srv.host?.characteristic.find(
+                (c) => c.code === "vCPU",
+            )?.value;
+        }
+        if (!srv.totalVram && srv.type === "AI") {
+            srv.totalVram = srv.host?.characteristic.find(
                 (c) => c.code === "vCPU",
             )?.value;
         }
@@ -150,24 +176,20 @@ export class PanelServerParametersComponent {
                 (c) => c.code === "disk",
             )?.value;
         }
+    }
 
-        let datacenterName = this.current.datacenter.name
-            ? srv.datacenter?.name
-            : "Default DC";
-
-        const datacenter = datacenters.find((x) => x.name === datacenterName);
-        srv.datacenter = datacenter;
-
-        this.current.datacenter = datacenter!;
-
-        if (srv.quantity === -1) {
-            srv.quantity = 1;
-            srv.annualOperatingTime = 8760;
+    private resolveDatacenter(
+        srv: DigitalServiceServerConfig,
+        datacenters: ServerDC[],
+    ): ServerDC {
+        let datacenterName: string | undefined;
+        if (this.current.datacenter.name) {
+            datacenterName = srv.datacenter?.name;
+        } else {
+            datacenterName = "Default DC";
         }
-
-        this.verifyValue(srv);
-        return srv;
-    });
+        return datacenters.find((x) => x.name === datacenterName)!;
+    }
 
     createLabelKey = computed(() => {
         if (this.server().mutualizationType === "Dedicated" && !this.server().id) {
@@ -210,6 +232,10 @@ export class PanelServerParametersComponent {
             this.serverForm.controls["disk"].setValue(
                 this.current.host.characteristic.find((c) => c.code === "disk")?.value!,
             );
+        } else {
+            this.serverForm.controls["vram"].setValue(
+                this.current.host.characteristic.find((c) => c.code === "vCPU")?.value!,
+            );
         }
     }
 
@@ -219,34 +245,68 @@ export class PanelServerParametersComponent {
         this.setDefaultForm(server.type);
 
         server.host = this.current.host;
-
         this.digitalServiceStore.setServer(server);
     }
 
     verifyValue(server: DigitalServiceServerConfig) {
         this.totalVmvCpu = 0;
-        const vcputControl = this.serverForm.get("vcpu");
+        let vcputControl: AbstractControl | null;
+        if (server.type === "Compute") {
+            vcputControl = this.serverForm.get("vcpu");
+        } else if (server.type === "Storage") {
+            vcputControl = this.serverForm.get("disk");
+        } else {
+            vcputControl = this.serverForm.get("vram");
+        }
+        if (!vcputControl) return;
+
+        let isValueTooHigh = false;
         if (server.vm?.length) {
             this.totalVmvCpu = server.vm.reduce(
-                (acc, vm) => acc + vm.vCpu * vm.quantity,
+                (acc, vm) => acc + this.getVmValue(server, vm) * vm.quantity,
                 0,
             );
-            if (
-                server?.totalVCpu !== null &&
-                (server.totalVCpu ?? 0) < this.totalVmvCpu
-            ) {
-                vcputControl?.setErrors({
-                    ...vcputControl?.errors,
-                    isValueTooHigh: true,
-                });
-                vcputControl?.markAsDirty();
-            } else {
-                delete vcputControl?.errors?.["isValueTooHigh"];
-                vcputControl?.updateValueAndValidity();
-            }
+            isValueTooHigh = (this.getServerTotal(server) ?? 0) < this.totalVmvCpu;
+        }
+        this.setControlError(vcputControl, "isValueTooHigh", isValueTooHigh);
+        if (isValueTooHigh) {
+            vcputControl.markAsDirty();
+        }
+    }
+
+    private getServerTotal(server: DigitalServiceServerConfig): number | undefined {
+        if (server.type === "Compute") {
+            return server.totalVCpu;
+        } else if (server.type === "Storage") {
+            return server.totalDisk;
         } else {
-            delete vcputControl?.errors?.["isValueTooHigh"];
-            vcputControl?.updateValueAndValidity();
+            return server.totalVram;
+        }
+    }
+
+    private getVmValue(server: DigitalServiceServerConfig, vm: ServerVM): number {
+        if (server.type === "Compute") {
+            return vm.vCpu;
+        } else if (server.type === "Storage") {
+            return vm.disk;
+        } else {
+            return vm.vRam!;
+        }
+    }
+
+    // Merges/clears a single custom error key without wiping errors set by the control's own validators.
+    private setControlError(
+        control: AbstractControl,
+        errorKey: string,
+        hasError: boolean,
+    ) {
+        const { [errorKey]: _removed, ...remainingErrors } = control.errors ?? {};
+        if (hasError) {
+            control.setErrors({ ...remainingErrors, [errorKey]: true });
+        } else if (Object.keys(remainingErrors).length) {
+            control.setErrors(remainingErrors);
+        } else {
+            control.setErrors(null);
         }
     }
 
@@ -273,7 +333,15 @@ export class PanelServerParametersComponent {
     }
 
     previousStep() {
-        this.digitalServiceStore.setServer(this.server());
+        this.digitalServiceStore.setServer({
+            ...this.server(),
+            annualElectricConsumption: undefined,
+            lifespan: undefined,
+            totalDisk: undefined,
+            totalVCpu: undefined,
+            totalVram: undefined,
+        });
+
         this.router.navigate(["../panel-create"], { relativeTo: this.route });
     }
 
