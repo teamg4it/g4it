@@ -364,7 +364,7 @@ describe("PanelServerParametersComponent", () => {
 
             component.setDefaultForm("AI");
 
-            expect(component.serverForm.controls["vcpu"].value).toBe(20);
+            expect(component.serverForm.controls["vram"].value).toBe(20);
         });
 
         it("should set disk for Storage", () => {
