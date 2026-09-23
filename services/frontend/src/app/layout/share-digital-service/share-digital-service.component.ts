@@ -90,6 +90,7 @@ export class ShareDigitalServiceComponent implements OnInit {
         this.digitalServiceStoreService.setServerTypes([
             ...referentialData.computeServerTypes,
             ...referentialData.storageServerTypes,
+            ...referentialData.aiServerTypes,
         ]);
 
         const countryMap: MapString = {};
