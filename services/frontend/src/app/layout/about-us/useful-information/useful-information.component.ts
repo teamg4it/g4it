@@ -75,6 +75,7 @@ export class UsefulInformationComponent implements OnInit {
                     ecomindai: `https://github.com/sustain4ai/ecomindai/releases/tag/${version["ecomindai"]}`,
                     boaviztapi: `https://github.com/Boavizta/boaviztapi/releases/tag/v${version["boaviztapi"]}`,
                     numecoeval: `https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval/-/tree/${version["numecoeval"]}`,
+                    ecologits: `https://github.com/mlco2/ecologits-api/pkgs/container/ecologits-api`,
                 };
                 for (const key in version) {
                     if (key !== "g4it") {

@@ -31,6 +31,11 @@ aimodelestimationapi:
   version: 1.0
   base-url: http://localhost:8000
 
+#EcoLogits configs
+ecologits:
+  version: 0.0.2beta
+  base-url: http://localhost:8010
+
 g4it:
   criteria: "Climate change, Particulate matter and respiratory inorganics, Ionising radiation, Acidification, Resource use (minerals and metals)"
   data:
