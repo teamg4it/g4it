@@ -197,7 +197,7 @@
             "title": "Source",
             "engine-title": "Calculation Engines Used",
             "reference-title": "References used",
-            "engine": "Physical equipment calculations are performed using <strong>NumEcoEval</strong>. </br> Virtual equipment calculations (non-cloud-based) are also handled by <strong>NumEcoEval</strong>. </br> For cloud-based virtual equipment, calculations are performed using <strong>Boavizta</strong>."
+            "engine": "Physical equipment calculations are performed using <strong>NumEcoEval</strong>. </br> Virtual equipment calculations (non-cloud-based) are also handled by <strong>NumEcoEval</strong>. </br> For cloud-based virtual equipment, calculations are performed using <strong>Boavizta</strong>. </br> For AI services, calculations are performed using <strong>Ecologits</strong>."
         },
         "main-navigation": "Main navigation",
         "country.all": "All Countries",
@@ -747,6 +747,7 @@
             "workspace-settings": "Workspace specific settings (zip)"
         },
         "choose-criteria": "Choose criteria for inventory {{inventoryName}}",
+        "ai-services-criteria-note": "For AI services, only the following factors are taken into account in the calculation: climate change, resource use, resource use fossils , and water use.",
         "calendar": "Calendar",
         "apply-selection": "Apply the selection",
         "unit-para1": "The impact value can be displayed either in the <strong>unit specific to the selected impact criteria</strong> or in <strong>people equivalent</strong>.",
@@ -783,6 +784,8 @@
             "download": "Download"
         },
         "data-consistency": "Data consistency",
+        "ai-services-category": "{{provider}} AI services",
+        "ai-services-status": "AI services",
         "round-button": {
             "acvStep": "Lifecycle",
             "country": "Country",

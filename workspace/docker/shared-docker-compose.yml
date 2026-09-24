@@ -190,7 +190,7 @@ services:
     image: ghcr.io/mlco2/ecologits-api:latest
     container_name: ecologits-api
     ports:
-      - "8010:8000"
+      - "8010:80"
     networks:
       - numecoeval
 

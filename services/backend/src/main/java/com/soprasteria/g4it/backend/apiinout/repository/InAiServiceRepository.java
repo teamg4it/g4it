@@ -15,6 +15,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Set;
+import org.springframework.data.domain.Pageable;
 
 /**
  * In AI Service JPA repository.
@@ -48,4 +49,8 @@ public interface InAiServiceRepository extends JpaRepository<InAiService, Long> 
     @Transactional
     @Modifying
     void deleteByInventoryIdAndServiceNameIn(Long inventoryId, Set<String> serviceNames);
+
+    List<InAiService> findByInventoryIdOrderByIdAsc(Long inventoryId, Pageable pageable);
+
+    long countByInventoryId(Long inventoryId);
 }

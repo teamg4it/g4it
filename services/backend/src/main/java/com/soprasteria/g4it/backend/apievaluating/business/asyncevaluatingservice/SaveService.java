@@ -8,6 +8,8 @@
 
 package com.soprasteria.g4it.backend.apievaluating.business.asyncevaluatingservice;
 
+import com.soprasteria.g4it.backend.apiinout.modeldb.OutAiService;
+import com.soprasteria.g4it.backend.apiinout.repository.OutAiServiceRepository;
 import com.soprasteria.g4it.backend.apievaluating.mapper.AggregationToOutput;
 import com.soprasteria.g4it.backend.apievaluating.model.AggValuesBO;
 import com.soprasteria.g4it.backend.apievaluating.model.RefShortcutBO;
@@ -21,6 +23,7 @@ import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
 import com.soprasteria.g4it.backend.common.utils.Constants;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,22 +38,20 @@ import java.util.Map;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class SaveService {
 
-    @Autowired
-    OutPhysicalEquipmentRepository outPhysicalEquipmentRepository;
+    private final OutPhysicalEquipmentRepository outPhysicalEquipmentRepository;
 
-    @Autowired
-    OutVirtualEquipmentRepository outVirtualEquipmentRepository;
+    private final OutVirtualEquipmentRepository outVirtualEquipmentRepository;
 
-    @Autowired
-    OutApplicationRepository outApplicationRepository;
+    private final OutAiServiceRepository outAiServiceRepository;
 
-    @Autowired
-    AggregationToOutput aggregationToOutput;
+    private final OutApplicationRepository outApplicationRepository;
 
-    @Autowired
-    TaskRepository taskRepository;
+    private final AggregationToOutput aggregationToOutput;
+
+    private final TaskRepository taskRepository;
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -179,5 +180,21 @@ public class SaveService {
         outVirtualEquipmentRepository.saveAll(outVirtualEquipments);
         outVirtualEquipments.clear();
         return finalizeSaveAndCleanup(aggregation);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public int saveOutAiServices(final List<OutAiService> outAiServices) {
+        if (outAiServices.isEmpty()) {
+            return 0;
+        }
+
+        int fromIndex = 0;
+        while (fromIndex < outAiServices.size()) {
+            int toIndex = Math.min(fromIndex + Constants.BATCH_SIZE, outAiServices.size());
+            outAiServiceRepository.saveAll(outAiServices.subList(fromIndex, toIndex));
+            flushAndClearEntityManager();
+            fromIndex = toIndex;
+        }
+        return outAiServices.size();
     }
 }

@@ -376,6 +376,7 @@ public class LoadFileService {
         inventory.setPhysicalEquipmentCount(loadPhysicalEquipmentService.getPhysicalEquipmentCount(inventoryId));
         inventory.setVirtualEquipmentCount(loadVirtualEquipmentService.getVirtualEquipmentCount(inventoryId));
         inventory.setApplicationCount(loadApplicationService.getApplicationCount(inventoryId));
+        inventory.setAiServiceCount(loadAiServiceService.getAiServiceCount(inventoryId));
 
         inventoryRepository.save(inventory);
     }

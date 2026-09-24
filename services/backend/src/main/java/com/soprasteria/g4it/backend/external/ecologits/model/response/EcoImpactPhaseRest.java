@@ -13,13 +13,16 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Impacts breakdown of an EcoLogits estimation: total impacts plus usage (electricity use) and
- * embodied (manufacturing) contributions.
+ * EcoLogits phase payload containing phase-specific impacts.
  */
 @Data
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class EcoImpactsRest {
+public class EcoImpactPhaseRest {
+
+    private String type;
+
+    private String name;
 
     private EcoMetricRest energy;
 
@@ -30,13 +33,4 @@ public class EcoImpactsRest {
     private EcoMetricRest pe;
 
     private EcoMetricRest wcf;
-
-    private EcoImpactPhaseRest usage;
-
-    private EcoImpactPhaseRest embodied;
-
-    private java.util.List<EcoStatusMessageRest> warnings;
-
-    private java.util.List<EcoStatusMessageRest> errors;
-
 }

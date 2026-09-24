@@ -414,6 +414,9 @@ components:
         applicationCount:
           type: integer
           format: int64
+        aiServiceCount:
+          type: integer
+          format: int64
         outApplicationCount:
           type: integer
           format: int64

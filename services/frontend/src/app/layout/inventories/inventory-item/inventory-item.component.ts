@@ -160,7 +160,8 @@ export class InventoryItemComponent implements OnInit {
         return (
             this.inventory().lastTaskEvaluating &&
             (this.inventory().physicalEquipmentCount > 0 ||
-                this.inventory().virtualEquipmentCount > 0)
+                this.inventory().virtualEquipmentCount > 0 ||
+                (this.inventory().aiServiceCount ?? 0) > 0)
         );
     };
 
@@ -208,7 +209,8 @@ export class InventoryItemComponent implements OnInit {
             case "equipment":
                 if (
                     this.inventory().physicalEquipmentCount > 0 ||
-                    this.inventory().virtualEquipmentCount > 0
+                    this.inventory().virtualEquipmentCount > 0 ||
+                    (this.inventory().aiServiceCount ?? 0) > 0
                 ) {
                     uri = criteriaUri;
                 }
@@ -246,10 +248,11 @@ export class InventoryItemComponent implements OnInit {
     }
 
     isEstimationDisabled() {
-        // If there is no physical equipement and no virtual equipment, disable button
+        // If there is no physical equipement, no virtual equipment and no AI service, disable button
         if (
             this.inventory().physicalEquipmentCount <= 0 &&
-            this.inventory().virtualEquipmentCount <= 0
+            this.inventory().virtualEquipmentCount <= 0 &&
+            (this.inventory().aiServiceCount ?? 0) <= 0
         )
             return true;
 

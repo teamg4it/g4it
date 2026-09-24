@@ -49,7 +49,10 @@ import {
     Inventory,
     InventoryCriteriaRest,
 } from "src/app/core/interfaces/inventory.interfaces";
-import { OutVirtualEquipmentRest } from "src/app/core/interfaces/output.interface";
+import {
+    OutAiServiceRest,
+    OutVirtualEquipmentRest,
+} from "src/app/core/interfaces/output.interface";
 import { Organization, Workspace } from "src/app/core/interfaces/user.interfaces";
 import { DigitalServiceBusinessService } from "src/app/core/service/business/digital-services.service";
 import { FilterService } from "src/app/core/service/business/filter.service";
@@ -60,6 +63,7 @@ import { UserService } from "src/app/core/service/business/user.service";
 import { EvaluationDataService } from "src/app/core/service/data/evaluation-data.service";
 import { FootprintDataService } from "src/app/core/service/data/footprint-data.service";
 import { InVirtualEquipmentsService } from "src/app/core/service/data/in-out/in-virtual-equipments.service";
+import { OutAiServicesService } from "src/app/core/service/data/in-out/out-ai-services.service";
 import { OutVirtualEquipmentsService } from "src/app/core/service/data/in-out/out-virtual-equipments.service";
 import { transformCriterion } from "src/app/core/service/mapper/array";
 import { resetColorMap } from "src/app/core/service/mapper/graphs-mapper";
@@ -101,6 +105,7 @@ export class InventoriesFootprintComponent implements OnInit, OnDestroy {
     protected footprintStore = inject(FootprintStoreService);
     private readonly globalStore = inject(GlobalStoreService);
     private readonly outVirtualEquipmentService = inject(OutVirtualEquipmentsService);
+    private readonly outAiServiceService = inject(OutAiServicesService);
     private readonly inVirtualEquipmentsService = inject(InVirtualEquipmentsService);
     private readonly digitalServiceStore = inject(DigitalServiceStoreService);
     protected readonly userService = inject(UserService);
@@ -374,6 +379,7 @@ export class InventoriesFootprintComponent implements OnInit, OnDestroy {
                     ),
                 ),
             this.outVirtualEquipmentService.getByInventory(this.inventoryId),
+            this.outAiServiceService.getByInventory(this.inventoryId),
             this.inVirtualEquipmentsService.getByInventory(this.inventoryId),
         ]).subscribe((results) => {
             const [
@@ -381,6 +387,7 @@ export class InventoriesFootprintComponent implements OnInit, OnDestroy {
                 datacenters,
                 physicalEquipments,
                 outVirtualEquipments,
+                outAiServices,
                 inVirtualEquipments,
             ] = results;
 
@@ -388,6 +395,7 @@ export class InventoriesFootprintComponent implements OnInit, OnDestroy {
                 footprint,
                 inVirtualEquipments,
                 outVirtualEquipments,
+                outAiServices,
             );
 
             this.initializeCriteriaMenu(footprint, criteria!);
@@ -410,15 +418,21 @@ export class InventoriesFootprintComponent implements OnInit, OnDestroy {
         footprint: Criterias,
         inVirtualEquipments: InVirtualEquipmentRest[],
         outVirtualEquipments: OutVirtualEquipmentRest[],
+        outAiServices: OutAiServiceRest[],
     ) {
         this.transformedInVirtualEquipments.set(
             this.transformInVirtualEquipment(inVirtualEquipments),
         );
         const transformedOutVirtualEquipments =
             this.transformOutVirtualEquipment(outVirtualEquipments);
+        const transformedOutAiServices =
+            this.transformOutAiServices(outAiServices);
         this.tranformAcvStepFootprint(footprint);
 
-        for (const equipment of transformedOutVirtualEquipments) {
+        for (const equipment of [
+            ...transformedOutVirtualEquipments,
+            ...transformedOutAiServices,
+        ]) {
             const matchedFootprint = footprint[equipment.criteria];
 
             if (matchedFootprint) {
@@ -530,7 +544,34 @@ export class InventoriesFootprintComponent implements OnInit, OnDestroy {
                     }) as Impact,
             );
     }
-
+    transformOutAiServices(outAiServices: OutAiServiceRest[]): Impact[] {
+        return outAiServices.map(
+            (item) =>
+                ({
+                    criteria: transformCriterion(item.criterion),
+                    acvStep: LifeCycleUtils.getLifeCycleMapReverse().get(
+                        item.lifecycleStep,
+                    ),
+                    country: this.digitalServiceStore.countryMap()[item.location],
+                    entity: item.name,
+                    equipment: this.translate.instant(
+                        "inventories-footprint.ai-services-category",
+                        {
+                            provider: (item.provider ?? "").toUpperCase(),
+                        },
+                    ),
+                    status: this.translate.instant(
+                        "inventories-footprint.ai-services-status",
+                    ),
+                    impact: item.unitImpact,
+                    sip: item.peopleEqImpact,
+                    statusIndicator: item.statusIndicator,
+                    countValue: item.countValue,
+                    quantity: item.quantity,
+                    unit: item.unit,
+                }) as Impact,
+        );
+    }
     transformInVirtualEquipment(
         inVirtualEquipments: InVirtualEquipmentRest[],
     ): InVirtualEquipmentRest[] {

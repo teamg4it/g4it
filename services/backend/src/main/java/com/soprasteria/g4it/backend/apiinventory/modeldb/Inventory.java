@@ -90,6 +90,9 @@ public class Inventory extends AbstractBaseEntity implements Serializable {
     private Long applicationCount = 0L;
 
     @Builder.Default
+    private Long aiServiceCount = 0L;
+
+    @Builder.Default
     private Long outApplicationCount = 0L;
 
     @Builder.Default

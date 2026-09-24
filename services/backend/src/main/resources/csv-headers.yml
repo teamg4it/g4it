@@ -333,6 +333,39 @@ filesystem.config.headers:
       optional: false
     - name: "sipImpact"
       optional: false
+
+  aiServiceIndicator:
+    - name: "inventoryName"
+      optional: false
+    - name: "calculationDate"
+      optional: false
+    - name: "batchDate"
+      optional: false
+    - name: "batchName"
+      optional: false
+    - name: "acvStep"
+      optional: false
+    - name: "criteria"
+      optional: false
+    - name: "provider"
+      optional: false
+    - name: "model"
+      optional: false
+    - name: "location"
+      optional: false
+    - name: "serviceName"
+      optional: false
+    - name: "indicatorStatus"
+      optional: false
+    - name: "unitImpact"
+      optional: false
+    - name: "unit"
+      optional: false
+    - name: "sipImpact"
+      optional: false
+    - name: "errors"
+      optional: false
+
   physicalEquipmentIndicatorDigitalService:
     - name: "digitalServiceName"
       optional: false

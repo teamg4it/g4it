@@ -13,21 +13,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Min/max approximation interval used in every EcoLogits metric.
+ * Warning or error message returned by EcoLogits.
  */
 @Data
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class EcoValueRangeRest {
+public class EcoStatusMessageRest {
 
-    private Double min;
+    private String code;
 
-    private Double max;
-
-    public Double getMean() {
-        if (min == null || max == null) {
-            return null;
-        }
-        return (min + max) / 2d;
-    }
+    private String message;
 }

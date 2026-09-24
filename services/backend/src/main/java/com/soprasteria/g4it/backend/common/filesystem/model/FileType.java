@@ -31,6 +31,8 @@ public enum FileType {
 
     APPLICATION_INDICATOR("APPLICATION_INDICATOR"),
 
+    AI_SERVICE_INDICATOR("AI_SERVICE_INDICATOR"),
+
     PHYSICAL_EQUIPMENT_INDICATOR_DIGITAL_SERVICE("PHYSICAL_EQUIPMENT_INDICATOR_DIGITAL_SERVICE"),
 
     VIRTUAL_EQUIPMENT_INDICATOR_DIGITAL_SERVICE("VIRTUAL_EQUIPMENT_INDICATOR_DIGITAL_SERVICE"),
@@ -68,6 +70,7 @@ public enum FileType {
                     "ind_virtual_equipment";
             case "APPLICATION_INDICATOR" -> "ind_application";
             case "OUT_AI_RECO" -> "ai_recommendations";
+            case "AI_SERVICE_INDICATOR" -> "ind_ai_service";
             case "IN_AI_PARAMETERS" -> "ai_parameters";
             case "IN_AI_INFRASTRUCTURE" -> "ai_infrastructure";
             case "AI_SERVICE" -> "AIservices";

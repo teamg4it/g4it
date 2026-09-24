@@ -117,6 +117,6 @@ public class LoadAiServiceService {
      * @return the number of AI services
      */
     public Long getAiServiceCount(final Long inventoryId) {
-        return (long) inAiServiceRepository.findByInventoryId(inventoryId).size();
+        return inAiServiceRepository.countByInventoryId(inventoryId);
     }
 }
