@@ -8,6 +8,7 @@ databaseChangeLog:
             - columnExists:
                 tableName: inventory
                 columnName: ai_service_count
+
       changes:
         - addColumn:
             tableName: inventory
@@ -17,16 +18,18 @@ databaseChangeLog:
                   type: bigint
                   defaultValueNumeric: 0
                   constraints:
-                    nullable: true
+                    nullable: false
+
         - sql:
             comment: Backfill AI service counts for existing inventories from in_aiservices table
             sql: >
               UPDATE inventory
-              SET ai_service_count = COALESCE((
+              SET ai_service_count = (
                 SELECT COUNT(*)
                 FROM in_aiservices
                 WHERE in_aiservices.inventory_id = inventory.id
-              ), 0)
+              )
+
       rollback:
         - dropColumn:
             tableName: inventory
