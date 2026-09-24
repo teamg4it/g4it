@@ -13,7 +13,8 @@ public enum DigitalServiceType {
     SHARED_SERVER("Shared Server"),
     DEDICATED_SERVER("Dedicated Server"),
     TERMINAL("Terminal"),
-    NETWORK("Network");
+    NETWORK("Network"),
+    AI_SERVER ("AI server");
 
     private final String value;
 

@@ -125,6 +125,8 @@ public final class Constants {
 
     public static final String RENEWAL_SUCCESS_MESSAGE = "Renewal successful extended";
 
+    public static final int BATCH_SIZE_50000 = 50000;
+
     private Constants() {
         throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
     }

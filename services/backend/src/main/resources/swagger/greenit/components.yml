@@ -1369,6 +1369,10 @@ components:
             $ref: "#/components/schemas/ServerHostRefRest"
         countries:
           $ref: "#/components/schemas/BoaviztaCountriesRest"
+        aiServerTypes:
+          type: array
+          items:
+            $ref: "#/components/schemas/ServerHostRefRest"
     BoaviztaCountriesRest:
       type: object
       additionalProperties:

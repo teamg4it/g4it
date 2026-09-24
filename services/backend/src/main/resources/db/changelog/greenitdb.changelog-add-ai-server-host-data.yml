@@ -1,0 +1,152 @@
+databaseChangeLog:
+  - changeSet:
+      id: insert-ref-server-host-small-ai-server
+      author: G4IT Dev Team
+      preConditions:
+        - onFail: MARK_RAN
+        - sqlCheck:
+            expectedResult: 0
+            sql: SELECT COUNT(*) FROM ref_server_host WHERE reference = 'Small AI Server (2 × NVIDIA L4)'
+      changes:
+        - insert:
+            tableName: ref_server_host
+            columns:
+              - column:
+                  name: description
+                  value: Small AI Server
+              - column:
+                  name: reference
+                  value: Small AI Server (2 × NVIDIA L4)
+              - column:
+                  name: external_referential_description
+                  value: Rack server NO, 2 processor high-end, 4 SSD 2048 GB each, 0 HDD, 48 RAM, 64 GB each, 2 GPUs Nvidia L4 (Hubblo), electricty consumption based on NegaOctet server with only 1 GPU
+              - column:
+                  name: type
+                  value: AI
+              - column:
+                  name: nb_of_vcpu
+                  valueNumeric: 48
+              - column:
+                  name: total_disk
+                  value: null
+              - column:
+                  name: lifespan
+                  valueNumeric: 5.0
+      rollback:
+        - delete:
+            tableName: ref_server_host
+            where: "reference = 'Small AI Server (2 × NVIDIA L4)'"
+
+  - changeSet:
+      id: insert-ref-server-host-medium-ai-server
+      author: G4IT Dev Team
+      preConditions:
+        - onFail: MARK_RAN
+        - sqlCheck:
+            expectedResult: 0
+            sql: SELECT COUNT(*) FROM ref_server_host WHERE reference = 'Medium AI Server (4 × H100 PCIe 80G)'
+      changes:
+        - insert:
+            tableName: ref_server_host
+            columns:
+              - column:
+                  name: description
+                  value: Medium AI Server
+              - column:
+                  name: reference
+                  value: Medium AI Server (4 × H100 PCIe 80G)
+              - column:
+                  name: external_referential_description
+                  value: Rack server NO, 2 processor high-end, 4 SSD- 2048 GB each, 0 HDD, 48 RAM, 64 GB each, 4 GPUs Nvidia H100 PCIe 80 GB (Hubblo), electricty consumption based on NegaOctet server with only 1 GPU
+              - column:
+                  name: type
+                  value: AI
+              - column:
+                  name: nb_of_vcpu
+                  valueNumeric: 320
+              - column:
+                  name: total_disk
+                  value: null
+              - column:
+                  name: lifespan
+                  valueNumeric: 5.0
+      rollback:
+        - delete:
+            tableName: ref_server_host
+            where: "reference = 'Medium AI Server (4 × H100 PCIe 80G)'"
+
+  - changeSet:
+      id: insert-ref-server-host-large-old-ai-server
+      author: G4IT Dev Team
+      preConditions:
+        - onFail: MARK_RAN
+        - sqlCheck:
+            expectedResult: 0
+            sql: SELECT COUNT(*) FROM ref_server_host WHERE reference = 'Large Old AI Server (8 × A100 SXM4 40Go)'
+      changes:
+        - insert:
+            tableName: ref_server_host
+            columns:
+              - column:
+                  name: description
+                  value: Large Old AI Server
+              - column:
+                  name: reference
+                  value: Large Old AI Server (8 × A100 SXM4 40Go)
+              - column:
+                  name: external_referential_description
+                  value: Rack server NO, 2 processor high-end, 4 SSD- 2048 GB each, 0 HDD, 48 RAM, 64 GB each, 8 GPUs Nvidia A100 SXM4 40 GB (Hubblo), electricty consumption based on NegaOctet server with only 1 GPU
+              - column:
+                  name: type
+                  value: AI
+              - column:
+                  name: nb_of_vcpu
+                  valueNumeric: 320
+              - column:
+                  name: total_disk
+                  value: null
+              - column:
+                  name: lifespan
+                  valueNumeric: 5.0
+      rollback:
+        - delete:
+            tableName: ref_server_host
+            where: "reference = 'Large Old AI Server (8 × A100 SXM4 40Go)'"
+
+  - changeSet:
+      id: insert-ref-server-host-large-recent-ai-server
+      author: G4IT Dev Team
+      preConditions:
+        - onFail: MARK_RAN
+        - sqlCheck:
+            expectedResult: 0
+            sql: SELECT COUNT(*) FROM ref_server_host WHERE reference = 'Large Recent AI Server (8 × H100 PCIe 40Go)'
+      changes:
+        - insert:
+            tableName: ref_server_host
+            columns:
+              - column:
+                  name: description
+                  value: Large Recent AI Server
+              - column:
+                  name: reference
+                  value: Large Recent AI Server (8 × H100 PCIe 40Go)
+              - column:
+                  name: external_referential_description
+                  value: Rack server NO, 2 processor high-end, 4 SSD- 2048 GB each, 0 HDD, 48 RAM, 64 GB each, 8 GPUs Nvidia H100 PCIe 80 GB (Hubblo), electricty consumption based on NegaOctet server with only 1 GPU
+              - column:
+                  name: type
+                  value: AI
+              - column:
+                  name: nb_of_vcpu
+                  valueNumeric: 640
+              - column:
+                  name: total_disk
+                  value: null
+              - column:
+                  name: lifespan
+                  valueNumeric: 5.0
+      rollback:
+        - delete:
+            tableName: ref_server_host
+            where: "reference = 'Large Recent AI Server (8 × H100 PCIe 40Go)'"
