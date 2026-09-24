@@ -4,11 +4,13 @@ import com.google.common.collect.BiMap;
 import com.soprasteria.g4it.backend.apievaluating.business.asyncevaluatingservice.engine.boaviztapi.EvaluateBoaviztapiService;
 import com.soprasteria.g4it.backend.apievaluating.business.asyncevaluatingservice.engine.numecoeval.EvaluateNumEcoEvalService;
 import com.soprasteria.g4it.backend.apievaluating.mapper.AggregationToOutput;
+import com.soprasteria.g4it.backend.apievaluating.mapper.AiServiceImpactToCsvRecord;
 import com.soprasteria.g4it.backend.apievaluating.mapper.ImpactToCsvRecord;
 import com.soprasteria.g4it.backend.apievaluating.mapper.InternalToNumEcoEvalImpact;
 import com.soprasteria.g4it.backend.apievaluating.model.AggValuesBO;
 import com.soprasteria.g4it.backend.apievaluating.model.ImpactBO;
 import com.soprasteria.g4it.backend.apievaluating.model.RefShortcutBO;
+import com.soprasteria.g4it.backend.apiinout.mapper.AiServiceToCsvRecord;
 import com.soprasteria.g4it.backend.apiinout.mapper.InputToCsvRecord;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InApplication;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InDatacenter;
@@ -117,6 +119,13 @@ class EvaluateServiceTest {
 
     @Mock
     ReferentialGetService referentialGetService;
+
+    @Mock
+    AiServiceToCsvRecord aiServiceToCsvRecord;
+
+    @Mock
+    AiServiceImpactToCsvRecord aiServiceImpactToCsvRecord;
+
 
 
     @BeforeEach
@@ -320,19 +329,35 @@ class EvaluateServiceTest {
         criterionRest.setCode("CLIMATE_CHANGE");
         criterionRest.setUnit("kg CO2 eq");
 
-        when(referentialService.getActiveCriteria(anyList())).thenReturn(List.of(criterionRest));
-        when(referentialService.getHypotheses(anyString())).thenReturn(List.of(mock(HypothesisRest.class)));
-        when(referentialService.getSipValueMap(anyList())).thenReturn(Map.of("CLIMATE_CHANGE", 2d));
-        when(referentialGetService.countItemImpactsForWorkspace(anyLong())).thenReturn(0L);
+        when(referentialService.getActiveCriteria(anyList()))
+                .thenReturn(List.of(criterionRest));
+        when(referentialService.getHypotheses(anyString()))
+                .thenReturn(List.of(mock(HypothesisRest.class)));
+        when(referentialService.getSipValueMap(anyList()))
+                .thenReturn(Map.of("CLIMATE_CHANGE", 2d));
+
+        when(referentialGetService.countItemImpactsForWorkspace(anyLong()))
+                .thenReturn(0L);
 
         CSVPrinter printer = mock(CSVPrinter.class);
-        when(csvFileService.getPrinter(any(FileType.class), any(Path.class))).thenReturn(printer);
+        when(csvFileService.getPrinter(any(FileType.class), any(Path.class)))
+                .thenReturn(printer);
 
-        when(inDatacenterRepository.findByInventoryId(1L)).thenReturn(List.of());
-        when(inPhysicalEquipmentRepository.countByInventoryId(1L)).thenReturn(0L);
-        when(inVirtualEquipmentRepository.countByInventoryIdAndInfrastructureType(1L, "CLOUD_SERVICES")).thenReturn(0L);
-        when(inAiServiceRepository.countByInventoryId(1L)).thenReturn(1L);
-        when(inPhysicalEquipmentRepository.findByInventoryId(eq(1L), any())).thenReturn(List.of());
+        when(inDatacenterRepository.findByInventoryId(1L))
+                .thenReturn(List.of());
+
+        when(inPhysicalEquipmentRepository.countByInventoryId(1L))
+                .thenReturn(0L);
+
+        when(inVirtualEquipmentRepository
+                .countByInventoryIdAndInfrastructureType(1L, "CLOUD_SERVICES"))
+                .thenReturn(0L);
+
+        when(inPhysicalEquipmentRepository.findByInventoryId(eq(1L), any()))
+                .thenReturn(List.of());
+
+        when(inAiServiceRepository.countByInventoryId(1L))
+                .thenReturn(1L);
 
         InAiService inAiService = InAiService.builder()
                 .serviceName("Assistant")
@@ -340,9 +365,26 @@ class EvaluateServiceTest {
                 .model("gpt-4o-mini")
                 .outputTokens(123L)
                 .build();
+
+        /*
+         * doEvaluate() calls findByInventoryIdOrderByIdAsc() twice.
+         * First call returns the AI service to process.
+         * Second call returns an empty list.
+         */
         when(inAiServiceRepository.findByInventoryIdOrderByIdAsc(eq(1L), any()))
                 .thenReturn(new ArrayList<>(List.of(inAiService)))
                 .thenReturn(new ArrayList<>());
+
+        when(aiServiceToCsvRecord.toCsv(eq(inAiService)))
+                .thenReturn(List.of("Assistant"));
+
+        when(aiServiceImpactToCsvRecord.toCsv(
+                any(),
+                eq(202L),
+                eq("Inventory"),
+                eq(inAiService),
+                any()
+        )).thenReturn(List.of("output"));
 
         when(evaluateEcologitsService.evaluate(
                 eq(inAiService),
@@ -358,11 +400,16 @@ class EvaluateServiceTest {
                         .build()
         ));
 
-        when(saveService.saveOutAiServices(anyList())).thenReturn(1);
+        when(saveService.saveOutAiServices(anyList()))
+                .thenReturn(1);
 
-        assertDoesNotThrow(() -> evaluateService.doEvaluate(context, task, tempDir));
+        assertDoesNotThrow(
+                () -> evaluateService.doEvaluate(context, task, tempDir)
+        );
 
-        verify(inAiServiceRepository).findByInventoryIdOrderByIdAsc(eq(1L), any());
+        verify(inAiServiceRepository, times(2))
+                .findByInventoryIdOrderByIdAsc(eq(1L), any());
+
         verify(evaluateEcologitsService)
                 .evaluate(
                         eq(inAiService),
@@ -370,9 +417,22 @@ class EvaluateServiceTest {
                         anyList(),
                         anyMap()
                 );
-        verify(saveService).saveOutAiServices(anyList());
-    }
 
+        verify(aiServiceToCsvRecord)
+                .toCsv(eq(inAiService));
+
+        verify(aiServiceImpactToCsvRecord)
+                .toCsv(
+                        any(),
+                        eq(202L),
+                        eq("Inventory"),
+                        eq(inAiService),
+                        any()
+                );
+
+        verify(saveService)
+                .saveOutAiServices(anyList());
+    }
     @Test
     void doEvaluate_shouldUpdateProgress_whenPhysicalEquipmentsExist() throws Exception {
         Context context = mock(Context.class);

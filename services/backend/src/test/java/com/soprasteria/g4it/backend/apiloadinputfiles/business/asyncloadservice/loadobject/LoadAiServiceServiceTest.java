@@ -461,12 +461,8 @@ class LoadAiServiceServiceTest {
         // Given
         Long inventoryId = 123L;
 
-        InAiService first = mock(InAiService.class);
-        InAiService second = mock(InAiService.class);
-        InAiService third = mock(InAiService.class);
-
-        when(inAiServiceRepository.findByInventoryId(inventoryId))
-                .thenReturn(List.of(first, second, third));
+        when(inAiServiceRepository.countByInventoryId(inventoryId))
+                .thenReturn(3L);
 
         // When
         Long result =
@@ -476,7 +472,10 @@ class LoadAiServiceServiceTest {
         assertEquals(3L, result);
 
         verify(inAiServiceRepository)
-                .findByInventoryId(inventoryId);
+                .countByInventoryId(inventoryId);
+
+        verify(inAiServiceRepository, never())
+                .findByInventoryId(anyLong());
     }
 
     @Test
@@ -484,8 +483,8 @@ class LoadAiServiceServiceTest {
         // Given
         Long inventoryId = 123L;
 
-        when(inAiServiceRepository.findByInventoryId(inventoryId))
-                .thenReturn(List.of());
+        when(inAiServiceRepository.countByInventoryId(inventoryId))
+                .thenReturn(0L);
 
         // When
         Long result =
@@ -495,7 +494,10 @@ class LoadAiServiceServiceTest {
         assertEquals(0L, result);
 
         verify(inAiServiceRepository)
-                .findByInventoryId(inventoryId);
+                .countByInventoryId(inventoryId);
+
+        verify(inAiServiceRepository, never())
+                .findByInventoryId(anyLong());
     }
 
 
