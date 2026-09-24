@@ -18,6 +18,7 @@ import com.soprasteria.g4it.backend.common.utils.Constants;
 import com.soprasteria.g4it.backend.server.gen.api.dto.OutAiServiceRest;
 import jakarta.persistence.EntityManager;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -30,13 +31,13 @@ import java.util.Optional;
 
 @Slf4j
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class OutAiServiceService {
 
-    private OutAiServiceRepository outAiServiceRepository;
-    private TaskRepository taskRepository;
-    private OutAiServiceMapper outAiServiceMapper;
-    private EntityManager entityManager;
+    private final OutAiServiceRepository outAiServiceRepository;
+    private final TaskRepository taskRepository;
+    private final OutAiServiceMapper outAiServiceMapper;
+    private final EntityManager entityManager;
 
     @Transactional(readOnly = true)
     public List<OutAiServiceRest> getByInventory(final Inventory inventory) {
@@ -44,8 +45,8 @@ public class OutAiServiceService {
         return task.map(t -> getAiServicesByTaskId(t.getId())).orElse(List.of());
     }
 
-    @Transactional(readOnly = true)
-    private List<OutAiServiceRest> getAiServicesByTaskId(final Long taskId) {
+
+    public List<OutAiServiceRest> getAiServicesByTaskId(final Long taskId) {
         int pageNumber = 0;
         List<OutAiServiceRest> result = new ArrayList<>();
 

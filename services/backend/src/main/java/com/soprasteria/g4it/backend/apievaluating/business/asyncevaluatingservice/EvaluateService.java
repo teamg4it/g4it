@@ -27,7 +27,6 @@ import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
 import com.soprasteria.g4it.backend.apireferential.business.ReferentialGetService;
 import com.soprasteria.g4it.backend.apireferential.business.ReferentialService;
-import com.soprasteria.g4it.backend.apiuser.repository.OrganizationRepository;
 import com.soprasteria.g4it.backend.common.filesystem.business.local.CsvFileService;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileType;
 import com.soprasteria.g4it.backend.common.model.Context;
@@ -40,13 +39,13 @@ import com.soprasteria.g4it.backend.external.boavizta.business.BoaviztapiService
 import com.soprasteria.g4it.backend.external.boavizta.model.response.BoaResponseRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.*;
 import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.lang3.tuple.Pair;
 import org.mte.numecoeval.calculs.domain.data.indicateurs.ImpactApplication;
 import org.mte.numecoeval.calculs.domain.data.indicateurs.ImpactEquipementPhysique;
 import org.mte.numecoeval.calculs.domain.data.indicateurs.ImpactEquipementVirtuel;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -56,6 +55,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.function.Function;
@@ -70,58 +70,33 @@ import com.soprasteria.g4it.backend.apiinout.modeldb.OutAiService;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class EvaluateService {
 
     private static final int INITIAL_MAP_CAPACITY = 5_000;
     private static final int MAXIMUM_MAP_CAPACITY = 500_000;
-    @Autowired
-    InDatacenterRepository inDatacenterRepository;
-    @Autowired
-    InPhysicalEquipmentRepository inPhysicalEquipmentRepository;
-    @Autowired
-    InVirtualEquipmentRepository inVirtualEquipmentRepository;
-    @Autowired
-    InApplicationRepository inApplicationRepository;
-    @Autowired
-    AggregationToOutput aggregationToOutput;
-    @Autowired
-    ImpactToCsvRecord impactToCsvRecord;
-    @Autowired
-    RefSustainableIndividualPackageRepository refSustainableIndividualPackageRepository;
-    @Autowired
-    EvaluateNumEcoEvalService evaluateNumEcoEvalService;
-    @Autowired
-    ReferentialService referentialService;
-    @Autowired
-    SaveService saveService;
-    @Autowired
-    OutVirtualEquipmentRepository outVirtualEquipmentRepository;
-    @Autowired
-    OutApplicationRepository outApplicationRepository;
-    @Autowired
-    CsvFileService csvFileService;
-    @Autowired
-    TaskRepository taskRepository;
-    @Autowired
-    OrganizationRepository organizationRepository;
-    @Autowired
-    InputToCsvRecord inputToCsvRecord;
-    @Autowired
-    EvaluateBoaviztapiService evaluateBoaviztapiService;
-    @Autowired
-    InternalToNumEcoEvalImpact internalToNumEcoEvalImpact;
-    @Autowired
-    BoaviztapiService boaviztapiService;
-    @Autowired
-    InventoryRepository inventoryRepository;
-    @Autowired
-    InAiServiceRepository inAiServiceRepository;
-    @Autowired
-    AiServiceImpactToCsvRecord aiServiceImpactToCsvRecord;
-    @Autowired
-    AiServiceToCsvRecord aiServiceToCsvRecord;
-    @Autowired
-    EvaluateEcologitsService evaluateEcologitsService;
+    private final InDatacenterRepository inDatacenterRepository;
+    private final InPhysicalEquipmentRepository inPhysicalEquipmentRepository;
+    private final InVirtualEquipmentRepository inVirtualEquipmentRepository;
+    private final InApplicationRepository inApplicationRepository;
+    private final AggregationToOutput aggregationToOutput;
+    private final ImpactToCsvRecord impactToCsvRecord;
+    private final RefSustainableIndividualPackageRepository refSustainableIndividualPackageRepository;
+    private final EvaluateNumEcoEvalService evaluateNumEcoEvalService;
+    private final ReferentialService referentialService;
+    private final SaveService saveService;
+    private final CsvFileService csvFileService;
+    private final TaskRepository taskRepository;
+    private final InputToCsvRecord inputToCsvRecord;
+    private final EvaluateBoaviztapiService evaluateBoaviztapiService;
+    private final InternalToNumEcoEvalImpact internalToNumEcoEvalImpact;
+    private final BoaviztapiService boaviztapiService;
+    private final InventoryRepository inventoryRepository;
+    private final InAiServiceRepository inAiServiceRepository;
+    private final AiServiceImpactToCsvRecord aiServiceImpactToCsvRecord;
+    private final AiServiceToCsvRecord aiServiceToCsvRecord;
+    private final EvaluateEcologitsService evaluateEcologitsService;
+    private final Clock clock;
 
     @Value("${local.working.folder}")
     private String localWorkingFolder;
@@ -132,8 +107,7 @@ public class EvaluateService {
     private List<String> lifecycleStepsCache;
     private Map<Pair<String, String>, Integer> electricityMixQuartilesCache;
     private Map<String, String> countryNameToCodeMapCache;
-    @Autowired
-    ReferentialGetService referentialGetService;
+    private final ReferentialGetService referentialGetService;
 
     @PostConstruct
     public void init() {
@@ -265,7 +239,6 @@ public class EvaluateService {
                 inVirtualEquipmentRepository.countByDigitalServiceVersionUidAndInfrastructureType(context.getDigitalServiceVersionUid(), CLOUD_SERVICES.name()) :
                 inVirtualEquipmentRepository.countByInventoryIdAndInfrastructureType(context.getInventoryId(), CLOUD_SERVICES.name());
 
-        //long totalEquipments = totalPhysicalEquipments + totalCloudVirtualEquipments;
         long totalAiServices = context.getInventoryId() == null ? 0L : inAiServiceRepository.countByInventoryId(context.getInventoryId());
         long totalEquipments = totalPhysicalEquipments + totalCloudVirtualEquipments + totalAiServices;
         FileType physicalEquipmentIndicator = context.getDigitalServiceVersionUid() == null ? FileType.PHYSICAL_EQUIPMENT_INDICATOR :
@@ -386,14 +359,6 @@ public class EvaluateService {
                     processed++;
 
                     if (processed % 20 == 0 || processed == totalEquipments) {
-
-                        /*int progress =
-                                (int) ((processed * 100.0 * processFactor) / totalEquipments);
-
-                        taskRepository.updateProgress(taskId,
-                                progress + "%",
-                                LocalDateTime.now()
-                        );*/
                         updateProgress(taskId, processed, totalEquipments, processFactor);
                     }
                     /**
@@ -808,7 +773,7 @@ public class EvaluateService {
             return;
         }
         int progress = (int) ((processed * 100.0 * processFactor) / totalEquipments);
-        taskRepository.updateProgress(taskId, progress + "%", LocalDateTime.now());
+        taskRepository.updateProgress(taskId, progress + "%", LocalDateTime.now(clock));
     }
 
     private OutAiService toOutAiService(final Long taskId,

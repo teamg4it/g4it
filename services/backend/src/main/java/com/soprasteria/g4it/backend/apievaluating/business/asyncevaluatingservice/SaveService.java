@@ -23,6 +23,7 @@ import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
 import com.soprasteria.g4it.backend.common.utils.Constants;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,25 +38,20 @@ import java.util.Map;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class SaveService {
 
-    @Autowired
-    OutPhysicalEquipmentRepository outPhysicalEquipmentRepository;
+    private final OutPhysicalEquipmentRepository outPhysicalEquipmentRepository;
 
-    @Autowired
-    OutVirtualEquipmentRepository outVirtualEquipmentRepository;
+    private final OutVirtualEquipmentRepository outVirtualEquipmentRepository;
 
-    @Autowired
-    OutAiServiceRepository outAiServiceRepository;
+    private final OutAiServiceRepository outAiServiceRepository;
 
-    @Autowired
-    OutApplicationRepository outApplicationRepository;
+    private final OutApplicationRepository outApplicationRepository;
 
-    @Autowired
-    AggregationToOutput aggregationToOutput;
+    private final AggregationToOutput aggregationToOutput;
 
-    @Autowired
-    TaskRepository taskRepository;
+    private final TaskRepository taskRepository;
 
     @PersistenceContext
     private EntityManager entityManager;

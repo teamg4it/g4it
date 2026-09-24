@@ -26,6 +26,7 @@ import java.util.function.Function;
 @RequiredArgsConstructor
 public class EvaluateEcologitsService {
 
+    private static final String WATER_USE = "WATER_USE";
     private static final String MANUFACTURING = "MANUFACTURING";
     private static final String USING = "USING";
     private static final String KO = "KO";
@@ -149,7 +150,7 @@ public class EvaluateEcologitsService {
                     .build();
         }
 
-        if ("WATER_USE".equals(criterion)) {
+        if (WATER_USE.equals(criterion)) {
             return ImpactBO.builder()
                     .criterion(criterion)
                     .lifecycleStep(lifecycleStep)
