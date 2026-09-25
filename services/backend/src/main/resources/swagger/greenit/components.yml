@@ -222,6 +222,8 @@ components:
           type: string
         numecoeval:
           type: string
+        ecologits:
+          type: string
     UserRest:
       description: User information
       type: object
