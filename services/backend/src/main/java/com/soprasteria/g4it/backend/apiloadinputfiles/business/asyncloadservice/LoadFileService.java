@@ -14,6 +14,7 @@ import com.soprasteria.g4it.backend.apiinout.repository.InApplicationRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.InVirtualEquipmentRepository;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
+import com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.loadobject.LoadAiServiceService;
 import com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.loadobject.LoadApplicationService;
 import com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.loadobject.LoadDatacenterService;
 import com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.loadobject.LoadPhysicalEquipmentService;
@@ -27,12 +28,14 @@ import com.soprasteria.g4it.backend.common.model.LineError;
 import com.soprasteria.g4it.backend.common.utils.Constants;
 import com.soprasteria.g4it.backend.common.utils.CsvUtils;
 import com.soprasteria.g4it.backend.exception.AsyncTaskException;
+import com.soprasteria.g4it.backend.server.gen.api.dto.InAiServiceRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InApplicationRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InDatacenterRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InPhysicalEquipmentRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InVirtualEquipmentRest;
 import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
@@ -52,30 +55,24 @@ import static java.util.stream.Collectors.*;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class LoadFileService {
 
     private static final String REJECTED = "rejected";
 
-    @Autowired
-    CsvFileMapperInfo csvFileMapperInfo;
-    @Autowired
-    MessageSource messageSource;
-    @Autowired
-    LoadDatacenterService loadDatacenterService;
-    @Autowired
-    LoadPhysicalEquipmentService loadPhysicalEquipmentService;
-    @Autowired
-    LoadVirtualEquipmentService loadVirtualEquipmentService;
-    @Autowired
-    LoadApplicationService loadApplicationService;
-    @Autowired
-    CsvToInMapper csvToInMapper;
-    @Autowired
-    InventoryRepository inventoryRepository;
-    @Autowired
-    InVirtualEquipmentRepository inVirtualEquipmentRepository;
-    @Autowired
-    InApplicationRepository inApplicationRepository;
+    private final CsvFileMapperInfo csvFileMapperInfo;
+    private final MessageSource messageSource;
+    private final LoadDatacenterService loadDatacenterService;
+
+    private final LoadPhysicalEquipmentService loadPhysicalEquipmentService;
+    private final LoadVirtualEquipmentService loadVirtualEquipmentService;
+    private final LoadApplicationService loadApplicationService;
+    private final LoadAiServiceService loadAiServiceService;
+    private final CsvToInMapper csvToInMapper;
+    private final InventoryRepository inventoryRepository;
+    private final InVirtualEquipmentRepository inVirtualEquipmentRepository;
+    private final InApplicationRepository inApplicationRepository;
+
     @Value("${local.working.folder}")
     private String localWorkingFolder;
 
@@ -136,6 +133,7 @@ public class LoadFileService {
                 case EQUIPEMENT_PHYSIQUE -> readPhysicalEquipments(context, fileToLoad, records);
                 case EQUIPEMENT_VIRTUEL -> readVirtualEquipments(context, fileToLoad, records);
                 case APPLICATION -> readApplications(context, fileToLoad, records);
+                case AI_SERVICE -> readAiServices(context, fileToLoad, records);
                 default -> throw new IllegalArgumentException();
             };
         } catch (AsyncTaskException e) {
@@ -336,6 +334,39 @@ public class LoadFileService {
         return errors;
     }
 
+    /**
+     * Read AI services from records
+     *
+     * @param context the context
+     * @param records the CSVParser records
+     * @return the list of error
+     */
+    private List<LineError> readAiServices(final Context context, final FileToLoad fileToLoad, final CSVParser records) {
+        int row = 1;
+        int pageNumber = 0;
+        List<LineError> errors = new ArrayList<>();
+
+        // read file locally by PAGE_SIZE lines page
+        List<InAiServiceRest> objects = new ArrayList<>(Constants.BATCH_SIZE);
+
+        for (CSVRecord csvRecord : records) {
+            objects.add(csvToInMapper.csvInAiServiceToRest(csvRecord, context.getInventoryId()));
+            if (row >= Constants.BATCH_SIZE) {
+                errors.addAll(loadAiServiceService.execute(context, fileToLoad, pageNumber, objects));
+                objects.clear();
+                row = 1;
+                pageNumber++;
+            } else {
+                row++;
+            }
+        }
+
+        errors.addAll(loadAiServiceService.execute(context, fileToLoad, pageNumber, objects));
+        objects.clear();
+
+        return errors;
+    }
+
     @Transactional
     void setInventoryCounts(final Long inventoryId) {
         Inventory inventory = inventoryRepository.findById(inventoryId)
@@ -345,6 +376,7 @@ public class LoadFileService {
         inventory.setPhysicalEquipmentCount(loadPhysicalEquipmentService.getPhysicalEquipmentCount(inventoryId));
         inventory.setVirtualEquipmentCount(loadVirtualEquipmentService.getVirtualEquipmentCount(inventoryId));
         inventory.setApplicationCount(loadApplicationService.getApplicationCount(inventoryId));
+        inventory.setAiServiceCount(loadAiServiceService.getAiServiceCount(inventoryId));
 
         inventoryRepository.save(inventory);
     }
@@ -358,7 +390,7 @@ public class LoadFileService {
     public List<String> mandatoryHeadersCheck(final Context context) {
         List<String> errors = new ArrayList<>();
 
-        for (FileType fileType : List.of(FileType.DATACENTER, FileType.EQUIPEMENT_PHYSIQUE, FileType.EQUIPEMENT_VIRTUEL, FileType.APPLICATION)) {
+        for (FileType fileType : List.of(FileType.DATACENTER, FileType.EQUIPEMENT_PHYSIQUE, FileType.EQUIPEMENT_VIRTUEL, FileType.APPLICATION, FileType.AI_SERVICE)) {
             for (FileToLoad fileToLoad : context.getFilesToLoad()) {
                 if (fileType.equals(fileToLoad.getFileType())) {
 

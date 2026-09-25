@@ -16,6 +16,7 @@ import com.soprasteria.g4it.backend.common.model.FileToLoad;
 import com.soprasteria.g4it.backend.common.utils.Constants;
 import com.soprasteria.g4it.backend.common.utils.CsvUtils;
 import com.soprasteria.g4it.backend.exception.AsyncTaskException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
@@ -31,19 +32,15 @@ import java.util.List;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class LoadMetadataService {
 
-    @Autowired
-    private CsvToInMapper csvToInMapper;
-    @Autowired
-    private LoadDatacenterMetadataService loadDatacenterMetadataService;
-    @Autowired
-    private LoadVirtualEquipmentMetadataService loadVirtualEquipmentMetadataService;
 
-    @Autowired
-    private LoadPhysicalEquipmentMetadataService loadPhysicalEquipmentMetadataService;
-    @Autowired
-    private LoadApplicationMetadataService loadApplicationMetadataService;
+    private final CsvToInMapper csvToInMapper;
+    private final LoadDatacenterMetadataService loadDatacenterMetadataService;
+    private final LoadVirtualEquipmentMetadataService loadVirtualEquipmentMetadataService;
+    private final LoadPhysicalEquipmentMetadataService loadPhysicalEquipmentMetadataService;
+    private final LoadApplicationMetadataService loadApplicationMetadataService;
 
     /**
      * Load the metadata file
@@ -52,6 +49,11 @@ public class LoadMetadataService {
      * @param context    : the file loading context
      */
     public void loadMetadataFile(FileToLoad fileToLoad, Context context) {
+
+        // AI Services do not require the unicity/coherence staging pipeline used by the other file types.
+        if (fileToLoad.getFileType() == FileType.AI_SERVICE) {
+            return;
+        }
 
         log.info("Load metadata for file {} {}", fileToLoad.getFilename(), context.log());
 

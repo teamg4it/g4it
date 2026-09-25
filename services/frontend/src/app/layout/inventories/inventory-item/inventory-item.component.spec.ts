@@ -198,6 +198,25 @@ describe("InventoryItemComponent", () => {
         expect(component.isEstimationDisabled()).toBeFalse();
     });
 
+    it("should enable estimation if only AI services are present", async () => {
+        fixture.componentInstance.testInventory = {
+            id: 1,
+            name: "Inventory 1",
+            creationDate: new Date("2024-01-01T12:00:00"),
+            lastUpdateDate: new Date("2024-01-01T12:00:00"),
+            physicalEquipmentCount: 0,
+            virtualEquipmentCount: 0,
+            applicationCount: 0,
+            aiServiceCount: 2,
+            lastTaskEvaluating: undefined,
+            tasks: [],
+        };
+        fixture.detectChanges();
+        await fixture.whenStable();
+
+        expect(component.isEstimationDisabled()).toBeFalse();
+    });
+
     it("should emit upload sidebar event", () => {
         spyOn(component.openSidebarForUploadInventory, "emit");
 

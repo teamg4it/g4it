@@ -12,13 +12,11 @@ import com.soprasteria.g4it.backend.apiinout.modeldb.InApplication;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InVirtualEquipment;
 import com.soprasteria.g4it.backend.apiinout.repository.InApplicationRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.InVirtualEquipmentRepository;
+import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
-import com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.loadobject.LoadApplicationService;
-import com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.loadobject.LoadDatacenterService;
-import com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.loadobject.LoadPhysicalEquipmentService;
-import com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.loadobject.LoadVirtualEquipmentService;
-import com.soprasteria.g4it.backend.apiloadinputfiles.mapper.CsvToInMapper;
+import com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.loadobject.*;
 import com.soprasteria.g4it.backend.common.filesystem.model.CsvFileMapperInfo;
+import com.soprasteria.g4it.backend.apiloadinputfiles.mapper.CsvToInMapper;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileType;
 import com.soprasteria.g4it.backend.common.model.Context;
 import com.soprasteria.g4it.backend.common.model.FileToLoad;
@@ -26,9 +24,7 @@ import com.soprasteria.g4it.backend.common.model.LineError;
 import com.soprasteria.g4it.backend.common.utils.Constants;
 import com.soprasteria.g4it.backend.common.utils.CsvUtils;
 import com.soprasteria.g4it.backend.exception.AsyncTaskException;
-import com.soprasteria.g4it.backend.server.gen.api.dto.InApplicationRest;
-import com.soprasteria.g4it.backend.server.gen.api.dto.InPhysicalEquipmentRest;
-import com.soprasteria.g4it.backend.server.gen.api.dto.InVirtualEquipmentRest;
+import com.soprasteria.g4it.backend.server.gen.api.dto.*;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 import org.junit.jupiter.api.AfterEach;
@@ -59,35 +55,42 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.when;
 
+
 @ExtendWith(MockitoExtension.class)
 class LoadFileServiceTest {
 
     @Mock
-    CsvFileMapperInfo csvFileMapperInfo;
-    @Mock
-    MessageSource messageSource;
-    @SuppressWarnings("unused")
-    @Mock
-    LoadDatacenterService loadDatacenterService;
-    @Mock
-    LoadPhysicalEquipmentService loadPhysicalEquipmentService;
-    @Mock
-    LoadVirtualEquipmentService loadVirtualEquipmentService;
-    @SuppressWarnings("unused")
-    @Mock
-    LoadApplicationService loadApplicationService;
-    @Mock
-    CsvToInMapper csvToInMapper;
-    @SuppressWarnings("unused")
-    @Mock
-    InventoryRepository inventoryRepository;
-    @Mock
-    InVirtualEquipmentRepository inVirtualEquipmentRepository;
-    @Mock
-    InApplicationRepository inApplicationRepository;
+    private CsvFileMapperInfo csvFileMapperInfo;
 
-    @InjectMocks
-    private LoadFileService loadFileService;
+    @Mock
+    private MessageSource messageSource;
+
+    @Mock
+    private LoadDatacenterService loadDatacenterService;
+
+    @Mock
+    private LoadPhysicalEquipmentService loadPhysicalEquipmentService;
+
+    @Mock
+    private LoadVirtualEquipmentService loadVirtualEquipmentService;
+
+    @Mock
+    private LoadApplicationService loadApplicationService;
+
+    @Mock
+    private LoadAiServiceService loadAiServiceService;
+
+    @Mock
+    private CsvToInMapper csvToInMapper;
+
+    @Mock
+    private InventoryRepository inventoryRepository;
+
+    @Mock
+    private InVirtualEquipmentRepository inVirtualEquipmentRepository;
+
+    @Mock
+    private InApplicationRepository inApplicationRepository;
 
     @Mock
     private Context context;
@@ -95,10 +98,14 @@ class LoadFileServiceTest {
     @Mock
     private FileToLoad fileToLoad;
 
+    @InjectMocks
+    private LoadFileService loadFileService;
+
     @TempDir
     Path tempDir;
 
     private Path tempCsv;
+
     private static final LocalDateTime referenceTime =
             LocalDateTime.of(2025, Month.JANUARY, 1, 12, 0);
 
@@ -127,6 +134,7 @@ class LoadFileServiceTest {
             Files.deleteIfExists(tempCsv);
         }
     }
+
 
     @Test
     void manageFile_convertedFileNotFound_throwsAsyncTaskException() {
@@ -428,6 +436,708 @@ class LoadFileServiceTest {
         @SuppressWarnings("unchecked")
         List<LineError> result = (List<LineError>) method.invoke(loadFileService, context, fileToLoad, parser);
         return result;
+    }
+
+    @Test
+    void readDatacenters_singleRecord_mapsAndLoadsSinglePage() throws Exception {
+        InDatacenterRest mapped = new InDatacenterRest();
+
+        CSVParser parser = mockParserWithRows(1);
+
+        when(csvToInMapper.csvInDatacenterToRest(
+                any(),
+                eq(123L),
+                eq(null)
+        )).thenReturn(mapped);
+
+        when(loadDatacenterService.execute(
+                eq(context),
+                eq(fileToLoad),
+                eq(0),
+                anyList()
+        )).thenReturn(Collections.emptyList());
+
+        List<LineError> errors = invokeReadDatacenters(parser);
+
+        assertTrue(errors.isEmpty());
+
+        verify(csvToInMapper)
+                .csvInDatacenterToRest(any(), eq(123L), eq(null));
+
+        verify(loadDatacenterService)
+                .execute(eq(context), eq(fileToLoad), eq(0), anyList());
+    }
+
+    @Test
+    void readDatacenters_moreThanBatchSize_splitsPagesAndAggregatesErrors() throws Exception {
+        int totalRows = Constants.BATCH_SIZE + 1;
+
+        LineError page0Error =
+                new LineError("datacenter.csv", 1, "page 0 error");
+
+        LineError page1Error =
+                new LineError("datacenter.csv", 2, "page 1 error");
+
+        CSVParser parser = mockParserWithRows(totalRows);
+
+        when(csvToInMapper.csvInDatacenterToRest(
+                any(),
+                eq(123L),
+                eq(null)
+        )).thenReturn(new InDatacenterRest());
+
+        List<List<InDatacenterRest>> batches = new ArrayList<>();
+
+        when(loadDatacenterService.execute(
+                eq(context),
+                eq(fileToLoad),
+                anyInt(),
+                anyList()
+        )).thenAnswer(invocation -> {
+            batches.add(new ArrayList<>(invocation.getArgument(3)));
+
+            Integer page = invocation.getArgument(2);
+
+            return page == 0
+                    ? List.of(page0Error)
+                    : List.of(page1Error);
+        });
+
+        List<LineError> errors = invokeReadDatacenters(parser);
+
+        assertEquals(
+                List.of(page0Error, page1Error),
+                errors
+        );
+
+        assertEquals(2, batches.size());
+        assertEquals(Constants.BATCH_SIZE, batches.get(0).size());
+        assertEquals(1, batches.get(1).size());
+
+        verify(csvToInMapper, times(totalRows))
+                .csvInDatacenterToRest(any(), eq(123L), eq(null));
+
+        verify(loadDatacenterService, times(2))
+                .execute(eq(context), eq(fileToLoad), anyInt(), anyList());
+
+        verify(loadDatacenterService)
+                .execute(eq(context), eq(fileToLoad), eq(0), anyList());
+
+        verify(loadDatacenterService)
+                .execute(eq(context), eq(fileToLoad), eq(1), anyList());
+    }
+
+    private List<LineError> invokeReadDatacenters(CSVParser parser)
+            throws Exception {
+
+        Method method = LoadFileService.class.getDeclaredMethod(
+                "readDatacenters",
+                Context.class,
+                FileToLoad.class,
+                CSVParser.class
+        );
+
+        method.setAccessible(true);
+
+        @SuppressWarnings("unchecked")
+        List<LineError> result =
+                (List<LineError>) method.invoke(
+                        loadFileService,
+                        context,
+                        fileToLoad,
+                        parser
+                );
+
+        return result;
+    }
+
+    @Test
+    void readVirtualEquipments_moreThanBatchSize_splitsPagesAndAggregatesErrors()
+            throws Exception {
+
+        int totalRows = Constants.BATCH_SIZE + 1;
+
+        LineError page0Error =
+                new LineError("virtual.csv", 1, "page 0 error");
+
+        LineError page1Error =
+                new LineError("virtual.csv", 2, "page 1 error");
+
+        CSVParser parser = mockParserWithRows(totalRows);
+
+        when(csvToInMapper.csvInVirtualEquipmentToRest(
+                any(),
+                eq(123L),
+                eq(null)
+        )).thenReturn(new InVirtualEquipmentRest());
+
+        List<List<InVirtualEquipmentRest>> batches = new ArrayList<>();
+
+        when(loadVirtualEquipmentService.execute(
+                eq(context),
+                eq(fileToLoad),
+                anyInt(),
+                anyList()
+        )).thenAnswer(invocation -> {
+
+            batches.add(
+                    new ArrayList<>(invocation.getArgument(3))
+            );
+
+            Integer page = invocation.getArgument(2);
+
+            return page == 0
+                    ? List.of(page0Error)
+                    : List.of(page1Error);
+        });
+
+        List<LineError> errors =
+                invokeReadVirtualEquipments(parser);
+
+        assertEquals(
+                List.of(page0Error, page1Error),
+                errors
+        );
+
+        assertEquals(2, batches.size());
+        assertEquals(
+                Constants.BATCH_SIZE,
+                batches.get(0).size()
+        );
+        assertEquals(1, batches.get(1).size());
+
+        verify(csvToInMapper, times(totalRows))
+                .csvInVirtualEquipmentToRest(
+                        any(),
+                        eq(123L),
+                        eq(null)
+                );
+
+        verify(loadVirtualEquipmentService, times(2))
+                .execute(
+                        eq(context),
+                        eq(fileToLoad),
+                        anyInt(),
+                        anyList()
+                );
+    }
+
+    private List<LineError> invokeReadVirtualEquipments(
+            CSVParser parser) throws Exception {
+
+        Method method = LoadFileService.class.getDeclaredMethod(
+                "readVirtualEquipments",
+                Context.class,
+                FileToLoad.class,
+                CSVParser.class
+        );
+
+        method.setAccessible(true);
+
+        @SuppressWarnings("unchecked")
+        List<LineError> result =
+                (List<LineError>) method.invoke(
+                        loadFileService,
+                        context,
+                        fileToLoad,
+                        parser
+                );
+
+        return result;
+    }
+
+    @Test
+    void readAiServices_emptyParser_executesSingleEmptyBatch()
+            throws Exception {
+
+        CSVParser parser = mockParserWithRows(0);
+
+        when(loadAiServiceService.execute(
+                eq(context),
+                eq(fileToLoad),
+                eq(0),
+                anyList()
+        )).thenReturn(Collections.emptyList());
+
+        List<LineError> errors =
+                invokeReadAiServices(parser);
+
+        assertTrue(errors.isEmpty());
+
+        verify(loadAiServiceService)
+                .execute(
+                        eq(context),
+                        eq(fileToLoad),
+                        eq(0),
+                        anyList()
+                );
+
+        verifyNoInteractions(csvToInMapper);
+    }
+
+    @Test
+    void readAiServices_singleRecord_mapsAndLoadsSinglePage()
+            throws Exception {
+
+        InAiServiceRest mapped = new InAiServiceRest();
+
+        CSVParser parser = mockParserWithRows(1);
+
+        when(csvToInMapper.csvInAiServiceToRest(
+                any(),
+                eq(123L)
+        )).thenReturn(mapped);
+
+        when(loadAiServiceService.execute(
+                eq(context),
+                eq(fileToLoad),
+                eq(0),
+                anyList()
+        )).thenReturn(Collections.emptyList());
+
+        List<LineError> errors =
+                invokeReadAiServices(parser);
+
+        assertTrue(errors.isEmpty());
+
+        verify(csvToInMapper)
+                .csvInAiServiceToRest(any(), eq(123L));
+
+        verify(loadAiServiceService)
+                .execute(
+                        eq(context),
+                        eq(fileToLoad),
+                        eq(0),
+                        anyList()
+                );
+    }
+    @Test
+    void readAiServices_moreThanBatchSize_splitsPagesAndAggregatesErrors()
+            throws Exception {
+
+        int totalRows = Constants.BATCH_SIZE + 1;
+
+        LineError page0Error =
+                new LineError("ai.csv", 1, "page 0 error");
+
+        LineError page1Error =
+                new LineError("ai.csv", 2, "page 1 error");
+
+        CSVParser parser = mockParserWithRows(totalRows);
+
+        when(csvToInMapper.csvInAiServiceToRest(
+                any(),
+                eq(123L)
+        )).thenReturn(new InAiServiceRest());
+
+        List<List<InAiServiceRest>> batches =
+                new ArrayList<>();
+
+        when(loadAiServiceService.execute(
+                eq(context),
+                eq(fileToLoad),
+                anyInt(),
+                anyList()
+        )).thenAnswer(invocation -> {
+
+            batches.add(
+                    new ArrayList<>(invocation.getArgument(3))
+            );
+
+            Integer page = invocation.getArgument(2);
+
+            return page == 0
+                    ? List.of(page0Error)
+                    : List.of(page1Error);
+        });
+
+        List<LineError> errors =
+                invokeReadAiServices(parser);
+
+        assertEquals(
+                List.of(page0Error, page1Error),
+                errors
+        );
+
+        assertEquals(2, batches.size());
+        assertEquals(
+                Constants.BATCH_SIZE,
+                batches.get(0).size()
+        );
+        assertEquals(
+                1,
+                batches.get(1).size()
+        );
+
+        verify(csvToInMapper, times(totalRows))
+                .csvInAiServiceToRest(any(), eq(123L));
+
+        verify(loadAiServiceService, times(2))
+                .execute(
+                        eq(context),
+                        eq(fileToLoad),
+                        anyInt(),
+                        anyList()
+                );
+    }
+
+    private List<LineError> invokeReadAiServices(
+            CSVParser parser) throws Exception {
+
+        Method method = LoadFileService.class.getDeclaredMethod(
+                "readAiServices",
+                Context.class,
+                FileToLoad.class,
+                CSVParser.class
+        );
+
+        method.setAccessible(true);
+
+        @SuppressWarnings("unchecked")
+        List<LineError> result =
+                (List<LineError>) method.invoke(
+                        loadFileService,
+                        context,
+                        fileToLoad,
+                        parser
+                );
+
+        return result;
+    }
+
+    @Test
+    void setInventoryCounts_updatesAllCountsAndSavesInventory() {
+
+        Long inventoryId = 123L;
+
+        Inventory inventory = new Inventory();
+
+        when(inventoryRepository.findById(inventoryId))
+                .thenReturn(Optional.of(inventory));
+
+        when(loadDatacenterService.getDatacenterCount(inventoryId))
+                .thenReturn(10L);
+
+        when(loadPhysicalEquipmentService.getPhysicalEquipmentCount(inventoryId))
+                .thenReturn(20L);
+
+        when(loadVirtualEquipmentService.getVirtualEquipmentCount(inventoryId))
+                .thenReturn(30L);
+
+        when(loadApplicationService.getApplicationCount(inventoryId))
+                .thenReturn(40L);
+
+        loadFileService.setInventoryCounts(inventoryId);
+
+        assertEquals(10L, inventory.getDataCenterCount());
+        assertEquals(20L, inventory.getPhysicalEquipmentCount());
+        assertEquals(30L, inventory.getVirtualEquipmentCount());
+        assertEquals(40L, inventory.getApplicationCount());
+
+        verify(inventoryRepository).save(inventory);
+    }
+
+    @Test
+    void setInventoryCounts_inventoryNotFound_throwsException() {
+
+        Long inventoryId = 999L;
+
+        when(inventoryRepository.findById(inventoryId))
+                .thenReturn(Optional.empty());
+
+        assertThrows(
+                NoSuchElementException.class,
+                () -> loadFileService.setInventoryCounts(inventoryId)
+        );
+
+        verify(inventoryRepository, never())
+                .save(any());
+    }
+
+    @Test
+    void linkApplicationsToVirtualEquipments_noMatchingVirtualEquipment_doesNotSave() {
+
+        Long inventoryId = 55L;
+
+        InApplication app = new InApplication();
+        app.setVirtualEquipmentName("UNKNOWN");
+        app.setPhysicalEquipmentName(null);
+
+        when(inVirtualEquipmentRepository.findByInventoryId(inventoryId))
+                .thenReturn(Collections.emptyList());
+
+        when(inApplicationRepository
+                .findByInventoryIdAndPhysicalEquipmentNameIsNull(inventoryId))
+                .thenReturn(List.of(app));
+
+        loadFileService.linkApplicationsToVirtualEquipments(inventoryId);
+
+        assertNull(app.getPhysicalEquipmentName());
+
+        verify(inApplicationRepository, never())
+                .save(any());
+    }
+
+    @Test
+    void manageFile_whenLoaderReturnsErrors_writesRejectedFile()
+            throws Exception {
+
+        String delim = CsvUtils.DELIMITER;
+
+        Files.writeString(
+                tempCsv,
+                "name" + delim + "location" + System.lineSeparator()
+                        + "DC1" + delim + "Paris" + System.lineSeparator()
+                        + "DC2" + delim + "London" + System.lineSeparator()
+        );
+
+        when(fileToLoad.getConvertedFile())
+                .thenReturn(tempCsv.toFile());
+
+        when(fileToLoad.getFileType())
+                .thenReturn(FileType.DATACENTER);
+
+        when(csvFileMapperInfo.getHeaderFields(
+                FileType.DATACENTER,
+                false
+        )).thenReturn(
+                new HashSet<>(List.of("name", "location"))
+        );
+
+        LineError error =
+                new LineError(
+                        "original.csv",
+                        2,
+                        "Invalid datacenter"
+                );
+
+        when(csvToInMapper.csvInDatacenterToRest(
+                any(),
+                eq(123L),
+                eq(null)
+        )).thenReturn(new InDatacenterRest());
+
+        when(loadDatacenterService.execute(
+                eq(context),
+                eq(fileToLoad),
+                anyInt(),
+                anyList()
+        )).thenReturn(List.of(error));
+
+        List<String> result =
+                loadFileService.manageFile(context, fileToLoad);
+
+        assertNotNull(result);
+
+        Path rejectedDirectory =
+                tempDir.resolve("rejected").resolve("123");
+
+        assertTrue(Files.exists(rejectedDirectory));
+
+        try (var files = Files.list(rejectedDirectory)) {
+            Path rejectedFile = files.findFirst().orElseThrow();
+
+            String content = Files.readString(rejectedFile);
+
+            assertTrue(content.contains("inputFileName"));
+            assertTrue(content.contains("lineNumber"));
+            assertTrue(content.contains("message"));
+            assertTrue(content.contains("original.csv"));
+            assertTrue(content.contains("Invalid datacenter"));
+        }
+    }
+
+
+    @Test
+    void manageFile_whenLoaderThrowsAsyncTaskException_propagatesException()
+            throws Exception {
+
+        String delim = CsvUtils.DELIMITER;
+
+        Files.writeString(
+                tempCsv,
+                "id" + delim + "name" + System.lineSeparator()
+                        + "1" + delim + "DC1" + System.lineSeparator()
+        );
+
+        when(fileToLoad.getConvertedFile())
+                .thenReturn(tempCsv.toFile());
+
+        when(fileToLoad.getFileType())
+                .thenReturn(FileType.DATACENTER);
+
+        when(csvFileMapperInfo.getHeaderFields(
+                FileType.DATACENTER,
+                false
+        )).thenReturn(new HashSet<>(List.of("id", "name")));
+
+        AsyncTaskException exception =
+                new AsyncTaskException("Loader failed");
+
+        when(csvToInMapper.csvInDatacenterToRest(
+                any(),
+                eq(123L),
+                eq(null)
+        )).thenThrow(exception);
+
+        AsyncTaskException thrown = assertThrows(
+                AsyncTaskException.class,
+                () -> loadFileService.manageFile(context, fileToLoad)
+        );
+
+        assertSame(exception, thrown);
+    }
+
+    @Test
+    void mandatoryHeadersCheck_allFileTypes_returnsNoErrors()
+            throws Exception {
+
+        for (FileType fileType : List.of(
+                FileType.DATACENTER,
+                FileType.EQUIPEMENT_PHYSIQUE,
+                FileType.EQUIPEMENT_VIRTUEL,
+                FileType.APPLICATION,
+                FileType.AI_SERVICE
+        )) {
+
+            Files.writeString(
+                    tempCsv,
+                    "id" + CsvUtils.DELIMITER + "name"
+                            + System.lineSeparator()
+                            + "1" + CsvUtils.DELIMITER + "test"
+            );
+
+            when(fileToLoad.getFileType())
+                    .thenReturn(fileType);
+
+            when(fileToLoad.getConvertedFile())
+                    .thenReturn(tempCsv.toFile());
+
+            when(csvFileMapperInfo.getHeaderFields(fileType, true))
+                    .thenReturn(
+                            new HashSet<>(List.of("id", "name"))
+                    );
+
+            when(context.getFilesToLoad())
+                    .thenReturn(List.of(fileToLoad));
+
+            List<String> errors =
+                    loadFileService.mandatoryHeadersCheck(context);
+
+            assertTrue(errors.isEmpty());
+        }
+    }
+
+    @Test
+    void manageFile_datacenterRouting_callsDatacenterLoader()
+            throws Exception {
+
+        Files.writeString(
+                tempCsv,
+                "id" + CsvUtils.DELIMITER + "name"
+                        + System.lineSeparator()
+        );
+
+        when(fileToLoad.getConvertedFile())
+                .thenReturn(tempCsv.toFile());
+
+        when(fileToLoad.getFileType())
+                .thenReturn(FileType.DATACENTER);
+
+        when(csvFileMapperInfo.getHeaderFields(
+                FileType.DATACENTER,
+                false
+        )).thenReturn(new HashSet<>(List.of("id", "name")));
+
+        when(loadDatacenterService.execute(
+                eq(context),
+                eq(fileToLoad),
+                anyInt(),
+                anyList()
+        )).thenReturn(Collections.emptyList());
+
+        List<String> errors =
+                loadFileService.manageFile(context, fileToLoad);
+
+        assertTrue(errors.isEmpty());
+
+        verify(loadDatacenterService)
+                .execute(eq(context), eq(fileToLoad), eq(0), anyList());
+    }
+
+    @Test
+    void manageFile_physicalEquipmentRouting_callsPhysicalLoader()
+            throws Exception {
+
+        Files.writeString(
+                tempCsv,
+                "name" + CsvUtils.DELIMITER + "physicalEquipmentName"
+                        + System.lineSeparator()
+        );
+
+        when(fileToLoad.getConvertedFile())
+                .thenReturn(tempCsv.toFile());
+
+        when(fileToLoad.getFileType())
+                .thenReturn(FileType.EQUIPEMENT_PHYSIQUE);
+
+        when(csvFileMapperInfo.getHeaderFields(
+                FileType.EQUIPEMENT_PHYSIQUE,
+                false
+        )).thenReturn(
+                new HashSet<>(List.of("name", "physicalEquipmentName"))
+        );
+
+        when(loadPhysicalEquipmentService.execute(
+                eq(context),
+                eq(fileToLoad),
+                anyInt(),
+                anyList()
+        )).thenReturn(Collections.emptyList());
+
+        List<String> errors =
+                loadFileService.manageFile(context, fileToLoad);
+
+        assertTrue(errors.isEmpty());
+
+        verify(loadPhysicalEquipmentService)
+                .execute(eq(context), eq(fileToLoad), eq(0), anyList());
+    }
+
+    @Test
+    void manageFile_applicationRouting_callsApplicationLoader()
+            throws Exception {
+
+        Files.writeString(
+                tempCsv,
+                "name" + System.lineSeparator()
+        );
+
+        when(fileToLoad.getConvertedFile())
+                .thenReturn(tempCsv.toFile());
+
+        when(fileToLoad.getFileType())
+                .thenReturn(FileType.APPLICATION);
+
+        when(csvFileMapperInfo.getHeaderFields(
+                FileType.APPLICATION,
+                false
+        )).thenReturn(new HashSet<>(List.of("name")));
+
+        when(loadApplicationService.execute(
+                eq(context),
+                eq(fileToLoad),
+                anyInt(),
+                anyList()
+        )).thenReturn(Collections.emptyList());
+
+        List<String> errors =
+                loadFileService.manageFile(context, fileToLoad);
+
+        assertTrue(errors.isEmpty());
+
+        verify(loadApplicationService)
+                .execute(eq(context), eq(fileToLoad), eq(0), anyList());
     }
 
     private CSVParser mockParserWithRows(int rowCount) {

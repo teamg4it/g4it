@@ -1,0 +1,104 @@
+databaseChangeLog:
+  - changeSet:
+      id: in-out-create-out-table-aiservice
+      author: G4IT Dev Team
+      changes:
+        - createTable:
+            tableName: out_aiservice
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  incrementBy: 100
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: out_aiservice_pk
+              - column:
+                  name: name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: criterion
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: lifecycle_step
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: task_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: out_aiservice_task_id_fk
+                    references: task(id)
+                    deleteCascade: true
+              - column:
+                  name: provider
+                  type: varchar(255)
+              - column:
+                  name: model
+                  type: varchar(255)
+              - column:
+                  name: location
+                  type: varchar(255)
+              - column:
+                  name: engine_name
+                  type: varchar(255)
+              - column:
+                  name: engine_version
+                  type: varchar(255)
+              - column:
+                  name: referential_version
+                  type: varchar(255)
+              - column:
+                  name: status_indicator
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: quantity
+                  type: float
+                  constraints:
+                    nullable: false
+              - column:
+                  name: unit_impact
+                  type: float
+              - column:
+                  name: people_eq_impact
+                  type: float
+              - column:
+                  name: count_value
+                  type: bigint
+              - column:
+                  name: unit
+                  type: varchar(255)
+              - column:
+                  name: common_filters
+                  type: varchar(255) array
+              - column:
+                  name: filters
+                  type: varchar(255) array
+              - column:
+                  name: errors
+                  type: varchar(255) array
+              - column:
+                  name: source
+                  type: varchar(255)
+              - column:
+                  name: creation_date
+                  type: timestamp
+              - column:
+                  name: last_update_date
+                  type: timestamp
+        - createIndex:
+            tableName: out_aiservice
+            indexName: idx_out_aiservice_task_id
+            columns:
+              - column:
+                  name: task_id
+                  descending: true

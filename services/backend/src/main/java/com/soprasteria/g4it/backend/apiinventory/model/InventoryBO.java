@@ -47,6 +47,8 @@ public class InventoryBO {
 
     private Long applicationCount;
 
+    private Long aiServiceCount;
+
     private Long outApplicationCount;
 
     private Long outVirtualCount;

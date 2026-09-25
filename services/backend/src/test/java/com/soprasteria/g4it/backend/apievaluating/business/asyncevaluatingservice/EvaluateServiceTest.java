@@ -4,11 +4,13 @@ import com.google.common.collect.BiMap;
 import com.soprasteria.g4it.backend.apievaluating.business.asyncevaluatingservice.engine.boaviztapi.EvaluateBoaviztapiService;
 import com.soprasteria.g4it.backend.apievaluating.business.asyncevaluatingservice.engine.numecoeval.EvaluateNumEcoEvalService;
 import com.soprasteria.g4it.backend.apievaluating.mapper.AggregationToOutput;
+import com.soprasteria.g4it.backend.apievaluating.mapper.AiServiceImpactToCsvRecord;
 import com.soprasteria.g4it.backend.apievaluating.mapper.ImpactToCsvRecord;
 import com.soprasteria.g4it.backend.apievaluating.mapper.InternalToNumEcoEvalImpact;
 import com.soprasteria.g4it.backend.apievaluating.model.AggValuesBO;
 import com.soprasteria.g4it.backend.apievaluating.model.ImpactBO;
 import com.soprasteria.g4it.backend.apievaluating.model.RefShortcutBO;
+import com.soprasteria.g4it.backend.apiinout.mapper.AiServiceToCsvRecord;
 import com.soprasteria.g4it.backend.apiinout.mapper.InputToCsvRecord;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InApplication;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InDatacenter;
@@ -53,6 +55,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -63,6 +66,9 @@ import static com.soprasteria.g4it.backend.common.utils.InfrastructureType.CLOUD
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
+import com.soprasteria.g4it.backend.apievaluating.business.asyncevaluatingservice.engine.ecologits.EvaluateEcologitsService;
+import com.soprasteria.g4it.backend.apiinout.modeldb.InAiService;
+import com.soprasteria.g4it.backend.apiinout.repository.InAiServiceRepository;
 
 @MockitoSettings(strictness = Strictness.LENIENT)
 @ExtendWith(MockitoExtension.class)
@@ -77,11 +83,15 @@ class EvaluateServiceTest {
     @Mock
     InApplicationRepository inApplicationRepository;
     @Mock
+    InAiServiceRepository inAiServiceRepository;
+    @Mock
     AggregationToOutput aggregationToOutput;
     @Mock
     EvaluateNumEcoEvalService evaluateNumEcoEvalService;
     @Mock
     ReferentialService referentialService;
+    @Mock
+    EvaluateEcologitsService evaluateEcologitsService;
     @Mock
     SaveService saveService;
     @Mock
@@ -111,6 +121,13 @@ class EvaluateServiceTest {
     @Mock
     ReferentialGetService referentialGetService;
 
+    @Mock
+    AiServiceToCsvRecord aiServiceToCsvRecord;
+
+    @Mock
+    AiServiceImpactToCsvRecord aiServiceImpactToCsvRecord;
+
+
 
     @BeforeEach
     void setup() {
@@ -121,6 +138,13 @@ class EvaluateServiceTest {
                 tempDir.toString()
         );
 
+        ReflectionTestUtils.setField(evaluateService, "ecologitsVersion", "0.0.2beta");
+
+        ReflectionTestUtils.setField(
+                evaluateService,
+                "clock",
+                Clock.systemDefaultZone()
+        );
         // ---- MOCK REFERENTIAL BEFORE INIT ----
         when(referentialService.getLifecycleSteps()).thenReturn(List.of("STEP1"));
         when(referentialService.getElectricityMixQuartiles(anyLong())).thenReturn(Map.of());
@@ -284,6 +308,138 @@ class EvaluateServiceTest {
         verify(printer, atLeastOnce()).printRecord(anyList());
     }
 
+
+    @Test
+    void doEvaluate_shouldProcessAiServicesForInventory() throws Exception {
+        Context context = mock(Context.class);
+        Task task = mock(Task.class);
+
+        when(context.log()).thenReturn("ORG/WS/INV");
+        when(context.getInventoryId()).thenReturn(1L);
+        when(context.getOrganization()).thenReturn("ORG");
+        when(context.getDigitalServiceName()).thenReturn("INV");
+        when(context.getDatetime()).thenReturn(LocalDateTime.now());
+        when(context.isHasVirtualEquipments()).thenReturn(false);
+        when(context.isHasApplications()).thenReturn(false);
+
+        when(task.getId()).thenReturn(202L);
+        when(task.getCriteria()).thenReturn(List.of("climate-change"));
+
+        Inventory inventory = mock(Inventory.class);
+        when(inventory.getDoExportVerbose()).thenReturn(true);
+        when(inventory.getName()).thenReturn("Inventory");
+        when(inventory.getId()).thenReturn(1L);
+        when(task.getInventory()).thenReturn(inventory);
+        when(inventoryRepository.findById(1L)).thenReturn(Optional.of(inventory));
+
+        CriterionRest criterionRest = new CriterionRest();
+        criterionRest.setCode("CLIMATE_CHANGE");
+        criterionRest.setUnit("kg CO2 eq");
+
+        when(referentialService.getActiveCriteria(anyList()))
+                .thenReturn(List.of(criterionRest));
+        when(referentialService.getHypotheses(anyString()))
+                .thenReturn(List.of(mock(HypothesisRest.class)));
+        when(referentialService.getSipValueMap(anyList()))
+                .thenReturn(Map.of("CLIMATE_CHANGE", 2d));
+
+        when(referentialGetService.countItemImpactsForWorkspace(anyLong()))
+                .thenReturn(0L);
+
+        CSVPrinter printer = mock(CSVPrinter.class);
+        when(csvFileService.getPrinter(any(FileType.class), any(Path.class)))
+                .thenReturn(printer);
+
+        when(inDatacenterRepository.findByInventoryId(1L))
+                .thenReturn(List.of());
+
+        when(inPhysicalEquipmentRepository.countByInventoryId(1L))
+                .thenReturn(0L);
+
+        when(inVirtualEquipmentRepository
+                .countByInventoryIdAndInfrastructureType(1L, "CLOUD_SERVICES"))
+                .thenReturn(0L);
+
+        when(inPhysicalEquipmentRepository.findByInventoryId(eq(1L), any()))
+                .thenReturn(List.of());
+
+        when(inAiServiceRepository.countByInventoryId(1L))
+                .thenReturn(1L);
+
+        InAiService inAiService = InAiService.builder()
+                .serviceName("Assistant")
+                .provider("openai")
+                .model("gpt-4o-mini")
+                .outputTokens(123L)
+                .build();
+
+        /*
+         * doEvaluate() calls findByInventoryIdOrderByIdAsc() twice.
+         * First call returns the AI service to process.
+         * Second call returns an empty list.
+         */
+        when(inAiServiceRepository.findByInventoryIdOrderByIdAsc(eq(1L), any()))
+                .thenReturn(new ArrayList<>(List.of(inAiService)))
+                .thenReturn(new ArrayList<>());
+
+        when(aiServiceToCsvRecord.toCsv(eq(inAiService)))
+                .thenReturn(List.of("Assistant"));
+
+        when(aiServiceImpactToCsvRecord.toCsv(
+                any(),
+                eq(202L),
+                eq("Inventory"),
+                eq(inAiService),
+                any()
+        )).thenReturn(List.of("output"));
+
+        when(evaluateEcologitsService.evaluate(
+                eq(inAiService),
+                anyList(),
+                anyList(),
+                anyMap()
+        )).thenReturn(List.of(
+                ImpactBO.builder()
+                        .criterion("CLIMATE_CHANGE")
+                        .lifecycleStep("USING")
+                        .unitImpact(8d)
+                        .indicatorStatus("OK")
+                        .build()
+        ));
+
+        when(saveService.saveOutAiServices(anyList()))
+                .thenReturn(1);
+
+        assertDoesNotThrow(
+                () -> evaluateService.doEvaluate(context, task, tempDir)
+        );
+
+        verify(inAiServiceRepository, times(2))
+                .findByInventoryIdOrderByIdAsc(eq(1L), any());
+
+        verify(evaluateEcologitsService)
+                .evaluate(
+                        eq(inAiService),
+                        anyList(),
+                        anyList(),
+                        anyMap()
+                );
+
+        verify(aiServiceToCsvRecord)
+                .toCsv(eq(inAiService));
+
+        verify(aiServiceImpactToCsvRecord)
+                .toCsv(
+                        any(),
+                        eq(202L),
+                        eq("Inventory"),
+                        eq(inAiService),
+                        any()
+                );
+
+        verify(saveService)
+                .saveOutAiServices(anyList());
+    }
     @Test
     void doEvaluate_shouldUpdateProgress_whenPhysicalEquipmentsExist() throws Exception {
         Context context = mock(Context.class);
