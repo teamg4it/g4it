@@ -55,6 +55,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -138,6 +139,12 @@ class EvaluateServiceTest {
         );
 
         ReflectionTestUtils.setField(evaluateService, "ecologitsVersion", "0.0.2beta");
+
+        ReflectionTestUtils.setField(
+                evaluateService,
+                "clock",
+                Clock.systemDefaultZone()
+        );
         // ---- MOCK REFERENTIAL BEFORE INIT ----
         when(referentialService.getLifecycleSteps()).thenReturn(List.of("STEP1"));
         when(referentialService.getElectricityMixQuartiles(anyLong())).thenReturn(Map.of());

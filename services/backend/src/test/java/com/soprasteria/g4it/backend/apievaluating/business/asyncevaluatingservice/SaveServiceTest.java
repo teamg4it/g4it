@@ -44,6 +44,8 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import org.junit.jupiter.api.BeforeEach;
+import org.springframework.test.util.ReflectionTestUtils;
 
 @ExtendWith(MockitoExtension.class)
 class SaveServiceTest {
@@ -71,6 +73,15 @@ class SaveServiceTest {
 
     @InjectMocks
     private SaveService saveService;
+
+    @BeforeEach
+    void setUp() {
+        ReflectionTestUtils.setField(
+                saveService,
+                "entityManager",
+                entityManager
+        );
+    }
 
     @Test
     void saveOutPhysicalEquipments_shouldSaveAllEntries() {
