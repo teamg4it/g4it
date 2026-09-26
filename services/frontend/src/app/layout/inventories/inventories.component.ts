@@ -40,6 +40,7 @@ import { Constants } from "src/constants";
 import { CommonEditorComponent } from "../common/common-editor/common-editor.component";
 import { RenewServicePopupComponent } from "../common/renew-service-popup/renew-service-popup.component";
 import { FilePanelComponent } from "./file-panel/file-panel.component";
+import { InvFilePanelComponent } from "./file-panel/inv-file-panel.component";
 import { InventoryItemComponent } from "./inventory-item/inventory-item.component";
 
 @Component({
@@ -50,7 +51,6 @@ import { InventoryItemComponent } from "./inventory-item/inventory-item.componen
     imports: [
         ToastModule,
         DrawerModule,
-        FilePanelComponent,
         CommonEditorComponent,
         Button,
         ScrollPanelModule,
@@ -61,6 +61,7 @@ import { InventoryItemComponent } from "./inventory-item/inventory-item.componen
         RenewServicePopupComponent,
         AsyncPipe,
         TranslatePipe,
+        InvFilePanelComponent,
     ],
 })
 export class InventoriesComponent implements OnInit, OnDestroy {

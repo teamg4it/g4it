@@ -151,6 +151,7 @@
         "overgreen-logo": "G4IT Logo",
         "soprasteria-logo": "Sopra Steria logo",
         "no-document-upload": "No document uploaded",
+        "no-month-name-choosen": "No Month or Name Choosen",
         "workspace": {
             "create": "Create new workspace",
             "mandatory": "Mandatory",
@@ -619,6 +620,7 @@
             "data-model": "Data model"
         },
         "add-files": "Add files",
+        "add-new-file": "Add new file",
         "loading-history": "Loading history",
         "finish": "Close",
         "start-upload": "Start upload",
@@ -629,7 +631,9 @@
         "browse-file": "Browse File",
         "datacenter": "Datacenter",
         "physical-equipment": "Physical Equipment",
-        "virtual-equipment": "Virtual Equipment"
+        "virtual-equipment": "Virtual Equipment",
+        "application": "Application",
+        "ai-services": "AI Services"
     },
     "welcome-page": {
         "title": "Welcome Page",
@@ -684,6 +688,30 @@
         "title": "My Information System - {{WorkspaceName}}",
         "add": "New inventory",
         "created": "created",
+        "create-drawer": {
+            "info": {
+                "title": "Inventory Info",
+                "description": "Each version of the information system allows you to track the evolution of its impact over time. A simulation allows you to perform an impact assessment on a test inventory."
+            },
+            "infra": {
+                "title": "Infrastructure",
+                "description": "The infrastructure includes all physical components that host and support IT systems, such as data centers, servers, and network equipment."
+            },
+            "end-user": {
+                "title": "End-user Devices",
+                "description": "This category includes all devices used by employees in their daily work to access IT systems, such as laptops, smartphones, displays, and printers."
+            },
+            "app-service": {
+                "title": "Application Services",
+                "description": "This category covers applications and their associated runtime components. It includes, in particular, virtual machines, containers, databases, and other software services that contribute to delivering functionality to users and business processes."
+            },
+            "external-services": {
+                "title": "External Services",
+                "description": "This category includes services provided by external vendors, such as cloud computing and AI service providers. These services are managed outside the organization but are essential for the organization to deliver value; therefore, they must be accounted for."
+            },
+            "create-inventory": "Create Inventory",
+            "update-inventory": "Update Inventory"
+        },
         "details.equipment": "EQUIPMENT",
         "details.application": "APPLICATION",
         "inventory-date": "Inventory",
@@ -719,7 +747,9 @@
             "eq-phys": "Physical Equipment",
             "eq-virt": "Virtual Equipment",
             "app": "Application",
-            "name": "Type of inventories"
+            "name": "Inventory Type",
+            "month": "Inventory Month",
+            "simulation-name": "Inventory Name"
         },
         "popup": {
             "delete-question": "Are you sure you want to delete the inventory",
