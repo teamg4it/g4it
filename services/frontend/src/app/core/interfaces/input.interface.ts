@@ -56,6 +56,7 @@ export interface InVirtualEquipmentRest {
     electricityConsumption?: number;
     vcpuCoreNumber?: number;
     sizeMemoryMb?: number;
+    sizeMemoryGb?: number;
     sizeDiskGb?: number;
     commonFilters?: string[];
     filters?: string[];

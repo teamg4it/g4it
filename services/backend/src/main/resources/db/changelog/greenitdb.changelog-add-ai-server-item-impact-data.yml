@@ -1,0 +1,63 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-ref-item-impact-data-for-ai-servers
+      author: G4IT Dev Team
+      preConditions:
+        onFail: MARK_RAN
+        sqlCheck:
+          expectedResult: "0"
+          sql: SELECT COUNT(*) FROM ref_item_impact WHERE name LIKE '%AI Server%'
+      changes:
+        - loadData:
+            file: db/changelog/referential-data/ref_item_impact_ai_server.csv
+            tableName: ref_item_impact
+            separator: ;
+            encoding: UTF-8
+            columns:
+              - column:
+                  name: criterion
+                  type: varchar(255)
+              - column:
+                  name: lifecycle_step
+                  type: varchar(255)
+              - column:
+                  name: name
+                  type: varchar(255)
+              - column:
+                  name: category
+                  type: varchar(255)
+              - column:
+                  name: avg_electricity_consumption
+                  type: double
+              - column:
+                  name: description
+                  type: varchar(255)
+              - column:
+                  name: location
+                  type: varchar(255)
+              - column:
+                  name: level
+                  type: varchar(255)
+              - column:
+                  name: source
+                  type: varchar(255)
+              - column:
+                  name: tier
+                  type: varchar(255)
+              - column:
+                  name: unit
+                  type: varchar(255)
+              - column:
+                  name: value
+                  type: double
+              - column:
+                  name: subscriber
+                  type: varchar(255)
+              - column:
+                  name: version
+                  type: varchar(255)
+      rollback:
+        - delete:
+            tableName: ref_item_impact
+            where: "name LIKE '%AI Server%'"
+

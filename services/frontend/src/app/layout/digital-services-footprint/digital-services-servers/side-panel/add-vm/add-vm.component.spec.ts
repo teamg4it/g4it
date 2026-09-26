@@ -1,4 +1,3 @@
-import { signal } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import {
     DigitalServiceServerConfig,
@@ -29,6 +28,7 @@ describe("PanelAddVmComponent", () => {
                 name: "Base VM",
                 vCpu: 2,
                 disk: 50,
+                vRam: 5,
                 quantity: 1,
                 annualOperatingTime: 8760,
                 electricityConsumption: 30,
@@ -56,8 +56,6 @@ describe("PanelAddVmComponent", () => {
 
         fixture = TestBed.createComponent(PanelAddVmComponent);
         component = fixture.componentInstance;
-
-        (component as any).server = signal(serverConfig);
     });
 
     it("should create", () => {
@@ -69,15 +67,6 @@ describe("PanelAddVmComponent", () => {
         component.ngOnInit();
 
         expect(component.vm.name).toBe("VM 2");
-        expect(component.vm).toEqual({
-            uid: "",
-            name: "VM 2",
-            vCpu: 1,
-            disk: 1,
-            quantity: 1,
-            annualOperatingTime: 8760,
-            electricityConsumption: undefined as any,
-        });
         expect(component.vm.electricityConsumption).toBeUndefined();
     });
 
@@ -114,6 +103,15 @@ describe("PanelAddVmComponent", () => {
         expect(component.quantityControl.errors?.["isQuantityTooLow"]).toBeTrue();
     });
 
+    it("should default missing total vCPU and vcpu value to zero", () => {
+        serverConfig.totalVCpu = undefined;
+        component.addVmForm.patchValue({ vcpu: 0, quantity: 1 });
+
+        component.verifyValue();
+
+        expect(component.vcpuControl.errors?.["isValueTooHigh"]).toBeTrue();
+    });
+
     it("should validate Storage disk capacity", () => {
         serverConfig.type = "Storage";
         serverConfig.totalDisk = 100;
@@ -129,7 +127,42 @@ describe("PanelAddVmComponent", () => {
         expect(component.diskControl.errors?.["isValueTooHigh"]).toBeUndefined();
     });
 
-    it("should calculate capacity sums for Compute and Storage while excluding the edited VM", () => {
+    it("should default missing total disk and disk/quantity values to zero", () => {
+        serverConfig.type = "Storage";
+        serverConfig.totalDisk = undefined;
+        component.addVmForm.patchValue({ disk: 0, quantity: 0 });
+
+        component.verifyValue();
+
+        expect(component.diskControl.errors?.["isValueTooHigh"]).toBeTrue();
+    });
+
+    it("should validate AI vRAM capacity", () => {
+        serverConfig.type = "AI";
+        serverConfig.totalVram = 20;
+        component.addVmForm.patchValue({ vram: 16, quantity: 1 });
+
+        component.verifyValue();
+
+        expect(component.vramControl.errors?.["isValueTooHigh"]).toBeTrue();
+
+        component.addVmForm.patchValue({ vram: 14, quantity: 1 });
+        component.verifyValue();
+
+        expect(component.vramControl.errors?.["isValueTooHigh"]).toBeUndefined();
+    });
+
+    it("should default missing total vRAM and vram/quantity values to zero", () => {
+        serverConfig.type = "AI";
+        serverConfig.totalVram = undefined;
+        component.addVmForm.patchValue({ vram: 0, quantity: 0 });
+
+        component.verifyValue();
+
+        expect(component.vramControl.errors?.["isValueTooHigh"]).toBeTrue();
+    });
+
+    it("should calculate capacity sums for Compute, Storage and AI while excluding the edited VM", () => {
         component.vm = serverConfig.vm[0];
 
         expect(component.sum()).toBe(0);
@@ -139,6 +172,9 @@ describe("PanelAddVmComponent", () => {
 
         serverConfig.type = "Storage";
         expect(component.sum()).toBe(50);
+
+        serverConfig.type = "AI";
+        expect(component.sum()).toBe(5);
     });
 
     it("should validate electricity consumption against remaining server capacity", () => {
@@ -156,6 +192,27 @@ describe("PanelAddVmComponent", () => {
         expect(
             component.electricityConsumptionControl.errors?.["isElecValueTooHigh"],
         ).toBeUndefined();
+    });
+
+    it("should default missing annual electricity consumption and per-VM values to zero", () => {
+        serverConfig.annualElectricConsumption = undefined;
+        serverConfig.vm.push({
+            uid: "VM2",
+            name: "No Consumption VM",
+            vCpu: 1,
+            disk: 1,
+            vRam: 1,
+            quantity: 1,
+            annualOperatingTime: 8760,
+            electricityConsumption: undefined as any,
+        });
+        component.vm = { name: "Different VM" } as ServerVM;
+
+        component.verifyElectricityValue();
+
+        expect(
+            component.electricityConsumptionControl.errors?.["isElecValueTooHigh"],
+        ).toBeTrue();
     });
 
     it("should add a new VM and close the panel on submission", () => {
@@ -187,5 +244,32 @@ describe("PanelAddVmComponent", () => {
         const emitSpy = spyOn(component.addVMPanelVisibleChange, "emit");
         component.close();
         expect(emitSpy).toHaveBeenCalledWith(false);
+    });
+
+    it("should merge a new error while keeping other existing errors", () => {
+        const control = component.quantityControl;
+        control.setErrors({ otherError: true });
+
+        (component as any).setControlError(control, "isValueTooHigh", true);
+
+        expect(control.errors).toEqual({ otherError: true, isValueTooHigh: true });
+    });
+
+    it("should remove only the given error while keeping other existing errors", () => {
+        const control = component.quantityControl;
+        control.setErrors({ otherError: true, isValueTooHigh: true });
+
+        (component as any).setControlError(control, "isValueTooHigh", false);
+
+        expect(control.errors).toEqual({ otherError: true });
+    });
+
+    it("should clear all errors when none remain", () => {
+        const control = component.quantityControl;
+        control.setErrors({ isValueTooHigh: true });
+
+        (component as any).setControlError(control, "isValueTooHigh", false);
+
+        expect(control.errors).toBeNull();
     });
 });

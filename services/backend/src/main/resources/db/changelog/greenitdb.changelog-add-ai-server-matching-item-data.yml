@@ -1,0 +1,27 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-ref-matching-item-data-for-ai-servers
+      author: G4IT Dev Team
+      preConditions:
+        onFail: MARK_RAN
+        sqlCheck:
+          expectedResult: "0"
+          sql: SELECT COUNT(*) FROM ref_matching_item WHERE item_source LIKE 'ai-server-%'
+      changes:
+        - loadData:
+            file: db/changelog/referential-data/ref_matching_item_ai_server.csv
+            tableName: ref_matching_item
+            separator: ;
+            encoding: UTF-8
+            columns:
+              - column:
+                  name: item_source
+                  type: varchar(255)
+              - column:
+                  name: ref_item_target
+                  type: varchar(255)
+      rollback:
+        - delete:
+            tableName: ref_matching_item
+            where: "item_source LIKE 'ai-server-%'"
+

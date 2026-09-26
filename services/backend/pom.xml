@@ -40,7 +40,7 @@
 
         <keycloak-adapter-bom.version>25.0.6</keycloak-adapter-bom.version>
         <postgresql.version>42.7.12</postgresql.version>
-        <bouncycastle.version>1.84</bouncycastle.version>
+        <bouncycastle.version>1.85</bouncycastle.version>
         <keycloak-spring-boot-starter.version>25.0.3</keycloak-spring-boot-starter.version>
 
         <!-- springdoc 2.7.0 is not working -->
@@ -59,7 +59,7 @@
         <shedlock.version>6.9.2</shedlock.version>
         <azure-communication-email.version>1.0.11</azure-communication-email.version>
         <!-- Netty version override to remediate CVE-2026-59901 and related vulnerabilities -->
-        <netty.version>4.2.16.Final</netty.version>
+        <netty.version>4.2.17.Final</netty.version>
         <sonar.coverage.exclusions>
             **/gen/**/*.java,
             **/controller/**/*.java,
