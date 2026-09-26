@@ -150,6 +150,7 @@
         "overgreen-logo": "G4IT Logo",
         "soprasteria-logo": "Sopra Steria Logo",
         "no-document-upload": "Aucun document téléchargé",
+        "no-month-name-choosen": "Aucun mois ou nom choisi",
         "workspace": {
             "create": "Créer un nouvel espace de travail",
             "mandatory": "Obligatoire",
@@ -625,6 +626,7 @@
             "data-model": "Modèle de données"
         },
         "add-files": "Ajouter fichiers",
+        "add-new-file": "Ajouter un fichier",
         "loading-history": "Historique des chargements",
         "finish": "Clore",
         "start-upload": "Lancer l'import",
@@ -635,7 +637,9 @@
         "browse-file": "Charger un fichier",
         "datacenter": "Centre de données",
         "physical-equipment": "Équipement physique",
-        "virtual-equipment": "Équipement virtuel"
+        "virtual-equipment": "Équipement virtuel",
+        "application": "Application",
+        "ai-services": "Services IA"
     },
     "welcome-page": {
         "title": "Page de bienvenue",
@@ -690,6 +694,30 @@
         "title": "Mon Système d'information - {{WorkspaceName}}",
         "add": "Nouvel Inventaire",
         "created": "créé",
+        "create-drawer": {
+            "info": {
+                "title": "Inventaire Infos",
+                "description": "Chaque version du système d'information vous permet de suivre l'évolution de son impact au fil du temps. Une simulation vous permet de réaliser une évaluation d'impact sur un inventaire de test."
+            },
+            "infra": {
+                "title": "Infrastructure",
+                "description": "L'infrastructure comprend tous les composants physiques qui hébergent et prennent en charge les systèmes informatiques, tels que les centres de données, les serveurs et les équipements réseau."
+            },
+            "end-user": {
+                "title": "Appareils Utilisateur Final",
+                "description": "Cette catégorie comprend tous les appareils utilisés par les collaborateurs dans le cadre de leur travail quotidien pour accéder aux systèmes informatiques, tels que les ordinateurs portables, les smartphones, les écrans et les imprimantes."
+            },
+            "app-service": {
+                "title": "Services Applicatifs",
+                "description": "Cette catégorie couvre les applications et leurs composants d'exécution associés. Elle inclut notamment les machines virtuelles, conteneurs, bases de données et autres services logiciels contribuant à la fourniture de fonctionnalités aux utilisateurs et aux processus métier."
+            },
+            "external-services": {
+                "title": "Services Externes",
+                "description": "Cette catégorie englobe les services fournis par des prestataires externes, tels que le cloud computing, et les fournisseurs de services d'IA. Ces services sont managés en dehors de l'organisation mais sont nécessaires pour que l'organisation délivre sa valeur. Ils doivent donc être comptabilisés."
+            },
+            "create-inventory": "Créer un inventaire",
+            "update-inventory": "Mettre à jour l'inventaire"
+        },
         "details.equipment": "EQUIPEMENT",
         "details.application": "APPLICATION",
         "inventory-date": "La date d'inventaire",
@@ -725,7 +753,9 @@
             "eq-phys": "Équipement Physique",
             "eq-virt": "Équipement Virtuel",
             "app": "Application",
-            "name": "Type d'inventaire"
+            "name": "Type d'inventaire",
+            "month": "Mois de l'inventaire",
+            "simulation-name": "Nom de l'inventaire"
         },
         "popup": {
             "delete-question": "Êtes-vous sûr de vouloir supprimer l'inventaire",

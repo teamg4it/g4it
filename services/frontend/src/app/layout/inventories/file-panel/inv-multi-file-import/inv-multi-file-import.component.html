@@ -1,0 +1,44 @@
+@for (row of rows; track row.id) {
+    <div class="multi-file-import flex justify-content-start mb-3">
+        <p-select
+            appendTo="body"
+            [(ngModel)]="row.type"
+            [options]="fileTypes"
+            optionLabel="label"
+            class="label-input w-15rem h-3rem min-w-0"
+            id="{{ row.id }}Name"
+            [ariaLabel]="row.type.label"
+        ></p-select>
+        <p-fileUpload
+            (onSelect)="onSelectFile($event, row)"
+            styleClass="multifile-upload cancel-creation-button uppercase mx-2 h-3rem font-bold"
+            id="file{{ row.id }}"
+            mode="basic"
+            [chooseLabel]="
+                row.file
+                    ? row.file.name
+                    : ('digital-services-import.browse-file' | translate)
+            "
+            [ariaLabel]="'digital-services-import.browse-file' | translate"
+            [files]="row.file ? [row.file] : []"
+            accept="{{ allowedFileExtensions.join(',') }}"
+            [customUpload]="true"
+        >
+        </p-fileUpload>
+        <p-button
+            class="mt-1"
+            icon="pi pi-times"
+            (onClick)="onDeleteRow(row)"
+            [text]="true"
+            [ariaLabel]="'administration.delete' | translate"
+        ></p-button>
+    </div>
+}
+
+<p-button
+    styleClass="cancel-creation-button uppercase h-3rem font-bold"
+    icon="pi pi-plus"
+    (onClick)="addRow()"
+    label="{{ 'digital-services-import.add-new-file' | translate }}"
+    [ariaLabel]="'digital-services-import.add-new-file' | translate"
+></p-button>
