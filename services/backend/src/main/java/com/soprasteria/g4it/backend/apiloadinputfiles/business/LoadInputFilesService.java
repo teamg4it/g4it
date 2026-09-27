@@ -339,9 +339,11 @@ public class LoadInputFilesService {
             boolean isInventory) {
 
         try {
-            Path workingDir = isInventory
-                    ? Path.of(localWorkingFolder, "input", "inventory")
-                    : Path.of(localWorkingFolder, "input", "digital-service");
+            Path workingDir = Path.of(
+                    localWorkingFolder,
+                    "input",
+                    isInventory ? "inventory" : "digital-service"
+            );
 
             String extension = StringUtils.getFilenameExtension(
                     multipartFile.getOriginalFilename()

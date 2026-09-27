@@ -301,13 +301,14 @@ class LoadInputFilesServiceTest {
         when(workspaceService.getWorkspaceById(1L))
                 .thenReturn(workspace);
 
+        List<MultipartFile> files = List.of(multipartFile);
         assertThrows(
                 ResponseStatusException.class,
                 () -> loadInputFilesService.loadFiles(
                         "testOrganization",
                         1L,
                         inventoryId,
-                        List.of(multipartFile),
+                        files,
                         null,
                         null,
                         null,
@@ -432,10 +433,12 @@ class LoadInputFilesServiceTest {
                 .thenReturn(Optional.of(digitalServiceVersion));
 
         when(taskRepository.findByDigitalServiceVersionAndStatusAndType(
-                eq(digitalServiceVersion),
-                eq(TaskStatus.IN_PROGRESS.toString()),
-                eq(TaskType.LOADING.toString())
+                digitalServiceVersion,
+                TaskStatus.IN_PROGRESS.toString(),
+                TaskType.LOADING.toString()
         )).thenReturn(List.of(mock(Task.class)));
+
+        List<MultipartFile> files = List.of(file);
 
         // When / Then
         assertThrows(
@@ -444,7 +447,7 @@ class LoadInputFilesServiceTest {
                         "testOrganization",
                         1L,
                         digitalServiceUid,
-                        List.of(file),
+                        files,
                         null,
                         null
                 )
@@ -475,11 +478,11 @@ class LoadInputFilesServiceTest {
                 .thenReturn(Optional.of(inventory));
 
         when(taskRepository.findByInventoryAndStatusAndType(
-                eq(inventory),
-                eq(TaskStatus.IN_PROGRESS.toString()),
-                eq(TaskType.LOADING.toString())
+                inventory,
+                TaskStatus.IN_PROGRESS.toString(),
+                TaskType.LOADING.toString()
         )).thenReturn(List.of(mock(Task.class)));
-
+        List<MultipartFile> files = List.of(file);
         // When / Then
         assertThrows(
                 G4itRestException.class,
@@ -487,7 +490,7 @@ class LoadInputFilesServiceTest {
                         "testOrganization",
                         1L,
                         inventoryId,
-                        List.of(file),
+                        files,
                         null,
                         null,
                         null,

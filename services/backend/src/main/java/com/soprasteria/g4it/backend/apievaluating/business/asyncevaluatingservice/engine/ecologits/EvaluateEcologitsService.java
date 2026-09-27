@@ -26,7 +26,11 @@ import java.util.function.Function;
 @RequiredArgsConstructor
 public class EvaluateEcologitsService {
 
+    private static final String CLIMATE_CHANGE = "CLIMATE_CHANGE";
     private static final String WATER_USE = "WATER_USE";
+    private static final String RESOURCE_USE = "RESOURCE_USE";
+    private static final String RESOURCE_USE_FOSSILS = "RESOURCE_USE_FOSSILS";
+
     private static final String MANUFACTURING = "MANUFACTURING";
     private static final String USING = "USING";
     private static final String TRANSPORTATION = "TRANSPORTATION";
@@ -35,16 +39,16 @@ public class EvaluateEcologitsService {
     private static final String OK = "OK";
     private static final String DEFAULT_LOCATION = "WOR";
     private static final Map<String, Function<EcoImpactPhaseRest, EcoMetricRest>> PHASE_METRICS = Map.of(
-            "CLIMATE_CHANGE", EcoImpactPhaseRest::getGwp,
-            "RESOURCE_USE", EcoImpactPhaseRest::getAdpe,
-            "RESOURCE_USE_FOSSILS", EcoImpactPhaseRest::getPe,
-            "WATER_USE", EcoImpactPhaseRest::getWcf
+            CLIMATE_CHANGE, EcoImpactPhaseRest::getGwp,
+            RESOURCE_USE, EcoImpactPhaseRest::getAdpe,
+            RESOURCE_USE_FOSSILS, EcoImpactPhaseRest::getPe,
+            WATER_USE, EcoImpactPhaseRest::getWcf
     );
     private static final Map<String, Function<EcoImpactsRest, EcoMetricRest>> TOTAL_METRICS = Map.of(
-            "CLIMATE_CHANGE", EcoImpactsRest::getGwp,
-            "RESOURCE_USE", EcoImpactsRest::getAdpe,
-            "RESOURCE_USE_FOSSILS", EcoImpactsRest::getPe,
-            "WATER_USE", EcoImpactsRest::getWcf
+            CLIMATE_CHANGE, EcoImpactsRest::getGwp,
+            RESOURCE_USE, EcoImpactsRest::getAdpe,
+            RESOURCE_USE_FOSSILS, EcoImpactsRest::getPe,
+            WATER_USE, EcoImpactsRest::getWcf
     );
 
     private final EcologitsService ecologitsService;

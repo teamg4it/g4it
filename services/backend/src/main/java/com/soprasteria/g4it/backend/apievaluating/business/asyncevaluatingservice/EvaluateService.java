@@ -193,7 +193,6 @@ public class EvaluateService {
         ));
 
 
-        // Build item referential map: item reference name -> {level, unit}
         Map<String, ItemReferentialInfo> itemReferentialMap = referentialService.buildItemReferentialMap(context.getWorkspaceId());
         RefShortcutBO refShortcutBO = new RefShortcutBO(
                 criteriaUnitMap,
@@ -210,9 +209,9 @@ public class EvaluateService {
         Map<String, Double> refSip = referentialService.getSipValueMap(criteriaCodes);
         Map<String, String> codeToCountryMap = codeToCountryMapCache;
 
-        Map<List<String>, AggValuesBO> aggregationPhysicalEquipments = new HashMap<>(INITIAL_MAP_CAPACITY);
-        Map<List<String>, AggValuesBO> aggregationVirtualEquipments = new HashMap<>(context.isHasVirtualEquipments() ? INITIAL_MAP_CAPACITY : 0);
-        Map<List<String>, AggValuesBO> aggregationApplications = new HashMap<>(context.isHasApplications() ? INITIAL_MAP_CAPACITY : 0);
+        Map<List<String>, AggValuesBO> aggregationPhysicalEquipments = HashMap.newHashMap(INITIAL_MAP_CAPACITY);
+        Map<List<String>, AggValuesBO> aggregationVirtualEquipments = HashMap.newHashMap(context.isHasVirtualEquipments() ? INITIAL_MAP_CAPACITY : 0);
+        Map<List<String>, AggValuesBO> aggregationApplications = HashMap.newHashMap(context.isHasApplications() ? INITIAL_MAP_CAPACITY : 0);
 
 
         if (inventory != null && null == inventory.getDoExportVerbose()) {
@@ -385,7 +384,7 @@ public class EvaluateService {
                     if (physicalSaveCounter >= 10) {
                         outPhysicalEquipmentSize += saveService.saveOutPhysicalEquipments(
                                 aggregationPhysicalEquipments, taskId, refShortcutBO);
-                        aggregationPhysicalEquipments = new HashMap<>(INITIAL_MAP_CAPACITY);
+                        aggregationPhysicalEquipments = HashMap.newHashMap(INITIAL_MAP_CAPACITY);
                         physicalSaveCounter = 0;
                     }
                 }
@@ -735,7 +734,7 @@ public class EvaluateService {
                                           Double sipValue,
                                           Double lifespan,
                                           Double usageDuration,
-                                          Double workload, Boolean isCloudService,
+                                          Double workload, boolean isCloudService,
                                           String source) {
 
         boolean isOk = "OK".equals(indicatorStatus);

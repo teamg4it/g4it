@@ -382,7 +382,7 @@ class EvaluateServiceTest {
                 .thenReturn(new ArrayList<>(List.of(inAiService)))
                 .thenReturn(new ArrayList<>());
 
-        when(aiServiceToCsvRecord.toCsv(eq(inAiService)))
+        when(aiServiceToCsvRecord.toCsv(inAiService))
                 .thenReturn(List.of("Assistant"));
 
         when(aiServiceImpactToCsvRecord.toCsv(
@@ -426,7 +426,7 @@ class EvaluateServiceTest {
                 );
 
         verify(aiServiceToCsvRecord)
-                .toCsv(eq(inAiService));
+                .toCsv(inAiService);
 
         verify(aiServiceImpactToCsvRecord)
                 .toCsv(

@@ -109,6 +109,7 @@ public class LoadMetadataService {
                     mappedObject = csvToInMapper.csvInPhysicalEquipmentToRest(csvRecord, inventoryId, digitalServiceVersionUid);
             case EQUIPEMENT_VIRTUEL -> mappedObject = csvToInMapper.csvInVirtualEquipmentToRest(csvRecord, inventoryId, digitalServiceVersionUid);
             case APPLICATION -> mappedObject = csvToInMapper.csvInApplicationToRest(csvRecord, inventoryId);
+            default -> throw new IllegalArgumentException("Unexpected value: " + fileType);
         }
         return mappedObject;
     }

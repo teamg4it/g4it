@@ -6,7 +6,6 @@ import com.soprasteria.g4it.backend.apiinout.repository.InAiServiceRepository;
 import com.soprasteria.g4it.backend.common.model.Context;
 import com.soprasteria.g4it.backend.common.model.FileToLoad;
 import com.soprasteria.g4it.backend.common.model.LineError;
-import com.soprasteria.g4it.backend.common.utils.Constants;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InAiServiceRest;
 
 import jakarta.persistence.EntityManager;
@@ -430,7 +429,7 @@ class LoadAiServiceServiceTest {
 
         // Then
         verify(inAiServiceRepository).deleteByInventoryIdAndServiceNameIn(
-                eq(inventoryId), eq(java.util.Set.of(aiService.getServiceName())));
+                inventoryId, java.util.Set.of(aiService.getServiceName()));
 
         // Delete must happen before save to avoid duplicate rows on reload
         var inOrder = inOrder(inAiServiceRepository);

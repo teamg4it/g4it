@@ -25,11 +25,11 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -53,6 +53,7 @@ public class SaveService {
 
     private final TaskRepository taskRepository;
 
+    private final Clock clock;
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -75,7 +76,7 @@ public class SaveService {
             i++;
             if (i >= Constants.BATCH_SIZE) {
                 outPhysicalEquipmentRepository.saveAll(outPhysicalEquipments);
-                taskRepository.updateLastUpdateDate(taskId, LocalDateTime.now());
+                taskRepository.updateLastUpdateDate(taskId, LocalDateTime.now(clock));
                 outPhysicalEquipments.clear();
                 flushAndClearEntityManager();
                 i = 0;

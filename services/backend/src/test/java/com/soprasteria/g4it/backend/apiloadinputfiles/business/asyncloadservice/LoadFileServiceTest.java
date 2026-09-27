@@ -482,8 +482,8 @@ class LoadFileServiceTest {
 
         when(csvToInMapper.csvInDatacenterToRest(
                 any(),
-                eq(123L),
-                eq(null)
+                123L,
+                null
         )).thenReturn(new InDatacenterRest());
 
         List<List<InDatacenterRest>> batches = new ArrayList<>();
@@ -498,9 +498,7 @@ class LoadFileServiceTest {
 
             Integer page = invocation.getArgument(2);
 
-            return page == 0
-                    ? List.of(page0Error)
-                    : List.of(page1Error);
+            return List.of(page == 0 ? page0Error : page1Error);
         });
 
         List<LineError> errors = invokeReadDatacenters(parser);
@@ -515,7 +513,7 @@ class LoadFileServiceTest {
         assertEquals(1, batches.get(1).size());
 
         verify(csvToInMapper, times(totalRows))
-                .csvInDatacenterToRest(any(), eq(123L), eq(null));
+                .csvInDatacenterToRest(any(), 123L, null);
 
         verify(loadDatacenterService, times(2))
                 .execute(eq(context), eq(fileToLoad), anyInt(), anyList());
@@ -586,9 +584,7 @@ class LoadFileServiceTest {
 
             Integer page = invocation.getArgument(2);
 
-            return page == 0
-                    ? List.of(page0Error)
-                    : List.of(page1Error);
+            return List.of(page == 0 ? page0Error : page1Error);
         });
 
         List<LineError> errors =
@@ -746,9 +742,7 @@ class LoadFileServiceTest {
 
             Integer page = invocation.getArgument(2);
 
-            return page == 0
-                    ? List.of(page0Error)
-                    : List.of(page1Error);
+            return List.of(page == 0 ? page0Error : page1Error);
         });
 
         List<LineError> errors =
