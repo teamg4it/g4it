@@ -21,6 +21,11 @@ boaviztapi:
   version: 1.3.10
   base-url: http://localhost:5000
 
+#Ecologits configs
+ecologits:
+  version: 0.0.2
+  base-url: http://localhost:8010
+
 #AI Model configs
 aimodelconfigapi:
   version: 1.0
