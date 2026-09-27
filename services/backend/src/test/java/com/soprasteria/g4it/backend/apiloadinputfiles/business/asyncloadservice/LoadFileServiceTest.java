@@ -482,8 +482,8 @@ class LoadFileServiceTest {
 
         when(csvToInMapper.csvInDatacenterToRest(
                 any(),
-                123L,
-                null
+                eq(123L),
+                eq(null)
         )).thenReturn(new InDatacenterRest());
 
         List<List<InDatacenterRest>> batches = new ArrayList<>();
@@ -513,7 +513,7 @@ class LoadFileServiceTest {
         assertEquals(1, batches.get(1).size());
 
         verify(csvToInMapper, times(totalRows))
-                .csvInDatacenterToRest(any(), 123L, null);
+                .csvInDatacenterToRest(any(), eq(123L), eq(null));
 
         verify(loadDatacenterService, times(2))
                 .execute(eq(context), eq(fileToLoad), anyInt(), anyList());

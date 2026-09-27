@@ -28,11 +28,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.time.Clock;
+import java.time.ZoneOffset;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -71,11 +74,25 @@ class SaveServiceTest {
     @Mock
     private EntityManager entityManager;
 
-    @InjectMocks
     private SaveService saveService;
+
+    private final Clock clock = Clock.fixed(
+            Instant.parse("2026-01-01T00:00:00Z"),
+            ZoneOffset.UTC
+    );
 
     @BeforeEach
     void setUp() {
+        saveService = new SaveService(
+                outPhysicalEquipmentRepository,
+                outVirtualEquipmentRepository,
+                outAiServiceRepository,
+                outApplicationRepository,
+                aggregationToOutput,
+                taskRepository,
+                clock
+        );
+
         ReflectionTestUtils.setField(
                 saveService,
                 "entityManager",
