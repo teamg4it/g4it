@@ -40,7 +40,6 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class FunctionalTests {
 
-    private static final String ORGANIZATION = "ORGANIZATION";
     @MockitoBean
     private BoaviztapiClient boaviztapiClient;
     @Autowired

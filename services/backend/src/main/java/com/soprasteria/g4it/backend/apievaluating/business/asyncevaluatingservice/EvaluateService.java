@@ -203,13 +203,14 @@ public class EvaluateService {
 
             double processFactor = evaluateReportBO.isExport() ? 0.8 : 0.9;
 
-            processPhysicalEquipmentPages(context, taskId, organization, evaluateReportBO, datacenterByNameMap,
-                    vmsByPhysical, printers, criteriaSetup, lifecycleSteps, codeToCountryMap, inventoryName,
-                    totalsInfo, countItemImpactWorkspace, processFactor, state);
+            EvaluationRunContext runContext = new EvaluationRunContext(context, taskId, organization, evaluateReportBO,
+                    datacenterByNameMap, vmsByPhysical, printers, criteriaSetup, lifecycleSteps, codeToCountryMap,
+                    inventoryName, totalsInfo, countItemImpactWorkspace, processFactor);
+
+            processPhysicalEquipmentPages(runContext, state);
 
             if (context.getInventoryId() != null) {
-                processAiServicePages(context, taskId, evaluateReportBO, printers, criteriaSetup, lifecycleSteps,
-                        inventoryName, totalsInfo, processFactor, state);
+                processAiServicePages(runContext, state);
             }
 
         } catch (IOException e) {
@@ -336,15 +337,9 @@ public class EvaluateService {
         }
     }
 
-    private void processPhysicalEquipmentPages(Context context, Long taskId, String organization,
-                                                EvaluateReportBO evaluateReportBO,
-                                                Map<String, InDatacenter> datacenterByNameMap,
-                                                Map<String, List<InVirtualEquipment>> vmsByPhysical,
-                                                CsvPrinters printers, CriteriaSetup criteriaSetup,
-                                                List<String> lifecycleSteps, Map<String, String> codeToCountryMap,
-                                                String inventoryName, TotalsInfo totalsInfo,
-                                                long countItemImpactWorkspace, double processFactor,
-                                                EvaluationState state) throws IOException {
+    private void processPhysicalEquipmentPages(EvaluationRunContext runCtx, EvaluationState state) throws IOException {
+        Context context = runCtx.context();
+        CsvPrinters printers = runCtx.printers();
 
         final Sort sortByName = Sort.by("name");
         int pageNumber = 0;
@@ -361,14 +356,11 @@ public class EvaluateService {
             }
 
             log.info("Evaluating {} physical equipments, page {}/{}", physicalEquipments.size(), pageNumber + 1,
-                    (int) Math.ceil((double) totalsInfo.totalPhysicalEquipments() / Constants.BATCH_SIZE));
+                    (int) Math.ceil((double) runCtx.totalsInfo().totalPhysicalEquipments() / Constants.BATCH_SIZE));
 
             int physicalSaveCounter = 0;
             for (InPhysicalEquipment physicalEquipment : physicalEquipments) {
-                physicalSaveCounter = processOnePhysicalEquipment(context, taskId, organization, evaluateReportBO,
-                        datacenterByNameMap, vmsByPhysical, printers, criteriaSetup, lifecycleSteps, codeToCountryMap,
-                        inventoryName, totalsInfo, countItemImpactWorkspace, processFactor, state, physicalEquipment,
-                        physicalSaveCounter);
+                physicalSaveCounter = processOnePhysicalEquipment(runCtx, state, physicalEquipment, physicalSaveCounter);
             }
 
             printers.physicalEquipment().flush();
@@ -380,50 +372,45 @@ public class EvaluateService {
         }
     }
 
-    private int processOnePhysicalEquipment(Context context, Long taskId, String organization,
-                                             EvaluateReportBO evaluateReportBO,
-                                             Map<String, InDatacenter> datacenterByNameMap,
-                                             Map<String, List<InVirtualEquipment>> vmsByPhysical,
-                                             CsvPrinters printers, CriteriaSetup criteriaSetup,
-                                             List<String> lifecycleSteps, Map<String, String> codeToCountryMap,
-                                             String inventoryName, TotalsInfo totalsInfo,
-                                             long countItemImpactWorkspace, double processFactor,
-                                             EvaluationState state, InPhysicalEquipment physicalEquipment,
-                                             int physicalSaveCounter) throws IOException {
+    private int processOnePhysicalEquipment(EvaluationRunContext runCtx, EvaluationState state,
+                                             InPhysicalEquipment physicalEquipment, int physicalSaveCounter) throws IOException {
+        Context context = runCtx.context();
+        EvaluateReportBO evaluateReportBO = runCtx.evaluateReportBO();
+        CriteriaSetup criteriaSetup = runCtx.criteriaSetup();
+        CsvPrinters printers = runCtx.printers();
 
         if (state.aggregationPhysicalEquipments.size() > MAXIMUM_MAP_CAPACITY) {
             log.error("Exceeding aggregation size for physical equipments");
             throw new AsyncTaskException("Exceeding aggregation size for physical equipments, please reduce criteria number");
         }
 
-        DatacenterInfo datacenterInfo = resolveDatacenterInfo(physicalEquipment, datacenterByNameMap);
+        DatacenterInfo datacenterInfo = resolveDatacenterInfo(physicalEquipment, runCtx.datacenterByNameMap());
 
         // Call external tools - lib calculs
         List<ImpactEquipementPhysique> impactEquipementPhysiqueList = evaluateNumEcoEvalService.calculatePhysicalEquipment(
                 physicalEquipment, datacenterInfo.datacenter(),
-                organization, criteriaSetup.activeCriteria(), lifecycleSteps, criteriaSetup.hypothesisRestList(),
-                context.getWorkspaceId(), countItemImpactWorkspace);
+                runCtx.organization(), criteriaSetup.activeCriteria(), runCtx.lifecycleSteps(), criteriaSetup.hypothesisRestList(),
+                context.getWorkspaceId(), runCtx.countItemImpactWorkspace());
 
-        boolean hasNonCloudVM = hasNonCloudVirtualMachines(vmsByPhysical, physicalEquipment);
+        boolean hasNonCloudVM = hasNonCloudVirtualMachines(runCtx.vmsByPhysical(), physicalEquipment);
 
         if (evaluateReportBO.isExport()) {
             printers.inPhysicalEquipment().printRecord(inputToCsvRecord.toCsv(physicalEquipment, datacenterInfo.datacenter()));
         }
 
-        aggregatePhysicalEquipmentImpacts(context, taskId, evaluateReportBO, printers, criteriaSetup, inventoryName,
-                physicalEquipment, datacenterInfo.datacenter(), impactEquipementPhysiqueList, state);
+        aggregatePhysicalEquipmentImpacts(runCtx, state, physicalEquipment, datacenterInfo.datacenter(), impactEquipementPhysiqueList);
 
         // set progress percentage
         state.processed++;
-        if (state.processed % 20 == 0 || state.processed == totalsInfo.totalEquipments()) {
-            updateProgress(taskId, state.processed, totalsInfo.totalEquipments(), processFactor);
+        if (state.processed % 20 == 0 || state.processed == runCtx.totalsInfo().totalEquipments()) {
+            updateProgress(runCtx.taskId(), state.processed, runCtx.totalsInfo().totalEquipments(), runCtx.processFactor());
         }
 
         /**
          * ------------------------------------------------------------------
          * VM RULE:
          * A physical equipment must run VM calculations ONLY IF:
-         *    - It has â‰¥ 1 NON-CLOUD VM
+         *    - It has >= 1 NON-CLOUD VM
          * Cloud VMs do NOT count for this condition.
          * ------------------------------------------------------------------
          */
@@ -434,12 +421,12 @@ public class EvaluateService {
         SaveResult saveResult = evaluateVirtualsEquipments(context, evaluateReportBO, physicalEquipment, impactEquipementPhysiqueList,
                 state.aggregationVirtualEquipments, state.aggregationApplications,
                 printers.inVirtualEquipment(), printers.virtualEquipment(), printers.inApplication(), printers.application(),
-                criteriaSetup.refSip(), criteriaSetup.refShortcutBO(), criteriaSetup.criteriaCodes(), lifecycleSteps,
-                codeToCountryMap, datacenterInfo.pue(), datacenterInfo.location());
+                criteriaSetup.refSip(), criteriaSetup.refShortcutBO(), criteriaSetup.criteriaCodes(), runCtx.lifecycleSteps(),
+                runCtx.codeToCountryMap(), datacenterInfo.pue(), datacenterInfo.location());
         state.outVirtualEquipmentSize += saveResult.savedVirtualCount();
         state.outApplicationSize += saveResult.savedApplicationCount();
 
-        return flushPhysicalEquipmentsIfFull(taskId, criteriaSetup.refShortcutBO(), state, physicalSaveCounter + 1);
+        return flushPhysicalEquipmentsIfFull(runCtx.taskId(), criteriaSetup.refShortcutBO(), state, physicalSaveCounter + 1);
     }
 
     private DatacenterInfo resolveDatacenterInfo(InPhysicalEquipment physicalEquipment,
@@ -464,11 +451,13 @@ public class EvaluateService {
     }
 
     // Aggregate physical equipment indicators in memory
-    private void aggregatePhysicalEquipmentImpacts(Context context, Long taskId, EvaluateReportBO evaluateReportBO,
-                                                    CsvPrinters printers, CriteriaSetup criteriaSetup, String inventoryName,
+    private void aggregatePhysicalEquipmentImpacts(EvaluationRunContext runCtx, EvaluationState state,
                                                     InPhysicalEquipment physicalEquipment, InDatacenter datacenter,
-                                                    List<ImpactEquipementPhysique> impactEquipementPhysiqueList,
-                                                    EvaluationState state) throws IOException {
+                                                    List<ImpactEquipementPhysique> impactEquipementPhysiqueList) throws IOException {
+        EvaluateReportBO evaluateReportBO = runCtx.evaluateReportBO();
+        CriteriaSetup criteriaSetup = runCtx.criteriaSetup();
+        CSVPrinter csvPhysicalEquipment = runCtx.printers().physicalEquipment();
+
         for (ImpactEquipementPhysique impact : impactEquipementPhysiqueList) {
             Double sipValue = criteriaSetup.refSip().get(impact.getCritere());
             AggValuesBO values = createAggValuesBO(impact.getStatutIndicateur(), impact.getTrace(),
@@ -484,8 +473,8 @@ public class EvaluateService {
                     .add(values);
 
             if (evaluateReportBO.isExport()) {
-                printers.physicalEquipment().printRecord(impactToCsvRecord.toCsv(
-                        context, taskId, inventoryName, physicalEquipment, impact, sipValue, evaluateReportBO.isVerbose())
+                csvPhysicalEquipment.printRecord(impactToCsvRecord.toCsv(
+                        runCtx.context(), runCtx.taskId(), runCtx.inventoryName(), physicalEquipment, impact, sipValue, evaluateReportBO.isVerbose())
                 );
             }
 
@@ -504,10 +493,11 @@ public class EvaluateService {
         return 0;
     }
 
-    private void processAiServicePages(Context context, Long taskId, EvaluateReportBO evaluateReportBO,
-                                        CsvPrinters printers, CriteriaSetup criteriaSetup, List<String> lifecycleSteps,
-                                        String inventoryName, TotalsInfo totalsInfo, double processFactor,
-                                        EvaluationState state) throws IOException {
+    private void processAiServicePages(EvaluationRunContext runCtx, EvaluationState state) throws IOException {
+        Context context = runCtx.context();
+        CriteriaSetup criteriaSetup = runCtx.criteriaSetup();
+        CSVPrinter csvAiService = runCtx.printers().aiService();
+
         final Sort sortById = Sort.by("id");
         int aiPageNumber = 0;
         while (true) {
@@ -518,41 +508,41 @@ public class EvaluateService {
             }
 
             List<OutAiService> outAiServices = new ArrayList<>(
-                    aiServices.size() * Math.max(criteriaSetup.criteriaCodes().size(), 1) * Math.max(lifecycleSteps.size(), 1));
+                    aiServices.size() * Math.max(criteriaSetup.criteriaCodes().size(), 1) * Math.max(runCtx.lifecycleSteps().size(), 1));
             for (InAiService aiService : aiServices) {
-                processOneAiService(context, taskId, evaluateReportBO, printers, criteriaSetup, lifecycleSteps,
-                        inventoryName, totalsInfo, processFactor, state, aiService, outAiServices);
+                processOneAiService(runCtx, state, aiService, outAiServices);
             }
 
             state.outAiServiceSize += saveService.saveOutAiServices(outAiServices);
-            printers.aiService().flush();
+            csvAiService.flush();
             aiPageNumber++;
             aiServices.clear();
         }
     }
 
-    private void processOneAiService(Context context, Long taskId, EvaluateReportBO evaluateReportBO,
-                                      CsvPrinters printers, CriteriaSetup criteriaSetup, List<String> lifecycleSteps,
-                                      String inventoryName, TotalsInfo totalsInfo, double processFactor,
-                                      EvaluationState state, InAiService aiService,
+    private void processOneAiService(EvaluationRunContext runCtx, EvaluationState state, InAiService aiService,
                                       List<OutAiService> outAiServices) throws IOException {
+        EvaluateReportBO evaluateReportBO = runCtx.evaluateReportBO();
+        CriteriaSetup criteriaSetup = runCtx.criteriaSetup();
+        CsvPrinters printers = runCtx.printers();
+
         if (evaluateReportBO.isExport()) {
             printers.inAiService().printRecord(aiServiceToCsvRecord.toCsv(aiService));
         }
 
-        List<ImpactBO> aiImpacts = evaluateEcologitsService.evaluate(aiService, criteriaSetup.criteriaCodes(), lifecycleSteps, countryNameToCodeMapCache);
+        List<ImpactBO> aiImpacts = evaluateEcologitsService.evaluate(aiService, criteriaSetup.criteriaCodes(), runCtx.lifecycleSteps(), countryNameToCodeMapCache);
         for (ImpactBO impact : aiImpacts) {
-            OutAiService outAiService = toOutAiService(taskId, aiService, impact, criteriaSetup.criteriaUnitMap(), criteriaSetup.refSip());
+            OutAiService outAiService = toOutAiService(runCtx.taskId(), aiService, impact, criteriaSetup.criteriaUnitMap(), criteriaSetup.refSip());
             outAiServices.add(outAiService);
             if (evaluateReportBO.isExport()) {
-                printers.aiService().printRecord(aiServiceImpactToCsvRecord.toCsv(context, taskId, inventoryName, aiService, outAiService));
+                printers.aiService().printRecord(aiServiceImpactToCsvRecord.toCsv(runCtx.context(), runCtx.taskId(), runCtx.inventoryName(), aiService, outAiService));
             }
             evaluateReportBO.setNbAiServiceLines(evaluateReportBO.getNbAiServiceLines() + 1);
         }
 
         state.processed++;
-        if (state.processed % 20 == 0 || state.processed == totalsInfo.totalEquipments()) {
-            updateProgress(taskId, state.processed, totalsInfo.totalEquipments(), processFactor);
+        if (state.processed % 20 == 0 || state.processed == runCtx.totalsInfo().totalEquipments()) {
+            updateProgress(runCtx.taskId(), state.processed, runCtx.totalsInfo().totalEquipments(), runCtx.processFactor());
         }
     }
 
@@ -640,6 +630,17 @@ public class EvaluateService {
                                 CSVPrinter inVirtualEquipment, CSVPrinter inAiService, CSVPrinter inApplication) {
     }
 
+    // Bundles the parameters shared across the physical-equipment and AI-service paged processing steps
+    private record EvaluationRunContext(Context context, Long taskId, String organization,
+                                         EvaluateReportBO evaluateReportBO,
+                                         Map<String, InDatacenter> datacenterByNameMap,
+                                         Map<String, List<InVirtualEquipment>> vmsByPhysical,
+                                         CsvPrinters printers, CriteriaSetup criteriaSetup,
+                                         List<String> lifecycleSteps, Map<String, String> codeToCountryMap,
+                                         String inventoryName, TotalsInfo totalsInfo,
+                                         long countItemImpactWorkspace, double processFactor) {
+    }
+
     // Mutable accumulator of aggregation maps and counters shared across the paged processing steps
     private static final class EvaluationState {
         private Map<List<String>, AggValuesBO> aggregationPhysicalEquipments;
@@ -677,122 +678,181 @@ public class EvaluateService {
 
         if (!context.isHasVirtualEquipments()) return new SaveResult(0, 0);
 
+        VirtualEquipmentEvalContext ctx = new VirtualEquipmentEvalContext(context, evaluateReportBO, physicalEquipment,
+                impactEquipementPhysiqueList, aggregationVirtualEquipments, aggregationApplications,
+                csvInVirtualEquipment, csvVirtualEquipment, csvInApplication, csvApplication,
+                refSip, refShortcutBO, criteria, lifecycleSteps, codeToCountryMap, equipmentPue, equipmentLocation);
         String physicalEquipmentName = physicalEquipment == null ? null : physicalEquipment.getName();
 
-        int pageNumber = 0;
-        int virtualSaveCounter = 0;
-
-        int savedVirtualCount = 0;
-        int savedApplicationCount = 0;
+        VirtualEvalState state = new VirtualEvalState();
         final Sort sortByName = Sort.by("name");
+
         while (true) {
-            Pageable page = PageRequest.of(pageNumber, Constants.BATCH_SIZE, sortByName);
-            List<InVirtualEquipment> virtualEquipments;
-            if (context.getInventoryId() == null && physicalEquipmentName == null) {
-                virtualEquipments = inVirtualEquipmentRepository
-                        .findByDigitalServiceVersionUidAndPhysicalEquipmentNameIsNull(
-                                context.getDigitalServiceVersionUid(), page);
-            } else {
-                virtualEquipments = context.getInventoryId() == null ?
-                        inVirtualEquipmentRepository.findByDigitalServiceVersionUidAndPhysicalEquipmentName(
-                                context.getDigitalServiceVersionUid(), physicalEquipmentName, page) :
-                        inVirtualEquipmentRepository.findByInventoryIdAndPhysicalEquipmentName(
-                                context.getInventoryId(), physicalEquipmentName, page);
-            }
+            Pageable page = PageRequest.of(state.pageNumber, Constants.BATCH_SIZE, sortByName);
+            List<InVirtualEquipment> virtualEquipments = fetchVirtualEquipmentsPage(context, physicalEquipmentName, page);
             if (virtualEquipments.isEmpty()) {
                 break;
             }
-            Double totalVcpuCoreNumber =
-                    evaluateNumEcoEvalService.getTotalVcpuCoreNumber(virtualEquipments);
-            Double totalStorage =
-                    evaluateNumEcoEvalService.getTotalDiskSize(virtualEquipments);
-            int virtualSize = virtualEquipments.size();
-            for (InVirtualEquipment virtualEquipment : virtualEquipments) {
-                List<ImpactEquipementVirtuel> impactEquipementVirtuelList;
-                Double cloudElectricityKwh = null;
-                boolean isCloudService = CLOUD_SERVICES.name().equals(virtualEquipment.getInfrastructureType());
-                if (isCloudService) {
-                    List<ImpactBO> impactBOList = evaluateBoaviztapiService.evaluate(virtualEquipment, criteria, lifecycleSteps);
-                    impactEquipementVirtuelList = internalToNumEcoEvalImpact.map(impactBOList);
-                    BoaResponseRest response =
-                            boaviztapiService.runBoaviztCalculations(virtualEquipment);
 
-                    Double avgPowerW =
-                            boaviztapiService.extractAvgPowerW(response).orElse(null);
+            processVirtualEquipmentsPage(ctx, virtualEquipments, state);
 
-                    cloudElectricityKwh =
-                            boaviztapiService.computeAnnualElectricityKwhRaw(
-                                    avgPowerW,
-                                    virtualEquipment.getDurationHour()
-                            );
-                } else {
-                    impactEquipementVirtuelList = evaluateNumEcoEvalService.calculateVirtualEquipment(
-                            virtualEquipment, impactEquipementPhysiqueList, virtualSize, totalVcpuCoreNumber, totalStorage,
-                            equipmentPue, equipmentLocation
-                    );
-                }
-                String location = isCloudService ? codeToCountryMap.get(virtualEquipment.getLocation()) : virtualEquipment.getLocation();
-                if (evaluateReportBO.isExport()) {
-                    csvInVirtualEquipment.printRecord(inputToCsvRecord.toCsv(virtualEquipment, location));
-                }
-
-                // Aggregate virtual equipment indicators in memory
-                for (ImpactEquipementVirtuel impact : impactEquipementVirtuelList) {
-
-                    Double sipValue = refSip.get(impact.getCritere());
-                    Double electricity =
-                            isCloudService
-                                    ? cloudElectricityKwh : impact.getConsoElecMoyenne();
-                    AggValuesBO values = createAggValuesBO(impact.getStatutIndicateur(), impact.getTrace(),
-                            virtualEquipment.getQuantity(),
-                            electricity, impact.getImpactUnitaire(),
-                            sipValue,
-                            null, virtualEquipment.getDurationHour(), virtualEquipment.getWorkload(), isCloudService,impact.getSource());
-
-                    aggregationVirtualEquipments
-                            .computeIfAbsent(aggregationToOutput.keyVirtualEquipment(physicalEquipment, virtualEquipment, impact, refShortcutBO, evaluateReportBO), k -> new AggValuesBO())
-                            .add(values);
-
-                    if (evaluateReportBO.isExport()) {
-                        csvVirtualEquipment.printRecord(impactToCsvRecord.toCsv(
-                                context, evaluateReportBO, virtualEquipment, impact, sipValue, electricity)
-                        );
-                    }
-
-                    evaluateReportBO.setNbVirtualEquipmentLines(evaluateReportBO.getNbVirtualEquipmentLines() + 1);
-                }
-
-                if (aggregationVirtualEquipments.size() > MAXIMUM_MAP_CAPACITY) {
-                    log.error("Exceeding aggregation size for virtual equipments");
-                    throw new AsyncTaskException("Exceeding aggregation size for virtual equipments, please reduce criteria number");
-                }
-
-                virtualSaveCounter++;
-
-                if (virtualSaveCounter >= 10) {
-                    savedVirtualCount += saveService.saveOutVirtualEquipments(
-                            aggregationVirtualEquipments, evaluateReportBO.getTaskId(), refShortcutBO);
-                    aggregationVirtualEquipments.clear();
-                    virtualSaveCounter = 0;
-                }
-
-                savedApplicationCount += this.evaluateApplications(context, evaluateReportBO, physicalEquipment, virtualEquipment, impactEquipementVirtuelList,
-                        aggregationApplications, csvInApplication, csvApplication, refSip, refShortcutBO, cloudElectricityKwh);
-            }
-            pageNumber++;
-            if (pageNumber > 0 && pageNumber % 5 == 0) {
+            state.pageNumber++;
+            if (state.pageNumber % 5 == 0) {
                 csvVirtualEquipment.flush();
                 csvApplication.flush();
             }
             virtualEquipments.clear();
         }
 
-        if (!aggregationVirtualEquipments.isEmpty()) {
-            savedVirtualCount += saveService.saveOutVirtualEquipments(
-                    aggregationVirtualEquipments, evaluateReportBO.getTaskId(), refShortcutBO);
-            aggregationVirtualEquipments.clear();
+        flushRemainingVirtualEquipments(ctx, state);
+        return new SaveResult(state.savedVirtualCount, state.savedApplicationCount);
+    }
+
+    private List<InVirtualEquipment> fetchVirtualEquipmentsPage(Context context, String physicalEquipmentName, Pageable page) {
+        if (context.getInventoryId() == null && physicalEquipmentName == null) {
+            return inVirtualEquipmentRepository.findByDigitalServiceVersionUidAndPhysicalEquipmentNameIsNull(
+                    context.getDigitalServiceVersionUid(), page);
         }
-        return new SaveResult(savedVirtualCount, savedApplicationCount);
+        if (context.getInventoryId() == null) {
+            return inVirtualEquipmentRepository.findByDigitalServiceVersionUidAndPhysicalEquipmentName(
+                    context.getDigitalServiceVersionUid(), physicalEquipmentName, page);
+        }
+        return inVirtualEquipmentRepository.findByInventoryIdAndPhysicalEquipmentName(
+                context.getInventoryId(), physicalEquipmentName, page);
+    }
+
+    private void processVirtualEquipmentsPage(VirtualEquipmentEvalContext ctx, List<InVirtualEquipment> virtualEquipments,
+                                               VirtualEvalState state) throws IOException {
+        Double totalVcpuCoreNumber = evaluateNumEcoEvalService.getTotalVcpuCoreNumber(virtualEquipments);
+        Double totalStorage = evaluateNumEcoEvalService.getTotalDiskSize(virtualEquipments);
+        int virtualSize = virtualEquipments.size();
+
+        for (InVirtualEquipment virtualEquipment : virtualEquipments) {
+            processOneVirtualEquipment(ctx, virtualEquipment, virtualSize, totalVcpuCoreNumber, totalStorage, state);
+        }
+    }
+
+    private void processOneVirtualEquipment(VirtualEquipmentEvalContext ctx, InVirtualEquipment virtualEquipment,
+                                             int virtualSize, Double totalVcpuCoreNumber, Double totalStorage,
+                                             VirtualEvalState state) throws IOException {
+        boolean isCloudService = CLOUD_SERVICES.name().equals(virtualEquipment.getInfrastructureType());
+        VirtualImpactResult impactResult = computeVirtualEquipmentImpacts(ctx, virtualEquipment, isCloudService,
+                virtualSize, totalVcpuCoreNumber, totalStorage);
+
+        String location = isCloudService ? ctx.codeToCountryMap().get(virtualEquipment.getLocation()) : virtualEquipment.getLocation();
+        if (ctx.evaluateReportBO().isExport()) {
+            ctx.csvInVirtualEquipment().printRecord(inputToCsvRecord.toCsv(virtualEquipment, location));
+        }
+
+        aggregateVirtualEquipmentImpacts(ctx, virtualEquipment, isCloudService, impactResult);
+
+        checkAggregationCapacity(ctx.aggregationVirtualEquipments(), "virtual equipments");
+
+        state.virtualSaveCounter++;
+        flushVirtualEquipmentsIfFull(ctx, state);
+
+        state.savedApplicationCount += this.evaluateApplications(ctx.context(), ctx.evaluateReportBO(), ctx.physicalEquipment(),
+                virtualEquipment, impactResult.impactList(), ctx.aggregationApplications(), ctx.csvInApplication(),
+                ctx.csvApplication(), ctx.refSip(), ctx.refShortcutBO(), impactResult.cloudElectricityKwh());
+    }
+
+    private VirtualImpactResult computeVirtualEquipmentImpacts(VirtualEquipmentEvalContext ctx, InVirtualEquipment virtualEquipment,
+                                                                 boolean isCloudService, int virtualSize,
+                                                                 Double totalVcpuCoreNumber, Double totalStorage) {
+        if (isCloudService) {
+            List<ImpactBO> impactBOList = evaluateBoaviztapiService.evaluate(virtualEquipment, ctx.criteria(), ctx.lifecycleSteps());
+            List<ImpactEquipementVirtuel> impactEquipementVirtuelList = internalToNumEcoEvalImpact.map(impactBOList);
+            BoaResponseRest response = boaviztapiService.runBoaviztCalculations(virtualEquipment);
+            Double avgPowerW = boaviztapiService.extractAvgPowerW(response).orElse(null);
+            Double cloudElectricityKwh = boaviztapiService.computeAnnualElectricityKwhRaw(avgPowerW, virtualEquipment.getDurationHour());
+            return new VirtualImpactResult(impactEquipementVirtuelList, cloudElectricityKwh);
+        }
+
+        List<ImpactEquipementVirtuel> impactEquipementVirtuelList = evaluateNumEcoEvalService.calculateVirtualEquipment(
+                virtualEquipment, ctx.impactEquipementPhysiqueList(), virtualSize, totalVcpuCoreNumber, totalStorage,
+                ctx.equipmentPue(), ctx.equipmentLocation()
+        );
+        return new VirtualImpactResult(impactEquipementVirtuelList, null);
+    }
+
+    // Aggregate virtual equipment indicators in memory
+    private void aggregateVirtualEquipmentImpacts(VirtualEquipmentEvalContext ctx, InVirtualEquipment virtualEquipment,
+                                                   boolean isCloudService, VirtualImpactResult impactResult) throws IOException {
+        EvaluateReportBO evaluateReportBO = ctx.evaluateReportBO();
+        for (ImpactEquipementVirtuel impact : impactResult.impactList()) {
+            Double sipValue = ctx.refSip().get(impact.getCritere());
+            Double electricity = isCloudService ? impactResult.cloudElectricityKwh() : impact.getConsoElecMoyenne();
+            AggValuesBO values = createAggValuesBO(impact.getStatutIndicateur(), impact.getTrace(),
+                    virtualEquipment.getQuantity(),
+                    electricity, impact.getImpactUnitaire(),
+                    sipValue,
+                    null, virtualEquipment.getDurationHour(), virtualEquipment.getWorkload(), isCloudService, impact.getSource());
+
+            ctx.aggregationVirtualEquipments()
+                    .computeIfAbsent(aggregationToOutput.keyVirtualEquipment(ctx.physicalEquipment(), virtualEquipment, impact,
+                            ctx.refShortcutBO(), evaluateReportBO), k -> new AggValuesBO())
+                    .add(values);
+
+            if (evaluateReportBO.isExport()) {
+                ctx.csvVirtualEquipment().printRecord(impactToCsvRecord.toCsv(
+                        ctx.context(), evaluateReportBO, virtualEquipment, impact, sipValue, electricity)
+                );
+            }
+
+            evaluateReportBO.setNbVirtualEquipmentLines(evaluateReportBO.getNbVirtualEquipmentLines() + 1);
+        }
+    }
+
+    private void checkAggregationCapacity(Map<List<String>, AggValuesBO> aggregationMap, String label) {
+        if (aggregationMap.size() > MAXIMUM_MAP_CAPACITY) {
+            log.error("Exceeding aggregation size for {}", label);
+            throw new AsyncTaskException("Exceeding aggregation size for " + label + ", please reduce criteria number");
+        }
+    }
+
+    private void flushVirtualEquipmentsIfFull(VirtualEquipmentEvalContext ctx, VirtualEvalState state) {
+        if (state.virtualSaveCounter < 10) {
+            return;
+        }
+        state.savedVirtualCount += saveService.saveOutVirtualEquipments(
+                ctx.aggregationVirtualEquipments(), ctx.evaluateReportBO().getTaskId(), ctx.refShortcutBO());
+        ctx.aggregationVirtualEquipments().clear();
+        state.virtualSaveCounter = 0;
+    }
+
+    private void flushRemainingVirtualEquipments(VirtualEquipmentEvalContext ctx, VirtualEvalState state) {
+        if (ctx.aggregationVirtualEquipments().isEmpty()) {
+            return;
+        }
+        state.savedVirtualCount += saveService.saveOutVirtualEquipments(
+                ctx.aggregationVirtualEquipments(), ctx.evaluateReportBO().getTaskId(), ctx.refShortcutBO());
+        ctx.aggregationVirtualEquipments().clear();
+    }
+
+    // Holder for the invariant parameters shared across the virtual equipment evaluation steps
+    private record VirtualEquipmentEvalContext(Context context, EvaluateReportBO evaluateReportBO,
+                                                InPhysicalEquipment physicalEquipment,
+                                                List<ImpactEquipementPhysique> impactEquipementPhysiqueList,
+                                                Map<List<String>, AggValuesBO> aggregationVirtualEquipments,
+                                                Map<List<String>, AggValuesBO> aggregationApplications,
+                                                CSVPrinter csvInVirtualEquipment, CSVPrinter csvVirtualEquipment,
+                                                CSVPrinter csvInApplication, CSVPrinter csvApplication,
+                                                Map<String, Double> refSip, RefShortcutBO refShortcutBO,
+                                                List<String> criteria, List<String> lifecycleSteps,
+                                                Map<String, String> codeToCountryMap, Double equipmentPue,
+                                                String equipmentLocation) {
+    }
+
+    // Holder for the impact computation result of a single virtual equipment
+    private record VirtualImpactResult(List<ImpactEquipementVirtuel> impactList, Double cloudElectricityKwh) {
+    }
+
+    // Mutable counters shared across the paged processing of virtual equipments
+    private static final class VirtualEvalState {
+        private int pageNumber;
+        private int virtualSaveCounter;
+        private int savedVirtualCount;
+        private int savedApplicationCount;
     }
 
     private int evaluateApplications(Context context, EvaluateReportBO evaluateReportBO,
@@ -806,71 +866,95 @@ public class EvaluateService {
                                      Double cloudElectricityKwh) throws IOException {
 
         if (!context.isHasApplications()) return 0;
-        int savedApplicationCount = 0;
+
         String physicalEquipmentName = physicalEquipment == null ? null : physicalEquipment.getName();
+        List<InApplication> applicationList = inApplicationRepository.findByInventoryIdAndPhysicalEquipmentNameAndVirtualEquipmentName(
+                context.getInventoryId(), physicalEquipmentName, virtualEquipment.getName());
 
-        List<InApplication> applicationList = inApplicationRepository.findByInventoryIdAndPhysicalEquipmentNameAndVirtualEquipmentName(context.getInventoryId(), physicalEquipmentName, virtualEquipment.getName());
+        ApplicationEvalContext ctx = new ApplicationEvalContext(context, evaluateReportBO, physicalEquipment,
+                virtualEquipment, impactEquipementVirtuelList, aggregationApplications, csvInApplication,
+                csvApplication, refSip, refShortcutBO, cloudElectricityKwh);
+
+        return processApplicationList(ctx, applicationList);
+    }
+
+    private int processApplicationList(ApplicationEvalContext ctx, List<InApplication> applicationList) throws IOException {
+        int savedApplicationCount = 0;
         int applicationSaveCounter = 0;
+
         for (InApplication application : applicationList) {
-
-            if (evaluateReportBO.isExport()) {
-                csvInApplication.printRecord(inputToCsvRecord.toCsv(application));
-            }
-
-            List<ImpactApplication> impactApplicationList = evaluateNumEcoEvalService.calculateApplication(application, impactEquipementVirtuelList, applicationList.size());
-            // Aggregate virtual equipment indicators in memory
-            for (ImpactApplication impact : impactApplicationList) {
-
-                Double sipValue = refSip.get(impact.getCritere());
-                Double electricity =
-                        cloudElectricityKwh != null
-                                ? cloudElectricityKwh
-                                : impact.getConsoElecMoyenne();
-                AggValuesBO values = createAggValuesBO(impact.getStatutIndicateur(), impact.getTrace(),
-                        null, electricity, impact.getImpactUnitaire(),
-                        sipValue,
-                        null, null, null, false,null);
-
-                aggregationApplications
-                        .computeIfAbsent(aggregationToOutput.keyApplication(physicalEquipment, virtualEquipment, application, impact, refShortcutBO), k -> new AggValuesBO())
-                        .add(values);
-
-                if (evaluateReportBO.isExport()) {
-                    csvApplication.printRecord(impactToCsvRecord.toCsv(
-                            context, evaluateReportBO, application, impact, sipValue, electricity)
-                    );
-                }
-
-                evaluateReportBO.setNbApplicationLines(evaluateReportBO.getNbApplicationLines() + 1);
-            }
-
-            if (aggregationApplications.size() > MAXIMUM_MAP_CAPACITY) {
-                log.error("Exceeding aggregation size for applications");
-                throw new AsyncTaskException("Exceeding aggregation size for applications, please reduce criteria number");
-            }
+            processOneApplication(ctx, application, applicationList.size());
 
             applicationSaveCounter++;
-
             if (applicationSaveCounter >= 10) {
-                savedApplicationCount += saveService.saveOutApplications(
-                        aggregationApplications,
-                        evaluateReportBO.getTaskId(),
-                        refShortcutBO
-                );
-                aggregationApplications.clear();
+                savedApplicationCount += flushApplications(ctx);
                 applicationSaveCounter = 0;
             }
         }
 
-        if (!aggregationApplications.isEmpty()) {
-            savedApplicationCount += saveService.saveOutApplications(
-                    aggregationApplications,
-                    evaluateReportBO.getTaskId(),
-                    refShortcutBO
-            );
-            aggregationApplications.clear();
+        if (!ctx.aggregationApplications().isEmpty()) {
+            savedApplicationCount += flushApplications(ctx);
         }
         return savedApplicationCount;
+    }
+
+    private void processOneApplication(ApplicationEvalContext ctx, InApplication application, int applicationListSize) throws IOException {
+        EvaluateReportBO evaluateReportBO = ctx.evaluateReportBO();
+
+        if (evaluateReportBO.isExport()) {
+            ctx.csvInApplication().printRecord(inputToCsvRecord.toCsv(application));
+        }
+
+        List<ImpactApplication> impactApplicationList = evaluateNumEcoEvalService.calculateApplication(
+                application, ctx.impactEquipementVirtuelList(), applicationListSize);
+
+        aggregateApplicationImpacts(ctx, application, impactApplicationList);
+
+        checkAggregationCapacity(ctx.aggregationApplications(), "applications");
+    }
+
+    // Aggregate application indicators in memory
+    private void aggregateApplicationImpacts(ApplicationEvalContext ctx, InApplication application,
+                                              List<ImpactApplication> impactApplicationList) throws IOException {
+        EvaluateReportBO evaluateReportBO = ctx.evaluateReportBO();
+
+        for (ImpactApplication impact : impactApplicationList) {
+            Double sipValue = ctx.refSip().get(impact.getCritere());
+            Double electricity = ctx.cloudElectricityKwh() != null ? ctx.cloudElectricityKwh() : impact.getConsoElecMoyenne();
+            AggValuesBO values = createAggValuesBO(impact.getStatutIndicateur(), impact.getTrace(),
+                    null, electricity, impact.getImpactUnitaire(),
+                    sipValue,
+                    null, null, null, false, null);
+
+            ctx.aggregationApplications()
+                    .computeIfAbsent(aggregationToOutput.keyApplication(ctx.physicalEquipment(), ctx.virtualEquipment(),
+                            application, impact, ctx.refShortcutBO()), k -> new AggValuesBO())
+                    .add(values);
+
+            if (evaluateReportBO.isExport()) {
+                ctx.csvApplication().printRecord(impactToCsvRecord.toCsv(
+                        ctx.context(), evaluateReportBO, application, impact, sipValue, electricity)
+                );
+            }
+
+            evaluateReportBO.setNbApplicationLines(evaluateReportBO.getNbApplicationLines() + 1);
+        }
+    }
+
+    private int flushApplications(ApplicationEvalContext ctx) {
+        int saved = saveService.saveOutApplications(ctx.aggregationApplications(), ctx.evaluateReportBO().getTaskId(), ctx.refShortcutBO());
+        ctx.aggregationApplications().clear();
+        return saved;
+    }
+
+    // Holder for the invariant parameters shared across the application evaluation steps
+    private record ApplicationEvalContext(Context context, EvaluateReportBO evaluateReportBO,
+                                           InPhysicalEquipment physicalEquipment, InVirtualEquipment virtualEquipment,
+                                           List<ImpactEquipementVirtuel> impactEquipementVirtuelList,
+                                           Map<List<String>, AggValuesBO> aggregationApplications,
+                                           CSVPrinter csvInApplication, CSVPrinter csvApplication,
+                                           Map<String, Double> refSip, RefShortcutBO refShortcutBO,
+                                           Double cloudElectricityKwh) {
     }
 
     /**
