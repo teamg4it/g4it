@@ -10,14 +10,11 @@ package com.soprasteria.g4it.backend.functionaltest;
 
 import com.soprasteria.g4it.backend.apiaiinfra.repository.InAiInfrastructureRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.*;
-import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
-import com.soprasteria.g4it.backend.apiloadinputfiles.controller.LoadInputFilesController;
 import com.soprasteria.g4it.backend.apiloadinputfiles.repository.CheckApplicationRepository;
 import com.soprasteria.g4it.backend.apiloadinputfiles.repository.CheckDatacenterRepository;
 import com.soprasteria.g4it.backend.apiloadinputfiles.repository.CheckPhysicalEquipmentRepository;
 import com.soprasteria.g4it.backend.apiloadinputfiles.repository.CheckVirtualEquipmentRepository;
 import com.soprasteria.g4it.backend.apiparameterai.repository.InAiParameterRepository;
-import com.soprasteria.g4it.backend.apiuser.repository.WorkspaceRepository;
 import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
 import com.soprasteria.g4it.backend.external.boavizta.business.BoaviztapiService;
 import com.soprasteria.g4it.backend.external.boavizta.client.BoaviztapiClient;

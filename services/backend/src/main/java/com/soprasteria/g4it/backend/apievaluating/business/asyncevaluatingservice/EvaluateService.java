@@ -16,7 +16,6 @@ import com.soprasteria.g4it.backend.apievaluating.mapper.AggregationToOutput;
 import com.soprasteria.g4it.backend.apievaluating.mapper.ImpactToCsvRecord;
 import com.soprasteria.g4it.backend.apievaluating.mapper.InternalToNumEcoEvalImpact;
 import com.soprasteria.g4it.backend.apievaluating.model.*;
-import com.soprasteria.g4it.backend.apiindicator.repository.RefSustainableIndividualPackageRepository;
 import com.soprasteria.g4it.backend.apiinout.mapper.InputToCsvRecord;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InApplication;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InDatacenter;
@@ -81,7 +80,6 @@ public class EvaluateService {
     private final InApplicationRepository inApplicationRepository;
     private final AggregationToOutput aggregationToOutput;
     private final ImpactToCsvRecord impactToCsvRecord;
-    private final RefSustainableIndividualPackageRepository refSustainableIndividualPackageRepository;
     private final EvaluateNumEcoEvalService evaluateNumEcoEvalService;
     private final ReferentialService referentialService;
     private final SaveService saveService;
