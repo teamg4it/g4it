@@ -7,7 +7,6 @@
  */
 import {
     Component,
-    ComponentRef,
     DestroyRef,
     EventEmitter,
     inject,
@@ -19,9 +18,7 @@ import {
     signal,
     SimpleChanges,
     ViewChild,
-    ViewContainerRef,
 } from "@angular/core";
-import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import {
     FormBuilder,
     FormControl,
@@ -33,11 +30,10 @@ import {
 import { TranslatePipe, TranslateService } from "@ngx-translate/core";
 import saveAs from "file-saver";
 import { MessageService } from "primeng/api";
-import { RadioButton, RadioButtonModule } from "primeng/radiobutton";
+import { RadioButtonModule } from "primeng/radiobutton";
 import { delay, Subject, switchMap, takeUntil, tap } from "rxjs";
 import {
     FileDescription,
-    FileType,
     TemplateFileDescription,
 } from "src/app/core/interfaces/file-system.interfaces";
 import {
@@ -45,21 +41,20 @@ import {
     Inventory,
     InventoryUpdateRest,
 } from "src/app/core/interfaces/inventory.interfaces";
-import { UserService } from "src/app/core/service/business/user.service";
 import { InventoryDataService } from "src/app/core/service/data/inventory-data.service";
 import { LoadingDataService } from "src/app/core/service/data/loading-data.service";
 import { TemplateFileService } from "src/app/core/service/data/template-file.service";
-import { WorkspaceReferenceDataService } from "src/app/core/service/data/workspace-reference-data.service";
 import { Constants } from "src/constants";
-import { SelectFileComponent } from "./select-file/select-file.component";
 
 import { NgClass, NgTemplateOutlet } from "@angular/common";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { Button } from "primeng/button";
 import { DatePickerModule } from "primeng/datepicker";
 import { InputTextModule } from "primeng/inputtext";
 import { ScrollPanelModule } from "primeng/scrollpanel";
 import { AutofocusDirective } from "src/app/core/directives/auto-focus.directive";
 import { CustomSidebarMenuForm } from "src/app/core/interfaces/sidebar-menu-form.interface";
+import { UserService } from "src/app/core/service/business/user.service";
 import { GlobalStoreService } from "src/app/core/store/global.store";
 import { FormNavComponent } from "../../common/form-nav/form-nav.component";
 import { InvMultiFileImportComponent } from "./inv-multi-file-import/inv-multi-file-import.component";
@@ -88,14 +83,9 @@ import { InvMultiFileImportComponent } from "./inv-multi-file-import/inv-multi-f
 export class InvFilePanelComponent implements OnInit, OnDestroy, OnChanges {
     private readonly userService = inject(UserService);
     private readonly destroyRef = inject(DestroyRef);
-    private readonly workspaceReferenceDataService = inject(
-        WorkspaceReferenceDataService,
-    );
     protected readonly global = inject(GlobalStoreService);
     className: string = "default-calendar max-w-full";
 
-    @ViewChild("uploaderContainer", { read: ViewContainerRef })
-    uploaderContainer!: ViewContainerRef;
     @ViewChild(InvMultiFileImportComponent)
     invMultiFileImport?: InvMultiFileImportComponent;
     @Input() purpose: string = "";
@@ -107,10 +97,6 @@ export class InvFilePanelComponent implements OnInit, OnDestroy, OnChanges {
     @Output() sidebarPurposeChange: EventEmitter<any> = new EventEmitter();
     @Output() sidebarVisibleChange: EventEmitter<any> = new EventEmitter();
     @Output() reloadInventoriesAndLoop = new EventEmitter<number>();
-
-    @ViewChild("firstInputElement", { static: false }) firstInputElement:
-        | RadioButton
-        | undefined;
 
     importDetails: CustomSidebarMenuForm = this.buildImportDetails();
     selectedMenuIndex: number | null = null;
@@ -179,7 +165,6 @@ export class InvFilePanelComponent implements OnInit, OnDestroy, OnChanges {
         externalServices: new FormControl<string | undefined>(undefined),
     });
 
-    public fileTypes: FileType[] = [];
     invalidDates: Date[] = [];
     // true while a create/update/upload request is in flight, used to disable the submit button
     isSubmitting: boolean = false;
@@ -190,17 +175,10 @@ export class InvFilePanelComponent implements OnInit, OnDestroy, OnChanges {
     selectedType: string = Constants.INVENTORY_TYPE.INFORMATION_SYSTEM;
     // keeps the datepicker's displayed selection when the tab is destroyed/recreated on switch
     selectedDate: Date | null = null;
-    inventoryDates: Date[] = [];
-    simulationNames: string[] = [];
     inventoriesForm!: FormGroup;
     inventoryType = Constants.INVENTORY_TYPE;
-    isFileUploaded = signal(false);
-    allowedFileExtensions = [".csv", ".xlsx", ".ods"];
 
     ngUnsubscribe = new Subject<void>();
-
-    private readonly uploaderOutpoutHandlerReset$ = new Subject<void>();
-    arrayComponents: Array<ComponentRef<SelectFileComponent>> = [];
 
     templateFiles: TemplateFileDescription[] = [];
 
@@ -215,36 +193,12 @@ export class InvFilePanelComponent implements OnInit, OnDestroy, OnChanges {
     ) {}
 
     ngOnInit(): void {
-        this.fileTypes = [
-            {
-                value: "DATACENTER",
-                text: this.translate.instant("inventories.type.dc"),
-            },
-            {
-                value: "EQUIPEMENT_PHYSIQUE",
-                text: this.translate.instant("inventories.type.eq-phys"),
-            },
-            {
-                value: "EQUIPEMENT_VIRTUEL",
-                text: this.translate.instant("inventories.type.eq-virt"),
-            },
-            {
-                value: "APPLICATION",
-                text: this.translate.instant("inventories.type.app"),
-            },
-        ];
         this.inventoriesForm = this.formBuilder.group({
             name: ["", [Validators.pattern(/^[^<>]+$/), Validators.maxLength(255)]],
         });
         this.initialName = this.name;
         this.getTemplateFiles();
     }
-
-    // ngAfterViewInit(): void {
-    //     for (const type of this.fileTypes) {
-    //         this.addComponent(type);
-    //     }
-    // }
 
     ngOnChanges(changes: SimpleChanges) {
         this.invalidDates = [];
@@ -314,46 +268,6 @@ export class InvFilePanelComponent implements OnInit, OnDestroy, OnChanges {
 
     get inventoriesFormControls() {
         return this.inventoriesForm.controls;
-    }
-
-    deleteComponent(index: number) {
-        this.arrayComponents.at(index)?.destroy();
-        this.arrayComponents.splice(index, 1);
-        for (const [index, { instance }] of this.arrayComponents.entries()) {
-            instance.index = index;
-        }
-    }
-
-    addComponent(type = this.fileTypes[0]) {
-        const componentRef = this.uploaderContainer.createComponent(SelectFileComponent);
-        componentRef.setInput("fileTypes", this.fileTypes);
-        componentRef.setInput("allowedFileExtensions", this.allowedFileExtensions);
-        componentRef.instance.type = type;
-        this.arrayComponents.push(componentRef);
-        this.uploaderOutpoutHandlerReset$.next();
-        for (const [index, { instance }] of this.arrayComponents.entries()) {
-            instance.index = index;
-            instance.outDelete
-                .asObservable()
-                .pipe(takeUntil(this.uploaderOutpoutHandlerReset$))
-                .subscribe(() => {
-                    this.deleteComponent(instance.index);
-                    this.checkfileUploaded();
-                });
-            instance.fileSelected
-                .asObservable()
-                .pipe(takeUntil(this.uploaderOutpoutHandlerReset$))
-                .subscribe(() => {
-                    this.checkfileUploaded();
-                });
-        }
-    }
-
-    checkfileUploaded() {
-        const isFileUploaded = this.arrayComponents.some(
-            (compRef) => compRef?.instance?.file,
-        );
-        this.isFileUploaded.set(isFileUploaded);
     }
 
     submitFormData() {
@@ -488,42 +402,16 @@ export class InvFilePanelComponent implements OnInit, OnDestroy, OnChanges {
             });
     }
 
-    clearSidePanel() {
-        for (const component of this.arrayComponents) {
-            component.destroy();
-        }
-        this.arrayComponents = [];
-        for (const type of this.fileTypes) {
-            this.addComponent(type);
-        }
-    }
-
     close() {
         if (this.purpose === "new") {
             this.name = "";
             this.selectedDate = null;
         }
         this.sidebarVisibleChange.emit(false);
-        this.clearSidePanel();
     }
 
     downloadTemplateFile(selectedFileName: string) {
         this.templateFileService.getdownloadTemplateFile(selectedFileName);
-    }
-
-    async downloadWorkspaceReferenceData() {
-        this.userService.currentWorkspace$
-            .pipe(
-                switchMap((workSpace) =>
-                    this.inventoryService.downloadWorkspaceSettingsZip().pipe(
-                        tap((blob) => {
-                            saveAs(blob, `workspace-referential-${workSpace.id}.zip`);
-                        }),
-                    ),
-                ),
-                takeUntilDestroyed(this.destroyRef),
-            )
-            .subscribe();
     }
 
     selectTab(index: number) {
@@ -581,6 +469,21 @@ export class InvFilePanelComponent implements OnInit, OnDestroy, OnChanges {
         if (index < this.importDetails["menu"].length - 1) {
             this.selectTab(++index);
         }
+    }
+
+    async downloadWorkspaceReferenceData() {
+        this.userService.currentWorkspace$
+            .pipe(
+                switchMap((workSpace) =>
+                    this.inventoryService.downloadWorkspaceSettingsZip().pipe(
+                        tap((blob) => {
+                            saveAs(blob, `workspace-referential-${workSpace.id}.zip`);
+                        }),
+                    ),
+                ),
+                takeUntilDestroyed(this.destroyRef),
+            )
+            .subscribe();
     }
 
     ngOnDestroy() {

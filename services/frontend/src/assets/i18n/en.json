@@ -774,14 +774,14 @@
         "new-inventory-choose": "Choose between IS version and simulation",
         "input-simulation-aria": "Type the name of your simulation",
         "templates": {
-            "datacenter-template-file": "Datacenter template file ({{type}}, {{size}} KB)",
-            "physical-template-file": "Physical equipment template file ({{type}}, {{size}} KB)",
-            "virtual-template-file": "Virtual equipment template file ({{type}}, {{size}} KB)",
-            "application-template-file": "Application template file ({{type}}, {{size}} KB)",
-            "all-template-files": "All template files ({{type}}, {{size}} KB)",
-            "data-model": "Platform DataModel ({{type}}, {{size}} KB)",
+            "datacenter-template-file": "Datacenter template file",
+            "physical-template-file": "Physical equipment template file",
+            "virtual-template-file": "Virtual equipment template file",
+            "application-template-file": "Application template file",
+            "all-template-files": "All template files",
+            "data-model": "Platform DataModel",
             "starter-pack": "Starter pack",
-            "workspace-settings": "Workspace specific settings (zip)"
+            "workspace-settings": "Workspace specific settings"
         },
         "choose-criteria": "Choose criteria for inventory {{inventoryName}}",
         "calendar": "Calendar",

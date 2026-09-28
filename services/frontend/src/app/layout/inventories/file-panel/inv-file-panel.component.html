@@ -54,6 +54,28 @@
                     ></ng-container>
                 }
 
+                @if (selectedMenuIndex === 0) {
+                    <div>
+                        <span
+                            class="pi pi-file-excel mr-2 font-bold light-black-color"
+                        ></span>
+                        <a
+                            class="font-bold cursor-pointer light-black-color"
+                            tabindex="0"
+                            role="link"
+                            #addFocus
+                            (click)="downloadWorkspaceReferenceData()"
+                            (keydown.enter)="downloadWorkspaceReferenceData()"
+                            [attr.id]="2"
+                        >
+                            <u>{{
+                                "inventories.templates.workspace-settings" | translate
+                            }}</u>
+                        </a>
+                        (zip)
+                    </div>
+                }
+
                 <ng-template #templateFile let-template>
                     <div>
                         <span
