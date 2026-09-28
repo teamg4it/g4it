@@ -199,20 +199,20 @@
                             />
                         }
                         @if (inventoriesFormControls["name"].invalid) {
-                            <p class="error-text">
+                            <span class="error-text">
                                 {{ "inventories.nameValidation" | translate }}
-                            </p>
+                            </span>
                         }
                         @if (checkForDuplicate()) {
-                            <p class="error-text">
+                            <span class="error-text">
                                 {{ "inventories.duplicateSimulation" | translate }}
-                            </p>
+                            </span>
                         }
                         @if (className === "ng-invalid ng-dirty") {
-                            <p class="error-text">
+                            <span class="error-text">
                                 {{ "inventories.inventory-date" | translate }}
                                 {{ "common.mandatory" | translate }}
-                            </p>
+                            </span>
                         }
                     </div>
                 } @else {
@@ -259,9 +259,7 @@
                                 (onClick)="submitFormData()"
                                 styleClass=" bg-light-green uppercase finish-btn-padding"
                                 [disabled]="
-                                    isSubmitting ||
-                                    (purpose === 'new' &&
-                                        importForm.controls.info.invalid)
+                                    name === '' || checkForDuplicate() || global.loading()
                                 "
                                 [label]="
                                     (purpose === 'new'

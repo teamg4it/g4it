@@ -166,8 +166,6 @@ export class InvFilePanelComponent implements OnInit, OnDestroy, OnChanges {
     });
 
     invalidDates: Date[] = [];
-    // true while a create/update/upload request is in flight, used to disable the submit button
-    isSubmitting: boolean = false;
     // snapshot of name at sidebar open, used for the static "load files on" title
     initialName: string = "";
     // full inventory/simulation being edited, kept to build the updateInventory payload
@@ -271,11 +269,9 @@ export class InvFilePanelComponent implements OnInit, OnDestroy, OnChanges {
     }
 
     submitFormData() {
-        this.isSubmitting = true;
         this.global.setLoading(true);
         if (this.name === "") {
             this.className = "ng-invalid ng-dirty";
-            this.isSubmitting = false;
             this.global.setLoading(false);
             return;
         }
@@ -299,7 +295,6 @@ export class InvFilePanelComponent implements OnInit, OnDestroy, OnChanges {
                         } ${this.translate.instant("inventories.created")}`,
                     });
                     if (!hasFiles) {
-                        this.isSubmitting = false;
                         this.global.setLoading(false);
                         this.reloadInventoriesAndLoop.emit(response.id);
                         this.close();
@@ -308,7 +303,6 @@ export class InvFilePanelComponent implements OnInit, OnDestroy, OnChanges {
                     }
                 },
                 error: (error) => {
-                    this.isSubmitting = false;
                     this.global.setLoading(false);
                 },
             });
@@ -326,7 +320,6 @@ export class InvFilePanelComponent implements OnInit, OnDestroy, OnChanges {
             this.inventoryService.updateInventory(inventoryRest).subscribe({
                 next: () => this.uploadOrClose(formData, hasFiles),
                 error: () => {
-                    this.isSubmitting = false;
                     this.global.setLoading(false);
                 },
             });
@@ -340,7 +333,6 @@ export class InvFilePanelComponent implements OnInit, OnDestroy, OnChanges {
         if (hasFiles) {
             this.uploadAndLaunchLoading(formData, this.inventoryId);
         } else {
-            this.isSubmitting = false;
             this.global.setLoading(false);
             this.close();
         }
@@ -388,14 +380,12 @@ export class InvFilePanelComponent implements OnInit, OnDestroy, OnChanges {
             .pipe(delay(500))
             .subscribe({
                 next: () => {
-                    this.isSubmitting = false;
                     this.global.setLoading(false);
                     this.sidebarVisibleChange.emit(false);
                     this.reloadInventoriesAndLoop.emit(inventoryId);
                     this.close();
                 },
                 error: () => {
-                    this.isSubmitting = false;
                     this.global.setLoading(false);
                     this.sidebarPurposeChange.emit("upload");
                 },
