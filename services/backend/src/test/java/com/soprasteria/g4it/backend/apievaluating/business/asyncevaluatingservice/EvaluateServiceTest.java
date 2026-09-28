@@ -53,6 +53,7 @@ import org.mte.numecoeval.calculs.domain.data.indicateurs.ImpactEquipementVirtue
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Clock;
@@ -1071,22 +1072,14 @@ class EvaluateServiceTest {
 
 
     @Test
-    void createAggValuesBO_shouldMultiplyImpactForCloud() {
+    void createAggValuesBO_shouldMultiplyImpactForCloud() throws Exception {
+
+        Object input = newAggValuesInput("OK", null, 2d, 100d, 10d, 5d, 1d, 10d, 0.5d, true, null);
 
         AggValuesBO result = ReflectionTestUtils.invokeMethod(
                 evaluateService,
                 "createAggValuesBO",
-                "OK",
-                null,
-                2d,
-                100d,
-                10d,
-                5d,
-                1d,
-                10d,
-                0.5d,
-                true,
-                null
+                input
         );
 
         // unitImpact * quantity = 10 * 2 = 20
@@ -1094,26 +1087,30 @@ class EvaluateServiceTest {
     }
 
     @Test
-    void createAggValuesBO_shouldNotMultiplyForNonCloud() {
+    void createAggValuesBO_shouldNotMultiplyForNonCloud() throws Exception {
+
+        Object input = newAggValuesInput("OK", null, 2d, 100d, 10d, 5d, 1d, 10d, 0.5d, false, null);
 
         AggValuesBO result = ReflectionTestUtils.invokeMethod(
                 evaluateService,
                 "createAggValuesBO",
-                "OK",
-                null,
-                2d,
-                100d,
-                10d,
-                5d,
-                1d,
-                10d,
-                0.5d,
-                false,
-                null
+                input
         );
 
         // stays same
         assertEquals(10d, result.getUnitImpact());
+    }
+
+    // Builds an instance of the private nested EvaluateService.AggValuesInput record via reflection
+    private Object newAggValuesInput(String indicatorStatus, String trace, Double quantity, Double elecConsumption,
+                                      Double unitImpact, Double sipValue, Double lifespan, Double usageDuration,
+                                      Double workload, boolean isCloudService, String source) throws Exception {
+        Class<?> inputClass = Class.forName(
+                "com.soprasteria.g4it.backend.apievaluating.business.asyncevaluatingservice.EvaluateService$AggValuesInput");
+        Constructor<?> constructor = inputClass.getDeclaredConstructors()[0];
+        constructor.setAccessible(true);
+        return constructor.newInstance(indicatorStatus, trace, quantity, elecConsumption, unitImpact, sipValue,
+                lifespan, usageDuration, workload, isCloudService, source);
     }
 
     @Test
