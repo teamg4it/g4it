@@ -6,6 +6,38 @@ info:
 
 components:
   schemas:
+    InAiServiceRest:
+      description: In AI Service
+      type: object
+      required: [ serviceName, provider, model, outputTokens ]
+      properties:
+        id:
+          type: integer
+          format: int64
+        inventoryId:
+          type: integer
+          format: int64
+        serviceName:
+          type: string
+          maxLength: 255
+        provider:
+          type: string
+          maxLength: 255
+        model:
+          type: string
+          maxLength: 255
+        outputTokens:
+          type: integer
+          format: int64
+        location:
+          type: string
+          maxLength: 255
+        creationDate:
+          type: string
+          format: date-time
+        lastUpdateDate:
+          type: string
+          format: date-time
     InDatacenterRest:
       description: Version
       type: object
@@ -570,3 +602,63 @@ components:
         type: string
       required: true
       description: The digital service version uid.
+
+    OutAiServiceRest:
+      description: Out AI service rest
+      type: object
+      properties:
+        name:
+          type: string
+        criterion:
+          type: string
+        lifecycleStep:
+          type: string
+        provider:
+          type: string
+        model:
+          type: string
+        location:
+          type: string
+        engineName:
+          type: string
+        engineVersion:
+          type: string
+        referentialVersion:
+          type: string
+        statusIndicator:
+          type: string
+        countValue:
+          type: number
+        quantity:
+          type: number
+          format: double
+        unitImpact:
+          type: number
+          format: double
+        peopleEqImpact:
+          type: number
+          format: double
+        unit:
+          type: string
+        commonFilters:
+          type: array
+          maxItems: 5
+          items:
+            type: string
+        filters:
+          type: array
+          maxItems: 5
+          items:
+            type: string
+        errors:
+          type: array
+          items:
+            type: string
+        source:
+          type: string
+        creationDate:
+          type: string
+          format: date-time
+        lastUpdateDate:
+          type: string
+          format: date-time

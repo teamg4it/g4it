@@ -55,6 +55,12 @@ paths:
                   items:
                     type: string
                     format: binary
+                AI_SERVICE:
+                  description: List of file of AI services
+                  type: array
+                  items:
+                    type: string
+                    format: binary
       responses:
         '200':
           description: The task id

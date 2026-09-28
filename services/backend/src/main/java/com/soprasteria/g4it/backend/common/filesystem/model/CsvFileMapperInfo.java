@@ -44,6 +44,7 @@ public class CsvFileMapperInfo implements FileMapperInfo {
     private List<Header> physicalEquipmentIndicator;
     private List<Header> virtualEquipmentIndicator;
     private List<Header> applicationIndicator;
+    private List<Header> aiServiceIndicator;
 
     private List<Header> physicalEquipmentIndicatorDigitalService;
 
@@ -52,6 +53,14 @@ public class CsvFileMapperInfo implements FileMapperInfo {
     private List<Header> outAiReco;
     private List<Header> aiParameters;
     private List<Header> aiInfrastructure;
+
+    private List<Header> aiService = List.of(
+            Header.builder().name("serviceName").optional(false).build(),
+            Header.builder().name("provider").optional(false).build(),
+            Header.builder().name("model").optional(false).build(),
+            Header.builder().name("outputTokens").optional(false).build(),
+            Header.builder().name("location").optional(true).build()
+    );
 
     @Override
     public List<Header> getMapping(final FileType type) {
@@ -65,6 +74,7 @@ public class CsvFileMapperInfo implements FileMapperInfo {
             case PHYSICAL_EQUIPMENT_INDICATOR -> new ArrayList<>(safe(physicalEquipmentIndicator));
             case VIRTUAL_EQUIPMENT_INDICATOR -> new ArrayList<>(safe(virtualEquipmentIndicator));
             case APPLICATION_INDICATOR -> new ArrayList<>(safe(applicationIndicator));
+            case AI_SERVICE_INDICATOR -> new ArrayList<>(safe(aiServiceIndicator));
             case INVENTORY -> new ArrayList<>(safe(inventory));
             case PHYSICAL_EQUIPMENT_INDICATOR_DIGITAL_SERVICE ->
                     new ArrayList<>(safe(physicalEquipmentIndicatorDigitalService));
@@ -73,6 +83,7 @@ public class CsvFileMapperInfo implements FileMapperInfo {
             case OUT_AI_RECO -> new ArrayList<>(safe(outAiReco));
             case IN_AI_PARAMETERS -> new ArrayList<>(safe(aiParameters));
             case IN_AI_INFRASTRUCTURE -> new ArrayList<>(safe(aiInfrastructure));
+            case AI_SERVICE -> new ArrayList<>(safe(aiService));
         };
     }
 

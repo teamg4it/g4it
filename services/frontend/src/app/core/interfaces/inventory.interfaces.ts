@@ -19,6 +19,7 @@ export interface Inventory {
     physicalEquipmentCount: number;
     virtualEquipmentCount: number;
     applicationCount: number;
+    aiServiceCount?: number;
     enableDataInconsistency: boolean;
     date?: Date;
     note?: Note;
