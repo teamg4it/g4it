@@ -115,7 +115,7 @@ export class InvMultiFileImportComponent implements OnChanges {
                         ),
                     },
                     {
-                        key: "AI_SERVICES",
+                        key: "AI_SERVICE",
                         label: this.translate.instant(
                             "digital-services-import.ai-services",
                         ),
