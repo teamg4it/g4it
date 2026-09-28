@@ -90,7 +90,7 @@ describe("InvMultiFileImportComponent", () => {
         expect(component.fileTypes).toHaveSize(2);
         expect(component.fileTypes.map((t) => t.key)).toEqual([
             "EQUIPEMENT_VIRTUEL",
-            "AI_SERVICES",
+            "AI_SERVICE",
         ]);
     });
 
