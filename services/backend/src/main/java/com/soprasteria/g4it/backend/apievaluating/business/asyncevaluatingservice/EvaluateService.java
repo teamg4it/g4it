@@ -144,45 +144,128 @@ public class EvaluateService {
      */
     public void doEvaluate(final Context context, final Task task, Path exportDirectory) {
 
-        // retrieving the VM list for this DS
-        Map<String, List<InVirtualEquipment>> vmsByPhysical =context.getInventoryId() != null?inVirtualEquipmentRepository.findByInventoryId(context.getInventoryId()).stream()
-                        // ONLY VMs attached to a physical equipment
-                        .filter(vm -> vm.getPhysicalEquipmentName() != null)
-                        .collect(Collectors.groupingBy(InVirtualEquipment::getPhysicalEquipmentName)):
-                inVirtualEquipmentRepository
-                        .findByDigitalServiceVersionUid(context.getDigitalServiceVersionUid())
-                        .stream()
-                        // ONLY VMs attached to a physical equipment
-                        .filter(vm -> vm.getPhysicalEquipmentName() != null)
-                        .collect(Collectors.groupingBy(InVirtualEquipment::getPhysicalEquipmentName));
+        Map<String, List<InVirtualEquipment>> vmsByPhysical = buildVmsByPhysicalMap(context);
 
-        Inventory inventory = task.getInventory();
-        String inventoryName;
-        if (inventory == null) {
-            inventoryName = context.getDigitalServiceName();
-        } else {
-            inventory = inventoryRepository.findById(inventory.getId()).orElse(null);
-            inventoryName = (inventory == null)
-                    ? context.getDigitalServiceName()
-                    : inventory.getName();
-        }
+        InventoryContext inventoryContext = resolveInventoryContext(task, context);
+        Inventory inventory = inventoryContext.inventory();
+        String inventoryName = inventoryContext.inventoryName();
 
         final long start = System.currentTimeMillis();
         final String organization = context.getOrganization();
         final Long taskId = task.getId();
 
-        // Get datacenters by name (name, InDatacenter)
-        final Map<String, InDatacenter> datacenterByNameMap = context.getInventoryId() == null ?
-                inDatacenterRepository.findByDigitalServiceVersionUid(context.getDigitalServiceVersionUid()).stream()
-                        .collect(Collectors.toMap(InDatacenter::getName, Function.identity())) :
-                inDatacenterRepository.findByInventoryId(context.getInventoryId()).stream()
-                        .collect(Collectors.toMap(InDatacenter::getName, Function.identity()));
+        final Map<String, InDatacenter> datacenterByNameMap = buildDatacenterByNameMap(context);
         final List<String> lifecycleSteps = lifecycleStepsCache;
 
+        CriteriaSetup criteriaSetup = buildCriteriaSetup(task, context, organization, lifecycleSteps);
+        if (criteriaSetup == null) {
+            return;
+        }
+
+        log.info("Start evaluating impacts for {}/{}", context.log(), taskId);
+
+        Map<String, String> codeToCountryMap = codeToCountryMapCache;
+
+        Map<List<String>, AggValuesBO> aggregationVirtualEquipments = HashMap.newHashMap(context.isHasVirtualEquipments() ? INITIAL_MAP_CAPACITY : 0);
+        Map<List<String>, AggValuesBO> aggregationApplications = HashMap.newHashMap(context.isHasApplications() ? INITIAL_MAP_CAPACITY : 0);
+
+        EvaluateReportBO evaluateReportBO = buildEvaluateReportBO(inventory, inventoryName, taskId);
+
+        TotalsInfo totalsInfo = computeTotals(context);
+
+        EvaluationState state = new EvaluationState(aggregationVirtualEquipments, aggregationApplications);
+
+        try (CSVPrinter csvPhysicalEquipment = csvFileService.getPrinter(totalsInfo.physicalEquipmentIndicator(), exportDirectory);
+             CSVPrinter csvVirtualEquipment = csvFileService.getPrinter(totalsInfo.virtualEquipmentIndicator(), exportDirectory);
+             CSVPrinter csvAiService = csvFileService.getPrinter(FileType.AI_SERVICE_INDICATOR, exportDirectory);
+             CSVPrinter csvApplication = csvFileService.getPrinter(FileType.APPLICATION_INDICATOR, exportDirectory);
+             CSVPrinter csvInDatacenter = csvFileService.getPrinter(FileType.DATACENTER, exportDirectory);
+             CSVPrinter csvInPhysicalEquipment = csvFileService.getPrinter(FileType.EQUIPEMENT_PHYSIQUE, exportDirectory);
+             CSVPrinter csvInVirtualEquipment = csvFileService.getPrinter(FileType.VIRTUAL_EQUIPMENT, exportDirectory);
+             CSVPrinter csvInAiService = csvFileService.getPrinter(FileType.AI_SERVICE, exportDirectory);
+             CSVPrinter csvInApplication = csvFileService.getPrinter(FileType.APPLICATION, exportDirectory);
+        ) {
+            CsvPrinters printers = new CsvPrinters(csvPhysicalEquipment, csvVirtualEquipment, csvAiService, csvApplication,
+                    csvInDatacenter, csvInPhysicalEquipment, csvInVirtualEquipment, csvInAiService, csvInApplication);
+
+            writeDatacentersCsv(evaluateReportBO, datacenterByNameMap, printers);
+
+            // manage virtual equipments without physical equipments (cloud)
+            SaveResult saveResult = evaluateVirtualsEquipments(context, evaluateReportBO, null, null,
+                    aggregationVirtualEquipments, aggregationApplications,
+                    csvInVirtualEquipment, csvVirtualEquipment, csvInApplication, csvApplication,
+                    criteriaSetup.refSip(), criteriaSetup.refShortcutBO(),
+                    criteriaSetup.criteriaCodes(), lifecycleSteps, codeToCountryMap,
+                    null, null);
+            state.outVirtualEquipmentSize += saveResult.savedVirtualCount();
+            state.outApplicationSize += saveResult.savedApplicationCount();
+
+            // to check weather workspace level data
+            long countItemImpactWorkspace = referentialGetService.countItemImpactsForWorkspace(context.getWorkspaceId());
+
+            double processFactor = evaluateReportBO.isExport() ? 0.8 : 0.9;
+
+            processPhysicalEquipmentPages(context, taskId, organization, evaluateReportBO, datacenterByNameMap,
+                    vmsByPhysical, printers, criteriaSetup, lifecycleSteps, codeToCountryMap, inventoryName,
+                    totalsInfo, countItemImpactWorkspace, processFactor, state);
+
+            if (context.getInventoryId() != null) {
+                processAiServicePages(context, taskId, evaluateReportBO, printers, criteriaSetup, lifecycleSteps,
+                        inventoryName, totalsInfo, processFactor, state);
+            }
+
+        } catch (IOException e) {
+            log.error("Cannot write csv output files", e);
+            throw new AsyncTaskException("An error occurred on writing csv files", e);
+        }
+
+        saveRemainingAggregations(taskId, criteriaSetup.refShortcutBO(), state);
+
+        log.info("End evaluating impacts for {}/{} in {}s and sizes: {}/{}/{}/{}", context.log(), taskId,
+                (System.currentTimeMillis() - start) / 1000,
+                state.outPhysicalEquipmentSize, state.outVirtualEquipmentSize, state.outApplicationSize, state.outAiServiceSize);
+
+        saveOutputCounts(inventory, state);
+
+        cleanEmptyFiles(exportDirectory, evaluateReportBO);
+    }
+
+    // retrieving the VM list for this DS, keyed by physical equipment name (ONLY VMs attached to a physical equipment)
+    private Map<String, List<InVirtualEquipment>> buildVmsByPhysicalMap(Context context) {
+        List<InVirtualEquipment> virtualEquipments = context.getInventoryId() != null ?
+                inVirtualEquipmentRepository.findByInventoryId(context.getInventoryId()) :
+                inVirtualEquipmentRepository.findByDigitalServiceVersionUid(context.getDigitalServiceVersionUid());
+
+        return virtualEquipments.stream()
+                .filter(vm -> vm.getPhysicalEquipmentName() != null)
+                .collect(Collectors.groupingBy(InVirtualEquipment::getPhysicalEquipmentName));
+    }
+
+    private InventoryContext resolveInventoryContext(Task task, Context context) {
+        Inventory inventory = task.getInventory();
+        if (inventory == null) {
+            return new InventoryContext(null, context.getDigitalServiceName());
+        }
+        inventory = inventoryRepository.findById(inventory.getId()).orElse(null);
+        String inventoryName = (inventory == null) ? context.getDigitalServiceName() : inventory.getName();
+        return new InventoryContext(inventory, inventoryName);
+    }
+
+    // Get datacenters by name (name, InDatacenter)
+    private Map<String, InDatacenter> buildDatacenterByNameMap(Context context) {
+        List<InDatacenter> datacenters = context.getInventoryId() == null ?
+                inDatacenterRepository.findByDigitalServiceVersionUid(context.getDigitalServiceVersionUid()) :
+                inDatacenterRepository.findByInventoryId(context.getInventoryId());
+        return datacenters.stream().collect(Collectors.toMap(InDatacenter::getName, Function.identity()));
+    }
+
+    private CriteriaSetup buildCriteriaSetup(Task task, Context context, String organization, List<String> lifecycleSteps) {
         List<CriterionRest> activeCriteria = referentialService.getActiveCriteria(task.getCriteria().stream()
                 .map(StringUtils::kebabToSnakeCase).toList());
 
-        if (activeCriteria == null) return;
+        if (activeCriteria == null) {
+            return null;
+        }
 
         List<String> criteriaCodes = activeCriteria.stream().map(CriterionRest::getCode).toList();
 
@@ -191,7 +274,6 @@ public class EvaluateService {
                 CriterionRest::getCode,
                 CriterionRest::getUnit
         ));
-
 
         Map<String, ItemReferentialInfo> itemReferentialMap = referentialService.buildItemReferentialMap(context.getWorkspaceId());
         RefShortcutBO refShortcutBO = new RefShortcutBO(
@@ -202,22 +284,17 @@ public class EvaluateService {
                 itemReferentialMap
         );
 
-        final List<HypothesisRest> hypothesisRestList = referentialService.getHypotheses(organization);
-
-        log.info("Start evaluating impacts for {}/{}", context.log(), taskId);
-
+        List<HypothesisRest> hypothesisRestList = referentialService.getHypotheses(organization);
         Map<String, Double> refSip = referentialService.getSipValueMap(criteriaCodes);
-        Map<String, String> codeToCountryMap = codeToCountryMapCache;
 
-        Map<List<String>, AggValuesBO> aggregationPhysicalEquipments = HashMap.newHashMap(INITIAL_MAP_CAPACITY);
-        Map<List<String>, AggValuesBO> aggregationVirtualEquipments = HashMap.newHashMap(context.isHasVirtualEquipments() ? INITIAL_MAP_CAPACITY : 0);
-        Map<List<String>, AggValuesBO> aggregationApplications = HashMap.newHashMap(context.isHasApplications() ? INITIAL_MAP_CAPACITY : 0);
+        return new CriteriaSetup(activeCriteria, criteriaCodes, criteriaUnitMap, refShortcutBO, hypothesisRestList, refSip);
+    }
 
-
+    private EvaluateReportBO buildEvaluateReportBO(Inventory inventory, String inventoryName, Long taskId) {
         if (inventory != null && null == inventory.getDoExportVerbose()) {
             inventory.setDoExportVerbose(true);
         }
-        EvaluateReportBO evaluateReportBO = EvaluateReportBO.builder()
+        return EvaluateReportBO.builder()
                 .export(true)
                 .verbose(inventory == null || inventory.getDoExportVerbose())
                 .isDigitalService(inventory == null)
@@ -228,7 +305,9 @@ public class EvaluateService {
                 .taskId(taskId)
                 .name(inventoryName)
                 .build();
+    }
 
+    private TotalsInfo computeTotals(Context context) {
         long totalPhysicalEquipments =
                 context.getInventoryId() == null ?
                         inPhysicalEquipmentRepository.countByDigitalServiceVersionUid(context.getDigitalServiceVersionUid()) :
@@ -244,236 +323,275 @@ public class EvaluateService {
                 FileType.PHYSICAL_EQUIPMENT_INDICATOR_DIGITAL_SERVICE;
         FileType virtualEquipmentIndicator = context.getDigitalServiceVersionUid() == null ? FileType.VIRTUAL_EQUIPMENT_INDICATOR :
                 FileType.VIRTUAL_EQUIPMENT_INDICATOR_DIGITAL_SERVICE;
-        int outPhysicalEquipmentSize = 0;
-        int outVirtualEquipmentSize = 0;
-        int outApplicationSize = 0;
-        int outAiServiceSize = 0;
-        try (CSVPrinter csvPhysicalEquipment = csvFileService.getPrinter(physicalEquipmentIndicator, exportDirectory);
-             CSVPrinter csvVirtualEquipment = csvFileService.getPrinter(virtualEquipmentIndicator, exportDirectory);
-             CSVPrinter csvAiService = csvFileService.getPrinter(FileType.AI_SERVICE_INDICATOR, exportDirectory);
-             CSVPrinter csvApplication = csvFileService.getPrinter(FileType.APPLICATION_INDICATOR, exportDirectory);
-             CSVPrinter csvInDatacenter = csvFileService.getPrinter(FileType.DATACENTER, exportDirectory);
-             CSVPrinter csvInPhysicalEquipment = csvFileService.getPrinter(FileType.EQUIPEMENT_PHYSIQUE, exportDirectory);
-             CSVPrinter csvInVirtualEquipment = csvFileService.getPrinter(FileType.VIRTUAL_EQUIPMENT, exportDirectory);
-             CSVPrinter csvInAiService = csvFileService.getPrinter(FileType.AI_SERVICE, exportDirectory);
-             CSVPrinter csvInApplication = csvFileService.getPrinter(FileType.APPLICATION, exportDirectory);
-        ) {
+
+        return new TotalsInfo(totalPhysicalEquipments, totalCloudVirtualEquipments, totalAiServices, totalEquipments,
+                physicalEquipmentIndicator, virtualEquipmentIndicator);
+    }
+
+    private void writeDatacentersCsv(EvaluateReportBO evaluateReportBO, Map<String, InDatacenter> datacenterByNameMap,
+                                      CsvPrinters printers) throws IOException {
+        if (!evaluateReportBO.isExport()) {
+            return;
+        }
+        for (InDatacenter inDatacenter : datacenterByNameMap.values()) {
+            printers.inDatacenter().printRecord(inputToCsvRecord.toCsv(inDatacenter));
+        }
+    }
+
+    private void processPhysicalEquipmentPages(Context context, Long taskId, String organization,
+                                                EvaluateReportBO evaluateReportBO,
+                                                Map<String, InDatacenter> datacenterByNameMap,
+                                                Map<String, List<InVirtualEquipment>> vmsByPhysical,
+                                                CsvPrinters printers, CriteriaSetup criteriaSetup,
+                                                List<String> lifecycleSteps, Map<String, String> codeToCountryMap,
+                                                String inventoryName, TotalsInfo totalsInfo,
+                                                long countItemImpactWorkspace, double processFactor,
+                                                EvaluationState state) throws IOException {
+
+        final Sort sortByName = Sort.by("name");
+        int pageNumber = 0;
+
+        while (true) {
+            Pageable page = PageRequest.of(pageNumber, Constants.BATCH_SIZE, sortByName);
+            final List<InPhysicalEquipment> physicalEquipments =
+                    context.getInventoryId() == null ?
+                            inPhysicalEquipmentRepository.findByDigitalServiceVersionUid(context.getDigitalServiceVersionUid(), page) :
+                            inPhysicalEquipmentRepository.findByInventoryId(context.getInventoryId(), page);
+
+            if (physicalEquipments.isEmpty()) {
+                break;
+            }
+
+            log.info("Evaluating {} physical equipments, page {}/{}", physicalEquipments.size(), pageNumber + 1,
+                    (int) Math.ceil((double) totalsInfo.totalPhysicalEquipments() / Constants.BATCH_SIZE));
+
+            int physicalSaveCounter = 0;
+            for (InPhysicalEquipment physicalEquipment : physicalEquipments) {
+                physicalSaveCounter = processOnePhysicalEquipment(context, taskId, organization, evaluateReportBO,
+                        datacenterByNameMap, vmsByPhysical, printers, criteriaSetup, lifecycleSteps, codeToCountryMap,
+                        inventoryName, totalsInfo, countItemImpactWorkspace, processFactor, state, physicalEquipment,
+                        physicalSaveCounter);
+            }
+
+            printers.physicalEquipment().flush();
+            printers.virtualEquipment().flush();
+            printers.application().flush();
+
+            pageNumber++;
+            physicalEquipments.clear();
+        }
+    }
+
+    private int processOnePhysicalEquipment(Context context, Long taskId, String organization,
+                                             EvaluateReportBO evaluateReportBO,
+                                             Map<String, InDatacenter> datacenterByNameMap,
+                                             Map<String, List<InVirtualEquipment>> vmsByPhysical,
+                                             CsvPrinters printers, CriteriaSetup criteriaSetup,
+                                             List<String> lifecycleSteps, Map<String, String> codeToCountryMap,
+                                             String inventoryName, TotalsInfo totalsInfo,
+                                             long countItemImpactWorkspace, double processFactor,
+                                             EvaluationState state, InPhysicalEquipment physicalEquipment,
+                                             int physicalSaveCounter) throws IOException {
+
+        if (state.aggregationPhysicalEquipments.size() > MAXIMUM_MAP_CAPACITY) {
+            log.error("Exceeding aggregation size for physical equipments");
+            throw new AsyncTaskException("Exceeding aggregation size for physical equipments, please reduce criteria number");
+        }
+
+        DatacenterInfo datacenterInfo = resolveDatacenterInfo(physicalEquipment, datacenterByNameMap);
+
+        // Call external tools - lib calculs
+        List<ImpactEquipementPhysique> impactEquipementPhysiqueList = evaluateNumEcoEvalService.calculatePhysicalEquipment(
+                physicalEquipment, datacenterInfo.datacenter(),
+                organization, criteriaSetup.activeCriteria(), lifecycleSteps, criteriaSetup.hypothesisRestList(),
+                context.getWorkspaceId(), countItemImpactWorkspace);
+
+        boolean hasNonCloudVM = hasNonCloudVirtualMachines(vmsByPhysical, physicalEquipment);
+
+        if (evaluateReportBO.isExport()) {
+            printers.inPhysicalEquipment().printRecord(inputToCsvRecord.toCsv(physicalEquipment, datacenterInfo.datacenter()));
+        }
+
+        aggregatePhysicalEquipmentImpacts(context, taskId, evaluateReportBO, printers, criteriaSetup, inventoryName,
+                physicalEquipment, datacenterInfo.datacenter(), impactEquipementPhysiqueList, state);
+
+        // set progress percentage
+        state.processed++;
+        if (state.processed % 20 == 0 || state.processed == totalsInfo.totalEquipments()) {
+            updateProgress(taskId, state.processed, totalsInfo.totalEquipments(), processFactor);
+        }
+
+        /**
+         * ------------------------------------------------------------------
+         * VM RULE:
+         * A physical equipment must run VM calculations ONLY IF:
+         *    - It has â‰¥ 1 NON-CLOUD VM
+         * Cloud VMs do NOT count for this condition.
+         * ------------------------------------------------------------------
+         */
+        if (!hasNonCloudVM) {
+            return physicalSaveCounter;
+        }
+
+        SaveResult saveResult = evaluateVirtualsEquipments(context, evaluateReportBO, physicalEquipment, impactEquipementPhysiqueList,
+                state.aggregationVirtualEquipments, state.aggregationApplications,
+                printers.inVirtualEquipment(), printers.virtualEquipment(), printers.inApplication(), printers.application(),
+                criteriaSetup.refSip(), criteriaSetup.refShortcutBO(), criteriaSetup.criteriaCodes(), lifecycleSteps,
+                codeToCountryMap, datacenterInfo.pue(), datacenterInfo.location());
+        state.outVirtualEquipmentSize += saveResult.savedVirtualCount();
+        state.outApplicationSize += saveResult.savedApplicationCount();
+
+        return flushPhysicalEquipmentsIfFull(taskId, criteriaSetup.refShortcutBO(), state, physicalSaveCounter + 1);
+    }
+
+    private DatacenterInfo resolveDatacenterInfo(InPhysicalEquipment physicalEquipment,
+                                                  Map<String, InDatacenter> datacenterByNameMap) {
+        if (physicalEquipment.getDatacenterName() == null) {
+            return new DatacenterInfo(null, null, null);
+        }
+        InDatacenter datacenter = datacenterByNameMap.get(physicalEquipment.getDatacenterName());
+        if (datacenter == null) {
+            return new DatacenterInfo(null, null, null);
+        }
+        // force location into physicalEquipment
+        physicalEquipment.setLocation(datacenter.getLocation());
+        return new DatacenterInfo(datacenter, datacenter.getPue(), datacenter.getLocation());
+    }
+
+    // Identify whether the physical equipment has NON-CLOUD VMs attached to it
+    private boolean hasNonCloudVirtualMachines(Map<String, List<InVirtualEquipment>> vmsByPhysical,
+                                                InPhysicalEquipment physicalEquipment) {
+        List<InVirtualEquipment> allVMs = vmsByPhysical.getOrDefault(physicalEquipment.getName(), List.of());
+        return allVMs.stream().anyMatch(vm -> !CLOUD_SERVICES.name().equals(vm.getInfrastructureType()));
+    }
+
+    // Aggregate physical equipment indicators in memory
+    private void aggregatePhysicalEquipmentImpacts(Context context, Long taskId, EvaluateReportBO evaluateReportBO,
+                                                    CsvPrinters printers, CriteriaSetup criteriaSetup, String inventoryName,
+                                                    InPhysicalEquipment physicalEquipment, InDatacenter datacenter,
+                                                    List<ImpactEquipementPhysique> impactEquipementPhysiqueList,
+                                                    EvaluationState state) throws IOException {
+        for (ImpactEquipementPhysique impact : impactEquipementPhysiqueList) {
+            Double sipValue = criteriaSetup.refSip().get(impact.getCritere());
+            AggValuesBO values = createAggValuesBO(impact.getStatutIndicateur(), impact.getTrace(),
+                    impact.getQuantite(), impact.getConsoElecMoyenne(),
+                    impact.getImpactUnitaire(),
+                    sipValue,
+                    impact.getDureeDeVie(), null, null, false, impact.getSource());
+
+            state.aggregationPhysicalEquipments
+                    .computeIfAbsent(aggregationToOutput.keyPhysicalEquipment(physicalEquipment, datacenter, impact,
+                                    criteriaSetup.refShortcutBO(), evaluateReportBO.isDigitalService()),
+                            k -> new AggValuesBO())
+                    .add(values);
 
             if (evaluateReportBO.isExport()) {
-                for (InDatacenter inDatacenter : datacenterByNameMap.values()) {
-                    csvInDatacenter.printRecord(inputToCsvRecord.toCsv(inDatacenter));
-                }
+                printers.physicalEquipment().printRecord(impactToCsvRecord.toCsv(
+                        context, taskId, inventoryName, physicalEquipment, impact, sipValue, evaluateReportBO.isVerbose())
+                );
             }
 
-            // manage virtual equipments without physical equipments (cloud)
-            SaveResult saveResult = evaluateVirtualsEquipments(context, evaluateReportBO, null, null,
-                    aggregationVirtualEquipments, aggregationApplications,
-                    csvInVirtualEquipment, csvVirtualEquipment, csvInApplication, csvApplication, refSip, refShortcutBO,
-                    criteriaCodes, lifecycleSteps, codeToCountryMap/*, outVirtualEquipmentSize*/,
-                    null, null);
-            outVirtualEquipmentSize += saveResult.savedVirtualCount();
-            outApplicationSize += saveResult.savedApplicationCount();
+            evaluateReportBO.setNbPhysicalEquipmentLines(evaluateReportBO.getNbPhysicalEquipmentLines() + 1);
+        }
+    }
 
-            // to check weather workspace level data
-            long countItemImpactWorkspace= referentialGetService.countItemImpactsForWorkspace(context.getWorkspaceId());
+    private int flushPhysicalEquipmentsIfFull(Long taskId, RefShortcutBO refShortcutBO, EvaluationState state,
+                                               int physicalSaveCounter) {
+        if (physicalSaveCounter < 10) {
+            return physicalSaveCounter;
+        }
+        state.outPhysicalEquipmentSize += saveService.saveOutPhysicalEquipments(
+                state.aggregationPhysicalEquipments, taskId, refShortcutBO);
+        state.aggregationPhysicalEquipments = HashMap.newHashMap(INITIAL_MAP_CAPACITY);
+        return 0;
+    }
 
-            int pageNumber = 0;
-            long processed = 0;
-            final Sort sortByName = Sort.by("name");
-            double processFactor = evaluateReportBO.isExport() ? 0.8 : 0.9;
-            while (true) {
-                Pageable page = PageRequest.of(pageNumber, Constants.BATCH_SIZE, sortByName);
-                final List<InPhysicalEquipment> physicalEquipments =
-                        context.getInventoryId() == null ?
-                                inPhysicalEquipmentRepository.findByDigitalServiceVersionUid(context.getDigitalServiceVersionUid(), page) :
-                                inPhysicalEquipmentRepository.findByInventoryId(context.getInventoryId(), page);
-
-                if (physicalEquipments.isEmpty()) {
-                    break;
-                }
-
-                log.info("Evaluating {} physical equipments, page {}/{}", physicalEquipments.size(), pageNumber + 1, (int) Math.ceil((double) totalPhysicalEquipments / Constants.BATCH_SIZE));
-                int physicalSaveCounter = 0;
-                for (InPhysicalEquipment physicalEquipment : physicalEquipments) {
-
-                    if (aggregationPhysicalEquipments.size() > MAXIMUM_MAP_CAPACITY) {
-                        log.error("Exceeding aggregation size for physical equipments");
-                        throw new AsyncTaskException("Exceeding aggregation size for physical equipments, please reduce criteria number");
-                    }
-
-                    final InDatacenter datacenter = physicalEquipment.getDatacenterName() == null ?
-                            null :
-                            datacenterByNameMap.get(physicalEquipment.getDatacenterName());
-
-                    if (datacenter != null) {
-                        // force location into physicalEquipment
-                        physicalEquipment.setLocation(datacenter.getLocation());
-                    }
-
-                    Double equipmentPue = datacenter != null ? datacenter.getPue() : null;
-                    String equipmentLocation = datacenter != null ? datacenter.getLocation() : null;
-
-                    // Call external tools - lib calculs
-                    List<ImpactEquipementPhysique> impactEquipementPhysiqueList = evaluateNumEcoEvalService.calculatePhysicalEquipment(
-                            physicalEquipment, datacenter,
-                            organization, activeCriteria, lifecycleSteps, hypothesisRestList,context.getWorkspaceId(),countItemImpactWorkspace);
-
-
-                    // Identify NON-CLOUD VMs for this physical equipment
-                    List<InVirtualEquipment> allVMs = vmsByPhysical.getOrDefault(physicalEquipment.getName(), List.of());
-
-                    List<InVirtualEquipment> nonCloudVMs = allVMs.stream()
-                            .filter(vm -> !CLOUD_SERVICES.name().equals(vm.getInfrastructureType()))
-                            .toList();
-
-                    boolean hasNonCloudVM = !nonCloudVMs.isEmpty();
-
-                    if (evaluateReportBO.isExport()) {
-                        csvInPhysicalEquipment.printRecord(inputToCsvRecord.toCsv(physicalEquipment, datacenter));
-                    }
-
-                    // Aggregate physical equipment indicators in memory
-                    for (ImpactEquipementPhysique impact : impactEquipementPhysiqueList) {
-                        Double sipValue = refSip.get(impact.getCritere());
-                        AggValuesBO values = createAggValuesBO(impact.getStatutIndicateur(), impact.getTrace(),
-                                impact.getQuantite(), impact.getConsoElecMoyenne(),
-                                impact.getImpactUnitaire(),
-                                sipValue,
-                                impact.getDureeDeVie(), null, null, false, impact.getSource());
-
-                        aggregationPhysicalEquipments
-                                .computeIfAbsent(aggregationToOutput.keyPhysicalEquipment(physicalEquipment, datacenter, impact, refShortcutBO, evaluateReportBO.isDigitalService()),
-                                        k -> new AggValuesBO())
-                                .add(values);
-
-                        if (evaluateReportBO.isExport()) {
-                            csvPhysicalEquipment.printRecord(impactToCsvRecord.toCsv(
-                                    context, taskId, inventoryName, physicalEquipment, impact, sipValue, evaluateReportBO.isVerbose())
-                            );
-                        }
-
-                        evaluateReportBO.setNbPhysicalEquipmentLines(evaluateReportBO.getNbPhysicalEquipmentLines() + 1);
-                    }
-                    // set progress percentage
-                    processed++;
-
-                    if (processed % 20 == 0 || processed == totalEquipments) {
-                        updateProgress(taskId, processed, totalEquipments, processFactor);
-                    }
-                    /**
-                     * ------------------------------------------------------------------
-                     * VM RULE:
-                     * A physical equipment must run VM calculations ONLY IF:
-                     *    - It has ≥ 1 NON-CLOUD VM
-                     * Cloud VMs do NOT count for this condition.
-                     * ------------------------------------------------------------------
-                     */
-                    if (!hasNonCloudVM) {
-                        continue;
-                    }
-
-                    SaveResult saveResult2 = evaluateVirtualsEquipments(context, evaluateReportBO, physicalEquipment, impactEquipementPhysiqueList,
-                            aggregationVirtualEquipments, aggregationApplications,
-                            csvInVirtualEquipment, csvVirtualEquipment, csvInApplication, csvApplication,
-                            refSip, refShortcutBO, criteriaCodes, lifecycleSteps, codeToCountryMap/*, outVirtualEquipmentSize*/,
-                            equipmentPue, equipmentLocation);
-                    outVirtualEquipmentSize += saveResult2.savedVirtualCount();
-                    outApplicationSize += saveResult2.savedApplicationCount();
-
-                    physicalSaveCounter++;
-                    if (physicalSaveCounter >= 10) {
-                        outPhysicalEquipmentSize += saveService.saveOutPhysicalEquipments(
-                                aggregationPhysicalEquipments, taskId, refShortcutBO);
-                        aggregationPhysicalEquipments = HashMap.newHashMap(INITIAL_MAP_CAPACITY);
-                        physicalSaveCounter = 0;
-                    }
-                }
-
-                csvPhysicalEquipment.flush();
-                csvVirtualEquipment.flush();
-                csvApplication.flush();
-
-                pageNumber++;
-                physicalEquipments.clear();
+    private void processAiServicePages(Context context, Long taskId, EvaluateReportBO evaluateReportBO,
+                                        CsvPrinters printers, CriteriaSetup criteriaSetup, List<String> lifecycleSteps,
+                                        String inventoryName, TotalsInfo totalsInfo, double processFactor,
+                                        EvaluationState state) throws IOException {
+        final Sort sortById = Sort.by("id");
+        int aiPageNumber = 0;
+        while (true) {
+            Pageable page = PageRequest.of(aiPageNumber, Constants.BATCH_SIZE, sortById);
+            List<InAiService> aiServices = inAiServiceRepository.findByInventoryIdOrderByIdAsc(context.getInventoryId(), page);
+            if (aiServices.isEmpty()) {
+                break;
             }
 
-            if (context.getInventoryId() != null) {
-                final Sort sortById = Sort.by("id");
-                int aiPageNumber = 0;
-                while (true) {
-                    Pageable page = PageRequest.of(aiPageNumber, Constants.BATCH_SIZE, sortById);
-                    List<InAiService> aiServices = inAiServiceRepository.findByInventoryIdOrderByIdAsc(context.getInventoryId(), page);
-                    if (aiServices.isEmpty()) {
-                        break;
-                    }
-
-                    List<OutAiService> outAiServices = new ArrayList<>(aiServices.size() * Math.max(criteriaCodes.size(), 1) * Math.max(lifecycleSteps.size(), 1));
-                    for (InAiService aiService : aiServices) {
-                        if (evaluateReportBO.isExport()) {
-                            csvInAiService.printRecord(aiServiceToCsvRecord.toCsv(aiService));
-                        }
-
-                        List<ImpactBO> aiImpacts = evaluateEcologitsService.evaluate(aiService, criteriaCodes, lifecycleSteps, countryNameToCodeMapCache);
-                        for (ImpactBO impact : aiImpacts) {
-                            OutAiService outAiService = toOutAiService(taskId, aiService, impact, criteriaUnitMap, refSip);
-                            outAiServices.add(outAiService);
-                            if (evaluateReportBO.isExport()) {
-                                csvAiService.printRecord(aiServiceImpactToCsvRecord.toCsv(context, taskId, inventoryName, aiService, outAiService));
-                            }
-                            evaluateReportBO.setNbAiServiceLines(evaluateReportBO.getNbAiServiceLines() + 1);
-                        }
-
-                        processed++;
-                        if (processed % 20 == 0 || processed == totalEquipments) {
-                            updateProgress(taskId, processed, totalEquipments, processFactor);
-                        }
-                    }
-
-                    outAiServiceSize += saveService.saveOutAiServices(outAiServices);
-                    csvAiService.flush();
-                    aiPageNumber++;
-                    aiServices.clear();
-                }
+            List<OutAiService> outAiServices = new ArrayList<>(
+                    aiServices.size() * Math.max(criteriaSetup.criteriaCodes().size(), 1) * Math.max(lifecycleSteps.size(), 1));
+            for (InAiService aiService : aiServices) {
+                processOneAiService(context, taskId, evaluateReportBO, printers, criteriaSetup, lifecycleSteps,
+                        inventoryName, totalsInfo, processFactor, state, aiService, outAiServices);
             }
 
-        } catch (IOException e) {
-            log.error("Cannot write csv output files", e);
-            throw new AsyncTaskException("An error occurred on writing csv files", e);
+            state.outAiServiceSize += saveService.saveOutAiServices(outAiServices);
+            printers.aiService().flush();
+            aiPageNumber++;
+            aiServices.clear();
+        }
+    }
+
+    private void processOneAiService(Context context, Long taskId, EvaluateReportBO evaluateReportBO,
+                                      CsvPrinters printers, CriteriaSetup criteriaSetup, List<String> lifecycleSteps,
+                                      String inventoryName, TotalsInfo totalsInfo, double processFactor,
+                                      EvaluationState state, InAiService aiService,
+                                      List<OutAiService> outAiServices) throws IOException {
+        if (evaluateReportBO.isExport()) {
+            printers.inAiService().printRecord(aiServiceToCsvRecord.toCsv(aiService));
         }
 
+        List<ImpactBO> aiImpacts = evaluateEcologitsService.evaluate(aiService, criteriaSetup.criteriaCodes(), lifecycleSteps, countryNameToCodeMapCache);
+        for (ImpactBO impact : aiImpacts) {
+            OutAiService outAiService = toOutAiService(taskId, aiService, impact, criteriaSetup.criteriaUnitMap(), criteriaSetup.refSip());
+            outAiServices.add(outAiService);
+            if (evaluateReportBO.isExport()) {
+                printers.aiService().printRecord(aiServiceImpactToCsvRecord.toCsv(context, taskId, inventoryName, aiService, outAiService));
+            }
+            evaluateReportBO.setNbAiServiceLines(evaluateReportBO.getNbAiServiceLines() + 1);
+        }
+
+        state.processed++;
+        if (state.processed % 20 == 0 || state.processed == totalsInfo.totalEquipments()) {
+            updateProgress(taskId, state.processed, totalsInfo.totalEquipments(), processFactor);
+        }
+    }
+
+    // Store aggregated indicators remaining in memory after paging is complete
+    private void saveRemainingAggregations(Long taskId, RefShortcutBO refShortcutBO, EvaluationState state) {
         log.info("Saving aggregated indicators");
-        // Store aggregated indicators
-        if (!aggregationPhysicalEquipments.isEmpty()) {
-            outPhysicalEquipmentSize += saveService.saveOutPhysicalEquipments(
-                    aggregationPhysicalEquipments, taskId, refShortcutBO);
-            aggregationPhysicalEquipments.clear();
+        if (!state.aggregationPhysicalEquipments.isEmpty()) {
+            state.outPhysicalEquipmentSize += saveService.saveOutPhysicalEquipments(
+                    state.aggregationPhysicalEquipments, taskId, refShortcutBO);
+            state.aggregationPhysicalEquipments.clear();
         }
-        if (!aggregationVirtualEquipments.isEmpty()) {
-            outVirtualEquipmentSize += saveService.saveOutVirtualEquipments(aggregationVirtualEquipments, taskId, refShortcutBO);
-            aggregationVirtualEquipments.clear();
+        if (!state.aggregationVirtualEquipments.isEmpty()) {
+            state.outVirtualEquipmentSize += saveService.saveOutVirtualEquipments(state.aggregationVirtualEquipments, taskId, refShortcutBO);
+            state.aggregationVirtualEquipments.clear();
         }
-        if (!aggregationApplications.isEmpty()) {
-            outApplicationSize += saveService.saveOutApplications(aggregationApplications, taskId, refShortcutBO);
-            aggregationApplications.clear();
+        if (!state.aggregationApplications.isEmpty()) {
+            state.outApplicationSize += saveService.saveOutApplications(state.aggregationApplications, taskId, refShortcutBO);
+            state.aggregationApplications.clear();
         }
+    }
 
-        log.info("End evaluating impacts for {}/{} in {}s and sizes: {}/{}/{}/{}", context.log(), taskId,
-                (System.currentTimeMillis() - start) / 1000,
-                outPhysicalEquipmentSize, outVirtualEquipmentSize, outApplicationSize, outAiServiceSize);
-
-        // Save output counts to inventory
-        if (inventory != null) {
-            inventoryRepository.updateOutputCounts(
-                    inventory.getId(),
-                    (long) outPhysicalEquipmentSize,
-                    (long) outVirtualEquipmentSize,
-                    (long) outApplicationSize
-            );
-            log.info("Saved output counts to inventory: physical={}, virtual={}, application={}",
-                    outPhysicalEquipmentSize, outVirtualEquipmentSize, outApplicationSize);
+    private void saveOutputCounts(Inventory inventory, EvaluationState state) {
+        if (inventory == null) {
+            return;
         }
+        inventoryRepository.updateOutputCounts(
+                inventory.getId(),
+                (long) state.outPhysicalEquipmentSize,
+                (long) state.outVirtualEquipmentSize,
+                (long) state.outApplicationSize
+        );
+        log.info("Saved output counts to inventory: physical={}, virtual={}, application={}",
+                state.outPhysicalEquipmentSize, state.outVirtualEquipmentSize, state.outApplicationSize);
+    }
 
-        // clean files if empty
+    // clean files if empty
+    private void cleanEmptyFiles(Path exportDirectory, EvaluateReportBO evaluateReportBO) {
         try {
             if (!evaluateReportBO.isExport()) {
                 Files.deleteIfExists(exportDirectory.resolve(FileType.DATACENTER.getFileName() + Constants.CSV));
@@ -491,12 +609,55 @@ public class EvaluateService {
                 Files.deleteIfExists(exportDirectory.resolve(FileType.APPLICATION.getFileName() + Constants.CSV));
             }
             if (evaluateReportBO.getNbAiServiceLines() == 0 || !evaluateReportBO.isExport()) {
-                Files.deleteIfExists(exportDirectory.resolve(FileType.AI_SERVICE_INDICATOR.getFileName() + Constants.CSV));
                 Files.deleteIfExists(exportDirectory.resolve(FileType.AI_SERVICE.getFileName() + Constants.CSV));
             }
         } catch (IOException e) {
             log.error("Cannot delete export local files", e);
             throw new AsyncTaskException("An error occurred on deleting empty csv files", e);
+        }
+    }
+
+    // Holder for inventory resolution result
+    private record InventoryContext(Inventory inventory, String inventoryName) {
+    }
+
+    // Holder for criteria/referential setup shared across the evaluation
+    private record CriteriaSetup(List<CriterionRest> activeCriteria, List<String> criteriaCodes,
+                                  Map<String, String> criteriaUnitMap, RefShortcutBO refShortcutBO,
+                                  List<HypothesisRest> hypothesisRestList, Map<String, Double> refSip) {
+    }
+
+    // Holder for pre-computed totals and file types used for progress reporting and CSV export
+    private record TotalsInfo(long totalPhysicalEquipments, long totalCloudVirtualEquipments, long totalAiServices,
+                               long totalEquipments, FileType physicalEquipmentIndicator, FileType virtualEquipmentIndicator) {
+    }
+
+    // Holder for the resolved datacenter and its derived attributes for a physical equipment
+    private record DatacenterInfo(InDatacenter datacenter, Double pue, String location) {
+    }
+
+    // Bundles the CSV printers opened for the duration of the evaluation
+    private record CsvPrinters(CSVPrinter physicalEquipment, CSVPrinter virtualEquipment, CSVPrinter aiService,
+                                CSVPrinter application, CSVPrinter inDatacenter, CSVPrinter inPhysicalEquipment,
+                                CSVPrinter inVirtualEquipment, CSVPrinter inAiService, CSVPrinter inApplication) {
+    }
+
+    // Mutable accumulator of aggregation maps and counters shared across the paged processing steps
+    private static final class EvaluationState {
+        private Map<List<String>, AggValuesBO> aggregationPhysicalEquipments;
+        private final Map<List<String>, AggValuesBO> aggregationVirtualEquipments;
+        private final Map<List<String>, AggValuesBO> aggregationApplications;
+        private long processed;
+        private int outPhysicalEquipmentSize;
+        private int outVirtualEquipmentSize;
+        private int outApplicationSize;
+        private int outAiServiceSize;
+
+        private EvaluationState(Map<List<String>, AggValuesBO> aggregationVirtualEquipments,
+                                 Map<List<String>, AggValuesBO> aggregationApplications) {
+            this.aggregationPhysicalEquipments = HashMap.newHashMap(INITIAL_MAP_CAPACITY);
+            this.aggregationVirtualEquipments = aggregationVirtualEquipments;
+            this.aggregationApplications = aggregationApplications;
         }
     }
 
