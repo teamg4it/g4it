@@ -317,7 +317,13 @@ export class InvFilePanelComponent implements OnInit, OnDestroy, OnChanges {
                 enableDataInconsistency: this.originalInventory.enableDataInconsistency,
             };
             this.inventoryService.updateInventory(inventoryRest).subscribe({
-                next: () => this.uploadOrClose(formData, hasFiles),
+                next: () => {
+                    if (hasFiles) {
+                        this.uploadAndLaunchLoading(formData, this.inventoryId);
+                    } else {
+                        this.closeWithoutUpload();
+                    }
+                },
                 error: () => {
                     this.global.setLoading(false);
                 },
@@ -325,16 +331,16 @@ export class InvFilePanelComponent implements OnInit, OnDestroy, OnChanges {
             return;
         }
 
-        this.uploadOrClose(formData, hasFiles);
-    }
-
-    private uploadOrClose(formData: FormData, hasFiles: boolean) {
         if (hasFiles) {
             this.uploadAndLaunchLoading(formData, this.inventoryId);
         } else {
-            this.global.setLoading(false);
-            this.close();
+            this.closeWithoutUpload();
         }
+    }
+
+    private closeWithoutUpload(): void {
+        this.global.setLoading(false);
+        this.close();
     }
 
     onSelectToDate(date: Date) {

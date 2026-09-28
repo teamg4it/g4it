@@ -50,9 +50,7 @@ export class InvMultiFileImportComponent implements OnChanges {
         this.fileTypes = this.getFileTypes();
         const index = this.selectedMenuIndex ?? -1;
         let rows = this.rowsByMenuIndex.get(index);
-        if (!rows) {
-            rows = this.fileTypes.map((type) => this.createRow(type));
-        }
+        rows ??= this.fileTypes.map((type) => this.createRow(type));
         this.setRows(rows);
     }
 
