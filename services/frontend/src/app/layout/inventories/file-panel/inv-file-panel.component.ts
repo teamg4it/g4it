@@ -439,7 +439,7 @@ export class InvFilePanelComponent implements OnInit, OnDestroy, OnChanges {
             );
 
         return files.filter((file) =>
-            ["datamodel", "virtualequipment", "AIservices"].some((type) =>
+            ["datamodel", "virtualequipment", "aiservices"].some((type) =>
                 file.name?.toLowerCase()?.includes(type),
             ),
         );
