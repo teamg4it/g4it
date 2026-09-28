@@ -242,46 +242,58 @@
                         }"
                     >
                         <div
-                            class="bg-light-grey-color space-form--button-group flex align-content-end justify-content-end flex-wrap"
+                            class="bg-light-grey-color space-form--button-group flex align-content-end justify-content-between flex-wrap"
                         >
-                            @if (
-                                menuIndex > 0 &&
-                                !importDetails["menu"][menuIndex - 1]["hidden"]
-                            ) {
+                            <div class="flex">
                                 <p-button
-                                    styleClass="p-button-secondary-blue uppercase"
-                                    (onClick)="previousTab(menuIndex)"
-                                    [label]="'common.previous' | translate"
-                                    [ariaLabel]="'common.previous' | translate"
+                                    styleClass="cancel-creation-button uppercase"
+                                    (onClick)="closeSidebar()"
+                                    [label]="'common.workspace.cancel' | translate"
+                                    [ariaLabel]="'common.workspace.cancel' | translate"
                                 ></p-button>
-                            }
-                            <p-button
-                                (onClick)="submitFormData()"
-                                styleClass=" bg-light-green uppercase finish-btn-padding"
-                                [disabled]="
-                                    name === '' || checkForDuplicate() || global.loading()
-                                "
-                                [label]="
-                                    (purpose === 'new'
-                                        ? 'inventories.create-drawer.create-inventory'
-                                        : 'inventories.create-drawer.update-inventory'
-                                    ) | translate
-                                "
-                                [ariaLabel]="
-                                    (purpose === 'new'
-                                        ? 'inventories.create-drawer.create-inventory'
-                                        : 'inventories.create-drawer.update-inventory'
-                                    ) | translate
-                                "
-                            ></p-button>
-                            @if (!lastIndex) {
+                            </div>
+                            <div class="flex">
+                                @if (
+                                    menuIndex > 0 &&
+                                    !importDetails["menu"][menuIndex - 1]["hidden"]
+                                ) {
+                                    <p-button
+                                        styleClass="p-button-secondary-blue uppercase"
+                                        (onClick)="previousTab(menuIndex)"
+                                        [label]="'common.previous' | translate"
+                                        [ariaLabel]="'common.previous' | translate"
+                                    ></p-button>
+                                }
                                 <p-button
-                                    styleClass="p-button-secondary-blue uppercase"
-                                    (onClick)="nextTab(menuIndex)"
-                                    [label]="'common.next' | translate"
-                                    [ariaLabel]="'common.next' | translate"
+                                    (onClick)="submitFormData()"
+                                    styleClass=" bg-light-green uppercase finish-btn-padding mx-2"
+                                    [disabled]="
+                                        name === '' ||
+                                        checkForDuplicate() ||
+                                        global.loading()
+                                    "
+                                    [label]="
+                                        (purpose === 'new'
+                                            ? 'inventories.create-drawer.create-inventory'
+                                            : 'inventories.create-drawer.update-inventory'
+                                        ) | translate
+                                    "
+                                    [ariaLabel]="
+                                        (purpose === 'new'
+                                            ? 'inventories.create-drawer.create-inventory'
+                                            : 'inventories.create-drawer.update-inventory'
+                                        ) | translate
+                                    "
                                 ></p-button>
-                            }
+                                @if (!lastIndex) {
+                                    <p-button
+                                        styleClass="p-button-secondary-blue uppercase"
+                                        (onClick)="nextTab(menuIndex)"
+                                        [label]="'common.next' | translate"
+                                        [ariaLabel]="'common.next' | translate"
+                                    ></p-button>
+                                }
+                            </div>
                         </div>
                     </div>
                 }
