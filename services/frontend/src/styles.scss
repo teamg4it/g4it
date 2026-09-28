@@ -1137,6 +1137,9 @@ app-inventory-item {
     font-weight: 800;
     padding: 0.85rem 1rem;
     text-transform: uppercase;
+    max-width: 280px;
+    display: flex;
+    justify-content: start;
 }
 .app-workspace {
     .p-button {

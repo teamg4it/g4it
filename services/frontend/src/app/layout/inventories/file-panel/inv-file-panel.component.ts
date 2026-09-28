@@ -239,7 +239,6 @@ export class InvFilePanelComponent implements OnInit, OnDestroy, OnChanges {
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe((templateFiles: FileDescription[]) => {
                 // conditon added to not include workpsace data model and to use platform data model instead
-                console.log(templateFiles);
                 templateFiles = templateFiles.filter(
                     (file) =>
                         !file.name.includes("ds_") &&
@@ -407,7 +406,6 @@ export class InvFilePanelComponent implements OnInit, OnDestroy, OnChanges {
     selectTab(index: number) {
         this.selectedMenuIndex = index;
         const files = this.templateFiles;
-        console.log(files);
         this.templateFileVisible.set(this.getSelectedTemplates(files));
         for (const [i, detail] of this.importDetails.menu.entries()) {
             detail.active = i === index;
