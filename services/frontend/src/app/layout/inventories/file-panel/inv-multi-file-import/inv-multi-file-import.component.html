@@ -41,6 +41,14 @@
         </div>
     }
 </div>
+
+<div class="mt-4 mb-4 font-italic">
+    <p>
+        {{ "common.allowed-extensions" | translate }}
+        {{ allowedFileExtensions.join(", ") }}
+    </p>
+</div>
+
 <p-button
     styleClass="cancel-creation-button uppercase h-3rem font-bold"
     icon="pi pi-plus"
