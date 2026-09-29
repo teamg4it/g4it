@@ -23,6 +23,7 @@
                     (sidebarPurposeChange)="sidebarPurpose = $event"
                     (sidebarVisibleChange)="focusLoadButton(); sidebarVisible = $event"
                     (reloadInventoriesAndLoop)="reloadInventoriesAndLoop($event)"
+                    (reloadInventoriesApi)="reloadInventories()"
                 ></app-inv-file-panel>
             </ng-template>
         </p-drawer>

@@ -97,6 +97,7 @@ export class InvFilePanelComponent implements OnInit, OnDestroy, OnChanges {
     @Output() sidebarPurposeChange: EventEmitter<any> = new EventEmitter();
     @Output() sidebarVisibleChange: EventEmitter<any> = new EventEmitter();
     @Output() reloadInventoriesAndLoop = new EventEmitter<number>();
+    @Output() reloadInventoriesApi: EventEmitter<any> = new EventEmitter();
 
     importDetails: CustomSidebarMenuForm = this.buildImportDetails();
     selectedMenuIndex: number | null = 0;
@@ -342,6 +343,8 @@ export class InvFilePanelComponent implements OnInit, OnDestroy, OnChanges {
     }
 
     private closeWithoutUpload(): void {
+        // to reload inventories api on changing name only
+        this.reloadInventoriesApi.emit(true);
         this.global.setLoading(false);
         this.close();
     }
