@@ -215,16 +215,19 @@
                             </span>
                         }
                     </div>
-                } @else {
-                    <h4 class="font-semibold">
-                        {{ "digital-services-import.add-files" | translate }}
-                    </h4>
-                    <app-inv-multi-file-import
-                        [selectedMenuIndex]="selectedMenuIndex"
-                        [form]="importDetails['form']"
-                        [importForm]="importForm"
-                        [inventoryId]="inventoryId"
-                    ></app-inv-multi-file-import>
+                }
+                @if (fileImportInitialized) {
+                    <div [hidden]="selectedMenuIndex === 0">
+                        <h4 class="font-semibold">
+                            {{ "digital-services-import.add-files" | translate }}
+                        </h4>
+                        <app-inv-multi-file-import
+                            [selectedMenuIndex]="selectedMenuIndex"
+                            [form]="importDetails['form']"
+                            [importForm]="importForm"
+                            [inventoryId]="inventoryId"
+                        ></app-inv-multi-file-import>
+                    </div>
                 }
             </p-scrollPanel>
             <!-- Footer Buttons -->

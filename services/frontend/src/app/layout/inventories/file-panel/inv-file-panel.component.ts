@@ -99,7 +99,7 @@ export class InvFilePanelComponent implements OnInit, OnDestroy, OnChanges {
     @Output() reloadInventoriesAndLoop = new EventEmitter<number>();
 
     importDetails: CustomSidebarMenuForm = this.buildImportDetails();
-    selectedMenuIndex: number | null = null;
+    selectedMenuIndex: number | null = 0;
     private buildImportDetails(): CustomSidebarMenuForm {
         const common = {
             subTitle: this.translate.instant("common.optional"),
@@ -175,6 +175,9 @@ export class InvFilePanelComponent implements OnInit, OnDestroy, OnChanges {
     selectedDate: Date | null = null;
     inventoriesForm!: FormGroup;
     inventoryType = Constants.INVENTORY_TYPE;
+    // becomes true the first time a non-info tab is shown; used to keep app-inv-multi-file-import
+    // mounted (hidden) afterward instead of destroying/recreating it and losing selected files
+    fileImportInitialized = false;
 
     ngUnsubscribe = new Subject<void>();
 
@@ -411,6 +414,8 @@ export class InvFilePanelComponent implements OnInit, OnDestroy, OnChanges {
 
     selectTab(index: number) {
         this.selectedMenuIndex = index;
+        // to hide files component initially once it visible remains true.
+        this.fileImportInitialized ||= index !== 0;
         const files = this.templateFiles;
         this.templateFileVisible.set(this.getSelectedTemplates(files));
         for (const [i, detail] of this.importDetails.menu.entries()) {
