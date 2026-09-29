@@ -188,7 +188,7 @@ describe("InvFilePanelComponent", () => {
 
             component.ngOnChanges({} as any);
 
-            expect(component.invalidDates.length).toBe(62);
+            expect(component.invalidDates).toHaveSize(62);
             expect(component.selectedType).toBe(
                 Constants.INVENTORY_TYPE.INFORMATION_SYSTEM,
             );
@@ -207,7 +207,7 @@ describe("InvFilePanelComponent", () => {
 
             component.ngOnChanges({} as any);
 
-            expect(component.invalidDates.length).toBe(31);
+            expect(component.invalidDates).toHaveSize(31);
             expect(component.selectedType).toBe(
                 Constants.INVENTORY_TYPE.INFORMATION_SYSTEM,
             );
