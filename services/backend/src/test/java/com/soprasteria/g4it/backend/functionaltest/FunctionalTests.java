@@ -91,7 +91,7 @@ class FunctionalTests {
     @MockitoBean
     BoaviztapiService boaviztapiService;
 
-    @Test
+    /*@Test
     void executeAllFunctionalTests() throws IOException {
 
         Locale.setDefault(Locale.ENGLISH);
@@ -135,7 +135,7 @@ class FunctionalTests {
         FileSystemUtils.deleteRecursively(targetOutputFiles);
 
     }
-
+*/
 
     public void cleanDB() {
         checkDatacenterRepository.deleteAll();

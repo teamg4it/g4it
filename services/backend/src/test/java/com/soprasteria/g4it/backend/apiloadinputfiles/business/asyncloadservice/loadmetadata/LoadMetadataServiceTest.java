@@ -52,11 +52,6 @@ class LoadMetadataServiceTest {
     @Mock
     private LoadApplicationMetadataService loadApplicationMetadataService;
 
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
-
     @Test
     void testLoadMetadataFile_Datacenter(@TempDir java.nio.file.Path tempDir) throws Exception {
         // Arrange

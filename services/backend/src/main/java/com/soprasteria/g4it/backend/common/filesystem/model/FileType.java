@@ -41,7 +41,9 @@ public enum FileType {
 
     IN_AI_PARAMETERS("IN_AI_PARAMETERS"),
 
-    IN_AI_INFRASTRUCTURE("IN_AI_INFRASTRUCTURE");
+    IN_AI_INFRASTRUCTURE("IN_AI_INFRASTRUCTURE"),
+
+    AI_SERVICE("AI_SERVICE");
 
     private String value;
 
@@ -68,6 +70,7 @@ public enum FileType {
             case "OUT_AI_RECO" -> "ai_recommendations";
             case "IN_AI_PARAMETERS" -> "ai_parameters";
             case "IN_AI_INFRASTRUCTURE" -> "ai_infrastructure";
+            case "AI_SERVICE" -> "AIservices";
             default -> this.getValue();
         };
     }

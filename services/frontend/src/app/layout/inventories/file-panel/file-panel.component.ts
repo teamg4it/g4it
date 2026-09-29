@@ -138,6 +138,10 @@ export class FilePanelComponent implements OnInit, OnDestroy, AfterViewInit, OnC
                 value: "APPLICATION",
                 text: this.translate.instant("inventories.type.app"),
             },
+            {
+                value: "AI_SERVICE",
+                text: this.translate.instant("inventories.type.ai-service"),
+            },
         ];
         this.inventoriesForm = this.formBuilder.group({
             name: ["", [Validators.pattern(/^[^<>]+$/), Validators.maxLength(255)]],
