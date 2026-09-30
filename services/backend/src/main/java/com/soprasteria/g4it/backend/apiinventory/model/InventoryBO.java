@@ -55,6 +55,8 @@ public class InventoryBO {
 
     private Long outPhysicalCount;
 
+    private Long outAiCount;
+
     private List<String> criteria;
 
     private List<TaskBO> tasks;

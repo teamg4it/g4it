@@ -34,3 +34,33 @@ databaseChangeLog:
         - dropColumn:
             tableName: inventory
             columnName: ai_service_count
+
+  - changeSet:
+      id: add-inventory-out-ai-count
+      author: G4IT Dev Team
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - columnExists:
+                tableName: inventory
+                columnName: out_ai_count
+      changes:
+        - addColumn:
+            tableName: inventory
+            columns:
+              - column:
+                  name: out_ai_count
+                  type: bigint
+                  defaultValueNumeric: 0
+                  constraints:
+                    nullable: true
+        - sql:
+            comment: Initialize output ai count to 0 for existing inventories
+            sql: >
+              UPDATE inventory
+              SET out_ai_count = 0
+              WHERE out_ai_count IS NULL
+      rollback:
+        - dropColumn:
+            tableName: inventory
+            columnName: out_ai_count

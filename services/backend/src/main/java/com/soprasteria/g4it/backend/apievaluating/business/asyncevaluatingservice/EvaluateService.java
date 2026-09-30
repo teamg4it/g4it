@@ -574,10 +574,11 @@ public class EvaluateService {
                 inventory.getId(),
                 (long) state.outPhysicalEquipmentSize,
                 (long) state.outVirtualEquipmentSize,
-                (long) state.outApplicationSize
+                (long) state.outApplicationSize,
+                (long) state.outAiServiceSize
         );
-        log.info("Saved output counts to inventory: physical={}, virtual={}, application={}",
-                state.outPhysicalEquipmentSize, state.outVirtualEquipmentSize, state.outApplicationSize);
+        log.info("Saved output counts to inventory: physical={}, virtual={}, application={}, aiService={}",
+                state.outPhysicalEquipmentSize, state.outVirtualEquipmentSize, state.outApplicationSize, state.outAiServiceSize);
     }
 
     // clean files if empty

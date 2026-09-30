@@ -46,12 +46,13 @@ public class OutAiServiceService {
     }
 
 
+    @Transactional(readOnly = true)
     public List<OutAiServiceRest> getAiServicesByTaskId(final Long taskId) {
         int pageNumber = 0;
         List<OutAiServiceRest> result = new ArrayList<>();
-
+        log.info("Fetching OutAiServices for taskId: {} batchsize: {}", taskId, Constants.BATCH_SIZE_50000);
         while (true) {
-            Pageable page = PageRequest.of(pageNumber, Constants.BATCH_SIZE_10000);
+            Pageable page = PageRequest.of(pageNumber, Constants.BATCH_SIZE_50000);
             List<OutAiService> aiServices = outAiServiceRepository.findByTaskIdOrderByIdAsc(taskId, page);
             if (aiServices.isEmpty()) {
                 break;
