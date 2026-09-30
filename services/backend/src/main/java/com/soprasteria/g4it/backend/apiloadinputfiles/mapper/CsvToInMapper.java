@@ -154,6 +154,8 @@ public interface CsvToInMapper {
                 .model(read(csvRecord, "model"))
                 .outputTokens(outputTokens)
                 .location(read(csvRecord, "location"))
+                .commonFilters(List.of(read(csvRecord, "nomEntite", "")))
+                .source(read(csvRecord, "nomSourceDonnee"))
                 .creationDate(LocalDateTime.now())
                 .lastUpdateDate(LocalDateTime.now())
                 .build();

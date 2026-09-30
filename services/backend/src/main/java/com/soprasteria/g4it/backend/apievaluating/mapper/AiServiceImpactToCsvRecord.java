@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.soprasteria.g4it.backend.common.utils.CsvUtils.print;
+import static com.soprasteria.g4it.backend.common.utils.CsvUtils.printFirst;
 
 @Mapper(componentModel = "spring")
 public interface AiServiceImpactToCsvRecord {
@@ -31,6 +32,8 @@ public interface AiServiceImpactToCsvRecord {
                 outAiService.getModel(),
                 print(outAiService.getLocation()),
                 inAiService.getServiceName(),
+                printFirst(inAiService.getCommonFilters()),
+                print(inAiService.getSource()),
                 outAiService.getStatusIndicator(),
                 print(outAiService.getUnitImpact()),
                 print(outAiService.getUnit()),

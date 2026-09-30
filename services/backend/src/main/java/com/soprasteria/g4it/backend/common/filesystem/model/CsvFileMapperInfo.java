@@ -59,7 +59,9 @@ public class CsvFileMapperInfo implements FileMapperInfo {
             Header.builder().name("provider").optional(false).build(),
             Header.builder().name("model").optional(false).build(),
             Header.builder().name("outputTokens").optional(false).build(),
-            Header.builder().name("location").optional(true).build()
+            Header.builder().name("location").optional(true).build(),
+            Header.builder().name("nomEntite").optional(true).build(),
+            Header.builder().name("nomSourceDonnee").optional(true).build()
     );
 
     @Override

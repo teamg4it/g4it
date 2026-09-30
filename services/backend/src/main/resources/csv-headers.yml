@@ -355,6 +355,10 @@ filesystem.config.headers:
       optional: false
     - name: "serviceName"
       optional: false
+    - name: "entityName"
+      optional: false
+    - name: "source"
+      optional: false
     - name: "indicatorStatus"
       optional: false
     - name: "unitImpact"

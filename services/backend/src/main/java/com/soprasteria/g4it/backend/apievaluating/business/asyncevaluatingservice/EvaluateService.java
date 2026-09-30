@@ -1013,6 +1013,7 @@ public class EvaluateService {
                 .unit(criteriaUnitMap.getOrDefault(impact.getCriterion(), impact.getUnit()))
                 .commonFilters(List.of(aiService.getServiceName()))
                 .filters(List.of(aiService.getProvider()))
+                .source(aiService.getSource())
                 .errors(errors)
                 .build();
     }
