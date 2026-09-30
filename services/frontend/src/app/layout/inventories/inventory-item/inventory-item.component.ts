@@ -303,11 +303,16 @@ export class InventoryItemComponent implements OnInit {
 
     displayPopupFct() {
         const defaultCriteria = Object.keys(this.global.criteriaList()).slice(0, 5);
-        this.selectedCriteria =
-            this.inventory().criteria ??
-            this.workspace?.criteriaIs ??
-            this.organization?.criteria ??
-            defaultCriteria;
+        const inventoryCriteria = this.inventory()?.criteria;
+
+        if (inventoryCriteria?.length) {
+            this.selectedCriteria = inventoryCriteria;
+        } else {
+            this.selectedCriteria =
+                this.workspace?.criteriaIs ??
+                this.organization?.criteria ??
+                defaultCriteria;
+        }
         this.displayPopup = true;
     }
 

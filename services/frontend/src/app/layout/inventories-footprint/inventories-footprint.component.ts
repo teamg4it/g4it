@@ -425,8 +425,7 @@ export class InventoriesFootprintComponent implements OnInit, OnDestroy {
         );
         const transformedOutVirtualEquipments =
             this.transformOutVirtualEquipment(outVirtualEquipments);
-        const transformedOutAiServices =
-            this.transformOutAiServices(outAiServices);
+        const transformedOutAiServices = this.transformOutAiServices(outAiServices);
         this.tranformAcvStepFootprint(footprint);
 
         for (const equipment of [
@@ -610,12 +609,17 @@ export class InventoriesFootprintComponent implements OnInit, OnDestroy {
     displayPopupFct() {
         const defaultCriteria = Object.keys(this.globalStore.criteriaList()).slice(0, 5);
         const criteriasCalculated = Object.keys(this.allUnmodifiedFootprint());
-        this.selectedCriterias =
-            this.inventory().criteria! ??
-            criteriasCalculated ??
-            this.workspace?.criteriaIs ??
-            this.organization?.criteria ??
-            defaultCriteria;
+        const inventoryCriteria = this.inventory()?.criteria;
+
+        if (inventoryCriteria?.length) {
+            this.selectedCriterias = inventoryCriteria;
+        } else {
+            this.selectedCriterias =
+                criteriasCalculated ??
+                this.workspace?.criteriaIs ??
+                this.organization?.criteria ??
+                defaultCriteria;
+        }
         this.displayPopup = true;
     }
 
