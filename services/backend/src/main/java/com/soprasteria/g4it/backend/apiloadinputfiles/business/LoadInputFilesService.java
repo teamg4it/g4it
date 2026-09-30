@@ -157,7 +157,12 @@ public class LoadInputFilesService {
         final Map<FileType, List<StoredFile>> storedFiles =
                 detachFiles(allFiles, true);
 
-        FileValidatorUtils.validateFiles(storedFiles);
+        try {
+            FileValidatorUtils.validateFiles(storedFiles);
+        } catch (RuntimeException e) {
+            cleanupStoredFiles(storedFiles);
+            throw e;
+        }
 
         /*
          * Now work ONLY with StoredFile.
@@ -235,7 +240,12 @@ public class LoadInputFilesService {
         final Map<FileType, List<StoredFile>> storedFiles =
                 detachFiles(allFiles, false);
 
-        FileValidatorUtils.validateFiles(storedFiles);
+        try {
+            FileValidatorUtils.validateFiles(storedFiles);
+        } catch (RuntimeException e) {
+            cleanupStoredFiles(storedFiles);
+            throw e;
+        }
 
         List<String> filenames=persistRenamedFiles(context,storedFiles);
         User user = getAuthenticatedUser();
