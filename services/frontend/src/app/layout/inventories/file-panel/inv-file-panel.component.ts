@@ -305,8 +305,8 @@ export class InvFilePanelComponent implements OnInit, OnDestroy, OnChanges {
                         this.uploadAndLaunchLoading(formData, response.id);
                     }
                 },
-                error: (error) => {
-                    this.global.setLoading(false);
+                error: () => {
+                    this.closeWithoutUpload();
                 },
             });
             return;
@@ -329,7 +329,7 @@ export class InvFilePanelComponent implements OnInit, OnDestroy, OnChanges {
                     }
                 },
                 error: () => {
-                    this.global.setLoading(false);
+                    this.closeWithoutUpload();
                 },
             });
             return;
@@ -397,7 +397,7 @@ export class InvFilePanelComponent implements OnInit, OnDestroy, OnChanges {
                     this.close();
                 },
                 error: () => {
-                    this.global.setLoading(false);
+                    this.closeWithoutUpload();
                     this.sidebarPurposeChange.emit("upload");
                 },
             });

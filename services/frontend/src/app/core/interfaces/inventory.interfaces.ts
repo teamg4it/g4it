@@ -32,6 +32,7 @@ export interface Inventory {
     outApplicationCount?: number;
     outPhysicalCount?: number;
     outVirtualCount?: number;
+    outAiCount?: number;
 }
 
 export interface CreateInventory {
