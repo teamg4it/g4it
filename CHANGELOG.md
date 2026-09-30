@@ -3,6 +3,7 @@
 
 ### Major Changes
 - 2329 | Digital Services - Add new AI server type into G4IT
+- 2336 | Review of the user journey for creating a new inventory
 
 ### Minor Changes
 

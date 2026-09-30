@@ -61,6 +61,7 @@ services:
       NUMECOEVALREFERENTIAL_BASEURL:  "http://api-referentiel:8080"
       NUMECOEVAL_IMPORTMAXMEMORY: "128"
       BOAVIZTAPI_BASEURL: "http://boaviztapi:5000"
+      ECOLOGITS_BASEURL: "http://ecologits-api:8000"
       FILESYSTEM_UPLOAD_MAXUPLOADSIZE: "104857600"
       G4IT_STORAGE_RETENTION_CRON: "0 0 7 * * *"
       G4IT_STORAGE_RETENTION_ONINIT: "false"
@@ -99,6 +100,11 @@ services:
       extends:
         file: shared-docker-compose.yml
         service: boaviztapi
+
+    ecologits-api:
+      extends:
+        file: shared-docker-compose.yml
+        service: ecologits-api
 
 volumes:
   numecoeval_postgres_data:

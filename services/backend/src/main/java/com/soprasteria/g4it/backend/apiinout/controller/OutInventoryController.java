@@ -21,6 +21,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import com.soprasteria.g4it.backend.apiinout.business.OutAiServiceService;
+import com.soprasteria.g4it.backend.server.gen.api.dto.OutAiServiceRest;
 
 /**
  * Digital Service Input Virtual Equipment Service.
@@ -44,6 +46,8 @@ public class OutInventoryController implements InventoryOutputsApiDelegate {
      * Service to access virtual equipment output data.
      */
     private OutApplicationService outApplicationService;
+
+    private OutAiServiceService outAiServiceService;
 
     /**
      * {@inheritDoc}
@@ -73,6 +77,13 @@ public class OutInventoryController implements InventoryOutputsApiDelegate {
                                                                                         Long workspace,
                                                                                         Long inventoryId) {
         return ResponseEntity.ok().body(outApplicationService.getByInventory(Inventory.builder().id(inventoryId).build()));
+    }
+
+    @Override
+    public ResponseEntity<List<OutAiServiceRest>> getInventoryOutputsAiServicesRest(String organization,
+                                                                                    Long workspace,
+                                                                                    Long inventoryId) {
+        return ResponseEntity.ok().body(outAiServiceService.getByInventory(Inventory.builder().id(inventoryId).build()));
     }
 
 }

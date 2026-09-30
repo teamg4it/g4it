@@ -52,10 +52,6 @@ export class TemplateFileService {
             templateFileDescription.type = "zip";
             templateFileDescription.displayFileName = this.translate.instant(
                 "inventories.templates.all-template-files",
-                {
-                    type: templateFileDescription.type,
-                    size: this.toKB(templateFileDescription.metadata.size),
-                },
             );
             return templateFileDescription;
         }
@@ -68,10 +64,6 @@ export class TemplateFileService {
         templateFileDescription.type = "xlsx";
         templateFileDescription.displayFileName = this.translate.instant(
             "inventories.templates.data-model",
-            {
-                type: templateFileDescription.type,
-                size: this.toKB(templateFileDescription.metadata.size),
-            },
         );
         return templateFileDescription;
     }
@@ -84,10 +76,6 @@ export class TemplateFileService {
             if (templateFileDescription.name.includes(csvFileType)) {
                 templateFileDescription.displayFileName = this.translate.instant(
                     `inventories.templates.${csvFileType}-template-file`,
-                    {
-                        type: templateFileDescription.type,
-                        size: this.toKB(templateFileDescription.metadata.size),
-                    },
                 );
                 templateFileDescription.csvFileType = csvFileType;
                 break;
