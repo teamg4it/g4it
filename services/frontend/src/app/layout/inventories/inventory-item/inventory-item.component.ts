@@ -224,7 +224,7 @@ export class InventoryItemComponent implements OnInit {
 
         if (uri === undefined) return;
 
-        this.router.navigate([`${this.inventory().id}/footprint/${uri}`], {
+        void this.router.navigate([`${this.inventory().id}/footprint/${uri}`], {
             relativeTo: this.route,
         });
     }
@@ -288,7 +288,7 @@ export class InventoryItemComponent implements OnInit {
         this.openSidebarForNote.emit(this.inventory().id);
     }
 
-    async onSelectedChange(id: number, event: any) {
+    onSelectedChange(id: number, event: any) {
         if (event === undefined) return;
         if (event === true) {
             this.openTab.emit(id);

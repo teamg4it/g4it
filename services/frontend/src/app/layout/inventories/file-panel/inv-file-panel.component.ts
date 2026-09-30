@@ -412,7 +412,7 @@ export class InvFilePanelComponent implements OnInit, OnDestroy, OnChanges {
     }
 
     downloadTemplateFile(selectedFileName: string) {
-        this.templateFileService.getdownloadTemplateFile(selectedFileName);
+        void this.templateFileService.getdownloadTemplateFile(selectedFileName);
     }
 
     selectTab(index: number) {
@@ -473,7 +473,7 @@ export class InvFilePanelComponent implements OnInit, OnDestroy, OnChanges {
         }
     }
 
-    async downloadWorkspaceReferenceData() {
+    downloadWorkspaceReferenceData() {
         this.userService.currentWorkspace$
             .pipe(
                 switchMap((workSpace) =>

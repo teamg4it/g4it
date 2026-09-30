@@ -228,7 +228,7 @@ export class InventoriesFootprintComponent implements OnInit, OnDestroy {
         private readonly digitalBusinessService: DigitalServiceBusinessService,
     ) {
         effect(() => {
-            (async () => {
+            void (async () => {
                 const res = await this.inventoryUtilService.computeEquipmentStats(
                     this.allUnmodifiedEquipments(),
                     this.footprintStore.filters(),
@@ -238,7 +238,7 @@ export class InventoriesFootprintComponent implements OnInit, OnDestroy {
                 this.equipmentStats.set(res);
             })();
 
-            (async () => {
+            void (async () => {
                 const res = await this.inventoryUtilService.computeCloudStats(
                     this.transformedInVirtualEquipments(),
                     this.footprintStore.filters(),
@@ -247,7 +247,7 @@ export class InventoriesFootprintComponent implements OnInit, OnDestroy {
                 this.cloudStats.set(res);
             })();
 
-            (async () => {
+            void (async () => {
                 const res = await this.inventoryUtilService.computeDataCenterStats(
                     this.footprintStore.filters(),
                     this.filterFields,
@@ -263,7 +263,7 @@ export class InventoriesFootprintComponent implements OnInit, OnDestroy {
     toReloadInventory = false;
 
     ngOnInit() {
-        this.checkStatusAndLoopApis();
+        void this.checkStatusAndLoopApis();
         resetColorMap();
     }
 
@@ -301,11 +301,11 @@ export class InventoriesFootprintComponent implements OnInit, OnDestroy {
         if (this.toReloadInventory) {
             await this.initInventory();
         } else if (!doAddTaskLoading && !doAddTaskEvaluating) {
-            this.initializeOnInit();
+            void this.initializeOnInit();
         }
     }
 
-    async loopLoadInventory() {
+    loopLoadInventory() {
         this.globalStore.setLoading(true);
 
         this.inventoryInterval = setInterval(async () => {
@@ -326,7 +326,7 @@ export class InventoriesFootprintComponent implements OnInit, OnDestroy {
             await firstValueFrom(this.userService.currentWorkspace$)
         ).name;
         this.globalStore.setLoading(true);
-        this.digitalBusinessService.initCountryMap();
+        void this.digitalBusinessService.initCountryMap();
         this.getDataApis(currentWorkspaceName, criteria);
         this.getSources();
     }
@@ -476,7 +476,7 @@ export class InventoriesFootprintComponent implements OnInit, OnDestroy {
             ];
         }
         // Compute stats after data is loaded
-        this.computeStats();
+        void this.computeStats();
         this.globalStore.setLoading(false);
     }
 
@@ -639,9 +639,12 @@ export class InventoriesFootprintComponent implements OnInit, OnDestroy {
                     .subscribe(async () => {
                         await this.checkStatusAndLoopApis();
                         if (this.inventory().criteria?.length === 1) {
-                            this.router.navigate(["../", this.inventory().criteria![0]], {
-                                relativeTo: this.route,
-                            });
+                            void this.router.navigate(
+                                ["../", this.inventory().criteria![0]],
+                                {
+                                    relativeTo: this.route,
+                                },
+                            );
                         }
                     });
             });
@@ -673,12 +676,12 @@ export class InventoriesFootprintComponent implements OnInit, OnDestroy {
 
     handleChartChange(criteria: any) {
         if (this.activatedRoute.snapshot.paramMap.get("criteria") === criteria) {
-            this.router.navigate(["../", "multi-criteria"], {
+            void this.router.navigate(["../", "multi-criteria"], {
                 relativeTo: this.route,
             });
             return;
         }
-        this.router.navigate(["../", criteria], {
+        void this.router.navigate(["../", criteria], {
             relativeTo: this.route,
         });
     }

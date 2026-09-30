@@ -301,7 +301,7 @@ export class InventoriesApplicationFootprintComponent implements OnInit, OnDestr
     ) {}
 
     ngOnInit() {
-        this.checkStatusAndLoopApis();
+        void this.checkStatusAndLoopApis();
         resetColorMap();
     }
 
@@ -359,7 +359,7 @@ export class InventoriesApplicationFootprintComponent implements OnInit, OnDestr
         }
     }
 
-    async loopLoadInventory() {
+    loopLoadInventory() {
         this.globalStore.setLoading(true);
 
         this.inventoryInterval = setInterval(async () => {
@@ -696,12 +696,12 @@ export class InventoriesApplicationFootprintComponent implements OnInit, OnDestr
 
     handleChartChange(criteria: any) {
         if (this.activatedRoute.snapshot.paramMap.get("criteria") === criteria) {
-            this.router.navigate(["../", "multi-criteria"], {
+            void this.router.navigate(["../", "multi-criteria"], {
                 relativeTo: this.route,
             });
             return;
         }
-        this.router.navigate(["../", criteria], {
+        void this.router.navigate(["../", criteria], {
             relativeTo: this.route,
         });
     }
@@ -739,9 +739,12 @@ export class InventoriesApplicationFootprintComponent implements OnInit, OnDestr
                     .subscribe(async () => {
                         await this.checkStatusAndLoopApis();
                         if (this.inventory().criteria?.length === 1) {
-                            this.router.navigate(["../", this.inventory().criteria![0]], {
-                                relativeTo: this.route,
-                            });
+                            void this.router.navigate(
+                                ["../", this.inventory().criteria![0]],
+                                {
+                                    relativeTo: this.route,
+                                },
+                            );
                         }
                     });
             });

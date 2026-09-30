@@ -229,7 +229,7 @@ export class DigitalServicesFootprintDashboardComponent
     }
 
     ngOnInit() {
-        this.asyncInit();
+        void this.asyncInit();
     }
     private async asyncInit() {
         this.digitalService = await firstValueFrom(
@@ -266,7 +266,7 @@ export class DigitalServicesFootprintDashboardComponent
 
         this.sub = this.route.parent!.paramMap.subscribe((params) => {
             const dsVersionUid = params.get("digitalServiceVersionId") ?? "";
-            this.updateRecomendation(dsVersionUid);
+            void this.updateRecomendation(dsVersionUid);
         });
     }
 
@@ -762,7 +762,7 @@ export class DigitalServicesFootprintDashboardComponent
     handleFilters(event: { enableConsistency: boolean; unitType: string }) {
         this.selectedUnit = event.unitType;
         if (event.enableConsistency !== this.digitalService.enableDataInconsistency) {
-            this.updateDataConsistencyInDS(event.enableConsistency);
+            void this.updateDataConsistencyInDS(event.enableConsistency);
         }
     }
 

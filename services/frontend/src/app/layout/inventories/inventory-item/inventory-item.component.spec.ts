@@ -225,10 +225,10 @@ describe("InventoryItemComponent", () => {
         expect(component.openSidebarForUploadInventory.emit).toHaveBeenCalledWith(1);
     });
 
-    it("should emit open tab event", async () => {
+    it("should emit open tab event", () => {
         spyOn(component.openTab, "emit");
 
-        await component.onSelectedChange(1, true);
+        component.onSelectedChange(1, true);
 
         expect(component.openTab.emit).toHaveBeenCalledWith(1);
     });

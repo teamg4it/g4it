@@ -95,7 +95,7 @@ export class InventoriesComponent implements OnInit, OnDestroy {
     ) {}
 
     ngOnInit(): void {
-        (async () => {
+        void (async () => {
             this.userService.currentWorkspace$
                 .pipe(takeUntil(this.ngUnsubscribe))
                 .subscribe((workspace: Workspace) => {
@@ -145,7 +145,7 @@ export class InventoriesComponent implements OnInit, OnDestroy {
                         }
 
                         if (this.isAllowedInventory) {
-                            this.reloadInventories().then(() => {
+                            void this.reloadInventories().then(() => {
                                 if (this.doLoop) {
                                     this.loopLoadInventories();
                                 }
@@ -328,7 +328,7 @@ export class InventoriesComponent implements OnInit, OnDestroy {
                     summary: this.translate.instant("common.note.delete"),
                     sticky: false,
                 });
-                this.reloadInventory(this.selectedInventory.id);
+                void this.reloadInventory(this.selectedInventory.id);
             });
     }
 
