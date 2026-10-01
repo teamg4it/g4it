@@ -47,11 +47,15 @@ public class InventoryBO {
 
     private Long applicationCount;
 
+    private Long aiServiceCount;
+
     private Long outApplicationCount;
 
     private Long outVirtualCount;
 
     private Long outPhysicalCount;
+
+    private Long outAiCount;
 
     private List<String> criteria;
 

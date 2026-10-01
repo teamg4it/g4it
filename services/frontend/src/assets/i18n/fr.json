@@ -196,7 +196,7 @@
             "title": "Source",
             "engine-title": "Moteurs de calcul utilisés",
             "reference-title": "Références utilisées",
-            "engine": "Les calculs des équipements physiques sont effectués à l'aide de <strong>NumEcoEval</strong>. </br> Les calculs des équipements virtuels (non basés sur le cloud) sont également gérés par <strong>NumEcoEval</strong>. </br> Pour les équipements virtuels basés sur le cloud, les calculs sont effectués à l'aide de <strong>Boavizta</strong>."
+            "engine": "Les calculs des équipements physiques sont effectués à l'aide de <strong>NumEcoEval</strong>. </br> Les calculs des équipements virtuels (non basés sur le cloud) sont également gérés par <strong>NumEcoEval</strong>. </br> Pour les équipements virtuels basés sur le cloud, les calculs sont effectués à l'aide de <strong>Boavizta</strong>. </br> Pour les services d'IA, les calculs sont effectués à l'aide de <strong>Ecologits</strong>."
         },
         "main-navigation": "Navigation principale",
         "country.all": "Tous les pays",
@@ -725,6 +725,7 @@
             "eq-phys": "Équipement Physique",
             "eq-virt": "Équipement Virtuel",
             "app": "Application",
+            "ai-service": "Services IA",
             "name": "Type d'inventaire"
         },
         "popup": {
@@ -745,12 +746,14 @@
             "physical-template-file": "Fichier modèle d'équipement physique ({{type}}, {{size}} Ko )",
             "virtual-template-file": "Fichier de modèle d'équipement virtuel ({{type}}, {{size}} Ko )",
             "application-template-file": "Fichier de modèle d'application ({{type}}, {{size}} Ko )",
+            "AIservices-template-file": "Fichier de modèle de services IA ({{type}}, {{size}} Ko )",
             "all-template-files": "Tous les fichiers modèles ({{type}}, {{size}} Ko )",
             "data-model": "Modèle de données de la plateforme ({{type}}, {{size}} Ko )",
             "starter-pack": "Kit de départ",
             "workspace-settings": "Paramètres spécifiques à l'espace de travail (zip)"
         },
         "choose-criteria": "Choisir les critères pour l'inventaire {{inventoryName}}",
+        "ai-services-criteria-note": "Pour les services d'IA, seuls les facteurs suivants sont pris en compte dans le calcul : changement climatique, épuisement ressources, utilisation des ressources fossiles et utilisation de l'eau.",
         "calendar": "Calendrier",
         "apply-selection": "Appliquer la sélection",
         "unit-para1": "La valeur de l’impact peut être affichée soit dans l’<strong>unité propre aux critères d’impact sélectionnés</strong>, soit en <strong>habitants équivalents</strong>.",
@@ -787,6 +790,8 @@
             "download": "Télécharger"
         },
         "data-consistency": "Cohérence des données",
+        "ai-services-category": "Services IA {{provider}}",
+        "ai-services-status": "Services IA",
         "round-button": {
             "acvStep": "Cycle de vie",
             "country": "Pays",

@@ -22,7 +22,6 @@ import com.soprasteria.g4it.backend.server.gen.api.dto.InDatacenterRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InPhysicalEquipmentRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InVirtualEquipmentRest;
 import org.apache.commons.csv.CSVRecord;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
@@ -51,11 +50,6 @@ class LoadMetadataServiceTest {
     private LoadPhysicalEquipmentMetadataService loadPhysicalEquipmentMetadataService;
     @Mock
     private LoadApplicationMetadataService loadApplicationMetadataService;
-
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
 
     @Test
     void testLoadMetadataFile_Datacenter(@TempDir java.nio.file.Path tempDir) throws Exception {

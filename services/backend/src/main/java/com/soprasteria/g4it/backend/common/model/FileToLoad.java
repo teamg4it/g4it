@@ -41,6 +41,8 @@ public class FileToLoad {
                 fileType = FileType.EQUIPEMENT_VIRTUEL;
             } else if (filename.startsWith(FileType.APPLICATION.toString())) {
                 fileType = FileType.APPLICATION;
+            } else if (filename.startsWith(FileType.AI_SERVICE.toString())) {
+                fileType = FileType.AI_SERVICE;
             } else {
                 fileType = FileType.UNKNOWN;
             }

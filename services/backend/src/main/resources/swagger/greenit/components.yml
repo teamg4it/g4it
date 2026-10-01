@@ -224,6 +224,7 @@ components:
           type: string
         ecologits:
           type: string
+
     UserRest:
       description: User information
       type: object
@@ -413,6 +414,9 @@ components:
         applicationCount:
           type: integer
           format: int64
+        aiServiceCount:
+          type: integer
+          format: int64
         outApplicationCount:
           type: integer
           format: int64
@@ -420,6 +424,9 @@ components:
           type: integer
           format: int64
         outPhysicalCount:
+          type: integer
+          format: int64
+        outAiCount:
           type: integer
           format: int64
         criteria:
