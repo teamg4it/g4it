@@ -17,6 +17,7 @@ COPY nginx/25-inject-env-var.sh /docker-entrypoint.d/25-inject-env-var.sh
 USER root
 
 RUN chmod a+rwx -R /usr/share/nginx/html \
+    && chmod a+rw /etc/nginx/nginx.conf \
     && chmod a+x /docker-entrypoint.d/25-inject-env-var.sh \
     && chown -R nginx:nginx /var/cache/nginx
 
