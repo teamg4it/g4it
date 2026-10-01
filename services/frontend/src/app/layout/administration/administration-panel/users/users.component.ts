@@ -159,10 +159,10 @@ export class UsersComponent implements OnInit {
 
         user.isWorkspaceAdmin = user.roles.includes(Role.WorkspaceAdmin);
         user.isOrganizationAdmin = user.roles.includes(Role.OrganizationAdmin);
-        user.isModule = this.getRole(user.roles, "INVENTORY_");
-        user.dsModule = this.getRole(user.roles, "DIGITAL_SERVICE_");
-        user.role = this.getRole(user.roles, "ADMINISTRATOR");
-        user.ecomindModule = this.getRole(user.roles, "ECO_MIND_AI_");
+        user.isModule = this.getRole(user, "INVENTORY_");
+        user.dsModule = this.getRole(user, "DIGITAL_SERVICE_");
+        user.role = this.getRole(user, "ADMINISTRATOR");
+        user.ecomindModule = this.getRole(user, "ECO_MIND_AI_");
         return user;
     }
 
@@ -200,8 +200,16 @@ export class UsersComponent implements OnInit {
         );
     }
 
-    getRole(roles: string[], type: string) {
+    getRole(user: any, type: string) {
+        const roles: string[] = user.roles;
         if (!roles || roles.length === 0) return "";
+        const isSopraUser = this.userService.isSopraUser(user.email);
+
+        if (type === "INVENTORY_" && isSopraUser) {
+            if (roles.includes(Role.InventoryWrite)) return "administration.role.write";
+            if (roles.includes(Role.InventoryRead)) return "administration.role.read";
+            return "";
+        }
 
         if (type === "ECO_MIND_AI_") {
             if (roles.includes(Role.EcoMindAiWrite)) return "administration.role.write";

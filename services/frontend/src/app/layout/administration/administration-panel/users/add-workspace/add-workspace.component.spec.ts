@@ -62,9 +62,10 @@ describe("AddWorkspaceComponent", () => {
         ]);
         mockTranslateService = jasmine.createSpyObj("TranslateService", ["instant"]);
         mockUserDataService = jasmine.createSpyObj("UserDataService", ["fetchUserInfo"]);
-        mockUserService = jasmine.createSpyObj("UserService", [], {
+        mockUserService = jasmine.createSpyObj("UserService", ["isSopraUser"], {
             user$: of(mockUser),
         });
+        mockUserService.isSopraUser.and.returnValue(false);
         mockRouter = jasmine.createSpyObj("Router", ["navigateByUrl"]);
 
         mockTranslateService.instant.and.callFake((key: string) => {
