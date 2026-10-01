@@ -147,6 +147,7 @@ public class BoaviztapiClient {
                 .queryParam(CRITERIA, "epf")
                 .queryParam(CRITERIA, "epm")
                 .queryParam(CRITERIA, "adpf")
+                .queryParam(CRITERIA, "wu")
                 .build();
         try {
             BoaResponseRest response = webClient.post()
