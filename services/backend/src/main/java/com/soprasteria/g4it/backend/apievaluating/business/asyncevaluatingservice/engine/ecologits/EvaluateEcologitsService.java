@@ -37,6 +37,7 @@ public class EvaluateEcologitsService {
     private static final String END_OF_LIFE = "END_OF_LIFE";
     private static final String KO = "KO";
     private static final String OK = "OK";
+    private static final String ERROR = "ERROR";
     private static final String DEFAULT_LOCATION = "WOR";
     private static final Map<String, Function<EcoImpactPhaseRest, EcoMetricRest>> PHASE_METRICS = Map.of(
             CLIMATE_CHANGE, EcoImpactPhaseRest::getGwp,
@@ -157,14 +158,13 @@ public class EvaluateEcologitsService {
         }
 
         if (TRANSPORTATION.equals(lifecycleStep)) {
-            // EcoLogits does not model transportation/distribution impacts separately for AI inference.
+            // EcoLogits folds transportation/distribution impacts into the manufacturing (embodied) phase for AI inference.
             return ImpactBO.builder()
                     .criterion(criterion)
                     .lifecycleStep(lifecycleStep)
                     .unit(unit)
                     .unitImpact(0d)
-                    .indicatorStatus(KO)
-                    .trace("EcoLogits does not provide transportation impacts for AI services")
+                    .indicatorStatus(OK)
                     .build();
         }
 
@@ -175,8 +175,8 @@ public class EvaluateEcologitsService {
                     .lifecycleStep(lifecycleStep)
                     .unit(unit)
                     .unitImpact(0d)
-                    .indicatorStatus(KO)
-                    .trace("EcoLogits does not provide end-of-life impacts for AI services")
+                    .indicatorStatus(ERROR)
+                    .trace("EcoLogits does not provide end_of_life impacts for AI services")
                     .build();
         }
 
