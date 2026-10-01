@@ -80,7 +80,7 @@ class EvaluateEcologitsServiceTest {
         assertEquals(0d, waterManufacturing.getUnitImpact());
 
         ImpactBO unsupported = findImpact(impacts, "ACIDIFICATION", "USING");
-        assertEquals("KO", unsupported.getIndicatorStatus());
+        assertEquals("ERROR", unsupported.getIndicatorStatus());
         assertTrue(unsupported.getTrace().contains("does not provide this impact criterion"));
     }
 
@@ -122,7 +122,7 @@ class EvaluateEcologitsServiceTest {
         );
 
         assertEquals(8, impacts.size());
-        assertTrue(impacts.stream().allMatch(impact -> "KO".equals(impact.getIndicatorStatus())));
+        assertTrue(impacts.stream().allMatch(impact -> "ERROR".equals(impact.getIndicatorStatus())));
         assertTrue(impacts.stream().allMatch(impact -> "boom".equals(impact.getTrace())));
     }
 
@@ -155,7 +155,7 @@ class EvaluateEcologitsServiceTest {
         );
 
         assertEquals(4, result.size());
-        assertTrue(result.stream().allMatch(impact -> "KO".equals(impact.getIndicatorStatus())));
+        assertTrue(result.stream().allMatch(impact -> "ERROR".equals(impact.getIndicatorStatus())));
         assertTrue(result.getFirst().getTrace().contains("model-not-registered"));
     }
 

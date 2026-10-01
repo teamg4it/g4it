@@ -993,7 +993,7 @@ public class EvaluateService {
         final Double unitImpact = isOk && impact.getUnitImpact() != null ? impact.getUnitImpact() : 0d;
         final Double sipValue = refSip.get(impact.getCriterion());
         final Double peopleEqImpact = isOk && sipValue != null && sipValue != 0 ? unitImpact / sipValue : 0d;
-        final Set<String> errors = isOk || impact.getTrace() == null ? null : Set.of(impact.getTrace());
+        final Set<String> errors = isOk && impact.getTrace() == null ? null : Set.of(impact.getTrace());
 
         return OutAiService.builder()
                 .taskId(taskId)
