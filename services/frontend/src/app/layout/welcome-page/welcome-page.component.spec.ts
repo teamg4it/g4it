@@ -64,7 +64,7 @@ describe("WelcomePageComponent", () => {
 
         expect(component.userName).toBe("John Doe");
         expect(component.userEmail).toBe("john@g4it.com");
-        expect(component.isAllowedInventory).toBeTrue();
+        expect(component.isAllowedInventory()).toBeTrue();
         expect(component.isAllowedDigitalService).toBeFalse();
         expect(component.isAllowedEcoMindAi()).toBeFalse();
         expect(component.currentOrganization).toEqual(organization);
@@ -109,7 +109,7 @@ describe("WelcomePageComponent", () => {
 
     it("should navigate to inventories when access is granted", () => {
         component.selectedPath = "/organizations/G4IT/workspaces/42";
-        component.isAllowedInventory = true;
+        component.isAllowedInventory.set(true);
 
         component.inventories();
 
@@ -118,12 +118,20 @@ describe("WelcomePageComponent", () => {
         );
     });
 
-    it("should navigate to useful information when inventory access is denied", () => {
-        component.isAllowedInventory = false;
+    it("should compose an inventory access email when inventory access is denied", () => {
+        component.currentOrganization = organization;
+        component.currentWorkspace = workspace;
+        component.isAllowedInventory.set(false);
+        userService.composeEcoMindAccessEmail.and.returnValue("javascript:void(0)");
 
         component.inventories();
 
-        expect(router.navigateByUrl).toHaveBeenCalledWith("/useful-information");
+        expect(userService.composeEcoMindAccessEmail).toHaveBeenCalledWith(
+            "G4IT",
+            "Main workspace",
+            true,
+        );
+        expect(router.navigateByUrl).not.toHaveBeenCalled();
     });
 
     it("should navigate to digital services with the expected state when access is granted", () => {
@@ -167,6 +175,7 @@ describe("WelcomePageComponent", () => {
         expect(userService.composeEcoMindAccessEmail).toHaveBeenCalledWith(
             "G4IT",
             "Main workspace",
+            false,
         );
     });
 });

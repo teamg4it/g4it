@@ -17,7 +17,12 @@ import { TranslateModule, TranslateService } from "@ngx-translate/core";
 import { MessageService } from "primeng/api";
 import { ToastModule } from "primeng/toast";
 import { of, ReplaySubject } from "rxjs";
-import { BasicRoles, OrgBasicRoles, Role } from "../../interfaces/roles.interfaces";
+import {
+    BasicRoles,
+    BasicSopraRoles,
+    OrgBasicRoles,
+    Role,
+} from "../../interfaces/roles.interfaces";
 import { Organization, User, Workspace } from "../../interfaces/user.interfaces";
 import { UserDataService } from "../data/user-data.service";
 import { UserService } from "./user.service";
@@ -598,6 +603,14 @@ describe("UserService", () => {
         });
     });
 
+    describe("isSopraUser", () => {
+        it("accepts Sopra emails regardless of case and whitespace", () => {
+            expect(service.isSopraUser(" Person@SOPRASTERIA.COM ")).toBeTrue();
+            expect(service.isSopraUser("person@example.com")).toBeFalse();
+            expect(service.isSopraUser(undefined)).toBeFalse();
+        });
+    });
+
     describe("getRoles", () => {
         it("should return OrganizationAdmin and all OrgBasicRoles when organization has OrganizationAdmin role", () => {
             const organization = {
@@ -630,10 +643,25 @@ describe("UserService", () => {
             expect(roles).toHaveSize(1 + BasicRoles.length + 2);
         });
 
+        it("should use BasicSopraRoles for Sopra users with WorkspaceAdmin", () => {
+            userDataService.userEmail.set("person@soprasteria.com");
+            const organization = {
+                roles: [],
+            } as unknown as Organization;
+            const workspace = {
+                roles: [Role.WorkspaceAdmin],
+            } as Workspace;
+
+            const roles = service.getRoles(organization, workspace);
+
+            expect(roles).toContain(Role.WorkspaceAdmin);
+            expect(roles).toEqual([Role.WorkspaceAdmin, ...BasicSopraRoles]);
+        });
+
         it("should return WorkspaceAdmin and BasicRoles with EcoMindAiRead when workspace has WorkspaceAdmin and only EcoMindAiRead", () => {
             const organization = {
                 roles: [],
-            }  as unknown as Organization;
+            } as unknown as Organization;
             const workspace = {
                 roles: [Role.WorkspaceAdmin, Role.EcoMindAiRead],
             } as Workspace;
