@@ -5,6 +5,8 @@
 - 2329 | Digital Services - Add new AI server type into G4IT
 
 ### Minor Changes
+- 2433 | Restrict inventory module access by default for new sopra steria users
+- 2445 | Fix Incorrect return navigation from EcoMind AI Version comparison
 
 ## 3.14.1
 
