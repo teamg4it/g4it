@@ -339,7 +339,7 @@ public class LoadInputFilesService {
                     // ensures the original filename can be properly matched with regex later
                     originalFilename = originalFilename == null ? "" : originalFilename.replace("_", "-");
                     String extension = StringUtils.getFilenameExtension(originalFilename);
-                    return String.format("%s_%s_%s.%s", type.toString(), originalFilename, UUID.randomUUID(), extension);
+                    return type + "_" + originalFilename + "_" + UUID.randomUUID() + "." + extension;
                 })
                 .toList();
     }

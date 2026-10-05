@@ -16,6 +16,7 @@ import com.soprasteria.g4it.backend.apireferential.modeldb.MatchingItem;
 import com.soprasteria.g4it.backend.apireferential.repository.*;
 import com.soprasteria.g4it.backend.common.utils.StringUtils;
 import com.soprasteria.g4it.backend.server.gen.api.dto.*;
+import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,25 +29,19 @@ import java.util.*;
  * Referential get service
  */
 @Service
-@NoArgsConstructor
+@AllArgsConstructor
 @Slf4j
 public class ReferentialGetService {
 
-    @Autowired
     private CriterionRepository criterionRepository;
-    @Autowired
     private LifecycleStepRepository lifecycleStepRepository;
-    @Autowired
     private ItemImpactRepository itemImpactRepository;
-    @Autowired
     private MatchingItemRepository matchingItemRepository;
-    @Autowired
     private HypothesisRepository hypothesisRepository;
-    @Autowired
     private ItemTypeRepository itemTypeRepository;
 
-    @Autowired
     private ReferentialMapper refRestMapper;
+    private final String ELECTRICITY_MIX = "electricity-mix";
 
     /**
      * Get all referential lifecycle steps
@@ -157,28 +152,13 @@ public class ReferentialGetService {
      * @return list of item impacts
      */
     public List<ItemImpact> getElectricityMix(Long workspaceId) {
-        List<ItemImpact> itemImpactList= itemImpactRepository.findByCategoryAndWorkspaceId("electricity-mix",workspaceId);
+        List<ItemImpact> itemImpactList= itemImpactRepository.findByCategoryAndWorkspaceId(ELECTRICITY_MIX,workspaceId);
         if(itemImpactList!=null && !itemImpactList.isEmpty()) {
             return itemImpactList;
         }
-        return itemImpactRepository.findByCategoryAndWorkspaceId("electricity-mix",null);
+        return itemImpactRepository.findByCategoryAndWorkspaceId(ELECTRICITY_MIX,null);
     }
 
-    /*public List<ItemTypeRest> getItemTypesForWorkspace(String type, Long workspaceId, Map<String, List<ItemTypeRest>> itemTypeMap) {
-
-        // get all itemTypes
-        if (type == null) {
-            return itemTypeMap.values().stream()
-                    .flatMap(Collection::stream)
-                    .toList();
-        }else{
-            String key = buildTypeKey(type, workspaceId);
-            if (itemTypeMap != null && !itemTypeMap.isEmpty() && itemTypeMap.containsKey(key)) {
-                return itemTypeMap.get(key);
-            }
-            return List.of();
-        }
-    }*/
     @Cacheable(value = "ref_getItemTypes", key = "#type + '|' + #workspaceId")
     public List<ItemTypeRest> getItemTypesForWorkspace(String type, Long workspaceId) {
         if (type == null) {
@@ -188,34 +168,12 @@ public class ReferentialGetService {
         return refRestMapper.toItemTypeRest(itemType.map(List::of).orElseGet(List::of));
     }
 
-    /*public MatchingItemRest getMatchingItemForWorkspace(String model, Long workspaceId,Map<String, MatchingItemRest> matchingItemMap) {
-        String key = buildModelKey(model, workspaceId);
-        if (matchingItemMap != null && !matchingItemMap.isEmpty() && matchingItemMap.containsKey(key)) {
-            return matchingItemMap.get(key);
-        }
-        return null;
-    }*/
     @Cacheable(value = "ref_getMatchingItem", key = "#model + '|' + #workspaceId")
     public MatchingItemRest getMatchingItemForWorkspace(String model, Long workspaceId) {
         return matchingItemRepository.findByItemSourceAndOrganizationAndWorkspaceId(model, null,workspaceId)
                 .map(item -> refRestMapper.toMatchingItemRest(item)).orElse(null);
     }
 
-    /*public List<ItemImpactRest> getItemImpactsForWorkspace(String criterion, String lifecycleStep,
-                                               String name, Long workspaceId,Map<String, List<ItemImpactRest>> itemImpactMap) {
-
-        String key = buildImpactKey(
-                StringUtils.kebabToSnakeCase(criterion),
-                LifecycleStepUtils.get(lifecycleStep, lifecycleStep),
-                name,
-                workspaceId
-        );
-        // Assuming you have a pre-fetched map of item impacts for the workspace
-         if (itemImpactMap != null && !itemImpactMap.isEmpty() && itemImpactMap.containsKey(key)) {
-             return itemImpactMap.get(key);
-         }
-        return List.of();
-    }*/
     @Cacheable(value = "ref_getItemImpacts", key = "#criterion + '|' + #lifecycleStep + '|' + #name + '|' + #location + '|' + #category + '|' + #organization + '|' + #workspaceId")
     public List<ItemImpactRest> getItemImpactsForWorkspace(String criterion, String lifecycleStep,
                                                            String name, String location,
@@ -227,15 +185,15 @@ public class ReferentialGetService {
 
 
     public List<ItemImpactRest> getItemImpactsELectricityMixForWorkspace(String criterion,String location,
-                                                           Long workspaceId,Map<String, List<ItemImpactRest>> itemImpactElectricityMap) {
+                                                                         Long workspaceId,Map<String, List<ItemImpactRest>> itemImpactElectricityMap) {
 
         String key = buildElectricityMixImpactKey(
                 StringUtils.kebabToSnakeCase(criterion),
-                "electricity-mix",
+                ELECTRICITY_MIX,
                 location,
                 workspaceId
         );
-        // Assuming you have a pre-fetched map of item impacts for the workspace
+
         if (itemImpactElectricityMap != null && itemImpactElectricityMap.containsKey(key)) {
             return itemImpactElectricityMap.get(key);
         }
@@ -311,7 +269,7 @@ public class ReferentialGetService {
             Set<String> locations,
             Long workspaceId) {
         List<ItemImpact> electricityMixImpact = itemImpactRepository.findByCriterionInAndCategoryAndLocationInAndWorkspaceId(
-                criteria, "electricity-mix", locations, workspaceId);
+                criteria, ELECTRICITY_MIX, locations, workspaceId);
         Map<String, List<ItemImpactRest>> map = new HashMap<>();
         for (ItemImpact impact : electricityMixImpact) {
             String key = buildElectricityMixImpactKey(
