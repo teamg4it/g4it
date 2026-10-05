@@ -106,10 +106,11 @@ describe("UsersComponent", () => {
             },
         );
 
-        mockUserService = jasmine.createSpyObj("UserService", [], {
+        mockUserService = jasmine.createSpyObj("UserService", ["isSopraUser"], {
             user$: of(mockUser),
             currentOrganization$: of(mockOrganization),
         });
+        mockUserService.isSopraUser.and.returnValue(false);
 
         mockUserDataService = jasmine.createSpyObj("UserDataService", ["fetchUserInfo"]);
         mockGlobalStore = jasmine.createSpyObj("GlobalStoreService", ["criteriaList"]);
@@ -271,21 +272,33 @@ describe("UsersComponent", () => {
 
     describe("getRole", () => {
         it("should return correct role for module types", () => {
-            expect(component.getRole([Role.EcoMindAiWrite], "ECO_MIND_AI_")).toBe(
-                "administration.role.write",
-            );
-            expect(component.getRole([Role.EcoMindAiRead], "ECO_MIND_AI_")).toBe(
-                "administration.role.read",
-            );
+            expect(
+                component.getRole(
+                    { ...mockUser, roles: [Role.EcoMindAiWrite] },
+                    "ECO_MIND_AI_",
+                ),
+            ).toBe("administration.role.write");
+            expect(
+                component.getRole(
+                    { ...mockUser, roles: [Role.EcoMindAiRead] },
+                    "ECO_MIND_AI_",
+                ),
+            ).toBe("administration.role.read");
         });
 
         it("should return admin or user for ADMINISTRATOR type", () => {
-            expect(component.getRole([Role.WorkspaceAdmin], "ADMINISTRATOR")).toBe(
-                "administration.role.admin",
-            );
-            expect(component.getRole([Role.InventoryRead], "ADMINISTRATOR")).toBe(
-                "administration.role.user",
-            );
+            expect(
+                component.getRole(
+                    { ...mockUser, roles: [Role.WorkspaceAdmin] },
+                    "ADMINISTRATOR",
+                ),
+            ).toBe("administration.role.admin");
+            expect(
+                component.getRole(
+                    { ...mockUser, roles: [Role.InventoryRead] },
+                    "ADMINISTRATOR",
+                ),
+            ).toBe("administration.role.user");
         });
     });
 

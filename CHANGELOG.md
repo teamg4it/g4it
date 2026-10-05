@@ -6,6 +6,7 @@
 - 2336 | Review of the user journey for creating a new inventory
 
 ### Minor Changes
+- 2433 | Restrict inventory module access by default for new sopra steria users
 
 ## 3.14.1
 

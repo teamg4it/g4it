@@ -38,7 +38,7 @@ export class WelcomePageComponent implements OnInit {
     selectedPath: string = "";
     currentOrganization: Organization = {} as Organization;
     currentWorkspace: Workspace = {} as Workspace;
-    isAllowedInventory: boolean = false;
+    isAllowedInventory = signal(false);
     isAllowedDigitalService: boolean = false;
     isAllowedEcoMindAi = signal(false);
     isEcoMindEnabledForCurrentOrganization: boolean = false;
@@ -72,7 +72,7 @@ export class WelcomePageComponent implements OnInit {
         this.userService.isAllowedInventoryRead$
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe((isAllowed: boolean) => {
-                this.isAllowedInventory = isAllowed;
+                this.isAllowedInventory.set(isAllowed);
             });
         this.userService.isAllowedDigitalServiceRead$
             .pipe(takeUntilDestroyed(this.destroyRef))
@@ -121,25 +121,30 @@ export class WelcomePageComponent implements OnInit {
     }
 
     inventories() {
-        if (this.isAllowedInventory) {
-            this.router.navigateByUrl(`${this.selectedPath}/inventories`);
+        if (this.isAllowedInventory()) {
+            void this.router.navigateByUrl(`${this.selectedPath}/inventories`);
         } else {
-            this.router.navigateByUrl("/useful-information");
+            const mailto = this.userService.composeEcoMindAccessEmail(
+                this.currentOrganization.name,
+                this.currentWorkspace.name,
+                true,
+            );
+            globalThis.location.href = mailto;
         }
     }
 
     digitalServices() {
         if (this.isAllowedDigitalService) {
-            this.router.navigateByUrl(`${this.selectedPath}/digital-services`, {
+            void this.router.navigateByUrl(`${this.selectedPath}/digital-services`, {
                 state: { isIa: false },
             });
         } else {
-            this.router.navigateByUrl("/useful-information");
+            void this.router.navigateByUrl("/useful-information");
         }
     }
 
     ecoMindAi() {
-        this.router.navigateByUrl(`${this.selectedPath}/eco-mind-ai`, {
+        void this.router.navigateByUrl(`${this.selectedPath}/eco-mind-ai`, {
             state: { isIa: true },
         });
     }
@@ -148,6 +153,7 @@ export class WelcomePageComponent implements OnInit {
         const mailto = this.userService.composeEcoMindAccessEmail(
             this.currentOrganization.name,
             this.currentWorkspace.name,
+            false,
         );
         globalThis.location.href = mailto;
     }

@@ -40,7 +40,7 @@
             [options]="isModuleValues"
             optionLabel="value"
             placeholder="{{ 'administration.user.is-module' | translate }}"
-            [disabled]="isAdmin"
+            [disabled]="isSopraUser ? !(isWsAdminAndInvAccess || isSuperAdmin) : isAdmin"
             [showClear]="true"
             id="module-is-dropdown"
         ></p-select>
