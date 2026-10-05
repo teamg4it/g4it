@@ -58,7 +58,7 @@ __G4IT__ needs postgresql, keycloak, and NumEcoEval to work.
 
 Start prerequisites :
 - Open IntelliJ workspace
-- Select the configuration to run `podman-compose up -d` and run it
+- Select the configuration to run `podman-compose up -d` or `python -m podman_compose up -d` and run it
   - it will start all containers
 
 Verifications :
@@ -126,3 +126,31 @@ We are going to create a simple example to visualize graphs for inventory use ca
 - Once the four types are filled, click on CREATE
 - then, click on LAUNCH ESTIMATE
 - then, navigate to EQUIPMENT and APPLICATION to see graphs
+
+### Troubleshooting
+
+#### Missing dependencies issue
+Sometimes, the backend may not start because of a missing dependency.
+- In IntelliJ, open the backend project
+- Open the Maven tool window (View > Tool Windows > Maven)
+- Clean the project (Lifecycle > clean)
+- Click on the refresh button/ Sync All Maven Projects to update dependencies
+- Click on compile (Lifecycle > compile) to build the project
+- Then, try to run the backend again
+
+![missing_dependency.png](../missing_dependency.png)
+
+#### Keycloak container not starting
+If the Keycloak container fails to start, it may be due to image pull issues. Check the following:
+- Ensure you have a stable internet connection.
+- If you are behind a proxy, configure your proxy settings in Podman Desktop.
+- Go to C:\G4IT\_repo\g4it\workspace\docker path.
+- Try pulling the images manually using the command:
+```bash
+python -m podman_compose up -d
+```
+- If the issue persists, check the logs for more details:
+```bash
+python -m podman_compose logs keycloak
+```
+

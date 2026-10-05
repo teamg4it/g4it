@@ -5,6 +5,7 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
+import { NgClass } from "@angular/common";
 import {
     Component,
     computed,
@@ -18,8 +19,11 @@ import {
 } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { ActivatedRoute, Router } from "@angular/router";
-import { TranslateService } from "@ngx-translate/core";
+import { TranslatePipe, TranslateService } from "@ngx-translate/core";
 import { MenuItem } from "primeng/api";
+import { Button } from "primeng/button";
+import { DrawerModule } from "primeng/drawer";
+import { ScrollPanelModule } from "primeng/scrollpanel";
 import { finalize, firstValueFrom } from "rxjs";
 import {
     OrganizationCriteriaRest,
@@ -51,14 +55,41 @@ import { InventoryService } from "src/app/core/service/business/inventory.servic
 import { UserService } from "src/app/core/service/business/user.service";
 import { EvaluationDataService } from "src/app/core/service/data/evaluation-data.service";
 import { FootprintDataService } from "src/app/core/service/data/footprint-data.service";
+import { resetColorMap } from "src/app/core/service/mapper/graphs-mapper";
 import { FootprintStoreService } from "src/app/core/store/footprint.store";
 import { GlobalStoreService } from "src/app/core/store/global.store";
 import * as LifeCycleUtils from "src/app/core/utils/lifecycle";
 import { Constants } from "src/constants";
+import { ConfigureViewFiltersComponent } from "../../common/configure-view-filters/configure-view-filters.component";
+import { CriteriaPopupComponent } from "../../common/criteria-popup/criteria-popup.component";
+import { ImpactSidebarComponent } from "../../common/impact-sidebar/impact-sidebar.component";
+import { IndicatorSectionComponent } from "../../common/indicator-section/indicator-section.component";
+import { InventoriesHeaderFootprintComponent } from "../header/inventories-header-footprint.component";
+import { ApplicationTableViewComponent } from "./application-table-view/application-table-view.component";
+import { ApplicationCriteriaFootprintComponent } from "./criteria/application-criteria-footprint.component";
+import { DatavizFilterApplicationComponent } from "./dataviz-filter-application/dataviz-filter-application.component";
+import { ApplicationMulticriteriaFootprintComponent } from "./multicriteria/application-multicriteria-footprint.component";
 
 @Component({
     selector: "app-inventories-application-footprint",
     templateUrl: "./inventories-application-footprint.component.html",
+    standalone: true,
+    imports: [
+        InventoriesHeaderFootprintComponent,
+        ScrollPanelModule,
+        IndicatorSectionComponent,
+        Button,
+        DatavizFilterApplicationComponent,
+        NgClass,
+        ImpactSidebarComponent,
+        ApplicationMulticriteriaFootprintComponent,
+        ApplicationCriteriaFootprintComponent,
+        ApplicationTableViewComponent,
+        CriteriaPopupComponent,
+        DrawerModule,
+        ConfigureViewFiltersComponent,
+        TranslatePipe,
+    ],
 })
 export class InventoriesApplicationFootprintComponent implements OnInit, OnDestroy {
     protected readonly footprintStore = inject(FootprintStoreService);
@@ -271,6 +302,7 @@ export class InventoriesApplicationFootprintComponent implements OnInit, OnDestr
 
     ngOnInit() {
         this.checkStatusAndLoopApis();
+        resetColorMap();
     }
 
     async checkStatusAndLoopApis() {
@@ -282,6 +314,22 @@ export class InventoriesApplicationFootprintComponent implements OnInit, OnDestr
         if (this.inventoryInterval) {
             clearInterval(this.inventoryInterval);
         }
+    }
+
+    switchView(newView: "graph" | "table") {
+        // Show global loader immediately
+        this.globalStore.setLoading(true);
+
+        // Use setTimeout to allow loader to render before heavy computation
+        setTimeout(() => {
+            // Switch view - this triggers the computed signals
+            this.view = newView;
+
+            // Give Angular time to render and process the new view
+            setTimeout(() => {
+                this.globalStore.setLoading(false);
+            }, 10);
+        }, 10);
     }
 
     async getInventoryStatus() {

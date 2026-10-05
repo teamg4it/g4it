@@ -35,6 +35,7 @@ public class DigitalServiceRuleFactory {
         rules.put(DigitalServiceType.TERMINAL.getValue(), terminalDigitalServiceRule);
         rules.put(DigitalServiceType.SHARED_SERVER.getValue(), nonCloudDigitalServiceRule);
         rules.put(DigitalServiceType.DEDICATED_SERVER.getValue(), nonCloudDigitalServiceRule);
+        rules.put(DigitalServiceType.AI_SERVER.getValue(), nonCloudDigitalServiceRule);
     }
 
     public DigitalServiceRule getRule(String digitalServiceType) {

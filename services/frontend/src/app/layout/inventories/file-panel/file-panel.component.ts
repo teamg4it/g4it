@@ -23,11 +23,17 @@ import {
     ViewContainerRef,
 } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { TranslateService } from "@ngx-translate/core";
+import {
+    FormBuilder,
+    FormGroup,
+    FormsModule,
+    ReactiveFormsModule,
+    Validators,
+} from "@angular/forms";
+import { TranslatePipe, TranslateService } from "@ngx-translate/core";
 import saveAs from "file-saver";
 import { MessageService } from "primeng/api";
-import { RadioButton } from "primeng/radiobutton";
+import { RadioButton, RadioButtonModule } from "primeng/radiobutton";
 import { delay, Subject, switchMap, takeUntil, tap } from "rxjs";
 import {
     FileDescription,
@@ -43,9 +49,26 @@ import { WorkspaceReferenceDataService } from "src/app/core/service/data/workspa
 import { Constants } from "src/constants";
 import { SelectFileComponent } from "./select-file/select-file.component";
 
+import { Button } from "primeng/button";
+import { DatePickerModule } from "primeng/datepicker";
+import { InputTextModule } from "primeng/inputtext";
+import { GlobalStoreService } from "src/app/core/store/global.store";
+import { AutofocusDirective } from "../../../core/directives/auto-focus.directive";
+
 @Component({
     selector: "app-file-panel",
     templateUrl: "./file-panel.component.html",
+    standalone: true,
+    imports: [
+        AutofocusDirective,
+        FormsModule,
+        RadioButtonModule,
+        DatePickerModule,
+        ReactiveFormsModule,
+        InputTextModule,
+        Button,
+        TranslatePipe,
+    ],
 })
 export class FilePanelComponent implements OnInit, OnDestroy, AfterViewInit, OnChanges {
     private readonly userService = inject(UserService);
@@ -53,6 +76,7 @@ export class FilePanelComponent implements OnInit, OnDestroy, AfterViewInit, OnC
     private readonly workspaceReferenceDataService = inject(
         WorkspaceReferenceDataService,
     );
+    protected readonly global = inject(GlobalStoreService);
     className: string = "default-calendar max-w-full";
 
     @ViewChild("uploaderContainer", { read: ViewContainerRef })
@@ -144,8 +168,11 @@ export class FilePanelComponent implements OnInit, OnDestroy, AfterViewInit, OnC
             .getTemplateFiles()
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe((templateFiles: FileDescription[]) => {
+                // conditon added to not include workpsace data model and to use platform data model instead
                 templateFiles = templateFiles.filter(
-                    (file) => !file.name.includes("ds_"),
+                    (file) =>
+                        !file.name.includes("ds_") &&
+                        !file.name.includes(Constants.DATA_MODEL_CONDITION),
                 );
                 if (templateFiles.length === 0) {
                     this.templateFiles = [];
@@ -209,8 +236,10 @@ export class FilePanelComponent implements OnInit, OnDestroy, AfterViewInit, OnC
     }
 
     submitFormData() {
+        this.global.setLoading(true);
         if (this.name === "") {
             this.className = "ng-invalid ng-dirty";
+            this.global.setLoading(false);
             return;
         }
         let formData = new FormData();
@@ -246,13 +275,16 @@ export class FilePanelComponent implements OnInit, OnDestroy, AfterViewInit, OnC
                         } ${this.translate.instant("inventories.created")}`,
                     });
                     if (bodyLoading.length === 0) {
+                        this.global.setLoading(false);
                         this.reloadInventoriesAndLoop.emit(response.id);
                         this.close();
                     } else {
                         this.uploadAndLaunchLoading(formData, response.id);
                     }
                 },
-                error: (error) => {},
+                error: (error) => {
+                    this.global.setLoading(false);
+                },
             });
             return;
         }
@@ -278,11 +310,13 @@ export class FilePanelComponent implements OnInit, OnDestroy, AfterViewInit, OnC
             .pipe(delay(500))
             .subscribe({
                 next: () => {
+                    this.global.setLoading(false);
                     this.sidebarVisibleChange.emit(false);
                     this.reloadInventoriesAndLoop.emit(inventoryId);
                     this.close();
                 },
                 error: () => {
+                    this.global.setLoading(false);
                     this.sidebarPurposeChange.emit("upload");
                 },
             });

@@ -47,6 +47,12 @@ public class InventoryBO {
 
     private Long applicationCount;
 
+    private Long outApplicationCount;
+
+    private Long outVirtualCount;
+
+    private Long outPhysicalCount;
+
     private List<String> criteria;
 
     private List<TaskBO> tasks;

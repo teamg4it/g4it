@@ -31,7 +31,7 @@ describe("DigitalServicesFootprintFooterComponent", () => {
     let mockAiFormsStore: jasmine.SpyObj<AIFormsStore>;
     let mockGlobalStore: jasmine.SpyObj<GlobalStoreService>;
 
-    beforeEach(() => {
+    beforeEach(async () => {
         mockRouter = jasmine.createSpyObj("Router", ["navigateByUrl", "navigate"], {
             url: "/organizations/abc/workpsaces/xyz/digital-services/123/footprint",
         });
@@ -66,9 +66,12 @@ describe("DigitalServicesFootprintFooterComponent", () => {
         ]);
         mockGlobalStore = jasmine.createSpyObj("GlobalStoreService", ["setLoading"]);
 
-        TestBed.configureTestingModule({
-            declarations: [DigitalServicesFootprintFooterComponent],
-            imports: [HttpClientTestingModule, RouterTestingModule],
+        await TestBed.configureTestingModule({
+            imports: [
+                HttpClientTestingModule,
+                RouterTestingModule,
+                DigitalServicesFootprintFooterComponent,
+            ],
             providers: [
                 {
                     provide: ActivatedRoute,

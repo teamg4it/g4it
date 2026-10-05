@@ -9,9 +9,8 @@ describe("GraphDescriptionComponent", () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [GraphDescriptionComponent],
-            imports: [TranslateModule.forRoot()],
-        }).compileComponents();
+    imports: [TranslateModule.forRoot(), GraphDescriptionComponent],
+}).compileComponents();
 
         fixture = TestBed.createComponent(GraphDescriptionComponent);
         component = fixture.componentInstance;

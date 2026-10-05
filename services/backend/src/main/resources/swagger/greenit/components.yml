@@ -222,6 +222,8 @@ components:
           type: string
         numecoeval:
           type: string
+        ecologits:
+          type: string
     UserRest:
       description: User information
       type: object
@@ -411,6 +413,15 @@ components:
         applicationCount:
           type: integer
           format: int64
+        outApplicationCount:
+          type: integer
+          format: int64
+        outVirtualCount:
+          type: integer
+          format: int64
+        outPhysicalCount:
+          type: integer
+          format: int64
         criteria:
           type: array
           items:
@@ -482,6 +493,12 @@ components:
           type: string
         countValue:
           type: number
+        level:
+          type: string
+          description: Equipment level from referential (e.g. 2-Equipement, 3-System)
+        impactUnit:
+          type: string
+          description: Impact unit from referential (e.g. kgCO2e, kWh, m3)
 
     ApplicationIndicatorRest:
       type: object
@@ -599,6 +616,12 @@ components:
         ageMoyen:
           type: number
           format: double
+        level:
+          type: string
+          description: Equipment level from referential (e.g. 2-Equipement, 3-System)
+        impactUnit:
+          type: string
+          description: Impact unit from referential (e.g. kgCO2e, kWh, m3)
     PhysicalEquipmentElecConsumptionRest:
       type: object
       properties:
@@ -800,6 +823,9 @@ components:
           type: string
         isAi:
           type: boolean
+        note:
+          type: object
+          $ref: "#/components/schemas/NoteRest"
 
     DigitalServiceServerImpactRest:
       type: object
@@ -1339,6 +1365,10 @@ components:
             $ref: "#/components/schemas/ServerHostRefRest"
         countries:
           $ref: "#/components/schemas/BoaviztaCountriesRest"
+        aiServerTypes:
+          type: array
+          items:
+            $ref: "#/components/schemas/ServerHostRefRest"
     BoaviztaCountriesRest:
       type: object
       additionalProperties:

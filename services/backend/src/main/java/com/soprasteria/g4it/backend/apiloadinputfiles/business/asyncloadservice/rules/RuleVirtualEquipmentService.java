@@ -8,8 +8,10 @@
 
 package com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.rules;
 
+import com.soprasteria.g4it.backend.common.error.ErrorConstants;
 import com.soprasteria.g4it.backend.common.model.LineError;
 import com.soprasteria.g4it.backend.common.utils.InfrastructureType;
+import com.soprasteria.g4it.backend.exception.AsyncTaskException;
 import com.soprasteria.g4it.backend.external.boavizta.business.BoaviztapiService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -225,11 +227,21 @@ public class RuleVirtualEquipmentService {
             return Optional.empty();
         }
         else if (virtualEquipmentNames.contains(virtualEquipmentName)) {
-            return Optional.of(new LineError(filename, line,
+            /*return Optional.of(new LineError(filename, line,
                     messageSource.getMessage("cloud.equipment.unique", new String[]{}, locale)
-            ));
+            ));*/
+            throw new AsyncTaskException(messageSource.getMessage("vm.name.should.not.duplicate", new String[]{}, locale));
         }
         virtualEquipmentNames.add(virtualEquipmentName);
+        return Optional.empty();
+    }
+
+    public Optional<LineError> checkAllocationFactor(Locale locale, String filename, int line, Double allocationFactor) {
+        if (allocationFactor!=null && (allocationFactor < 0 || allocationFactor > 1)) {
+            return Optional.of(new LineError(filename, line,
+                    messageSource.getMessage("allocation.factor.should.be.greater.than.zero", new String[]{}, locale)
+            ));
+        }
         return Optional.empty();
     }
 

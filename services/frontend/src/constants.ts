@@ -188,6 +188,7 @@ export abstract class Constants {
         lifeCycle: "lifeCycles",
         domain: "domains",
     };
+    static readonly VIEWPORT_SCROLL_THRESHOLD: number = 20;
     static readonly ALL: string = "All";
     static readonly EMPTY: string = "!Empty"; // ! character is used for sorting Empty on top
 
@@ -244,14 +245,19 @@ export abstract class Constants {
         this.DATA_QUALITY_STATUS.error,
     ];
 
-    static readonly TOTAL_VISIBLE_GRAPH_ITEMS = 10;
+    static readonly TOTAL_VISIBLE_GRAPH_ITEMS = 6;
     static readonly USEFUL_INFORMATION = "useful-information";
     static readonly DECLARATIONS = "declarations";
     static readonly WELCOME_PAGE = "welcome-page";
+    static readonly EQUIPEMENT_2 = "2-Equipement";
+    static readonly ITEM = "Item";
 
     static readonly VALID_PAGES = [
         this.USEFUL_INFORMATION,
         this.DECLARATIONS,
         this.WELCOME_PAGE,
     ];
+
+    static readonly DATA_MODEL_CONDITION = "workspace";
+    static readonly MAX_NUMBER_OF_CRITERIA_RADAR = 5;
 }

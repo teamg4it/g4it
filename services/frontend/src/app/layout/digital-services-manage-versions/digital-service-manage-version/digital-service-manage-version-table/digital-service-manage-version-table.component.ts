@@ -1,19 +1,42 @@
+import { AsyncPipe } from "@angular/common";
 import { Component, DestroyRef, inject, OnInit } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { FormsModule } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
-import { TranslateService } from "@ngx-translate/core";
-import { ConfirmationService } from "primeng/api";
+import { TranslatePipe, TranslateService } from "@ngx-translate/core";
+import { ConfirmationService, PrimeTemplate } from "primeng/api";
+import { Button } from "primeng/button";
+import { CheckboxModule } from "primeng/checkbox";
+import { ConfirmPopupModule } from "primeng/confirmpopup";
+import { TableModule } from "primeng/table";
+import { TooltipModule } from "primeng/tooltip";
 import { finalize } from "rxjs";
 import { DigitalServiceVersionResponse } from "src/app/core/interfaces/digital-service-version.interface";
 import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServiceVersionDataService } from "src/app/core/service/data/digital-service-version-data-service";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
 import { GlobalStoreService } from "src/app/core/store/global.store";
+import { PromoteVersionDialogComponent } from "../../../common/promote-version-dialog/promote-version-dialog.component";
+import { VersionTypeTagComponent } from "../../../digital-services-footprint/digital-services-footprint-header/version-type-tag/version-type-tag.component";
 
 @Component({
     selector: "app-digital-service-manage-version-table",
     templateUrl: "./digital-service-manage-version-table.component.html",
     providers: [ConfirmationService],
+    standalone: true,
+    imports: [
+        TableModule,
+        PrimeTemplate,
+        Button,
+        TooltipModule,
+        VersionTypeTagComponent,
+        ConfirmPopupModule,
+        CheckboxModule,
+        FormsModule,
+        PromoteVersionDialogComponent,
+        AsyncPipe,
+        TranslatePipe,
+    ],
 })
 export class DigitalServiceManageVersionTableComponent implements OnInit {
     private readonly digitalServiceVersionDataService = inject(
@@ -91,9 +114,7 @@ export class DigitalServiceManageVersionTableComponent implements OnInit {
     }
 
     onVersionSelect(version: DigitalServiceVersionResponse): void {
-        const index = this.selectedVersions.findIndex(
-            (v: string) => v === version.digitalServiceVersionUid,
-        );
+        const index = this.selectedVersions.indexOf(version.digitalServiceVersionUid);
 
         if (index > -1) {
             // Version is already selected, remove it

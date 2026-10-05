@@ -97,4 +97,8 @@ export class ApplicationTableViewComponent {
             ),
         };
     });
+
+    trackByRow(index: number, item: any): string {
+        return `${item.applicationName}-${item.criteria}`;
+    }
 }

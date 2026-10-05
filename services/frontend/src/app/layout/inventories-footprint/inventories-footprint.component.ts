@@ -5,6 +5,7 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
+import { NgClass } from "@angular/common";
 import {
     Component,
     DestroyRef,
@@ -19,8 +20,11 @@ import {
 } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { ActivatedRoute, Router } from "@angular/router";
-import { TranslateService } from "@ngx-translate/core";
+import { TranslatePipe, TranslateService } from "@ngx-translate/core";
 import { MenuItem } from "primeng/api";
+import { Button } from "primeng/button";
+import { DrawerModule } from "primeng/drawer";
+import { ScrollPanelModule } from "primeng/scrollpanel";
 import { finalize, firstValueFrom, forkJoin, map } from "rxjs";
 import {
     OrganizationCriteriaRest,
@@ -58,15 +62,40 @@ import { FootprintDataService } from "src/app/core/service/data/footprint-data.s
 import { InVirtualEquipmentsService } from "src/app/core/service/data/in-out/in-virtual-equipments.service";
 import { OutVirtualEquipmentsService } from "src/app/core/service/data/in-out/out-virtual-equipments.service";
 import { transformCriterion } from "src/app/core/service/mapper/array";
+import { resetColorMap } from "src/app/core/service/mapper/graphs-mapper";
 import { DigitalServiceStoreService } from "src/app/core/store/digital-service.store";
 import { FootprintStoreService } from "src/app/core/store/footprint.store";
 import { GlobalStoreService } from "src/app/core/store/global.store";
 import * as LifeCycleUtils from "src/app/core/utils/lifecycle";
 import { Constants } from "src/constants";
+import { ConfigureViewFiltersComponent } from "../common/configure-view-filters/configure-view-filters.component";
+import { CriteriaPopupComponent } from "../common/criteria-popup/criteria-popup.component";
+import { ImpactSidebarComponent } from "../common/impact-sidebar/impact-sidebar.component";
+import { IndicatorSectionComponent } from "../common/indicator-section/indicator-section.component";
+import { InventoriesCritereFootprintComponent } from "./critere/inventories-critere-footprint.component";
+import { DatavizFilterComponent } from "./dataviz-filter/dataviz-filter.component";
+import { InventoriesHeaderFootprintComponent } from "./header/inventories-header-footprint.component";
+import { InventoriesMultiCriteriaFootprintComponent } from "./multicriteria/inventories-multicriteria-footprint.component";
 
 @Component({
     selector: "app-inventories-footprint",
     templateUrl: "./inventories-footprint.component.html",
+    standalone: true,
+    imports: [
+        InventoriesHeaderFootprintComponent,
+        ScrollPanelModule,
+        IndicatorSectionComponent,
+        Button,
+        DatavizFilterComponent,
+        NgClass,
+        ImpactSidebarComponent,
+        InventoriesMultiCriteriaFootprintComponent,
+        InventoriesCritereFootprintComponent,
+        CriteriaPopupComponent,
+        DrawerModule,
+        ConfigureViewFiltersComponent,
+        TranslatePipe,
+    ],
 })
 export class InventoriesFootprintComponent implements OnInit, OnDestroy {
     protected footprintStore = inject(FootprintStoreService);
@@ -128,7 +157,7 @@ export class InventoriesFootprintComponent implements OnInit, OnDestroy {
         ] as StatGroup[];
     });
 
-    allUnmodifiedFootprint: WritableSignal<Criterias> = signal({} as Criterias);
+    allUnmodifiedFootprint: WritableSignal<Criterias> = signal({});
     allUnmodifiedFilters: Filter<string> = {};
     allUnmodifiedDatacenters: WritableSignal<Datacenter[]> = signal([] as Datacenter[]);
     allUnmodifiedEquipments: WritableSignal<
@@ -230,6 +259,7 @@ export class InventoriesFootprintComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.checkStatusAndLoopApis();
+        resetColorMap();
     }
 
     async checkStatusAndLoopApis() {
@@ -421,7 +451,6 @@ export class InventoriesFootprintComponent implements OnInit, OnDestroy {
             Constants.EQUIPMENT_FILTERS,
             true,
         );
-
         for (const field of Constants.EQUIPMENT_FILTERS) {
             this.allUnmodifiedFilters[field] = [
                 Constants.ALL,

@@ -18,6 +18,7 @@ import com.soprasteria.g4it.backend.apievaluating.mapper.AggregationToOutput;
 import com.soprasteria.g4it.backend.apievaluating.mapper.ImpactToCsvRecord;
 import com.soprasteria.g4it.backend.apievaluating.model.AggValuesBO;
 import com.soprasteria.g4it.backend.apievaluating.model.EvaluateReportBO;
+import com.soprasteria.g4it.backend.apievaluating.model.ItemReferentialInfo;
 import com.soprasteria.g4it.backend.apievaluating.model.RefShortcutBO;
 import com.soprasteria.g4it.backend.apiinout.mapper.InputToCsvRecord;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InDatacenter;
@@ -31,6 +32,7 @@ import com.soprasteria.g4it.backend.apiparameterai.repository.InAiParameterRepos
 import com.soprasteria.g4it.backend.apirecomandation.mapper.RecommendationJsonMapper;
 import com.soprasteria.g4it.backend.apirecomandation.modeldb.OutAiReco;
 import com.soprasteria.g4it.backend.apirecomandation.repository.OutAiRecoRepository;
+import com.soprasteria.g4it.backend.apireferential.business.ReferentialGetService;
 import com.soprasteria.g4it.backend.apireferential.business.ReferentialService;
 import com.soprasteria.g4it.backend.apiuser.repository.OrganizationRepository;
 import com.soprasteria.g4it.backend.client.gen.connector.apiecomindv2.dto.InputEstimationLLMInference;
@@ -43,8 +45,7 @@ import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
 import com.soprasteria.g4it.backend.common.utils.StringUtils;
 import com.soprasteria.g4it.backend.exception.AsyncTaskException;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
-import com.soprasteria.g4it.backend.server.gen.api.dto.CriterionRest;
-import com.soprasteria.g4it.backend.server.gen.api.dto.HypothesisRest;
+import com.soprasteria.g4it.backend.server.gen.api.dto.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVPrinter;
 import org.mte.numecoeval.calculs.domain.data.indicateurs.ImpactEquipementPhysique;
@@ -56,10 +57,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -112,6 +110,9 @@ public class EvaluateAiService {
 
     @Value("${local.working.folder}")
     private String localWorkingFolder;
+
+    @Autowired
+    ReferentialGetService referentialGetService;
 
     /**
      * Evaluate the digital service with ia parameter
@@ -201,11 +202,15 @@ public class EvaluateAiService {
                 CriterionRest::getUnit
         ));
 
+        // Build item referential map: item reference name -> {level, unit}
+        Map<String, ItemReferentialInfo> itemReferentialMap = referentialService.buildItemReferentialMap(context.getWorkspaceId());
+
         RefShortcutBO refShortcutBO = new RefShortcutBO(
                 criteriaUnitMap,
                 getShortcutMap(criteriaCodes),
                 getShortcutMap(lifecycleSteps),
-                referentialService.getElectricityMixQuartiles(context.getWorkspaceId())
+                referentialService.getElectricityMixQuartiles(context.getWorkspaceId()),
+                itemReferentialMap
         );
 
         final List<HypothesisRest> hypothesisRestList = referentialService.getHypotheses(organization);
@@ -251,10 +256,31 @@ public class EvaluateAiService {
                     csvOutAiReco.printRecord((Object[]) aiRecoRecord);
                 }
             }
+            long countItemImpactWorkspace= referentialGetService.countItemImpactsForWorkspace(context.getWorkspaceId());
 
             while (!physicalEquipments.isEmpty()) {
 
-                log.info("Evaluating {} physical equipments", physicalEquipments.size());
+                /*log.info("Evaluating {} physical equipments", physicalEquipments.size());
+                Set<String> models = physicalEquipments.stream()
+                        .map(InPhysicalEquipment::getModel)
+                        .filter(Objects::nonNull)
+                        .collect(Collectors.toSet());
+                Set<String> types = physicalEquipments.stream()
+                        .map(InPhysicalEquipment::getType)
+                        .filter(Objects::nonNull)
+                        .collect(Collectors.toSet());
+                Set<String> locations = physicalEquipments.stream()
+                        .map(InPhysicalEquipment::getLocation)
+                        .filter(Objects::nonNull)
+                        .collect(Collectors.toSet());
+                Map<String, MatchingItemRest> matchingItemMap = referentialGetService.bulkGetMatchingItemsForWorkspace(models,context.getWorkspaceId());
+                Map<String, List<ItemTypeRest>> itemTypeMap = referentialGetService.bulkGetItemTypesForWorkspace(types, context.getWorkspaceId());
+                Map<String, List<ItemImpactRest>> itemImpactMap = referentialGetService.bulkGetAllItemImpactsForWorkspace(
+                        activeCriteria.stream().map(CriterionRest::getCode).collect(Collectors.toSet()),
+                        new HashSet<>(lifecycleSteps),
+                        locations,
+                        context.getWorkspaceId()
+                );*/
 
                 for (InPhysicalEquipment inPhysicalEq : physicalEquipments) {
                     if (aggregationPhysicalEquipments.size() > MAXIMUM_MAP_CAPICITY) {
@@ -275,7 +301,7 @@ public class EvaluateAiService {
 
                     List<ImpactEquipementPhysique> impactEquipementPhysiqueList = evaluateNumEcoEvalService.calculatePhysicalEquipment(
                             inPhysicalEq, datacenters.getFirst(),
-                            organization, activeCriteria, lifecycleSteps, hypothesisRestList, context.getWorkspaceId());
+                            organization, activeCriteria, lifecycleSteps, hypothesisRestList, context.getWorkspaceId(),countItemImpactWorkspace);
 
                     if (evaluateReportBO.isExport()) {
                         csvInPhysicalEquipment.printRecord(inputToCsvRecord.toCsv(inPhysicalEq, datacenter));

@@ -11,20 +11,21 @@
         />
     }
     @if (!showInconsitencyGraph) {
-        <p-dropdown
+        <p-select
             [options]="dimensions"
             [ngModel]="selectedDimension()"
             (ngModelChange)="footprintStore.setApplicationDimension($event)"
             [placeholder]="'inventories-footprint.select-dimension' | translate"
-            styleClass="ml-auto"
         >
             <ng-template pTemplate="selectedItem">
-                <div *ngIf="selectedDimension()">
-                    {{
-                        "inventories-footprint.application-round-button." +
-                            selectedDimension() | translate
-                    }}
-                </div>
+                @if (selectedDimension()) {
+                    <div>
+                        {{
+                            "inventories-footprint.application-round-button." +
+                                selectedDimension() | translate
+                        }}
+                    </div>
+                }
             </ng-template>
             <ng-template let-dimension pTemplate="item">
                 <div>
@@ -34,7 +35,7 @@
                     }}
                 </div>
             </ng-template>
-        </p-dropdown>
+        </p-select>
     }
 </div>
 @if (showInconsitencyGraph) {
@@ -65,13 +66,17 @@
         <div class="no-data-round">
             <p
                 class="text-round-empty"
-                tabindex="0"
                 attr.aria-label="{{ 'common.no-data' | translate }}"
             >
                 {{ "common.no-data" | translate }}
             </p>
         </div>
     }
+}
+<app-inverse-axis-button
+    (inverseAxisChange)="this.isAxisInverted.set($event)"
+></app-inverse-axis-button>
+@if (!showInconsitencyGraph) {
     <app-graph-description
         [contentText]="getContentText()"
         [textDescriptionImpacts]="textDescriptionImpacts"

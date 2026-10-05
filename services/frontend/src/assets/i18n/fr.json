@@ -1,4 +1,4 @@
-{
+﻿{
     "common": {
         "yes": "Oui",
         "no": "Non",
@@ -87,7 +87,9 @@
             "eq": "Voir l'impact des équipements pour l'inventaire de",
             "refresh": "Rafraichir les informations pour l'inventaire de",
             "addNote": "Cliquer pour ajouter une note",
-            "attachedNote": "Cliquer pour consulter la note",
+            "add-context": "Cliquer pour ajouter le contexte/les hypothèses",
+            "edit-context": "Cliquer pour modifier le contexte/les hypothèses",
+            "attachedNote": "Cliquer pour consulter la Contexte et hypothèses",
             "download": "Cliquez pour télécharger les résultats",
             "note": "Note",
             "accordion-open": "Cliquez pour afficher les sous-domaines",
@@ -145,7 +147,7 @@
         "digital-services": "Services numériques",
         "eco-mind-ai": "EcoMind AI (Bêta)",
         "skip-to-main-content": "Accéder au contenu principal",
-        "overgreen-logo": "Overgreen Logo",
+        "overgreen-logo": "G4IT Logo",
         "soprasteria-logo": "Sopra Steria Logo",
         "no-document-upload": "Aucun document téléchargé",
         "workspace": {
@@ -195,7 +197,16 @@
             "engine-title": "Moteurs de calcul utilisés",
             "reference-title": "Références utilisées",
             "engine": "Les calculs des équipements physiques sont effectués à l'aide de <strong>NumEcoEval</strong>. </br> Les calculs des équipements virtuels (non basés sur le cloud) sont également gérés par <strong>NumEcoEval</strong>. </br> Pour les équipements virtuels basés sur le cloud, les calculs sont effectués à l'aide de <strong>Boavizta</strong>."
-        }
+        },
+        "main-navigation": "Navigation principale",
+        "country.all": "Tous les pays",
+        "entity.all": "Toutes les entités",
+        "equipment.all": "Tous les équipements",
+        "status.all": "Tous les statuts",
+        "environment.all": "Tous les environnements",
+        "equipmentType.all": "Tous les types d'équipements",
+        "lifeCycle.all": "Tous les cycles de vie",
+        "domain.all": "Tous les domaines et sous-domaines"
     },
     "useful-information": {
         "computing-engines": "Moteurs de calcul",
@@ -308,7 +319,11 @@
             "popup": {
                 "delete-question": "Etes vous sûr de vouloir supprimer cette version",
                 "archived-text": "Vous êtes sur le point de supprimer une verison archivée, vous ne pourrez plus intégrer cette version dans votre suivi d'évolution."
-            }
+            },
+            "context-and-assumptions": "Contexte et hypothèses",
+            "edit-context-assumptions": "EDIT CONTEXTE/HYPOTHESES",
+            "add-context-assumptions": "AJOUTER CONTEXTE/HYPOTHESES",
+            "context-text": "Nous vous invitons à décrire ici le contexte de votre analyse ainsi que les hypothèses retenues (sources, choix méthodologiques, limites, etc.). Ces éléments permettent de mieux comprendre, tracer et comparer votre évaluation d’impact. <br /> Ces éléments pourront être complétés ultérieurement."
         },
         "error.digital-service-already-exists": "Le service numérique existe déjà",
         "error.digital-service-version-already-exists": "La version existe déjà",
@@ -383,14 +398,30 @@
         "country": "Pays",
         "name": "Nom",
         "nb-user": "Nombre d'utilisateurs uniques",
+        "nb-user-tooltip": "Nombre total d'utilisateurs uniques au cours de l'année.",
         "numberOfUsers": "Nombre d'utilisateurs uniques",
         "yearly-usage": "Temps moyen passé par utilisateur et par an",
         "hours": "heures",
+        "usage-time": "Temps d'utilisation",
         "table-yearly-usage": "Temps d'utilisation annuel par utilisateur",
+        "table-yearly-usage-tooltip": "Durée totale d'utilisation par utilisateur sur un an (en heures).",
         "yearlyUsageTimePerUser": "Temps d'utilisation annuel par utilisateur",
         "lifespan": "Durée de vie moyenne de l'équipement (années)",
+        "internal-usage": "Usage interne",
+        "internal-usage-tooltip": "Durée d'utilisation moyenne avant remplacement (en années).",
         "error.terminal-already-exists": "Le terminal existe déjà",
-        "terminal-name": "Nom du terminal"
+        "terminal-name": "Nom du terminal",
+        "information-step": "ÉTAPE 1",
+        "information-text": "Décrivez les équipements utilisés par les utilisateurs de votre service numérique. Cette étape vous permet d’estimer l’impact du matériel (ordinateur, smartphone, etc.) nécessaire à l’utilisation de votre service.<br/> Si vous ne disposez pas de données précises, vous pouvez faire une estimation pour réaliser une première évaluation.",
+        "information-li1": "Si vos utilisateurs utilisent plusieurs types d’équipements → créez plusieurs lignes (une par type d’appareil).",
+        "information-li2": "Si vos utilisateurs sont situés dans plusieurs pays → créez une ligne par pays pour plus de précision ou choisissez le pays d’utilisation principal pour une estimation rapide.",
+        "information-li3": "Si la localisation n'est pas connue, mettez 'World' par défaut.",
+        "device-identification": "Identification de l'équipement",
+        "identification-text": "Définissez les caractéristiques générales du groupe d'équipements utilisés par vos utilisateurs.</br> Selon la localisation des équipements utilisés, les impacts peuvent changer du simple au décuple (ex : si le pays utilise du charbon pour produire sont electricité).",
+        "use-of-service": "Utilisation du service",
+        "use-of-service-text": "Ces informations vous permettent d'attribuer une partie de l'impact des équipements à votre service.</br> Remarque : Si nécessaire, commencez par l'utilisation quotidienne (par exemple, minutes/jour) pour estimer un total annuel.",
+        "device-lifetime": "Durée de vie de l'équipement",
+        "device-lifetime-text": "Définissez la durée d'utilisation de l'appareil au sein de votre organisation."
     },
     "digital-services-networks": {
         "new": "Nouveau Réseau",
@@ -400,23 +431,36 @@
         "id": "#",
         "name": "Nom",
         "type": "Type",
+        "network-stream-name-tooltip": "Nom du flux réseau.",
+        "network-type-tooltip": "Type et emplacement du réseau.",
         "typeCode": "Type",
+        "data-exchanged": "Volume de données échangées",
+        "data-exchanged-tooltip": "Volume total de données échangées sur une année (en GB).",
         "yearly-go": "Quantité totale de Go échangés par an pour tous les utilisateurs",
         "table-yearly-go": "Quantité annuelle de Go échangés",
         "yearlyQuantityOfGbExchanged": "Quantité annuelle de Go échangés",
         "network-name": "Nom du réseau",
-        "error.network-already-exists": "Le réseau existe déjà"
+        "error.network-already-exists": "Le réseau existe déjà",
+        "information-step": "ÉTAPE 2",
+        "information-text": "Décrivez le volume de données échangées entre les utilisateurs et les serveurs ou entre serveurs, sur les réseaux filaires (=fixe) et ou mobile.",
+        "information-li1": "Si votre service utilise plusieurs types de réseau (ex : mobile et wifi), créez une ligne par type.",
+        "information-li2": "Si vous ne connaissez pas le volume exact, estimez-le à partir du nombre d’utilisateurs et de leur usage.",
+        "network-description": "Descriptif du réseau",
+        "network-description-text": "Précisez le type de réseau principalement utilisé (mobile pour les connexion de type 2G/3G/4G/5G, filaire pour les autres) et le volume total de données échangées sur une année.</br> Ce volume correspond à toutes les données transférées entre les utilisateurs et votre service (requêtes + réponses).</br> Si vous ne connaissez pas ces données : estimez-les à partir du nombre d’utilisateurs et du trafic moyen par utilisateur."
     },
     "digital-services-servers": {
         "Dedicated": "Dédié",
         "Shared": "Partagé",
         "Compute": "Calcul",
         "Storage": "Stockage",
+        "AI": "IA",
         "server-type": {
             "Dedicated-Compute": "Calcul Dédié",
             "Dedicated-Storage": "Stockage Dédié",
+            "Dedicated-AI": "IA Dédié",
             "Shared-Compute": "Calcul Partagé",
-            "Shared-Storage": "Stockage Partagé"
+            "Shared-Storage": "Stockage Partagé",
+            "Shared-AI": "IA Partagé"
         },
         "edit": "Édition Serveur",
         "new": "Nouveau Serveur",
@@ -439,11 +483,18 @@
         "datacenter": "Centre de données",
         "datacenterName": "Centre de données",
         "total.vcpu": "Total vCPU",
-        "total.disk": "Capacité totale du disque (Go)",
-        "lifespan": "Durée de vie du serveur (années)",
-        "electricity": "Consommation électrique à l'année (kwH)",
+        "total.vcpu-tooltip": "Puissance de calcul du serveur.",
+        "total.disk": "Capacité totale du disque",
+        "total.disk-tooltip": "Capacité totale de stockage disponible sur le serveur (en Gb).",
+        "total.vram": "Total vRAM",
+        "total.vram-tooltip": "Puissance de calcul du serveur.",
+        "lifespan": "Durée de vie du serveur",
+        "lifespan-tooltip": "Durée d'utilisation du serveur (en années)",
+        "electricity": "Consommation d'électricité",
+        "electricity-tooltip": "Consommation annuelle (kWh).",
         "electricityConsumption": "Consommation électrique (kwH)",
-        "usage.time": "Temps d'utilisation annuel (heure)",
+        "usage.time": "Temps de fonctionnement",
+        "usage-time-tooltip": "Durée de fonctionnement annuelle (heures).",
         "annualOperatingTime": "Temps d'utilisation annuel (heure)",
         "pue": "PUE",
         "pue.label": "Pour en savoir plus sur l'indicateur d'efficacité énergétique et comment il est calculé, accédez à cette page sur",
@@ -460,14 +511,42 @@
         "accessibility.vm": "Machine Virtuelle",
         "vcpu": "vCPU",
         "vCpu": "vCPU",
+        "vRam": "vRam",
         "disk": "Disque",
         "error.vcpu": "La somme des vCPUs des VMs dépasse la capacité du serveur",
         "error.electricityConsumption": "La somme de la consommation électrique des VMs dépasse les capacités du serveur",
         "error.totalvcpu": "La somme des vCPUs des VMs ({{ totalVmvCpu }} {{totalVmvCpuUnit}}) dépasse la capacité du serveur",
+        "error.totaldisk": "La somme des Disques des VMs ({{ totalVmvCpu }} {{totalVmvCpuUnit}}) dépasse la capacité du serveur",
+        "error.totalvram": "La somme des vRam des VMs ({{ totalVmvCpu }} {{totalVmvCpuUnit}}) dépasse la capacité du serveur",
         "error.disk": "La capacité de stockage des machines virtuelles dépasse les capacités du serveur",
+        "error.vram": "La somme des vRAM des VMs dépasse les capacités du serveur",
         "error.quantity": "La quantité ne peut pas être nulle",
         "pue.rule": "doit être >= 1",
-        "error.server-already-exists": "Le serveur existe déjà"
+        "error.server-already-exists": "Le serveur existe déjà",
+        "information-step": "ÉTAPE 3",
+        "information-text": "Décrivez les ressources d'infrastructure nécessaires au fonctionnement de votre service (serveurs, marchines virtuelles, conteneurs). Vous pouvez effectuer des estimations et utiliser les valeurs fournies pour obtenir une première évaluation.</br> Vous pouvez modéliser différents scénarios :",
+        "information-li1": "Serveurs dédiés (utilisés uniquement par votre service),",
+        "information-li2": "Serveurs partagés (partagés avec d'autres services),",
+        "information-li3": "Les serveurs dédiés hostés dans le cloud sont aussi à référencer ici.",
+        "server-description-text1": "Choisissez le type de serveur qui correspond le mieux à vos besoins :",
+        "server-description-text2": "Précisez ensuite son rôle principal :",
+        "server-description-text-li1": "Serveur dédié : utilisé exclusivement par votre service,",
+        "server-description-text-li2": "Serveur partagé : partagé avec d’autres services (virtualisation),",
+        "server-description-text-li3": "Calcul : ressources de calcul (API, backend, traitement),",
+        "server-description-text-li4": "Stockage : stockage de données (fichiers, images, journaux),",
+        "server-description-text-li5": "IA : serveurs spécifiques avec des GPU.",
+        "server-example": "Examples :</br> ",
+        "server-example-1": "- Backend API → Dédié / Calcul",
+        "server-example-2": "- Kubernetes → Partagé / Calcul",
+        "server-example-3": "- Base de données → Dédié / Calcul + Stockage",
+        "server-example-4": "- Stockage de fichiers (S3,...) → Partagé / Stockage",
+        "server-example-5": "- File de messages (Kafka, RabbitMQ,...) → Partagé / Calcul",
+        "server-example-para": "Remarque : Si une partie de votre infrastructure se trouve dans un cloud public (AWS, Azure…), utilisez la section « Cloud » dédiée.",
+        "server-parameter-text": "Fournissez une configuration représentative de votre serveur.</br> Bonnes pratiques :",
+        "server-parameter-li1": "Regroupez les serveurs similaires,",
+        "server-parameter-li2": "Utilisez des ordres de grandeur réalistes,",
+        "server-parameter-li3": "Démarrez par une approximation maitrisée et affinez ensuite.",
+        "server-vm-text": "Décrivez la proportion de ressources utilisées par votre service sur un serveur partagé.</br> Cela correspond généralement à des machines virtuelles (VM) ou à des conteneurs (ex : Kubernetes)."
     },
     "digital-services-cloud-services": {
         "new": "Nouvelle instance Cloud",
@@ -494,7 +573,9 @@
         "configuration": "Instance configuration",
         "error.service-already-exists": "Le service cloud existe déjà",
         "tooltip_average_workload": "Charge de travail moyenne",
-        "tooltip_annual_usage": "Utilisation annuelle"
+        "tooltip_annual_usage": "Utilisation annuelle",
+        "information-step": "ÉTAPE 4",
+        "information-text": "Décrivez les serveurs IaaS fournis par les principaux service cloud provider."
     },
     "digital-services-ai-parameter": {
         "new": "Nouveau terminal",
@@ -677,7 +758,11 @@
         "visualisation": {
             "application": "Visualisation des applications",
             "equipment": "Visualisation des équipements"
-        }
+        },
+        "more-data-message": "Limite de résultats atteinte",
+        "click-info": "Cliquez pour plus d'informations",
+        "more-data-message-body": "Le calcul s'est terminé avec succès, mais le nombre de lignes de résultats générées dépasse la limite maximale autorisée.</br> Pour réduire le volume de résultats, veuillez sélectionner moins de critères environnementaux et relancer le calcul.",
+        "more-data-message-email": "Si vous avez besoin d'aide ou si vous estimez que cette limite ne correspond pas à votre cas d'usage, veuillez contacter l'équipe de support à l'adresse "
     },
     "inventories-footprint": {
         "active-filters": "Filtres activés",
@@ -801,7 +886,10 @@
         },
         "filter-view": "Filtrer la vue",
         "filter-text": "Filtres",
-        "filter-description": "Ces filtres vous permettent de ne visualiser qu'un partie des données calculées par G4IT. Vos choix s’appliqueront à toute la page et mettront à jour les indicateurs clés et les impacts selon le filtre définit."
+        "filter-description": "Ces filtres vous permettent de ne visualiser qu'un partie des données calculées par G4IT. Vos choix s’appliqueront à toute la page et mettront à jour les indicateurs clés et les impacts selon le filtre définit.",
+        "inverse-axis": "Inverser les axes",
+        "on": "On",
+        "off": "Off"
     },
     "error-page": {
         "title": {
@@ -817,12 +905,12 @@
     },
     "toast-errors": {
         "unknown": {
-            "title": "Erreur inconnue",
-            "text": "Merci de contacter le support pour avoir de l'aide"
+            "title": "Quelque chose s'est mal passé...",
+            "text": "Une erreur est survenue. En cas de blocage, merci de contacter le support G4IT (support.g4it@soprasteria.com)."
         },
         "backend-unreachable": {
             "title": "Les APIs Backend ne sont pas accessibles",
-            "text": "Please contact the support for help"
+            "text": "Une erreur est survenue. En cas de blocage, merci de contacter le support G4IT (support.g4it@soprasteria.com)."
         },
         "payload-too-large": {
             "title": "La taille maximum d'un fichier est dépassées",
@@ -863,7 +951,22 @@
         "bad-request": {
             "title": "Mauvaise demande",
             "text": "La requête n'a pas pu être traitée en raison d'une syntaxe invalide ou de paramètres manquants."
-        }
+        },
+        "csv.columns.missing": "Certaines colonnes obligatoires sont manquantes dans le fichier {0}. Colonnes manquantes : {1}. Veuillez vous référer au modèle de données pour la liste complète des colonnes obligatoires.",
+        "csv.columns.unexpected": "Certaines colonnes inattendues sont présentes dans le fichier {0}. Colonnes inattendues : {1}. Veuillez vous référer au modèle de données pour la liste complète des colonnes valides.",
+        "csv.columns.order.invalid": "Ordre de colonnes invalide dans le fichier {0} à la position {1}. Colonne attendue : '{2}', mais trouvé : '{3}'. Veuillez vous assurer que les colonnes sont dans l'ordre correct comme spécifié dans le modèle de données.",
+        "csv.decimal.comma.invalid": "Les nombres décimaux ne doivent pas contenir de virgule, mais un point (ex : 1.25) à la ligne {0}.",
+        "csv.format.invalid": "Le format du fichier CSV est incorrect. Veuillez vous assurer d'utiliser le point-virgule (;) comme délimiteur et que toutes les colonnes requises sont présentes. Consultez le modèle de données pour plus d'informations.",
+        "itemimpact.required.fields.missing": "Certaines informations obligatoires sont manquantes. Merci de vous référer au dataModel pour connaître les données demandées.",
+        "itemimpact.criterion.invalid": "Certains critères d'impact [{0}] renseignés sont inconnus. Merci de vous référer aux valeurs indiquées dans le dataModel.",
+        "itemimpact.lifecyclestep.invalid": "Certaines étapes du cycle de vie [{0}] renseignées sont inconnues. Merci de vous référer aux valeurs indiquées dans le dataModel.",
+        "itemimpact.electricity.consumption.missing": "La consommation d'électricité doit être indiquée pour toutes les lignes relatives à l'étape « UTILISATION » du cycle de vie [{0}].",
+        "itemimpact.duplicate.triplet": "Valeur en double trouvée pour le triplet (critère/étape du cycle de vie/nom) pour l'élément suivant : [{0}]",
+        "itemtype.required.fields.missing": "Certaines informations obligatoires sont manquantes. Merci de vous référer au dataModel pour connaître les données demandées.",
+        "itemtype.duplicate.type": "Certains types [{0}] d'équipement sont en doublon dans le fichier d'import.",
+        "itemtype.lifespan.invalid": "La durée de vie par défaut d'un type d'équipement [{0}] doit être strictement supérieure à 0.",
+        "matchingitem.required.fields.missing": "Certaines informations obligatoires sont manquantes. Merci de vous référer au dataModel pour connaître les données demandées.",
+        "matchingitem.invalid.reference": "La référence [{0}] est inconnue dans la table ref_item_impact."
     },
     "digital-services-cards": {
         "global-vision": {
@@ -1322,7 +1425,7 @@
         },
         "technology-used": {
             "title": "Technologies utilisées",
-            "one": "Angular - 18.2.13",
+            "one": "Angular - 21.2.12",
             "two": "HTML5",
             "three": "CSS"
         },

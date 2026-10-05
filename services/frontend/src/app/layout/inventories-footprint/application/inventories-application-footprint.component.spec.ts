@@ -95,22 +95,21 @@ describe("Inventory Application footprint", () => {
     let fixture: ComponentFixture<InventoriesApplicationFootprintComponent>;
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [InventoriesApplicationFootprintComponent],
-            imports: [HttpClientTestingModule, TranslateModule.forRoot()],
-            schemas: [NO_ERRORS_SCHEMA],
-            providers: [
-                { provide: ActivatedRoute, useValue: mockActivatedRoute },
-                { provide: TranslateService, useValue: mockTranslateService },
-                { provide: UserService, useValue: mockUserService },
-                { provide: InventoryService, useValue: mockInventoryService },
-                { provide: FootprintDataService, useValue: mockFootprintDataService },
-                { provide: FootprintService, useValue: mockFootprintService },
-                { provide: FootprintStoreService, useValue: mockFootprintStore },
-                { provide: GlobalStoreService, useValue: mockGlobalStore },
-                DecimalsPipe,
-                IntegerPipe,
-            ],
-        }).compileComponents();
+    imports: [HttpClientTestingModule, TranslateModule.forRoot(), InventoriesApplicationFootprintComponent],
+    schemas: [NO_ERRORS_SCHEMA],
+    providers: [
+        { provide: ActivatedRoute, useValue: mockActivatedRoute },
+        { provide: TranslateService, useValue: mockTranslateService },
+        { provide: UserService, useValue: mockUserService },
+        { provide: InventoryService, useValue: mockInventoryService },
+        { provide: FootprintDataService, useValue: mockFootprintDataService },
+        { provide: FootprintService, useValue: mockFootprintService },
+        { provide: FootprintStoreService, useValue: mockFootprintStore },
+        { provide: GlobalStoreService, useValue: mockGlobalStore },
+        DecimalsPipe,
+        IntegerPipe,
+    ],
+}).compileComponents();
         fixture = TestBed.createComponent(InventoriesApplicationFootprintComponent);
         component = fixture.componentInstance;
     });

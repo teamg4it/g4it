@@ -5,6 +5,7 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
+import { NgClass, NgTemplateOutlet } from "@angular/common";
 import {
     Component,
     computed,
@@ -16,9 +17,14 @@ import {
     Signal,
     SimpleChanges,
 } from "@angular/core";
+import { FormsModule } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
-import { TranslateService } from "@ngx-translate/core";
+import { TranslatePipe, TranslateService } from "@ngx-translate/core";
 import { EChartsOption } from "echarts";
+import { NgxEchartsDirective } from "ngx-echarts";
+import { PrimeTemplate } from "primeng/api";
+import { Button } from "primeng/button";
+import { SelectModule } from "primeng/select";
 import { sortByProperty } from "sort-by-property";
 import {
     GraphDescriptionContent,
@@ -47,11 +53,28 @@ import {
 import { FootprintStoreService } from "src/app/core/store/footprint.store";
 import { GlobalStoreService } from "src/app/core/store/global.store";
 import { Constants } from "src/constants";
+import { StackBarChartComponent } from "../../../common/stack-bar-chart/stack-bar-chart.component";
+import { GraphDescriptionComponent } from "../../../digital-services-footprint/digital-services-footprint-dashboard/graph-description/graph-description.component";
 import { AbstractDashboard } from "../../abstract-dashboard";
+import { ApplicationCriteriaPieChartComponent } from "../application-criteria-pie-chart/application-criteria-pie-chart.component";
 import { InventoriesApplicationFootprintComponent } from "../inventories-application-footprint.component";
 @Component({
     selector: "app-application-criteria-footprint",
     templateUrl: "./application-criteria-footprint.component.html",
+    standalone: true,
+    imports: [
+        NgClass,
+        NgTemplateOutlet,
+        SelectModule,
+        FormsModule,
+        PrimeTemplate,
+        StackBarChartComponent,
+        NgxEchartsDirective,
+        ApplicationCriteriaPieChartComponent,
+        GraphDescriptionComponent,
+        Button,
+        TranslatePipe,
+    ],
 })
 export class ApplicationCriteriaFootprintComponent
     extends AbstractDashboard
@@ -152,8 +175,6 @@ export class ApplicationCriteriaFootprintComponent
         );
     });
 
-    maxNumberOfBarsToBeDisplayed: number = 10;
-
     constructor(
         protected readonly appComponent: InventoriesApplicationFootprintComponent,
         override translate: TranslateService,
@@ -175,49 +196,65 @@ export class ApplicationCriteriaFootprintComponent
     }
 
     onChartClick(event: any) {
-        if (this.footprintStore.appGraphType() === "global") {
-            const domainSelected: any = this.footprintStore
-                .applicationSelectedFilters()
-                ["domain"].find((d) => (d as TransformedDomain).label === event.name);
-            if (domainSelected?.children.length <= 1) {
-                this.footprintStore.setDomain(event.name);
-                this.footprintStore.setSubDomain(domainSelected?.children[0].label);
+        if (this.footprintStore.appGraphType() === "application") return;
+        this.globalStore.setLoading(true);
+        setTimeout(() => {
+            if (this.footprintStore.appGraphType() === "global") {
+                const domainSelected: any = this.footprintStore
+                    .applicationSelectedFilters()
+                    ["domain"].find((d) => (d as TransformedDomain).label === event.name);
+                if (domainSelected?.children.length <= 1) {
+                    this.footprintStore.setDomain(event.name);
+                    this.footprintStore.setSubDomain(domainSelected?.children[0].label);
+                    this.footprintStore.setGraphType("subdomain");
+                } else {
+                    this.footprintStore.setGraphType("domain");
+                    this.footprintStore.setDomain(event.name);
+                    this.footprintStore.setSubDomain("");
+                }
+            } else if (this.footprintStore.appGraphType() === "domain") {
                 this.footprintStore.setGraphType("subdomain");
-            } else {
-                this.footprintStore.setGraphType("domain");
-                this.footprintStore.setDomain(event.name);
-                this.footprintStore.setSubDomain("");
+                this.footprintStore.setSubDomain(event.name);
+            } else if (this.footprintStore.appGraphType() === "subdomain") {
+                this.footprintStore.setGraphType("application");
+                this.footprintStore.setApplication(event.name);
             }
-        } else if (this.footprintStore.appGraphType() === "domain") {
-            this.footprintStore.setGraphType("subdomain");
-            this.footprintStore.setSubDomain(event.name);
-        } else if (this.footprintStore.appGraphType() === "subdomain") {
-            this.footprintStore.setGraphType("application");
-            this.footprintStore.setApplication(event.name);
-        }
+            setTimeout(() => {
+                this.globalStore.setLoading(false);
+            }, 10);
+        }, 10);
     }
 
     onArrowClick() {
-        if (this.footprintStore.appGraphType() === "application") {
-            this.footprintStore.setGraphType("subdomain");
-            this.footprintStore.setApplication("");
-        } else if (this.footprintStore.appGraphType() === "subdomain") {
-            const domainSelected: any = this.allUnmodifiedFilters()["domain"].find(
-                (d) => (d as TransformedDomain).label === this.footprintStore.appDomain(),
-            );
-            if (domainSelected?.children.length <= 1) {
+        this.globalStore.setLoading(true);
+        setTimeout(() => {
+            if (this.footprintStore.appGraphType() === "application") {
+                this.footprintStore.setGraphType("subdomain");
+                this.footprintStore.setApplication("");
+            } else if (this.footprintStore.appGraphType() === "subdomain") {
+                const domainSelected: any = this.allUnmodifiedFilters()["domain"].find(
+                    (d) =>
+                        (d as TransformedDomain).label ===
+                        this.footprintStore.appDomain(),
+                );
+                if (domainSelected?.children.length <= 1) {
+                    this.footprintStore.setGraphType("global");
+                    this.footprintStore.setDomain("");
+                    this.footprintStore.setSubDomain("");
+                } else {
+                    this.footprintStore.setGraphType("domain");
+                    this.footprintStore.setSubDomain("");
+                }
+            } else if (this.footprintStore.appGraphType() === "domain") {
                 this.footprintStore.setGraphType("global");
                 this.footprintStore.setDomain("");
                 this.footprintStore.setSubDomain("");
-            } else {
-                this.footprintStore.setGraphType("domain");
-                this.footprintStore.setSubDomain("");
             }
-        } else if (this.footprintStore.appGraphType() === "domain") {
-            this.footprintStore.setGraphType("global");
-            this.footprintStore.setDomain("");
-            this.footprintStore.setSubDomain("");
-        }
+            // Give Angular time to render and process the new view
+            setTimeout(() => {
+                this.globalStore.setLoading(false);
+            }, 10);
+        }, 10);
     }
 
     checkIfNoData(selectedFilters: Filter) {
@@ -238,67 +275,101 @@ export class ApplicationCriteriaFootprintComponent
         selectedCriteria: string,
         selectedDimension: string,
     ) {
-        let result: any = {};
+        this.processBarChartData(
+            barChartData,
+            selectedFilters,
+            selectedCriteria,
+            selectedDimension,
+        );
+        return this.initGraphData(this.impactOrder);
+    }
+
+    private processBarChartData(
+        barChartData: ApplicationFootprint[],
+        selectedFilters: Filter,
+        selectedCriteria: string,
+        selectedDimension: string,
+    ): void {
         for (const data of barChartData) {
             if (data.criteria === selectedCriteria) {
-                for (const impact of data.impacts) {
-                    if (!impact.impact) {
-                        impact.impact = 0;
-                        impact.sip = 0;
-                    }
-                    if (this.filterService.getFilterincludes(selectedFilters, impact)) {
-                        switch (this.footprintStore.appGraphType()) {
-                            case "global":
-                                this.computeImpactOrder(
-                                    impact,
-                                    impact.domain,
-                                    selectedDimension,
-                                );
-                                break;
-                            case "domain":
-                                if (impact.domain === this.footprintStore.appDomain()) {
-                                    this.computeImpactOrder(
-                                        impact,
-                                        impact.subDomain,
-                                        selectedDimension,
-                                    );
-                                }
-                                break;
-                            case "subdomain":
-                                if (
-                                    impact.domain === this.footprintStore.appDomain() &&
-                                    impact.subDomain ===
-                                        this.footprintStore.appSubDomain()
-                                ) {
-                                    this.computeImpactOrder(
-                                        impact,
-                                        impact.applicationName,
-                                        selectedDimension,
-                                    );
-                                }
-                                break;
-                            case "application":
-                                if (
-                                    impact.domain === this.footprintStore.appDomain() &&
-                                    impact.subDomain ===
-                                        this.footprintStore.appSubDomain() &&
-                                    impact.applicationName ===
-                                        this.footprintStore.appApplication()
-                                ) {
-                                    this.computeImpactOrder(
-                                        impact,
-                                        impact.virtualEquipmentName,
-                                        selectedDimension,
-                                    );
-                                }
-                                break;
-                        }
-                    }
-                }
+                this.processImpacts(data.impacts, selectedFilters, selectedDimension);
             }
         }
-        result = this.initGraphData(this.impactOrder);
-        return result;
+    }
+
+    private processImpacts(
+        impacts: ApplicationImpact[],
+        selectedFilters: Filter,
+        selectedDimension: string,
+    ): void {
+        for (const impact of impacts) {
+            this.normalizeImpactValues(impact);
+            if (this.filterService.getFilterincludes(selectedFilters, impact)) {
+                this.handleImpactByGraphType(impact, selectedDimension);
+            }
+        }
+    }
+
+    private normalizeImpactValues(impact: ApplicationImpact): void {
+        if (!impact.impact) {
+            impact.impact = 0;
+            impact.sip = 0;
+        }
+    }
+
+    private handleImpactByGraphType(
+        impact: ApplicationImpact,
+        selectedDimension: string,
+    ): void {
+        const graphType = this.footprintStore.appGraphType();
+
+        if (graphType === "global") {
+            this.computeImpactOrder(impact, impact.domain, selectedDimension);
+        } else if (graphType === "domain") {
+            this.processDomainImpact(impact, selectedDimension);
+        } else if (graphType === "subdomain") {
+            this.processSubdomainImpact(impact, selectedDimension);
+        } else if (graphType === "application") {
+            this.processApplicationImpact(impact, selectedDimension);
+        }
+    }
+
+    private processDomainImpact(
+        impact: ApplicationImpact,
+        selectedDimension: string,
+    ): void {
+        if (impact.domain === this.footprintStore.appDomain()) {
+            this.computeImpactOrder(impact, impact.subDomain, selectedDimension);
+        }
+    }
+
+    private processSubdomainImpact(
+        impact: ApplicationImpact,
+        selectedDimension: string,
+    ): void {
+        if (
+            impact.domain === this.footprintStore.appDomain() &&
+            impact.subDomain === this.footprintStore.appSubDomain()
+        ) {
+            this.computeImpactOrder(impact, impact.applicationName, selectedDimension);
+        }
+    }
+
+    private processApplicationImpact(
+        impact: ApplicationImpact,
+        selectedDimension: string,
+    ): void {
+        if (
+            impact.domain === this.footprintStore.appDomain() &&
+            impact.subDomain === this.footprintStore.appSubDomain() &&
+            impact.applicationName === this.footprintStore.appApplication()
+        ) {
+            this.computeImpactOrder(
+                impact,
+                impact.virtualEquipmentName,
+                selectedDimension,
+            );
+        }
     }
 
     computeImpactOrder(
@@ -417,162 +488,149 @@ export class ApplicationCriteriaFootprintComponent
 
     initGraphData(impactOrder: any[]): any {
         impactOrder.sort(sortByProperty("sipImpact", "desc"));
-        const xAxis: string[] = [];
-        const yAxis: any[] = [];
-        const unitImpact: number[] = [];
-        const subdomainCount: number[] = [];
-        const appCount: number[] = [];
-        const equipmentList: string[] = [];
-        const environmentList: string[] = [];
-        const clusterList: string[] = [];
-        const status: StatusCountMap = {};
+        const result = {
+            xAxis: [] as string[],
+            yAxis: [] as any[],
+            unitImpact: [] as number[],
+            subdomainCount: [] as number[],
+            appCount: [] as number[],
+            equipmentList: [] as string[],
+            environmentList: [] as string[],
+            clusterList: [] as string[],
+            status: {} as StatusCountMap,
+        };
+
         for (const impact of impactOrder) {
-            let subdomainList: string[] = [];
-            let appList: string[] = [];
-
             const repartitionEntries = Object.entries(impact.repartYaxis ?? {});
-            switch (this.footprintStore.appGraphType()) {
-                case "global": {
-                    xAxis.push(impact.domain);
-                    for (const [key, value] of repartitionEntries) {
-                        const { raw, sip, apps, subDomain } =
-                            value as RepartitionYAxisKeys;
-                        const data = [impact.domain, raw, sip, apps, subDomain];
+            this.processImpactByGraphType(impact, repartitionEntries, result);
+        }
 
-                        yAxis.push({
-                            name: key,
-                            data: [data],
-                            type: "bar",
-                            stack: "Ad",
-                            emphasis: {
-                                focus: "series",
-                            },
-                            itemStyle: {
-                                color: getUniqueColorFromText(key),
-                            },
-                        });
-                    }
-                    unitImpact.push(impact.unitImpact);
-                    status[impact.domain] = { status: impact.status };
-                    subdomainCount.push(new Set(impact.subdomains).size);
-                    appCount.push(new Set(impact.apps).size);
-                    break;
-                }
-                case "domain":
-                    xAxis.push(impact.subdomain);
-                    //////
-                    for (const [key, value] of repartitionEntries) {
-                        const { raw, sip, apps, subDomain } =
-                            value as RepartitionYAxisKeys;
-                        const data = [impact.subdomain, raw, sip, apps, subDomain];
-                        yAxis.push({
-                            name: key,
-                            data: [data],
-                            type: "bar",
-                            stack: "Ad",
-                            emphasis: {
-                                focus: "series",
-                            },
-                            itemStyle: {
-                                color: getUniqueColorFromText(key),
-                            },
-                        });
-                    }
-                    //////
-                    unitImpact.push(impact.unitImpact);
-                    status[impact.subdomain] = { status: impact.status };
-                    for (const app of impact.apps) {
-                        if (!appList.includes(app)) {
-                            appList.push(app);
-                        }
-                    }
-                    appCount.push(appList.length);
-                    break;
-                case "subdomain":
-                    xAxis.push(impact.app);
-                    /////
-                    for (const [key, value] of repartitionEntries) {
-                        const { raw, sip, apps, subDomain } =
-                            value as RepartitionYAxisKeys;
-                        const data = [impact.app, raw, sip, apps, subDomain];
+        result.yAxis.sort((a, b) => b.name.localeCompare(a.name));
+        return result;
+    }
 
-                        yAxis.push({
-                            name: key,
-                            data: [data],
-                            type: "bar",
-                            stack: "Ad",
-                            emphasis: {
-                                focus: "series",
-                            },
-                            itemStyle: {
-                                color: getUniqueColorFromText(key),
-                            },
-                        });
-                    }
-                    /////
+    private processImpactByGraphType(
+        impact: any,
+        repartitionEntries: [string, any][],
+        result: any,
+    ): void {
+        const graphType = this.footprintStore.appGraphType();
 
-                    unitImpact.push(impact.unitImpact);
-                    status[impact.app] = { status: impact.status };
-                    break;
-                case "application":
-                    xAxis.push(impact.virtualEquipmentName);
-                    //////
-                    for (const [key, value] of repartitionEntries) {
-                        const {
-                            raw,
-                            sip,
-                            apps,
-                            subDomain,
-                            cluster,
-                            environment,
-                            equipment,
-                        } = value as RepartitionYAxisKeys;
-                        const data = [
-                            impact.virtualEquipmentName,
-                            raw,
-                            sip,
-                            apps,
-                            subDomain,
-                            cluster,
-                            environment,
-                            equipment,
-                        ];
+        if (graphType === "global") {
+            this.processGlobalGraph(impact, repartitionEntries, result);
+        } else if (graphType === "domain") {
+            this.processDomainGraph(impact, repartitionEntries, result);
+        } else if (graphType === "subdomain") {
+            this.processSubdomainGraph(impact, repartitionEntries, result);
+        } else if (graphType === "application") {
+            this.processApplicationGraph(impact, repartitionEntries, result);
+        }
+    }
 
-                        yAxis.push({
-                            name: key,
-                            data: [data],
-                            type: "bar",
-                            stack: "Ad",
-                            emphasis: {
-                                focus: "series",
-                            },
-                            itemStyle: {
-                                color: getUniqueColorFromText(key),
-                            },
-                        });
-                    }
-                    ///////
-                    unitImpact.push(impact.unitImpact);
-                    equipmentList.push(impact.equipment);
-                    environmentList.push(impact.environment);
-                    clusterList.push(impact.cluster);
-                    status[impact.virtualEquipmentName] = { status: impact.status };
-                    break;
+    private addYAxisEntry(yAxis: any[], key: string, data: any[]): void {
+        // Find existing series for this lifecycle phase
+        let existingSeries = yAxis.find((series) => series.name === key);
+
+        if (existingSeries) {
+            // Append data to existing series
+            existingSeries.data.push(data);
+        } else {
+            // Create new series for this lifecycle phase
+            yAxis.push({
+                name: key,
+                data: [data],
+                type: "bar",
+                stack: "Ad",
+                emphasis: {
+                    focus: "series",
+                },
+                itemStyle: {
+                    color: getUniqueColorFromText(key),
+                },
+            });
+        }
+    }
+
+    private processGlobalGraph(
+        impact: any,
+        repartitionEntries: [string, any][],
+        result: any,
+    ): void {
+        result.xAxis.push(impact.domain);
+        for (const [key, value] of repartitionEntries) {
+            const { raw, sip, apps, subDomain } = value as RepartitionYAxisKeys;
+            const data = [impact.domain, raw, sip, apps, subDomain];
+            this.addYAxisEntry(result.yAxis, key, data);
+        }
+        result.unitImpact.push(impact.unitImpact);
+        result.status[impact.domain] = { status: impact.status };
+        result.subdomainCount.push(new Set(impact.subdomains).size);
+        result.appCount.push(new Set(impact.apps).size);
+    }
+
+    private processDomainGraph(
+        impact: any,
+        repartitionEntries: [string, any][],
+        result: any,
+    ): void {
+        result.xAxis.push(impact.subdomain);
+        for (const [key, value] of repartitionEntries) {
+            const { raw, sip, apps, subDomain } = value as RepartitionYAxisKeys;
+            const data = [impact.subdomain, raw, sip, apps, subDomain];
+            this.addYAxisEntry(result.yAxis, key, data);
+        }
+        result.unitImpact.push(impact.unitImpact);
+        result.status[impact.subdomain] = { status: impact.status };
+        const appList: string[] = [];
+        for (const app of impact.apps) {
+            if (!appList.includes(app)) {
+                appList.push(app);
             }
         }
-        // sort repartition in yAxis by name descending
-        yAxis.sort((a, b) => b.name.localeCompare(a.name));
-        return {
-            xAxis,
-            yAxis,
-            unitImpact,
-            subdomainCount,
-            appCount,
-            equipmentList,
-            environmentList,
-            clusterList,
-            status,
-        };
+        result.appCount.push(appList.length);
+    }
+
+    private processSubdomainGraph(
+        impact: any,
+        repartitionEntries: [string, any][],
+        result: any,
+    ): void {
+        result.xAxis.push(impact.app);
+        for (const [key, value] of repartitionEntries) {
+            const { raw, sip, apps, subDomain } = value as RepartitionYAxisKeys;
+            const data = [impact.app, raw, sip, apps, subDomain];
+            this.addYAxisEntry(result.yAxis, key, data);
+        }
+        result.unitImpact.push(impact.unitImpact);
+        result.status[impact.app] = { status: impact.status };
+    }
+
+    private processApplicationGraph(
+        impact: any,
+        repartitionEntries: [string, any][],
+        result: any,
+    ): void {
+        result.xAxis.push(impact.virtualEquipmentName);
+        for (const [key, value] of repartitionEntries) {
+            const { raw, sip, apps, subDomain, cluster, environment, equipment } =
+                value as RepartitionYAxisKeys;
+            const data = [
+                impact.virtualEquipmentName,
+                raw,
+                sip,
+                apps,
+                subDomain,
+                cluster,
+                environment,
+                equipment,
+            ];
+            this.addYAxisEntry(result.yAxis, key, data);
+        }
+        result.unitImpact.push(impact.unitImpact);
+        result.equipmentList.push(impact.equipment);
+        result.environmentList.push(impact.environment);
+        result.clusterList.push(impact.cluster);
+        result.status[impact.virtualEquipmentName] = { status: impact.status };
     }
 
     loadBarChartOption(
@@ -609,74 +667,64 @@ export class ApplicationCriteriaFootprintComponent
                 (f) => f.status?.error,
             );
         });
-        if (result.xAxis.length < 10) {
+        if (result.xAxis.length < Constants.TOTAL_VISIBLE_GRAPH_ITEMS) {
             showZoom = false;
         }
+
+        // Pre-cache translations for tooltip performance
+        const tooltipTranslations = {
+            peopleEqMin: this.translate.instant("common.peopleeq-min"),
+            nbSd: this.translate.instant(
+                "inventories-footprint.application.tooltip.nb-sd",
+            ),
+            nbApp: this.translate.instant(
+                "inventories-footprint.application.tooltip.nb-app",
+            ),
+            cluster: this.translate.instant(
+                "inventories-footprint.application.tooltip.cluster",
+            ),
+            equipment: this.translate.instant(
+                "inventories-footprint.application.tooltip.equipment",
+            ),
+            environment: this.translate.instant(
+                "inventories-footprint.application.tooltip.environnement",
+            ),
+        };
+
         return {
+            animation: false, // Disable animations for faster rendering
+            // Performance optimizations for large datasets
+            progressive: 400, // Render progressively in chunks of 400
+            progressiveThreshold: 1000, // Enable progressive rendering if data > 1000
+            hoverLayerThreshold: 3000, // Optimize hover layer for large datasets
             tooltip: {
                 show: true,
                 formatter: (params: any) => {
                     let impact = "";
                     if (params.data[1]) {
+                        // Use pre-cached translations for better performance
+                        const graphType = this.footprintStore.appGraphType();
+                        let extraInfo = "";
+
+                        if (graphType === "global") {
+                            extraInfo = `<br>${tooltipTranslations.nbSd} : ${params.data[4]?.length}<br>${tooltipTranslations.nbApp} : ${params.data[3]?.length}`;
+                        } else if (graphType === "domain") {
+                            extraInfo = `<br>${tooltipTranslations.nbApp} : ${params.data[3]?.length}`;
+                        } else if (graphType === "application") {
+                            extraInfo = `<br>${tooltipTranslations.cluster} : ${params.data[5]}<br>${tooltipTranslations.equipment} : ${params.data[7]}<br>${tooltipTranslations.environment} : ${params.data[6]}`;
+                        }
+
                         impact = `
                         <span>
                             Impact : ${this.integerPipe.transform(params.data[2])}
-                                    ${this.translate.instant("common.peopleeq-min")}
+                                    ${tooltipTranslations.peopleEqMin}
                                 <br>
                             Impact : ${
                                 params.data[1] < 1
                                     ? "< 1"
                                     : this.decimalsPipe.transform(params.data[1])
                             }
-                                ${unit}
-                                ${
-                                    this.footprintStore.appGraphType() === "global"
-                                        ? "<br>" +
-                                          this.translate.instant(
-                                              "inventories-footprint.application.tooltip.nb-sd",
-                                          ) +
-                                          " : " +
-                                          params.data[4]?.length +
-                                          "<br>" +
-                                          this.translate.instant(
-                                              "inventories-footprint.application.tooltip.nb-app",
-                                          ) +
-                                          " : " +
-                                          params.data[3]?.length
-                                        : ""
-                                }
-                                ${
-                                    this.footprintStore.appGraphType() === "domain"
-                                        ? "<br>" +
-                                          this.translate.instant(
-                                              "inventories-footprint.application.tooltip.nb-app",
-                                          ) +
-                                          " : " +
-                                          params.data[3]?.length
-                                        : ""
-                                }
-                                ${
-                                    this.footprintStore.appGraphType() === "application"
-                                        ? "<br>" +
-                                          this.translate.instant(
-                                              "inventories-footprint.application.tooltip.cluster",
-                                          ) +
-                                          " : " +
-                                          params.data[5] +
-                                          "<br>" +
-                                          this.translate.instant(
-                                              "inventories-footprint.application.tooltip.equipment",
-                                          ) +
-                                          " : " +
-                                          params.data[7] +
-                                          "<br>" +
-                                          this.translate.instant(
-                                              "inventories-footprint.application.tooltip.environnement",
-                                          ) +
-                                          " : " +
-                                          params.data[6]
-                                        : ""
-                                }
+                                ${unit}${extraInfo}
                                 <span>
                         `;
                     }
@@ -701,7 +749,7 @@ export class ApplicationCriteriaFootprintComponent
                 {
                     show: showZoom,
                     startValue: result.xAxis[0],
-                    endValue: result.xAxis[this.maxNumberOfBarsToBeDisplayed - 1],
+                    endValue: result.xAxis[Constants.TOTAL_VISIBLE_GRAPH_ITEMS - 1],
                 },
             ],
             xAxis: [
@@ -735,7 +783,14 @@ export class ApplicationCriteriaFootprintComponent
                     type: "value",
                 },
             ],
-            series: result.yAxis,
+            series: result.yAxis.map((serie: any) => ({
+                ...serie,
+                // Large dataset optimization - only if this series has many data points
+                large: serie.data.length > 1000,
+                largeThreshold: 1000,
+                // Improve rendering performance with downsampling for huge datasets
+                sampling: serie.data.length > 2000 ? "lttb" : undefined,
+            })),
             color: Constants.BLUE_COLOR,
         };
     }
@@ -750,9 +805,18 @@ export class ApplicationCriteriaFootprintComponent
     }
 
     moveToMultiCriteria() {
-        this.router.navigate(["../", "multi-criteria"], {
-            relativeTo: this.route,
-        });
+        this.globalStore.setLoading(true);
+        setTimeout(() => {
+            // Switch view - this triggers the computed signals
+            this.router.navigate(["../", "multi-criteria"], {
+                relativeTo: this.route,
+            });
+
+            // Give Angular time to render and process the new view
+            setTimeout(() => {
+                this.globalStore.setLoading(false);
+            }, 10);
+        }, 10);
     }
 
     getContentText = computed((): GraphDescriptionContent => {

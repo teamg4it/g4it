@@ -5,13 +5,18 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component, DestroyRef, inject, OnInit } from "@angular/core";
+import { AsyncPipe } from "@angular/common";
+import { Component, DestroyRef, inject, OnInit, signal } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { Title } from "@angular/platform-browser";
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
-import { TranslateService } from "@ngx-translate/core";
+import { TranslatePipe, TranslateService } from "@ngx-translate/core";
 import { ConfirmationService, MessageService } from "primeng/api";
-import { PaginatorState } from "primeng/paginator";
+import { Button } from "primeng/button";
+import { DrawerModule } from "primeng/drawer";
+import { PaginatorModule, PaginatorState } from "primeng/paginator";
+import { ScrollPanelModule } from "primeng/scrollpanel";
+import { ToastModule } from "primeng/toast";
 import { finalize, lastValueFrom } from "rxjs";
 import { DigitalService } from "src/app/core/interfaces/digital-service.interfaces";
 import { Role } from "src/app/core/interfaces/roles.interfaces";
@@ -20,11 +25,27 @@ import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
 import { GlobalStoreService } from "src/app/core/store/global.store";
 import { environment } from "src/environments/environment";
+import { RenewServicePopupComponent } from "../common/renew-service-popup/renew-service-popup.component";
+import { CreateDigitalServicesSidebarComponent } from "./create-digital-services-sidebar/create-digital-services-sidebar.component";
+import { DigitalServicesItemComponent } from "./digital-services-item/digital-services-item.component";
 
 @Component({
     selector: "app-digital-services",
     templateUrl: "./digital-services.component.html",
     providers: [MessageService, ConfirmationService],
+    standalone: true,
+    imports: [
+        ToastModule,
+        Button,
+        ScrollPanelModule,
+        DigitalServicesItemComponent,
+        PaginatorModule,
+        DrawerModule,
+        CreateDigitalServicesSidebarComponent,
+        RenewServicePopupComponent,
+        AsyncPipe,
+        TranslatePipe,
+    ],
 })
 export class DigitalServicesComponent implements OnInit {
     private readonly global = inject(GlobalStoreService);
@@ -45,10 +66,11 @@ export class DigitalServicesComponent implements OnInit {
 
     rowsPerPage: number = 10;
     currentPage = 0;
-    isEcoMindAi = false;
+    isEcoMindAi = signal(false);
     firstCall = true;
     displayRenewServicePopup = false;
     digitalServiceUid = "";
+    private newDsDrawerTrigger: HTMLElement | null = null;
     private readonly destroyRef = inject(DestroyRef);
 
     constructor(
@@ -63,9 +85,10 @@ export class DigitalServicesComponent implements OnInit {
 
     ngOnInit(): void {
         this.route.parent?.data.subscribe((data) => {
-            this.isEcoMindAi = data["isIa"] === true;
+            this.isEcoMindAi.set(data["isIa"] === true);
         });
-        const titleKey = this.isEcoMindAi
+
+        const titleKey = this.isEcoMindAi()
             ? "welcome-page.eco-mind-ai.title"
             : "digital-services.page-title";
         this.translate
@@ -113,7 +136,7 @@ export class DigitalServicesComponent implements OnInit {
     async retrieveDigitalServices() {
         this.allDigitalServices = [];
         if (
-            this.isEcoMindAi &&
+            this.isEcoMindAi() &&
             this.isAllowedEcoMindAiService &&
             this.isEcoMindEnabledForCurrentOrganization &&
             this.isEcoMindModuleEnabled
@@ -121,7 +144,7 @@ export class DigitalServicesComponent implements OnInit {
             const apiResult = await lastValueFrom(this.digitalServicesData.list(true));
             apiResult.sort((x, y) => x.name.localeCompare(y.name));
             this.allDigitalServices.push(...apiResult);
-        } else if (!this.isEcoMindAi && this.isAllowedDigitalService) {
+        } else if (!this.isEcoMindAi() && this.isAllowedDigitalService) {
             const apiResult = await lastValueFrom(this.digitalServicesData.list(false));
             apiResult.sort((x, y) => x.name.localeCompare(y.name));
             this.allDigitalServices.push(...apiResult);
@@ -131,7 +154,7 @@ export class DigitalServicesComponent implements OnInit {
 
     async createNewDigitalServices(event: { dsName: string; versionName: string }) {
         if (
-            this.isEcoMindAi &&
+            this.isEcoMindAi() &&
             this.isAllowedEcoMindAiService &&
             this.isEcoMindEnabledForCurrentOrganization &&
             this.isEcoMindModuleEnabled
@@ -142,7 +165,7 @@ export class DigitalServicesComponent implements OnInit {
             };
             const { uid } = await lastValueFrom(this.digitalServicesData.create(req));
             this.goToDigitalServiceFootprint(uid);
-        } else if (!this.isEcoMindAi && this.isAllowedDigitalService) {
+        } else if (!this.isEcoMindAi() && this.isAllowedDigitalService) {
             const req = {
                 ...event,
                 isAi: false,
@@ -166,7 +189,7 @@ export class DigitalServicesComponent implements OnInit {
     }
 
     goToDigitalServiceFootprint(uid: string) {
-        if (this.isEcoMindAi) {
+        if (this.isEcoMindAi()) {
             this.router.navigate([`../eco-mind-ai/${uid}/footprint/ecomind-parameters`], {
                 relativeTo: this.route,
             });
@@ -191,5 +214,16 @@ export class DigitalServicesComponent implements OnInit {
                 }),
             )
             .subscribe(() => this.retrieveDigitalServices());
+    }
+
+    openNewDsDrawer(event: Event): void {
+        this.newDsDrawerTrigger = event.currentTarget as HTMLElement;
+    }
+
+    focusNewDsButton(): void {
+        setTimeout(() => {
+            this.newDsDrawerTrigger?.focus();
+            this.newDsDrawerTrigger = null;
+        }, 10);
     }
 }

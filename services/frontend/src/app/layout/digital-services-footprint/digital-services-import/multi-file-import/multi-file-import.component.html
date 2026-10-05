@@ -12,10 +12,14 @@
         />
         <p-fileUpload
             (onSelect)="onSelectFile($event, type.key)"
-            styleClass="cancel-creation-button uppercase mx-2 h-3rem font-bold"
+            styleClass="multifile-upload cancel-creation-button uppercase mx-2 h-3rem font-bold"
             id="file{{ type.key }}"
             mode="basic"
-            chooseLabel="{{ 'digital-services-import.browse-file' | translate }}"
+            [chooseLabel]="
+                selectedFiles[type.key]
+                    ? selectedFiles[type.key].name
+                    : ('digital-services-import.browse-file' | translate)
+            "
             [ariaLabel]="'digital-services-import.browse-file' | translate"
             [files]="type.key && selectedFiles[type.key] ? [selectedFiles[type.key]] : []"
             accept="{{ allowedFileExtensions.join(',') }}"

@@ -17,7 +17,7 @@ import {
 } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { Router } from "@angular/router";
-import { TranslateService } from "@ngx-translate/core";
+import { TranslatePipe, TranslateService } from "@ngx-translate/core";
 import { ConfirmationService, MessageService } from "primeng/api";
 import { map, switchMap, take } from "rxjs";
 import { WorkspaceWithOrganization } from "src/app/core/interfaces/administration.interfaces";
@@ -28,11 +28,26 @@ import { UserService } from "src/app/core/service/business/user.service";
 import { UserDataService } from "src/app/core/service/data/user-data.service";
 import { Constants } from "src/constants";
 import { environment } from "src/environments/environment";
+import { AutofocusDirective } from "../../../../../core/directives/auto-focus.directive";
+
+import { FormsModule } from "@angular/forms";
+import { Button } from "primeng/button";
+import { InputTextModule } from "primeng/inputtext";
+import { SelectModule } from "primeng/select";
 
 @Component({
     selector: "app-add-workspace",
     templateUrl: "./add-workspace.component.html",
     providers: [ConfirmationService, MessageService],
+    standalone: true,
+    imports: [
+        AutofocusDirective,
+        InputTextModule,
+        SelectModule,
+        FormsModule,
+        Button,
+        TranslatePipe,
+    ],
 })
 export class AddWorkspaceComponent implements OnInit, OnChanges {
     @Input() userDetail!: UserDetails;
@@ -60,6 +75,10 @@ export class AddWorkspaceComponent implements OnInit, OnChanges {
     isAdminRoleDisabled: boolean = false;
 
     isEcoMindModuleEnabled: boolean = environment.isEcomindEnabled;
+    isSuperAdmin = false;
+    isWsAdminAndEcomindAccess = false;
+    isWsAdminAndInvAccess = false;
+    isSopraUser = false;
 
     private readonly destroyRef = inject(DestroyRef);
     constructor(
@@ -70,6 +89,32 @@ export class AddWorkspaceComponent implements OnInit, OnChanges {
         private readonly router: Router,
     ) {}
     ngOnInit() {
+        this.userService.user$
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe((user) => {
+                this.isSuperAdmin = user.isSuperAdmin;
+                if (this.isSuperAdmin) return;
+                const meRoles = user.organizations
+                    .find((o) => o.id === this.workspace.organizationId)
+                    ?.workspaces.find((w) => w.id === this.workspace.workspaceId)?.roles;
+                if (meRoles?.length) {
+                    this.isWsAdminAndEcomindAccess =
+                        meRoles.includes(Role.WorkspaceAdmin) &&
+                        meRoles.includes(Role.EcoMindAiWrite);
+
+                    if (this.isSopraUser) {
+                        this.isWsAdminAndInvAccess =
+                            meRoles.includes(Role.WorkspaceAdmin) &&
+                            meRoles.includes(Role.InventoryWrite);
+                    }
+                } else {
+                    this.isWsAdminAndEcomindAccess = false;
+                    if (this.isSopraUser) {
+                        this.isWsAdminAndInvAccess = false;
+                    }
+                }
+            });
+
         this.isModuleValues = this.isRoles.map((role) => this.getRoleValue(role));
 
         this.dsModuleValues = this.dsRoles.map((role) => this.getRoleValue(role));
@@ -93,6 +138,7 @@ export class AddWorkspaceComponent implements OnInit, OnChanges {
     }
 
     ngOnChanges() {
+        this.isSopraUser = this.userService.isSopraUser(this.userDetail.email);
         this.clearFormData();
 
         if (this.userDetail?.roles === undefined) return;
@@ -101,6 +147,10 @@ export class AddWorkspaceComponent implements OnInit, OnChanges {
 
         if (roles.includes(Role.WorkspaceAdmin)) {
             this.forceAdmin();
+            if (this.isSopraUser) {
+                this.isModule = this.mapCodeValueRole(roles, this.isRoles);
+            }
+            this.ecomindModule = this.mapCodeValueRole(roles, this.ecomindRoles);
             return;
         }
 
@@ -109,26 +159,18 @@ export class AddWorkspaceComponent implements OnInit, OnChanges {
             value: this.translate.instant(`administration.role.user`),
         };
 
-        for (const role of [...this.isRoles].reverse()) {
-            if (roles.includes(role)) {
-                this.isModule = this.getRoleValue(role);
-                break;
-            }
-        }
+        this.isModule = this.mapCodeValueRole(roles, this.isRoles);
+        this.dsModule = this.mapCodeValueRole(roles, this.dsRoles);
+        this.ecomindModule = this.mapCodeValueRole(roles, this.ecomindRoles);
+    }
 
-        for (const role of [...this.dsRoles].reverse()) {
-            if (roles.includes(role)) {
-                this.dsModule = this.getRoleValue(role);
-                break;
+    private mapCodeValueRole(userRoles: Role[], rolesList: Role[]): RoleValue {
+        for (const role of [...rolesList].reverse()) {
+            if (userRoles.includes(role)) {
+                return this.getRoleValue(role);
             }
         }
-
-        for (const role of [...this.ecomindRoles].reverse()) {
-            if (roles.includes(role)) {
-                this.ecomindModule = this.getRoleValue(role);
-                break;
-            }
-        }
+        return undefined as unknown as RoleValue;
     }
 
     getRoleValue(role: Role): RoleValue {
@@ -148,8 +190,11 @@ export class AddWorkspaceComponent implements OnInit, OnChanges {
 
     getWorkspaceBody() {
         let roles: string[] = [];
-
         if (this.adminModule.code === Role.WorkspaceAdmin) {
+            if (this.isSopraUser) {
+                if (this.isModule) roles.push(this.isModule.code);
+            }
+            if (this.ecomindModule) roles.push(this.ecomindModule.code);
             roles.push(Role.WorkspaceAdmin);
         } else {
             if (this.isModule) roles.push(this.isModule.code);
@@ -189,7 +234,7 @@ export class AddWorkspaceComponent implements OnInit, OnChanges {
                     currentUserRoles?.includes(Role.OrganizationAdmin) ||
                     currentUserRoles?.includes(Role.WorkspaceAdmin);
                 if (!isAdmin && currentUserRoles) {
-                    this.router.navigateByUrl(Constants.WELCOME_PAGE);
+                    void this.router.navigateByUrl(Constants.WELCOME_PAGE);
                     return;
                 }
                 this.outClose.emit(false);
@@ -198,8 +243,9 @@ export class AddWorkspaceComponent implements OnInit, OnChanges {
 
     forceAdmin() {
         this.dsModule = this.getRoleValue(Role.DigitalServiceWrite);
-        this.isModule = this.getRoleValue(Role.InventoryWrite);
-        this.ecomindModule = this.getRoleValue(Role.EcoMindAiWrite);
+        if (!this.isSopraUser) {
+            this.isModule = this.getRoleValue(Role.InventoryWrite);
+        }
 
         this.adminModule = {
             code: Role.WorkspaceAdmin,

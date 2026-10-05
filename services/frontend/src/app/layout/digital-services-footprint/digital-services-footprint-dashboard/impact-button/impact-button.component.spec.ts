@@ -1,5 +1,6 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { ComponentFixture, TestBed, fakeAsync, tick } from "@angular/core/testing";
 import { TranslateService } from "@ngx-translate/core";
+import { GlobalStoreService } from "src/app/core/store/global.store";
 import { ImpactButtonComponent } from "./impact-button.component";
 
 describe("ImpactButtonComponent", () => {
@@ -20,9 +21,16 @@ describe("ImpactButtonComponent", () => {
     };
 
     beforeEach(async () => {
+        const globalStoreMock = {
+            setLoading: jasmine.createSpy("setLoading"),
+        };
+
         await TestBed.configureTestingModule({
             imports: [ImpactButtonComponent],
-            providers: [{ provide: TranslateService, useValue: translateServiceMock }],
+            providers: [
+                { provide: TranslateService, useValue: translateServiceMock },
+                { provide: GlobalStoreService, useValue: globalStoreMock },
+            ],
         }).compileComponents();
 
         fixture = TestBed.createComponent(ImpactButtonComponent);
@@ -52,15 +60,16 @@ describe("ImpactButtonComponent", () => {
         expect(component.selectedLang).toBe("en");
     });
 
-    it("should emit selectedCriteriaChange event", () => {
+    it("should emit selectedCriteriaChange event", fakeAsync(() => {
         spyOn(component.selectedCriteriaChange, "emit");
 
         component.changeCritere("climate", "test-id");
+        tick(20);
 
         expect(component.selectedCriteriaChange.emit).toHaveBeenCalledWith("climate");
-    });
+    }));
 
-    it("should blur the button when changeCritere is called", () => {
+    it("should blur the button when changeCritere is called", fakeAsync(() => {
         const button = document.createElement("button");
         spyOn(button, "blur");
 
@@ -70,11 +79,12 @@ describe("ImpactButtonComponent", () => {
         document.body.appendChild(wrapper);
 
         component.changeCritere("climate", "test-id");
+        tick(20);
 
         expect(button.blur).toHaveBeenCalled();
 
         wrapper.remove();
-    });
+    }));
 
     it("should not throw error if button is not found", () => {
         expect(() => {

@@ -1,8 +1,81 @@
 # G4IT
+## 3.15.0
+
+### Major Changes
+- 2329 | Digital Services - Add new AI server type into G4IT
+
+### Minor Changes
+- 2433 | Restrict inventory module access by default for new sopra steria users
+
+## 3.14.1
+
+### Major Changes
+- 2384 | Improve performances and scalability for large datasets
+- 2386 | Improve scheduler and concurrent processing management
+
+### Minor Changes
+- 2232 | Redesign digital service input journey to improve clarity, guidance, and usability
+- 2376 | Resolve accessibility issues at 200% zoom
+- 2371 | Resolve accessibility fixes for drawer and other issues
+
+## 3.14.0
+
+### Major Changes
+
+- 2141 | Require explicit access request for EcomindIA module in new workspaces
+- 2196 | Managing the context and calculation assumptions for a digital service
+- 2158 | Reverse Axes on the main Radial graph
+- 2150 | Modifying the rendering of the main graph when more than 5 items 
+- 2195 | Explicit checks during the creation of an inventory by importing a file
+  
+### Minor Changes
+- 2318 | Correct calculation of total equipment count and average lifespan in Inventory module
+- 2183 | New data model file for importing workspace reference data + updating platform data model
+- 2193 | Administration - Explicit checks during the loading of workspace reference data files
+- 2304 | Redirect to login page if user is logout due to session out
+- 2217 | Display loading state during inventory creation
+- 2288 | Fix for Electric Mix Resolution Issue During Equipment Impact Calculation
+- 2190 | Fix for Encoding problems when exporting reference data files (platform and workspace)
+- 2364 | Average PUE undisplayed when 1 equipment type is unfiltered
+
+## 3.13.1
+
+### Major Changes
+
+- 2172 | Spring boot 4 migration
+
+### Minor Changes
+
+- 2273 | Fix Unable to upload Platform reference Data
+- 2261 | Unable to import .csv file
+- 2210 | Installation KO
+
+## 3.13.0
+
+### Major Changes
+
+- 2180 | Angular Upgrade to version 21
+- 2168 | Secure Keycloak deployment by migrating from the Bitnami Helm chart to a standard & maintained chart
+
+### Minor Changes
+
+- 2188 | Digital Service version duplication button show loader till duplicated version is created
+- 2203 | Display User Friendly Alert message for internal server error
+
+## 3.12.1
+
+### Major Changes
+
+- 2181 | Severe performance degradation and blocking during impact calculation after introduction of workspace-specific referential
+
+### Minor Changes
+
+- 2205 | Average lifespan calculation fix
 
 ## 3.12.0
 
 ## Major changes
+
 - 2001 | Inventory module filter the view moves from overlay to side panel
 - 2017 | keep the data for 2 more years - GUI Impact
 - 1983 | Update Reference Data at Workspace level
@@ -10,10 +83,10 @@
 - 2081 | Sources used for calculation below the graphs
 
 ### Minor Changes
+
 - 2129 | Fix for Unit change - Unauthorized error remove in Digital Service
 - 2140 | Inventories - Application View Review Set Graph view as default, Additional elements of analysis section added
 - 2142 | Retain repartition dropdown list selection in the navigation on the inventory results page.
-
 
 ## 3.11.0
 
@@ -25,6 +98,7 @@
 - 1991 | EcoMindAI - Beta
 
 ### Minor Changes
+
 - 1989 | Update Reference data in Super Admin mode
 - 2070 | fix for set default host value settings in server
 - 2069 | Fix for unable to add a datacenter

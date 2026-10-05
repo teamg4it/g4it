@@ -1,0 +1,31 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-progress-last-changed-date-column
+      author: G4IT Dev Team
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - columnExists:
+                tableName: task
+                columnName: progress_last_changed_date
+      changes:
+        - addColumn:
+            tableName: task
+            columns:
+              - column:
+                  name: progress_last_changed_date
+                  type: timestamp
+                  constraints:
+                    nullable: true
+        - sql:
+            comment: Initialize progress_last_changed_date for existing IN_PROGRESS tasks
+            sql: >
+              UPDATE task 
+              SET progress_last_changed_date = last_update_date 
+              WHERE status = 'IN_PROGRESS' 
+              AND progress_last_changed_date IS NULL
+      rollback:
+        - dropColumn:
+            tableName: task
+            columnName: progress_last_changed_date
+

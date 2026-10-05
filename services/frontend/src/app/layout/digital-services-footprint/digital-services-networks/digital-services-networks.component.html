@@ -1,3 +1,13 @@
+<div class="information-section my-3">
+    <h3 class="m-0 text-lg mb-2 font-semibold">
+        {{ "digital-services-networks.information-step" | translate }}
+    </h3>
+    <p [innerHTML]="'digital-services-networks.information-text' | translate"></p>
+    <ul>
+        <li>{{ "digital-services-networks.information-li1" | translate }}</li>
+        <li>{{ "digital-services-networks.information-li2" | translate }}</li>
+    </ul>
+</div>
 <div class="table-container mb-5">
     <app-digital-service-table
         titleText="networks"
@@ -13,16 +23,17 @@
     ></app-digital-service-table>
 </div>
 @if (sidebarVisible) {
-    <p-sidebar
+    <p-drawer
         [(visible)]="sidebarVisible"
         position="right"
-        styleClass="p-sidebar-lg"
-        (onHide)="networkSidePanel.close()"
+        styleClass="drawer-lg"
+        appendTo="body"
+        (onHide)="focusNetworkButton(); networkSidePanel.close()"
         ariaCloseLabel="Close"
     >
         <app-digital-services-networks-side-panel
             #networkSidePanel
-            (sidebarVisible)="(sidebarVisible)"
+            (sidebarVisible)="focusNetworkButton(); sidebarVisible = false"
             [existingNames]="existingNames()"
             [network]="network"
             [networkData]="networkData()"
@@ -30,5 +41,5 @@
             (delete)="deleteItem($event); sidebarVisible = false"
             (outCancel)="actionNetwork('cancel', $event)"
         ></app-digital-services-networks-side-panel>
-    </p-sidebar>
+    </p-drawer>
 }

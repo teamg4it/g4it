@@ -1,44 +1,27 @@
 <p-toast #toast position="bottom-center"></p-toast>
 @if (sidebarVisible) {
-    <p-sidebar
+    <p-drawer
         [(visible)]="sidebarVisible"
         position="right"
-        styleClass="p-sidebar-md w-7"
+        styleClass="drawer-lg"
         [showCloseIcon]="true"
-        (onHide)="sidebarVisible = false"
+        (onHide)="focusPrevButton(); sidebarVisible = false"
         ariaCloseLabel="Close"
     >
         <app-common-editor
             [content]="digitalService.note?.content"
-            [showButtons]="userService.isAllowedDigitalServiceWrite$ | async"
+            [title]="'digital-services.version.context-and-assumptions' | translate"
+            [isWriteRole]="userService.isAllowedDigitalServiceWrite$ | async"
             (saveValue)="noteSaveValue($event)"
-            (outClose)="sidebarVisible = $event"
+            (outClose)="focusPrevButton(); sidebarVisible = $event"
             (delete)="noteDelete(); sidebarVisible = $event"
-            styleClass="mx-7"
+            styleClass="m-0"
         >
         </app-common-editor>
-    </p-sidebar>
-}
-<!-- Import Sidebar -->
-@if (importSidebarVisible) {
-    <p-sidebar
-        [(visible)]="importSidebarVisible"
-        position="right"
-        styleClass="p-sidebar-lg"
-        [showCloseIcon]="true"
-        (onHide)="importSidebarVisible = false"
-        ariaCloseLabel="Close"
-        [fullScreen]="isZoom125()"
-    >
-        <ng-template pTemplate="headless">
-            <app-digital-services-import
-                (sidebarVisibleChange)="importSidebarVisible = $event"
-            />
-        </ng-template>
-    </p-sidebar>
+    </p-drawer>
 }
 
-<p-confirmPopup [style]="{ width: '450px' }"></p-confirmPopup>
+<p-confirmpopup [style]="{ width: '450px' }"></p-confirmpopup>
 <div class="flex justify-content-between align-items-center flex-wrap">
     <div class="block relative w-full lg:w-auto md:flex align-items-center">
         @if (!isSharedDs) {
@@ -74,50 +57,55 @@
         }
 
         <div class="input-title flex align-items-center">
-            <h1
-                *ngIf="!(userService.isAllowedDigitalServiceWrite$ | async)"
-                class="text-xl px-2 color-black-seventy lg:text-4xl"
-            >
-                {{ digitalService.name }}
-            </h1>
-            <p-inplace
-                *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
-                [closable]="true"
-                [closeAriaLabel]="'digital-services.save-inplace' | translate"
-                [preventClick]="digitalService.name === ''"
-                (onDeactivate)="onNameUpdate(digitalService.name, true)"
-                styleClass="inline-block w-auto color-black-seventy lg:w-24rem md:w-15rem"
-                [ngClass]="{ 'hide-close': disableDs }"
-            >
-                <ng-template pTemplate="display">
-                    <h1 class="text-xl px-2 color-black-seventy lg:text-4xl">
-                        {{ digitalService.name }}
-                    </h1>
-                </ng-template>
-                <ng-template pTemplate="content">
-                    <input
-                        type="text"
-                        class="text-xl font-semibold color-black-seventy px-2 mr-2 w-11 lg:text-4xl"
-                        pInputText
-                        [(ngModel)]="digitalService.name"
-                        [required]="true"
-                        (ngModelChange)="validateDs($event)"
-                        [ngClass]="{ 'ng-dirty ng-invalid': disableDs }"
-                    />
-                    @if (disableDs) {
-                        <span class="error-text block">
+            @if (!(userService.isAllowedDigitalServiceWrite$ | async)) {
+                <h1 class="text-xl px-2 color-black-seventy lg:text-4xl">
+                    {{ digitalService.name }}
+                </h1>
+            }
+            @if (userService.isAllowedDigitalServiceWrite$ | async) {
+                <p-inplace
+                    [closable]="true"
+                    [closeAriaLabel]="'digital-services.save-inplace' | translate"
+                    [preventClick]="digitalService.name === ''"
+                    (onDeactivate)="onNameUpdate(digitalService.name, true)"
+                    styleClass="inline-block w-auto color-black-seventy lg:w-24rem md:w-15rem"
+                    [ngClass]="{ 'hide-close': disableDs }"
+                >
+                    <ng-template pTemplate="display">
+                        <h1 class="text-xl px-2 color-black-seventy lg:text-4xl">
+                            {{ digitalService.name }}
+                        </h1>
+                    </ng-template>
+                    <ng-template pTemplate="content">
+                        <label for="digitalServiceName" class="visually-hidden">
                             {{
-                                "digital-services.error.digital-service-already-exists"
-                                    | translate
+                                "digital-services.version.ds-name-placeholder" | translate
                             }}
-                        </span>
-                    }
-                </ng-template>
-
-                <ng-template pTemplate="closeicon">
-                    <i class="pi pi-check"></i>
-                </ng-template>
-            </p-inplace>
+                        </label>
+                        <input
+                            id="digitalServiceName"
+                            type="text"
+                            class="text-xl font-semibold color-black-seventy px-2 mr-2 w-11 lg:text-4xl"
+                            pInputText
+                            [(ngModel)]="digitalService.name"
+                            [required]="true"
+                            (ngModelChange)="validateDs($event)"
+                            [ngClass]="{ 'ng-dirty ng-invalid': disableDs }"
+                        />
+                        @if (disableDs) {
+                            <span class="error-text block">
+                                {{
+                                    "digital-services.error.digital-service-already-exists"
+                                        | translate
+                                }}
+                            </span>
+                        }
+                    </ng-template>
+                    <ng-template pTemplate="closeicon">
+                        <i class="pi pi-check"></i>
+                    </ng-template>
+                </p-inplace>
+            }
         </div>
         @if (digitalService.name) {
             <i class="pi pi-angle-right text-2xl"></i>
@@ -131,49 +119,59 @@
             }
 
             <div class="input-title flex align-items-center">
-                <h2
-                    *ngIf="!(userService.isAllowedDigitalServiceWrite$ | async)"
-                    class="text-xl px-2 lg:text-4xl"
-                >
-                    {{ digitalService.description }}
-                </h2>
-                <p-inplace
-                    *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
-                    [closable]="true"
-                    [closeAriaLabel]="'digital-services.save-inplace' | translate"
-                    [preventClick]="digitalService.description === ''"
-                    (onDeactivate)="onNameUpdate(digitalService.description!, false)"
-                    styleClass="inline-block w-auto  lg:w-18rem md:w-15rem"
-                    [ngClass]="{ 'hide-close': disableVersion }"
-                >
-                    <ng-template pTemplate="display">
-                        <h2 class="text-xl px-2 lg:text-4xl">
-                            {{ digitalService.description }}
-                        </h2>
-                    </ng-template>
-                    <ng-template pTemplate="content">
-                        <input
-                            type="text"
-                            class="text-xl font-semibold px-2 mr-2 w-11 lg:text-4xl"
-                            pInputText
-                            [(ngModel)]="digitalService.description"
-                            [required]="true"
-                            (ngModelChange)="validateVersion($event)"
-                            [ngClass]="{ 'ng-dirty ng-invalid': disableVersion }"
-                        />
-                        @if (disableVersion) {
-                            <span class="error-text block">
+                @if (!(userService.isAllowedDigitalServiceWrite$ | async)) {
+                    <h2 class="text-xl px-2 lg:text-4xl">
+                        {{ digitalService.description }}
+                    </h2>
+                }
+                @if (userService.isAllowedDigitalServiceWrite$ | async) {
+                    <p-inplace
+                        [closable]="true"
+                        [closeAriaLabel]="'digital-services.save-inplace' | translate"
+                        [preventClick]="digitalService.description === ''"
+                        (onDeactivate)="onNameUpdate(digitalService.description!, false)"
+                        styleClass="inline-block w-auto  lg:w-18rem md:w-15rem"
+                        [ngClass]="{ 'hide-close': disableVersion }"
+                    >
+                        <ng-template pTemplate="display">
+                            <h2 class="text-xl px-2 lg:text-4xl">
+                                {{ digitalService.description }}
+                            </h2>
+                        </ng-template>
+                        <ng-template pTemplate="content">
+                            <label
+                                for="digitalServiceDescription"
+                                class="visually-hidden"
+                            >
                                 {{
-                                    "digital-services.error.digital-service-version-already-exists"
+                                    "digital-services.version.ds-version-name-placeholder"
                                         | translate
                                 }}
-                            </span>
-                        }
-                    </ng-template>
-                    <ng-template pTemplate="closeicon">
-                        <i class="pi pi-check"></i>
-                    </ng-template>
-                </p-inplace>
+                            </label>
+                            <input
+                                id="digitalServiceDescription"
+                                type="text"
+                                class="text-xl font-semibold px-2 mr-2 w-11 lg:text-4xl"
+                                pInputText
+                                [(ngModel)]="digitalService.description"
+                                [required]="true"
+                                (ngModelChange)="validateVersion($event)"
+                                [ngClass]="{ 'ng-dirty ng-invalid': disableVersion }"
+                            />
+                            @if (disableVersion) {
+                                <span class="error-text block">
+                                    {{
+                                        "digital-services.error.digital-service-version-already-exists"
+                                            | translate
+                                    }}
+                                </span>
+                            }
+                        </ng-template>
+                        <ng-template pTemplate="closeicon">
+                            <i class="pi pi-check"></i>
+                        </ng-template>
+                    </p-inplace>
+                }
             </div>
         }
 
@@ -200,30 +198,38 @@
                     id="manage-versions"
                 />
             }
-            <p-button
-                (onClick)="sidebarVisible = true"
-                styleClass="cancel-creation-button uppercase mx-2 mb-3 lg:mb-0"
-                [ariaLabel]="'common.accessibility.addNote' | translate"
-                *ngIf="
-                    !isEcoMindAi() &&
-                    !digitalService.note &&
-                    (userService.isAllowedDigitalServiceWrite$ | async)
-                "
-                icon="pi pi-pen-to-square"
-                [pTooltip]="'common.note.add' | translate"
-                id="add-note"
-                tooltipPosition="bottom"
-            />
+            @if (
+                !isEcoMindAi() &&
+                !digitalService.note &&
+                (userService.isAllowedDigitalServiceWrite$ | async)
+            ) {
+                <p-button
+                    #noteBtn
+                    (onClick)="sidebarVisible = true"
+                    styleClass="cancel-creation-button uppercase mx-2 mb-3 lg:mb-0"
+                    [ariaLabel]="'common.accessibility.add-context' | translate"
+                    icon="pi pi-pen-to-square"
+                    id="add-note"
+                    tooltipPosition="bottom"
+                    [label]="
+                        'digital-services.version.add-context-assumptions' | translate
+                    "
+                />
+            }
 
-            <p-button
-                (onClick)="sidebarVisible = true"
-                styleClass="cancel-creation-button uppercase mx-2 mb-3 lg:mb-0"
-                [ariaLabel]="'common.accessibility.attachedNote' | translate"
-                *ngIf="!isEcoMindAi() && digitalService.note"
-                icon="pi pi-clipboard"
-                [pTooltip]="'common.note.attached' | translate"
-                tooltipPosition="bottom"
-            />
+            @if (!isEcoMindAi() && digitalService.note) {
+                <p-button
+                    #noteBtn
+                    (onClick)="sidebarVisible = true"
+                    styleClass="cancel-creation-button uppercase mx-2 mb-3 lg:mb-0"
+                    [ariaLabel]="'common.accessibility.edit-context' | translate"
+                    icon="pi pi-pen-to-square"
+                    tooltipPosition="bottom"
+                    [label]="
+                        'digital-services.version.edit-context-assumptions' | translate
+                    "
+                />
+            }
 
             @if (!isEcoMindAi() && (userService.isAllowedDigitalServiceWrite$ | async)) {
                 <p-button
@@ -246,6 +252,7 @@
                 />
 
                 <p-button
+                    #importBtn
                     [ariaLabel]="'common.accessibility.import' | translate"
                     styleClass="p-button-secondary-blue uppercase mx-2 mb-3 lg:mb-0"
                     (onClick)="importData()"
@@ -253,57 +260,91 @@
                     [pTooltip]="'digital-services.import' | translate"
                     tooltipPosition="bottom"
                 />
+
+                <!-- Import Sidebar -->
+                @if (importSidebarVisible) {
+                    <p-drawer
+                        [(visible)]="importSidebarVisible"
+                        position="right"
+                        [showCloseIcon]="true"
+                        (onHide)="
+                            importBtn?.el?.nativeElement
+                                ?.querySelector('button')
+                                ?.focus();
+                            importSidebarVisible = false
+                        "
+                        ariaCloseLabel="Close"
+                        styleClass="drawer-lg"
+                    >
+                        <ng-template #headless>
+                            <app-digital-services-import
+                                (sidebarVisibleChange)="
+                                    importBtn?.el?.nativeElement
+                                        ?.querySelector('button')
+                                        ?.focus();
+                                    importSidebarVisible = $event
+                                "
+                            />
+                        </ng-template>
+                    </p-drawer>
+                }
             }
 
-            <p-button
-                [ariaLabel]="'common.accessibility.download' | translate"
-                styleClass="p-button-secondary-blue uppercase mx-2 mb-3 lg:mb-0"
-                (onClick)="exportData()"
-                *ngIf="userService.isAllowedDigitalServiceRead$ | async"
-                [disabled]="digitalService.lastCalculationDate === undefined"
-                icon="pi pi-download"
-                [pTooltip]="'inventories-footprint.header.export' | translate"
-                tooltipPosition="bottom"
-            />
-            <p-button
-                styleClass="header-blue-btn ml-2 mb-3 lg:mb-0"
-                icon="pi pi-clone"
-                *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
-                id="duplicate-version"
-                [pTooltip]="'digital-services.version.duplicate-version' | translate"
-                tooltipPosition="bottom"
-                [ariaLabel]="'digital-services.version.duplicate-version' | translate"
-                (onClick)="duplicateDigitalServiceVersion()"
-            >
-            </p-button>
-            @if (digitalService.versionType === "draft") {
+            @if (userService.isAllowedDigitalServiceRead$ | async) {
+                <p-button
+                    [ariaLabel]="'common.accessibility.download' | translate"
+                    styleClass="p-button-secondary-blue uppercase mx-2 mb-3 lg:mb-0"
+                    (onClick)="exportData()"
+                    [disabled]="digitalService.lastCalculationDate === undefined"
+                    icon="pi pi-download"
+                    [pTooltip]="'inventories-footprint.header.export' | translate"
+                    tooltipPosition="bottom"
+                />
+            }
+            @if (userService.isAllowedDigitalServiceWrite$ | async) {
                 <p-button
                     styleClass="header-blue-btn ml-2 mb-3 lg:mb-0"
-                    icon="pi pi-star"
-                    *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
-                    id="promote-version"
-                    [pTooltip]="'digital-services.version.promote-version' | translate"
+                    icon="pi pi-clone"
+                    id="duplicate-version"
+                    [pTooltip]="'digital-services.version.duplicate-version' | translate"
                     tooltipPosition="bottom"
-                    [ariaLabel]="
-                        'digital-services.version.aria-promote-version' | translate
-                    "
-                    (onClick)="isPromoteVersionDialogVisible = true"
+                    [ariaLabel]="'digital-services.version.duplicate-version' | translate"
+                    (onClick)="duplicateDigitalServiceVersion()"
                 >
                 </p-button>
             }
+            @if (digitalService.versionType === "draft") {
+                @if (userService.isAllowedDigitalServiceWrite$ | async) {
+                    <p-button
+                        styleClass="header-blue-btn ml-2 mb-3 lg:mb-0"
+                        icon="pi pi-star"
+                        id="promote-version"
+                        [pTooltip]="
+                            'digital-services.version.promote-version' | translate
+                        "
+                        tooltipPosition="bottom"
+                        [ariaLabel]="
+                            'digital-services.version.aria-promote-version' | translate
+                        "
+                        (onClick)="isPromoteVersionDialogVisible = true"
+                    >
+                    </p-button>
+                }
+            }
 
             @if (digitalService.versionType !== "active") {
-                <p-button
-                    *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
-                    styleClass="header-delete-btn ml-2 mb-3 lg:mb-0"
-                    (onClick)="confirmDelete($event)"
-                    icon="pi pi-trash"
-                    [ariaLabel]="
-                        'digital-services.delete-criteria'
-                            | translate: { digitalServiceName: digitalService.name }
-                    "
-                    id="delete-service"
-                />
+                @if (userService.isAllowedDigitalServiceWrite$ | async) {
+                    <p-button
+                        styleClass="header-delete-btn ml-2 mb-3 lg:mb-0"
+                        (onClick)="confirmDelete($event)"
+                        icon="pi pi-trash"
+                        [ariaLabel]="
+                            'digital-services.delete-criteria'
+                                | translate: { digitalServiceName: digitalService.name }
+                        "
+                        id="delete-service"
+                    />
+                }
             }
         </div>
     }

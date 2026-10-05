@@ -4,7 +4,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
 import { TranslateModule, TranslateService } from "@ngx-translate/core";
 import { MessageService } from "primeng/api";
-import { of } from "rxjs";
+import { of, Subject } from "rxjs";
 import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServicesAiDataService } from "src/app/core/service/data/digital-services-ai-data.service";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
@@ -50,14 +50,27 @@ describe("DigitalServicesAiInfrastructureComponent", () => {
 
         mockTranslateService = {
             instant: jasmine.createSpy().and.callFake((key) => key),
+            get: jasmine.createSpy().and.callFake((key) => of(key)),
         };
+        Object.defineProperty(mockTranslateService, "onLangChange", {
+            value: new Subject(),
+            writable: true,
+        });
+        Object.defineProperty(mockTranslateService, "onTranslationChange", {
+            value: new Subject(),
+            writable: true,
+        });
+        Object.defineProperty(mockTranslateService, "onDefaultLangChange", {
+            value: new Subject(),
+            writable: true,
+        });
 
         await TestBed.configureTestingModule({
-            declarations: [DigitalServicesAiInfrastructureComponent],
             imports: [
                 ReactiveFormsModule,
                 HttpClientTestingModule,
                 TranslateModule.forRoot(),
+                DigitalServicesAiInfrastructureComponent,
             ],
             providers: [
                 FormBuilder,

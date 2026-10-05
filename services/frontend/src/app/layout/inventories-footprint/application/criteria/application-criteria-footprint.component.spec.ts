@@ -1,7 +1,8 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
-import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { ComponentFixture, TestBed, fakeAsync, tick } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
 import { TranslateModule } from "@ngx-translate/core";
+import { NGX_ECHARTS_CONFIG } from "ngx-echarts";
 import { DecimalsPipe } from "src/app/core/pipes/decimal.pipe";
 import { IntegerPipe } from "src/app/core/pipes/integer.pipe";
 import { FilterService } from "src/app/core/service/business/filter.service";
@@ -17,6 +18,7 @@ describe("ApplicationCriteriaFootprintComponent", () => {
     let footprintStore: any;
     let filterService: any;
     let translate: any;
+    let globalStore: any;
 
     beforeEach(async () => {
         footprintStore = {
@@ -41,9 +43,16 @@ describe("ApplicationCriteriaFootprintComponent", () => {
             instant: jasmine.createSpy().and.callFake((key) => key),
         };
 
+        globalStore = {
+            setLoading: jasmine.createSpy(),
+        };
+
         await TestBed.configureTestingModule({
-            declarations: [ApplicationCriteriaFootprintComponent],
-            imports: [HttpClientTestingModule, TranslateModule.forRoot()],
+            imports: [
+                HttpClientTestingModule,
+                TranslateModule.forRoot(),
+                ApplicationCriteriaFootprintComponent,
+            ],
             providers: [
                 {
                     provide: InventoriesApplicationFootprintComponent,
@@ -54,12 +63,16 @@ describe("ApplicationCriteriaFootprintComponent", () => {
                 },
                 { provide: IntegerPipe, useValue: { transform: (v: any) => v } },
                 { provide: DecimalsPipe, useValue: { transform: (v: any) => v } },
-                { provide: GlobalStoreService, useValue: {} },
+                { provide: GlobalStoreService, useValue: globalStore },
                 { provide: FilterService, useValue: filterService },
                 { provide: FootprintStoreService, useValue: footprintStore },
                 {
                     provide: ActivatedRoute,
                     useValue: { snapshot: { paramMap: { get: () => "1" } } },
+                },
+                {
+                    provide: NGX_ECHARTS_CONFIG,
+                    useFactory: () => ({ echarts: () => import("echarts") }),
                 },
             ],
         }).compileComponents();
@@ -98,60 +111,66 @@ describe("ApplicationCriteriaFootprintComponent", () => {
     });
 
     describe("onChartClick", () => {
-        it("should set domain + subdomain if global and children <=1", () => {
+        it("should set domain + subdomain if global and children <=1", fakeAsync(() => {
             footprintStore.appGraphType.and.returnValue("global");
             footprintStore.applicationSelectedFilters.and.returnValue({
                 domain: [{ label: "Domain1", children: [{ label: "SubDomain1" }] }],
             });
             component.onChartClick({ name: "Domain1" });
+            tick(20);
             expect(footprintStore.setGraphType).toHaveBeenCalledWith("subdomain");
             expect(footprintStore.setDomain).toHaveBeenCalledWith("Domain1");
             expect(footprintStore.setSubDomain).toHaveBeenCalledWith("SubDomain1");
-        });
+        }));
 
-        it("should set domain only if global and children >1", () => {
+        it("should set domain only if global and children >1", fakeAsync(() => {
             footprintStore.appGraphType.and.returnValue("global");
             footprintStore.applicationSelectedFilters.and.returnValue({
                 domain: [{ label: "Domain1", children: [{}, {}] }],
             });
             component.onChartClick({ name: "Domain1" });
+            tick(20);
             expect(footprintStore.setGraphType).toHaveBeenCalledWith("domain");
             expect(footprintStore.setDomain).toHaveBeenCalledWith("Domain1");
             expect(footprintStore.setSubDomain).toHaveBeenCalledWith("");
-        });
+        }));
 
-        it("should set subdomain if graphType = domain", () => {
+        it("should set subdomain if graphType = domain", fakeAsync(() => {
             footprintStore.appGraphType.and.returnValue("domain");
             component.onChartClick({ name: "SubDomain1" });
+            tick(20);
             expect(footprintStore.setGraphType).toHaveBeenCalledWith("subdomain");
             expect(footprintStore.setSubDomain).toHaveBeenCalledWith("SubDomain1");
-        });
+        }));
 
-        it("should set application if graphType = subdomain", () => {
+        it("should set application if graphType = subdomain", fakeAsync(() => {
             footprintStore.appGraphType.and.returnValue("subdomain");
             component.onChartClick({ name: "App1" });
+            tick(20);
             expect(footprintStore.setGraphType).toHaveBeenCalledWith("application");
             expect(footprintStore.setApplication).toHaveBeenCalledWith("App1");
-        });
+        }));
     });
 
     describe("onArrowClick", () => {
-        it("should go back from application -> subdomain", () => {
+        it("should go back from application -> subdomain", fakeAsync(() => {
             footprintStore.appGraphType.and.returnValue("application");
             component.onArrowClick();
+            tick(20);
             expect(footprintStore.setGraphType).toHaveBeenCalledWith("subdomain");
             expect(footprintStore.setApplication).toHaveBeenCalledWith("");
-        });
+        }));
 
-        it("should go back from domain -> global", () => {
+        it("should go back from domain -> global", fakeAsync(() => {
             footprintStore.appGraphType.and.returnValue("domain");
             component.allUnmodifiedFilters = { domain: [] } as any;
             component.onArrowClick();
+            tick(20);
             expect(footprintStore.setGraphType).toHaveBeenCalledWith("global");
             expect(footprintStore.setDomain).toHaveBeenCalledWith("");
-        });
+        }));
 
-        it("should go back from subdomain -> global", () => {
+        it("should go back from subdomain -> global", fakeAsync(() => {
             footprintStore.appGraphType.and.returnValue("subdomain");
 
             (component.allUnmodifiedFilters as any) = () => ({
@@ -162,9 +181,29 @@ describe("ApplicationCriteriaFootprintComponent", () => {
             });
             (component["footprintStore"].appDomain as any) = () => "Domain1";
             component.onArrowClick();
+            tick(20);
             expect(footprintStore.setGraphType).toHaveBeenCalledWith("global");
             expect(footprintStore.setDomain).toHaveBeenCalledWith("");
-        });
+        }));
+
+        it("should go back from subdomain -> domain when children > 1", fakeAsync(() => {
+            footprintStore.appGraphType.and.returnValue("subdomain");
+
+            (component.allUnmodifiedFilters as any) = () => ({
+                domain: [
+                    { label: "ALL" },
+                    {
+                        label: "Domain1",
+                        children: [{ label: "Sub1" }, { label: "Sub2" }],
+                    },
+                ],
+            });
+            (component["footprintStore"].appDomain as any) = () => "Domain1";
+            component.onArrowClick();
+            tick(20);
+            expect(footprintStore.setGraphType).toHaveBeenCalledWith("domain");
+            expect(footprintStore.setSubDomain).toHaveBeenCalledWith("");
+        }));
     });
 
     it("checkIfNoData should return false if filter includes impact", () => {
@@ -175,7 +214,7 @@ describe("ApplicationCriteriaFootprintComponent", () => {
     it("computeImpactOrder should add and then aggregate impacts", () => {
         const impact = component.footprint.impacts[0];
         component.computeImpactOrder(impact, "Domain1", "lifeCycle");
-        expect(component.impactOrder.length).toBe(1);
+        expect(component.impactOrder).toHaveSize(1);
 
         // second time aggregates
         component.computeImpactOrder(

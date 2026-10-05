@@ -1,4 +1,4 @@
-<div class="pt-4">
+<div class="pt-2">
     <h2 for="upload-reference" class="inline m-0">
         {{ "administration.uploadcsv.description" | translate }}
     </h2>
@@ -14,11 +14,12 @@
             class="block font-semibold text-color mb-2 text-base"
             >{{ "administration.uploadcsv.select-endpoint" | translate }}</label
         >
-        <p-dropdown
+        <p-select
             appendTo="body"
             [options]="csvEndpoints"
             optionLabel="apiEndpointName"
             name="endpointDropdown"
+            class="item-impact"
             [(ngModel)]="selectedEndpoint"
             [style]="{ width: '35%' }"
             placeholder="{{
@@ -44,34 +45,12 @@
                     <small class="text-base text-500 font-mono">{{ endpoint.url }}</small>
                 </div>
             </ng-template>
-        </p-dropdown>
+        </p-select>
     </div>
 
     <div class="flex align-items-center gap-2">
-        <p-fileUpload
-            #fileUpload
-            name="csvFile"
-            [multiple]="false"
-            accept=".csv"
-            [maxFileSize]="maxFileSize"
-            [customUpload]="true"
-            (uploadHandler)="onUpload($event)"
-            (onSelect)="onSelect($event)"
-            (onRemove)="onRemove($event)"
-            (onError)="onError($event)"
-            [auto]="false"
-            [disabled]="!selectedEndpoint"
-            chooseLabel="{{ 'common.choose-file' | translate }}"
-            uploadLabel="{{ 'administration.uploadcsv.upload-button' | translate }}"
-            cancelLabel="{{ 'common.cancel' | translate }}"
-            mode="basic"
-            [showUploadButton]="true"
-            [showCancelButton]="false"
-            styleClass="ml-1"
-        ></p-fileUpload>
-
         <p-button
-            styleClass="p-button-secondary-blue"
+            styleClass="p-button-secondary-blue h-3rem mr-3"
             icon="pi pi-download"
             [label]="'administration.uploadcsv.download-button' | translate"
             [disabled]="!selectedEndpoint"
@@ -80,6 +59,48 @@
             (keydown.enter)="onDownload()"
             (keydown.space)="onDownload()"
         ></p-button>
+
+        <p-fileUpload
+            #fileUpload
+            name="csvFile"
+            [multiple]="false"
+            accept=".csv"
+            class="mr-3"
+            [styleClass]="
+                selectedFile()?.name
+                    ? 'custom-file-upload has-file'
+                    : 'custom-file-upload'
+            "
+            [chooseIcon]="selectedFile()?.name ? 'pi pi-upload' : 'pi pi-plus'"
+            [maxFileSize]="maxFileSize"
+            [customUpload]="true"
+            (uploadHandler)="onUpload($event)"
+            (onSelect)="onSelect($event)"
+            [auto]="false"
+            [chooseLabel]="selectedFile()?.name || ('common.choose-file' | translate)"
+            [attr.title]="selectedFile()?.name || ('common.choose-file' | translate)"
+            mode="basic"
+            id="upload-platform-data"
+        ></p-fileUpload>
+
+        <p-button
+            styleClass="p-button-secondary-blue h-3rem uppercase"
+            icon="pi pi-upload "
+            (onClick)="fileUpload.upload()"
+            [label]="'digital-services-import.start-upload' | translate"
+            [ariaLabel]="'digital-services-import.start-upload' | translate"
+            [disabled]="!selectedEndpoint || !selectedFile() || isProcessing"
+        />
+
+        @if (selectedFile()?.name) {
+            <p-button
+                class="mx-3 mt-1"
+                icon="pi pi-times"
+                (onClick)="onRemove($event)"
+                [text]="true"
+                [ariaLabel]="'administration.delete' | translate"
+            />
+        }
     </div>
 
     <!-- Information section -->
@@ -177,18 +198,19 @@
                         <div
                             class="max-h-20rem overflow-y-auto border-bottom-1 border-red-300"
                         >
-                            <div
-                                class="flex align-items-start gap-3 px-4 py-3 border-bottom-1 border-red-200"
-                                *ngFor="let error of uploadErrors; let i = index"
-                            >
-                                <div class="flex-1">
-                                    <div
-                                        class="flex align-items-start gap-2 text-sm line-height-3 text-red-900 font-medium"
-                                    >
-                                        {{ error }}
+                            @for (error of uploadErrors; track error; let i = $index) {
+                                <div
+                                    class="flex align-items-start gap-3 px-4 py-3 border-bottom-1 border-red-200"
+                                >
+                                    <div class="flex-1">
+                                        <div
+                                            class="flex align-items-start gap-2 text-sm line-height-3 text-red-900 font-medium"
+                                        >
+                                            {{ error }}
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            }
                         </div>
                     </div>
                 </div>

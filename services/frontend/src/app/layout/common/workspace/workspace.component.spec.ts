@@ -5,7 +5,7 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { TranslateModule, TranslateService } from "@ngx-translate/core";
 import { MessageService } from "primeng/api";
 import { ButtonModule } from "primeng/button";
-import { DropdownModule } from "primeng/dropdown";
+import { SelectModule } from "primeng/select";
 import { of } from "rxjs";
 import { UserService } from "src/app/core/service/business/user.service";
 import { WorkspaceService } from "src/app/core/service/business/workspace.service";
@@ -24,19 +24,21 @@ describe("WorkspaceComponent", () => {
         ]);
         mockWorkspaceService.getDomainOrganizations.and.returnValue(of([])); // Ensure it returns an observable
 
-        mockUserService = jasmine.createSpyObj("UserService", ["getRoles"]);
+        mockUserService = jasmine.createSpyObj("UserService", ["getRoles"], {
+            user$: of({ email: "test@example.com" }),
+        });
         mockUserService.getRoles.and.returnValue([]); // Ensure it returns a valid value
 
         await TestBed.configureTestingModule({
-            declarations: [WorkspaceComponent],
             imports: [
                 ReactiveFormsModule,
                 CommonModule,
                 FormsModule,
-                DropdownModule,
+                SelectModule,
                 ButtonModule,
                 TranslateModule.forRoot(),
-                HttpClientModule, // Add this module
+                HttpClientModule,
+                WorkspaceComponent,
             ],
             providers: [
                 { provide: WorkspaceService, useValue: mockWorkspaceService },

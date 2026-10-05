@@ -15,10 +15,7 @@ import com.soprasteria.g4it.backend.apievaluating.business.asyncevaluatingservic
 import com.soprasteria.g4it.backend.apievaluating.mapper.AggregationToOutput;
 import com.soprasteria.g4it.backend.apievaluating.mapper.ImpactToCsvRecord;
 import com.soprasteria.g4it.backend.apievaluating.mapper.InternalToNumEcoEvalImpact;
-import com.soprasteria.g4it.backend.apievaluating.model.AggValuesBO;
-import com.soprasteria.g4it.backend.apievaluating.model.EvaluateReportBO;
-import com.soprasteria.g4it.backend.apievaluating.model.ImpactBO;
-import com.soprasteria.g4it.backend.apievaluating.model.RefShortcutBO;
+import com.soprasteria.g4it.backend.apievaluating.model.*;
 import com.soprasteria.g4it.backend.apiindicator.repository.RefSustainableIndividualPackageRepository;
 import com.soprasteria.g4it.backend.apiinout.mapper.InputToCsvRecord;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InApplication;
@@ -28,6 +25,7 @@ import com.soprasteria.g4it.backend.apiinout.modeldb.InVirtualEquipment;
 import com.soprasteria.g4it.backend.apiinout.repository.*;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
+import com.soprasteria.g4it.backend.apireferential.business.ReferentialGetService;
 import com.soprasteria.g4it.backend.apireferential.business.ReferentialService;
 import com.soprasteria.g4it.backend.apiuser.repository.OrganizationRepository;
 import com.soprasteria.g4it.backend.common.filesystem.business.local.CsvFileService;
@@ -40,8 +38,7 @@ import com.soprasteria.g4it.backend.common.utils.StringUtils;
 import com.soprasteria.g4it.backend.exception.AsyncTaskException;
 import com.soprasteria.g4it.backend.external.boavizta.business.BoaviztapiService;
 import com.soprasteria.g4it.backend.external.boavizta.model.response.BoaResponseRest;
-import com.soprasteria.g4it.backend.server.gen.api.dto.CriterionRest;
-import com.soprasteria.g4it.backend.server.gen.api.dto.HypothesisRest;
+import com.soprasteria.g4it.backend.server.gen.api.dto.*;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVPrinter;
@@ -60,10 +57,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -121,6 +115,8 @@ public class EvaluateService {
     private Map<String, String> codeToCountryMapCache;
     private List<String> lifecycleStepsCache;
     private Map<Pair<String, String>, Integer> electricityMixQuartilesCache;
+    @Autowired
+    ReferentialGetService referentialGetService;
 
     @PostConstruct
     public void init() {
@@ -146,7 +142,10 @@ public class EvaluateService {
     public void doEvaluate(final Context context, final Task task, Path exportDirectory) {
 
         // retrieving the VM list for this DS
-        Map<String, List<InVirtualEquipment>> vmsByPhysical =
+        Map<String, List<InVirtualEquipment>> vmsByPhysical =context.getInventoryId() != null?inVirtualEquipmentRepository.findByInventoryId(context.getInventoryId()).stream()
+                        // ONLY VMs attached to a physical equipment
+                        .filter(vm -> vm.getPhysicalEquipmentName() != null)
+                        .collect(Collectors.groupingBy(InVirtualEquipment::getPhysicalEquipmentName)):
                 inVirtualEquipmentRepository
                         .findByDigitalServiceVersionUid(context.getDigitalServiceVersionUid())
                         .stream()
@@ -164,6 +163,7 @@ public class EvaluateService {
                     ? context.getDigitalServiceName()
                     : inventory.getName();
         }
+
         final long start = System.currentTimeMillis();
         final String organization = context.getOrganization();
         final Long taskId = task.getId();
@@ -189,11 +189,15 @@ public class EvaluateService {
                 CriterionRest::getUnit
         ));
 
+
+        // Build item referential map: item reference name -> {level, unit}
+        Map<String, ItemReferentialInfo> itemReferentialMap = referentialService.buildItemReferentialMap(context.getWorkspaceId());
         RefShortcutBO refShortcutBO = new RefShortcutBO(
                 criteriaUnitMap,
                 getShortcutMap(criteriaCodes),
                 getShortcutMap(lifecycleSteps),
-                electricityMixQuartilesCache
+                electricityMixQuartilesCache,
+                itemReferentialMap
         );
 
         final List<HypothesisRest> hypothesisRestList = referentialService.getHypotheses(organization);
@@ -263,6 +267,9 @@ public class EvaluateService {
             outVirtualEquipmentSize += saveResult.savedVirtualCount();
             outApplicationSize += saveResult.savedApplicationCount();
 
+            // to check weather workspace level data
+            long countItemImpactWorkspace= referentialGetService.countItemImpactsForWorkspace(context.getWorkspaceId());
+
             int pageNumber = 0;
             long processed = 0;
             final Sort sortByName = Sort.by("name");
@@ -302,7 +309,7 @@ public class EvaluateService {
                     // Call external tools - lib calculs
                     List<ImpactEquipementPhysique> impactEquipementPhysiqueList = evaluateNumEcoEvalService.calculatePhysicalEquipment(
                             physicalEquipment, datacenter,
-                            organization, activeCriteria, lifecycleSteps, hypothesisRestList,context.getWorkspaceId());
+                            organization, activeCriteria, lifecycleSteps, hypothesisRestList,context.getWorkspaceId(),countItemImpactWorkspace);
 
 
                     // Identify NON-CLOUD VMs for this physical equipment
@@ -415,6 +422,18 @@ public class EvaluateService {
                 (System.currentTimeMillis() - start) / 1000,
                 outPhysicalEquipmentSize, outVirtualEquipmentSize, outApplicationSize);
 
+        // Save output counts to inventory
+        if (inventory != null) {
+            inventoryRepository.updateOutputCounts(
+                    inventory.getId(),
+                    (long) outPhysicalEquipmentSize,
+                    (long) outVirtualEquipmentSize,
+                    (long) outApplicationSize
+            );
+            log.info("Saved output counts to inventory: physical={}, virtual={}, application={}",
+                    outPhysicalEquipmentSize, outVirtualEquipmentSize, outApplicationSize);
+        }
+
         // clean files if empty
         try {
             if (!evaluateReportBO.isExport()) {
@@ -526,7 +545,7 @@ public class EvaluateService {
                             virtualEquipment.getQuantity(),
                             electricity, impact.getImpactUnitaire(),
                             sipValue,
-                            null, virtualEquipment.getDurationHour(), virtualEquipment.getWorkload(), isCloudService, impact.getSource());
+                            null, virtualEquipment.getDurationHour(), virtualEquipment.getWorkload(), isCloudService,impact.getSource());
 
                     aggregationVirtualEquipments
                             .computeIfAbsent(aggregationToOutput.keyVirtualEquipment(physicalEquipment, virtualEquipment, impact, refShortcutBO, evaluateReportBO), k -> new AggValuesBO())

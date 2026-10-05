@@ -2,7 +2,7 @@
 <div class="flex justify-content-between align-items-center flex-wrap">
     <div class="flex align-items-center">
         <p-button
-            [routerLink]="changePageToInventories()"
+            (onClick)="backButton()"
             styleClass="cancel-creation-button uppercase mr-2 mb-2 lg:mb-0"
             [ariaLabel]="'inventories.return' | translate"
             icon="pi pi-arrow-left"
@@ -23,60 +23,67 @@
     </div>
 
     <div>
-        <p-button
-            *ngIf="!inventory.note && (userService.isAllowedInventoryWrite$ | async)"
-            (onClick)="sidebarVisible = true"
-            styleClass="text-gray-900 header-button"
-            [text]="true"
-            [plain]="true"
-            [ariaLabel]="'common.accessibility.addNote' | translate"
-            [label]="'common.note.add' | translate"
-            icon="pi pi-plus-circle"
-        />
+        @if (!inventory.note && (userService.isAllowedInventoryWrite$ | async)) {
+            <p-button
+                #noteButton
+                (onClick)="sidebarVisible = true"
+                styleClass="text-gray-900 header-button"
+                [text]="true"
+                [plain]="true"
+                [ariaLabel]="'common.accessibility.addNote' | translate"
+                [label]="'common.note.add' | translate"
+                icon="pi pi-plus-circle"
+            />
+        }
 
-        <p-button
-            *ngIf="inventory.note"
-            (onClick)="sidebarVisible = true"
-            styleClass="text-gray-900 header-button"
-            [text]="true"
-            [plain]="true"
-            [ariaLabel]="'common.accessibility.attachedNote' | translate"
-            [label]="'common.note.attached' | translate"
-            icon="pi pi-clipboard"
-        />
+        @if (inventory.note) {
+            <p-button
+                #noteButton
+                (onClick)="sidebarVisible = true"
+                styleClass="text-gray-900 header-button"
+                [text]="true"
+                [plain]="true"
+                [ariaLabel]="'common.accessibility.attachedNote' | translate"
+                [label]="'common.note.attached' | translate"
+                icon="pi pi-clipboard"
+            />
+        }
 
-        <p-button
-            [ariaLabel]="'common.accessibility.download' | translate"
-            styleClass="bg-black text-white header-button"
-            (onClick)="download($event)"
-            [disabled]="downloadInProgress"
-            *ngIf="userService.isAllowedInventoryRead$ | async"
-            id="export-inventory-button"
-            icon="pi pi-download"
-            [label]="'inventories-footprint.header.export' | translate"
-        />
+        @if (userService.isAllowedInventoryRead$ | async) {
+            <p-button
+                [ariaLabel]="'common.accessibility.download' | translate"
+                styleClass="bg-black text-white header-button"
+                (onClick)="download($event)"
+                [disabled]="downloadInProgress"
+                id="export-inventory-button"
+                icon="pi pi-download"
+                [label]="'inventories-footprint.header.export' | translate"
+            />
+        }
     </div>
 
     @if (sidebarVisible) {
-        <p-sidebar
+        <p-drawer
             [(visible)]="sidebarVisible"
             position="right"
             tabIndex="0"
-            styleClass="p-sidebar-md w-7"
-            (onHide)="sidebarVisible = false"
+            styleClass="w-7"
+            (onHide)="focusNewInvButton(); sidebarVisible = false"
             ariaCloseLabel="Close"
         >
             <app-common-editor
                 [content]="inventory.note?.content"
                 [title]="'Note - ' + inventory.name"
-                [showButtons]="userService.isAllowedInventoryWrite$ | async"
+                [isWriteRole]="userService.isAllowedInventoryWrite$ | async"
                 (saveValue)="noteSaveValue($event)"
-                (outClose)="sidebarVisible = $event"
-                (delete)="noteDelete($event); sidebarVisible = $event"
-                styleClass="mx-7"
+                (outClose)="focusNewInvButton(); sidebarVisible = $event"
+                (delete)="
+                    noteDelete($event); focusNewInvButton(); sidebarVisible = $event
+                "
+                styleClass="m-0"
             >
             </app-common-editor>
-        </p-sidebar>
+        </p-drawer>
     }
 </div>
-<p-confirmPopup ariaCloseLabel="close" [style]="{ width: '450px' }"></p-confirmPopup>
+<p-confirmpopup ariaCloseLabel="close" [style]="{ width: '450px' }"></p-confirmpopup>

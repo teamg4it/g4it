@@ -2,10 +2,20 @@
 <div class="flex h-screen w-screen">
     <!-- Skip to Main Content Button -->
     <button
+        #skipButton
         class="hidden-focus-button"
         (click)="focusFirstElement()"
         [attr.aria-label]="'common.skip-to-main-content' | translate"
     ></button>
+
+    @if (!isMobile()) {
+        <aside
+            class="left-sidebar hidden lg:block"
+            [attr.aria-label]="'common.main-navigation' | translate"
+        >
+            <app-left-sidebar />
+        </aside>
+    }
 
     <!-- Header -->
     <header class="header w-full fixed top-0 left-0 z-10 flex items-center" role="banner">
@@ -15,30 +25,28 @@
     <!-- Sidebar + Main content container -->
     <div class="flex w-full">
         <!-- Sidebar -->
-        @if (!isMobile()) {
-            <aside class="left-sidebar hidden lg:block">
-                <app-left-sidebar />
-            </aside>
-        }
+
         <!-- Main content area -->
-        <main class="flex-1" #mainContent>
+        <main role="main" class="flex-1" #mainContent>
             <router-outlet></router-outlet>
         </main>
         @if (spaceSidebarVisible) {
             <!-- Create workspace -->
-            <p-sidebar
+            <p-drawer
                 [(visible)]="spaceSidebarVisible"
                 position="right"
-                styleClass="p-sidebar-lg"
+                styleClass="drawer-lg"
+                appendTo="body"
                 ariaCloseLabel="Close"
                 [fullScreen]="isZoom125()"
             >
-                <ng-template pTemplate="headless">
+                <ng-template #headless>
                     <app-workspace
                         (sidebarVisibleChange)="spaceSidebarVisible = $event"
                     />
                 </ng-template>
-            </p-sidebar>
+            </p-drawer>
         }
+        <footer role="contentinfo"></footer>
     </div>
 </div>

@@ -16,6 +16,7 @@
 
 .login-pf-page {
     margin: 0px;
+    padding-top: 7vh;
 }
 
 .login-pf-page-header {
@@ -119,3 +120,13 @@ button#kc-current-locale-link::after {
     padding-left: 10px;
     padding-right: 10px;
     }
+
+@media (max-width: 767px) {
+    #kc-header {
+        padding-top: 25px;
+    }
+
+    #kc-locale {
+        top: 60px;
+    }
+}

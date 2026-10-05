@@ -18,10 +18,9 @@ describe("EquipmentsCardComponent", () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [EquipmentsCardComponent, MonthYearPipe],
-            imports: [TranslateModule.forRoot(), DecimalsPipe],
-            providers: [TranslatePipe, TranslateService],
-        }).compileComponents();
+    imports: [TranslateModule.forRoot(), DecimalsPipe, EquipmentsCardComponent, MonthYearPipe],
+    providers: [TranslatePipe, TranslateService],
+}).compileComponents();
 
         fixture = TestBed.createComponent(EquipmentsCardComponent);
         component = fixture.componentInstance;

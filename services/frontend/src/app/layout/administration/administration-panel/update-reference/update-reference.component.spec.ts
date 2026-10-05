@@ -23,7 +23,7 @@ describe("UpdateReferenceComponent", () => {
 
     const mockFile = new File(["test,data"], "test.csv", { type: "text/csv" });
 
-    beforeEach(() => {
+    beforeEach(async () => {
         messageServiceMock = jasmine.createSpyObj("MessageService", ["add"]);
         csvImportServiceMock = jasmine.createSpyObj("CsvImportDataService", [
             "getCsvEndpoints",
@@ -32,13 +32,13 @@ describe("UpdateReferenceComponent", () => {
         ]);
         csvImportServiceMock.getCsvEndpoints.and.returnValue(mockEndpoints);
 
-        TestBed.configureTestingModule({
+        await TestBed.configureTestingModule({
             providers: [
                 UpdateReferenceComponent,
                 { provide: MessageService, useValue: messageServiceMock },
                 { provide: CsvImportDataService, useValue: csvImportServiceMock },
             ],
-        });
+        }).compileComponents();
 
         component = TestBed.inject(UpdateReferenceComponent);
     });

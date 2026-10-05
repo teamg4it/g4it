@@ -105,6 +105,7 @@ public final class Constants {
      * BATCH SIZE
      */
     public static final int BATCH_SIZE = 10000;
+    public static final int BATCH_SIZE_10000 = 10000;
     /**
      * CSV EXTENSION
      */
@@ -123,6 +124,8 @@ public final class Constants {
     public static final String NETWORK_DATE_WITHDRAWAL = "2021-01-01";
 
     public static final String RENEWAL_SUCCESS_MESSAGE = "Renewal successful extended";
+
+    public static final int BATCH_SIZE_50000 = 50000;
 
     private Constants() {
         throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");

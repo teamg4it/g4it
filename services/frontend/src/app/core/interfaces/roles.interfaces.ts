@@ -16,7 +16,7 @@ export enum Role {
     EcoMindAiWrite = "ROLE_ECO_MIND_AI_WRITE",
 }
 
-export const BasicRoles = [
+export const OrgBasicRoles = [
     Role.InventoryRead,
     Role.InventoryWrite,
     Role.DigitalServiceRead,
@@ -24,6 +24,18 @@ export const BasicRoles = [
     Role.EcoMindAiRead,
     Role.EcoMindAiWrite,
 ];
+
+export const BasicRoles = [
+    Role.InventoryRead,
+    Role.InventoryWrite,
+    Role.DigitalServiceRead,
+    Role.DigitalServiceWrite,
+];
+
+export const BasicSopraRoles = [
+    Role.DigitalServiceRead,
+    Role.DigitalServiceWrite,
+]
 
 export const RoleRightMap: any = {
     ROLE_INVENTORY_READ: "read",

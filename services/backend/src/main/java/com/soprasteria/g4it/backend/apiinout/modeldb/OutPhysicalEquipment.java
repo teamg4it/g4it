@@ -74,6 +74,10 @@ public class OutPhysicalEquipment {
     private String reference;
     private String hostingEfficiency;
 
+    private String level;
+
+    private String impactUnit;
+
     private List<String> commonFilters;
 
     private List<String> filters;

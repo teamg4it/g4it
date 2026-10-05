@@ -1,32 +1,55 @@
 import {
     Component,
     EventEmitter,
+    input,
     Input,
     OnChanges,
     Output,
     SecurityContext,
     SimpleChanges,
 } from "@angular/core";
+import { FormsModule } from "@angular/forms";
 import { DomSanitizer } from "@angular/platform-browser";
-import { TranslateService } from "@ngx-translate/core";
+import { TranslatePipe, TranslateService } from "@ngx-translate/core";
 import { ConfirmationService, MessageService } from "primeng/api";
+import { Button } from "primeng/button";
+import { ConfirmPopupModule } from "primeng/confirmpopup";
+import { EditorModule } from "primeng/editor";
+import { ScrollPanel } from "primeng/scrollpanel";
+import { ToastModule } from "primeng/toast";
+import { AutofocusDirective } from "../../../core/directives/auto-focus.directive";
 
 @Component({
     selector: "app-common-editor",
     templateUrl: "./common-editor.component.html",
     providers: [ConfirmationService, MessageService],
+    standalone: true,
+    imports: [
+        AutofocusDirective,
+        EditorModule,
+        FormsModule,
+        ToastModule,
+        ConfirmPopupModule,
+        Button,
+        TranslatePipe,
+        ScrollPanel,
+    ],
 })
 export class CommonEditorComponent implements OnChanges {
     @Input() styleClass = "";
     @Input() maxContentLength = 20000;
     @Input() content: string | undefined = undefined;
-    @Input() showButtons: boolean | null = false;
+    @Input() isWriteRole: boolean | null = false;
+    showTitle = input(true);
+    showButtons = input(true);
+    isScroll = input(true);
     @Input() title = "Note";
     escape: boolean = false;
 
     @Output() outClose: EventEmitter<any> = new EventEmitter();
     @Output() delete: EventEmitter<any> = new EventEmitter();
     @Output() saveValue: EventEmitter<string> = new EventEmitter();
+    @Output() contentChange: EventEmitter<string> = new EventEmitter();
 
     editorTextValue = "";
     editorTextValueUnmodified = "";
@@ -52,9 +75,34 @@ export class CommonEditorComponent implements OnChanges {
         }
     }
 
+    onTextChange(value: string) {
+        this.contentChange.emit(value);
+    }
+
     removeStylesFromText(htmlText: string) {
         let html = new DOMParser().parseFromString(htmlText, "text/html");
         return html.body.textContent ?? "";
+    }
+
+    /**
+     * Validates and returns sanitized content, or null if validation fails
+     * Shows error messages via MessageService
+     */
+    validateAndGetSanitizedContent(): string | null {
+        if (this.editorTextValue.length > this.maxContentLength) {
+            this.messageService.add({
+                severity: "error",
+                summary: this.translate.instant("common.note.content-length-exceeded"),
+            });
+            return null;
+        }
+
+        const sanitizedData: any = this.sanitizer.sanitize(
+            SecurityContext.HTML,
+            this.editorTextValue,
+        );
+
+        return sanitizedData || null;
     }
 
     saveContent() {
@@ -68,20 +116,7 @@ export class CommonEditorComponent implements OnChanges {
             });
             return;
         }
-
-        if (this.editorTextValue.length > this.maxContentLength) {
-            this.messageService.add({
-                severity: "error",
-                summary: this.translate.instant("common.note.content-length-exceeded"),
-            });
-            return;
-        }
-
-        const sanitizedData: any = this.sanitizer.sanitize(
-            SecurityContext.HTML,
-            this.editorTextValue,
-        );
-
+        const sanitizedData = this.validateAndGetSanitizedContent();
         if (sanitizedData) {
             this.saveValue.emit(sanitizedData);
         }
@@ -95,7 +130,7 @@ export class CommonEditorComponent implements OnChanges {
             message: this.translate.instant("common.cancelConfirmMsgForEditor"),
             accept: () => {
                 this.editorTextValue = this.editorTextValueUnmodified;
-                this.outClose.emit();
+                this.outClose.emit(false);
             },
             reject: () => {},
         });
@@ -109,7 +144,7 @@ export class CommonEditorComponent implements OnChanges {
             message: this.translate.instant("common.confirmMessageForEditor"),
             accept: () => {
                 this.editorTextValue = "";
-                this.delete.emit();
+                this.delete.emit(false);
             },
             reject: () => {},
         });

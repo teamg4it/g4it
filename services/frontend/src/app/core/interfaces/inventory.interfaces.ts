@@ -28,6 +28,9 @@ export interface Inventory {
     lastTaskEvaluating?: TaskRest;
     workspaceId?: number;
     expiryDate?: string;
+    outApplicationCount?: number;
+    outPhysicalCount?: number;
+    outVirtualCount?: number;
 }
 
 export interface CreateInventory {

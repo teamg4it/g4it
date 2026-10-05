@@ -5,12 +5,20 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component, DestroyRef, effect, inject, OnInit } from "@angular/core";
+import { Component, DestroyRef, effect, inject, OnInit, signal } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import {
+    FormBuilder,
+    FormGroup,
+    FormsModule,
+    ReactiveFormsModule,
+    Validators,
+} from "@angular/forms";
 import { Router } from "@angular/router";
-import { TranslateService } from "@ngx-translate/core";
-import { ConfirmationService, MessageService } from "primeng/api";
+import { TranslatePipe, TranslateService } from "@ngx-translate/core";
+import { ConfirmationService, MessageService, PrimeTemplate } from "primeng/api";
+import { Button } from "primeng/button";
+import { SelectModule } from "primeng/select";
 import { firstValueFrom, take } from "rxjs";
 import {
     WorkspaceCriteriaRest,
@@ -24,11 +32,37 @@ import { UserDataService } from "src/app/core/service/data/user-data.service";
 import { GlobalStoreService } from "src/app/core/store/global.store";
 import { Constants } from "src/constants";
 import { environment } from "src/environments/environment";
+import { CriteriaPopupComponent } from "../../../common/criteria-popup/criteria-popup.component";
+
+import { ConfirmDialogModule } from "primeng/confirmdialog";
+import { DrawerModule } from "primeng/drawer";
+import { InputTextModule } from "primeng/inputtext";
+import { ScrollPanelModule } from "primeng/scrollpanel";
+import { TableModule } from "primeng/table";
+import { ToastModule } from "primeng/toast";
+import { AddWorkspaceComponent } from "./add-workspace/add-workspace.component";
 
 @Component({
     selector: "app-users",
     templateUrl: "./users.component.html",
     providers: [ConfirmationService, MessageService],
+    standalone: true,
+    imports: [
+        SelectModule,
+        FormsModule,
+        Button,
+        CriteriaPopupComponent,
+        ReactiveFormsModule,
+        InputTextModule,
+        ScrollPanelModule,
+        TableModule,
+        PrimeTemplate,
+        DrawerModule,
+        AddWorkspaceComponent,
+        ToastModule,
+        ConfirmDialogModule,
+        TranslatePipe,
+    ],
 })
 export class UsersComponent implements OnInit {
     private readonly destroyRef = inject(DestroyRef);
@@ -53,6 +87,7 @@ export class UsersComponent implements OnInit {
     sidebarCreateMode = false; // true for create mode, false for update mode
     sidebarVisible = false;
     errorMessageVisible = false;
+    private drawerTriggerRowIndex: number | null = null;
 
     displayPopup = false;
     selectedCriteriaIS: string[] = [];
@@ -63,6 +98,8 @@ export class UsersComponent implements OnInit {
 
     isEcoMindModuleEnabled: boolean = environment.isEcomindEnabled;
     isEcoMindEnabledForCurrentOrganizationSelected: boolean = false;
+
+    isConfirmDialogVisible = signal(false);
 
     constructor(
         private readonly administrationService: AdministrationService,
@@ -122,10 +159,10 @@ export class UsersComponent implements OnInit {
 
         user.isWorkspaceAdmin = user.roles.includes(Role.WorkspaceAdmin);
         user.isOrganizationAdmin = user.roles.includes(Role.OrganizationAdmin);
-        user.isModule = this.getRole(user.roles, "INVENTORY_");
-        user.dsModule = this.getRole(user.roles, "DIGITAL_SERVICE_");
-        user.role = this.getRole(user.roles, "ADMINISTRATOR");
-        user.ecomindModule = this.getRole(user.roles, "ECO_MIND_AI_");
+        user.isModule = this.getRole(user, "INVENTORY_");
+        user.dsModule = this.getRole(user, "DIGITAL_SERVICE_");
+        user.role = this.getRole(user, "ADMINISTRATOR");
+        user.ecomindModule = this.getRole(user, "ECO_MIND_AI_");
         return user;
     }
 
@@ -163,8 +200,18 @@ export class UsersComponent implements OnInit {
         );
     }
 
-    getRole(roles: string[], type: string) {
+    getRole(user: any, type: string) {
+        const roles: string[] = user.roles;
         if (!roles || roles.length === 0) return "";
+        const isSopraUser = this.userService.isSopraUser(user.email);
+
+        if (type === "INVENTORY_" && isSopraUser) {
+            return this.getModuleRole(roles, Role.InventoryWrite, Role.InventoryRead);
+        }
+
+        if (type === "ECO_MIND_AI_") {
+            return this.getModuleRole(roles, Role.EcoMindAiWrite, Role.EcoMindAiRead);
+        }
 
         if (type === "ADMINISTRATOR") {
             return this.isAdmin(roles)
@@ -187,60 +234,87 @@ export class UsersComponent implements OnInit {
         return userRoles[0] || "";
     }
 
+    private getModuleRole(roles: string[], writeRole: Role, readRole: Role): string {
+        if (roles.includes(writeRole)) return "administration.role.write";
+        if (roles.includes(readRole)) return "administration.role.read";
+        return "";
+    }
+
     async deleteUserDetails(event: Event, user: UserDetails) {
         const userId = (await firstValueFrom(this.userService.user$)).id;
-        this.confirmationService.confirm({
-            target: event.target as EventTarget,
-            message: this.translate.instant("administration.user.delete-message", {
-                FirstName: user.firstName,
-                LastName: user.lastName,
-            }),
-            header: this.translate.instant("administration.delete-confirmation"),
-            icon: "pi pi-info-circle",
-            acceptLabel: this.translate.instant("administration.delete"),
-            acceptButtonStyleClass: "p-button-danger center",
-            rejectButtonStyleClass: Constants.CONSTANT_VALUE.NONE,
-            acceptIcon: Constants.CONSTANT_VALUE.NONE,
-            rejectIcon: Constants.CONSTANT_VALUE.NONE,
-            rejectVisible: false,
+        setTimeout(() => {
+            this.confirmationService.confirm({
+                target: event.target as EventTarget,
+                message: this.translate.instant("administration.user.delete-message", {
+                    FirstName: user.firstName,
+                    LastName: user.lastName,
+                }),
+                header: this.translate.instant("administration.delete-confirmation"),
+                icon: "pi pi-info-circle",
+                acceptLabel: this.translate.instant("administration.delete"),
+                acceptButtonStyleClass: "p-button-danger center",
+                rejectButtonStyleClass: Constants.CONSTANT_VALUE.NONE,
+                acceptIcon: Constants.CONSTANT_VALUE.NONE,
+                rejectIcon: Constants.CONSTANT_VALUE.NONE,
+                rejectVisible: false,
 
-            accept: () => {
-                let body = {
-                    workspaceId: this.workspace.workspaceId,
-                    users: [
-                        {
-                            userId: user.id,
-                            roles: user?.roles,
-                        },
-                    ],
-                };
-                this.administrationService.deleteUserDetails(body).subscribe((res) => {
-                    const currentUserRoles = body.users.find(
-                        (u) => u.userId === userId,
-                    )?.roles;
-                    if (currentUserRoles?.includes(Role.WorkspaceAdmin)) {
-                        this.userDataService
-                            .fetchUserInfo()
-                            .pipe(take(1))
-                            .subscribe(() => {
-                                this.router.navigateByUrl(Constants.WELCOME_PAGE);
-                            });
-                    } else {
-                        this.searchList();
-                    }
-                });
-            },
+                accept: () => this.handleAcceptEvent(user, userId),
+            });
+        });
+    }
+
+    handleAcceptEvent(user: UserDetails, userId: number) {
+        let body = {
+            workspaceId: this.workspace.workspaceId,
+            users: [
+                {
+                    userId: user.id,
+                    roles: user?.roles,
+                },
+            ],
+        };
+        this.administrationService.deleteUserDetails(body).subscribe((res) => {
+            const currentUserRoles = body.users.find((u) => u.userId === userId)?.roles;
+            if (currentUserRoles?.includes(Role.WorkspaceAdmin)) {
+                this.userDataService
+                    .fetchUserInfo()
+                    .pipe(take(1))
+                    .subscribe(() => {
+                        void this.router.navigateByUrl(Constants.WELCOME_PAGE);
+                    });
+            } else {
+                this.searchList();
+            }
+            this.isConfirmDialogVisible.set(false);
         });
     }
 
     openSidepanelForAddORUpdateOrg(
         user: UserDetails,
         isEcoMindEnabledForCurrentOrganizationSelected: boolean,
+        rowIndex: number,
     ) {
+        this.drawerTriggerRowIndex = rowIndex;
         this.sidebarVisible = true;
         this.sidebarCreateMode = user.roles.length === 0;
         this.userDetail = user;
         this.userDetailEcoMind = isEcoMindEnabledForCurrentOrganizationSelected;
+    }
+
+    closeSidebar(): void {
+        this.clearForm = true;
+        this.searchList();
+        this.sidebarVisible = false;
+
+        const rowIndex = this.drawerTriggerRowIndex;
+        this.drawerTriggerRowIndex = null;
+        // get focus on edit/add after drawer close
+        setTimeout(() => {
+            document
+                .getElementById(`user-actions-${rowIndex}`)
+                ?.querySelector<HTMLElement>("button")
+                ?.focus();
+        }, 200);
     }
 
     displayPopupFct() {

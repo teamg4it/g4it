@@ -24,19 +24,18 @@ describe("DigitalServicesItemComponent", () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [DigitalServicesItemComponent],
-            imports: [HttpClientTestingModule],
-            providers: [
-                UserService,
-                UserDataService,
-                MessageService,
-                { provide: Router, useValue: routerSpy },
-                { provide: TranslateService, useValue: translateServiceStub },
-                { provide: ConfirmationService, useValue: confirmationServiceStub },
-                { provide: ActivatedRoute, useValue: { snapshot: {}, params: of({}) } },
-            ],
-            schemas: [NO_ERRORS_SCHEMA], // Ignore unknown elements/attributes in template
-        }).compileComponents();
+    imports: [HttpClientTestingModule, DigitalServicesItemComponent],
+    providers: [
+        UserService,
+        UserDataService,
+        MessageService,
+        { provide: Router, useValue: routerSpy },
+        { provide: TranslateService, useValue: translateServiceStub },
+        { provide: ConfirmationService, useValue: confirmationServiceStub },
+        { provide: ActivatedRoute, useValue: { snapshot: {}, params: of({}) } },
+    ],
+    schemas: [NO_ERRORS_SCHEMA], // Ignore unknown elements/attributes in template
+}).compileComponents();
     });
 
     beforeEach(() => {

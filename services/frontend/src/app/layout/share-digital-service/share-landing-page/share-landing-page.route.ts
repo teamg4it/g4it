@@ -1,12 +1,14 @@
 import { Routes } from "@angular/router";
 import { SharedAccessGuard } from "src/app/guard/shared-ds.guard";
 import { Constants } from "src/constants";
-import { ShareLandingPageComponent } from "./share-landing-page.component";
 
 export const appRoutes: Routes = [
     {
         path: "",
-        component: ShareLandingPageComponent,
+        loadComponent: () =>
+            import("./share-landing-page.component").then(
+                (m) => m.ShareLandingPageComponent,
+            ),
         children: [
             {
                 path: `:share-token/dsv/:id/${Constants.USEFUL_INFORMATION}`,
@@ -27,8 +29,8 @@ export const appRoutes: Routes = [
             {
                 path: ":share-token/dsv/:id/footprint",
                 loadChildren: () =>
-                    import("../share-digital-service.module").then(
-                        (m) => m.ShareDigitalServiceModule,
+                    import("../shared-digital-service.route").then(
+                        (m) => m.shareDsRoutes,
                     ),
                 canActivate: [SharedAccessGuard],
             },

@@ -5,25 +5,42 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component, Input, OnDestroy, OnInit } from "@angular/core";
+import { AsyncPipe } from "@angular/common";
+import { Component, Input, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { Router } from "@angular/router";
-import { TranslateService } from "@ngx-translate/core";
+import { TranslatePipe, TranslateService } from "@ngx-translate/core";
 import { saveAs } from "file-saver";
 import { ConfirmationService, MessageService } from "primeng/api";
+import { Button } from "primeng/button";
+import { ConfirmPopupModule } from "primeng/confirmpopup";
+import { DrawerModule } from "primeng/drawer";
+import { ToastModule } from "primeng/toast";
 import { Subject, firstValueFrom, takeUntil } from "rxjs";
 import { Inventory } from "src/app/core/interfaces/inventory.interfaces";
-import { Note } from "src/app/core/interfaces/note.interface";
 import { Organization, Workspace } from "src/app/core/interfaces/user.interfaces";
 import { InventoryService } from "src/app/core/service/business/inventory.service";
 import { UserService } from "src/app/core/service/business/user.service";
 import { FootprintDataService } from "src/app/core/service/data/footprint-data.service";
 import { delay } from "src/app/core/utils/time";
 import { Constants } from "src/constants";
+import { MonthYearPipe } from "../../../core/pipes/monthyear.pipe";
+import { CommonEditorComponent } from "../../common/common-editor/common-editor.component";
 
 @Component({
     selector: "app-inventories-header-footprint",
     templateUrl: "./inventories-header-footprint.component.html",
     providers: [ConfirmationService, MessageService],
+    standalone: true,
+    imports: [
+        ToastModule,
+        Button,
+        DrawerModule,
+        CommonEditorComponent,
+        ConfirmPopupModule,
+        AsyncPipe,
+        TranslatePipe,
+        MonthYearPipe,
+    ],
 })
 export class InventoriesHeaderFootprintComponent implements OnInit, OnDestroy {
     @Input() inventory: Inventory = {} as Inventory;
@@ -38,6 +55,7 @@ export class InventoriesHeaderFootprintComponent implements OnInit, OnDestroy {
 
     selectedWorkspace = "";
     selectedOrganization = "";
+    @ViewChild("noteButton") noteButton?: Button;
 
     constructor(
         private readonly inventoryService: InventoryService,
@@ -63,6 +81,10 @@ export class InventoriesHeaderFootprintComponent implements OnInit, OnDestroy {
             .subscribe((workspace: Workspace) => {
                 this.selectedWorkspace = workspace.name;
             });
+    }
+
+    backButton() {
+        this.router.navigateByUrl(this.changePageToInventories());
     }
 
     changePageToInventories() {
@@ -97,11 +119,12 @@ export class InventoriesHeaderFootprintComponent implements OnInit, OnDestroy {
     noteSaveValue(event: any) {
         this.inventory.note = {
             content: event,
-        } as Note;
+        };
         this.inventoryService
             .updateInventory(this.inventory)
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe((res) => {
+                this.focusNewInvButton();
                 this.sidebarVisible = false;
                 this.messageService.add({
                     severity: "success",
@@ -123,6 +146,12 @@ export class InventoriesHeaderFootprintComponent implements OnInit, OnDestroy {
                     sticky: false,
                 });
             });
+    }
+
+    focusNewInvButton(): void {
+        setTimeout(() => {
+            this.noteButton?.el?.nativeElement?.querySelector("button")?.focus();
+        }, 200);
     }
 
     ngOnDestroy() {

@@ -5,15 +5,8 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { RouterModule, Routes } from "@angular/router";
+import { Routes } from "@angular/router";
 import { TitleResolver } from "../common/title-resolver.service";
-import { DigitalServicesEcomindParametersComponent } from "./digital-services-ecomind-parameters/digital-services-ecomind-parameters.component";
-import { DigitalServicesFootprintDashboardComponent } from "./digital-services-footprint-dashboard/digital-services-footprint-dashboard.component";
-import { DigitalServicesFootprintComponent } from "./digital-services-footprint.component";
-import { DigitalServicesResourcesComponent } from "./digital-services-resources/digital-services-resources.component";
-import { PanelCreateServerComponent } from "./digital-services-servers/side-panel/create-server/create-server.component";
-import { PanelListVmComponent } from "./digital-services-servers/side-panel/list-vm/list-vm.component";
-import { PanelServerParametersComponent } from "./digital-services-servers/side-panel/server-parameters/server-parameters.component";
 
 const titleResolveObject = {
     resolve: {
@@ -33,40 +26,62 @@ const ecomindTitleResolveObject = {
     },
 };
 
-const routes: Routes = [
+// Angular 21: Export routes array for lazy loading with standalone components
+export const DIGITAL_SERVICES_FOOTPRINT_ROUTES: Routes = [
     {
         path: "",
-        component: DigitalServicesFootprintComponent,
+        loadComponent: () =>
+            import("./digital-services-footprint.component").then(
+                (m) => m.DigitalServicesFootprintComponent,
+            ),
         children: [
             {
                 path: "dashboard",
-                component: DigitalServicesFootprintDashboardComponent,
+                loadComponent: () =>
+                    import(
+                        "./digital-services-footprint-dashboard/digital-services-footprint-dashboard.component"
+                    ).then((m) => m.DigitalServicesFootprintDashboardComponent),
             },
             {
                 path: "resources",
-                component: DigitalServicesResourcesComponent,
+                loadComponent: () =>
+                    import(
+                        "./digital-services-resources/digital-services-resources.component"
+                    ).then((m) => m.DigitalServicesResourcesComponent),
                 ...titleResolveObject,
                 children: [
                     {
                         path: "panel-create",
-                        component: PanelCreateServerComponent,
+                        loadComponent: () =>
+                            import(
+                                "./digital-services-servers/side-panel/create-server/create-server.component"
+                            ).then((m) => m.PanelCreateServerComponent),
                         ...titleResolveObject,
                     },
                     {
                         path: "panel-parameters",
-                        component: PanelServerParametersComponent,
+                        loadComponent: () =>
+                            import(
+                                "./digital-services-servers/side-panel/server-parameters/server-parameters.component"
+                            ).then((m) => m.PanelServerParametersComponent),
                         ...titleResolveObject,
                     },
                     {
                         path: "panel-vm",
-                        component: PanelListVmComponent,
+                        loadComponent: () =>
+                            import(
+                                "./digital-services-servers/side-panel/list-vm/list-vm.component"
+                            ).then((m) => m.PanelListVmComponent),
                         ...titleResolveObject,
                     },
                 ],
             },
             {
                 path: "ecomind-parameters",
-                component: DigitalServicesEcomindParametersComponent,
+                loadComponent: () =>
+                    import(
+                        "./digital-services-ecomind-parameters/digital-services-ecomind-parameters.component"
+                    ).then((m) => m.DigitalServicesEcomindParametersComponent),
                 ...ecomindTitleResolveObject,
             },
 
@@ -78,5 +93,3 @@ const routes: Routes = [
         ],
     },
 ];
-
-export const digitalServicesFootprintRouter = RouterModule.forChild(routes);

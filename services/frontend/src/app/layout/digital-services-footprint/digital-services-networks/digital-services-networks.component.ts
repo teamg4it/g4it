@@ -14,8 +14,10 @@ import {
     signal,
     ViewChild,
 } from "@angular/core";
+import { TranslateModule } from "@ngx-translate/core";
 import { addYears } from "date-fns";
 import { MessageService } from "primeng/api";
+import { DrawerModule } from "primeng/drawer";
 import { firstValueFrom } from "rxjs";
 import {
     DigitalService,
@@ -28,11 +30,19 @@ import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
 import { InPhysicalEquipmentsService } from "src/app/core/service/data/in-out/in-physical-equipments.service";
 import { DigitalServiceStoreService } from "src/app/core/store/digital-service.store";
+import { DigitalServiceTableComponent } from "../../common/digital-service-table/digital-service-table.component";
 import { DigitalServicesNetworksSidePanelComponent } from "./digital-services-networks-side-panel/digital-services-networks-side-panel.component";
 @Component({
     selector: "app-digital-services-networks",
     templateUrl: "./digital-services-networks.component.html",
     providers: [MessageService],
+    standalone: true,
+    imports: [
+        DigitalServiceTableComponent,
+        DrawerModule,
+        DigitalServicesNetworksSidePanelComponent,
+        TranslateModule,
+    ],
 })
 export class DigitalServicesNetworksComponent implements OnInit {
     digitalServiceStore = inject(DigitalServiceStoreService);
@@ -116,15 +126,7 @@ export class DigitalServicesNetworksComponent implements OnInit {
     }
 
     resetNetwork() {
-        this.existingNames.set(
-            this.networkData()
-                .filter((c) =>
-                    this.network.idFront === undefined
-                        ? true
-                        : this.network.name !== c.name,
-                )
-                .map((network) => network.name),
-        );
+        this.existingNames.set(this.networkData().map((network) => network.name));
         this.network = {
             name: this.digitalServicesBusiness.getNextAvailableName(
                 this.existingNames(),
@@ -184,5 +186,18 @@ export class DigitalServicesNetworksComponent implements OnInit {
             return yearlyQuantityOfGbExchanged / type.annualQuantityOfGo;
         }
         return 0;
+    }
+
+    focusNetworkButton() {
+        setTimeout(() => {
+            if (this.network.idFront !== undefined) {
+                document
+                    .getElementById("add-networks" + this.network.idFront)
+                    ?.querySelector("button")
+                    ?.focus();
+            } else {
+                document.getElementById("add-networks")?.querySelector("button")?.focus();
+            }
+        }, 400);
     }
 }

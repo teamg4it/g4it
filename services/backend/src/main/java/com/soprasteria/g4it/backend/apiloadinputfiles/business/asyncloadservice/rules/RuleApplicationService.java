@@ -8,13 +8,16 @@
 
 package com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.rules;
 
+import com.soprasteria.g4it.backend.apiinout.modeldb.InPhysicalEquipment;
 import com.soprasteria.g4it.backend.common.model.LineError;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class RuleApplicationService {

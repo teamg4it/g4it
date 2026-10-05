@@ -34,4 +34,6 @@ export const environment = {
         },
     },
     isEcomindEnabled: true,
+    applicationMaxLimit: "${APPLICATION_MAX_LIMIT}",
+    equipmentMaxLimit: "${EQUIPMENT_MAX_LIMIT}",
 };

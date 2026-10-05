@@ -1,0 +1,18 @@
+<div class="flex align-items-center gap-2">
+    <p-button
+        (onClick)="toggleAxis()"
+        [label]="
+            isInverted()
+                ? ('inventories-footprint.on' | translate)
+                : ('inventories-footprint.off' | translate)
+        "
+        [ariaLabel]="'inventories-footprint.inverse-axis' | translate"
+        class="inverse-axis-toggle ml-3 w-4rem h-2rem"
+        styleClass="w-full h-full"
+        [ngClass]="{
+            on: isInverted(),
+            off: !isInverted(),
+        }"
+    />
+    <span>{{ "inventories-footprint.inverse-axis" | translate }}</span>
+</div>

@@ -1,8 +1,5 @@
 import { Routes } from "@angular/router";
 import { TitleResolver } from "../common/title-resolver.service";
-import { DigitalServicesFootprintDashboardComponent } from "../digital-services-footprint/digital-services-footprint-dashboard/digital-services-footprint-dashboard.component";
-import { DigitalServicesResourcesComponent } from "../digital-services-footprint/digital-services-resources/digital-services-resources.component";
-import { ShareDigitalServiceComponent } from "./share-digital-service.component";
 const titleResolveObject = {
     resolve: {
         title: TitleResolver,
@@ -16,7 +13,10 @@ const titleResolveObject = {
 export const shareDsRoutes: Routes = [
     {
         path: "",
-        component: ShareDigitalServiceComponent,
+        loadComponent: () =>
+            import("./share-digital-service.component").then(
+                (m) => m.ShareDigitalServiceComponent,
+            ),
         children: [
             {
                 path: "",
@@ -25,12 +25,18 @@ export const shareDsRoutes: Routes = [
             },
             {
                 path: "dashboard",
-                component: DigitalServicesFootprintDashboardComponent,
+                loadComponent: () =>
+                    import(
+                        "../digital-services-footprint/digital-services-footprint-dashboard/digital-services-footprint-dashboard.component"
+                    ).then((m) => m.DigitalServicesFootprintDashboardComponent),
                 ...titleResolveObject,
             },
             {
                 path: "resources",
-                component: DigitalServicesResourcesComponent,
+                loadComponent: () =>
+                    import(
+                        "../digital-services-footprint/digital-services-resources/digital-services-resources.component"
+                    ).then((m) => m.DigitalServicesResourcesComponent),
                 ...titleResolveObject,
             },
         ],

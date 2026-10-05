@@ -16,6 +16,7 @@
                 <div class="ml-3 pb-2 pt-3">
                     <div class="field-checkbox">
                         <p-checkbox
+                            inputId="criteria-all-is"
                             [ngModel]="
                                 selectedCriteriaIS.length === criteriaList.length
                                     ? ['All']
@@ -23,21 +24,30 @@
                             "
                             (ngModelChange)="onAllSelectedChange($event, true)"
                             value="All"
-                            [label]="'common.all' | translate"
                             [ariaLabel]="'common.all' | translate"
-                        />
+                        ></p-checkbox>
+                        <label for="criteria-all-is">{{
+                            "common.all" | translate
+                        }}</label>
                     </div>
                 </div>
                 <div class="flex gap-2 flex-wrap mx-3">
-                    <div *ngFor="let criteria of criteriaList" class="field-checkbox">
-                        <p-checkbox
-                            [(ngModel)]="selectedCriteriaIS"
-                            [value]="criteria"
-                            (onChange)="onCriteriaChange()"
-                            [label]="'criteria.' + criteria + '.title' | translate"
-                            [ariaLabel]="'criteria.' + criteria + '.title' | translate"
-                        ></p-checkbox>
-                    </div>
+                    @for (criteria of criteriaList; track criteria) {
+                        <div class="field-checkbox">
+                            <p-checkbox
+                                [inputId]="'criteria-is-' + criteria"
+                                [(ngModel)]="selectedCriteriaIS"
+                                [value]="criteria"
+                                (onChange)="onCriteriaChange()"
+                                [ariaLabel]="
+                                    'criteria.' + criteria + '.title' | translate
+                                "
+                            ></p-checkbox>
+                            <label [attr.for]="'criteria-is-' + criteria">{{
+                                "criteria." + criteria + ".title" | translate
+                            }}</label>
+                        </div>
+                    }
                 </div>
             } @else {
                 <div>
@@ -45,6 +55,7 @@
                     <div class="ml-5">
                         <div class="field-checkbox">
                             <p-checkbox
+                                inputId="criteria-workspace-all-is"
                                 [ngModel]="
                                     selectedCriteriaIS.length === criteriaList.length
                                         ? ['All']
@@ -52,29 +63,39 @@
                                 "
                                 (ngModelChange)="onAllSelectedChange($event, true)"
                                 value="All"
-                                [label]="'common.all' | translate"
                                 [ariaLabel]="'common.all' | translate"
-                            />
+                            ></p-checkbox>
+                            <label for="criteria-workspace-all-is">{{
+                                "common.all" | translate
+                            }}</label>
                         </div>
                     </div>
                 </div>
 
                 <div class="flex gap-2 flex-wrap m-5">
-                    <div *ngFor="let criteria of criteriaList" class="field-checkbox">
-                        <p-checkbox
-                            [(ngModel)]="selectedCriteriaIS"
-                            [value]="criteria"
-                            (onChange)="onCriteriaChange()"
-                            [label]="'criteria.' + criteria + '.title' | translate"
-                            [ariaLabel]="'criteria.' + criteria + '.title' | translate"
-                        ></p-checkbox>
-                    </div>
+                    @for (criteria of criteriaList; track criteria) {
+                        <div class="field-checkbox">
+                            <p-checkbox
+                                [inputId]="'criteria-workspace-is-' + criteria"
+                                [(ngModel)]="selectedCriteriaIS"
+                                [value]="criteria"
+                                (onChange)="onCriteriaChange()"
+                                [ariaLabel]="
+                                    'criteria.' + criteria + '.title' | translate
+                                "
+                            ></p-checkbox>
+                            <label [attr.for]="'criteria-workspace-is-' + criteria">{{
+                                "criteria." + criteria + ".title" | translate
+                            }}</label>
+                        </div>
+                    }
                 </div>
                 <div>
                     <h3>{{ "administration.user.ds-header" | translate }}</h3>
                     <div class="ml-5">
                         <div class="field-checkbox">
                             <p-checkbox
+                                inputId="criteria-workspace-all-ds"
                                 [ngModel]="
                                     selectedCriteriaDS.length === criteriaList.length
                                         ? ['All']
@@ -82,23 +103,32 @@
                                 "
                                 (ngModelChange)="onAllSelectedChange($event, false)"
                                 value="All"
-                                [label]="'common.all' | translate"
                                 [ariaLabel]="'common.all' | translate"
-                            />
+                            ></p-checkbox>
+                            <label for="criteria-workspace-all-ds">{{
+                                "common.all" | translate
+                            }}</label>
                         </div>
                     </div>
                 </div>
 
                 <div class="flex gap-2 flex-wrap m-5">
-                    <div *ngFor="let criteria of criteriaList" class="field-checkbox">
-                        <p-checkbox
-                            [(ngModel)]="selectedCriteriaDS"
-                            [value]="criteria"
-                            (onChange)="onCriteriaChange()"
-                            [label]="'criteria.' + criteria + '.title' | translate"
-                            [ariaLabel]="'criteria.' + criteria + '.title' | translate"
-                        ></p-checkbox>
-                    </div>
+                    @for (criteria of criteriaList; track criteria) {
+                        <div class="field-checkbox">
+                            <p-checkbox
+                                inputId="criteria-{{ criteria }}"
+                                [(ngModel)]="selectedCriteriaDS"
+                                [value]="criteria"
+                                (onChange)="onCriteriaChange()"
+                                [ariaLabel]="
+                                    'criteria.' + criteria + '.title' | translate
+                                "
+                            ></p-checkbox>
+                            <label for="criteria-{{ criteria }}">{{
+                                "criteria." + criteria + ".title" | translate
+                            }}</label>
+                        </div>
+                    }
                 </div>
             }
 
@@ -115,7 +145,7 @@
 
             <ng-template pTemplate="footer">
                 <div
-                    class="block text-left sm:text-right sm:flex align-items-center justify-content-between"
+                    class="w-full block text-left sm:text-right sm:flex align-items-center justify-content-between"
                 >
                     <div class="flex justify-content-start mr-auto">
                         <p-button
@@ -127,30 +157,33 @@
                             {{ "common.cancel" | translate }}
                         </p-button>
                     </div>
-                    <p-button
-                        styleClass="p-button-secondary-blue uppercase"
-                        (onClick)="resetToDefault()"
-                        aria-label="Reset"
-                        class="m-0"
-                    >
-                        <i class="pi pi-refresh icon mr-2"></i>
-                        {{ "common.reset" | translate }}
-                    </p-button>
+                    <div class="flex justify-content-end">
+                        <p-button
+                            styleClass="p-button-secondary-blue uppercase"
+                            (onClick)="resetToDefault()"
+                            aria-label="Reset"
+                            class="m-0"
+                        >
+                            <i class="pi pi-refresh icon mr-2"></i>
+                            {{ "common.reset" | translate }}
+                        </p-button>
 
-                    <p-button
-                        styleClass="uppercase"
-                        (onClick)="saveChanges()"
-                        [disabled]="
-                            (type === 'workspace' &&
-                                (selectedCriteriaIS.length === 0 ||
-                                    selectedCriteriaDS.length === 0)) ||
-                            (type !== 'workspace' && selectedCriteriaIS.length === 0) ||
-                            !hasChanged
-                        "
-                        aria-label="Save"
-                    >
-                        {{ "common.save" | translate }}
-                    </p-button>
+                        <p-button
+                            styleClass="uppercase"
+                            (onClick)="saveChanges()"
+                            [disabled]="
+                                (type === 'workspace' &&
+                                    (selectedCriteriaIS.length === 0 ||
+                                        selectedCriteriaDS.length === 0)) ||
+                                (type !== 'workspace' &&
+                                    selectedCriteriaIS.length === 0) ||
+                                !hasChanged
+                            "
+                            aria-label="Save"
+                        >
+                            {{ "common.save" | translate }}
+                        </p-button>
+                    </div>
                 </div>
             </ng-template>
         </p-dialog>

@@ -174,9 +174,9 @@ describe("Digital Service Mapper", () => {
                 networkTypes,
             );
             expect(result).toBeDefined();
-            expect(result.length).toBe(1);
+            expect(result).toHaveSize(1);
             expect(result[0].criteria).toBe("climate-change");
-            expect(result[0].impacts.length).toBe(1);
+            expect(result[0].impacts).toHaveSize(1);
             expect(result[0].impacts[0].networkType).toBe("Fiber Optic");
         });
     });

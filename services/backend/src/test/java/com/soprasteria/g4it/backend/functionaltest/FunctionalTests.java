@@ -31,8 +31,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
-import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
@@ -45,12 +43,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Locale;
 import java.util.Map;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest(
         properties = {
-                "spring.cloud.azure.enabled=false",
+                "spring.cloud.azure.storage.blob.enabled=false",
                 "spring.liquibase.enabled=false",
-                "spring.jpa.hibernate.ddl-auto=create-drop"
+                "spring.jpa.hibernate.ddl-auto=create-drop",
+                "spring.cloud.azure.keyvault.secret.enabled=false"
         }
 )
 @ActiveProfiles({"local", "test"})
@@ -88,7 +88,7 @@ class FunctionalTests {
     CheckApplicationRepository checkApplicationRepository;
 
 
-    @Mock
+    @MockitoBean
     BoaviztapiService boaviztapiService;
 
     @Test
@@ -104,7 +104,7 @@ class FunctionalTests {
         taskRepository.deleteAll();
         inventoryRepository.deleteAll();
 
-        Mockito.when(boaviztapiService.getCountryMap()).thenReturn(Map.of());
+        when(boaviztapiService.getCountryMap()).thenReturn(Map.of());
 
         var inventory = inventoryRepository.save(Inventory.builder()
                 .name("Inventory Name")

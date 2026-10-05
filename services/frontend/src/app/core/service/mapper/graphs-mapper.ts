@@ -54,6 +54,11 @@ export const createStackBarGradientColor = (
 const colorMap = new Map<string, string>();
 let currentIndex = 0;
 
+export const resetColorMap = () => {
+    colorMap.clear();
+    currentIndex = 0;
+};
+
 export const getUniqueColorFromText = (
     text: string,
     palette: string[] = Constants.COLOR,

@@ -27,14 +27,14 @@ describe("SharedAccessGuard", () => {
         } as any;
     }
 
-    beforeEach(() => {
-        TestBed.configureTestingModule({
+    beforeEach(async () => {
+        await TestBed.configureTestingModule({
             providers: [
                 SharedAccessGuard,
                 { provide: DigitalServicesDataService, useValue: mockDataService },
                 { provide: Router, useValue: mockRouter },
             ],
-        });
+        }).compileComponents();
         guard = TestBed.inject(SharedAccessGuard);
         mockRouter.navigateByUrl.calls.reset();
         mockDataService.validateShareToken.calls.reset();

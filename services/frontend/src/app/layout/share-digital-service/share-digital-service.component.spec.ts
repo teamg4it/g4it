@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute, Router } from "@angular/router";
 import { TranslateModule, TranslateService } from "@ngx-translate/core";
+import { MessageService } from "primeng/api";
 import { of } from "rxjs";
 import { DigitalService } from "src/app/core/interfaces/digital-service.interfaces";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
@@ -61,6 +62,7 @@ describe("ShareDigitalServiceComponent", () => {
                 computeServerTypes: [{ value: "C1" }],
                 storageServerTypes: [{ value: "S1" }],
                 countries: { FR: "France", US: "United States" },
+                aiServerTypes: [{ value: "AI1" }],
             }),
         ),
     };
@@ -81,9 +83,9 @@ describe("ShareDigitalServiceComponent", () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [ShareDigitalServiceComponent],
-            imports: [TranslateModule.forRoot()],
+            imports: [TranslateModule.forRoot(), ShareDigitalServiceComponent],
             providers: [
+                MessageService,
                 { provide: ActivatedRoute, useValue: mockActivatedRoute },
                 {
                     provide: DigitalServicesDataService,
@@ -142,7 +144,7 @@ describe("ShareDigitalServiceComponent", () => {
         expect(mockStore.setCountryMap).toHaveBeenCalled();
 
         // Tabs created
-        expect(component.tabItems?.length).toBe(2);
+        expect(component.tabItems).toHaveSize(2);
         const visualizeTab = component.tabItems?.find((t) => t.id === "visualize");
         expect(visualizeTab?.visible).toBeTrue();
     });

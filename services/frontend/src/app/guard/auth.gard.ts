@@ -1,27 +1,51 @@
-import { Injectable } from "@angular/core";
+import { inject } from "@angular/core";
 import {
     ActivatedRouteSnapshot,
+    CanActivateFn,
     RouterStateSnapshot,
     UrlTree,
-    Router,
 } from "@angular/router";
-import { KeycloakAuthGuard, KeycloakService } from "keycloak-angular";
+import { environment } from "src/environments/environment";
+import {
+    CustomAuthService,
+    keycloak,
+} from "../core/service/business/custom-auth.service";
 
-@Injectable({
-    providedIn: "root",
-})
-export class AuthGuard extends KeycloakAuthGuard {
-    constructor(
-        override readonly router: Router,
-        protected readonly keycloak: KeycloakService,
-    ) {
-        super(router, keycloak);
+/**
+ * Angular 21 functional guard for Keycloak authentication
+ */
+export const authGuard: CanActivateFn = async (
+    route: ActivatedRouteSnapshot,
+    state: RouterStateSnapshot,
+): Promise<boolean | UrlTree> => {
+    const customAuthService = inject(CustomAuthService);
+
+    // Check if the route is public
+    const isPublicRoute = customAuthService.isPublicRoute(state.url);
+
+    // For public routes, allow access
+    if (isPublicRoute) {
+        return true;
     }
 
-    async isAccessAllowed(
-        route: ActivatedRouteSnapshot,
-        state: RouterStateSnapshot,
-    ): Promise<boolean | UrlTree> {
-        return this.authenticated;
+    // For protected routes, check Keycloak authentication
+    if (environment.keycloak?.enabled === "true") {
+        // Check if user is authenticated
+        if (keycloak.authenticated) {
+            return true;
+        }
+
+        // Not authenticated - redirect to login
+        const loginHint = localStorage.getItem("username") || "";
+        await keycloak.login({
+            redirectUri: globalThis.location.origin + state.url,
+            loginHint,
+        });
+
+        // This line won't be reached due to redirect, but TypeScript needs it
+        return false;
     }
-}
+
+    // If Keycloak is disabled, allow access
+    return true;
+};

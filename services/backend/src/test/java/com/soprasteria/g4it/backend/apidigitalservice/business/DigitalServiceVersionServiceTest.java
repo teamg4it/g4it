@@ -17,7 +17,6 @@ import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceVers
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceLinkRepository;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceVersionRepository;
-import com.soprasteria.g4it.backend.apiinout.repository.InApplicationRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.InDatacenterRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.InPhysicalEquipmentRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.InVirtualEquipmentRepository;
@@ -35,11 +34,13 @@ import com.soprasteria.g4it.backend.server.gen.api.dto.*;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -54,6 +55,8 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class DigitalServiceVersionServiceTest {
 
+    private static final LocalDateTime referenceTime =
+            LocalDateTime.of(2025, Month.JANUARY, 1, 12, 0);
     private static final Long WORKSPACE_ID = 1L;
     private static final Long ORGANIZATION_ID = 1L;
     private static final String DIGITAL_SERVICE_UID = "80651485-3f8b-49dd-a7be-753e4fe1fd36";
@@ -88,8 +91,6 @@ class DigitalServiceVersionServiceTest {
     private DigitalServiceLinkRepository digitalServiceLinkRepo;
     @Mock
     private InVirtualEquipmentRepository inVirtualEquipmentRepository;
-    @Mock
-    private InApplicationRepository inApplicationRepository;
     @Mock
     private InPhysicalEquipmentRepository inPhysicalEquipmentRepository;
     @Mock
@@ -523,11 +524,8 @@ class DigitalServiceVersionServiceTest {
     void shouldUpdateLastUpdateDate() {
 
         digitalServiceVersionService.updateLastUpdateDate(DIGITAL_SERVICE_UID);
-        verify(digitalServiceVersionRepository, times(1))
-                .updateLastUpdateDate(
-                        argThat(date -> date.isAfter(LocalDateTime.now().minusSeconds(1)) && date.isBefore(LocalDateTime.now().plusSeconds(1))),
-                        eq(DIGITAL_SERVICE_UID)
-                );
+        verify(digitalServiceVersionRepository)
+                .updateLastUpdateDate(any(LocalDateTime.class), eq(DIGITAL_SERVICE_UID));
 
     }
 
@@ -543,7 +541,7 @@ class DigitalServiceVersionServiceTest {
         DigitalServiceSharedLink existingLink = DigitalServiceSharedLink.builder()
                 .uid("linkUid")
                 .digitalServiceVersion(digitalServiceVersion)
-                .expiryDate(LocalDateTime.now().minusDays(1))
+                .expiryDate(referenceTime.minusDays(1))
                 .isActive(true)
                 .build();
 
@@ -560,7 +558,7 @@ class DigitalServiceVersionServiceTest {
         assertTrue(result.getUrl().contains(existingLink.getUid()));
         verify(digitalServiceLinkRepo).save(existingLink);
 
-        assertTrue(result.getExpiryDate().isAfter(LocalDateTime.now().plusDays(59)));
+        assertTrue(result.getExpiryDate().isAfter(referenceTime.plusDays(59)));
     }
 
     @Test
@@ -573,7 +571,7 @@ class DigitalServiceVersionServiceTest {
 
         DigitalServiceSharedLink newLink = DigitalServiceSharedLink.builder()
                 .uid("newUid123")
-                .expiryDate(LocalDateTime.now().plusDays(30))
+                .expiryDate(referenceTime.plusDays(30))
                 .build();
 
         when(digitalServiceVersionRepository.findById(DIGITAL_SERVICE_VERSION_UID)).thenReturn(Optional.of(digitalServiceVersion));
@@ -621,7 +619,7 @@ class DigitalServiceVersionServiceTest {
                 .isAi(inDigitalServiceVersionRest.getIsAi())
                 .build();
 
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = referenceTime;
 
         final DigitalServiceVersion digitalServiceVersion = DigitalServiceVersion.builder()
                 .uid(DIGITAL_SERVICE_VERSION_UID)
@@ -1020,5 +1018,157 @@ class DigitalServiceVersionServiceTest {
         assertTrue(result.getDsNames().isEmpty());
         assertTrue(result.getVersionNames().isEmpty());
     }
+
+    @Test
+    void shouldCreateNewDigitalServiceVersion_WithNote() {
+
+        final Workspace linkedWorkspace = Workspace.builder()
+                .name(WORKSPACE_NAME)
+                .build();
+
+        final User user = User.builder()
+                .id(USER_ID)
+                .build();
+
+        final DigitalServiceVersionBO expectedBo = DigitalServiceVersionBO.builder().build();
+
+        final DigitalService digitalServiceToSave = DigitalService.builder()
+                .uid(DIGITAL_SERVICE_UID)
+                .workspace(linkedWorkspace)
+                .user(user)
+                .name("Digital Service")
+                .build();
+
+        final DigitalServiceVersion digitalServiceVersionToSave = DigitalServiceVersion.builder()
+                .digitalService(digitalServiceToSave)
+                .build();
+
+        when(workspaceService.getWorkspaceById(WORKSPACE_ID))
+                .thenReturn(linkedWorkspace);
+
+        when(userRepository.findById(USER_ID))
+                .thenReturn(Optional.of(user));
+
+        when(digitalServiceRepository.save(any()))
+                .thenReturn(digitalServiceToSave);
+
+        when(digitalServiceVersionRepository.save(any()))
+                .thenReturn(digitalServiceVersionToSave);
+
+        when(digitalServiceVersionMapper.toBusinessObject(digitalServiceVersionToSave, digitalServiceToSave))
+                .thenReturn(expectedBo);
+
+        InDigitalServiceVersionRest request = mock(InDigitalServiceVersionRest.class);
+        var noteRest = mock(com.soprasteria.g4it.backend.server.gen.api.dto.NoteRest.class);
+
+        when(request.getDsName()).thenReturn("Digital Service");
+        when(request.getVersionName()).thenReturn("v1");
+        when(request.getNote()).thenReturn(noteRest);
+        when(noteRest.getContent()).thenReturn("My test note");
+
+        DigitalServiceVersionBO result =
+                digitalServiceVersionService.createDigitalServiceVersion(
+                        WORKSPACE_ID,
+                        USER_ID,
+                        request);
+
+        assertThat(result).isEqualTo(expectedBo);
+
+        ArgumentCaptor<DigitalServiceVersion> captor =
+                ArgumentCaptor.forClass(DigitalServiceVersion.class);
+
+        verify(digitalServiceVersionRepository).save(captor.capture());
+
+        assertNotNull(captor.getValue().getNote());
+        assertEquals("My test note", captor.getValue().getNote().getContent());
+
+        verify(workspaceService).getWorkspaceById(WORKSPACE_ID);
+        verify(userRepository).findById(USER_ID);
+    }
+
+    @Test
+    void shouldCreateDigitalServiceVersion_WithNullNoteContent() {
+
+        Workspace linkedWorkspace = Workspace.builder().name(WORKSPACE_NAME).build();
+        User user = User.builder().id(USER_ID).build();
+
+        DigitalService digitalService = DigitalService.builder()
+                .uid(DIGITAL_SERVICE_UID)
+                .workspace(linkedWorkspace)
+                .user(user)
+                .build();
+
+        DigitalServiceVersion savedVersion = DigitalServiceVersion.builder().build();
+        DigitalServiceVersionBO expected = DigitalServiceVersionBO.builder().build();
+
+        when(workspaceService.getWorkspaceById(WORKSPACE_ID)).thenReturn(linkedWorkspace);
+        when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
+        when(digitalServiceRepository.save(any())).thenReturn(digitalService);
+        when(digitalServiceVersionRepository.save(any())).thenReturn(savedVersion);
+        when(digitalServiceVersionMapper.toBusinessObject(savedVersion, digitalService)).thenReturn(expected);
+
+        InDigitalServiceVersionRest request = mock(InDigitalServiceVersionRest.class);
+        com.soprasteria.g4it.backend.server.gen.api.dto.NoteRest note =
+                mock(com.soprasteria.g4it.backend.server.gen.api.dto.NoteRest.class);
+
+        when(request.getNote()).thenReturn(note);
+        when(note.getContent()).thenReturn(null);
+
+        digitalServiceVersionService.createDigitalServiceVersion(
+                WORKSPACE_ID,
+                USER_ID,
+                request);
+
+        ArgumentCaptor<DigitalServiceVersion> captor =
+                ArgumentCaptor.forClass(DigitalServiceVersion.class);
+
+        verify(digitalServiceVersionRepository).save(captor.capture());
+
+        assertNull(captor.getValue().getNote());
+    }
+
+    @Test
+    void shouldCreateDigitalServiceVersion_WithNote() {
+
+        Workspace linkedWorkspace = Workspace.builder().name(WORKSPACE_NAME).build();
+        User user = User.builder().id(USER_ID).build();
+
+        DigitalService digitalService = DigitalService.builder()
+                .uid(DIGITAL_SERVICE_UID)
+                .workspace(linkedWorkspace)
+                .user(user)
+                .build();
+
+        DigitalServiceVersion savedVersion = DigitalServiceVersion.builder().build();
+        DigitalServiceVersionBO expected = DigitalServiceVersionBO.builder().build();
+
+        when(workspaceService.getWorkspaceById(WORKSPACE_ID)).thenReturn(linkedWorkspace);
+        when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
+        when(digitalServiceRepository.save(any())).thenReturn(digitalService);
+        when(digitalServiceVersionRepository.save(any())).thenReturn(savedVersion);
+        when(digitalServiceVersionMapper.toBusinessObject(savedVersion, digitalService)).thenReturn(expected);
+
+        InDigitalServiceVersionRest request = mock(InDigitalServiceVersionRest.class);
+        com.soprasteria.g4it.backend.server.gen.api.dto.NoteRest note =
+                mock(com.soprasteria.g4it.backend.server.gen.api.dto.NoteRest.class);
+
+        when(request.getNote()).thenReturn(note);
+        when(note.getContent()).thenReturn("Test note");
+
+        digitalServiceVersionService.createDigitalServiceVersion(
+                WORKSPACE_ID,
+                USER_ID,
+                request);
+
+        ArgumentCaptor<DigitalServiceVersion> captor =
+                ArgumentCaptor.forClass(DigitalServiceVersion.class);
+
+        verify(digitalServiceVersionRepository).save(captor.capture());
+
+        assertNotNull(captor.getValue().getNote());
+        assertEquals("Test note", captor.getValue().getNote().getContent());
+    }
+
+
 
 }

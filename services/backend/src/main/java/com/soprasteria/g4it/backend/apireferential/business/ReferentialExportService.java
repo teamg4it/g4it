@@ -101,15 +101,15 @@ public class ReferentialExportService {
         File outputFile = Path.of(localWorkingFolder).resolve(REFERENTIAL).resolve(type + "_" + UUID.randomUUID() + ".csv").toFile();
         try (Writer csvout = new OutputStreamWriter(
                 new FileOutputStream(outputFile),
-                StandardCharsets.UTF_8);
-             CSVPrinter csvPrinter = new CSVPrinter(csvout, csvFormat)) {
-
-            csvout.write("\uFEFF");
+                StandardCharsets.UTF_8)){
+        csvout.write("\uFEFF");
+        try (CSVPrinter csvPrinter = new CSVPrinter(csvout, csvFormat)) {
 
             for (Object object : records) {
                 csvPrinter.printRecord(getCsvRecord(object));
             }
         }
+    }
 
         return new FileInputStream(outputFile);
     }
@@ -151,26 +151,25 @@ public class ReferentialExportService {
         File outputFile = Path.of(localWorkingFolder).resolve(REFERENTIAL).resolve(type + "_" + UUID.randomUUID() + ".csv").toFile();
         try (Writer csvout = new OutputStreamWriter(
                 new FileOutputStream(outputFile),
-                StandardCharsets.UTF_8);
-             CSVPrinter csvPrinter = new CSVPrinter(csvout, csvFormat)) {
-
+                StandardCharsets.UTF_8)) {
             csvout.write("\uFEFF");
+            try (CSVPrinter csvPrinter = new CSVPrinter(csvout, csvFormat)) {
+                int pageNumber = 0;
+                Page<MatchingItem> matchingItems;
+                do {
+                    Pageable pageable = PageRequest.of(pageNumber, PAGE_SIZE);
 
-            int pageNumber = 0;
-            Page<MatchingItem> matchingItems;
-            do {
-                Pageable pageable = PageRequest.of(pageNumber, PAGE_SIZE);
+                    matchingItems = matchingItemRepository.findByOrganization(organization, pageable);
 
-                matchingItems = matchingItemRepository.findByOrganization(organization, pageable);
+                    for (MatchingItem item : matchingItems.getContent()) {
+                        csvPrinter.printRecord(item.toCsvRecord());
+                    }
 
-                for (MatchingItem item : matchingItems.getContent()) {
-                    csvPrinter.printRecord(item.toCsvRecord());
-                }
+                    pageNumber++;
+                } while (matchingItems.hasNext());
 
-                pageNumber++;
-            } while (matchingItems.hasNext());
-
-            csvPrinter.flush();
+                csvPrinter.flush();
+            }
         }
 
         return new FileInputStream(outputFile);
@@ -193,10 +192,9 @@ public class ReferentialExportService {
         File outputFile = Path.of(localWorkingFolder).resolve(REFERENTIAL).resolve(type + "_" + UUID.randomUUID() + ".csv").toFile();
         try (Writer csvout = new OutputStreamWriter(
                 new FileOutputStream(outputFile),
-                StandardCharsets.UTF_8);
-             CSVPrinter csvPrinter = new CSVPrinter(csvout, csvFormat)) {
-
+                StandardCharsets.UTF_8)){
             csvout.write("\uFEFF");
+             try(CSVPrinter csvPrinter = new CSVPrinter(csvout, csvFormat)) {
 
             int pageNumber = 0;
             Page<ItemImpact> itemImpacts;
@@ -213,6 +211,7 @@ public class ReferentialExportService {
             } while (itemImpacts.hasNext());
 
             csvPrinter.flush();
+        }
         }
 
         return new FileInputStream(outputFile);

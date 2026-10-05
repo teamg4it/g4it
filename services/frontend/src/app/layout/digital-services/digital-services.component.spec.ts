@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { ActivatedRoute, Router } from "@angular/router";
+import { ActivatedRoute, NavigationEnd, NavigationStart, Router } from "@angular/router";
 import { TranslateModule, TranslateService } from "@ngx-translate/core";
 import { ConfirmationService, MessageService } from "primeng/api";
 import { of, Subject } from "rxjs";
@@ -47,8 +47,7 @@ describe("DigitalServicesComponent", () => {
         };
 
         await TestBed.configureTestingModule({
-            imports: [TranslateModule.forRoot()],
-            declarations: [DigitalServicesComponent],
+            imports: [TranslateModule.forRoot(), DigitalServicesComponent],
             providers: [
                 { provide: Router, useValue: mockRouter },
                 { provide: ActivatedRoute, useValue: mockRoute },
@@ -79,7 +78,7 @@ describe("DigitalServicesComponent", () => {
         spyOn(component, "retrieveDigitalServices").and.callThrough();
         component.ngOnInit();
         expect(component.retrieveDigitalServices).toHaveBeenCalled();
-        expect(component.allDigitalServices.length).toBe(0);
+        expect(component.allDigitalServices).toHaveSize(0);
     });
 
     it("should update paginated items on page change", () => {
@@ -92,7 +91,7 @@ describe("DigitalServicesComponent", () => {
                 }) as DigitalService,
         );
         component.onPageChange({ first: 0, rows: 10, page: 1 } as any);
-        expect(component.paginatedDigitalServices.length).toBe(10);
+        expect(component.paginatedDigitalServices).toHaveSize(10);
         expect(component.paginatedDigitalServices[0].name).toBe("Service 10");
     });
 
@@ -110,7 +109,7 @@ describe("DigitalServicesComponent", () => {
     it("should create a new digital service and navigate to its footprint", async () => {
         mockDigitalServicesData.create.and.returnValue(of({ uid: 2 }));
         //for the else if
-        component.isEcoMindAi = false;
+        component.isEcoMindAi.set(false);
         component.isAllowedDigitalService = true;
         await component.createNewDigitalServices({ dsName: "New DS", versionName: "v1" });
         expect(mockDigitalServicesData.create).toHaveBeenCalled();
@@ -122,5 +121,35 @@ describe("DigitalServicesComponent", () => {
         expect(mockGlobalStore.setLoading).toHaveBeenCalledWith(true);
         expect(mockDigitalServicesData.delete).toHaveBeenCalledWith("1");
         expect(component.retrieveDigitalServices).toHaveBeenCalled();
+    });
+
+    it("should retrieve digital services on NavigationEnd event when isAllowedDigitalService is true", () => {
+        spyOn(component, "retrieveDigitalServices");
+        component.isAllowedDigitalService = true;
+
+        const navigationEndEvent = new NavigationEnd(1, "/test", "/test");
+        mockRouter.events.next(navigationEndEvent);
+
+        expect(component.retrieveDigitalServices).toHaveBeenCalled();
+    });
+
+    it("should not retrieve digital services on NavigationEnd event when isAllowedDigitalService is false", () => {
+        spyOn(component, "retrieveDigitalServices");
+        component.isAllowedDigitalService = false;
+
+        const navigationEndEvent = new NavigationEnd(1, "/test", "/test");
+        mockRouter.events.next(navigationEndEvent);
+
+        expect(component.retrieveDigitalServices).not.toHaveBeenCalled();
+    });
+
+    it("should not retrieve digital services on non-NavigationEnd events", () => {
+        spyOn(component, "retrieveDigitalServices");
+        component.isAllowedDigitalService = true;
+
+        const navigationStartEvent = new NavigationStart(1, "/test");
+        mockRouter.events.next(navigationStartEvent);
+
+        expect(component.retrieveDigitalServices).not.toHaveBeenCalled();
     });
 });

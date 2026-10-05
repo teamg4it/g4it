@@ -1,11 +1,14 @@
 import { Component, computed, EventEmitter, input, Output } from "@angular/core";
 import { EChartsOption } from "echarts";
+import { NgxEchartsDirective } from "ngx-echarts";
 import { StatusCountMap } from "src/app/core/interfaces/digital-service.interfaces";
 import { AbstractDashboard } from "src/app/layout/inventories-footprint/abstract-dashboard";
 import { Constants } from "src/constants";
 @Component({
     selector: "app-stack-bar-chart",
     templateUrl: "./stack-bar-chart.component.html",
+    standalone: true,
+    imports: [NgxEchartsDirective],
 })
 export class StackBarChartComponent extends AbstractDashboard {
     @Output() selectedStackBarClick: EventEmitter<string> = new EventEmitter();
@@ -24,6 +27,8 @@ export class StackBarChartComponent extends AbstractDashboard {
         return {
             legend: {
                 selectedMode: false,
+                show: true,
+                type: "scroll",
             },
             grid: {
                 left: "3%",
@@ -36,7 +41,7 @@ export class StackBarChartComponent extends AbstractDashboard {
             },
             xAxis: {
                 type: "category",
-                data: this.xAxisInput() as any[],
+                data: this.xAxisInput(),
                 axisLabel: {
                     interval: 0, // Show all labels
                     rotate: 30, // Rotate labels if they overlap

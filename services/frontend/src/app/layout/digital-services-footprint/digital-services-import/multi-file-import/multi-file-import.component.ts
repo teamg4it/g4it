@@ -1,11 +1,21 @@
 import { Component, EventEmitter, inject, Input, OnChanges, Output } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { TranslateService } from "@ngx-translate/core";
+import { TranslateService, TranslatePipe } from "@ngx-translate/core";
 import { LoadingDataService } from "src/app/core/service/data/loading-data.service";
+import { InputTextModule } from "primeng/inputtext";
+import { FileUploadModule } from "primeng/fileupload";
+import { Button } from "primeng/button";
 
 @Component({
     selector: "app-multi-file-import",
     templateUrl: "./multi-file-import.component.html",
+    standalone: true,
+    imports: [
+        InputTextModule,
+        FileUploadModule,
+        Button,
+        TranslatePipe,
+    ],
 })
 export class MultiFileImportComponent implements OnChanges {
     private readonly loadingService = inject(LoadingDataService);

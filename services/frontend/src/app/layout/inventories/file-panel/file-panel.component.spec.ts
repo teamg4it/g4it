@@ -63,15 +63,15 @@ describe("FilePanelComponent", () => {
         );
 
         await TestBed.configureTestingModule({
-            declarations: [FilePanelComponent, SelectFileComponent],
             imports: [
                 HttpClientTestingModule,
                 RouterTestingModule,
                 ReactiveFormsModule,
                 SharedModule,
                 TranslateModule.forRoot(),
+                FilePanelComponent,
+                SelectFileComponent,
             ],
-
             providers: [
                 FormBuilder,
                 TranslateService,
@@ -704,7 +704,7 @@ describe("FilePanelComponent", () => {
 
             component.deleteComponent(0);
 
-            expect(component.arrayComponents.length).toBe(0);
+            expect(component.arrayComponents).toHaveSize(0);
         });
 
         it("should re-index remaining components", () => {
@@ -723,7 +723,7 @@ describe("FilePanelComponent", () => {
 
             component.deleteComponent(0);
 
-            expect(component.arrayComponents.length).toBe(2);
+            expect(component.arrayComponents).toHaveSize(2);
             expect(component.arrayComponents[0].instance.index).toBe(0);
             expect(component.arrayComponents[1].instance.index).toBe(1);
         });
@@ -745,7 +745,7 @@ describe("FilePanelComponent", () => {
             component.deleteComponent(1);
 
             expect(mockComponentRef2.destroy).toHaveBeenCalled();
-            expect(component.arrayComponents.length).toBe(2);
+            expect(component.arrayComponents).toHaveSize(2);
             expect(component.arrayComponents[0].instance.index).toBe(0);
             expect(component.arrayComponents[1].instance.index).toBe(1);
         });
@@ -886,7 +886,7 @@ describe("FilePanelComponent", () => {
 
             component.addComponent();
 
-            expect(component.arrayComponents.length).toBe(initialLength + 1);
+            expect(component.arrayComponents).toHaveSize(initialLength + 1);
         });
 
         it("should set index for all components after adding", () => {
@@ -924,7 +924,7 @@ describe("FilePanelComponent", () => {
 
             component.ngOnChanges({} as any);
 
-            expect(component.invalidDates.length).toBe(0);
+            expect(component.invalidDates).toHaveSize(0);
         });
 
         it("should add all days of a month for a single inventory", () => {
@@ -935,7 +935,7 @@ describe("FilePanelComponent", () => {
             component.ngOnChanges({} as any);
 
             // Should have 31 days for March
-            expect(component.invalidDates.length).toBe(31);
+            expect(component.invalidDates).toHaveSize(31);
         });
 
         it("should generate dates for the correct year and month", () => {
@@ -962,7 +962,7 @@ describe("FilePanelComponent", () => {
             component.ngOnChanges({} as any);
 
             // 31 days for January + 31 days for February (loop goes 1-31 regardless)
-            expect(component.invalidDates.length).toBe(62);
+            expect(component.invalidDates).toHaveSize(62);
         });
 
         it("should handle multiple inventories in the same month", () => {
@@ -976,7 +976,7 @@ describe("FilePanelComponent", () => {
             component.ngOnChanges({} as any);
 
             // 31 days + 31 days (duplicates allowed)
-            expect(component.invalidDates.length).toBe(62);
+            expect(component.invalidDates).toHaveSize(62);
         });
 
         it("should handle empty inventories array", () => {
@@ -984,7 +984,7 @@ describe("FilePanelComponent", () => {
 
             component.ngOnChanges({} as any);
 
-            expect(component.invalidDates.length).toBe(0);
+            expect(component.invalidDates).toHaveSize(0);
         });
 
         it("should reset invalidDates before adding new dates", () => {
@@ -996,7 +996,7 @@ describe("FilePanelComponent", () => {
             component.ngOnChanges({} as any);
 
             // Should only have the 31 new dates, not the old ones
-            expect(component.invalidDates.length).toBe(31);
+            expect(component.invalidDates).toHaveSize(31);
             expect(component.invalidDates).not.toContain(new Date(2023, 11, 1));
         });
 
@@ -1027,7 +1027,7 @@ describe("FilePanelComponent", () => {
 
             component.ngOnChanges({} as any);
 
-            expect(component.invalidDates.length).toBe(62);
+            expect(component.invalidDates).toHaveSize(62);
             // Check first date is from 2023 December
             expect(component.invalidDates[0]).toEqual(new Date(2023, 11, 1));
             // Check date after 31st is from 2024 January

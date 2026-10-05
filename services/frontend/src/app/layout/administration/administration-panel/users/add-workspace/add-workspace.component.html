@@ -11,16 +11,17 @@
     <br />
 
     <div>
-        <input
-            *ngIf="userDetail"
-            class="w-full"
-            type="text"
-            [value]="userDetail.email"
-            name="email"
-            pInputText
-            readonly
-            aria-label="Email"
-        />
+        @if (userDetail) {
+            <input
+                class="w-full"
+                type="text"
+                [value]="userDetail.email"
+                name="email"
+                pInputText
+                readonly
+                aria-label="Email"
+            />
+        }
     </div>
     <br />
     <div>
@@ -32,23 +33,23 @@
         <label for="module-is-dropdown">
             {{ "administration.user.is-module" | translate }}
         </label>
-        <p-dropdown
+        <p-select
             appendTo="body"
             [style]="{ width: '100%' }"
             [(ngModel)]="isModule"
             [options]="isModuleValues"
             optionLabel="value"
             placeholder="{{ 'administration.user.is-module' | translate }}"
-            [disabled]="isAdmin"
+            [disabled]="isSopraUser ? !(isWsAdminAndInvAccess || isSuperAdmin) : isAdmin"
             [showClear]="true"
             id="module-is-dropdown"
-        ></p-dropdown>
+        ></p-select>
         <br />
         <br />
         <label for="module-ds-dropdown">{{
             "administration.user.ds-module" | translate
         }}</label>
-        <p-dropdown
+        <p-select
             appendTo="body"
             [style]="{ width: '100%' }"
             [(ngModel)]="dsModule"
@@ -58,24 +59,24 @@
             [disabled]="isAdmin"
             [showClear]="true"
             id="module-ds-dropdown"
-        ></p-dropdown>
+        ></p-select>
         @if (isEcoMindModuleEnabled && userDetailEcoMind) {
             <br />
             <br />
             <label for="module-ecomind-dropdown">{{
                 "administration.user.ecomind-module" | translate
             }}</label>
-            <p-dropdown
+            <p-select
                 appendTo="body"
                 [style]="{ width: '100%' }"
                 [(ngModel)]="ecomindModule"
                 [options]="ecomindModuleValues"
                 optionLabel="value"
                 placeholder="{{ 'administration.user.ecomind-module' | translate }}"
-                [disabled]="isAdmin"
+                [disabled]="!(isWsAdminAndEcomindAccess || isSuperAdmin)"
                 [showClear]="true"
                 id="module-ecomind-dropdown"
-            ></p-dropdown>
+            ></p-select>
         }
     </div>
     <br />
@@ -87,7 +88,7 @@
             class="h-2rem border-top-2 border-primary p-0 mt-1"
             style="color: lightgray"
         ></div>
-        <p-dropdown
+        <p-select
             appendTo="body"
             [style]="{ width: '100%' }"
             [(ngModel)]="adminModule"
@@ -98,14 +99,18 @@
             placeholder="{{ 'administration.user.role' | translate }}"
             class="p-inputtext-sm type-dropdown"
             id="user-role-dropdown"
-        ></p-dropdown>
-        <p class="error-text" *ngIf="!adminModule">
-            {{ "administration.user.role" | translate }}
-            {{ "common.mandatory" | translate }}
-        </p>
-        <p *ngIf="isAdminRoleDisabled">
-            {{ "administration.user.unauthorized-domain" | translate }}
-        </p>
+        ></p-select>
+        @if (!adminModule) {
+            <p class="error-text">
+                {{ "administration.user.role" | translate }}
+                {{ "common.mandatory" | translate }}
+            </p>
+        }
+        @if (isAdminRoleDisabled) {
+            <p>
+                {{ "administration.user.unauthorized-domain" | translate }}
+            </p>
+        }
     </div>
     <div class="button-bottom-right">
         <p-button
@@ -114,26 +119,28 @@
             (onClick)="cancel()"
             >{{ "common.cancel" | translate }}</p-button
         >
-        <p-button
-            styleClass="black-button-sidebar"
-            [disabled]="!adminModule"
-            type="submit"
-            (onClick)="addUpdateWorkspace()"
-            *ngIf="!updateOrganizationEnable"
-            id="add-button"
-        >
-            <span>{{ "common.add" | translate }}</span>
-        </p-button>
-        <p-button
-            styleClass="black-button-sidebar"
-            *ngIf="updateOrganizationEnable"
-            [disabled]="!adminModule"
-            type="submit"
-            (onClick)="addUpdateWorkspace()"
-            id="update-button"
-        >
-            <span>{{ "common.save" | translate }}</span>
-        </p-button>
+        @if (!updateOrganizationEnable) {
+            <p-button
+                styleClass="black-button-sidebar"
+                [disabled]="!adminModule"
+                type="submit"
+                (onClick)="addUpdateWorkspace()"
+                id="add-button"
+            >
+                <span>{{ "common.add" | translate }}</span>
+            </p-button>
+        }
+        @if (updateOrganizationEnable) {
+            <p-button
+                styleClass="black-button-sidebar"
+                [disabled]="!adminModule"
+                type="submit"
+                (onClick)="addUpdateWorkspace()"
+                id="update-button"
+            >
+                <span>{{ "common.save" | translate }}</span>
+            </p-button>
+        }
         <br />
         <br />
     </div>

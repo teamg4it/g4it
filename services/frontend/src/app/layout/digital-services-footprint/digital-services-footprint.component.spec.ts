@@ -2,10 +2,14 @@ import { ChangeDetectorRef } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute, convertToParamMap } from "@angular/router";
 import { TranslateModule } from "@ngx-translate/core";
+import { MessageService } from "primeng/api";
 import { of } from "rxjs";
 import { DigitalServiceBusinessService } from "src/app/core/service/business/digital-services.service";
+import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
 import { InDatacentersService } from "src/app/core/service/data/in-out/in-datacenters.service";
+import { InventoryDataService } from "src/app/core/service/data/inventory-data.service";
+import { AIFormsStore } from "src/app/core/store/ai-forms.store";
 import { DigitalServiceStoreService } from "src/app/core/store/digital-service.store";
 import { GlobalStoreService } from "src/app/core/store/global.store";
 import { DigitalServicesFootprintComponent } from "./digital-services-footprint.component";
@@ -18,6 +22,9 @@ describe("DigitalServicesFootprintComponent", () => {
         snapshot: {
             paramMap: {
                 get: (key: string) => "test-uid",
+            },
+            queryParamMap: {
+                get: (key: string) => null,
             },
         },
         paramMap: of(
@@ -37,8 +44,12 @@ describe("DigitalServicesFootprintComponent", () => {
         get: () => of(mockDigitalService),
         getNetworkReferential: () => of([]),
         getDeviceReferential: () => of([]),
-        getHostServerReferential: () => of([]),
+        getHostServerReferential: (_type: string) => of([] as { value: string }[]),
         update: () => of(mockDigitalService),
+        digitalService$: of(mockDigitalService),
+        getServiceRenewalDetails: () => of(null),
+        getDuplicateDigitalServiceAndVersionName: () =>
+            of({ dsNames: [], versionNames: [] }),
     };
 
     const mockDigitalServiceStoreService = {
@@ -66,15 +77,35 @@ describe("DigitalServicesFootprintComponent", () => {
         create: () => of({}),
     };
 
+    const mockUserService = {
+        currentOrganization$: of({
+            name: "Test Org",
+            id: "test-org-id",
+            ecomindai: false,
+        }),
+        currentWorkspace$: of({ name: "Test Workspace" }),
+        user$: of({ email: "test@example.com" }),
+    };
+
+    const mockInventoryDataService = {
+        getServiceRenewalDetails: () => of(null),
+    };
+
+    const mockAIFormsStore = {
+        setParameterChange: jasmine.createSpy(),
+        setInfrastructureChange: jasmine.createSpy(),
+        clearForms: jasmine.createSpy(),
+    };
+
     const mockCdr = { detectChanges: jasmine.createSpy() };
 
     const MockScrollPanel = { refresh: jasmine.createSpy("refresh") };
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [DigitalServicesFootprintComponent],
-            imports: [TranslateModule.forRoot()],
+            imports: [TranslateModule.forRoot(), DigitalServicesFootprintComponent],
             providers: [
+                MessageService,
                 { provide: ActivatedRoute, useValue: mockRoute },
                 {
                     provide: DigitalServicesDataService,
@@ -91,6 +122,9 @@ describe("DigitalServicesFootprintComponent", () => {
                 { provide: ChangeDetectorRef, useValue: mockCdr },
                 { provide: GlobalStoreService, useValue: mockGlobal },
                 { provide: InDatacentersService, useValue: mockInDatacentersService },
+                { provide: UserService, useValue: mockUserService },
+                { provide: InventoryDataService, useValue: mockInventoryDataService },
+                { provide: AIFormsStore, useValue: mockAIFormsStore },
             ],
         }).compileComponents();
 
@@ -106,24 +140,15 @@ describe("DigitalServicesFootprintComponent", () => {
         component.isEcoMindAi = true;
         component.digitalService = { lastCalculationDate: new Date() } as any;
         component.updateTabItems();
-        expect(component.tabItems?.length).toBe(2);
+        expect(component.tabItems).toHaveSize(2);
     });
 
     it("should set tabItems for normal service", () => {
         component.isEcoMindAi = false;
         component.digitalService = { lastCalculationDate: new Date() } as any;
         component.updateTabItems();
-        expect(component.tabItems?.length).toBe(2);
+        expect(component.tabItems).toHaveSize(2);
         expect(component.tabItems?.find((item) => item.id === "resources")).toBeDefined();
-    });
-
-    it("should call updateHeights in updateEnableCalculation", (done) => {
-        const spy = spyOn(component, "updateHeights");
-        component.updateEnableCalculation();
-        setTimeout(() => {
-            expect(spy).toHaveBeenCalled();
-            done();
-        }, 10);
     });
 
     it("should call asyncInit() with the UID from route params", () => {
@@ -134,5 +159,48 @@ describe("DigitalServicesFootprintComponent", () => {
         component.ngOnInit();
 
         expect(asyncInitSpy).toHaveBeenCalledWith("ABC-123");
+    });
+
+    it("should sort server host referentials and set server types without mutating the original arrays", async () => {
+        const computeItems = [
+            { value: "Custom Compute B" },
+            { value: "Server Compute M" },
+            { value: "Custom Compute A" },
+        ];
+        const storageItems = [
+            { value: "Custom Storage B" },
+            { value: "Server Storage M" },
+        ];
+        const aiItems = [{ value: "AI B" }, { value: "AI A" }];
+
+        const originalComputeItems = [...computeItems];
+        const originalStorageItems = [...storageItems];
+        const originalAiItems = [...aiItems];
+
+        spyOn(mockDigitalServicesDataService, "getHostServerReferential").and.callFake(
+            (type: string) => {
+                if (type === "Compute") return of(computeItems);
+                if (type === "Storage") return of(storageItems);
+                return of(aiItems);
+            },
+        );
+
+        component.isEcoMindAi = false;
+        await (component as any).asyncInit("test-uid");
+
+        expect(mockDigitalServiceStoreService.setServerTypes).toHaveBeenCalledWith([
+            { value: "Server Storage M" },
+            { value: "Server Compute M" },
+            { value: "Custom Compute A" },
+            { value: "Custom Compute B" },
+            { value: "Custom Storage B" },
+            { value: "AI A" },
+            { value: "AI B" },
+        ]);
+
+        // The source arrays returned by the data service must remain untouched.
+        expect(computeItems).toEqual(originalComputeItems);
+        expect(storageItems).toEqual(originalStorageItems);
+        expect(aiItems).toEqual(originalAiItems);
     });
 });

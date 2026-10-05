@@ -79,6 +79,13 @@ public class Task {
     private String progressPercentage;
 
     /**
+     * Date when the progress percentage last changed.
+     * Used to detect stuck tasks with stagnant progress.
+     */
+    @Column(name = "progress_last_changed_date", updatable = true)
+    private LocalDateTime progressLastChangedDate;
+
+    /**
      * Criteria list to evaluate impacts on
      */
     private List<String> criteria;

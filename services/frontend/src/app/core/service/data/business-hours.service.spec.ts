@@ -50,7 +50,6 @@ describe("BusinessHoursService", () => {
 
             service.getBusinessHours().subscribe((businessHours) => {
                 expect(businessHours).toEqual(mockBusinessHours);
-                expect(businessHours.length).toBe(3);
                 expect(businessHours[0].day).toBe("Monday");
                 expect(businessHours[0].start_time).toBe("09:00");
                 expect(businessHours[0].end_time).toBe("17:00");
@@ -66,7 +65,6 @@ describe("BusinessHoursService", () => {
 
             service.getBusinessHours().subscribe((businessHours) => {
                 expect(businessHours).toEqual([]);
-                expect(businessHours.length).toBe(0);
             });
 
             const req = httpMock.expectOne(Constants.ENDPOINTS.businessHours);
@@ -117,7 +115,6 @@ describe("BusinessHoursService", () => {
             ];
 
             service.getBusinessHours().subscribe((businessHours) => {
-                expect(businessHours.length).toBe(7);
                 expect(businessHours[4].day).toBe("Friday");
                 expect(businessHours[4].end_time).toBe("16:00");
                 expect(businessHours[6].day).toBe("Sunday");

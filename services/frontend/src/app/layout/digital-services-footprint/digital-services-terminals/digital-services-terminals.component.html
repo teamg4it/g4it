@@ -1,3 +1,14 @@
+<div class="information-section my-3">
+    <h3 class="m-0 text-lg mb-2 font-semibold">
+        {{ "digital-services-terminals.information-step" | translate }}
+    </h3>
+    <p [innerHTML]="'digital-services-terminals.information-text' | translate"></p>
+    <ul>
+        <li>{{ "digital-services-terminals.information-li1" | translate }}</li>
+        <li>{{ "digital-services-terminals.information-li2" | translate }}</li>
+        <li>{{ "digital-services-terminals.information-li3" | translate }}</li>
+    </ul>
+</div>
 <div class="table-container mb-5">
     <app-digital-service-table
         titleText="devices"
@@ -13,11 +24,12 @@
     ></app-digital-service-table>
 </div>
 @if (sidebarVisible) {
-    <p-sidebar
+    <p-drawer
         [(visible)]="sidebarVisible"
         position="right"
-        styleClass="p-sidebar-lg"
-        (onHide)="childSidePanel.close()"
+        styleClass="drawer-lg"
+        (onHide)="focusTerminalButton(); sidebarVisible = false"
+        appendTo="body"
         ariaCloseLabel="Close"
     >
         <app-digital-services-terminals-side-panel
@@ -25,10 +37,10 @@
             [terminal]="terminal"
             [terminalData]="terminalData()"
             [sidebarVisible]="sidebarVisible"
-            (sidebarVisibleChange)="sidebarVisible = $event"
+            (sidebarVisibleChange)="focusTerminalButton(); sidebarVisible = $event"
             (updateTerminals)="updateTerminals($event)"
             (deleteTerminals)="deleteItem($event)"
         >
         </app-digital-services-terminals-side-panel>
-    </p-sidebar>
+    </p-drawer>
 }

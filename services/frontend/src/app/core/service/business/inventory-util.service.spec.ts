@@ -455,7 +455,7 @@ describe("InventoryUtilService", () => {
                 footprint,
             );
 
-            expect(stats.length).toEqual(4);
+            expect(stats).toHaveSize(4);
         });
 
         it("should return an array with count and avgPue", () => {

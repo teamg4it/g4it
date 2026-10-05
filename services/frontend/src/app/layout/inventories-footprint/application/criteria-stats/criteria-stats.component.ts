@@ -5,8 +5,11 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
+import { NgClass } from "@angular/common";
 import { Component, computed, inject, input, Signal } from "@angular/core";
-import { TranslateService } from "@ngx-translate/core";
+import { TranslatePipe, TranslateService } from "@ngx-translate/core";
+import { CardModule } from "primeng/card";
+import { TooltipModule } from "primeng/tooltip";
 import { Filter, TransformedDomain } from "src/app/core/interfaces/filter.interface";
 import {
     ApplicationFootprint,
@@ -25,6 +28,8 @@ interface CriteriaData {
 @Component({
     selector: "app-criteria-stats",
     templateUrl: "./criteria-stats.component.html",
+    standalone: true,
+    imports: [CardModule, NgClass, TooltipModule, TranslatePipe],
 })
 export class CriteriaStatsComponent {
     protected footprintStore = inject(FootprintStoreService);

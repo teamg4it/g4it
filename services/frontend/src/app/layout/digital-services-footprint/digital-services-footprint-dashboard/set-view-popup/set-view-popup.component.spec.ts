@@ -9,9 +9,8 @@ describe("SetViewPopupComponent", () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            imports: [TranslateModule.forRoot()],
-            declarations: [SetViewPopupComponent],
-        }).compileComponents();
+    imports: [TranslateModule.forRoot(), SetViewPopupComponent],
+}).compileComponents();
 
         fixture = TestBed.createComponent(SetViewPopupComponent);
         component = fixture.componentInstance;

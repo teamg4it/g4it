@@ -6,11 +6,11 @@
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
 import { CommonModule } from "@angular/common";
-import { Component, DestroyRef, inject, OnInit } from "@angular/core";
+import { Component, DestroyRef, inject, OnInit, signal, ViewChild } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { Router, RouterModule } from "@angular/router";
 import { TranslateModule } from "@ngx-translate/core";
-import { ButtonModule } from "primeng/button";
+import { Button, ButtonModule } from "primeng/button";
 import { CardModule } from "primeng/card";
 import { ScrollPanelModule } from "primeng/scrollpanel";
 import { take } from "rxjs";
@@ -38,15 +38,17 @@ export class WelcomePageComponent implements OnInit {
     selectedPath: string = "";
     currentOrganization: Organization = {} as Organization;
     currentWorkspace: Workspace = {} as Workspace;
-    isAllowedInventory: boolean = false;
+    isAllowedInventory = signal(false);
     isAllowedDigitalService: boolean = false;
-    isAllowedEcoMindAi: boolean = false;
+    isAllowedEcoMindAi = signal(false);
     isEcoMindEnabledForCurrentOrganization: boolean = false;
     isEcoMindModuleEnabled: boolean = environment.isEcomindEnabled;
 
     private readonly destroyRef = inject(DestroyRef);
     public userService = inject(UserService);
     ecoDesignPercent = this.userService.ecoDesignPercent;
+    @ViewChild("createWorkspaceButton")
+    createWorkspaceButton?: Button;
 
     externalLinks = [
         {
@@ -70,7 +72,7 @@ export class WelcomePageComponent implements OnInit {
         this.userService.isAllowedInventoryRead$
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe((isAllowed: boolean) => {
-                this.isAllowedInventory = isAllowed;
+                this.isAllowedInventory.set(isAllowed);
             });
         this.userService.isAllowedDigitalServiceRead$
             .pipe(takeUntilDestroyed(this.destroyRef))
@@ -80,7 +82,7 @@ export class WelcomePageComponent implements OnInit {
         this.userService.isAllowedEcoMindAiRead$
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe((isAllowed: boolean) => {
-                this.isAllowedEcoMindAi = isAllowed;
+                this.isAllowedEcoMindAi.set(isAllowed);
             });
         this.userService.user$.pipe(take(1)).subscribe((userDetails) => {
             this.userName = userDetails?.firstName + " " + userDetails?.lastName;
@@ -99,6 +101,19 @@ export class WelcomePageComponent implements OnInit {
                 this.currentWorkspace = workspace;
                 this.selectedPath = `/organizations/${this.currentOrganization.name}/workspaces/${workspace?.id}`;
             });
+
+        this.workspaceService
+            .getIsOpen()
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe((isOpen: boolean) => {
+                if (!isOpen) {
+                    setTimeout(() => {
+                        this.createWorkspaceButton?.el?.nativeElement
+                            ?.querySelector("button")
+                            ?.focus();
+                    }, 200);
+                }
+            });
     }
 
     openWorkspaceSidebar() {
@@ -106,25 +121,30 @@ export class WelcomePageComponent implements OnInit {
     }
 
     inventories() {
-        if (this.isAllowedInventory) {
-            this.router.navigateByUrl(`${this.selectedPath}/inventories`);
+        if (this.isAllowedInventory()) {
+            void this.router.navigateByUrl(`${this.selectedPath}/inventories`);
         } else {
-            this.router.navigateByUrl("/useful-information");
+            const mailto = this.userService.composeEcoMindAccessEmail(
+                this.currentOrganization.name,
+                this.currentWorkspace.name,
+                true,
+            );
+            globalThis.location.href = mailto;
         }
     }
 
     digitalServices() {
         if (this.isAllowedDigitalService) {
-            this.router.navigateByUrl(`${this.selectedPath}/digital-services`, {
+            void this.router.navigateByUrl(`${this.selectedPath}/digital-services`, {
                 state: { isIa: false },
             });
         } else {
-            this.router.navigateByUrl("/useful-information");
+            void this.router.navigateByUrl("/useful-information");
         }
     }
 
     ecoMindAi() {
-        this.router.navigateByUrl(`${this.selectedPath}/eco-mind-ai`, {
+        void this.router.navigateByUrl(`${this.selectedPath}/eco-mind-ai`, {
             state: { isIa: true },
         });
     }
@@ -133,6 +153,7 @@ export class WelcomePageComponent implements OnInit {
         const mailto = this.userService.composeEcoMindAccessEmail(
             this.currentOrganization.name,
             this.currentWorkspace.name,
+            false,
         );
         globalThis.location.href = mailto;
     }

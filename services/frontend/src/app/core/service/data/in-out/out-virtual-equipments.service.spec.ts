@@ -76,7 +76,7 @@ describe("OutVirtualEquipmentsService", () => {
 
             service.getByDigitalService(digitalServiceUid).subscribe((equipments) => {
                 expect(equipments).toEqual(mockVirtualEquipmentList);
-                expect(equipments.length).toBe(3);
+                expect(equipments).toHaveSize(3);
                 expect(equipments[0].name).toBe("VM-Test-1");
             });
 
@@ -92,7 +92,7 @@ describe("OutVirtualEquipmentsService", () => {
 
             service.getByDigitalService(digitalServiceUid).subscribe((equipments) => {
                 expect(equipments).toEqual([]);
-                expect(equipments.length).toBe(0);
+                expect(equipments).toHaveSize(0);
             });
 
             const expectedUrl = `${Constants.ENDPOINTS.digitalServicesVersions}/${digitalServiceUid}/outputs/virtual-equipments`;
@@ -110,7 +110,7 @@ describe("OutVirtualEquipmentsService", () => {
             ];
 
             service.getByDigitalService(digitalServiceUid).subscribe((equipments) => {
-                expect(equipments.length).toBe(3);
+                expect(equipments).toHaveSize(3);
                 expect(equipments[0].provider).toBe("AWS");
                 expect(equipments[1].provider).toBe("Azure");
                 expect(equipments[2].provider).toBe("GCP");
@@ -128,7 +128,7 @@ describe("OutVirtualEquipmentsService", () => {
 
             service.getByInventory(inventoryId).subscribe((equipments) => {
                 expect(equipments).toEqual(mockVirtualEquipmentList);
-                expect(equipments.length).toBe(3);
+                expect(equipments).toHaveSize(3);
                 expect(equipments[0].name).toBe("VM-Test-1");
             });
 
@@ -144,7 +144,7 @@ describe("OutVirtualEquipmentsService", () => {
 
             service.getByInventory(inventoryId).subscribe((equipments) => {
                 expect(equipments).toEqual([]);
-                expect(equipments.length).toBe(0);
+                expect(equipments).toHaveSize(0);
             });
 
             const expectedUrl = `${Constants.ENDPOINTS.inventories}/${inventoryId}/outputs/virtual-equipments`;
@@ -204,16 +204,28 @@ describe("OutVirtualEquipmentsService", () => {
             const inventoryId1 = 100;
             const inventoryId2 = 200;
 
-            service.getByInventory(inventoryId1).subscribe();
+            service.getByInventory(inventoryId1).subscribe((response) => {
+                expect(response).toEqual([mockVirtualEquipment]);
+            });
+
             const req1 = httpMock.expectOne(
                 `${Constants.ENDPOINTS.inventories}/${inventoryId1}/outputs/virtual-equipments`,
             );
+
+            expect(req1.request.method).toBe("GET");
+
             req1.flush([mockVirtualEquipment]);
 
-            service.getByInventory(inventoryId2).subscribe();
+            service.getByInventory(inventoryId2).subscribe((response) => {
+                expect(response).toEqual([]);
+            });
+
             const req2 = httpMock.expectOne(
                 `${Constants.ENDPOINTS.inventories}/${inventoryId2}/outputs/virtual-equipments`,
             );
+
+            expect(req2.request.method).toBe("GET");
+
             req2.flush([]);
         });
 
@@ -264,20 +276,30 @@ describe("OutVirtualEquipmentsService", () => {
         it("should handle zero inventory ID", () => {
             const inventoryId = 0;
 
-            service.getByInventory(inventoryId).subscribe();
+            service.getByInventory(inventoryId).subscribe((response) => {
+                expect(response).toEqual([]);
+            });
 
             const expectedUrl = `${Constants.ENDPOINTS.inventories}/${inventoryId}/outputs/virtual-equipments`;
             const req = httpMock.expectOne(expectedUrl);
+
+            expect(req.request.method).toBe("GET");
+
             req.flush([]);
         });
 
         it("should handle large inventory ID", () => {
             const inventoryId = 999999999;
 
-            service.getByInventory(inventoryId).subscribe();
+            service.getByInventory(inventoryId).subscribe((response) => {
+                expect(response).toEqual([mockVirtualEquipment]);
+            });
 
             const expectedUrl = `${Constants.ENDPOINTS.inventories}/${inventoryId}/outputs/virtual-equipments`;
             const req = httpMock.expectOne(expectedUrl);
+
+            expect(req.request.method).toBe("GET");
+
             req.flush([mockVirtualEquipment]);
         });
     });
@@ -321,13 +343,13 @@ describe("OutVirtualEquipmentsService", () => {
             const uid3 = "ds-3";
 
             service.getByDigitalService(uid1).subscribe((equipments) => {
-                expect(equipments.length).toBe(1);
+                expect(equipments).toHaveSize(1);
             });
             service.getByDigitalService(uid2).subscribe((equipments) => {
-                expect(equipments.length).toBe(2);
+                expect(equipments).toHaveSize(2);
             });
             service.getByDigitalService(uid3).subscribe((equipments) => {
-                expect(equipments.length).toBe(0);
+                expect(equipments).toHaveSize(0);
             });
 
             const req1 = httpMock.expectOne(
@@ -351,13 +373,13 @@ describe("OutVirtualEquipmentsService", () => {
             const id3 = 3;
 
             service.getByInventory(id1).subscribe((equipments) => {
-                expect(equipments.length).toBe(1);
+                expect(equipments).toHaveSize(1);
             });
             service.getByInventory(id2).subscribe((equipments) => {
-                expect(equipments.length).toBe(2);
+                expect(equipments).toHaveSize(2);
             });
             service.getByInventory(id3).subscribe((equipments) => {
-                expect(equipments.length).toBe(0);
+                expect(equipments).toHaveSize(0);
             });
 
             const req1 = httpMock.expectOne(
@@ -379,8 +401,13 @@ describe("OutVirtualEquipmentsService", () => {
             const digitalServiceUid = "mixed-ds";
             const inventoryId = 888;
 
-            service.getByDigitalService(digitalServiceUid).subscribe();
-            service.getByInventory(inventoryId).subscribe();
+            service.getByDigitalService(digitalServiceUid).subscribe((response) => {
+                expect(response).toEqual([mockVirtualEquipment]);
+            });
+
+            service.getByInventory(inventoryId).subscribe((response) => {
+                expect(response).toEqual(mockVirtualEquipmentList);
+            });
 
             const reqDs = httpMock.expectOne(
                 `${Constants.ENDPOINTS.digitalServicesVersions}/${digitalServiceUid}/outputs/virtual-equipments`,
@@ -388,6 +415,9 @@ describe("OutVirtualEquipmentsService", () => {
             const reqInv = httpMock.expectOne(
                 `${Constants.ENDPOINTS.inventories}/${inventoryId}/outputs/virtual-equipments`,
             );
+
+            expect(reqDs.request.method).toBe("GET");
+            expect(reqInv.request.method).toBe("GET");
 
             reqDs.flush([mockVirtualEquipment]);
             reqInv.flush(mockVirtualEquipmentList);

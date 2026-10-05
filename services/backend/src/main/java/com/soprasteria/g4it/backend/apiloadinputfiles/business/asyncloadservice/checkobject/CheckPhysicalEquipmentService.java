@@ -15,12 +15,14 @@ import com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.
 import com.soprasteria.g4it.backend.common.model.Context;
 import com.soprasteria.g4it.backend.common.model.LineError;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InPhysicalEquipmentRest;
+import com.soprasteria.g4it.backend.server.gen.api.dto.ItemTypeRest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 @Service
@@ -62,6 +64,10 @@ public class CheckPhysicalEquipmentService {
         // check type is in itemTypes referential
         genericRuleService.checkType(context.getLocale(), context.getOrganization(),filename, line, physicalEquipment.getType(), isDigitalService,context.getWorkspaceId())
                 .ifPresent(errors::add);
+
+        /*// check quantity not null and > 0
+        genericRuleService.checkQuantity(context.getLocale(),filename, line, physicalEquipment.getQuantity(), isDigitalService)
+                .ifPresent(errors::add);*/
 
 
         // check date purchase < date retrieval

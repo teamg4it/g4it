@@ -5,6 +5,7 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
+import { NgClass } from "@angular/common";
 import {
     Component,
     EventEmitter,
@@ -14,11 +15,16 @@ import {
     Output,
     SimpleChanges,
 } from "@angular/core";
-import { TranslateService } from "@ngx-translate/core";
+import { TranslatePipe, TranslateService } from "@ngx-translate/core";
+import { CardModule } from "primeng/card";
+import { DecimalsPipe } from "../../../core/pipes/decimal.pipe";
+import { IntegerPipe } from "../../../core/pipes/integer.pipe";
 
 @Component({
     selector: "app-impact-aggregate-infos",
     templateUrl: "./impact-aggregate-infos.component.html",
+    standalone: true,
+    imports: [NgClass, CardModule, DecimalsPipe, IntegerPipe, TranslatePipe],
 })
 export class ImpactAggregateInfosComponent implements OnChanges {
     private readonly translate = inject(TranslateService);

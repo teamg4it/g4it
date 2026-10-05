@@ -17,18 +17,31 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-
+import org.springframework.data.domain.Pageable;
 /**
  * Out OutPhysical Equipment JPA repository.
  */
 @Repository
 public interface OutPhysicalEquipmentRepository extends JpaRepository<OutPhysicalEquipment, Long> {
 
-    List<OutPhysicalEquipment> findByTaskId(Long taskId);
+    List<OutPhysicalEquipment> findByTaskId(Long taskId, Pageable pageable);
 
     @Transactional
     @Modifying
     void deleteByTaskId(Long taskId);
+
+    // In OutPhysicalEquipmentRepository
+    @Query("SELECT o.criterion, o FROM OutPhysicalEquipment o WHERE o.taskId = :taskId")
+    List<Object[]> findCriterionAndEquipmentByTaskId(@Param("taskId") Long taskId);
+
+    @Query("""
+        SELECT o.criterion, o
+        FROM OutPhysicalEquipment o
+        WHERE o.taskId = :taskId
+    """)
+    List<Object[]> findCriterionAndEquipmentByTaskId(
+            @Param("taskId") Long taskId,
+            Pageable pageable);
 
     @Query("""
     SELECT DISTINCT o.source
@@ -37,4 +50,10 @@ public interface OutPhysicalEquipmentRepository extends JpaRepository<OutPhysica
         AND o.source IS NOT NULL
 """)
     List<String> findDistinctSourcesByTaskId(@Param("taskId") Long taskId);
+
+    List<OutPhysicalEquipment> findByTaskIdOrderByIdAsc(
+            Long taskId,
+            Pageable pageable);
+
 }
+

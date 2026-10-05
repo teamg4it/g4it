@@ -20,18 +20,17 @@ import { CheckboxModule } from "primeng/checkbox";
 import { ConfirmDialogModule } from "primeng/confirmdialog";
 import { ConfirmPopupModule } from "primeng/confirmpopup";
 import { DialogModule } from "primeng/dialog";
-import { DropdownModule } from "primeng/dropdown";
+import { DrawerModule } from "primeng/drawer";
 import { EditorModule } from "primeng/editor";
 import { FocusTrapModule } from "primeng/focustrap";
 import { InputTextModule } from "primeng/inputtext";
+import { MenubarModule } from "primeng/menubar";
 import { OverlayModule } from "primeng/overlay";
 import { PaginatorModule } from "primeng/paginator";
 import { RadioButtonModule } from "primeng/radiobutton";
 import { ScrollPanelModule } from "primeng/scrollpanel";
-import { SidebarModule } from "primeng/sidebar";
+import { SelectModule } from "primeng/select";
 import { TableModule } from "primeng/table";
-import { TabMenuModule } from "primeng/tabmenu";
-import { TabViewModule } from "primeng/tabview";
 import { ToastModule } from "primeng/toast";
 import { TooltipModule } from "primeng/tooltip";
 import { CommonEditorComponent } from "src/app/layout/common/common-editor/common-editor.component";
@@ -41,7 +40,6 @@ import { ImpactSidebarComponent } from "src/app/layout/common/impact-sidebar/imp
 import { PromoteVersionDialogComponent } from "src/app/layout/common/promote-version-dialog/promote-version-dialog.component";
 import { SpinnerComponent } from "src/app/layout/common/spinner/spinner.component";
 import { StackBarChartComponent } from "src/app/layout/common/stack-bar-chart/stack-bar-chart.component";
-import { StatsComponent } from "src/app/layout/common/stats/stats.component";
 import { WorkspaceComponent } from "src/app/layout/common/workspace/workspace.component";
 import { BaseFilterSidebarComponent } from "src/app/layout/inventories-footprint/base-filter-sidebar/base-filter-sidebar.component";
 import { DatavizFilterComponent } from "src/app/layout/inventories-footprint/dataviz-filter/dataviz-filter.component";
@@ -53,22 +51,6 @@ import { IntegerPipe } from "../pipes/integer.pipe";
 import { MonthYearPipe } from "../pipes/monthyear.pipe";
 
 @NgModule({
-    declarations: [
-        SpinnerComponent,
-        MonthYearPipe,
-        InventoriesHeaderFootprintComponent,
-        BaseFilterSidebarComponent,
-        DatavizFilterComponent,
-        CommonEditorComponent,
-        BusinessHoursRendererPipe,
-        StatsComponent,
-        CriteriaPopupComponent,
-        PromoteVersionDialogComponent,
-        AutofocusDirective,
-        StackBarChartComponent,
-        WorkspaceComponent,
-        FormNavComponent,
-    ],
     imports: [
         CommonModule,
         FormsModule,
@@ -79,17 +61,16 @@ import { MonthYearPipe } from "../pipes/monthyear.pipe";
         ToastModule,
         CardModule,
         ScrollPanelModule,
-        SidebarModule,
+        DrawerModule,
         RadioButtonModule,
         ConfirmPopupModule,
         ButtonModule,
         CheckboxModule,
-        TabViewModule,
+        MenubarModule,
         OverlayModule,
         EditorModule,
-        DropdownModule,
+        SelectModule,
         ConfirmDialogModule,
-        TabMenuModule,
         PaginatorModule,
         AccordionModule,
         InputTextModule,
@@ -103,6 +84,19 @@ import { MonthYearPipe } from "../pipes/monthyear.pipe";
         DecimalsPipe,
         IntegerPipe,
         BadgeModule,
+        SpinnerComponent,
+        MonthYearPipe,
+        InventoriesHeaderFootprintComponent,
+        BaseFilterSidebarComponent,
+        DatavizFilterComponent,
+        CommonEditorComponent,
+        BusinessHoursRendererPipe,
+        CriteriaPopupComponent,
+        PromoteVersionDialogComponent,
+        AutofocusDirective,
+        StackBarChartComponent,
+        WorkspaceComponent,
+        FormNavComponent,
     ],
     exports: [
         TooltipModule,
@@ -115,6 +109,7 @@ import { MonthYearPipe } from "../pipes/monthyear.pipe";
         TranslateModule,
         ToastModule,
         CardModule,
+        MenubarModule,
         ScrollPanelModule,
         InventoriesHeaderFootprintComponent,
         ConfirmPopupModule,
@@ -123,16 +118,13 @@ import { MonthYearPipe } from "../pipes/monthyear.pipe";
         DatavizFilterComponent,
         PaginatorModule,
         CheckboxModule,
-        TabViewModule,
         OverlayModule,
-        SidebarModule,
+        DrawerModule,
         RadioButtonModule,
         CommonEditorComponent,
-        StatsComponent,
-        DropdownModule,
+        SelectModule,
         ConfirmDialogModule,
         TableModule,
-        TabMenuModule,
         AccordionModule,
         BusinessHoursRendererPipe,
         InputTextModule,

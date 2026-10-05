@@ -122,13 +122,13 @@
             @if (versionIdNames().length) {
                 <div>
                     <table class="compare-table">
+                        <caption class="visually-hidden">
+                            {{
+                                "digital-services.version.compare-versions-title"
+                                    | translate
+                            }}
+                        </caption>
                         <thead>
-                            <caption class="visually-hidden">
-                                {{
-                                    "digital-services.version.compare-versions-title"
-                                        | translate
-                                }}
-                            </caption>
                             <tr>
                                 <th id="criteria" class="border-top-none">
                                     {{

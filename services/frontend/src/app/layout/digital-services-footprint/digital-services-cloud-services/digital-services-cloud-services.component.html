@@ -1,3 +1,9 @@
+<div class="information-section my-3">
+    <h3 class="m-0 text-lg mb-2 font-semibold">
+        {{ "digital-services-cloud-services.information-step" | translate }}
+    </h3>
+    <p [innerHTML]="'digital-services-cloud-services.information-text' | translate"></p>
+</div>
 <div class="table-container mb-5">
     <app-digital-service-table
         titleText="cloud-services"
@@ -14,11 +20,12 @@
 </div>
 
 @if (sidebarVisible) {
-    <p-sidebar
+    <p-drawer
         [(visible)]="sidebarVisible"
         position="right"
-        styleClass="p-sidebar-md"
-        (onHide)="childSidePanel.close()"
+        styleClass="drawer-md"
+        appendTo="body"
+        (onHide)="focusCloudButton(); childSidePanel.close()"
         ariaCloseLabel="Close"
     >
         <app-digital-services-cloud-services-side-panel
@@ -26,10 +33,10 @@
             [cloud]="cloud"
             [sidebarVisible]="sidebarVisible"
             [cloudServices]="cloudServices()"
-            (sidebarVisibleChange)="sidebarVisible = $event"
+            (sidebarVisibleChange)="focusCloudButton(); sidebarVisible = $event"
             (updateCloudServices)="updateCloudServices($event)"
             (deleteCloudServices)="deleteCloudServices($event)"
         >
         </app-digital-services-cloud-services-side-panel>
-    </p-sidebar>
+    </p-drawer>
 }

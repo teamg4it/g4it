@@ -5,10 +5,12 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
+import { NgClass, NgTemplateOutlet } from "@angular/common";
 import {
     Component,
     computed,
     DestroyRef,
+    effect,
     inject,
     OnDestroy,
     OnInit,
@@ -20,8 +22,10 @@ import {
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { Title } from "@angular/platform-browser";
 import { ActivatedRoute, Router } from "@angular/router";
-import { TranslateService } from "@ngx-translate/core";
+import { TranslatePipe, TranslateService } from "@ngx-translate/core";
 import { EChartsOption } from "echarts";
+import { Button } from "primeng/button";
+import { DrawerModule } from "primeng/drawer";
 import { firstValueFrom, lastValueFrom, Subscription } from "rxjs";
 import { WorkspaceWithOrganization } from "src/app/core/interfaces/administration.interfaces";
 import {
@@ -58,13 +62,36 @@ import {
 import { DigitalServiceStoreService } from "src/app/core/store/digital-service.store";
 import { GlobalStoreService } from "src/app/core/store/global.store";
 import { Constants } from "src/constants";
+import { ConfigureViewFiltersComponent } from "../../common/configure-view-filters/configure-view-filters.component";
+import { CriteriaPopupComponent } from "../../common/criteria-popup/criteria-popup.component";
+import { ImpactSidebarComponent } from "../../common/impact-sidebar/impact-sidebar.component";
+import { InverseAxisButtonComponent } from "../../common/inverse-axis-button/inverse-axis-button.component";
 import { AbstractDashboard } from "../../inventories-footprint/abstract-dashboard";
 import { BarChartComponent } from "./bar-chart/bar-chart.component";
+import { GraphDescriptionComponent } from "./graph-description/graph-description.component";
+import { PieChartComponent } from "./pie-chart/pie-chart.component";
+import { RadialChartComponent } from "./radial-chart/radial-chart.component";
 
 @Component({
     selector: "app-digital-services-footprint-dashboard",
     templateUrl: "./digital-services-footprint-dashboard.component.html",
     styleUrls: ["./digital-services-footprint-dashboard.component.scss"],
+    standalone: true,
+    imports: [
+        Button,
+        NgClass,
+        ImpactSidebarComponent,
+        NgTemplateOutlet,
+        RadialChartComponent,
+        PieChartComponent,
+        BarChartComponent,
+        GraphDescriptionComponent,
+        CriteriaPopupComponent,
+        DrawerModule,
+        ConfigureViewFiltersComponent,
+        TranslatePipe,
+        InverseAxisButtonComponent,
+    ],
 })
 export class DigitalServicesFootprintDashboardComponent
     extends AbstractDashboard
@@ -78,6 +105,7 @@ export class DigitalServicesFootprintDashboardComponent
     private readonly shareDigitalService = inject(ShareDigitalServiceDataService);
     private readonly route = inject(ActivatedRoute);
     chartType = signal("radial");
+    isAxisInverted = signal<boolean>(false);
     showInconsitencyBtn = false;
     constants = Constants;
     noData = true;
@@ -156,6 +184,27 @@ export class DigitalServicesFootprintDashboardComponent
         );
     });
 
+    shouldShowStackBarChart = computed(() => {
+        if (!this.globalVisionChartData || this.globalVisionChartData.length === 0) {
+            return false;
+        }
+
+        // Stack bar chart only for non-inverted mode
+        if (this.isAxisInverted()) {
+            return false;
+        }
+
+        // Count unique criteria
+        const uniqueCriteria = new Set<string>();
+        this.globalVisionChartData.forEach((tierData) => {
+            tierData.impacts.forEach((impact) => {
+                uniqueCriteria.add(impact.criteria);
+            });
+        });
+
+        return uniqueCriteria.size > Constants.MAX_NUMBER_OF_CRITERIA_RADAR;
+    });
+
     calculatedCriteriaList: string[] = [];
     sub!: Subscription;
     constructor(
@@ -170,6 +219,13 @@ export class DigitalServicesFootprintDashboardComponent
         private readonly router: Router,
     ) {
         super(translate, integerPipe, decimalsPipe, globalStore);
+
+        // Automatically reset axis inversion when leaving radial chart
+        effect(() => {
+            if (this.chartType() !== "radial") {
+                this.isAxisInverted.set(false);
+            }
+        });
     }
 
     ngOnInit() {

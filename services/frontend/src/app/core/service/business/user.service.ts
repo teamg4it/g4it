@@ -14,7 +14,12 @@ import { NavigationEnd, Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { MessageService } from "primeng/api";
 import { Constants } from "src/constants";
-import { BasicRoles, Role } from "../../interfaces/roles.interfaces";
+import {
+    BasicRoles,
+    BasicSopraRoles,
+    OrgBasicRoles,
+    Role,
+} from "../../interfaces/roles.interfaces";
 
 @Injectable({
     providedIn: "root",
@@ -115,7 +120,7 @@ export class UserService {
 
         if (currentUser.organizations.length === 0) {
             this.errorMessage("organization-or-workspace-not-found");
-            this.router.navigateByUrl(`something-went-wrong/403`);
+            void this.router.navigateByUrl(`something-went-wrong/403`);
             return;
         }
 
@@ -155,17 +160,17 @@ export class UserService {
 
         if (organization === undefined) {
             this.errorMessage("insuffisant-right-organization");
-            this.router.navigateByUrl("/");
+            void this.router.navigateByUrl("/");
             return;
         }
         if (workspace === undefined) {
             this.errorMessage("insuffisant-right-workspace");
-            this.router.navigateByUrl("/");
+            void this.router.navigateByUrl("/");
             return;
         }
         this.setOrganizationAndWorkspace(organization, workspace);
         if (!this.checkIfAllowed(organization, workspace, page)) {
-            this.router.navigateByUrl(Constants.WELCOME_PAGE);
+            void this.router.navigateByUrl(Constants.WELCOME_PAGE);
         }
     }
 
@@ -188,7 +193,7 @@ export class UserService {
                 return;
             } else {
                 this.setOrganizationAndWorkspace(organization, workspace!);
-                this.router.navigateByUrl(Constants.WELCOME_PAGE);
+                void this.router.navigateByUrl(Constants.WELCOME_PAGE);
             }
         }
 
@@ -200,7 +205,7 @@ export class UserService {
             ]) {
                 if (this.checkIfAllowed(organization, workspace, type)) {
                     this.setOrganizationAndWorkspace(organization, workspace);
-                    this.router.navigateByUrl(
+                    void this.router.navigateByUrl(
                         `organizations/${organization.name}/workspaces/${workspace.id}/${type}`,
                     );
                     break;
@@ -279,12 +284,29 @@ export class UserService {
     }
 
     getRoles(organization: Organization, workspace: Workspace): Role[] {
+        const isSopraUser = this.isSopraUser(this.userDataService.userEmail());
         if (organization.roles.includes(Role.OrganizationAdmin)) {
-            return [Role.OrganizationAdmin, Role.WorkspaceAdmin, ...BasicRoles];
+            return [Role.OrganizationAdmin, Role.WorkspaceAdmin, ...OrgBasicRoles];
         }
-
+        let workSpaceRoles: Role[];
         if (workspace.roles.includes(Role.WorkspaceAdmin)) {
-            return [Role.WorkspaceAdmin, ...BasicRoles];
+            if (isSopraUser) {
+                workSpaceRoles = [Role.WorkspaceAdmin, ...BasicSopraRoles];
+                if (workspace.roles.includes(Role.InventoryWrite)) {
+                    workSpaceRoles.push(Role.InventoryWrite, Role.InventoryRead);
+                } else if (workspace.roles.includes(Role.InventoryRead)) {
+                    workSpaceRoles.push(Role.InventoryRead);
+                }
+            } else {
+                workSpaceRoles = [Role.WorkspaceAdmin, ...BasicRoles];
+            }
+            if (workspace.roles.includes(Role.EcoMindAiWrite)) {
+                workSpaceRoles.push(Role.EcoMindAiWrite, Role.EcoMindAiRead);
+            } else if (workspace.roles.includes(Role.EcoMindAiRead)) {
+                workSpaceRoles.push(Role.EcoMindAiRead);
+            }
+
+            return workSpaceRoles;
         }
 
         const roles = [...workspace.roles];
@@ -302,6 +324,10 @@ export class UserService {
         }
 
         return roles;
+    }
+
+    isSopraUser(email?: string): boolean {
+        return email?.trim().toLowerCase().endsWith("@soprasteria.com") ?? false;
     }
 
     checkIfAllowed(
@@ -354,6 +380,7 @@ export class UserService {
         this.workspaceSubject.next(workspace);
         localStorage.setItem("currentOrganization", organization.name);
         localStorage.setItem("currentWorkspace", workspace.id.toString());
+
         this.rolesSubject.next(this.getRoles(organization, workspace));
     }
 
@@ -370,12 +397,12 @@ export class UserService {
                 page === "digital-service-version" ||
                 page === "eco-mind-ai"
             ) {
-                this.router.navigateByUrl(
+                void this.router.navigateByUrl(
                     `organizations/${organization.name}/workspaces/${workspace.id}/${page}`,
                 );
             }
         } else {
-            this.router.navigateByUrl(Constants.WELCOME_PAGE);
+            void this.router.navigateByUrl(Constants.WELCOME_PAGE);
         }
     }
 
@@ -394,17 +421,23 @@ export class UserService {
         return `mailto:${Constants.RECIPIENT_MAIL}?subject=${subject}`;
     }
 
-    composeEcoMindAccessEmail(orgName: string, workspaceName: string): string {
-        const subject = encodeURIComponent("EcoMindAI access");
+    composeEcoMindAccessEmail(
+        orgName: string,
+        workspaceName: string,
+        isInventory: boolean,
+    ): string {
+        const subject = encodeURIComponent(
+            isInventory ? "Inventory access" : "EcoMindAI access",
+        );
         const orgWorkspaceName = `[${workspaceName} (${orgName})]`;
         const body = encodeURIComponent(
             `Hello,
-            I request the access to the module EcoMindAI Module of G4IT on the workspace named ${orgWorkspaceName}
+            I request the access to the module ${isInventory ? "Inventory" : "EcoMindAI"} Module of G4IT on the workspace named ${orgWorkspaceName}
             What I expect of the tool is :
             The context of my project is :
             ---------------------------------------------------------------------
             Bonjour,
-            J'aimerais accéder au module EcoMindAI de G4IT sur l'espace de travail nommé ${orgWorkspaceName}
+            J'aimerais accéder au module ${isInventory ? "Inventaire" : "EcoMindAI"} de G4IT sur l'espace de travail nommé ${orgWorkspaceName}
             Voici ce que j'aimerais faire avec l'outil :
             Voici le contexte de mon projet : `,
         );

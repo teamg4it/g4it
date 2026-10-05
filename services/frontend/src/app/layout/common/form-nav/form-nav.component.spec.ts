@@ -12,15 +12,15 @@ describe("FormNavComponent", () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [FormNavComponent],
-            imports: [
-                HttpClientTestingModule,
-                RouterTestingModule,
-                ReactiveFormsModule,
-                SharedModule,
-                TranslateModule.forRoot(),
-            ],
-        }).compileComponents();
+    imports: [
+        HttpClientTestingModule,
+        RouterTestingModule,
+        ReactiveFormsModule,
+        SharedModule,
+        TranslateModule.forRoot(),
+        FormNavComponent,
+    ],
+}).compileComponents();
 
         fixture = TestBed.createComponent(FormNavComponent);
         component = fixture.componentInstance;

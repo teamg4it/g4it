@@ -16,17 +16,15 @@ describe("shareDsRoutes", () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            imports: [
-                RouterTestingModule.withRoutes(shareDsRoutes),
-                HttpClientModule,
-                TranslateModule.forRoot(),
-            ],
-            declarations: [
-                ShareDigitalServiceComponent,
-                DigitalServicesFootprintDashboardComponent,
-                DigitalServicesResourcesComponent,
-            ],
-        }).compileComponents();
+    imports: [
+        RouterTestingModule.withRoutes(shareDsRoutes),
+        HttpClientModule,
+        TranslateModule.forRoot(),
+        ShareDigitalServiceComponent,
+        DigitalServicesFootprintDashboardComponent,
+        DigitalServicesResourcesComponent,
+    ],
+}).compileComponents();
 
         router = TestBed.inject(Router);
         location = TestBed.inject(Location);

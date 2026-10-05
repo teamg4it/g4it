@@ -6,7 +6,7 @@
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
 import { HttpClient } from "@angular/common/http";
-import { Injectable } from "@angular/core";
+import { Injectable, signal } from "@angular/core";
 import { Observable, ReplaySubject, tap } from "rxjs";
 
 import { Constants } from "src/constants";
@@ -18,12 +18,14 @@ const endpoint = Constants.ENDPOINTS.users;
 })
 export class UserDataService {
     userSubject = new ReplaySubject<User>(1);
+    userEmail = signal<string>("");
 
     constructor(private readonly http: HttpClient) {}
 
     fetchUserInfo(): Observable<User> {
         return this.http.get<User>(`${endpoint}/me`).pipe(
             tap(async (user) => {
+                this.userEmail?.set(user.email);
                 this.userSubject.next(user);
             }),
         );

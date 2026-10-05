@@ -79,6 +79,16 @@ describe("UserDataService", () => {
         expect(UserDataService).toBeTruthy();
     });
 
+    it("should update the email signal when user info is fetched", () => {
+        expect(userService.userEmail()).toBe("");
+
+        userService.fetchUserInfo().subscribe();
+        httpMock.expectOne("users/me").flush(userInfo);
+
+        expect(userService.userEmail()).toBe(userInfo.email);
+        httpMock.verify();
+    });
+
     it("fetchUserInfo() should http GET organization", () => {
         userService.fetchUserInfo().subscribe((res) => {
             expect(res).toEqual(userInfo);

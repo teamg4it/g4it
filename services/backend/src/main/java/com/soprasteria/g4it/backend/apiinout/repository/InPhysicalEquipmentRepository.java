@@ -16,9 +16,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 
 /**
  * In Physical Equipment JPA repository.
@@ -53,8 +56,10 @@ public interface InPhysicalEquipmentRepository extends JpaRepository<InPhysicalE
      * @param digitalServiceVersionUid digital service Identifier
      * @return return a list of physical equipments
      */
-    List<InPhysicalEquipment> findByDigitalServiceVersionUidOrderByName(String digitalServiceVersionUid);
-
+    // List<InPhysicalEquipment> findByDigitalServiceVersionUidOrderByName(String digitalServiceVersionUid);
+    List<InPhysicalEquipment> findByDigitalServiceVersionUidOrderByName(
+            String digitalServiceVersionUid,
+            Pageable pageable);
     /**
      * Find physical equipment by the functionally unique fields
      *
@@ -70,7 +75,10 @@ public interface InPhysicalEquipmentRepository extends JpaRepository<InPhysicalE
      * @param inventoryId inventory id
      * @return return a list of physical equipments
      */
-    List<InPhysicalEquipment> findByInventoryId(Long inventoryId);
+    // List<InPhysicalEquipment> findByInventoryId(Long inventoryId);
+    List<InPhysicalEquipment> findByInventoryIdOrderByIdAsc(
+            Long inventoryId,
+            Pageable pageable);
 
     List<InPhysicalEquipment> findByInventoryId(Long inventoryId, Pageable pageable);
 
@@ -125,4 +133,13 @@ public interface InPhysicalEquipmentRepository extends JpaRepository<InPhysicalE
             WHERE digital_service_version_uid = :oldUid
             """, nativeQuery = true)
     void copyForVersion(@Param("oldUid") String oldUid, @Param("newUid") String newUid);
+
+    @Query("""
+       SELECT p.name
+       FROM InPhysicalEquipment p
+       WHERE p.inventoryId = :inventoryId
+         AND p.name IN :names
+       """)
+    Set<String> findExistingNamesByInventoryIdAndNameIn(@Param("inventoryId") Long inventoryId,
+                                                        @Param("names") Collection<String> names);
 }

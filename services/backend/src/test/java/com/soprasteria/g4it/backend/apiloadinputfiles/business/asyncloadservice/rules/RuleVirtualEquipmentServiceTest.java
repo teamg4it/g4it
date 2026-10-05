@@ -10,10 +10,13 @@ package com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice
 
 import com.soprasteria.g4it.backend.common.model.LineError;
 import com.soprasteria.g4it.backend.common.utils.InfrastructureType;
+import com.soprasteria.g4it.backend.exception.AsyncTaskException;
 import com.soprasteria.g4it.backend.external.boavizta.business.BoaviztapiService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -259,13 +262,13 @@ class RuleVirtualEquipmentServiceTest {
 
     @Test
     void testDuplicateVirtualEquipmentNameError() {
-        when(messageSource.getMessage(eq("cloud.equipment.unique"), any(), eq(locale)))
-                .thenReturn("nomEquipementVirtuel should be unique");
+        when(messageSource.getMessage(eq("vm.name.should.not.duplicate"), any(), eq(locale)))
+                .thenReturn("nomEquipementVirtuel should not be duplicate");
 
         Set<String> names = new HashSet<>(Set.of("VM1"));
-        var actual = service.checkVirtualEquipmentName(locale, filename, line, "VM1", names, true, false);
-        Assertions.assertTrue(actual.isPresent());
-        Assertions.assertEquals(new LineError(filename,1, "nomEquipementVirtuel should be unique"), actual.get());
+        Assertions.assertThrows(AsyncTaskException.class, () ->
+            service.checkVirtualEquipmentName(locale, filename, line, "VM1", names, true, false)
+        );
     }
 
     @Test
@@ -439,12 +442,12 @@ class RuleVirtualEquipmentServiceTest {
     // checkVirtualEquipmentName unique for !isCloudService
     @Test
     void testCheckVirtualEquipmentNameDuplicateNonCloudService() {
-        when(messageSource.getMessage(eq("cloud.equipment.unique"), any(), eq(locale))).
-                thenReturn("nomEquipementVirtuel should be unique");
+        when(messageSource.getMessage(eq("vm.name.should.not.duplicate"), any(), eq(locale))).
+                thenReturn("nomEquipementVirtuel should not be duplicate");
         Set<String> names = new HashSet<>(Set.of("N1"));
-        var result = service.checkVirtualEquipmentName(locale, filename, line, "N1", names, false, false);
-        Assertions.assertTrue(result.isPresent());
-        Assertions.assertEquals(new LineError(filename,1,"nomEquipementVirtuel should be unique"), result.get());
+        Assertions.assertThrows(AsyncTaskException.class, () ->
+            service.checkVirtualEquipmentName(locale, filename, line, "N1", names, false, false)
+        );
     }
 
     @Test
@@ -453,5 +456,42 @@ class RuleVirtualEquipmentServiceTest {
         var result = service.checkVirtualEquipmentName(locale, filename, line, "name", names, false, false);
         Assertions.assertTrue(result.isEmpty());
         Assertions.assertTrue(names.contains("name"));
+    }
+
+    @Test
+    void testCheckAllocationFactorNullIsOk() {
+        var result = service.checkAllocationFactor(locale, filename, line, null);
+
+        Assertions.assertTrue(result.isEmpty());
+    }
+
+    @Test
+    void testCheckAllocationFactorNegativeError() {
+        when(messageSource.getMessage(eq("allocation.factor.should.be.greater.than.zero"), any(), eq(locale)))
+                .thenReturn("Allocation factor must be between 0 and 1");
+
+        var result = service.checkAllocationFactor(locale, filename, line, -0.01);
+
+        Assertions.assertTrue(result.isPresent());
+        Assertions.assertEquals(new LineError(filename, line, "Allocation factor must be between 0 and 1"), result.get());
+    }
+
+    @Test
+    void testCheckAllocationFactorGreaterThanOneError() {
+        when(messageSource.getMessage(eq("allocation.factor.should.be.greater.than.zero"), any(), eq(locale)))
+                .thenReturn("Allocation factor must be between 0 and 1");
+
+        var result = service.checkAllocationFactor(locale, filename, line, 1.01);
+
+        Assertions.assertTrue(result.isPresent());
+        Assertions.assertEquals(new LineError(filename, line, "Allocation factor must be between 0 and 1"), result.get());
+    }
+
+    @ParameterizedTest
+    @ValueSource(doubles = {0D, 1D, 0.5D})
+    void testCheckAllocationFactorValidValuesOk(double allocationFactor) {
+        var result = service.checkAllocationFactor(locale, filename, line, allocationFactor);
+
+        Assertions.assertTrue(result.isEmpty());
     }
 }

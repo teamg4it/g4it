@@ -45,6 +45,7 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
 
     Optional<Task> findTopByDigitalServiceVersionOrderByIdDesc(final DigitalServiceVersion dsv);
 
+    List<Task> findByStatus(final String status);
     /**
      * Find by digitalService
      *
@@ -121,6 +122,7 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
                 update Task t
                 set t.status = :status,
                     t.progressPercentage = :progress,
+                    t.progressLastChangedDate = CURRENT_TIMESTAMP,
                     t.details = :details,
                     t.lastUpdateDate = CURRENT_TIMESTAMP
                 where t.id = :taskId
@@ -146,11 +148,31 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
                                     @Param("progress") String progress,
                                     @Param("details") List<String> details);
 
-    Optional<Task> findTopByDigitalServiceVersionAndTypeAndStatusOrderByIdDesc(
-            DigitalServiceVersion digitalServiceVersion,
-            String type,
-            String status
-    );
+    @Modifying
+    @Transactional
+    @Query("""
+                update Task t
+                set t.progressLastChangedDate = :progressLastChangedDate
+                where t.id = :id
+            """)
+    void updateProgressLastChangedDate(@Param("id") Long id,
+                                       @Param("progressLastChangedDate") LocalDateTime progressLastChangedDate);
+
+    @Modifying
+    @Transactional
+    @Query("""
+                update Task t
+                set t.status = :status,
+                    t.lastUpdateDate = :lastUpdateDate,
+                    t.details = :details,
+                    t.errors = :errors
+                where t.id = :id
+            """)
+    void updateStuckTaskFailed(@Param("id") Long id,
+                               @Param("status") String status,
+                               @Param("lastUpdateDate") LocalDateTime lastUpdateDate,
+                               @Param("details") List<String> details,
+                               @Param("errors") List<String> errors);
 
 
 }

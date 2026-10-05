@@ -19,6 +19,7 @@ import { of } from "rxjs";
 import { DigitalService } from "src/app/core/interfaces/digital-service.interfaces";
 import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
+import { InventoryDataService } from "src/app/core/service/data/inventory-data.service";
 import { SharedModule } from "src/app/core/shared/shared.module";
 import { DigitalServicesFootprintHeaderComponent } from "./digital-services-footprint-header.component";
 
@@ -46,11 +47,11 @@ describe("DigitalServicesFootprintHeaderComponent", () => {
         delete: () => of({}),
         getDuplicateDigitalServiceAndVersionName: () =>
             of({ dsNames: [], versionNames: [] }),
+        getServiceRenewalDetails: () => of(null),
     };
 
     beforeEach(async () => {
         TestBed.configureTestingModule({
-            declarations: [DigitalServicesFootprintHeaderComponent],
             imports: [
                 HttpClientTestingModule,
                 RouterTestingModule,
@@ -60,11 +61,18 @@ describe("DigitalServicesFootprintHeaderComponent", () => {
                 SharedModule,
                 ConfirmPopupModule,
                 TranslateModule.forRoot(),
+                DigitalServicesFootprintHeaderComponent,
             ],
             providers: [
                 {
                     provide: DigitalServicesDataService,
                     useValue: digitalServiceDataMock,
+                },
+                {
+                    provide: InventoryDataService,
+                    useValue: {
+                        getServiceRenewalDetails: () => of(null),
+                    },
                 },
                 TranslatePipe,
                 TranslateService,
@@ -80,7 +88,9 @@ describe("DigitalServicesFootprintHeaderComponent", () => {
                             }),
                             queryParamMap: {
                                 get: (key: string) => {
-                                    const params: { [key: string]: any } = {
+                                    const params: {
+                                        [key: string]: any;
+                                    } = {
                                         renew: "true",
                                         inventoryId: "1",
                                     };
@@ -114,7 +124,7 @@ describe("DigitalServicesFootprintHeaderComponent", () => {
     });
 
     it("should emit event on digital service name change", () => {
-        const newDigitalServiceName = "New name";
+        const newDigitalServiceName = "Test Digital Service";
         spyOn(component.digitalServiceChange, "emit");
         component.onNameUpdate(newDigitalServiceName, true);
         fixture.detectChanges();

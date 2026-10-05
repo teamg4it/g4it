@@ -32,6 +32,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -52,6 +53,9 @@ class RenewServiceTest {
     @InjectMocks
     private RenewService renewService;
 
+    private static final LocalDateTime referenceTime =
+            LocalDateTime.of(2025, Month.JANUARY, 1, 12, 0);
+
     @BeforeEach
     void setUp() {
         ReflectionTestUtils.setField(renewService, "dataRetentiondDay", 30);
@@ -67,7 +71,7 @@ class RenewServiceTest {
         Inventory inventory = new Inventory();
         inventory.setId(1L);
         inventory.setName("Test Inventory");
-        inventory.setLastUpdateDate(LocalDateTime.now().minusDays(5));
+        inventory.setLastUpdateDate(referenceTime.minusDays(5));
         when(workspaceRepository.findById(1L)).thenReturn(Optional.of(workspace));
         when(inventoryRepository.findById(1L)).thenReturn(Optional.of(inventory));
         RenewRest result = renewService.getRenewDetailsInventory(1L, 1L);
@@ -106,7 +110,7 @@ class RenewServiceTest {
         DigitalService digitalService = new DigitalService();
         digitalService.setUid("ds-uid");
         digitalService.setName("Digital Service");
-        digitalService.setLastUpdateDate(LocalDateTime.now().minusDays(3));
+        digitalService.setLastUpdateDate(referenceTime.minusDays(3));
         DigitalServiceVersion version = new DigitalServiceVersion();
         version.setDigitalService(digitalService);
         when(workspaceRepository.findById(anyLong())).thenReturn(Optional.of(workspace));

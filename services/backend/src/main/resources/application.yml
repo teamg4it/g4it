@@ -21,6 +21,11 @@ boaviztapi:
   version: 1.3.10
   base-url: http://localhost:5000
 
+#Ecologits configs
+ecologits:
+  version: 0.0.2
+  base-url: http://localhost:8010
+
 #AI Model configs
 aimodelconfigapi:
   version: 1.0
@@ -62,6 +67,12 @@ g4it:
   local:
     retention:
       ttl: PT10M
+  task:
+    stuck:
+      timeout:
+        hours: 0.167                  # Tasks stuck for this long will be marked as FAILED (0.167 hours = 10 minutes)
+      check:
+        enabled: true
 
 filesystem.local.path: ".\\storage"
 

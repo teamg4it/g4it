@@ -1,7 +1,8 @@
 <p-button
+    #eqFilterButton
     (onClick)="openFilterSidebar()"
     styleClass="p-button-secondary-blue uppercase mr-3"
-    id="filter"
+    id="filter-button"
     [icon]="selectedFilterNames().length ? 'pi pi-filter-fill' : 'pi pi-filter'"
     [ariaLabel]="'inventories-footprint.filter-view' | translate"
 ></p-button>
@@ -13,9 +14,15 @@
         [tabs]="tabs"
         [allFilters]="allFilters"
         [translationKeyPrefix]="'inventories-footprint.filter-tabs'"
-        (filtersApplied)="applyFilters()"
+        (filtersApplied)="
+            applyFilters();
+            eqFilterButton?.el?.nativeElement?.querySelector('button')?.focus()
+        "
         (checkboxChanged)="
             onCheckboxChange($event.selectedValues, $event.tab, $event.selection)
+        "
+        (filtersCancelled)="
+            eqFilterButton?.el?.nativeElement?.querySelector('button')?.focus()
         "
     >
     </app-base-filter-sidebar>

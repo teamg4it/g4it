@@ -138,7 +138,10 @@ public class LoadFileService {
                 case APPLICATION -> readApplications(context, fileToLoad, records);
                 default -> throw new IllegalArgumentException();
             };
-        } catch ( Exception e) {
+        } catch (AsyncTaskException e) {
+            throw e;
+        }
+        catch ( Exception e) {
             throw new AsyncTaskException(String.format("%s - Error while managing converted file '%s'", context.log(),
                     fileToLoad.getConvertedFile().getName()), e);
         }

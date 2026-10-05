@@ -30,7 +30,7 @@ describe("CriteriaPopupComponent", () => {
         };
 
         await TestBed.configureTestingModule({
-            declarations: [CriteriaPopupComponent],
+            imports: [CriteriaPopupComponent],
             providers: [
                 MonthYearPipe,
                 { provide: TranslateService, useValue: translateMock },
@@ -69,7 +69,7 @@ describe("CriteriaPopupComponent", () => {
             },
         });
 
-        expect(component.criteriaList.length).toBe(6);
+        expect(component.criteriaList).toHaveSize(6);
         expect(component.hasChanged).toBeFalse();
     });
 
@@ -173,7 +173,7 @@ describe("CriteriaPopupComponent", () => {
     it("should select all IS criteria when All is selected", () => {
         component.onAllSelectedChange(["All"], true);
 
-        expect(component.selectedCriteriaIS.length).toBe(6);
+        expect(component.selectedCriteriaIS).toHaveSize(6);
         expect(component.hasChanged).toBeTrue();
     });
 

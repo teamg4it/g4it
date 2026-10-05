@@ -34,7 +34,7 @@ describe("ParameterService", () => {
 
             service.getModels().subscribe((models) => {
                 expect(models).toEqual(mockModels);
-                expect(models.length).toBe(4);
+                expect(models).toHaveSize(4);
                 expect(models[0]).toBe("GPT-4");
             });
 
@@ -48,7 +48,7 @@ describe("ParameterService", () => {
 
             service.getModels().subscribe((models) => {
                 expect(models).toEqual([]);
-                expect(models.length).toBe(0);
+                expect(models).toHaveSize(0);
             });
 
             const req = httpMock.expectOne(`${baseUrl}/models`);
@@ -95,7 +95,7 @@ describe("ParameterService", () => {
             ];
 
             service.getModels().subscribe((models) => {
-                expect(models.length).toBe(6);
+                expect(models).toHaveSize(6);
                 expect(models).toContain("GPT-4");
                 expect(models).toContain("BERT-base");
             });
@@ -111,7 +111,7 @@ describe("ParameterService", () => {
 
             service.getParameters().subscribe((parameters) => {
                 expect(parameters).toEqual(mockParameters);
-                expect(parameters.length).toBe(4);
+                expect(parameters).toHaveSize(4);
                 expect(parameters[0]).toBe("7B");
             });
 
@@ -125,7 +125,6 @@ describe("ParameterService", () => {
 
             service.getParameters().subscribe((parameters) => {
                 expect(parameters).toEqual([]);
-                expect(parameters.length).toBe(0);
             });
 
             const req = httpMock.expectOne(`${baseUrl}/parameters`);
@@ -151,7 +150,6 @@ describe("ParameterService", () => {
             const mockParameters = ["1B", "3B", "7B", "13B", "33B", "65B"];
 
             service.getParameters().subscribe((parameters) => {
-                expect(parameters.length).toBe(6);
                 expect(parameters).toContain("7B");
                 expect(parameters).toContain("65B");
             });
@@ -167,7 +165,6 @@ describe("ParameterService", () => {
 
             service.getFrameworks().subscribe((frameworks) => {
                 expect(frameworks).toEqual(mockFrameworks);
-                expect(frameworks.length).toBe(4);
                 expect(frameworks[0]).toBe("PyTorch");
             });
 
@@ -181,7 +178,6 @@ describe("ParameterService", () => {
 
             service.getFrameworks().subscribe((frameworks) => {
                 expect(frameworks).toEqual([]);
-                expect(frameworks.length).toBe(0);
             });
 
             const req = httpMock.expectOne(`${baseUrl}/frameworks`);
@@ -213,7 +209,7 @@ describe("ParameterService", () => {
             ];
 
             service.getFrameworks().subscribe((frameworks) => {
-                expect(frameworks.length).toBe(5);
+                expect(frameworks).toHaveSize(5);
                 expect(frameworks).toContain("PyTorch");
                 expect(frameworks).toContain("Keras");
             });
@@ -229,7 +225,6 @@ describe("ParameterService", () => {
 
             service.getQuantizations().subscribe((quantizations) => {
                 expect(quantizations).toEqual(mockQuantizations);
-                expect(quantizations.length).toBe(4);
                 expect(quantizations[0]).toBe("FP32");
             });
 
@@ -243,7 +238,6 @@ describe("ParameterService", () => {
 
             service.getQuantizations().subscribe((quantizations) => {
                 expect(quantizations).toEqual([]);
-                expect(quantizations.length).toBe(0);
             });
 
             const req = httpMock.expectOne(`${baseUrl}/quantizations`);
@@ -272,7 +266,7 @@ describe("ParameterService", () => {
             const mockQuantizations = ["FP32", "FP16", "BF16", "INT8", "INT4", "GPTQ"];
 
             service.getQuantizations().subscribe((quantizations) => {
-                expect(quantizations.length).toBe(6);
+                expect(quantizations).toHaveSize(6);
                 expect(quantizations).toContain("INT8");
                 expect(quantizations).toContain("GPTQ");
             });

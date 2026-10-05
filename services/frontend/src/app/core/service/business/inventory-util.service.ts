@@ -85,9 +85,16 @@ export class InventoryUtilService {
         const hasAllFilters = this.checkAllFilters(filtersSet);
 
         const [maxCriteria, maxStep] = this.maxCriteriaAndStep(footprint);
+        /*
+        Only physical equipment (category "2 – Equipment" (Constants.EQUIPEMENT_2)) are
+        considered in Total equipment count calculation and  Average lifespan calculation
+        */
         const impacts = footprint[maxCriteria]?.impacts.filter(
             (impact) =>
-                impact.acvStep === maxStep && impact.status !== Constants.CLOUD_SERVICES,
+                impact.acvStep === maxStep &&
+                impact.status !== Constants.CLOUD_SERVICES &&
+                impact.level === Constants.EQUIPEMENT_2 &&
+                impact.impactUnit === Constants.ITEM,
         );
 
         const physicalEquipmentCount =
@@ -97,9 +104,16 @@ export class InventoryUtilService {
                 )
                 ?.reduce((n, impact) => n + impact.countValue, 0) || 0;
 
+        /*
+        Only physical equipment (category "2 – Equipment" (Constants.EQUIPEMENT_2)) are
+        considered in Total equipment count calculation and  Average lifespan calculation
+        */
         const filteredEquipmentsAvgAge = equipmentsAvgAge.filter(
             (equipment) =>
-                hasAllFilters || this.isEquipmentPresent(equipment, filtersSet, false),
+                (hasAllFilters ||
+                    this.isEquipmentPresent(equipment, filtersSet, false)) &&
+                equipment.level === Constants.EQUIPEMENT_2 &&
+                equipment.impactUnit === Constants.ITEM,
         );
 
         const { physicalEquipmentSum, poidsSum } = filteredEquipmentsAvgAge.reduce(

@@ -6,10 +6,10 @@ import { TranslateModule, TranslateService } from "@ngx-translate/core";
 import { saveAs } from "file-saver";
 import { MessageService } from "primeng/api";
 import { ButtonModule } from "primeng/button";
-import { DropdownModule } from "primeng/dropdown";
 import { FileUpload, FileUploadModule } from "primeng/fileupload";
 import { ProgressBarModule } from "primeng/progressbar";
 import { ScrollPanelModule } from "primeng/scrollpanel";
+import { SelectModule } from "primeng/select";
 import { finalize } from "rxjs";
 import { WorkspaceWithOrganization } from "src/app/core/interfaces/administration.interfaces";
 import {
@@ -22,6 +22,7 @@ import { CsvImportEndpoint } from "src/app/core/service/data/api-route-referenti
 import { TemplateFileService } from "src/app/core/service/data/template-file.service";
 import { WorkspaceReferenceDataService } from "src/app/core/service/data/workspace-reference-data.service";
 import { SharedModule } from "src/app/core/shared/shared.module";
+import { Constants } from "src/constants";
 
 @Component({
     selector: "app-update-workspace-reference",
@@ -32,7 +33,7 @@ import { SharedModule } from "src/app/core/shared/shared.module";
         FileUploadModule,
         ProgressBarModule,
         TranslateModule,
-        DropdownModule,
+        SelectModule,
         FormsModule,
         ScrollPanelModule,
         SharedModule,
@@ -61,7 +62,7 @@ export class UpdateWorkspaceReferenceComponent implements OnInit {
     loadingResults: any[] = [];
     downloadInProgress = false;
     uploadInProgress = false;
-
+    allowedFileExtensions = [".csv", ".xlsx", ".ods"];
     ngOnInit() {
         this.csvEndpoints = this.workspaceReferenceDataService.getWorkspaceCsvEndpoints();
         this.getTemplates();
@@ -120,8 +121,9 @@ export class UpdateWorkspaceReferenceComponent implements OnInit {
                 transformedTemplateFiles[0].displayFileName = this.translate.instant(
                     "digital-services-import.templates.data-model",
                 );
+                // conditon added to include workpsace data model
                 this.dataModel = transformedTemplateFiles.find((file) =>
-                    file.name?.toLowerCase()?.includes("datamodel"),
+                    file.name?.toLowerCase()?.includes(Constants.DATA_MODEL_CONDITION),
                 );
                 if (this.dataModel?.displayFileName) {
                     this.dataModel.displayFileName = this.translate.instant(
