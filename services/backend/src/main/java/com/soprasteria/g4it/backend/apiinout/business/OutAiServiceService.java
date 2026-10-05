@@ -46,7 +46,6 @@ public class OutAiServiceService {
     }
 
 
-    @Transactional(readOnly = true)
     public List<OutAiServiceRest> getAiServicesByTaskId(final Long taskId) {
         int pageNumber = 0;
         List<OutAiServiceRest> result = new ArrayList<>();

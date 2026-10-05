@@ -41,7 +41,7 @@ public class ReferentialGetService {
     private ItemTypeRepository itemTypeRepository;
 
     private ReferentialMapper refRestMapper;
-    private final String ELECTRICITY_MIX = "electricity-mix";
+    private final String electricityMix = "electricity-mix";
 
     /**
      * Get all referential lifecycle steps
@@ -152,11 +152,11 @@ public class ReferentialGetService {
      * @return list of item impacts
      */
     public List<ItemImpact> getElectricityMix(Long workspaceId) {
-        List<ItemImpact> itemImpactList= itemImpactRepository.findByCategoryAndWorkspaceId(ELECTRICITY_MIX,workspaceId);
+        List<ItemImpact> itemImpactList= itemImpactRepository.findByCategoryAndWorkspaceId(electricityMix,workspaceId);
         if(itemImpactList!=null && !itemImpactList.isEmpty()) {
             return itemImpactList;
         }
-        return itemImpactRepository.findByCategoryAndWorkspaceId(ELECTRICITY_MIX,null);
+        return itemImpactRepository.findByCategoryAndWorkspaceId(electricityMix,null);
     }
 
     @Cacheable(value = "ref_getItemTypes", key = "#type + '|' + #workspaceId")
@@ -189,7 +189,7 @@ public class ReferentialGetService {
 
         String key = buildElectricityMixImpactKey(
                 StringUtils.kebabToSnakeCase(criterion),
-                ELECTRICITY_MIX,
+                electricityMix,
                 location,
                 workspaceId
         );
@@ -269,7 +269,7 @@ public class ReferentialGetService {
             Set<String> locations,
             Long workspaceId) {
         List<ItemImpact> electricityMixImpact = itemImpactRepository.findByCriterionInAndCategoryAndLocationInAndWorkspaceId(
-                criteria, ELECTRICITY_MIX, locations, workspaceId);
+                criteria, electricityMix, locations, workspaceId);
         Map<String, List<ItemImpactRest>> map = new HashMap<>();
         for (ItemImpact impact : electricityMixImpact) {
             String key = buildElectricityMixImpactKey(
