@@ -206,15 +206,11 @@ export class UsersComponent implements OnInit {
         const isSopraUser = this.userService.isSopraUser(user.email);
 
         if (type === "INVENTORY_" && isSopraUser) {
-            if (roles.includes(Role.InventoryWrite)) return "administration.role.write";
-            if (roles.includes(Role.InventoryRead)) return "administration.role.read";
-            return "";
+            return this.getModuleRole(roles, Role.InventoryWrite, Role.InventoryRead);
         }
 
         if (type === "ECO_MIND_AI_") {
-            if (roles.includes(Role.EcoMindAiWrite)) return "administration.role.write";
-            if (roles.includes(Role.EcoMindAiRead)) return "administration.role.read";
-            return "";
+            return this.getModuleRole(roles, Role.EcoMindAiWrite, Role.EcoMindAiRead);
         }
 
         if (type === "ADMINISTRATOR") {
@@ -236,6 +232,12 @@ export class UsersComponent implements OnInit {
         }
 
         return userRoles[0] || "";
+    }
+
+    private getModuleRole(roles: string[], writeRole: Role, readRole: Role): string {
+        if (roles.includes(writeRole)) return "administration.role.write";
+        if (roles.includes(readRole)) return "administration.role.read";
+        return "";
     }
 
     async deleteUserDetails(event: Event, user: UserDetails) {
@@ -278,7 +280,7 @@ export class UsersComponent implements OnInit {
                     .fetchUserInfo()
                     .pipe(take(1))
                     .subscribe(() => {
-                        this.router.navigateByUrl(Constants.WELCOME_PAGE);
+                        void this.router.navigateByUrl(Constants.WELCOME_PAGE);
                     });
             } else {
                 this.searchList();

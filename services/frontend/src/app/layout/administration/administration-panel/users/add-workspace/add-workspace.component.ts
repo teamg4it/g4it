@@ -234,7 +234,7 @@ export class AddWorkspaceComponent implements OnInit, OnChanges {
                     currentUserRoles?.includes(Role.OrganizationAdmin) ||
                     currentUserRoles?.includes(Role.WorkspaceAdmin);
                 if (!isAdmin && currentUserRoles) {
-                    this.router.navigateByUrl(Constants.WELCOME_PAGE);
+                    void this.router.navigateByUrl(Constants.WELCOME_PAGE);
                     return;
                 }
                 this.outClose.emit(false);

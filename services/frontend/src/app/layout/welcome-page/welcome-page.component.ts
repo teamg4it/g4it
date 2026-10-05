@@ -122,7 +122,7 @@ export class WelcomePageComponent implements OnInit {
 
     inventories() {
         if (this.isAllowedInventory()) {
-            this.router.navigateByUrl(`${this.selectedPath}/inventories`);
+            void this.router.navigateByUrl(`${this.selectedPath}/inventories`);
         } else {
             const mailto = this.userService.composeEcoMindAccessEmail(
                 this.currentOrganization.name,
@@ -135,16 +135,16 @@ export class WelcomePageComponent implements OnInit {
 
     digitalServices() {
         if (this.isAllowedDigitalService) {
-            this.router.navigateByUrl(`${this.selectedPath}/digital-services`, {
+            void this.router.navigateByUrl(`${this.selectedPath}/digital-services`, {
                 state: { isIa: false },
             });
         } else {
-            this.router.navigateByUrl("/useful-information");
+            void this.router.navigateByUrl("/useful-information");
         }
     }
 
     ecoMindAi() {
-        this.router.navigateByUrl(`${this.selectedPath}/eco-mind-ai`, {
+        void this.router.navigateByUrl(`${this.selectedPath}/eco-mind-ai`, {
             state: { isIa: true },
         });
     }

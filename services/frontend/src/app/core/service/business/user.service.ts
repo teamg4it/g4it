@@ -120,7 +120,7 @@ export class UserService {
 
         if (currentUser.organizations.length === 0) {
             this.errorMessage("organization-or-workspace-not-found");
-            this.router.navigateByUrl(`something-went-wrong/403`);
+            void this.router.navigateByUrl(`something-went-wrong/403`);
             return;
         }
 
@@ -160,17 +160,17 @@ export class UserService {
 
         if (organization === undefined) {
             this.errorMessage("insuffisant-right-organization");
-            this.router.navigateByUrl("/");
+            void this.router.navigateByUrl("/");
             return;
         }
         if (workspace === undefined) {
             this.errorMessage("insuffisant-right-workspace");
-            this.router.navigateByUrl("/");
+            void this.router.navigateByUrl("/");
             return;
         }
         this.setOrganizationAndWorkspace(organization, workspace);
         if (!this.checkIfAllowed(organization, workspace, page)) {
-            this.router.navigateByUrl(Constants.WELCOME_PAGE);
+            void this.router.navigateByUrl(Constants.WELCOME_PAGE);
         }
     }
 
@@ -193,7 +193,7 @@ export class UserService {
                 return;
             } else {
                 this.setOrganizationAndWorkspace(organization, workspace!);
-                this.router.navigateByUrl(Constants.WELCOME_PAGE);
+                void this.router.navigateByUrl(Constants.WELCOME_PAGE);
             }
         }
 
@@ -205,7 +205,7 @@ export class UserService {
             ]) {
                 if (this.checkIfAllowed(organization, workspace, type)) {
                     this.setOrganizationAndWorkspace(organization, workspace);
-                    this.router.navigateByUrl(
+                    void this.router.navigateByUrl(
                         `organizations/${organization.name}/workspaces/${workspace.id}/${type}`,
                     );
                     break;
@@ -397,12 +397,12 @@ export class UserService {
                 page === "digital-service-version" ||
                 page === "eco-mind-ai"
             ) {
-                this.router.navigateByUrl(
+                void this.router.navigateByUrl(
                     `organizations/${organization.name}/workspaces/${workspace.id}/${page}`,
                 );
             }
         } else {
-            this.router.navigateByUrl(Constants.WELCOME_PAGE);
+            void this.router.navigateByUrl(Constants.WELCOME_PAGE);
         }
     }
 
