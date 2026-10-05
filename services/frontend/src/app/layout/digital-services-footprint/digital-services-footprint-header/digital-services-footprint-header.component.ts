@@ -225,7 +225,7 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
         } else if (footprint.includes("compare-versions")) {
             return `/organizations/${organization}/workspaces/${workspace}/${serviceType}/${dsVId}/manage-versions`;
         } else {
-            return `/organizations/${organization}/workspaces/${workspace}/${serviceType}/${dsVId}/footprint/resources`;
+            return `/organizations/${organization}/workspaces/${workspace}/${serviceType}/${dsVId}/footprint/${serviceType === "eco-mind-ai" ? "ecomind-parameters" : "resources"}`;
         }
     }
 
