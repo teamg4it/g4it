@@ -46,4 +46,6 @@ public interface MatchingItemRepository extends JpaRepository<MatchingItem, Long
             Set<String> itemSources,
             Long workspaceId
     );
+
+    long countByWorkspaceId(Long workspaceId);
 }

@@ -425,8 +425,7 @@ export class InventoriesFootprintComponent implements OnInit, OnDestroy {
         );
         const transformedOutVirtualEquipments =
             this.transformOutVirtualEquipment(outVirtualEquipments);
-        const transformedOutAiServices =
-            this.transformOutAiServices(outAiServices);
+        const transformedOutAiServices = this.transformOutAiServices(outAiServices);
         this.tranformAcvStepFootprint(footprint);
 
         for (const equipment of [
@@ -553,7 +552,7 @@ export class InventoriesFootprintComponent implements OnInit, OnDestroy {
                         item.lifecycleStep,
                     ),
                     country: this.digitalServiceStore.countryMap()[item.location],
-                    entity: item.name,
+                    entity: item.commonFilters?.[0] ?? null,
                     equipment: this.translate.instant(
                         "inventories-footprint.ai-services-category",
                         {

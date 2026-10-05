@@ -28,7 +28,7 @@ public class ErrorConstants {
             "Workspace %d not found";
     public static final String INVALID_RENEW_ACTION = "Invalid renew action.";
     public static final String INVALID_DECIMAL_NUMBER_FORMAT = "Import failed: Decimal numbers should not contain a comma, but a period (e.g., 1.25).";
-    public static final String INVALID_INTEGER_NUMBER_FORMAT = "outputTokens should be a valid integer";
+    public static final String INVALID_INTEGER_NUMBER_FORMAT = "outputTokens should be a valid whole number";
     public static final String PUE_SHOULD_GREATER_THAN_ONE = "The PUE of a datacenter must be strictly greater than 1.";
 
 }

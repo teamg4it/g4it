@@ -791,7 +791,7 @@
         },
         "data-consistency": "Cohérence des données",
         "ai-services-category": "Services IA {{provider}}",
-        "ai-services-status": "Services IA",
+        "ai-services-status": "Non spécifié",
         "round-button": {
             "acvStep": "Cycle de vie",
             "country": "Pays",

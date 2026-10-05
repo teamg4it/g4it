@@ -29,8 +29,6 @@ import reactor.core.publisher.Mono;
 @Service
 public class EcologitsClient {
 
-    public static final String ECOLOGITS_ENGINE = "EcoLogits";
-
     private static final String ESTIMATIONS_PATH = "/v1beta/estimations";
 
     @Autowired

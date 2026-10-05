@@ -59,6 +59,19 @@ public class ReferentialGetService {
     }
 
     /**
+     * Check if a workspace has its own referential data by checking if any
+     * item impact, item type or matching item record exists for the given workspace id.
+     *
+     * @param workspaceId the workspace id
+     * @return true if the workspace has at least one workspace-specific referential record
+     */
+    public boolean isWorkspaceSpecific(final Long workspaceId) {
+        return itemImpactRepository.countByWorkspaceId(workspaceId) > 0
+                || itemTypeRepository.countByWorkspaceId(workspaceId) > 0
+                || matchingItemRepository.countByWorkspaceId(workspaceId) > 0;
+    }
+
+    /**
      * Get all referential criteria
      *
      * @return list of all the criteria

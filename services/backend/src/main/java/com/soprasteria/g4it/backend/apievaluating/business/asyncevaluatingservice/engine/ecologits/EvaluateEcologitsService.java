@@ -58,12 +58,7 @@ public class EvaluateEcologitsService {
                                    final List<String> lifecycleSteps,
                                    final Map<String, String> countryNameToCodeMap) {
         final String resolvedLocation = resolveLocation(aiService.getLocation(), countryNameToCodeMap);
-        final int outputTokens;
-        try {
-            outputTokens = Math.toIntExact(aiService.getOutputTokens());
-        } catch (ArithmeticException e) {
-            return buildErrorRows(activeCriteriaCodes, lifecycleSteps, "output token count exceeds EcoLogits integer limit");
-        }
+        final long outputTokens = aiService.getOutputTokens();
 
         final EcoEstimationResponseRest response;
         try {

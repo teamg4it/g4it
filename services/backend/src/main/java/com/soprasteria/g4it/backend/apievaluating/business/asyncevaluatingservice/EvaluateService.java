@@ -994,6 +994,7 @@ public class EvaluateService {
         final Double sipValue = refSip.get(impact.getCriterion());
         final Double peopleEqImpact = isOk && sipValue != null && sipValue != 0 ? unitImpact / sipValue : 0d;
         final Set<String> errors = isOk && impact.getTrace() == null ? null : Set.of(impact.getTrace());
+        final List<String> commonFilters = aiService.getCommonFilters() == null ? List.of() : aiService.getCommonFilters();
 
         return OutAiService.builder()
                 .taskId(taskId)
@@ -1012,7 +1013,7 @@ public class EvaluateService {
                 .peopleEqImpact(peopleEqImpact)
                 .countValue(1L)
                 .unit(criteriaUnitMap.getOrDefault(impact.getCriterion(), impact.getUnit()))
-                .commonFilters(List.of(aiService.getServiceName()))
+                .commonFilters(commonFilters)
                 .filters(List.of(aiService.getProvider()))
                 .source(aiService.getSource())
                 .errors(errors)
