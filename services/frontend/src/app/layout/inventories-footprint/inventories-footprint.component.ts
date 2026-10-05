@@ -552,7 +552,7 @@ export class InventoriesFootprintComponent implements OnInit, OnDestroy {
                         item.lifecycleStep,
                     ),
                     country: this.digitalServiceStore.countryMap()[item.location],
-                    entity: item.name,
+                    entity: item.commonFilters?.[0] ?? null,
                     equipment: this.translate.instant(
                         "inventories-footprint.ai-services-category",
                         {

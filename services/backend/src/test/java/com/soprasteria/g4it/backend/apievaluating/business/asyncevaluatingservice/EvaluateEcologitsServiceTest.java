@@ -62,9 +62,8 @@ class EvaluateEcologitsServiceTest {
         assertEquals(7d, climateManufacturing.getUnitImpact());
 
         ImpactBO climateTransportation = findImpact(impacts, "CLIMATE_CHANGE", "TRANSPORTATION");
-        assertEquals("KO", climateTransportation.getIndicatorStatus());
+        assertEquals("OK", climateTransportation.getIndicatorStatus());
         assertEquals(0d, climateTransportation.getUnitImpact());
-        assertTrue(climateTransportation.getTrace().contains("does not provide transportation impacts"));
 
         ImpactBO climateUsing = findImpact(impacts, "CLIMATE_CHANGE", "USING");
         assertEquals("OK", climateUsing.getIndicatorStatus());
@@ -73,7 +72,7 @@ class EvaluateEcologitsServiceTest {
         ImpactBO climateEol =
                 findImpact(impacts, "CLIMATE_CHANGE", "END_OF_LIFE");
 
-        assertEquals("KO", climateEol.getIndicatorStatus());
+        assertEquals("ERROR", climateEol.getIndicatorStatus());
         assertEquals(0d, climateEol.getUnitImpact());
 
         ImpactBO waterManufacturing = findImpact(impacts, "WATER_USE", "MANUFACTURING");
@@ -81,7 +80,7 @@ class EvaluateEcologitsServiceTest {
         assertEquals(0d, waterManufacturing.getUnitImpact());
 
         ImpactBO unsupported = findImpact(impacts, "ACIDIFICATION", "USING");
-        assertEquals("KO", unsupported.getIndicatorStatus());
+        assertEquals("ERROR", unsupported.getIndicatorStatus());
         assertTrue(unsupported.getTrace().contains("does not provide this impact criterion"));
     }
 
@@ -123,7 +122,7 @@ class EvaluateEcologitsServiceTest {
         );
 
         assertEquals(8, impacts.size());
-        assertTrue(impacts.stream().allMatch(impact -> "KO".equals(impact.getIndicatorStatus())));
+        assertTrue(impacts.stream().allMatch(impact -> "ERROR".equals(impact.getIndicatorStatus())));
         assertTrue(impacts.stream().allMatch(impact -> "boom".equals(impact.getTrace())));
     }
 
@@ -156,7 +155,7 @@ class EvaluateEcologitsServiceTest {
         );
 
         assertEquals(4, result.size());
-        assertTrue(result.stream().allMatch(impact -> "KO".equals(impact.getIndicatorStatus())));
+        assertTrue(result.stream().allMatch(impact -> "ERROR".equals(impact.getIndicatorStatus())));
         assertTrue(result.getFirst().getTrace().contains("model-not-registered"));
     }
 
@@ -250,14 +249,13 @@ class EvaluateEcologitsServiceTest {
         );
 
         ImpactBO transportation = findImpact(impacts, "CLIMATE_CHANGE", "TRANSPORTATION");
-        assertEquals("KO", transportation.getIndicatorStatus());
+        assertEquals("OK", transportation.getIndicatorStatus());
         assertEquals(0d, transportation.getUnitImpact());
-        assertTrue(transportation.getTrace().contains("does not provide transportation impacts"));
 
         ImpactBO endOfLife = findImpact(impacts, "CLIMATE_CHANGE", "END_OF_LIFE");
-        assertEquals("KO", endOfLife.getIndicatorStatus());
+        assertEquals("ERROR", endOfLife.getIndicatorStatus());
         assertEquals(0d, endOfLife.getUnitImpact());
-        assertTrue(endOfLife.getTrace().contains("does not provide end-of-life impacts"));
+        assertTrue(endOfLife.getTrace().contains("does not provide end_of_life impacts"));
     }
 
     private EcoEstimationResponseRest responseWithImpacts() {

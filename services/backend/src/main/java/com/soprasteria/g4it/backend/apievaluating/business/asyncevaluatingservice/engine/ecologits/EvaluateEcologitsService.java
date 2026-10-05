@@ -35,8 +35,8 @@ public class EvaluateEcologitsService {
     private static final String USING = "USING";
     private static final String TRANSPORTATION = "TRANSPORTATION";
     private static final String END_OF_LIFE = "END_OF_LIFE";
-    private static final String KO = "KO";
     private static final String OK = "OK";
+    private static final String ERROR = "ERROR";
     private static final String DEFAULT_LOCATION = "WOR";
     private static final Map<String, Function<EcoImpactPhaseRest, EcoMetricRest>> PHASE_METRICS = Map.of(
             CLIMATE_CHANGE, EcoImpactPhaseRest::getGwp,
@@ -58,12 +58,7 @@ public class EvaluateEcologitsService {
                                    final List<String> lifecycleSteps,
                                    final Map<String, String> countryNameToCodeMap) {
         final String resolvedLocation = resolveLocation(aiService.getLocation(), countryNameToCodeMap);
-        final int outputTokens;
-        try {
-            outputTokens = Math.toIntExact(aiService.getOutputTokens());
-        } catch (ArithmeticException e) {
-            return buildKoRows(activeCriteriaCodes, lifecycleSteps, "output token count exceeds EcoLogits integer limit");
-        }
+        final long outputTokens = aiService.getOutputTokens();
 
         final EcoEstimationResponseRest response;
         try {
@@ -75,11 +70,11 @@ public class EvaluateEcologitsService {
             );
         } catch (ExternalApiException e) {
             log.warn("EcoLogits estimation failed for AI service '{}' ({}/{})", aiService.getServiceName(), aiService.getProvider(), aiService.getModel(), e);
-            return buildKoRows(activeCriteriaCodes, lifecycleSteps, e.getMessage());
+            return buildErrorRows(activeCriteriaCodes, lifecycleSteps, e.getMessage());
         }
 
         if (response == null || response.getImpacts() == null) {
-            return buildKoRows(activeCriteriaCodes, lifecycleSteps, "EcoLogits returned an empty impacts payload");
+            return buildErrorRows(activeCriteriaCodes, lifecycleSteps, "EcoLogits returned an empty impacts payload");
         }
 
         if (response.getImpacts().getErrors() != null && !response.getImpacts().getErrors().isEmpty()) {
@@ -89,7 +84,7 @@ public class EvaluateEcologitsService {
                     .orElse("EcoLogits returned calculation errors");
             log.warn("EcoLogits returned business errors for AI service '{}' ({}/{}): {}",
                     aiService.getServiceName(), aiService.getProvider(), aiService.getModel(), errorMessage);
-            return buildKoRows(activeCriteriaCodes, lifecycleSteps, errorMessage);
+            return buildErrorRows(activeCriteriaCodes, lifecycleSteps, errorMessage);
         }
 
         return buildSuccessRows(activeCriteriaCodes, lifecycleSteps, response.getImpacts());
@@ -103,7 +98,7 @@ public class EvaluateEcologitsService {
         for (String criterion : activeCriteriaCodes) {
             final Function<EcoImpactsRest, EcoMetricRest> totalMetricExtractor = TOTAL_METRICS.get(criterion);
             if (totalMetricExtractor == null) {
-                results.addAll(buildKoRows(List.of(criterion), lifecycleSteps,
+                results.addAll(buildErrorRows(List.of(criterion), lifecycleSteps,
                         "EcoLogits does not provide this impact criterion for AI services"));
                 continue;
             }
@@ -157,14 +152,14 @@ public class EvaluateEcologitsService {
         }
 
         if (TRANSPORTATION.equals(lifecycleStep)) {
-            // EcoLogits does not model transportation/distribution impacts separately for AI inference.
+            // EcoLogits folds transportation/distribution impacts into the manufacturing (embodied) phase for AI inference.
             return ImpactBO.builder()
                     .criterion(criterion)
                     .lifecycleStep(lifecycleStep)
                     .unit(unit)
                     .unitImpact(0d)
-                    .indicatorStatus(KO)
-                    .trace("EcoLogits does not provide transportation impacts for AI services")
+                    .indicatorStatus(OK)
+                    .trace("EcoLogits includes the impact of transportation in the impact of manufacturing for AI services.")
                     .build();
         }
 
@@ -175,8 +170,8 @@ public class EvaluateEcologitsService {
                     .lifecycleStep(lifecycleStep)
                     .unit(unit)
                     .unitImpact(0d)
-                    .indicatorStatus(KO)
-                    .trace("EcoLogits does not provide end-of-life impacts for AI services")
+                    .indicatorStatus(ERROR)
+                    .trace("EcoLogits does not provide end_of_life impacts for AI services")
                     .build();
         }
 
@@ -185,7 +180,7 @@ public class EvaluateEcologitsService {
                 .lifecycleStep(lifecycleStep)
                 .unit(unit)
                 .unitImpact(0d)
-                .indicatorStatus(KO)
+                .indicatorStatus(ERROR)
                 .trace("EcoLogits does not provide this lifecycle step for AI services")
                 .build();
     }
@@ -230,7 +225,7 @@ public class EvaluateEcologitsService {
         return metric.getValue().getMean();
     }
 
-    private List<ImpactBO> buildKoRows(final List<String> criteria,
+    private List<ImpactBO> buildErrorRows(final List<String> criteria,
                                        final List<String> lifecycleSteps,
                                        final String message) {
         final List<ImpactBO> errors = new ArrayList<>();
@@ -241,7 +236,7 @@ public class EvaluateEcologitsService {
                         .lifecycleStep(lifecycleStep)
                         .unitImpact(0d)
                         .unit(null)
-                        .indicatorStatus(KO)
+                        .indicatorStatus(ERROR)
                         .trace(message)
                         .build());
             }

@@ -212,6 +212,7 @@ class InventoryServiceTest {
                 .outApplicationCount(0L)
                 .outVirtualCount(0L)
                 .outPhysicalCount(0L)
+                .outAiCount(0L)
                 .tasks(List.of())
                 .aiServiceCount(0L)
                 .enableDataInconsistency(false)

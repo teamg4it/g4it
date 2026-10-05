@@ -426,6 +426,9 @@ components:
         outPhysicalCount:
           type: integer
           format: int64
+        outAiCount:
+          type: integer
+          format: int64
         criteria:
           type: array
           items:

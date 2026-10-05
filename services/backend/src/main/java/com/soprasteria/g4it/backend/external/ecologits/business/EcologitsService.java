@@ -41,7 +41,7 @@ public class EcologitsService {
      */
     public EcoEstimationResponseRest runEstimation(final String provider,
                                                    final String model,
-                                                   final int outputTokenCount,
+                                                   final long outputTokenCount,
                                                    final String electricityMixZone) {
 
         EcoEstimationRequestRest request = EcoEstimationRequestRest.builder()

@@ -9,7 +9,8 @@
 
 package com.soprasteria.g4it.backend.external.ecologits.model.response;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import tools.jackson.databind.annotation.JsonDeserialize;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -18,13 +19,14 @@ import lombok.NoArgsConstructor;
  */
 @Data
 @NoArgsConstructor
-@JsonIgnoreProperties(ignoreUnknown = true)
+
 public class EcoMetricRest {
 
     private String type;
 
     private String name;
 
+    @JsonDeserialize(using = EcoValueRangeRestDeserializer.class)
     private EcoValueRangeRest value;
 
     private String unit;

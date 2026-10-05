@@ -824,7 +824,7 @@
         },
         "data-consistency": "Data consistency",
         "ai-services-category": "{{provider}} AI services",
-        "ai-services-status": "AI services",
+        "ai-services-status": "Not specified",
         "round-button": {
             "acvStep": "Lifecycle",
             "country": "Country",

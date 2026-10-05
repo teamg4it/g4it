@@ -15,6 +15,7 @@ import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -55,6 +56,12 @@ public class InAiService {
 
     @Column(name = "location")
     private String location;
+
+    @Column(name = "common_filters")
+    private List<String> commonFilters;
+
+    @Column(name = "source")
+    private String source;
 
     @EqualsAndHashCode.Exclude
     @Column(name = "creation_date")

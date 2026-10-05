@@ -6,6 +6,7 @@ import org.mapstruct.Mapper;
 import java.util.List;
 
 import static com.soprasteria.g4it.backend.common.utils.CsvUtils.print;
+import static com.soprasteria.g4it.backend.common.utils.CsvUtils.printFirst;
 
 @Mapper(componentModel = "spring")
 public interface AiServiceToCsvRecord {
@@ -16,7 +17,9 @@ public interface AiServiceToCsvRecord {
                 aiService.getProvider(),
                 aiService.getModel(),
                 aiService.getOutputTokens().toString(),
-                print(aiService.getLocation())
+                print(aiService.getLocation()),
+                printFirst(aiService.getCommonFilters()),
+                print(aiService.getSource())
         );
     }
 }
