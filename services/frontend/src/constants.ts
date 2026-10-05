@@ -84,6 +84,7 @@ export abstract class Constants {
         sharedDs: "shared",
         dsv: "dsv",
         referentialWorkspace: "referential-workspace",
+        isWorkspaceSpecific: "is-workspace-specific",
     };
 
     static readonly ERRORS: any = {

@@ -56,6 +56,7 @@ import { ScrollPanelModule } from "primeng/scrollpanel";
 import { AutofocusDirective } from "src/app/core/directives/auto-focus.directive";
 import { CustomSidebarMenuForm } from "src/app/core/interfaces/sidebar-menu-form.interface";
 import { UserService } from "src/app/core/service/business/user.service";
+import { IsWorkspaceSpecificService } from "src/app/core/service/data/is-workspace-sepecific.service";
 import { GlobalStoreService } from "src/app/core/store/global.store";
 import { FormNavComponent } from "../../common/form-nav/form-nav.component";
 import { InvMultiFileImportComponent } from "./inv-multi-file-import/inv-multi-file-import.component";
@@ -86,6 +87,7 @@ export class InvFilePanelComponent implements OnInit, OnDestroy, OnChanges {
     private readonly destroyRef = inject(DestroyRef);
     private readonly elementRef = inject<ElementRef<HTMLElement>>(ElementRef);
     protected readonly global = inject(GlobalStoreService);
+    private readonly isWorkspaceSpecificService = inject(IsWorkspaceSpecificService);
     className: string = "default-calendar max-w-full";
 
     @ViewChild(InvMultiFileImportComponent)
@@ -187,6 +189,7 @@ export class InvFilePanelComponent implements OnInit, OnDestroy, OnChanges {
     templateFiles: TemplateFileDescription[] = [];
 
     templateFileVisible = signal<TemplateFileDescription[]>([]);
+    isWorkspaceSpecific = signal(false);
     constructor(
         private readonly inventoryService: InventoryDataService,
         private readonly loadingService: LoadingDataService,
@@ -202,6 +205,7 @@ export class InvFilePanelComponent implements OnInit, OnDestroy, OnChanges {
         });
         this.initialName = this.name;
         this.getTemplateFiles();
+        this.checkIfWorkspaceReferenceDataExists();
     }
 
     ngOnChanges(changes: SimpleChanges) {
@@ -429,10 +433,7 @@ export class InvFilePanelComponent implements OnInit, OnDestroy, OnChanges {
     }
 
     getSelectedTemplates(files: TemplateFileDescription[]): TemplateFileDescription[] {
-        if (this.selectedMenuIndex === 0)
-            return files.filter((file) =>
-                ["datamodel"].some((type) => file.name?.toLowerCase()?.includes(type)),
-            );
+        if (this.selectedMenuIndex === 0) return [];
         else if (this.selectedMenuIndex === 1)
             return files.filter((file) =>
                 ["datamodel", "datacenter", "physicalequipment"].some((type) =>
@@ -504,6 +505,15 @@ export class InvFilePanelComponent implements OnInit, OnDestroy, OnChanges {
                 takeUntilDestroyed(this.destroyRef),
             )
             .subscribe();
+    }
+
+    checkIfWorkspaceReferenceDataExists() {
+        this.isWorkspaceSpecificService
+            .getIsWorkspaceSpecific()
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe((res: boolean) => {
+                this.isWorkspaceSpecific.set(res);
+            });
     }
 
     ngOnDestroy() {

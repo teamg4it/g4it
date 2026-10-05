@@ -8,7 +8,7 @@
 import { ComponentFixture, fakeAsync, TestBed, tick } from "@angular/core/testing";
 import { TranslateService } from "@ngx-translate/core";
 import { MessageService } from "primeng/api";
-import { of, throwError } from "rxjs";
+import { of, Subject, throwError } from "rxjs";
 import { TemplateFileDescription } from "src/app/core/interfaces/file-system.interfaces";
 import {
     Inventory,
@@ -16,6 +16,7 @@ import {
 } from "src/app/core/interfaces/inventory.interfaces";
 import { UserService } from "src/app/core/service/business/user.service";
 import { InventoryDataService } from "src/app/core/service/data/inventory-data.service";
+import { IsWorkspaceSpecificService } from "src/app/core/service/data/is-workspace-sepecific.service";
 import { LoadingDataService } from "src/app/core/service/data/loading-data.service";
 import { TemplateFileService } from "src/app/core/service/data/template-file.service";
 import { GlobalStoreService } from "src/app/core/store/global.store";
@@ -31,6 +32,7 @@ describe("InvFilePanelComponent", () => {
     let translateService: jasmine.SpyObj<TranslateService>;
     let templateFileService: jasmine.SpyObj<TemplateFileService>;
     let globalStore: jasmine.SpyObj<GlobalStoreService>;
+    let isWorkspaceSpecificService: jasmine.SpyObj<IsWorkspaceSpecificService>;
 
     const buildInventory = (overrides: Partial<Inventory> = {}): Inventory =>
         ({
@@ -79,6 +81,10 @@ describe("InvFilePanelComponent", () => {
             (files: any) => files as TemplateFileDescription[],
         );
         globalStore = jasmine.createSpyObj("GlobalStoreService", ["setLoading"]);
+        isWorkspaceSpecificService = jasmine.createSpyObj("IsWorkspaceSpecificService", [
+            "getIsWorkspaceSpecific",
+        ]);
+        isWorkspaceSpecificService.getIsWorkspaceSpecific.and.returnValue(of(false));
 
         await TestBed.configureTestingModule({
             imports: [InvFilePanelComponent],
@@ -88,6 +94,10 @@ describe("InvFilePanelComponent", () => {
                 { provide: MessageService, useValue: messageService },
                 { provide: TranslateService, useValue: translateService },
                 { provide: TemplateFileService, useValue: templateFileService },
+                {
+                    provide: IsWorkspaceSpecificService,
+                    useValue: isWorkspaceSpecificService,
+                },
                 {
                     provide: UserService,
                     useValue: { currentWorkspace$: of({ id: 7, name: "Workspace" }) },
@@ -137,6 +147,7 @@ describe("InvFilePanelComponent", () => {
         ]) {
             it(`should focus ${scenario.focused} after ${scenario.direction} from tab ${scenario.start}`, fakeAsync(() => {
                 component.selectTab(scenario.start);
+                fixture.changeDetectorRef.markForCheck();
                 fixture.detectChanges();
                 const source = fixture.nativeElement.querySelector(
                     `.space-form--input.active [data-navigation="${scenario.direction}"] button`,
@@ -156,11 +167,53 @@ describe("InvFilePanelComponent", () => {
     });
 
     describe("ngOnInit", () => {
-        it("should build the form, snapshot the initial name and load template files", () => {
+        it("should build the form, snapshot the initial name and load template files and the workspace-specific flag", () => {
             expect(component.inventoriesForm).toBeTruthy();
             expect(component.initialName).toBe(component.name);
             expect(templateFileService.getTemplateFiles).toHaveBeenCalled();
             expect(component.templateFiles).toEqual([]);
+            expect(
+                isWorkspaceSpecificService.getIsWorkspaceSpecific,
+            ).toHaveBeenCalledTimes(1);
+            expect(component.isWorkspaceSpecific()).toBeFalse();
+        });
+    });
+
+    describe("checkIfWorkspaceReferenceDataExists", () => {
+        for (const isWorkspaceSpecific of [true, false]) {
+            it(`should set the workspace-specific flag to ${isWorkspaceSpecific}`, () => {
+                component.isWorkspaceSpecific.set(!isWorkspaceSpecific);
+                isWorkspaceSpecificService.getIsWorkspaceSpecific.and.returnValue(
+                    of(isWorkspaceSpecific),
+                );
+
+                component.checkIfWorkspaceReferenceDataExists();
+
+                expect(component.isWorkspaceSpecific()).toBe(isWorkspaceSpecific);
+            });
+        }
+
+        it("should update the flag when the response arrives asynchronously", () => {
+            const response = new Subject<boolean>();
+            isWorkspaceSpecificService.getIsWorkspaceSpecific.and.returnValue(response);
+
+            component.checkIfWorkspaceReferenceDataExists();
+
+            expect(component.isWorkspaceSpecific()).toBeFalse();
+            response.next(true);
+            expect(component.isWorkspaceSpecific()).toBeTrue();
+        });
+
+        it("should unsubscribe from the workspace-specific response when destroyed", () => {
+            const response = new Subject<boolean>();
+            isWorkspaceSpecificService.getIsWorkspaceSpecific.and.returnValue(response);
+            component.checkIfWorkspaceReferenceDataExists();
+
+            fixture.destroy();
+            response.next(true);
+
+            expect(component.isWorkspaceSpecific()).toBeFalse();
+            expect(response.observed).toBeFalse();
         });
     });
 
@@ -598,15 +651,22 @@ describe("InvFilePanelComponent", () => {
             ];
         });
 
-        it("should select the data model file for tab 0", () => {
+        it("should show no template files for tab 0", () => {
             component.selectTab(0);
 
             expect(component.selectedMenuIndex).toBe(0);
-            expect(component.templateFileVisible().map((f) => f.name)).toEqual([
-                "DataModel.xlsx",
-            ]);
+            expect(component.templateFileVisible()).toEqual([]);
             expect(component.importDetails.menu[0].active).toBeTrue();
             expect(component.importDetails.menu[1].active).toBeFalse();
+        });
+
+        it("should clear visible templates when returning to tab 0", () => {
+            component.selectTab(1);
+            expect(component.templateFileVisible().length).toBeGreaterThan(0);
+
+            component.selectTab(0);
+
+            expect(component.templateFileVisible()).toEqual([]);
         });
 
         it("should select data center related files for tab 1", () => {
