@@ -8,6 +8,7 @@
 import {
     Component,
     DestroyRef,
+    ElementRef,
     EventEmitter,
     inject,
     Input,
@@ -83,6 +84,7 @@ import { InvMultiFileImportComponent } from "./inv-multi-file-import/inv-multi-f
 export class InvFilePanelComponent implements OnInit, OnDestroy, OnChanges {
     private readonly userService = inject(UserService);
     private readonly destroyRef = inject(DestroyRef);
+    private readonly elementRef = inject<ElementRef<HTMLElement>>(ElementRef);
     protected readonly global = inject(GlobalStoreService);
     className: string = "default-calendar max-w-full";
 
@@ -464,13 +466,29 @@ export class InvFilePanelComponent implements OnInit, OnDestroy, OnChanges {
     previousTab(index: number) {
         if (index > 0) {
             this.selectTab(--index);
+            this.focusNavigationButton("previous");
         }
     }
 
     nextTab(index: number) {
         if (index < this.importDetails["menu"].length - 1) {
             this.selectTab(++index);
+            this.focusNavigationButton("next");
         }
+    }
+
+    private focusNavigationButton(direction: "previous" | "next"): void {
+        setTimeout(() => {
+            const footer = this.elementRef.nativeElement.querySelector(
+                ".space-form--input.active",
+            );
+            const button =
+                footer?.querySelector<HTMLButtonElement>(
+                    `[data-navigation="${direction}"] button`,
+                ) ?? footer?.querySelector<HTMLButtonElement>("[data-navigation] button");
+
+            button?.focus();
+        });
     }
 
     downloadWorkspaceReferenceData() {

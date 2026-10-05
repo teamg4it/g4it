@@ -95,7 +95,28 @@ describe("InvFilePanelComponent", () => {
                 { provide: GlobalStoreService, useValue: globalStore },
             ],
         })
-            .overrideComponent(InvFilePanelComponent, { set: { template: "" } })
+            .overrideComponent(InvFilePanelComponent, {
+                set: {
+                    template: `
+                        @for (menu of importDetails.menu; track $index; let menuIndex = $index; let lastIndex = $last) {
+                            <div class="space-form--input"
+                                [class.active]="selectedMenuIndex === menuIndex"
+                                [hidden]="selectedMenuIndex !== menuIndex">
+                                @if (menuIndex > 0) {
+                                    <span data-navigation="previous">
+                                        <button (click)="previousTab(menuIndex)">Previous</button>
+                                    </span>
+                                }
+                                @if (!lastIndex) {
+                                    <span data-navigation="next">
+                                        <button (click)="nextTab(menuIndex)">Next</button>
+                                    </span>
+                                }
+                            </div>
+                        }
+                    `,
+                },
+            })
             .compileComponents();
 
         fixture = TestBed.createComponent(InvFilePanelComponent);
@@ -105,6 +126,33 @@ describe("InvFilePanelComponent", () => {
 
     it("should create", () => {
         expect(component).toBeTruthy();
+    });
+
+    describe("navigation focus", () => {
+        for (const scenario of [
+            { start: 2, direction: "previous", target: 1, focused: "previous" },
+            { start: 1, direction: "previous", target: 0, focused: "next" },
+            { start: 1, direction: "next", target: 2, focused: "next" },
+            { start: 3, direction: "next", target: 4, focused: "previous" },
+        ]) {
+            it(`should focus ${scenario.focused} after ${scenario.direction} from tab ${scenario.start}`, fakeAsync(() => {
+                component.selectTab(scenario.start);
+                fixture.detectChanges();
+                const source = fixture.nativeElement.querySelector(
+                    `.space-form--input.active [data-navigation="${scenario.direction}"] button`,
+                ) as HTMLButtonElement;
+                source.focus();
+                source.click();
+                fixture.detectChanges();
+                tick();
+
+                const target = fixture.nativeElement.querySelector(
+                    `.space-form--input.active [data-navigation="${scenario.focused}"] button`,
+                ) as HTMLButtonElement;
+                expect(component.selectedMenuIndex).toBe(scenario.target);
+                expect(document.activeElement).toBe(target);
+            }));
+        }
     });
 
     describe("ngOnInit", () => {

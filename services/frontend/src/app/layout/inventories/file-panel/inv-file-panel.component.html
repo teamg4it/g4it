@@ -261,6 +261,7 @@
                                     !importDetails["menu"][menuIndex - 1]["hidden"]
                                 ) {
                                     <p-button
+                                        data-navigation="previous"
                                         styleClass="p-button-secondary-blue uppercase"
                                         (onClick)="previousTab(menuIndex)"
                                         [label]="'common.previous' | translate"
@@ -290,6 +291,7 @@
                                 ></p-button>
                                 @if (!lastIndex) {
                                     <p-button
+                                        data-navigation="next"
                                         styleClass="p-button-secondary-blue uppercase"
                                         (onClick)="nextTab(menuIndex)"
                                         [label]="'common.next' | translate"
