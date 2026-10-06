@@ -40,7 +40,7 @@ It has its own kubernetes deployment and service.
 #### Backend
 The backend is a Restful API built using Springboot 3. It is served by an embedded Server.
 It has its own kubernetes deployment and service and is connected to a PostgreSQL database and a file storage.
-It calls dedicated G4IT Boavizta APIs to evaluate the environmental impact of cloud services.
+It calls dedicated G4IT Boavizta and EcoLogits APIs to evaluate the environmental impact of cloud services and AI services respectively.
 
 #### keycloak
 Keycloak has its own kubernetes statefullset and service. It is connected to the backend and to the user's identity provider as EntraId(Azure AD) or Companies third party identity provider SSO.
