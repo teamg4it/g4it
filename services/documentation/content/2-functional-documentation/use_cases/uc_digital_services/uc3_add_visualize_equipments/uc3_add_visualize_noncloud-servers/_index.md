@@ -65,7 +65,7 @@ My Digital Services / My Digital Service / Visualize my resources tab /Private I
 | 1         | New Server or Edit Server | title        |                                                                         |
 | 2         | Name                      | label input  |                                                                         |
 | 3         | Dedicated or Shared       | Radio button |                                                                         |
-| 4         | Compute or Storage        | Radio button |                                                                         |
+| 4         | Compute or Storage or AI  | Radio button |                                                                         |
 | 5         | Cancel                    | button       | <li><u>_action rules_</u>: That button open the window Network details. |
 | 6         | Next                      | button       |                                                                         |
 
