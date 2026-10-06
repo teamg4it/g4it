@@ -518,6 +518,7 @@ export class InventoriesFootprintComponent implements OnInit, OnDestroy {
         this.footprintStore.setCriteria(criteria || Constants.MUTLI_CRITERIA);
     }
 
+    // staus updated from Constants.CLOUD_SERVICES to "inventories-footprint.not-specified-status"
     transformOutVirtualEquipment(
         outVirtualEquipments: OutVirtualEquipmentRest[],
     ): Impact[] {
@@ -532,7 +533,9 @@ export class InventoriesFootprintComponent implements OnInit, OnDestroy {
                         ),
                         country: this.digitalServiceStore.countryMap()[item.location],
                         equipment: `Cloud ${item.provider.toUpperCase()}`,
-                        status: Constants.CLOUD_SERVICES,
+                        status: this.translate.instant(
+                            "inventories-footprint.not-specified-status",
+                        ),
                         entity: item.commonFilters?.[0] ?? null,
                         impact: item.unitImpact,
                         sip: item.peopleEqImpact,
@@ -560,7 +563,7 @@ export class InventoriesFootprintComponent implements OnInit, OnDestroy {
                         },
                     ),
                     status: this.translate.instant(
-                        "inventories-footprint.ai-services-status",
+                        "inventories-footprint.not-specified-status",
                     ),
                     impact: item.unitImpact,
                     sip: item.peopleEqImpact,
