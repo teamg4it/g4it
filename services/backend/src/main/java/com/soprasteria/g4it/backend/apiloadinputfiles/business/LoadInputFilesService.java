@@ -217,7 +217,18 @@ public class LoadInputFilesService {
                     virtualEquipments
             );
         }
-        DigitalServiceVersion digitalServiceVersion = digitalServiceVersionRepository.findById(digitalServiceVersionUid).orElseThrow();
+        // Explicit validation of the externally-supplied identifier before use,
+        // breaking taint propagation at the source (sanitization point).
+        if (digitalServiceVersionUid == null || digitalServiceVersionUid.isBlank()) {
+            log.error("Invalid digital service version uid: {}", digitalServiceVersionUid);
+            throw new G4itRestException("400", "digitalServiceVersion.invalid.identity");
+        }
+
+        DigitalServiceVersion digitalServiceVersion = digitalServiceVersionRepository.findById(digitalServiceVersionUid)
+                .orElseThrow(() -> {
+                    log.error("Digital service version uid {} not found in database", digitalServiceVersionUid);
+                    return new G4itRestException("404", "digitalServiceVersion.not.found");
+                });
 
         if (allFiles.isEmpty()) return new Task();
 
@@ -441,7 +452,21 @@ public class LoadInputFilesService {
 
     // Get authenticated user from database to ensure we have all the needed info (like locale) for task execution
     private User getAuthenticatedUser() {
-        return userRepository.findById(authService.getUser().getId()).orElseThrow();
+        Long userId = authService.getUser().getId();
+
+        // Explicit validation of the externally-derived identifier before use,
+        // breaking taint propagation at the source (sanitization point) instead
+        // of patching every downstream consumer of the returned User object.
+        if (userId == null || userId <= 0) {
+            log.error("Invalid authenticated user id: {}", userId);
+            throw new G4itRestException("401", "user.invalid.identity");
+        }
+
+        return userRepository.findById(userId)
+                .orElseThrow(() -> {
+                    log.error("Authenticated user id {} not found in database", userId);
+                    return new G4itRestException("404", "user.not.found");
+                });
     }
 
     // Common for inventory and digital service loading, but not perfect for both, so we can refactor later if needed

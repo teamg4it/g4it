@@ -55,10 +55,23 @@ public class FileConversionService {
      */
     public File convertFileToCsv(File file, String originalFilename) throws IOException, RuntimeException {
         String extension = StringUtils.getFilenameExtension(originalFilename == null ? "" : originalFilename).toLowerCase();
-        // added regex pattern to verify correct filename
+
+        // Sanitize the filename component: strip anything that isn't alphanumeric, dot, underscore
+        // or hyphen. This removes path separators and ".." sequences from ever reaching the filesystem.
         String safeName = file.getName().replaceAll("[^a-zA-Z0-9._-]", "_");
+
         Path convertedFilePath = file.toPath().resolveSibling("converted_" + safeName + Constants.CSV).normalize();
-        if (!convertedFilePath.startsWith(file.getParent())) {
+
+        String parentDirStr = file.getParent();
+        if (parentDirStr == null) {
+            throw new SecurityException("Invalid file path for conversion. File: " + file.getName());
+        }
+
+        Path expectedParentDir = Path.of(parentDirStr).normalize();
+
+        // Strict Path equality check (not a String/Path "startsWith" prefix match, which can be
+        // bypassed by sibling directories sharing a common prefix, e.g. "/safe/dir" vs "/safe/dir-evil").
+        if (convertedFilePath.getParent() == null || !convertedFilePath.getParent().equals(expectedParentDir)) {
             throw new SecurityException("Invalid file path for conversion. File: " + file.getName() +
                     ", Path: " + convertedFilePath
             );
