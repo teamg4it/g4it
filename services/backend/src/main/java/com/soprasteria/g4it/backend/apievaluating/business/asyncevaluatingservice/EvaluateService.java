@@ -53,6 +53,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -144,13 +145,19 @@ public class EvaluateService {
         // Explicit validation of the export directory path before any local disk
         // access is performed on it (reads/writes/deletes throughout this method),
         // protecting against path traversal at the single point of entry.
-        Path safeExportDirectory = exportDirectory.normalize();
-        Path baseDir = Path.of(localWorkingFolder).normalize();
-        if (!safeExportDirectory.startsWith(baseDir)) {
-            log.error("Invalid export directory path: {}", exportDirectory);
-            throw new AsyncTaskException(String.format("%s - Invalid export directory path '%s'", context.log(), exportDirectory));
+        // Uses canonical path resolution (which also resolves symlinks) rather than
+        // simple normalization, matching the standard Path Traversal sanitizer pattern.
+        try {
+            String canonicalExportDir = exportDirectory.toFile().getCanonicalPath();
+            String canonicalBase = new File(localWorkingFolder).getCanonicalPath();
+            if (!canonicalExportDir.equals(canonicalBase) && !canonicalExportDir.startsWith(canonicalBase + File.separator)) {
+                log.error("Invalid export directory path: {}", exportDirectory);
+                throw new AsyncTaskException(String.format("%s - Invalid export directory path '%s'", context.log(), exportDirectory));
+            }
+            exportDirectory = new File(canonicalExportDir).toPath();
+        } catch (IOException e) {
+            throw new AsyncTaskException(String.format("%s - Cannot resolve export directory path '%s'", context.log(), exportDirectory), e);
         }
-        exportDirectory = safeExportDirectory;
 
         // retrieving the VM list for this DS
         Map<String, List<InVirtualEquipment>> vmsByPhysical =context.getInventoryId() != null?inVirtualEquipmentRepository.findByInventoryId(context.getInventoryId()).stream()
