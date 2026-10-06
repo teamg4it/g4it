@@ -696,7 +696,7 @@
         "created": "créé",
         "create-drawer": {
             "info": {
-                "title": "Inventaire Infos",
+                "title": "Infos d'Inventaire",
                 "description": "Chaque version du système d'information vous permet de suivre l'évolution de son impact au fil du temps. Une simulation vous permet de réaliser une évaluation d'impact sur un inventaire de test."
             },
             "infra": {
@@ -704,7 +704,7 @@
                 "description": "L'infrastructure comprend tous les composants physiques qui hébergent et prennent en charge les systèmes informatiques, tels que les centres de données, les serveurs et les équipements réseau."
             },
             "end-user": {
-                "title": "Appareils Utilisateur Final",
+                "title": "Terminaux Utilisateur",
                 "description": "Cette catégorie comprend tous les appareils utilisés par les collaborateurs dans le cadre de leur travail quotidien pour accéder aux systèmes informatiques, tels que les ordinateurs portables, les smartphones, les écrans et les imprimantes."
             },
             "app-service": {
