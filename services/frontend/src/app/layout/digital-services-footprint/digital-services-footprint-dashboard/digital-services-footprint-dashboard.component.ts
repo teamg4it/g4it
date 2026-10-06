@@ -229,7 +229,7 @@ export class DigitalServicesFootprintDashboardComponent
     }
 
     ngOnInit() {
-        this.asyncInit();
+        void this.asyncInit();
     }
     private async asyncInit() {
         this.digitalService = await firstValueFrom(
@@ -266,7 +266,7 @@ export class DigitalServicesFootprintDashboardComponent
 
         this.sub = this.route.parent!.paramMap.subscribe((params) => {
             const dsVersionUid = params.get("digitalServiceVersionId") ?? "";
-            this.updateRecomendation(dsVersionUid);
+            void this.updateRecomendation(dsVersionUid);
         });
     }
 
@@ -698,12 +698,17 @@ export class DigitalServicesFootprintDashboardComponent
     displayPopupFct() {
         const defaultCriteria = Object.keys(this.globalStore.criteriaList()).slice(0, 5);
         const criteriasCalculated = this.impacts.flatMap((impact) => impact.name);
-        this.selectedCriteriaPopup =
-            this.digitalService.criteria ??
-            criteriasCalculated ??
-            this.workspace.criteriaDs ??
-            this.organization.criteria ??
-            defaultCriteria;
+        const digitalServiceCriteria = this.digitalService?.criteria;
+
+        if (digitalServiceCriteria?.length) {
+            this.selectedCriteriaPopup = digitalServiceCriteria;
+        } else {
+            this.selectedCriteriaPopup =
+                criteriasCalculated ??
+                this.workspace.criteriaDs ??
+                this.organization.criteria ??
+                defaultCriteria;
+        }
         this.displayCriteriaPopup = true;
     }
     handleSaveDs(DSCriteria: DSCriteriaRest) {
@@ -757,7 +762,7 @@ export class DigitalServicesFootprintDashboardComponent
     handleFilters(event: { enableConsistency: boolean; unitType: string }) {
         this.selectedUnit = event.unitType;
         if (event.enableConsistency !== this.digitalService.enableDataInconsistency) {
-            this.updateDataConsistencyInDS(event.enableConsistency);
+            void this.updateDataConsistencyInDS(event.enableConsistency);
         }
     }
 

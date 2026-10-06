@@ -4,7 +4,7 @@
             pInputText
             [value]="type.label"
             [disabled]="true"
-            class="label-input w-12rem h-3rem min-w-0"
+            class="label-input w-12rem h-3rem min-w-0 opacity-100"
             locale="fr-FR"
             id="{{ type.key }}Name"
             [attr.label]="type.key"
@@ -24,6 +24,11 @@
             [files]="type.key && selectedFiles[type.key] ? [selectedFiles[type.key]] : []"
             accept="{{ allowedFileExtensions.join(',') }}"
             [customUpload]="true"
+            [attr.title]="
+                selectedFiles[type.key]
+                    ? selectedFiles[type.key].name
+                    : ('digital-services-import.browse-file' | translate)
+            "
         >
         </p-fileUpload>
         @if (selectedFiles[type.key]) {

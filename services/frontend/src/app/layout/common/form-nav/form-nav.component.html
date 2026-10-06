@@ -17,7 +17,8 @@
                     [tabindex]="
                         panelIndex > 0 &&
                         spaceForm.get(spaceDetails['form'][panelIndex - 1]['name'])
-                            ?.invalid
+                            ?.invalid &&
+                        !spaceMenu.optional
                             ? -1
                             : 0
                     "

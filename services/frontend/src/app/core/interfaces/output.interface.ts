@@ -81,3 +81,25 @@ export interface OutApplicationsRest {
     filtersVirtualEquipment?: string[];
     errors?: string[];
 }
+
+export interface OutAiServiceRest {
+    name: string;
+    criterion: string;
+    lifecycleStep: string;
+    provider: string;
+    model: string;
+    location: string;
+    engineName: string;
+    engineVersion: string;
+    referentialVersion: string;
+    statusIndicator: string;
+    countValue: number;
+    quantity: number;
+    unitImpact: number;
+    peopleEqImpact: number;
+    unit: string;
+    commonFilters?: string[];
+    filters?: string[];
+    errors?: string[];
+    source?: string;
+}

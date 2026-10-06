@@ -51,4 +51,6 @@ public interface ItemTypeRepository extends JpaRepository<ItemType, Long> {
             Set<String> types,
             Long workspaceId
     );
+
+    long countByWorkspaceId(Long workspaceId);
 }
