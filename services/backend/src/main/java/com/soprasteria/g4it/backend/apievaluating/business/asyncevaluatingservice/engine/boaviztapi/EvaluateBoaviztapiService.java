@@ -48,21 +48,24 @@ public class EvaluateBoaviztapiService {
             return getErrors(criteria, lifecycleSteps, e.getStatusCode(), e.getMessage());
         }
 
-        var criteriaImpactMap = response == null ?
-                new HashMap<String, BoaImpactRest>() :
-                Map.ofEntries(
-                        new AbstractMap.SimpleEntry<>("CLIMATE_CHANGE", response.getImpacts().getGwp()),
-                        new AbstractMap.SimpleEntry<>("RESOURCE_USE", response.getImpacts().getAdpe()),
-                        new AbstractMap.SimpleEntry<>("IONISING_RADIATION", response.getImpacts().getIr()),
-                        new AbstractMap.SimpleEntry<>("ACIDIFICATION", response.getImpacts().getAp()),
-                        new AbstractMap.SimpleEntry<>("PARTICULATE_MATTER", response.getImpacts().getPm()),
-                        new AbstractMap.SimpleEntry<>("OZONE_DEPLETION", response.getImpacts().getOdp()),
-                        new AbstractMap.SimpleEntry<>("PHOTOCHEMICAL_OZONE_FORMATION", response.getImpacts().getPocp()),
-                        new AbstractMap.SimpleEntry<>("EUTROPHICATION_TERRESTRIAL", response.getImpacts().getEpt()),
-                        new AbstractMap.SimpleEntry<>("EUTROPHICATION_FRESHWATER", response.getImpacts().getEpf()),
-                        new AbstractMap.SimpleEntry<>("EUTROPHICATION_MARINE", response.getImpacts().getEpm()),
-                        new AbstractMap.SimpleEntry<>("RESOURCE_USE_FOSSILS", response.getImpacts().getAdpf())
-                );
+        // Use a null-tolerant map: BoaviztAPI may not return every criterion
+        // (e.g. missing field, or "not implemented" mapped to null), and
+        // Map.ofEntries/Map.of do not accept null values.
+        var criteriaImpactMap = new HashMap<String, BoaImpactRest>();
+        if (response != null && response.getImpacts() != null) {
+            criteriaImpactMap.put("CLIMATE_CHANGE", response.getImpacts().getGwp());
+            criteriaImpactMap.put("RESOURCE_USE", response.getImpacts().getAdpe());
+            criteriaImpactMap.put("IONISING_RADIATION", response.getImpacts().getIr());
+            criteriaImpactMap.put("ACIDIFICATION", response.getImpacts().getAp());
+            criteriaImpactMap.put("PARTICULATE_MATTER", response.getImpacts().getPm());
+            criteriaImpactMap.put("OZONE_DEPLETION", response.getImpacts().getOdp());
+            criteriaImpactMap.put("PHOTOCHEMICAL_OZONE_FORMATION", response.getImpacts().getPocp());
+            criteriaImpactMap.put("EUTROPHICATION_TERRESTRIAL", response.getImpacts().getEpt());
+            criteriaImpactMap.put("EUTROPHICATION_FRESHWATER", response.getImpacts().getEpf());
+            criteriaImpactMap.put("EUTROPHICATION_MARINE", response.getImpacts().getEpm());
+            criteriaImpactMap.put("RESOURCE_USE_FOSSILS", response.getImpacts().getAdpf());
+            criteriaImpactMap.put("WATER_USE", response.getImpacts().getWu());
+        }
 
         for (String criterion : criteria) {
             BoaImpactRest impact = null;
@@ -75,13 +78,19 @@ public class EvaluateBoaviztapiService {
                 Double unitImpact = getUnitImpact(impact, lifecycleStep);
                 String unit = unitImpact == null ? null : impact.getUnit();
                 String indicatorStatus = unitImpact == null ? "ERROR" : "OK";
+                String traceMessage = null;
+                if (lifecycleStep.equalsIgnoreCase(Constants.TRANSPORTATION)) {
+                    // BoaviztAPI returns the impact per year, we need to convert it to per hour
+                    indicatorStatus = "OK";
+                    traceMessage = Constants.BOAVIZTA_TRACE_TRANSPORTATION;
+                }
 
                 result.add(ImpactBO.builder()
                         .criterion(criterion)
                         .lifecycleStep(lifecycleStep)
                         .unitImpact(unitImpact)
                         .unit(unit)
-                        .indicatorStatus(indicatorStatus)
+                        .indicatorStatus(indicatorStatus).trace(traceMessage)
                         .build());
             }
         }
@@ -99,8 +108,10 @@ public class EvaluateBoaviztapiService {
     private Double getUnitImpact(final BoaImpactRest impact, final String lifecycleStep) {
         if (impact == null) return null;
         return switch (lifecycleStep) {
-            case Constants.MANUFACTURING -> impact.getEmbedded().getValue();
-            case Constants.USING -> impact.getUse().getValue();
+            // embedded/use can be null when BoaviztAPI returns "not implemented"
+            // instead of a value object for this criterion/phase
+            case Constants.MANUFACTURING -> impact.getEmbedded() == null ? null : impact.getEmbedded().getValue();
+            case Constants.USING -> impact.getUse() == null ? null : impact.getUse().getValue();
             default -> null;
         };
     }
