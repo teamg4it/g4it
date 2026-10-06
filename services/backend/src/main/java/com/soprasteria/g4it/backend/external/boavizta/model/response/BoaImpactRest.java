@@ -12,6 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import tools.jackson.databind.annotation.JsonDeserialize;
 
 @Data
 @NoArgsConstructor
@@ -20,6 +21,8 @@ import lombok.experimental.SuperBuilder;
 public class BoaImpactRest {
     private String unit;
     private String description;
+    @JsonDeserialize(using = BoaManufacturingRestDeserializer.class)
     private BoaManufacturingRest embedded;
+    @JsonDeserialize(using = BoaUtilizationRestDeserializer.class)
     private BoaUtilizationRest use;
 }

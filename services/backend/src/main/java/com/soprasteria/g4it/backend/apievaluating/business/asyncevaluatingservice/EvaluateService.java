@@ -703,6 +703,7 @@ public class EvaluateService {
 
         if (isCloudService) {
             impact = unitImpact == null ? 0d : unitImpact * localQuantity;
+            error = (isOk && trace==null) ? null : trace;
         } else {
             impact = unitImpact == null ? 0d : unitImpact;
         }

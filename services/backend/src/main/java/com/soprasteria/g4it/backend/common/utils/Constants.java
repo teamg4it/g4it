@@ -116,6 +116,8 @@ public final class Constants {
     public static final String ZIP = ".zip";
     public static final String MANUFACTURING = "MANUFACTURING";
     public static final String USING = "USING";
+    public static final String TRANSPORTATION = "TRANSPORTATION";
+    public static final String BOAVIZTA_TRACE_TRANSPORTATION = "Boavizta includes the impact of transportation in the impact of manufacturing.";
     public static final String REFERENTIAL_VERSION_CLOUD = "BaseImpact 2011";
     public static final String CLOUD_TYPE = "compute";
 
