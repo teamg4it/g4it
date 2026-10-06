@@ -141,6 +141,17 @@ public class EvaluateService {
      */
     public void doEvaluate(final Context context, final Task task, Path exportDirectory) {
 
+        // Explicit validation of the export directory path before any local disk
+        // access is performed on it (reads/writes/deletes throughout this method),
+        // protecting against path traversal at the single point of entry.
+        Path safeExportDirectory = exportDirectory.normalize();
+        Path baseDir = Path.of(localWorkingFolder).normalize();
+        if (!safeExportDirectory.startsWith(baseDir)) {
+            log.error("Invalid export directory path: {}", exportDirectory);
+            throw new AsyncTaskException(String.format("%s - Invalid export directory path '%s'", context.log(), exportDirectory));
+        }
+        exportDirectory = safeExportDirectory;
+
         // retrieving the VM list for this DS
         Map<String, List<InVirtualEquipment>> vmsByPhysical =context.getInventoryId() != null?inVirtualEquipmentRepository.findByInventoryId(context.getInventoryId()).stream()
                         // ONLY VMs attached to a physical equipment
