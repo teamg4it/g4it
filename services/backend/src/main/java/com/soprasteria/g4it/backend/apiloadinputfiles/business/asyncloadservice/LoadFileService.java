@@ -97,13 +97,14 @@ public class LoadFileService {
      */
     private File validateConvertedFile(final File convertedFile, final Context context) {
         try {
-            String canonicalPath = convertedFile.getCanonicalPath();
+            File canonicalFile = convertedFile.getCanonicalFile();
             String canonicalBase = new File(localWorkingFolder).getCanonicalPath();
+            String canonicalPath = canonicalFile.getPath();
             if (!canonicalPath.equals(canonicalBase) && !canonicalPath.startsWith(canonicalBase + File.separator)) {
                 throw new AsyncTaskException(String.format("%s - Invalid converted file path '%s'",
                         context.log(), convertedFile.getName()));
             }
-            return new File(canonicalPath);
+            return canonicalFile;
         } catch (IOException e) {
             throw new AsyncTaskException(String.format("%s - Cannot resolve converted file path '%s'",
                     context.log(), convertedFile.getName()), e);

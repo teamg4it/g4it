@@ -148,13 +148,14 @@ public class EvaluateService {
         // Uses canonical path resolution (which also resolves symlinks) rather than
         // simple normalization, matching the standard Path Traversal sanitizer pattern.
         try {
-            String canonicalExportDir = exportDirectory.toFile().getCanonicalPath();
+            File canonicalExportDirFile = exportDirectory.toFile().getCanonicalFile();
             String canonicalBase = new File(localWorkingFolder).getCanonicalPath();
+            String canonicalExportDir = canonicalExportDirFile.getPath();
             if (!canonicalExportDir.equals(canonicalBase) && !canonicalExportDir.startsWith(canonicalBase + File.separator)) {
                 log.error("Invalid export directory path: {}", exportDirectory);
                 throw new AsyncTaskException(String.format("%s - Invalid export directory path '%s'", context.log(), exportDirectory));
             }
-            exportDirectory = new File(canonicalExportDir).toPath();
+            exportDirectory = canonicalExportDirFile.toPath();
         } catch (IOException e) {
             throw new AsyncTaskException(String.format("%s - Cannot resolve export directory path '%s'", context.log(), exportDirectory), e);
         }
