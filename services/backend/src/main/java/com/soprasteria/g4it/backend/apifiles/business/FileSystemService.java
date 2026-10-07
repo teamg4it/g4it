@@ -242,20 +242,23 @@ public class FileSystemService {
                 }
             }
 
-            try (InputStream tmpInputStream = new FileInputStream(outputFile)) {
-                var filename = newFilename == null
-                        ? file.getOriginalFilename()
-                        : newFilename;
+            var filename = newFilename == null
+                    ? file.getOriginalFilename()
+                    : newFilename;
 
-                var result = fileStorage.upload(
+            String result;
+
+            try (InputStream tmpInputStream = new FileInputStream(outputFile)) {
+                result = fileStorage.upload(
                         FileFolder.INPUT,
                         filename,
                         file.getOriginalFilename(),
                         tmpInputStream);
-
-                Files.delete(Path.of(tempPath.toString()));
-                return result;
             }
+
+            Files.deleteIfExists(outputFile.toPath());
+
+            return result;
         } catch (final IOException e) {
             log.error("Upload failed for file {}", file.getOriginalFilename(), e);
             throw new ResponseStatusException(
