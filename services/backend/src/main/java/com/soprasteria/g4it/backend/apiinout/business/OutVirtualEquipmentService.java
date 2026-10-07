@@ -84,7 +84,7 @@ public class OutVirtualEquipmentService {
      * @return list of aggregated virtual equipments
      */
     @Transactional(readOnly = true)
-    private List<OutVirtualEquipmentRest> getVirtualEquipmentsByTaskId(final Long taskId) {
+    public List<OutVirtualEquipmentRest> getVirtualEquipmentsByTaskId(final Long taskId) {
         int pageNumber = 0;
         List<OutVirtualEquipmentRest> result = new ArrayList<>();
         log.info("Fetching virtual equipments for taskId: {} batchsize: {}", taskId, Constants.BATCH_SIZE_50000);

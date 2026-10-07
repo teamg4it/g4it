@@ -15,32 +15,31 @@ import com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.
 import com.soprasteria.g4it.backend.common.model.Context;
 import com.soprasteria.g4it.backend.common.model.LineError;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InPhysicalEquipmentRest;
-import com.soprasteria.g4it.backend.server.gen.api.dto.ItemTypeRest;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 @Service
+@AllArgsConstructor
 public class CheckPhysicalEquipmentService {
 
-    @Autowired
-    GenericRuleService genericRuleService;
+    
+    private final GenericRuleService genericRuleService;
 
-    @Autowired
-    MessageSource messageSource;
+    
+    private final MessageSource messageSource;
 
-    @Autowired
-    RuleDateService ruleDateService;
-    @Autowired
-    RulePhysicalEquipmentService rulePhysicalEqpService;
+    
+    private final RuleDateService ruleDateService;
+    
+    private final RulePhysicalEquipmentService rulePhysicalEqpService;
 
-    @Autowired
-    private DigitalServiceRuleFactory digitalServiceRuleFactory;
+    
+    private final DigitalServiceRuleFactory digitalServiceRuleFactory;
 
     /**
      * Check a physical equipment object

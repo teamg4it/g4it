@@ -38,13 +38,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class InDatacenterService {
 
-    private InDatacenterRepository inDatacenterRepository;
-    private InDatacenterMapper inDatacenterMapper;
-    private DigitalServiceVersionRepository digitalServiceVersionRepository;
-    private InventoryRepository inventoryRepository;
-
-    @Autowired
-    private EntityManager entityManager;
+    private final InDatacenterRepository inDatacenterRepository;
+    private final InDatacenterMapper inDatacenterMapper;
+    private final DigitalServiceVersionRepository digitalServiceVersionRepository;
+    private final InventoryRepository inventoryRepository;
+    private final EntityManager entityManager;
 
     /**
      * Get the datacenters list linked to a digital service.

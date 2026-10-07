@@ -84,7 +84,7 @@ public class OutPhysicalEquipmentService {
      * @return list of aggregated physical equipments
      */
     @Transactional(readOnly = true)
-    private List<OutPhysicalEquipmentRest> getPhysicalEquipmentsByTaskId(
+    public List<OutPhysicalEquipmentRest> getPhysicalEquipmentsByTaskId(
             final Long taskId, 
             final boolean useOrderedQuery) {
         int pageNumber = 0;

@@ -20,6 +20,7 @@ import com.soprasteria.g4it.backend.common.utils.StringUtils;
 import com.soprasteria.g4it.backend.exception.BadRequestException;
 import com.soprasteria.g4it.backend.server.gen.api.dto.FileDescriptionRest;
 import jakarta.annotation.PostConstruct;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -39,6 +40,7 @@ import java.util.UUID;
 
 @Service
 @Slf4j
+@AllArgsConstructor
 public class FileSystemService {
 
     private static final int REPLACEMENT_CHAR = 65533;
@@ -53,16 +55,16 @@ public class FileSystemService {
     /**
      * File System.
      */
-    @Autowired
-    private FileSystem fileSystem;
+    
+    private final FileSystem fileSystem;
     /**
      * File System.
      */
-    @Autowired
-    private FileDescriptionRestMapper fileDescriptionRestMapper;
+    
+    private final FileDescriptionRestMapper fileDescriptionRestMapper;
 
-    @Autowired
-    private WorkspaceService workspaceService;
+    
+    private final WorkspaceService workspaceService;
     @Value("${local.working.folder}")
     private String localWorkingFolder;
 

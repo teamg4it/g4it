@@ -39,28 +39,28 @@ import java.util.stream.Stream;
 @AllArgsConstructor
 @Slf4j
 public class AdministratorWorkspaceService {
-    @Autowired
-    AdministratorRoleService administratorRoleService;
-    @Autowired
-    WorkspaceService workspaceService;
-    @Autowired
-    WorkspaceRepository workspaceRepository;
-    @Autowired
-    RoleService roleService;
-    @Autowired
-    UserWorkspaceRepository userWorkspaceRepository;
-    @Autowired
-    UserOrganizationRepository userOrganizationRepository;
-    @Autowired
-    UserRoleWorkspaceRepository userRoleWorkspaceRepository;
-    @Autowired
-    UserRepository userRepository;
-    @Autowired
-    UserRestMapper userRestMapper;
-    @Autowired
-    UserService userService;
-    @Autowired
-    AuthService authService;
+
+    private final AdministratorRoleService administratorRoleService;
+
+    private final WorkspaceService workspaceService;
+
+    private final WorkspaceRepository workspaceRepository;
+
+    private final RoleService roleService;
+
+    private final UserWorkspaceRepository userWorkspaceRepository;
+
+    private final UserOrganizationRepository userOrganizationRepository;
+
+    private final UserRoleWorkspaceRepository userRoleWorkspaceRepository;
+
+    private final UserRepository userRepository;
+
+    private final UserRestMapper userRestMapper;
+
+    private final UserService userService;
+
+    private final AuthService authService;
 
     /**
      * Get the list of active workspaces with admin role attached to organization

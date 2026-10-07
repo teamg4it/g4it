@@ -12,7 +12,7 @@ import com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.
 import com.soprasteria.g4it.backend.common.model.Context;
 import com.soprasteria.g4it.backend.common.model.LineError;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InDatacenterRest;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
@@ -20,13 +20,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class CheckDatacenterService {
 
-    @Autowired
-    GenericRuleService genericRuleService;
-
-    @Autowired
-    MessageSource messageSource;
+    private final GenericRuleService genericRuleService;
+    private final MessageSource messageSource;
 
     /**
      * Check a datacenter object

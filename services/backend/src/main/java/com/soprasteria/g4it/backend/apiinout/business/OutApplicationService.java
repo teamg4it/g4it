@@ -35,11 +35,11 @@ import org.springframework.transaction.annotation.Transactional;
 @AllArgsConstructor
 public class OutApplicationService {
 
-    private OutApplicationRepository outApplicationRepository;
-    private DigitalServiceVersionRepository digitalServiceVersionRepository;
-    private TaskRepository taskRepository;
-    private OutApplicationMapper outApplicationMapper;
-    private EntityManager entityManager;
+    private final OutApplicationRepository outApplicationRepository;
+    private final DigitalServiceVersionRepository digitalServiceVersionRepository;
+    private final TaskRepository taskRepository;
+    private final OutApplicationMapper outApplicationMapper;
+    private final EntityManager entityManager;
 
     /**
      * Get applications by inventory id
@@ -82,7 +82,7 @@ public class OutApplicationService {
      * @return list of aggregated applications
      */
     @Transactional(readOnly = true)
-    private List<OutApplicationRest> getApplicationsByTaskId(final Long taskId) {
+    public List<OutApplicationRest> getApplicationsByTaskId(final Long taskId) {
         int pageNumber = 0;
         List<OutApplicationRest> result = new ArrayList<>();
 

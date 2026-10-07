@@ -9,27 +9,28 @@
 package com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.checkobject;
 
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceType;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.Map;
 
+@AllArgsConstructor
 @Component
 public class DigitalServiceRuleFactory {
 
-    @Autowired
-    private NetworkDigitalServiceRule networkDigitalServiceRule;
+    
+    private final NetworkDigitalServiceRule networkDigitalServiceRule;
 
-    @Autowired
-    private TerminalDigitalServiceRule terminalDigitalServiceRule;
+    
+    private final TerminalDigitalServiceRule terminalDigitalServiceRule;
 
-    @Autowired
-    private NonCloudDigitalServiceRule nonCloudDigitalServiceRule;
+    
+    private final NonCloudDigitalServiceRule nonCloudDigitalServiceRule;
 
     private final Map<String, DigitalServiceRule> rules = new HashMap<>();
 
-    @Autowired
+    
     public void initializeRules() {
         rules.put(DigitalServiceType.NETWORK.getValue(), networkDigitalServiceRule);
         rules.put(DigitalServiceType.TERMINAL.getValue(), terminalDigitalServiceRule);

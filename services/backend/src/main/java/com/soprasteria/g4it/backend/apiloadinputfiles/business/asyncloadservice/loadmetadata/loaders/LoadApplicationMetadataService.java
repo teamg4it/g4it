@@ -8,31 +8,29 @@
 
 package com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.loadmetadata.loaders;
 
-import com.soprasteria.g4it.backend.apiinout.mapper.InApplicationMapper;
-import com.soprasteria.g4it.backend.apiinout.repository.InApplicationRepository;
+
 import com.soprasteria.g4it.backend.apiloadinputfiles.modeldb.CheckApplication;
 import com.soprasteria.g4it.backend.apiloadinputfiles.repository.CheckApplicationRepository;
 import com.soprasteria.g4it.backend.common.model.Context;
 import com.soprasteria.g4it.backend.common.model.FileToLoad;
 import com.soprasteria.g4it.backend.common.utils.Constants;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InApplicationRest;
-import com.soprasteria.g4it.backend.server.gen.api.dto.InVirtualEquipmentRest;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
 public class LoadApplicationMetadataService implements IMetadataLoaderService {
 
-    @Autowired
-    private CheckApplicationRepository checkApplicationRepository;
+
+    private final CheckApplicationRepository checkApplicationRepository;
 
     @PersistenceContext
     private EntityManager entityManager;

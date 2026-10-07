@@ -14,6 +14,7 @@ import com.soprasteria.g4it.backend.common.filesystem.business.local.LocalFileSe
 import com.soprasteria.g4it.backend.common.filesystem.model.FileFolder;
 import com.soprasteria.g4it.backend.common.utils.Constants;
 import com.soprasteria.g4it.backend.exception.AsyncTaskException;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -25,16 +26,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 @Service
+@AllArgsConstructor
 public class ExportService {
 
     @Value("${local.working.folder}")
     private String localWorkingFolder;
 
-    @Autowired
-    LocalFileService localFileService;
-
-    @Autowired
-    private FileSystem fileSystem;
+    private final LocalFileService localFileService;
+    private final FileSystem fileSystem;
 
     /**
      * Create export directory for task id

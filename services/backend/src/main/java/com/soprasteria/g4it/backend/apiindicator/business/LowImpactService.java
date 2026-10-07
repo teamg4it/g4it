@@ -15,6 +15,7 @@ import com.soprasteria.g4it.backend.apiindicator.utils.CriteriaUtils;
 import com.soprasteria.g4it.backend.apireferential.business.ReferentialGetService;
 import com.soprasteria.g4it.backend.apireferential.business.ReferentialService;
 import com.soprasteria.g4it.backend.common.utils.StringUtils;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,7 @@ import java.util.stream.Collectors;
  */
 @Service
 @Slf4j
+@AllArgsConstructor
 public class LowImpactService {
 
     /**
@@ -42,20 +44,13 @@ public class LowImpactService {
     /**
      * Referential Service.
      */
-    @Autowired
-    private ReferentialService referentialService;
+    private final ReferentialService referentialService;
 
     /**
      * ReferentialGet Service.
      */
-    @Autowired
-    private ReferentialGetService referentialGetService;
+    private final ReferentialGetService referentialGetService;
 
-    @Autowired
-    InVirtualEquipmentLowImpactViewRepository inVirtualEquipmentLowImpactViewRepository;
-
-    @Autowired
-    VirtualEquipmentIndicatorMapper virtualEquipmentIndicatorMapper;
 
     /**
      * For a country, estimate the environment impact regarding electricity mix and returns true if the country has a low impact

@@ -31,6 +31,7 @@ import com.soprasteria.g4it.backend.server.gen.api.dto.InAiInfrastructureRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InDatacenterRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InPhysicalEquipmentRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InVirtualEquipmentRest;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -42,53 +43,23 @@ import java.util.Optional;
 
 @Service
 @Slf4j
+@AllArgsConstructor
 public class InAiInfrastructureService {
 
-    @Autowired
-    InAiInfrastructureMapper inAiInfrastructureMapper;
-
-    @Autowired
-    DigitalServiceRepository digitalServiceRepository;
-    @Autowired
-    DigitalServiceService digitalServiceService;
-
-    @Autowired
-    DigitalServiceReferentialService digitalServiceReferentialService;
-
-
-    @Autowired
-    InDatacenterMapper inDatacenterMapper;
-
-    @Autowired
-    InDatacenterRepository inDatacenterRepository;
-
-    @Autowired
-    InDatacenterService inDatacenterService;
-    @Autowired
-    InPhysicalEquipmentService inPhysicalEquipmentService;
-    @Autowired
-    InVirtualEquipmentService inVirtualEquipmentService;
-
-    @Autowired
-    InPhysicalEquipmentMapper inPhysicalEquipmentMapper;
-
-    @Autowired
-    InPhysicalEquipmentRepository inPhysicalEquipmentRepository;
-
-    @Autowired
-    InVirtualEquipmentMapper inVirtualEquipmentMapper;
-
-    @Autowired
-    InVirtualEquipmentRepository inVirtualEquipmentRepository;
-
-    @Autowired
-    InAiInfrastructureRepository inAiInfrastructureRepository;
-
-    @Autowired
-    DigitalServiceVersionService digitalServiceVersionService;
-
-    @Autowired
-    DigitalServiceVersionRepository digitalServiceVersionRepository;
+    private final InAiInfrastructureMapper inAiInfrastructureMapper;
+    private final DigitalServiceReferentialService digitalServiceReferentialService;
+    private final InDatacenterMapper inDatacenterMapper;
+    private final InDatacenterRepository inDatacenterRepository;
+    private final InDatacenterService inDatacenterService;
+    private final InPhysicalEquipmentService inPhysicalEquipmentService;
+    private final InVirtualEquipmentService inVirtualEquipmentService;
+    private final InPhysicalEquipmentMapper inPhysicalEquipmentMapper;
+    private final InPhysicalEquipmentRepository inPhysicalEquipmentRepository;
+    private final InVirtualEquipmentMapper inVirtualEquipmentMapper;
+    private final InVirtualEquipmentRepository inVirtualEquipmentRepository;
+    private final InAiInfrastructureRepository inAiInfrastructureRepository;
+    private final DigitalServiceVersionService digitalServiceVersionService;
+    private final DigitalServiceVersionRepository digitalServiceVersionRepository;
 
     /**
      * Saves inAiInfrastructureRest information in tables InDatacenter, InPhysicalEquipment, InVirtualEquipment and InAiInfrastructure.

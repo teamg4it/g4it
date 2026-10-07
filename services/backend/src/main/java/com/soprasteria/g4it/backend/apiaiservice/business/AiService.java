@@ -19,14 +19,11 @@ import java.util.List;
 @Slf4j
 public class AiService {
 
-    public static final String ECOMINAPI_VERSION = "1.0";
-    public static final String ECOMINAPI_ENGINE = "EcomindAPI";
+
     /**
      * EcomindClient
      */
     private AiModelapiClient aiModelapiClient;
-    @Autowired
-    private AiConfigurationMapper aiConfigurationMapper;
 
     /**
      * Get BoaviztAPI countries with code.

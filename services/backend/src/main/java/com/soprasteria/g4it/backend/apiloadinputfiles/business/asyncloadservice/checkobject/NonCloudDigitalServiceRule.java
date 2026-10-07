@@ -12,6 +12,7 @@ import com.soprasteria.g4it.backend.apidigitalservice.business.DigitalServiceRef
 import com.soprasteria.g4it.backend.apidigitalservice.model.ServerHostBO;
 import com.soprasteria.g4it.backend.common.model.LineError;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InPhysicalEquipmentRest;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
@@ -21,12 +22,11 @@ import java.util.Locale;
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class NonCloudDigitalServiceRule extends AbstractDigitalServiceRule {
 
-    @Autowired
-    MessageSource messageSource;
-    @Autowired
-    DigitalServiceReferentialService digitalServiceRefService;
+    private final MessageSource messageSource;
+    private final DigitalServiceReferentialService digitalServiceRefService;
 
     @Override
     protected void validateSpecificRules(Locale locale, InPhysicalEquipmentRest physicalEquipment, String filename, int line, List<LineError> errors) {

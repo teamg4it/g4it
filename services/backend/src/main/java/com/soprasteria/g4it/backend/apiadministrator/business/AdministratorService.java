@@ -43,33 +43,33 @@ public class AdministratorService {
     /**
      * Repository to access organization data.
      */
-    @Autowired
-    OrganizationRepository organizationRepository;
+
+    private final OrganizationRepository organizationRepository;
     /**
      * Repository to access user data.
      */
-    UserRepository userRepository;
+    private final UserRepository userRepository;
     /**
      * Organization Mapper.
      */
-    @Autowired
-    OrganizationRestMapper organizationRestMapper;
+
+    private final OrganizationRestMapper organizationRestMapper;
     /**
      * The Administrator Role Service
      */
-    @Autowired
-    private AdministratorRoleService administratorRoleService;
+
+    private final  AdministratorRoleService administratorRoleService;
     /**
      * The Organization Service
      */
-    @Autowired
-    private OrganizationService organizationService;
+
+    private final  OrganizationService organizationService;
 
     /**
      * The User Service
      */
-    @Autowired
-    private UserService userService;
+
+    private final  UserService userService;
 
     /**
      * Retrieve the list of organizations for the user which has ROLE_ORGANIZATION_ADMINISTRATOR on it

@@ -19,6 +19,7 @@ import com.soprasteria.g4it.backend.apiinout.modeldb.InPhysicalEquipment;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InVirtualEquipment;
 import com.soprasteria.g4it.backend.apireferential.business.ReferentialService;
 import com.soprasteria.g4it.backend.server.gen.api.dto.*;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.mte.numecoeval.calculs.domain.data.demande.DemandeCalculImpactApplication;
@@ -45,22 +46,23 @@ import java.util.Map;
 
 @Service
 @Slf4j
+@AllArgsConstructor
 public class EvaluateNumEcoEvalService {
 
-    @Autowired
-    InternalToNumEcoEvalCalculs internalToNumEcoEvalCalculs;
 
-    @Autowired
-    ReferentialService referentialService;
+    private final InternalToNumEcoEvalCalculs internalToNumEcoEvalCalculs;
 
-    @Autowired
-    CalculImpactEquipementPhysiqueService calculImpactEquipementPhysiqueService;
 
-    @Autowired
-    CalculImpactEquipementVirtuelService calculImpactEquipementVirtuelService;
+    private final ReferentialService referentialService;
 
-    @Autowired
-    CalculImpactApplicationService calculImpactApplicationService;
+
+    private final CalculImpactEquipementPhysiqueService calculImpactEquipementPhysiqueService;
+
+
+    private final CalculImpactEquipementVirtuelService calculImpactEquipementVirtuelService;
+
+
+    private final CalculImpactApplicationService calculImpactApplicationService;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 

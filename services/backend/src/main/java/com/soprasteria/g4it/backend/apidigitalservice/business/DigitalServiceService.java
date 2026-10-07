@@ -28,6 +28,7 @@ import com.soprasteria.g4it.backend.apiuser.repository.UserRepository;
 import com.soprasteria.g4it.backend.apiuser.repository.UserWorkspaceRepository;
 import com.soprasteria.g4it.backend.common.utils.ObjectUtils;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -45,42 +46,28 @@ import java.util.stream.Collectors;
  */
 @Service
 @Slf4j
+@AllArgsConstructor
 public class DigitalServiceService {
 
-    private static final String DEFAULT_NAME_PREFIX = "Digital Service";
-    @Autowired
-    private DigitalServiceRepository digitalServiceRepository;
-    @Autowired
-    private DigitalServiceReferentialService digitalServiceReferentialService;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private DigitalServiceMapper digitalServiceMapper;
-    @Autowired
-    private DigitalServiceVersionMapper digitalServiceVersionMapper;
-    @Autowired
-    private RoleService roleService;
-    @Autowired
-    private WorkspaceService workspaceService;
-    @Autowired
-    private UserWorkspaceRepository userWorkspaceRepository;
-    @Autowired
-    private OrganizationRepository organizationRepository;
-    @Autowired
-    private InDatacenterRepository inDatacenterRepository;
-    @Autowired
-    private InPhysicalEquipmentRepository inPhysicalEquipmentRepository;
-    @Autowired
-    private InVirtualEquipmentRepository inVirtualEquipmentRepository;
-    @Autowired
-    private InAiParameterRepository inAiParameterRepository;
-    @Autowired
-    private InAiInfrastructureRepository inAiInfrastructureRepository;
-    @Autowired
-    private DigitalServiceLinkRepository digitalServiceLinkRepository;
+    private final DigitalServiceRepository digitalServiceRepository;
+
+    private final DigitalServiceMapper digitalServiceMapper;
+
+    private final WorkspaceService workspaceService;
+
+    private final InDatacenterRepository inDatacenterRepository;
+
+    private final InPhysicalEquipmentRepository inPhysicalEquipmentRepository;
+
+    private final InVirtualEquipmentRepository inVirtualEquipmentRepository;
+
+    private final InAiParameterRepository inAiParameterRepository;
+
+    private final InAiInfrastructureRepository inAiInfrastructureRepository;
+
     @Value("${batch.local.working.folder.base.path:}")
     private String localWorkingPath;
-    @Autowired
+
     private DigitalServiceVersionRepository digitalServiceVersionRepository;
     @Value("${g4it.data.retention.day}")
     private Integer dataRetentiondDay;

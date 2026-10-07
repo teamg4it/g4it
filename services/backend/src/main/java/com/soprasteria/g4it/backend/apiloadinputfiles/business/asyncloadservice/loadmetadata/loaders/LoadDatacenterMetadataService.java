@@ -15,6 +15,7 @@ import com.soprasteria.g4it.backend.common.utils.Constants;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InDatacenterRest;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,10 +25,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class LoadDatacenterMetadataService implements IMetadataLoaderService {
 
-    @Autowired
-    private CheckDatacenterRepository checkDatacenterRepository;
+    private final CheckDatacenterRepository checkDatacenterRepository;
 
     @PersistenceContext
     private EntityManager entityManager;

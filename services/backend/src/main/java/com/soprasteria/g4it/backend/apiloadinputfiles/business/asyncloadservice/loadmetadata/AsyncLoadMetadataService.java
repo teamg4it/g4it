@@ -11,8 +11,8 @@ package com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice
 import com.soprasteria.g4it.backend.common.model.Context;
 import com.soprasteria.g4it.backend.common.model.FileToLoad;
 import com.soprasteria.g4it.backend.exception.AsyncTaskException;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.concurrent.ExecutorService;
@@ -21,10 +21,10 @@ import java.util.concurrent.TimeUnit;
 
 @Service
 @Slf4j
+@AllArgsConstructor
 public class AsyncLoadMetadataService {
 
-    @Autowired
-    private LoadMetadataService loadMetadataService;
+    private final LoadMetadataService loadMetadataService;
 
     /**
      * Load the inventory metadata

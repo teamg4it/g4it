@@ -10,6 +10,7 @@ package com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice
 
 import com.soprasteria.g4it.backend.common.model.FileToLoad;
 import com.soprasteria.g4it.backend.common.model.LineError;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -26,10 +27,10 @@ import java.util.List;
 
 @Slf4j
 @Service
+@AllArgsConstructor
 public class CheckMetadataInventoryFileService {
 
-    @Autowired
-    private CheckConstraintService checkConstraintService;
+    private final CheckConstraintService checkConstraintService;
 
     /**
      * Check the metadata file

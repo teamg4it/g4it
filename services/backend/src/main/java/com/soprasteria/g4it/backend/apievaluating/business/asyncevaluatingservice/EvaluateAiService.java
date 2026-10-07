@@ -46,6 +46,7 @@ import com.soprasteria.g4it.backend.common.utils.StringUtils;
 import com.soprasteria.g4it.backend.exception.AsyncTaskException;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
 import com.soprasteria.g4it.backend.server.gen.api.dto.*;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVPrinter;
 import org.mte.numecoeval.calculs.domain.data.indicateurs.ImpactEquipementPhysique;
@@ -62,57 +63,58 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
+@AllArgsConstructor
 public class EvaluateAiService {
 
     private static final int INITIAL_MAP_CAPICITY = 50_000;
     private static final int MAXIMUM_MAP_CAPICITY = 500_000;
-    @Autowired
-    InDatacenterRepository inDatacenterRepository;
-    @Autowired
-    InPhysicalEquipmentRepository inPhysicalEquipmentRepository;
-    @Autowired
-    InVirtualEquipmentRepository inVirtualEquipmentRepository;
-    @Autowired
-    EvaluateNumEcoEvalService evaluateNumEcoEvalService;
-    @Autowired
-    ReferentialService referentialService;
-    @Autowired
-    SaveService saveService;
-    @Autowired
-    OrganizationRepository organizationRepository;
-    @Autowired
-    TaskRepository taskRepository;
 
-    @Autowired
-    AiService aiService;
+    private final InDatacenterRepository inDatacenterRepository;
 
-    @Autowired
-    InAiInfrastructureRepository inAiInfrastructureRepository;
+    private final InPhysicalEquipmentRepository inPhysicalEquipmentRepository;
 
-    @Autowired
-    OutAiRecoRepository outAiRecoRepository;
+    private final InVirtualEquipmentRepository inVirtualEquipmentRepository;
 
-    @Autowired
-    InAiParameterRepository inAIParameterRepository;
+    private final EvaluateNumEcoEvalService evaluateNumEcoEvalService;
 
-    @Autowired
-    AggregationToOutput aggregationToOutput;
+    private final ReferentialService referentialService;
 
-    @Autowired
-    CsvFileService csvFileService;
+    private final SaveService saveService;
 
-    @Autowired
-    InputToCsvRecord inputToCsvRecord;
+    private final OrganizationRepository organizationRepository;
 
-    @Autowired
-    ImpactToCsvRecord impactToCsvRecord;
+    private final TaskRepository taskRepository;
+
+
+    private final AiService aiService;
+
+
+    private final InAiInfrastructureRepository inAiInfrastructureRepository;
+
+
+    private final OutAiRecoRepository outAiRecoRepository;
+
+
+    private final InAiParameterRepository inAIParameterRepository;
+
+
+    private final AggregationToOutput aggregationToOutput;
+
+
+    private final CsvFileService csvFileService;
+
+
+    private final InputToCsvRecord inputToCsvRecord;
+
+
+    private final ImpactToCsvRecord impactToCsvRecord;
 
 
     @Value("${local.working.folder}")
     private String localWorkingFolder;
 
-    @Autowired
-    ReferentialGetService referentialGetService;
+
+    private final ReferentialGetService referentialGetService;
 
     /**
      * Evaluate the digital service with ia parameter

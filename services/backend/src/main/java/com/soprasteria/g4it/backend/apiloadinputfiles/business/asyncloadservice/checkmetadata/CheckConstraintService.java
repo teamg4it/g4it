@@ -15,6 +15,7 @@ import com.soprasteria.g4it.backend.apiloadinputfiles.repository.CheckDatacenter
 import com.soprasteria.g4it.backend.apiloadinputfiles.repository.CheckPhysicalEquipmentRepository;
 import com.soprasteria.g4it.backend.apiloadinputfiles.repository.CheckVirtualEquipmentRepository;
 import com.soprasteria.g4it.backend.common.model.LineError;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -26,17 +27,18 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
+@AllArgsConstructor
 public class CheckConstraintService {
-    @Autowired
-    MessageSource messageSource;
-    @Autowired
-    private CheckDatacenterRepository checkDatacenterRepository;
-    @Autowired
-    private CheckPhysicalEquipmentRepository checkPhysicalEqpRepository;
-    @Autowired
-    private CheckVirtualEquipmentRepository checkVirtualEqpRepository;
-    @Autowired
-    private CheckApplicationRepository checkApplicationRepository;
+    
+    private final MessageSource messageSource;
+    
+    private final CheckDatacenterRepository checkDatacenterRepository;
+    
+    private final CheckPhysicalEquipmentRepository checkPhysicalEqpRepository;
+    
+    private final CheckVirtualEquipmentRepository checkVirtualEqpRepository;
+    
+    private final CheckApplicationRepository checkApplicationRepository;
 
     /**
      * Check the metadata files

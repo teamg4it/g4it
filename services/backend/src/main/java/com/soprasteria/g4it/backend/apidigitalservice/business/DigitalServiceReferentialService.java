@@ -23,6 +23,7 @@ import com.soprasteria.g4it.backend.apidigitalservice.repository.ServerHostRefRe
 import com.soprasteria.g4it.backend.apireferential.business.ReferentialGetService;
 import com.soprasteria.g4it.backend.exception.InvalidReferentialException;
 import com.soprasteria.g4it.backend.external.boavizta.business.BoaviztapiService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -35,49 +36,49 @@ import java.util.Map;
  * Digital Service Referential Service.
  */
 @Service
+@AllArgsConstructor
 public class DigitalServiceReferentialService {
 
     /**
      * Repository to access data.
      */
-    @Autowired
-    private DeviceTypeRefRepository deviceTypeRefRepository;
+    private final DeviceTypeRefRepository deviceTypeRefRepository;
 
     /**
      * Network type referential repository.
      */
-    @Autowired
-    private NetworkTypeRefRepository networkTypeRefRepository;
+
+    private final NetworkTypeRefRepository networkTypeRefRepository;
 
     /**
      * Server host referential repository.
      */
-    @Autowired
-    private ServerHostRefRepository serverHostRefRepository;
+
+    private final ServerHostRefRepository serverHostRefRepository;
 
     /**
      * Ecomind type referential repository.
      */
-    @Autowired
-    private EcomindTypeRefRepository ecomindTypeRefRepository;
+
+    private final EcomindTypeRefRepository ecomindTypeRefRepository;
 
     /**
      * Referential Mapper.
      */
-    @Autowired
-    private DigitalServiceReferentialMapper digitalServiceReferentialMapper;
+
+    private final DigitalServiceReferentialMapper digitalServiceReferentialMapper;
 
     /**
      * Boaviztapi  Service.
      */
-    @Autowired
-    private BoaviztapiService boaviztapiService;
+
+    private final BoaviztapiService boaviztapiService;
 
     /**
      * Referential Service.
      */
-    @Autowired
-    private ReferentialGetService referentialGetService;
+
+    private final ReferentialGetService referentialGetService;
 
 
     /**

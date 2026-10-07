@@ -21,6 +21,7 @@ import com.soprasteria.g4it.backend.common.task.business.TaskService;
 import com.soprasteria.g4it.backend.common.task.modeldb.Task;
 import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
+import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,29 +33,16 @@ import java.util.Map;
  * Inventory Service.
  */
 @Service
-@NoArgsConstructor
+@AllArgsConstructor
 public class InventoryIndicatorService {
-
-    @Autowired
-    ExportService exportService;
-    @Autowired
-    private InventoryService inventoryService;
-    @Autowired
-    private IndicatorService indicatorService;
-    @Autowired
-    private WorkspaceService workspaceService;
-    @Autowired
-    private TaskRepository taskRepository;
-    @Autowired
-    private InDatacenterRepository inDatacenterRepository;
-    @Autowired
-    private InPhysicalEquipmentRepository inPhysicalEquipmentRepository;
-    @Autowired
-    private InVirtualEquipmentRepository inVirtualEquipmentRepository;
-    @Autowired
-    private InApplicationRepository inApplicationRepository;
-    @Autowired
-    private TaskService taskService;
+    
+    private final InventoryService inventoryService;
+    
+    private final IndicatorService indicatorService;
+    
+    private final TaskRepository taskRepository;
+    
+    private  final TaskService taskService;
 
     /**
      * Get last batch name in the inventory business object.

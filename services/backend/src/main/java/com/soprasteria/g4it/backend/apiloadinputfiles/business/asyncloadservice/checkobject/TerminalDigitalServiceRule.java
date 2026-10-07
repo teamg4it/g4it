@@ -14,7 +14,7 @@ import com.soprasteria.g4it.backend.apidigitalservice.modeldb.referential.Device
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DeviceTypeRefRepository;
 import com.soprasteria.g4it.backend.common.model.LineError;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InPhysicalEquipmentRest;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
@@ -23,14 +23,11 @@ import java.util.Locale;
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class TerminalDigitalServiceRule extends AbstractDigitalServiceRule {
 
-    @Autowired
-    MessageSource messageSource;
-    @Autowired
-    DigitalServiceReferentialService digitalServiceRefService;
-    @Autowired
-    DeviceTypeRefRepository deviceTypeRefRepository;
+    private final MessageSource messageSource;
+    private final DeviceTypeRefRepository deviceTypeRefRepository;
 
     @Override
     protected void validateSpecificRules(Locale locale, InPhysicalEquipmentRest physicalEquipment, String filename, int line, List<LineError> errors) {

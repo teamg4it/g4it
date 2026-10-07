@@ -36,12 +36,10 @@ import java.util.Optional;
 @Slf4j
 public class InApplicationService {
 
-    private InApplicationRepository inApplicationRepository;
-    private InApplicationMapper inApplicationMapper;
-    private InventoryRepository inventoryRepository;
-
-    @Autowired
-    private EntityManager entityManager;
+    private final InApplicationRepository inApplicationRepository;
+    private final InApplicationMapper inApplicationMapper;
+    private final InventoryRepository inventoryRepository;
+    private final EntityManager entityManager;
 
     /**
      * Get the applications list linked to an inventory
@@ -49,11 +47,7 @@ public class InApplicationService {
      * @param inventoryId the inventory id
      * @return the application list.
      */
-    /*public List<InApplicationRest> getByInventory(final Long inventoryId) {
-        final List<InApplication> inApplication = inApplicationRepository.findByInventoryId(inventoryId);
-        return inApplicationMapper.toRest(inApplication);
-    }*/
-    
+
     @Transactional(readOnly = true)
     public List<InApplicationRest> getByInventory(final Long inventoryId) {
 

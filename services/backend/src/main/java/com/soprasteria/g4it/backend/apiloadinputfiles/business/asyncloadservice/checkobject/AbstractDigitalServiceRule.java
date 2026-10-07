@@ -12,13 +12,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.rules.RulePhysicalEquipmentService;
 import com.soprasteria.g4it.backend.common.model.LineError;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InPhysicalEquipmentRest;
 
+@NoArgsConstructor
 public abstract class AbstractDigitalServiceRule implements DigitalServiceRule {
+
 
     @Autowired
     RulePhysicalEquipmentService rulePhysicalEqpService;

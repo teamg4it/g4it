@@ -12,6 +12,7 @@ import com.soprasteria.g4it.backend.apibusinesshours.mapper.BusinessHoursMapper;
 import com.soprasteria.g4it.backend.apibusinesshours.modeldb.BusinessHours;
 import com.soprasteria.g4it.backend.apibusinesshours.repository.BusinessHoursRepository;
 import com.soprasteria.g4it.backend.server.gen.api.dto.BusinessHoursRest;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
@@ -22,13 +23,11 @@ import java.util.List;
 
 @Service
 @Slf4j
+@AllArgsConstructor
 public class BusinessHoursService {
 
-    @Autowired
-    private BusinessHoursRepository repository;
-
-    @Autowired
-    private BusinessHoursMapper mapper;
+    private final BusinessHoursRepository repository;
+    private final BusinessHoursMapper mapper;
 
     @Cacheable("getBusinessHours")
     public List<BusinessHoursRest> getBusinessHours() {

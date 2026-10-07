@@ -8,27 +8,24 @@
 
 package com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.checkobject;
 
-import com.soprasteria.g4it.backend.apiinout.modeldb.InPhysicalEquipment;
 import com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.rules.GenericRuleService;
 import com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.rules.RuleApplicationService;
 import com.soprasteria.g4it.backend.common.model.Context;
 import com.soprasteria.g4it.backend.common.model.LineError;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InApplicationRest;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
+@AllArgsConstructor
 @Service
 public class CheckApplicationService {
 
-    @Autowired
-    GenericRuleService genericRuleService;
+    private final GenericRuleService genericRuleService;
 
-    @Autowired
-    RuleApplicationService ruleApplicationService;
+    private final RuleApplicationService ruleApplicationService;
 
     /**
      * Check a virtual equipment object

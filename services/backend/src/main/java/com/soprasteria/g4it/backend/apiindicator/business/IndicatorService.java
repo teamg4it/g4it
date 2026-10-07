@@ -41,29 +41,29 @@ import java.util.stream.Collectors;
 @Slf4j
 public class IndicatorService {
 
-    @Autowired
-    private DataCenterIndicatorService dataCenterIndicatorService;
+    
+    private final DataCenterIndicatorService dataCenterIndicatorService;
 
-    @Autowired
-    private PhysicalEquipmentIndicatorService physicalEquipmentIndicatorService;
+    
+    private final PhysicalEquipmentIndicatorService physicalEquipmentIndicatorService;
 
-    @Autowired
-    private VirtualEquipmentIndicatorService virtualEquipmentIndicatorService;
+    
+    private final VirtualEquipmentIndicatorService virtualEquipmentIndicatorService;
 
-    @Autowired
-    private EquipmentIndicatorMapper equipmentIndicatorMapper;
+    
+    private final EquipmentIndicatorMapper equipmentIndicatorMapper;
 
-    @Autowired
-    private ApplicationIndicatorMapper applicationIndicatorMapper;
+    
+    private final ApplicationIndicatorMapper applicationIndicatorMapper;
 
-    @Autowired
-    private WorkspaceService workspaceService;
+    
+    private final WorkspaceService workspaceService;
 
-    @Autowired
-    private OutPhysicalEquipmentRepository outPhysicalEquipmentRepository;
+    
+    private final OutPhysicalEquipmentRepository outPhysicalEquipmentRepository;
 
-    @Autowired
-    private OutApplicationRepository outApplicationRepository;
+    
+    private final OutApplicationRepository outApplicationRepository;
 
     @PersistenceContext
     private EntityManager entityManager;

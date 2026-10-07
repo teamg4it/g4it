@@ -36,35 +36,28 @@ import java.util.List;
 @Slf4j
 public class PhysicalEquipmentIndicatorService {
 
-    @Autowired
-    private InPhysicalEquipmentAvgAgeViewRepository inPhysicalEquipmentAvgAgeViewRepository;
+    private final InPhysicalEquipmentAvgAgeViewRepository inPhysicalEquipmentAvgAgeViewRepository;
 
-    @Autowired
-    private InPhysicalEquipmentLowImpactViewRepository inPhysicalEquipmentLowImpactViewRepository;
+    private final InPhysicalEquipmentLowImpactViewRepository inPhysicalEquipmentLowImpactViewRepository;
 
-    @Autowired
-    private InPhysicalEquipmentElecConsumptionViewRepository inPhysicalEquipmentElecConsumptionViewRepository;
+    private final InPhysicalEquipmentElecConsumptionViewRepository inPhysicalEquipmentElecConsumptionViewRepository;
 
-    /**
-     * Physical equipment indicators mapper.
-     */
-    @Autowired
-    private PhysicalEquipmentIndicatorMapper physicalEquipmentIndicatorMapper;
+    private final PhysicalEquipmentIndicatorMapper physicalEquipmentIndicatorMapper;
 
     /**
      * The Workspace Service
      */
-    @Autowired
-    private WorkspaceService workspaceService;
+    
+    private final WorkspaceService workspaceService;
 
     /**
      * The LowImpact Service
      */
-    @Autowired
-    private LowImpactService lowImpactService;
+    
+    private final LowImpactService lowImpactService;
 
-    @Autowired
-    private TaskRepository taskRepository;
+    
+    private final TaskRepository taskRepository;
 
     /**
      * Retrieve average age indicators.

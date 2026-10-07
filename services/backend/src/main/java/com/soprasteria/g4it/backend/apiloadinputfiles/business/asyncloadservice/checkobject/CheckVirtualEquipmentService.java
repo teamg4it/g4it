@@ -14,7 +14,7 @@ import com.soprasteria.g4it.backend.common.model.Context;
 import com.soprasteria.g4it.backend.common.model.LineError;
 import com.soprasteria.g4it.backend.common.utils.InfrastructureType;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InVirtualEquipmentRest;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -23,13 +23,10 @@ import java.util.Objects;
 import java.util.Set;
 
 @Service
+@AllArgsConstructor
 public class CheckVirtualEquipmentService {
 
-    @Autowired
-    GenericRuleService genericRuleService;
-
-    @Autowired
-    RuleVirtualEquipmentService ruleVirtualEquipmentService;
+    private final RuleVirtualEquipmentService ruleVirtualEquipmentService;
 
     /**
      * Check a virtual equipment object

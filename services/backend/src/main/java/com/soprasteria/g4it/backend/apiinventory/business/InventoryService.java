@@ -33,6 +33,7 @@ import com.soprasteria.g4it.backend.exception.G4itRestException;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InventoryCreateRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InventoryType;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InventoryUpdateRest;
+import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,39 +50,39 @@ import java.util.Optional;
  * Inventory Service.
  */
 @Service
-@NoArgsConstructor
+@AllArgsConstructor
 @Slf4j
 public class InventoryService {
 
     /**
      * Repository to access inventory data.
      */
-    @Autowired
-    private InventoryRepository inventoryRepository;
+    
+    private final InventoryRepository inventoryRepository;
     /**
      * The Workspace service.
      */
-    @Autowired
-    private WorkspaceService workspaceService;
+    
+    private final WorkspaceService workspaceService;
     /**
      * Mapper for inventory data.
      */
-    @Autowired
-    private InventoryMapper inventoryMapper;
+    
+    private final InventoryMapper inventoryMapper;
 
-    @Autowired
-    private TaskRepository taskRepository;
-    @Autowired
-    private RoleService roleService;
-    @Autowired
-    private UserWorkspaceRepository userWorkspaceRepository;
-    @Autowired
-    private OrganizationRepository organizationRepository;
+    
+    private final TaskRepository taskRepository;
+    
+    private final RoleService roleService;
+    
+    private final UserWorkspaceRepository userWorkspaceRepository;
+    
+    private final OrganizationRepository organizationRepository;
 
-    @Autowired
-    private OutPhysicalEquipmentRepository outPhysicalEquipmentRepository;
-    @Autowired
-    private OutVirtualEquipmentRepository outVirtualEquipmentRepository;
+    
+    private final OutPhysicalEquipmentRepository outPhysicalEquipmentRepository;
+    
+    private final OutVirtualEquipmentRepository outVirtualEquipmentRepository;
 
     @Value("${g4it.data.retention.day}")
     private Integer dataRetentiondDay;

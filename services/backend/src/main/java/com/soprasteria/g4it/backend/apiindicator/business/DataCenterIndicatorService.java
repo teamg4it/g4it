@@ -24,16 +24,13 @@ import java.util.List;
 @AllArgsConstructor
 public class DataCenterIndicatorService {
 
-    @Autowired
-    private WorkspaceService workspaceService;
+    private final WorkspaceService workspaceService;
     /**
      * DataCenter indicators mapper.
      */
-    @Autowired
-    private DataCenterIndicatorMapper dataCenterIndicatorMapper;
+    private final DataCenterIndicatorMapper dataCenterIndicatorMapper;
 
-    @Autowired
-    private InDatacenterViewRepository inDatacenterViewRepository;
+    private final InDatacenterViewRepository inDatacenterViewRepository;
 
     /**
      * Retrieve datacenter indicators.

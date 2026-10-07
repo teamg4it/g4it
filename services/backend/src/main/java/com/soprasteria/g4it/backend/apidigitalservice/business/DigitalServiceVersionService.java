@@ -34,6 +34,7 @@ import com.soprasteria.g4it.backend.exception.G4itRestException;
 import com.soprasteria.g4it.backend.server.gen.api.dto.*;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -52,41 +53,41 @@ import java.util.stream.Collectors;
  */
 @Service
 @Slf4j
+@AllArgsConstructor
 public class DigitalServiceVersionService {
 
-    @Autowired
-    private DigitalServiceRepository digitalServiceRepository;
-    @Autowired
-    private DigitalServiceReferentialService digitalServiceReferentialService;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private DigitalServiceVersionMapper digitalServiceVersionMapper;
-    @Autowired
-    private RoleService roleService;
-    @Autowired
-    private WorkspaceService workspaceService;
-    @Autowired
-    private UserWorkspaceRepository userWorkspaceRepository;
-    @Autowired
-    private OrganizationRepository organizationRepository;
-    @Autowired
-    private InDatacenterRepository inDatacenterRepository;
-    @Autowired
-    private InPhysicalEquipmentRepository inPhysicalEquipmentRepository;
-    @Autowired
-    private InApplicationRepository inApplicationRepository;
-    @Autowired
-    private InVirtualEquipmentRepository inVirtualEquipmentRepository;
-    @Autowired
-    private InAiParameterRepository inAiParameterRepository;
-    @Autowired
-    private InAiInfrastructureRepository inAiInfrastructureRepository;
-    @Autowired
+    private final DigitalServiceRepository digitalServiceRepository;
+
+    private final DigitalServiceReferentialService digitalServiceReferentialService;
+
+    private final UserRepository userRepository;
+
+    private final DigitalServiceVersionMapper digitalServiceVersionMapper;
+
+    private final RoleService roleService;
+
+    private final WorkspaceService workspaceService;
+
+    private final UserWorkspaceRepository userWorkspaceRepository;
+
+    private final OrganizationRepository organizationRepository;
+
+    private final InDatacenterRepository inDatacenterRepository;
+
+    private final InPhysicalEquipmentRepository inPhysicalEquipmentRepository;
+
+    private final InApplicationRepository inApplicationRepository;
+
+    private final InVirtualEquipmentRepository inVirtualEquipmentRepository;
+
+    private final InAiParameterRepository inAiParameterRepository;
+
+    private final InAiInfrastructureRepository inAiInfrastructureRepository;
+
     private DigitalServiceLinkRepository digitalServiceLinkRepository;
     @Value("${batch.local.working.folder.base.path:}")
     private String localWorkingPath;
-    @Autowired
+
     private DigitalServiceVersionRepository digitalServiceVersionRepository;
 
 

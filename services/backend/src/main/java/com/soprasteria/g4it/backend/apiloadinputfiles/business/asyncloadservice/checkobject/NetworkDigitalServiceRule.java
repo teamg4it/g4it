@@ -8,14 +8,13 @@
 
 package com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.checkobject;
 
-import com.soprasteria.g4it.backend.apidigitalservice.business.DigitalServiceReferentialService;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceType;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.referential.NetworkTypeRef;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.NetworkTypeRefRepository;
 import com.soprasteria.g4it.backend.common.model.LineError;
 import com.soprasteria.g4it.backend.common.utils.Constants;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InPhysicalEquipmentRest;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
@@ -25,14 +24,12 @@ import java.util.Locale;
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class NetworkDigitalServiceRule extends AbstractDigitalServiceRule {
 
-    @Autowired
-    MessageSource messageSource;
-    @Autowired
-    DigitalServiceReferentialService digitalServiceRefService;
-    @Autowired
-    NetworkTypeRefRepository networkTypeRefRepository;
+
+    private final MessageSource messageSource;
+    private final NetworkTypeRefRepository networkTypeRefRepository;
 
     @Override
     protected void validateSpecificRules(Locale locale, InPhysicalEquipmentRest physicalEquipment, String filename, int line, List<LineError> errors) {

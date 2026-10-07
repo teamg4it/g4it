@@ -16,39 +16,40 @@ import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
 import com.soprasteria.g4it.backend.apiuser.business.WorkspaceService;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
+import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-@NoArgsConstructor
+@AllArgsConstructor
 public class InventoryDeleteService {
 
     /**
      * Repository to access inventory data.
      */
-    @Autowired
-    private InventoryRepository inventoryRepository;
+    
+    private final InventoryRepository inventoryRepository;
 
     /**
      * The workspace service.
      */
-    @Autowired
-    private WorkspaceService workspaceService;
+    
+    private final WorkspaceService workspaceService;
 
     /**
      * Inventory Indicator Service
      */
-    @Autowired
-    private InventoryIndicatorService inventoryIndicatorService;
-    @Autowired
-    private InDatacenterRepository inDatacenterRepository;
-    @Autowired
-    private InPhysicalEquipmentRepository inPhysicalEquipmentRepository;
-    @Autowired
-    private InVirtualEquipmentRepository inVirtualEquipmentRepository;
-    @Autowired
-    private InApplicationRepository inApplicationRepository;
+    
+    private final InventoryIndicatorService inventoryIndicatorService;
+    
+    private final InDatacenterRepository inDatacenterRepository;
+    
+    private final InPhysicalEquipmentRepository inPhysicalEquipmentRepository;
+    
+    private final InVirtualEquipmentRepository inVirtualEquipmentRepository;
+    
+    private final InApplicationRepository inApplicationRepository;
 
 
     /**

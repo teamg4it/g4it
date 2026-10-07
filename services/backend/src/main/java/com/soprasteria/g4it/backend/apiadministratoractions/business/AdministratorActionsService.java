@@ -18,6 +18,7 @@ import com.soprasteria.g4it.backend.apiuser.repository.WorkspaceRepository;
 import com.soprasteria.g4it.backend.common.task.modeldb.Task;
 import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
 import com.soprasteria.g4it.backend.server.gen.api.dto.AllEvaluationStatusRest;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,22 +29,19 @@ import java.util.Optional;
 
 @Service
 @Slf4j
+@AllArgsConstructor
 public class AdministratorActionsService {
 
-    @Autowired
-    EvaluatingService evaluatingService;
 
-    @Autowired
-    DigitalServiceRepository digitalServiceRepository;
+    private final EvaluatingService evaluatingService;
 
-    @Autowired
-    WorkspaceRepository workspaceRepository;
+    private final DigitalServiceRepository digitalServiceRepository;
 
-    @Autowired
-    InPhysicalEquipmentRepository physicalEquipmentRepository;
+    private final WorkspaceRepository workspaceRepository;
 
-    @Autowired
-    TaskRepository taskRepository;
+    private final InPhysicalEquipmentRepository physicalEquipmentRepository;
+
+    private final TaskRepository taskRepository;
 
     public AllEvaluationStatusRest evaluateAllDigitalServices() {
         List<DigitalService> digitalServices = digitalServiceRepository.findAll();

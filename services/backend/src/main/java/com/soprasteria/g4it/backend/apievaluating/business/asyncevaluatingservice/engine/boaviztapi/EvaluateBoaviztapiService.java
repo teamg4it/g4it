@@ -17,16 +17,18 @@ import com.soprasteria.g4it.backend.exception.ExternalApiException;
 import com.soprasteria.g4it.backend.external.boavizta.business.BoaviztapiService;
 import com.soprasteria.g4it.backend.external.boavizta.model.response.BoaImpactRest;
 import com.soprasteria.g4it.backend.external.boavizta.model.response.BoaResponseRest;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
 @Service
+@AllArgsConstructor
 public class EvaluateBoaviztapiService {
 
-    @Autowired
-    private BoaviztapiService boaviztapiService;
+
+    private final BoaviztapiService boaviztapiService;
 
     /**
      * Evaluate a virtual equipment with boaviztapi

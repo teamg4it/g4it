@@ -32,6 +32,7 @@ import com.soprasteria.g4it.backend.common.task.modeldb.Task;
 import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
 import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -48,45 +49,46 @@ import java.util.concurrent.CompletableFuture;
 
 @Service
 @Slf4j
+@AllArgsConstructor
 public class EvaluatingService {
 
-    @Autowired
-    WorkspaceService workspaceService;
 
-    @Autowired
-    TaskRepository taskRepository;
+    private final WorkspaceService workspaceService;
 
-    @Autowired
-    InventoryRepository inventoryRepository;
 
-    @Autowired
-    DigitalServiceRepository digitalServiceRepository;
+    private final TaskRepository taskRepository;
 
-    @Autowired
-    DigitalServiceVersionRepository digitalServiceVersionRepository;
 
-    @Autowired
-    UserRepository userRepository;
-    @Autowired
+    private final InventoryRepository inventoryRepository;
+
+
+    private final DigitalServiceRepository digitalServiceRepository;
+
+
+    private final DigitalServiceVersionRepository digitalServiceVersionRepository;
+
+
+    private final UserRepository userRepository;
+
     @Qualifier("taskExecutorEvaluation")
-    TaskExecutor taskExecutor;
+    private final TaskExecutor taskExecutor;
 
-    @Autowired
-    CriteriaService criteriaService;
 
-    @Autowired
-    ExportService exportService;
-    @Autowired
-    AuthService authService;
+    private final CriteriaService criteriaService;
+
+
+    private final ExportService exportService;
+
+    private final AuthService authService;
 
     /**
      * Async Service where is executed the evaluation
      */
-    @Autowired
-    AsyncEvaluatingService asyncEvaluatingService;
 
-    @Autowired
-    DigitalServiceVersionService digitalServiceVersionService;
+    private final AsyncEvaluatingService asyncEvaluatingService;
+
+
+    private final DigitalServiceVersionService digitalServiceVersionService;
 
     /**
      * Evaluating an inventory
