@@ -67,7 +67,7 @@ export class DigitalServicesCompareVersionsComponent implements OnInit {
                 });
         });
 
-        this.getDigitalService();
+        void this.getDigitalService();
     }
 
     async getDigitalService(): Promise<void> {

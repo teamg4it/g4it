@@ -98,7 +98,7 @@ export class OrganizationsComponent implements OnInit {
             );
 
             if (this.notOrganizationAdminInSome) {
-                this.getDomainOrganizationsList();
+                void this.getDomainOrganizationsList();
             }
         });
 
@@ -217,7 +217,7 @@ export class OrganizationsComponent implements OnInit {
             this.init(this.organization?.name);
             this.userDataService.fetchUserInfo().pipe(take(1)).subscribe();
             if (this.notOrganizationAdminInSome) {
-                this.getDomainOrganizationsList();
+                void this.getDomainOrganizationsList();
             }
         });
     }

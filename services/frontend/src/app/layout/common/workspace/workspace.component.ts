@@ -23,6 +23,7 @@ import { FocusTrapModule } from "primeng/focustrap";
 import { InputTextModule } from "primeng/inputtext";
 import { SelectModule } from "primeng/select";
 import { firstValueFrom, take } from "rxjs";
+import { AutofocusDirective } from "src/app/core/directives/auto-focus.directive";
 import { DomainOrganizations } from "src/app/core/interfaces/administration.interfaces";
 import { CustomSidebarMenuForm } from "src/app/core/interfaces/sidebar-menu-form.interface";
 import { User } from "src/app/core/interfaces/user.interfaces";
@@ -48,6 +49,7 @@ import { FormNavComponent } from "../form-nav/form-nav.component";
         InputTextModule,
         SelectModule,
         TranslatePipe,
+        AutofocusDirective,
     ],
 })
 export class WorkspaceComponent implements OnInit {
@@ -118,7 +120,7 @@ export class WorkspaceComponent implements OnInit {
     });
 
     ngOnInit() {
-        this.getDomainOrganizationsList();
+        void this.getDomainOrganizationsList();
         this.selectTab(0);
 
         this.spaceForm.get("organization")?.valueChanges.subscribe((value) => {
@@ -236,7 +238,7 @@ export class WorkspaceComponent implements OnInit {
                                 page === Constants.ENDPOINTS.digitalServices ||
                                 page === Constants.ENDPOINTS.inventories
                             ) {
-                                this.router.navigateByUrl(
+                                void this.router.navigateByUrl(
                                     `organizations/${organization.name}/workspaces/${res.id}/${page}`,
                                 );
                             } else {
@@ -262,10 +264,10 @@ export class WorkspaceComponent implements OnInit {
                                 }
                                 // Reload current route by navigating away and back
                                 const currentUrl = this.router.url;
-                                this.router
+                                void this.router
                                     .navigateByUrl("/", { skipLocationChange: true })
                                     .then(() => {
-                                        this.router.navigateByUrl(currentUrl);
+                                        void this.router.navigateByUrl(currentUrl);
                                     });
                             }
                         });

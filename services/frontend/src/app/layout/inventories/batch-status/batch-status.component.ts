@@ -63,7 +63,7 @@ export class BatchStatusComponent implements OnInit {
     }
 
     downloadFile() {
-        this.fileSystemBusinessService.downloadFile(
+        void this.fileSystemBusinessService.downloadFile(
             this.taskId(),
             this.selectedOrganization,
             this.selectedWorkspace,
@@ -103,7 +103,7 @@ export class BatchStatusComponent implements OnInit {
     }
 
     getTaskDetail(taskId: string) {
-        this.fileSystemBusinessService.getTaskDetail(taskId);
+        void this.fileSystemBusinessService.getTaskDetail(taskId);
     }
 
     isNumeric(value: string) {

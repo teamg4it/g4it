@@ -171,7 +171,7 @@ export class TopHeaderComponent implements OnInit {
                                 ? this.openDeclarationsInNewTab(
                                       Constants.USEFUL_INFORMATION,
                                   )
-                                : this.router.navigate(["/useful-information"]);
+                                : void this.router.navigate(["/useful-information"]);
                             this.dialogVisible = false;
                         },
                     },
@@ -183,7 +183,7 @@ export class TopHeaderComponent implements OnInit {
                         command: () => {
                             this.isSharedDs()
                                 ? this.openDeclarationsInNewTab(Constants.DECLARATIONS)
-                                : this.router.navigate(["/declarations"]);
+                                : void this.router.navigate(["/declarations"]);
                             this.dialogVisible = false;
                         },
                     },
@@ -224,7 +224,7 @@ export class TopHeaderComponent implements OnInit {
                 label: undefined,
                 link: "",
                 command: () => {
-                    this.router.navigate(["/useful-information"]);
+                    void this.router.navigate(["/useful-information"]);
                 },
                 items: [
                     {
@@ -238,7 +238,7 @@ export class TopHeaderComponent implements OnInit {
                                 ? this.openDeclarationsInNewTab(
                                       Constants.USEFUL_INFORMATION,
                                   )
-                                : this.router.navigate(["/useful-information"]);
+                                : void this.router.navigate(["/useful-information"]);
                         },
                     },
                 ],
@@ -247,7 +247,7 @@ export class TopHeaderComponent implements OnInit {
                 label: undefined,
                 link: "",
                 command: () => {
-                    this.router.navigate(["/declarations"]);
+                    void this.router.navigate(["/declarations"]);
                 },
                 items: [
                     {
@@ -258,7 +258,7 @@ export class TopHeaderComponent implements OnInit {
                         command: () => {
                             this.isSharedDs()
                                 ? this.openDeclarationsInNewTab(Constants.DECLARATIONS)
-                                : this.router.navigate(["/declarations"]);
+                                : void this.router.navigate(["/declarations"]);
                         },
                     },
                 ],
@@ -408,7 +408,7 @@ export class TopHeaderComponent implements OnInit {
         this.translate.use(lang);
         localStorage.setItem("lang", lang);
         document.querySelector("html")!.setAttribute("lang", lang);
-        this.router.navigate([], {
+        void this.router.navigate([], {
             skipLocationChange: true,
             queryParamsHandling: "merge",
         });

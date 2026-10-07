@@ -28,7 +28,7 @@ import { GlobalStoreService } from "src/app/core/store/global.store";
     imports: [CommonModule, ButtonModule, TranslateModule, DecimalsPipe, IntegerPipe],
 })
 export class ImpactButtonComponent implements OnInit {
-    private globalStore = inject(GlobalStoreService);
+    private readonly globalStore = inject(GlobalStoreService);
     @Input() impact: string = "...";
     @Input() impactText: string = "Other";
     @Input() impactUnite: string = "";

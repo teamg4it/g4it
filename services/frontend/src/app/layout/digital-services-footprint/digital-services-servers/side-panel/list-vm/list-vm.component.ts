@@ -109,11 +109,11 @@ export class PanelListVmComponent {
     }
 
     previousStep() {
-        this.router.navigate(["../panel-parameters"], { relativeTo: this.route });
+        void this.router.navigate(["../panel-parameters"], { relativeTo: this.route });
     }
 
-    async submitServer() {
-        this.digitalServiceBusiness.submitServerForm(
+    async submitServer(): Promise<void> {
+        await this.digitalServiceBusiness.submitServerForm(
             this.digitalServiceStore.server(),
             this.digitalServiceStore.digitalService(),
         );

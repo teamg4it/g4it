@@ -21,7 +21,7 @@ export class SharedAccessGuard {
         const id = route.paramMap.get("id");
 
         if (!token || !id) {
-            this.router.navigateByUrl("something-went-wrong/404");
+            void this.router.navigateByUrl("something-went-wrong/404");
             return of(false);
         }
 

@@ -93,7 +93,7 @@ export class DigitalServicesNetworksComponent implements OnInit {
     ) {}
 
     ngOnInit() {
-        this.asyncInit();
+        void this.asyncInit();
     }
     private async asyncInit() {
         this.digitalService = await firstValueFrom(
