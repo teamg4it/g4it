@@ -19,7 +19,7 @@ As a G4IT user, I want to access to a welcome page when I access to G4IT. In ord
 
 ## Mockup
 
-In Welcome page, it has "Create new Workspace" button is available. And under Module access we have two cards such as "Inventories" and "Digital Services" both with description and navigation button.
+In Welcome page, it has "Create new Workspace" button is available. And under Module access we have three cards such as "Inventories", "Digital Services" and "EcoMind AI" with description and navigation button.
 
 A new button (Home button) is available in the left pannel when we access to the page.
 
@@ -41,7 +41,7 @@ A new button (Home button) is available in the left pannel when we access to the
 
 {{% /expand %}}
 
-As a projet team member:
+As a project team member:
 When I don't have access to the inventories module associated to the selected workspace
 Then the icon of the module is in grey and the button is disabled.
 
@@ -53,6 +53,17 @@ Then the icon of the module is in grey and the button is disabled.
 
 ![Welcome page visualization](../images/welcome_page_disabled_digital_services.png)
 
+
+As a user without access to the EcoMind AI module:
+When I don't have access to the EcoMind AI module associated to the selected workspace
+Then the icon of the module is in grey and there is "Request access" button which will redirect to mail. User can mail to `support.g4it@soprasteria.com` to request access to EcoMind AI module.
+
+For Sopra Steria organization, initially Inventory module is disabled. Only Digital Services module is enabled. And for other organizations, Inventory and Digital Service modules are enabled.
+When users don't have access to the Inventory AI module associated to the selected workspace
+Then the icon of the module is in grey and there is "Request access" button which will redirect to mail. User can mail to `support.g4it@soprasteria.com` to request access to Inventory module.
+
+![Welcome page visualization](../images/welcome_page_disabled_inventory.png)
+
 ## Accessibility
 
-On Tabulation, focusing into first focusable element i.e, "Create New Workspace". Then "Inventories" and "Digital Services" if these buttons are enabled. And finally into footer parts like "Useful information", "G4IT Github" and "G4IT documentation".
+On Tabulation, focusing into first focusable element i.e, "Create New Workspace". Then "Inventories", "Digital Services" and "EcoMind AI" if these buttons are enabled. And finally into footer parts like "Useful information", "G4IT Github" and "G4IT documentation".

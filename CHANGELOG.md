@@ -6,7 +6,6 @@
 
 - 2329 | Digital Services - Add new AI server type into G4IT
 - 2338 | Integrate EcoLogits Calculation Engine into G4IT
-- 2329 | Add new AI server type into G4IT
 - 2335 | Addition of a new import file dedicated to AI services
 - 2339 | Calculating the impact of AI services on an inventory
 - 2337 | Update Data Model documentation to version 3.2.0 for AI services import
