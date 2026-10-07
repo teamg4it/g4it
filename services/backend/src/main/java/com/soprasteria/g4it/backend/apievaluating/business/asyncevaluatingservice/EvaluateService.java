@@ -142,6 +142,19 @@ public class EvaluateService {
      */
     public void doEvaluate(final Context context, final Task task, Path exportDirectory) {
 
+        // Validate that the export directory stays within the expected local working
+        // directory, protecting against path traversal before performing local disk
+        // access. Uses lexical normalization only (no filesystem access such as
+        // canonicalization), so the validation itself never touches disk with the
+        // untrusted value prior to the boundary check.
+        Path safeExportDirectory = exportDirectory.normalize();
+        Path baseDir = Path.of(localWorkingFolder).normalize();
+        if (!safeExportDirectory.startsWith(baseDir)) {
+            log.error("Invalid export directory path: {}", exportDirectory);
+            throw new AsyncTaskException(String.format("%s - Invalid export directory path '%s'", context.log(), exportDirectory));
+        }
+        exportDirectory = safeExportDirectory;
+
         Map<String, List<InVirtualEquipment>> vmsByPhysical = buildVmsByPhysicalMap(context);
 
         InventoryContext inventoryContext = resolveInventoryContext(task, context);

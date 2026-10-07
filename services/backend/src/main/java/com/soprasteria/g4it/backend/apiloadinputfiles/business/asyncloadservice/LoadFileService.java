@@ -84,28 +84,22 @@ public class LoadFileService {
     /**
      * Validates that the given converted file's path stays within the expected
      * local working directory, protecting against path traversal before performing
-     * local disk access (read). Uses canonical path resolution (which also resolves
-     * symlinks) rather than simple normalization, for a stronger sanitization guarantee
-     * recognized by standard Path Traversal remediation patterns.
+     * local disk access (read). Uses lexical normalization only (no filesystem
+     * access such as canonicalization), so the validation itself never touches
+     * disk with the untrusted value prior to the boundary check.
      *
      * @param convertedFile the file to validate
      * @param context       the context, used for error logging
-     * @return the validated, canonicalized file
+     * @return the validated file
      */
     private File validateConvertedFile(final File convertedFile, final Context context) {
-        try {
-            File canonicalFile = convertedFile.getCanonicalFile();
-            String canonicalBase = new File(localWorkingFolder).getCanonicalPath();
-            String canonicalPath = canonicalFile.getPath();
-            if (!canonicalPath.equals(canonicalBase) && !canonicalPath.startsWith(canonicalBase + File.separator)) {
-                throw new AsyncTaskException(String.format("%s - Invalid converted file path '%s'",
-                        context.log(), convertedFile.getName()));
-            }
-            return canonicalFile;
-        } catch (IOException e) {
-            throw new AsyncTaskException(String.format("%s - Cannot resolve converted file path '%s'",
-                    context.log(), convertedFile.getName()), e);
+        Path safePath = convertedFile.toPath().normalize();
+        Path baseDir = Path.of(localWorkingFolder).normalize();
+        if (!safePath.startsWith(baseDir)) {
+            throw new AsyncTaskException(String.format("%s - Invalid converted file path '%s'",
+                    context.log(), convertedFile.getName()));
         }
+        return safePath.toFile();
     }
 
     /**
@@ -198,23 +192,18 @@ public class LoadFileService {
         // Validate the rejected output path stays within the expected working
         // directory, protecting against path traversal via a crafted pathId
         // (e.g. digitalServiceVersionUid) before performing local disk access.
-        File rejectedDirFile;
-        File rejectedFile;
-        try {
-            String canonicalRejectedBase = new File(localWorkingFolder, REJECTED).getCanonicalPath();
-            String canonicalRejectedDir = new File(canonicalRejectedBase, pathId).getCanonicalPath();
-            if (!canonicalRejectedDir.equals(canonicalRejectedBase) && !canonicalRejectedDir.startsWith(canonicalRejectedBase + File.separator)) {
-                throw new AsyncTaskException(String.format("%s - Invalid rejected folder path for pathId '%s'", context.log(), pathId));
-            }
-            String canonicalRejectedFile = new File(canonicalRejectedDir, rejectedFileName).getCanonicalPath();
-            if (!canonicalRejectedFile.startsWith(canonicalRejectedDir + File.separator)) {
-                throw new AsyncTaskException(String.format("%s - Invalid rejected file path '%s'", context.log(), rejectedFileName));
-            }
-            rejectedDirFile = new File(canonicalRejectedDir);
-            rejectedFile = new File(canonicalRejectedFile);
-        } catch (IOException e) {
-            throw new AsyncTaskException(String.format("%s - Invalid rejected path for pathId '%s'", context.log(), pathId), e);
+        // Pure lexical normalization + startsWith checks (no filesystem access).
+        Path rejectedBaseDir = Path.of(localWorkingFolder, REJECTED).normalize();
+        Path rejectedDir = rejectedBaseDir.resolve(pathId).normalize();
+        if (!rejectedDir.startsWith(rejectedBaseDir)) {
+            throw new AsyncTaskException(String.format("%s - Invalid rejected folder path for pathId '%s'", context.log(), pathId));
         }
+        Path rejectedFilePath = rejectedDir.resolve(rejectedFileName).normalize();
+        if (!rejectedFilePath.startsWith(rejectedDir)) {
+            throw new AsyncTaskException(String.format("%s - Invalid rejected file path '%s'", context.log(), rejectedFileName));
+        }
+        File rejectedDirFile = rejectedDir.toFile();
+        File rejectedFile = rejectedFilePath.toFile();
 
         try {
             Files.createDirectories(rejectedDirFile.toPath());
