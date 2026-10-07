@@ -143,5 +143,22 @@ RND ->> front: Click on any download template button in the loading files view
 front ->> back: GET /api/{organization}/{workspace}/templates-files/{template}
 back --> azure: Get the selected template
 back ->> front: Send the select template
+front ->> back: GET /api/{organization}/{workspace}/is-workspace-specific
+
+{{< /mermaid >}}
+
+### Check Workspace Specific file uploaded in Selected Workspace
+
+{{< mermaid >}}
+sequenceDiagram
+actor RND as Sustainable IT Leader
+participant front as G4IT Front-End
+participant back as G4IT Back-End
+participant azure as Azure file storage
+
+RND ->> front: Click on new Inventory or load files button
+front ->> back: GET /api/{organization}/{workspace}/is-workspace-specific
+back --> azure: Check the workspace specific settings uploaded in workspace
+back ->> front: Send the boolean 
 
 {{< /mermaid >}}
