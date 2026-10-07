@@ -1,3 +1,4 @@
+import { AsyncPipe } from "@angular/common";
 import {
     Component,
     computed,
@@ -8,28 +9,21 @@ import {
     Output,
 } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { TranslateService, TranslatePipe } from "@ngx-translate/core";
+import { TranslatePipe, TranslateService } from "@ngx-translate/core";
 import { ConfirmationService, MessageService } from "primeng/api";
+import { Button } from "primeng/button";
+import { CardModule } from "primeng/card";
+import { ConfirmPopupModule } from "primeng/confirmpopup";
 import { DigitalService } from "src/app/core/interfaces/digital-service.interfaces";
 import { UserService } from "src/app/core/service/business/user.service";
 import { shouldShowExpiryMessage } from "src/app/core/service/mapper/renew-time";
-import { CardModule } from "primeng/card";
-import { Button } from "primeng/button";
-import { AsyncPipe } from "@angular/common";
-import { ConfirmPopupModule } from "primeng/confirmpopup";
 
 @Component({
     selector: "app-digital-services-item",
     templateUrl: "./digital-services-item.component.html",
     providers: [MessageService, ConfirmationService],
     standalone: true,
-    imports: [
-    CardModule,
-    Button,
-    ConfirmPopupModule,
-    AsyncPipe,
-    TranslatePipe
-],
+    imports: [CardModule, Button, ConfirmPopupModule, AsyncPipe, TranslatePipe],
 })
 export class DigitalServicesItemComponent implements OnInit {
     digitalService = input.required<DigitalService>({});
@@ -61,11 +55,11 @@ export class DigitalServicesItemComponent implements OnInit {
 
     goToDigitalServiceFootprint(uid: string) {
         if (this.isAi) {
-            this.router.navigate([`${uid}/footprint/${this.firstFootprintTab}`], {
+            void this.router.navigate([`${uid}/footprint/${this.firstFootprintTab}`], {
                 relativeTo: this.route,
             });
         } else {
-            this.router.navigate(
+            void this.router.navigate(
                 [`../digital-service-version/${uid}/footprint/${this.firstFootprintTab}`],
                 {
                     relativeTo: this.route,
@@ -86,7 +80,7 @@ export class DigitalServicesItemComponent implements OnInit {
             )} ${name} ?
             ${this.translate.instant("digital-services.popup.delete-text")}`,
             icon: "pi pi-exclamation-triangle",
-            accept: async () => {
+            accept: () => {
                 this.deleteUid.emit(uid);
             },
         });

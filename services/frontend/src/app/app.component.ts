@@ -43,7 +43,7 @@ export class AppComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.initializeAsync();
+        void this.initializeAsync();
     }
 
     private async initializeAsync(): Promise<void> {

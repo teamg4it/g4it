@@ -81,7 +81,7 @@ export class DigitalServicesFootprintComponent
     ngOnInit(): void {
         this.route.paramMap.subscribe((params) => {
             this.dsvUid = params.get("digitalServiceVersionId") ?? "";
-            this.asyncInit(this.dsvUid);
+            void this.asyncInit(this.dsvUid);
         });
     }
     private async asyncInit(uid: string) {
@@ -164,7 +164,7 @@ export class DigitalServicesFootprintComponent
         }
         this.global.setLoading(false);
 
-        this.digitalBusinessService.initCountryMap();
+        await this.digitalBusinessService.initCountryMap();
     }
 
     ngAfterViewInit() {
@@ -180,7 +180,7 @@ export class DigitalServicesFootprintComponent
 
     onTabChange(tab: any) {
         if (tab?.routerLink) {
-            this.router.navigate([tab.routerLink], { relativeTo: this.route });
+            void this.router.navigate([tab.routerLink], { relativeTo: this.route });
         }
     }
 
@@ -257,8 +257,8 @@ export class DigitalServicesFootprintComponent
             this.digitalServicesData.update(this.digitalService),
         );
 
-        this.digitalServiceStore.initInPhysicalEquipments(this.dsvUid);
-        this.digitalServiceStore.initInVirtualEquipments(this.dsvUid);
+        void this.digitalServiceStore.initInPhysicalEquipments(this.dsvUid);
+        void this.digitalServiceStore.initInVirtualEquipments(this.dsvUid);
         this.updateTabItems();
     }
 }

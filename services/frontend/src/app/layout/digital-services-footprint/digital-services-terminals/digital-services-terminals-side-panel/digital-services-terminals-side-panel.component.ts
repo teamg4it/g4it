@@ -78,7 +78,7 @@ export class DigitalServicesTerminalsSidePanelComponent implements OnInit {
     ) {}
 
     ngOnInit() {
-        this.onInitData();
+        void this.onInitData();
     }
 
     private async onInitData() {
@@ -175,12 +175,12 @@ export class DigitalServicesTerminalsSidePanelComponent implements OnInit {
         this.sidebarVisibleChange.emit(false);
     }
 
-    async submitFormData() {
+    submitFormData(): void {
         this.updateTerminals.emit(this.terminal);
         this.close();
     }
 
-    async deleteTerminal() {
+    deleteTerminal(): void {
         this.deleteTerminals.emit(this.terminal);
         this.close();
     }

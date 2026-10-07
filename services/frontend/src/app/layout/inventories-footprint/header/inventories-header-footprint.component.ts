@@ -70,7 +70,7 @@ export class InventoriesHeaderFootprintComponent implements OnInit, OnDestroy {
         this.onInitData();
     }
 
-    private async onInitData(): Promise<void> {
+    private onInitData(): void {
         this.userService.currentOrganization$
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe((organization: Organization) => {
@@ -84,7 +84,7 @@ export class InventoriesHeaderFootprintComponent implements OnInit, OnDestroy {
     }
 
     backButton() {
-        this.router.navigateByUrl(this.changePageToInventories());
+        void this.router.navigateByUrl(this.changePageToInventories());
     }
 
     changePageToInventories() {
@@ -94,7 +94,7 @@ export class InventoriesHeaderFootprintComponent implements OnInit, OnDestroy {
 
     download(event: Event) {
         this.downloadInProgress = true;
-        this.downloadFile();
+        void this.downloadFile();
     }
 
     async downloadFile() {

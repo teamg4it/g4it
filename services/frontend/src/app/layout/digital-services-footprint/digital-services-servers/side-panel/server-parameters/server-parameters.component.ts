@@ -342,10 +342,10 @@ export class PanelServerParametersComponent {
             totalVram: undefined,
         });
 
-        this.router.navigate(["../panel-create"], { relativeTo: this.route });
+        void this.router.navigate(["../panel-create"], { relativeTo: this.route });
     }
 
-    async nextStep() {
+    async nextStep(): Promise<void> {
         const server = this.server();
 
         server.host = this.current.host;
@@ -353,13 +353,13 @@ export class PanelServerParametersComponent {
 
         this.digitalServiceStore.setServer(server);
         if (this.server().mutualizationType === "Dedicated") {
-            this.digitalServiceBusiness.submitServerForm(
+            await this.digitalServiceBusiness.submitServerForm(
                 this.server(),
                 this.digitalServiceStore.digitalService(),
             );
             this.close();
         } else if (this.server().mutualizationType === "Shared") {
-            this.router.navigate(["../panel-vm"], { relativeTo: this.route });
+            void this.router.navigate(["../panel-vm"], { relativeTo: this.route });
         }
     }
 

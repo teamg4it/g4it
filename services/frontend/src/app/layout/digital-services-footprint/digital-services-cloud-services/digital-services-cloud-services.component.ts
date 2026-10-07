@@ -74,11 +74,11 @@ export class DigitalServicesCloudServicesComponent implements OnInit {
 
     ngOnInit(): void {
         this.digitalServiceUid = this.router.url.split("/")[6];
-        this.getCloudServices();
+        void this.getCloudServices();
     }
 
     async getCloudServices() {
-        this.digitalServiceStore.initInVirtualEquipments(this.digitalServiceUid);
+        await this.digitalServiceStore.initInVirtualEquipments(this.digitalServiceUid);
     }
 
     changeSidebar(event: boolean) {

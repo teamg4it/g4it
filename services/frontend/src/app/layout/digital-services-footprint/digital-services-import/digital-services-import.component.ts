@@ -151,7 +151,7 @@ export class DigitalServicesImportComponent implements OnInit, OnDestroy {
                 this.selectedWorkspace = workspace.name;
             });
         this.getTemplates();
-        this.getDigitalServiceStatus();
+        void this.getDigitalServiceStatus();
     }
 
     focusFirstTemplate() {
@@ -212,7 +212,7 @@ export class DigitalServicesImportComponent implements OnInit, OnDestroy {
     }
 
     downloadTemplateFile(selectedFileName: string) {
-        this.templateFileService.getdownloadTemplateFile(selectedFileName);
+        void this.templateFileService.getdownloadTemplateFile(selectedFileName);
     }
 
     async getDigitalServiceStatus() {
@@ -242,7 +242,7 @@ export class DigitalServicesImportComponent implements OnInit, OnDestroy {
                 lastTaskStatus,
             );
         if (!this.toReloadDigitalService) {
-            this.callInputApis();
+            void this.callInputApis();
             // to update ds in store to run enableCalcul signal - fix calculate button issue for update and calculate date
             this.digitalServiceStore.setDigitalService(ds);
         }
@@ -263,8 +263,8 @@ export class DigitalServicesImportComponent implements OnInit, OnDestroy {
             this.inDatacentersService.get(this.digitalServicesId),
         );
         this.digitalServiceStore.setInDatacenters(inDatacenters);
-        this.digitalServiceStore.initInPhysicalEquipments(this.digitalServicesId);
-        this.digitalServiceStore.initInVirtualEquipments(this.digitalServicesId);
+        void this.digitalServiceStore.initInPhysicalEquipments(this.digitalServicesId);
+        void this.digitalServiceStore.initInVirtualEquipments(this.digitalServicesId);
     }
 
     getClassStatus(status: string, isCss: boolean): string {
@@ -297,7 +297,7 @@ export class DigitalServicesImportComponent implements OnInit, OnDestroy {
         if (event === "submit") {
             clearInterval(this.digitalServiceInterval);
             await this.getDigitalServiceStatus();
-            this.loopLoadDigitalServices();
+            void this.loopLoadDigitalServices();
         }
     }
 
@@ -362,7 +362,7 @@ export class DigitalServicesImportComponent implements OnInit, OnDestroy {
     }
 
     downloadFileDs(taskId: string) {
-        this.fileSystemBusinessService.downloadFile(
+        void this.fileSystemBusinessService.downloadFile(
             taskId,
             this.selectedOrganization,
             this.selectedWorkspace,
@@ -371,7 +371,7 @@ export class DigitalServicesImportComponent implements OnInit, OnDestroy {
     }
 
     getTaskDetail(taskId: string) {
-        this.fileSystemBusinessService.getTaskDetail(taskId);
+        void this.fileSystemBusinessService.getTaskDetail(taskId);
     }
 
     ngOnDestroy() {

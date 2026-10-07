@@ -8,6 +8,7 @@
         <div class="space-form">
             <h2>{{ "common.workspace.create" | translate }}</h2>
             <p-button
+                appAutofocus
                 (onClick)="closeSidebar()"
                 [link]="true"
                 [rounded]="true"
@@ -51,7 +52,6 @@
                                 [placeholder]="spaceDetail['placeholder']"
                                 [formControlName]="spaceDetail['name']"
                                 class="mt-2"
-                                autofocus="true"
                             />
                             @if (
                                 spaceForm.get(spaceDetail["name"])?.errors?.["duplicate"]
@@ -103,7 +103,6 @@
                                 optionLabel="name"
                                 name="organizationName"
                                 optionValue="id"
-                                autofocus="true"
                             />
                             @if (
                                 spaceForm.get(spaceDetail["name"])?.errors?.[

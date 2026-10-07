@@ -79,7 +79,7 @@ export class DigitalServiceManageVersionTableComponent implements OnInit {
     redirectToVersionDetails(version: string, calculationDone?: boolean): void {
         let [_, _1, _2, _3, _4, moduleType] = this.router.url.split("/");
         if (moduleType === "eco-mind-ai") {
-            this.router.navigate(
+            void this.router.navigate(
                 [
                     "eco-mind-ai",
                     version,
@@ -90,7 +90,7 @@ export class DigitalServiceManageVersionTableComponent implements OnInit {
             );
             return;
         }
-        this.router.navigate(
+        void this.router.navigate(
             [
                 "digital-service-version",
                 version,
@@ -103,7 +103,7 @@ export class DigitalServiceManageVersionTableComponent implements OnInit {
     compareVersions(): void {
         if (this.selectedVersions.length === 2) {
             // Implement your comparison logic here
-            this.router.navigate(["../compare-versions"], {
+            void this.router.navigate(["../compare-versions"], {
                 relativeTo: this.route,
                 queryParams: {
                     version1: this.selectedVersions[0],
@@ -169,7 +169,7 @@ export class DigitalServiceManageVersionTableComponent implements OnInit {
                             const activeVersion = this.versionData.find(
                                 (v) => v.versionType === "active",
                             )?.digitalServiceVersionUid!;
-                            this.router.navigate(
+                            void this.router.navigate(
                                 [
                                     "digital-service-version",
                                     activeVersion,

@@ -55,7 +55,7 @@ export class CustomAuthService {
                         const isLoggedIn: boolean = !!keycloak.authenticated;
                         if (!isLoggedIn) {
                             // Initialize on demand if needed
-                            this.init();
+                            void this.init();
                         }
                     }
                 });

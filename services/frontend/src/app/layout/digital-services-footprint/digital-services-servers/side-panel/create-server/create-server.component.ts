@@ -101,7 +101,7 @@ export class PanelCreateServerComponent implements OnInit {
         this.server.name = this.serverForm.value.name!;
 
         this.digitalServiceStore.setServer(this.server);
-        this.router.navigate(["../panel-parameters"], { relativeTo: this.route });
+        void this.router.navigate(["../panel-parameters"], { relativeTo: this.route });
     }
 
     close() {

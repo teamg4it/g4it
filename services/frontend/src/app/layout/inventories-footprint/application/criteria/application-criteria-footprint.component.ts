@@ -808,7 +808,7 @@ export class ApplicationCriteriaFootprintComponent
         this.globalStore.setLoading(true);
         setTimeout(() => {
             // Switch view - this triggers the computed signals
-            this.router.navigate(["../", "multi-criteria"], {
+            void this.router.navigate(["../", "multi-criteria"], {
                 relativeTo: this.route,
             });
 
