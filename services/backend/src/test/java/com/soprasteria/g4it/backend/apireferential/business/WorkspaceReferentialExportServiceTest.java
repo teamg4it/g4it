@@ -22,6 +22,8 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -526,12 +528,14 @@ class WorkspaceReferentialExportServiceTest {
         when(matchingItemRepository.findByWorkspaceId(eq(workspaceId), any()))
                 .thenReturn(Page.empty());
 
+        boolean found = false;
+
         try (InputStream inputStream =
                      service.exportReferentialZip(ORG, workspaceId);
-             java.util.zip.ZipInputStream zipInputStream =
-                     new java.util.zip.ZipInputStream(inputStream)) {
+             ZipInputStream zipInputStream =
+                     new ZipInputStream(inputStream)) {
 
-            java.util.zip.ZipEntry entry;
+            ZipEntry entry;
 
             while ((entry = zipInputStream.getNextEntry()) != null) {
                 if ("workspace-referential/itemType.csv".equals(entry.getName())) {
@@ -543,13 +547,15 @@ class WorkspaceReferentialExportServiceTest {
                     assertTrue(csvContent.contains("val1"));
                     assertTrue(csvContent.contains("val2"));
 
-                    return;
+                    found = true;
+                    break;
                 }
             }
-
-            fail("itemType.csv was not found in the ZIP");
         }
-    }
 
+        assertTrue(
+                found,
+                "itemType.csv was not found in the ZIP");
+    }
 
 }
