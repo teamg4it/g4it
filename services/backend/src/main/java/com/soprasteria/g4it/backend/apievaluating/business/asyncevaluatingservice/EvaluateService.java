@@ -596,6 +596,18 @@ public class EvaluateService {
 
     // clean files if empty
     private void cleanEmptyFiles(Path exportDirectory, EvaluateReportBO evaluateReportBO) {
+        // Re-validate the export directory stays within the expected local working
+        // directory before performing local disk access (delete). Lexical
+        // normalization only (no filesystem access), so the check itself never
+        // touches disk with the value prior to the boundary verification.
+        Path safeExportDirectory = exportDirectory.normalize();
+        Path baseDir = Path.of(localWorkingFolder).normalize();
+        if (!safeExportDirectory.startsWith(baseDir)) {
+            log.error("Invalid export directory path: {}", exportDirectory);
+            throw new AsyncTaskException(String.format("Invalid export directory path '%s'", exportDirectory));
+        }
+        exportDirectory = safeExportDirectory;
+
         try {
             if (!evaluateReportBO.isExport()) {
                 Files.deleteIfExists(exportDirectory.resolve(FileType.DATACENTER.getFileName() + Constants.CSV));
