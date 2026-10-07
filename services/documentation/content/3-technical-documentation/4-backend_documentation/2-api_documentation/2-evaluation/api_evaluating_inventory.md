@@ -129,6 +129,37 @@ The calculateApplication method
 of [EvaluateNumEcoEvalService class](https://github.com/G4ITTeam/g4it/blob/main/services/backend/src/main/java/com/soprasteria/g4it/backend/apievaluating/business/asyncevaluatingservice/engine/numecoeval/EvaluateNumEcoEvalService.java)
 from numEcoEval library is used for the traditional virtual equipment.
 
+
+#### AI Service:
+
+AI Service data is retrieved from the `in_aiservices` table for the inventory.
+
+For each AI Service, the environmental impacts are calculated using the
+[EcoLogits calculation engine](https://github.com/mlco2/ecologits-api), which is dedicated to assessing the
+environmental impact of AI services and LLM usage.
+
+The EcoLogits API is called with the AI Service provider, model, output token count, and location when available.
+If no location is provided, the calculation uses the default `WOR` electricity mix zone.
+
+The EcoLogits estimation is requested through the `/estimations` endpoint. The returned impact data is then
+integrated into the inventory evaluation results.
+
+For AI Services, EcoLogits provides the following impact indicators:
+
+- **GWP**: Climate change
+- **ADPe**: Resource use
+- **PE**: Resource use, fossils
+- **WCF**: Water use
+
+The AI Service impacts are evaluated according to the lifecycle mapping used by EcoLogits:
+usage impacts are associated with the `USING` lifecycle step and embodied impacts are associated with
+the `MANUFACTURING` lifecycle step. Distribution is included in the manufacturing impact provided by
+EcoLogits.
+
+If the EcoLogits service returns an error, the error is captured as part of the AI Service evaluation.
+The error does not stop the evaluation of the complete inventory; the corresponding AI Service indicators
+are marked as unavailable/KO and the error is reported in the evaluation output.
+
 ### Models to save indicators
 
 Below you will find the entities used to save the generated indicators in the database.
@@ -138,6 +169,7 @@ Below you will find the entities used to save the generated indicators in the da
 | com/soprasteria/g4it/backend/apiinout/modeldb | OutPhysicalEquipment | [out_physical_equipment](../../db_documentation/information_system_and_digital_service_output_data/information_sytem_output_data/) |
 | com/soprasteria/g4it/backend/apiinout/modeldb | OutVirtualEquipment  | [out_virtual_equipment](../../db_documentation/information_system_and_digital_service_output_data/information_sytem_output_data/)  |
 | com/soprasteria/g4it/backend/apiinout/modeldb | OutApplication       | [out_application](../../db_documentation/information_system_and_digital_service_output_data/information_sytem_output_data/)        |
+| com/soprasteria/g4it/backend/apiinout/modeldb | OutAIService         | [out_aiservice](../../db_documentation/information_system_and_digital_service_output_data/information_sytem_output_data/)        |
 
 These entities are by saved by
 the [SaveService class](https://github.com/G4ITTeam/g4it/blob/main/services/backend/src/main/java/com/soprasteria/g4it/backend/apievaluating/business/asyncevaluatingservice/SaveService.java)

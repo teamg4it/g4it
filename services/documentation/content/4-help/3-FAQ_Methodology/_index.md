@@ -61,6 +61,17 @@ Here the step by step to retrieve the information needed and to integrate them i
 {{% /expand %}}
 
 
+### AI Services environmental impact
+
+{{% expand title="How does G4IT calculate the environmental impact of AI Services with EcoLogits" expanded="false" %}}
+EcoLogits is used by G4IT to estimate the environmental impacts associated with AI Services and Large Language Model (LLM) usage.
+
+The calculation uses information such as the AI service provider, model, number of output tokens and location / electricity mix zone.
+
+Here the step by step information about the EcoLogits calculation engine: [EcoLogits Calculation Engine](7-EcoLogits_Calculation_Engine.md).
+{{% /expand %}}
+
+
 ## Calculate
 
 ### Convert data
@@ -255,6 +266,10 @@ All information is available in [Application](../../2-functional-documentation/g
 
 {{% expand title="Which methodology is used to assess the footprint of exchange on the network" expanded="false" %}}
 All information is available in [Network](../../2-functional-documentation/global_concepts/environmental_footprint_assessment_methodology/uc4_network.md)
+{{% /expand %}}
+
+{{% expand title="Which methodology is used to assess the footprint of an AI service" expanded="false" %}}
+All information is available in [EcoLogits Calculation Engine](../../2-functional-documentation/global_concepts/environmental_footprint_assessment_methodology/ecologits_calculation_engine.md)
 {{% /expand %}}
 
 ## Analyse

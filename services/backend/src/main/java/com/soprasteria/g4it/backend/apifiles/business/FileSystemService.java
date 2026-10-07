@@ -67,17 +67,24 @@ public class FileSystemService {
     private String localWorkingFolder;
 
     private static BufferedReader getBufferedReader(StoredFile file) throws IOException {
-        var isr = new InputStreamReader(Files.newInputStream(file.getPath()), StandardCharsets.UTF_8);
         boolean isOk = true;
-        while (isr.ready()) {
-            // if there is a character like this �, it means that the encoding was not utf-8
-            if (isr.read() == REPLACEMENT_CHAR) {
-                isOk = false;
-                break;
+
+        try (InputStreamReader isr = new InputStreamReader(
+                Files.newInputStream(file.getPath()), StandardCharsets.UTF_8)) {
+
+            while (isr.ready()) {
+                // if there is a character like this �, it means that the encoding was not utf-8
+                if (isr.read() == REPLACEMENT_CHAR) {
+                    isOk = false;
+                    break;
+                }
             }
         }
+
         String encoding = isOk ? StandardCharsets.UTF_8.toString() : "Cp1252";
-        return new BufferedReader(new InputStreamReader(Files.newInputStream(file.getPath()), encoding));
+
+        return new BufferedReader(
+                new InputStreamReader(Files.newInputStream(file.getPath()), encoding));
     }
 
     @PostConstruct
@@ -224,9 +231,10 @@ public class FileSystemService {
             } else {
                 // if the encoding was not utf8 for plain text,
                 // we open the file again with an encoding adapted to ANSI
-                BufferedReader br = getBufferedReader(file);
-                try (Writer out = new BufferedWriter(new OutputStreamWriter(
-                        new FileOutputStream(outputFile), StandardCharsets.UTF_8))) {
+                try (BufferedReader br = getBufferedReader(file);
+                     Writer out = new BufferedWriter(new OutputStreamWriter(
+                             new FileOutputStream(outputFile), StandardCharsets.UTF_8))) {
+
                     String line;
                     while ((line = br.readLine()) != null) {
                         out.append(line).append("\n");
@@ -234,11 +242,22 @@ public class FileSystemService {
                 }
             }
 
-            InputStream tmpInputStream = new FileInputStream(outputFile);
-            var filename = newFilename == null ? file.getOriginalFilename() : newFilename;
-            var result = fileStorage.upload(FileFolder.INPUT, filename, file.getOriginalFilename(), tmpInputStream);
-            tmpInputStream.close();
-            Files.delete(Path.of(tempPath.toString()));
+            var filename = newFilename == null
+                    ? file.getOriginalFilename()
+                    : newFilename;
+
+            String result;
+
+            try (InputStream tmpInputStream = new FileInputStream(outputFile)) {
+                result = fileStorage.upload(
+                        FileFolder.INPUT,
+                        filename,
+                        file.getOriginalFilename(),
+                        tmpInputStream);
+            }
+
+            Files.deleteIfExists(outputFile.toPath());
+
             return result;
         } catch (final IOException e) {
             log.error("Upload failed for file {}", file.getOriginalFilename(), e);
