@@ -1,6 +1,12 @@
 import { Component, DestroyRef, inject, OnDestroy, OnInit } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
+import {
+    FormBuilder,
+    FormGroup,
+    FormsModule,
+    ReactiveFormsModule,
+    Validators,
+} from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
 import { TranslatePipe, TranslateService } from "@ngx-translate/core";
 import { MessageService } from "primeng/api";
@@ -21,14 +27,14 @@ import { InputNumberModule } from "primeng/inputnumber";
     templateUrl: "./digital-services-ai-parameters.component.html",
     standalone: true,
     imports: [
-    CardModule,
-    FormsModule,
-    ReactiveFormsModule,
-    SelectModule,
-    CheckboxModule,
-    InputNumberModule,
-    TranslatePipe
-],
+        CardModule,
+        FormsModule,
+        ReactiveFormsModule,
+        SelectModule,
+        CheckboxModule,
+        InputNumberModule,
+        TranslatePipe,
+    ],
 })
 export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
     terminalsForm!: FormGroup;
@@ -56,7 +62,7 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
     ) {}
 
     ngOnInit(): void {
-        (async () => {
+        void (async () => {
             this.initForm();
 
             await this.loadModels();
@@ -251,7 +257,7 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
             });
     }
 
-    async handlingValueChangesForCalculateButton() {
+    handlingValueChangesForCalculateButton(): void {
         this.formSubscription = this.terminalsForm.valueChanges.subscribe(() => {
             if (this.terminalsForm.valid && this.terminalsForm.dirty) {
                 this.digitalServiceStore.setEcoMindEnableCalcul(true);

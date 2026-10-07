@@ -118,7 +118,7 @@ export class WorkspaceComponent implements OnInit {
     });
 
     ngOnInit() {
-        this.getDomainOrganizationsList();
+        void this.getDomainOrganizationsList();
         this.selectTab(0);
 
         this.spaceForm.get("organization")?.valueChanges.subscribe((value) => {
@@ -236,7 +236,7 @@ export class WorkspaceComponent implements OnInit {
                                 page === Constants.ENDPOINTS.digitalServices ||
                                 page === Constants.ENDPOINTS.inventories
                             ) {
-                                this.router.navigateByUrl(
+                                void this.router.navigateByUrl(
                                     `organizations/${organization.name}/workspaces/${res.id}/${page}`,
                                 );
                             } else {
@@ -262,10 +262,10 @@ export class WorkspaceComponent implements OnInit {
                                 }
                                 // Reload current route by navigating away and back
                                 const currentUrl = this.router.url;
-                                this.router
+                                void this.router
                                     .navigateByUrl("/", { skipLocationChange: true })
                                     .then(() => {
-                                        this.router.navigateByUrl(currentUrl);
+                                        void this.router.navigateByUrl(currentUrl);
                                     });
                             }
                         });

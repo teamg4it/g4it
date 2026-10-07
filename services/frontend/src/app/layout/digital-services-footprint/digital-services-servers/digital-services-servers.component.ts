@@ -166,7 +166,9 @@ export class DigitalServicesServersComponent implements OnInit, OnDestroy {
 
                 this.sidebarVisible = res;
                 if (res === false && !this.router.url.endsWith("/resources")) {
-                    this.router.navigate(["../resources"], { relativeTo: this.route });
+                    void this.router.navigate(["../resources"], {
+                        relativeTo: this.route,
+                    });
                 }
             });
     }
@@ -227,14 +229,14 @@ export class DigitalServicesServersComponent implements OnInit, OnDestroy {
         };
 
         this.digitalServiceStore.setServer(newServer);
-        this.router.navigate(["panel-create"], { relativeTo: this.route });
+        void this.router.navigate(["panel-create"], { relativeTo: this.route });
 
         this.digitalServicesBusiness.openPanel();
     }
 
     updateServer(server: DigitalServiceServerConfig) {
         this.digitalServiceStore.setServer(server);
-        this.router.navigate(["panel-parameters"], { relativeTo: this.route });
+        void this.router.navigate(["panel-parameters"], { relativeTo: this.route });
 
         this.digitalServicesBusiness.openPanel();
     }

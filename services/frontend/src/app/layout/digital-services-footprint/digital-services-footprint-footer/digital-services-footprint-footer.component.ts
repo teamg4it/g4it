@@ -1,3 +1,4 @@
+import { AsyncPipe } from "@angular/common";
 import {
     Component,
     computed,
@@ -12,8 +13,9 @@ import {
 } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { ActivatedRoute, Router } from "@angular/router";
-import { TranslateService, TranslatePipe } from "@ngx-translate/core";
+import { TranslatePipe, TranslateService } from "@ngx-translate/core";
 import { MessageService } from "primeng/api";
+import { Button } from "primeng/button";
 import { firstValueFrom, lastValueFrom } from "rxjs";
 import { DigitalService } from "src/app/core/interfaces/digital-service.interfaces";
 import { DigitalServiceBusinessService } from "src/app/core/service/business/digital-services.service";
@@ -23,18 +25,12 @@ import { DigitalServicesDataService } from "src/app/core/service/data/digital-se
 import { AIFormsStore } from "src/app/core/store/ai-forms.store";
 import { DigitalServiceStoreService } from "src/app/core/store/digital-service.store";
 import { GlobalStoreService } from "src/app/core/store/global.store";
-import { Button } from "primeng/button";
-import { AsyncPipe } from "@angular/common";
 
 @Component({
     selector: "app-digital-services-footprint-footer",
     templateUrl: "./digital-services-footprint-footer.component.html",
     standalone: true,
-    imports: [
-        Button,
-        AsyncPipe,
-        TranslatePipe,
-    ],
+    imports: [Button, AsyncPipe, TranslatePipe],
 })
 export class DigitalServicesFootprintFooterComponent implements OnInit {
     isEcoMindAi = input<boolean>(false);
@@ -129,18 +125,18 @@ export class DigitalServicesFootprintFooterComponent implements OnInit {
 
             if (this.digitalServiceVersionUid) {
                 if (this.isEcoMindAi()) {
-                    this.router
+                    void this.router
                         .navigateByUrl("/", { skipLocationChange: true })
                         .then(() => {
-                            this.router.navigate([
+                            void this.router.navigate([
                                 `/organizations/${organization}/workspaces/${workspace}/eco-mind-ai/${this.digitalServiceVersionUid}/footprint/dashboard`,
                             ]);
                         });
                 } else {
-                    this.router
+                    void this.router
                         .navigateByUrl("/", { skipLocationChange: true })
                         .then(() => {
-                            this.router.navigate([
+                            void this.router.navigate([
                                 `/organizations/${organization}/workspaces/${workspace}/digital-service-version/${this.digitalServiceVersionUid}/footprint/dashboard`,
                             ]);
                         });

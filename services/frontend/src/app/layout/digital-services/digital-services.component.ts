@@ -127,7 +127,7 @@ export class DigitalServicesComponent implements OnInit {
             .subscribe((event) => {
                 if (event instanceof NavigationEnd) {
                     if (this.isAllowedDigitalService) {
-                        this.retrieveDigitalServices();
+                        void this.retrieveDigitalServices();
                     }
                 }
             });
@@ -190,11 +190,14 @@ export class DigitalServicesComponent implements OnInit {
 
     goToDigitalServiceFootprint(uid: string) {
         if (this.isEcoMindAi()) {
-            this.router.navigate([`../eco-mind-ai/${uid}/footprint/ecomind-parameters`], {
-                relativeTo: this.route,
-            });
+            void this.router.navigate(
+                [`../eco-mind-ai/${uid}/footprint/ecomind-parameters`],
+                {
+                    relativeTo: this.route,
+                },
+            );
         } else {
-            this.router.navigate(
+            void this.router.navigate(
                 [`../digital-service-version/${uid}/footprint/resources`],
                 {
                     relativeTo: this.route,

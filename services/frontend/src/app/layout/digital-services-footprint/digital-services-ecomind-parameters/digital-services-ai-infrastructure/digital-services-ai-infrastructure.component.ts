@@ -8,7 +8,13 @@ import {
     OnInit,
     Signal,
 } from "@angular/core";
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
+import {
+    FormBuilder,
+    FormGroup,
+    FormsModule,
+    ReactiveFormsModule,
+    Validators,
+} from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
 import { TranslatePipe, TranslateService } from "@ngx-translate/core";
 import { MessageService } from "primeng/api";
@@ -31,14 +37,14 @@ import { DigitalServiceStoreService } from "src/app/core/store/digital-service.s
     templateUrl: "./digital-services-ai-infrastructure.component.html",
     standalone: true,
     imports: [
-    CardModule,
-    FormsModule,
-    ReactiveFormsModule,
-    SelectModule,
-    InputNumberModule,
-    NgStyle,
-    TranslatePipe
-],
+        CardModule,
+        FormsModule,
+        ReactiveFormsModule,
+        SelectModule,
+        InputNumberModule,
+        NgStyle,
+        TranslatePipe,
+    ],
 })
 export class DigitalServicesAiInfrastructureComponent implements OnInit, OnDestroy {
     infrastructureForm!: FormGroup;
@@ -78,7 +84,7 @@ export class DigitalServicesAiInfrastructureComponent implements OnInit, OnDestr
     ) {}
 
     ngOnInit() {
-        (async () => {
+        void (async () => {
             this.userService.isAllowedEcoMindAiWrite$
                 .pipe(take(1))
                 .subscribe((isAllowed) => {
@@ -206,7 +212,7 @@ export class DigitalServicesAiInfrastructureComponent implements OnInit, OnDestr
         })();
     }
 
-    async handlingValueChangesForCalculateButton() {
+    handlingValueChangesForCalculateButton(): void {
         this.formSubscription = this.infrastructureForm.valueChanges.subscribe(() => {
             if (this.infrastructureForm.valid && this.infrastructureForm.dirty) {
                 this.digitalServiceStore.setEcoMindEnableCalcul(true);
