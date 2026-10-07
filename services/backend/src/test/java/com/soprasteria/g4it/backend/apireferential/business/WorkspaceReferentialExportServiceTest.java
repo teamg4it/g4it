@@ -16,9 +16,12 @@ import org.springframework.data.domain.*;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -172,12 +175,18 @@ class WorkspaceReferentialExportServiceTest {
 
     @Test
     void initFolder_createsDirectory() throws Exception {
-        ReflectionTestUtils.setField(service, "localWorkingFolder", tempDir);
+        ReflectionTestUtils.setField(
+                service,
+                "localWorkingFolder",
+                tempDir);
 
         service.initFolder();
 
-        Path expected = Path.of(tempDir, "workspace-referential");
-        assertTrue(Files.exists(expected));
+        Path expected = Path.of(
+                tempDir,
+                "workspace-referential");
+
+        assertTrue(Files.isDirectory(expected));
     }
 
     // =========================
@@ -410,4 +419,137 @@ class WorkspaceReferentialExportServiceTest {
 
         assertTrue(found);
     }
+
+    @Test
+    void exportReferentialZip_deletesZipFileWhenStreamIsClosed() throws Exception {
+        Long workspaceId = 1L;
+
+        when(itemTypeRepository.findByWorkspaceId(eq(workspaceId), any()))
+                .thenReturn(Page.empty());
+        when(itemImpactRepository.findByWorkspaceId(eq(workspaceId), any()))
+                .thenReturn(Page.empty());
+        when(matchingItemRepository.findByWorkspaceId(eq(workspaceId), any()))
+                .thenReturn(Page.empty());
+
+        Path referentialDirectory = Path.of(
+                tempDir,
+                "workspace-referential");
+
+        // Existing ZIP files before this test
+        Set<Path> zipFilesBeforeExport;
+
+        try (var paths = Files.list(referentialDirectory)) {
+            zipFilesBeforeExport = paths
+                    .filter(path -> path.getFileName()
+                            .toString()
+                            .startsWith("workspace_referential_"))
+                    .collect(Collectors.toSet());
+        }
+
+        InputStream inputStream =
+                service.exportReferentialZip(ORG, workspaceId);
+
+        Path zipPath;
+
+        try (var paths = Files.list(referentialDirectory)) {
+            zipPath = paths
+                    .filter(path -> path.getFileName()
+                            .toString()
+                            .startsWith("workspace_referential_"))
+                    .filter(path -> !zipFilesBeforeExport.contains(path))
+                    .findFirst()
+                    .orElseThrow();
+        }
+
+        assertTrue(Files.exists(zipPath));
+
+        inputStream.close();
+
+        assertFalse(
+                Files.exists(zipPath),
+                "ZIP file should be deleted after closing the returned InputStream");
+    }
+
+    @Test
+    void exportReferentialZip_shouldContainAllCsvEntries() throws Exception {
+        Long workspaceId = 1L;
+
+        when(itemTypeRepository.findByWorkspaceId(eq(workspaceId), any()))
+                .thenReturn(Page.empty());
+        when(itemImpactRepository.findByWorkspaceId(eq(workspaceId), any()))
+                .thenReturn(Page.empty());
+        when(matchingItemRepository.findByWorkspaceId(eq(workspaceId), any()))
+                .thenReturn(Page.empty());
+
+        try (InputStream inputStream =
+                     service.exportReferentialZip(ORG, workspaceId);
+             java.util.zip.ZipInputStream zipInputStream =
+                     new java.util.zip.ZipInputStream(inputStream)) {
+
+            List<String> entries = new java.util.ArrayList<>();
+
+            java.util.zip.ZipEntry entry;
+            while ((entry = zipInputStream.getNextEntry()) != null) {
+                entries.add(entry.getName());
+            }
+
+            assertTrue(entries.contains("workspace-referential/"));
+            assertTrue(entries.contains(
+                    "workspace-referential/itemType_template.csv"));
+            assertTrue(entries.contains(
+                    "workspace-referential/itemImpact_template.csv"));
+            assertTrue(entries.contains(
+                    "workspace-referential/matchingItem_template.csv"));
+        }
+    }
+
+    @Test
+    void exportReferentialZip_shouldContainCsvRecord() throws Exception {
+        Long workspaceId = 1L;
+
+        ItemType item = mock(ItemType.class);
+
+        when(item.toCsvRecordForWorkspace())
+                .thenReturn(new Object[]{"val1", "val2"});
+
+        Page<ItemType> page = new PageImpl<>(
+                List.of(item),
+                PageRequest.of(0, 2),
+                1);
+
+        when(itemTypeRepository.findByWorkspaceId(eq(workspaceId), any()))
+                .thenReturn(page);
+
+        when(itemImpactRepository.findByWorkspaceId(eq(workspaceId), any()))
+                .thenReturn(Page.empty());
+
+        when(matchingItemRepository.findByWorkspaceId(eq(workspaceId), any()))
+                .thenReturn(Page.empty());
+
+        try (InputStream inputStream =
+                     service.exportReferentialZip(ORG, workspaceId);
+             java.util.zip.ZipInputStream zipInputStream =
+                     new java.util.zip.ZipInputStream(inputStream)) {
+
+            java.util.zip.ZipEntry entry;
+
+            while ((entry = zipInputStream.getNextEntry()) != null) {
+                if ("workspace-referential/itemType.csv".equals(entry.getName())) {
+
+                    String csvContent = new String(
+                            zipInputStream.readAllBytes(),
+                            StandardCharsets.UTF_8);
+
+                    assertTrue(csvContent.contains("val1"));
+                    assertTrue(csvContent.contains("val2"));
+
+                    return;
+                }
+            }
+
+            fail("itemType.csv was not found in the ZIP");
+        }
+    }
+
+
 }
