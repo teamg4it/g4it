@@ -5,7 +5,7 @@ weight: 200
 ---
 ## Description
 
-G4IT leverages NumEcoEval and Boavizta to evaluate the environmental impact of digital technologies.
+G4IT leverages NumEcoEval, Boavizta and EcoLogits to evaluate the environmental impact of digital technologies.
 NumEcoEval is an open-source engine built with the Ministry of Ecological Transition. NumEcoEval estimation methodology is compliant with the Digital Service Product Category Rules released by ADEME and allows to measure the environmental footprint of information systems and digital services with a multicriteria approach.
 
 NumEcoEval Environmental footprint assessment methodology is described in the
@@ -16,6 +16,15 @@ Boaviztapi is an API to evaluate the environmental impacts of digital products a
 
 Boavizta footprint assessment methodology is described in the
 [Boavizta Documentation](https://doc.api.boavizta.org/)
+
+EcoLogits is an open-source calculation engine used to evaluate the environmental impact associated with the use of Artificial Intelligence (AI) services, particularly Large Language Models (LLMs).
+
+EcoLogits provides environmental impact estimations based on information such as the AI service provider, model, number of output tokens and location/electricity mix zone.
+
+EcoLogits calculation methodology is used by G4IT to assess the environmental footprint of AI services.
+
+EcoLogits API documentation is available in the
+[EcoLogits API Documentation](https://api.ecologits.ai/docs#/Estimations/post_estimations_v1beta_estimations_post "EcoLogits API Documentation")
 
 ## Table of contents
 
