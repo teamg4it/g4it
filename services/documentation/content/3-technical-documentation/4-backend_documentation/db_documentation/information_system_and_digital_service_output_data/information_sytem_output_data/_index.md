@@ -132,10 +132,37 @@ erDiagram
     float8 workload
     varchar source
   }
+
+  out_aiservice {
+        int8 id PK
+        varchar name
+        varchar criterion
+        varchar lifecycle_step
+        int8 task_id FK
+        varchar provider
+        varchar model
+        varchar location
+        varchar engine_name
+        varchar engine_version
+        varchar referential_version
+        varchar status_indicator
+        float8 quantity
+        float8 unit_impact
+        float8 people_eq_impact
+        int8 count_value
+        varchar unit
+        _varchar common_filters
+        _varchar filters
+        _varchar errors
+        varchar source
+        timestamp creation_date
+        timestamp last_update_date 
+  }
   inventory ||--o{ task : "foreign key"
   task ||--o{ out_application : "foreign key"
   task ||--o{ out_physical_equipment : "foreign key"
   task ||--o{ out_virtual_equipment : "foreign key"
+  task ||--o{ out_aiservice : "foreign key"
 ``` 
 
 ## Tables 
@@ -369,4 +396,53 @@ erDiagram
 |task_id|task|id|
 
 {{% /expand %}}
+
+### out_aiservice
+
+{{% expand title="Show details" expanded="false" center="true"%}}
+
+#### Comments
+
+- This table stores the environmental footprint calculated indicators for an AI Service using the EcoLogits calculation engine.
+
+#### Columns
+
+|Name|Data type|Comments|
+|---|---|---|
+|**id**|int8|Auto incremented unique AI Service identifier|
+|name|varchar(255)|Name of AI Service|
+|criterion|varchar(255)|AI Service criterion|
+|lifecycle_step|varchar(255)|AI Service lifecycle step|
+|*task_id*|int8|Foreign key to the task|
+|provider|varchar(255)|AI Service provider|
+|model|varchar(255)|AI model|
+|location|varchar(255)|Location used for the calculation|
+|engine_name|varchar(255)|Calculation engine name|
+|engine_version|varchar(255)|Calculation engine version|
+|referential_version|varchar(255)|Referential version|
+|status_indicator|varchar(255)|Status indicator|
+|quantity|float8|Quantity|
+|unit_impact|float8|Unit impact|
+|people_eq_impact|float8|People equivalent impact|
+|count_value|int8|Count value|
+|unit|varchar(255)|Unit|
+|common_filters|_varchar|Common filters|
+|filters|_varchar|Filters|
+|errors|_varchar|Errors encountered during calculation|
+|source|varchar(255)|Source of calculation|
+|creation_date|timestamp|Creation date|
+|last_update_date|timestamp|Last update date|
+
+#### Primary Key
+
+- id
+
+#### Foreign keys
+
+|Column name|Referenced table|Referenced primary key|
+|---|---|---|
+|task_id|task|id|
+
+{{% /expand %}}
+
 

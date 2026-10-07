@@ -191,6 +191,8 @@ front ->> back: GET /api/organizations/{organization}/workspaces/{workspace}/inv
 Database --> back : Get average Age of physical equipments
 front ->> back: GET /api/organizations/{organization}/workspaces/{workspace}/inventories/{inventoryId}/indicators/datacenters
 Database --> back : Get number of datacenters
+front ->> back: GET /api/organizations/{organization}/workspaces/{workspace}/inventories/{inventory_id}/outputs/ai-services
+Database--> back: Get indicators from out_ai_service table
 front ->> back: GET /api/referential/boaviztapi/countries
 Database --> back : Get referential countries from boaviztapi
 front --> RND: Display the list of filters related to my view

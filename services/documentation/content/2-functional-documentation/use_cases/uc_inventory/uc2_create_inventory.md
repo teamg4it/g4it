@@ -102,6 +102,9 @@ participant back as G4IT Back-End
 participant DataBase
 
 RND ->> front: Click on create in the New Inventory view
+front ->> back: Get /api/organizations/{organization}/workspaces/{workspace}/is-workspace-specific
+back ->> DataBase: Get boolean for if the workspace referential is present or not
+back ->> front: Return the boolean
 front ->> back: Post /api/{organization}/{workspace}/inventories
 back ->> DataBase: Create the inventory
 front ->> back: Get /api/{organization}/{workspace}/inventories
@@ -120,6 +123,9 @@ participant back as G4IT Back-End
 participant DataBase
 
 RND ->> front: Click on create in the New Inventory view
+front ->> back: Get /api/organizations/{organization}/workspaces/{workspace}/is-workspace-specific
+back ->> DataBase: Get boolean for if the workspace referential is present or not
+back ->> front: Return the boolean
 front ->> back: Post /api/{organization}/{workspace}/inventories
 back ->> DataBase: Create the inventory
 front ->> back: Post /api/{organization}/{workspace}/inventories/{inventoryId}

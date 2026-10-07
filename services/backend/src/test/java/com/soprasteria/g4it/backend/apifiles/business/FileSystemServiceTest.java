@@ -16,6 +16,9 @@ import com.soprasteria.g4it.backend.common.mapper.FileDescriptionRestMapper;
 import com.soprasteria.g4it.backend.common.utils.Constants;
 import com.soprasteria.g4it.backend.exception.BadRequestException;
 import com.soprasteria.g4it.backend.server.gen.api.dto.FileDescriptionRest;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -29,6 +32,7 @@ import com.soprasteria.g4it.backend.common.filesystem.model.StoredFile;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
@@ -275,109 +279,127 @@ class FileSystemServiceTest {
         assertTrue(result.isEmpty());
     }
 
+
     @Test
-    void testManageFilesAndRename_success() throws Exception {
+    void testManageFilesAndRename_success() throws IOException {
+        Path workingDir = Files.createTempDirectory("filesystem-test-");
+        Path inventoryDir = Files.createDirectories(
+                workingDir.resolve("input").resolve("inventory"));
 
-        String tempDir = System.getProperty("java.io.tmpdir");
-
-        ReflectionTestUtils.setField(
-                fileSystemService,
-                "localWorkingFolder",
-                tempDir);
-
-        Files.createDirectories(
-                Path.of(tempDir, "input", "inventory"));
-
-        Path csvFile = Files.createTempFile("inventory", ".csv");
+        Path csvFile = Files.createTempFile(
+                inventoryDir,
+                "test-",
+                ".csv");
 
         Files.writeString(
                 csvFile,
-                "col1,col2\nv1,v2",
+                "name;value\nTest;123",
                 StandardCharsets.UTF_8);
 
-        StoredFile storedFile = mock(StoredFile.class);
-
-        when(storedFile.getOriginalFilename()).thenReturn("a.csv");
-        when(storedFile.getContentType()).thenReturn("text/csv");
-        when(storedFile.getPath()).thenReturn(csvFile);
-
-        when(fileSystem.mount("org", "1"))
-                .thenReturn(fileStorage);
-
-        when(fileStorage.upload(
-                eq(FileFolder.INPUT),
-                eq("newname.csv"),
-                eq("a.csv"),
-                any(InputStream.class)
-        )).thenReturn("uploaded.csv");
-
-        List<String> result =
-                fileSystemService.manageFilesAndRename(
-                        "org",
-                        1L,
-                        List.of(storedFile),
-                        List.of("newname.csv"),
-                        true);
-
-        assertEquals(1, result.size());
-        assertEquals("uploaded.csv", result.get(0));
-
-        verify(fileStorage).upload(
-                eq(FileFolder.INPUT),
-                eq("newname.csv"),
-                eq("a.csv"),
-                any(InputStream.class)
-        );
-
-        Files.deleteIfExists(csvFile);
-    }
-
-    @Test
-    void testManageFilesAndRename_xlsx() throws Exception {
-
-        String tempDir = System.getProperty("java.io.tmpdir");
+        StoredFile storedFile = new StoredFile(
+                csvFile,
+                "test.csv",
+                "text/csv");
 
         ReflectionTestUtils.setField(
                 fileSystemService,
                 "localWorkingFolder",
-                tempDir);
+                workingDir.toString());
 
-        Files.createDirectories(
-                Path.of(tempDir, "input", "inventory"));
-
-        Path xlsxFile = Files.createTempFile("inventory", ".xlsx");
-
-        Files.write(xlsxFile, "dummy".getBytes());
-
-        StoredFile storedFile = mock(StoredFile.class);
-
-        when(storedFile.getOriginalFilename()).thenReturn("test.xlsx");
-        when(storedFile.getContentType()).thenReturn(
-                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-        when(storedFile.getPath()).thenReturn(xlsxFile);
-
-        when(fileSystem.mount("org", "1"))
+        when(fileSystem.mount("organization", "1"))
                 .thenReturn(fileStorage);
 
         when(fileStorage.upload(
                 eq(FileFolder.INPUT),
-                eq("renamed.xlsx"),
-                eq("test.xlsx"),
-                any(InputStream.class)
-        )).thenReturn("uploaded.xlsx");
+                eq("test.csv"),
+                eq("test.csv"),
+                any(InputStream.class)))
+                .thenReturn("uploaded.csv");
 
-        List<String> result =
-                fileSystemService.manageFilesAndRename(
-                        "org",
-                        1L,
-                        List.of(storedFile),
-                        List.of("renamed.xlsx"),
-                        true);
+        List<String> result = fileSystemService.manageFilesAndRename(
+                "organization",
+                1L,
+                List.of(storedFile),
+                List.of("test.csv"),
+                true);
+
+        assertEquals(List.of("uploaded.csv"), result);
+
+        verify(fileStorage).upload(
+                eq(FileFolder.INPUT),
+                eq("test.csv"),
+                eq("test.csv"),
+                any(InputStream.class));
+
+        assertTrue(Files.exists(csvFile));
+
+        Files.deleteIfExists(csvFile);
+        Files.deleteIfExists(inventoryDir);
+        Files.deleteIfExists(inventoryDir.getParent());
+        Files.deleteIfExists(workingDir);
+    }
+
+    @Test
+    void testManageFilesAndRename_xlsx() throws IOException {
+        Path workingDir = Files.createTempDirectory("filesystem-test-");
+        Path inventoryDir = Files.createDirectories(
+                workingDir.resolve("input").resolve("inventory"));
+
+        Path xlsxFile = Files.createTempFile(
+                inventoryDir,
+                "test-",
+                ".xlsx");
+
+        try (XSSFWorkbook workbook = new XSSFWorkbook();
+             OutputStream outputStream = Files.newOutputStream(xlsxFile)) {
+
+            Sheet sheet = workbook.createSheet("Sheet1");
+            Row row = sheet.createRow(0);
+            row.createCell(0).setCellValue("Test");
+
+            workbook.write(outputStream);
+        }
+
+        StoredFile storedFile = new StoredFile(
+                xlsxFile,
+                "test.xlsx",
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+
+        ReflectionTestUtils.setField(
+                fileSystemService,
+                "localWorkingFolder",
+                workingDir.toString());
+
+        when(fileSystem.mount("organization", "1"))
+                .thenReturn(fileStorage);
+
+        when(fileStorage.upload(
+                eq(FileFolder.INPUT),
+                eq("test.xlsx"),
+                eq("test.xlsx"),
+                any(InputStream.class)))
+                .thenReturn("uploaded.xlsx");
+
+        List<String> result = fileSystemService.manageFilesAndRename(
+                "organization",
+                1L,
+                List.of(storedFile),
+                List.of("test.xlsx"),
+                true);
 
         assertEquals(List.of("uploaded.xlsx"), result);
 
+        verify(fileStorage).upload(
+                eq(FileFolder.INPUT),
+                eq("test.xlsx"),
+                eq("test.xlsx"),
+                any(InputStream.class));
+
+        assertTrue(Files.exists(xlsxFile));
+
         Files.deleteIfExists(xlsxFile);
+        Files.deleteIfExists(inventoryDir);
+        Files.deleteIfExists(inventoryDir.getParent());
+        Files.deleteIfExists(workingDir);
     }
-
-
 }

@@ -18,6 +18,7 @@ mermaid: true
 | GET /organizations/{organization}/workspaces/{workspace}/inventories/{inventoryId}/indicators/physicalEquipmentsElecConsumption | [Electricity consumption](https://saas-g4it.com/api/swagger-ui/index.html#/inventory-indicator/getPhysicalEquipmentElecConsumption)      | [Visualize equipments]({{% ref "/2-functional-documentation/use_cases/uc_inventory/uc5_visualize_equipment_footprint.md" %}})   |
 | GET /organizations/{organization}/workspaces/{workspace}/inventories/{inventoryId}/outputs/virtual-equipments                   | [Output virtual equipments](https://saas-g4it.com/api/swagger-ui/index.html#/inventory-outputs/getInventoryOutputsVirtualEquipmentsRest) | [Visualize equipments]({{% ref "/2-functional-documentation/use_cases/uc_inventory/uc5_visualize_equipment_footprint.md" %}})   |
 | GET /organizations/{organization}/workspaces/{workspace}/inventories/{inventoryId}/indicators/physicalEquipmentsLowEquipment    | [Low Equipment](https://saas-g4it.com/api/swagger-ui/index.html#/inventory-indicator/getPhysicalEquipmentsLowImpact)                         | [Visualize equipments]({{% ref "/2-functional-documentation/use_cases/uc_inventory/uc5_visualize_equipment_footprint.md" %}})   |
+| GET /organizations/{organization}/workspaces/{workspace}/inventories/{inventoryId}/outputs/ai-services                          | [Ai service](https://saas-g4it.com/api/swagger-ui/index.html#/inventory-indicator/getPhysicalEquipmentsLowImpact)                         | [Visualize equipments]({{% ref "/2-functional-documentation/use_cases/uc_inventory/uc5_visualize_equipment_footprint.md" %}})   |
 
 #### API PATH FOR APPLICATIONS
 
@@ -44,6 +45,7 @@ Below you will find the entities used to retrieve the saved indicators in the da
 | com/soprasteria/g4it/backend/apiinout/modeldb | InVirtualEquipment   | [ in_virtual_equipment ](../../db_documentation/information_system_and_digital_service_input_data/information_sytem_input_data/)   |
 | com/soprasteria/g4it/backend/apiinout/modeldb | OutVirtualEquipment  | [out_virtual_equipment](../../db_documentation/information_system_and_digital_service_output_data/information_sytem_output_data/)  |
 | com/soprasteria/g4it/backend/apiinout/modeldb | OutApplication       | [out_application](../../db_documentation/information_system_and_digital_service_output_data/information_sytem_output_data/)        |
+| com/soprasteria/g4it/backend/apiinout/modeldb | OutAIService         | [out_aiservice](../../db_documentation/information_system_and_digital_service_output_data/information_sytem_output_data/)        |
 
 ## API Call Processing for equipment view
 
@@ -68,7 +70,7 @@ table [out_physical_equipment](../../db_documentation/information_system_and_dig
 via [OutPhysicalEquipmentRepository](https://github.com/G4ITTeam/g4it/blob/main/services/backend/src/main/java/com/soprasteria/g4it/backend/apiinout/repository/OutPhysicalEquipmentRepository.java)
 after grouping them by criteria in
 the [IndicatorService](https://github.com/G4ITTeam/g4it/blob/main/services/backend/src/main/java/com/soprasteria/g4it/backend/apiindicator/business/IndicatorService.java).
-
+ 
 #### Datacenters
 
 The API call is handled
@@ -141,6 +143,24 @@ The API call is handled by [InventoryIndicatorController](https://github.com/G4I
 and the data retrieval is performed through the native query defined in [InPhysicalEquipmentLowImpactView](https://github.com/teamg4it/g4it/blob/main/services/backend/src/main/java/com/soprasteria/g4it/backend/apiindicator/modeldb/InPhysicalEquipmentLowImpactView.java), executed via its repository. The query aggregates physical equipment quantities per inventory, country, type, and organizational filters.
 
 The low-impact determination is handled by [LowImpactService](https://github.com/teamg4it/g4it/blob/main/services/backend/src/main/java/com/soprasteria/g4it/backend/apiindicator/business/LowImpactService.java), which evaluates each country’s electricity mix impact by summing quartile positions across configured environmental criteria. A country is considered low impact if its total electricity mix score falls within the first quartile compared to all countries.
+
+#### AI services
+
+The AI Services output API retrieves the environmental footprint indicators calculated for the AI services
+of an inventory.
+
+The API uses the `out_aiservice` table, which stores the calculated AI Service indicators generated using
+the EcoLogits calculation engine.
+
+The returned AI Service data includes the AI service name, criterion, lifecycle step, provider, model,
+location, calculation engine information, status indicator, quantity, unit impact, people equivalent impact,
+and calculation errors when applicable.
+
+The API is exposed through:
+
+GET /organizations/{organization}/workspaces/{workspace}/inventories/{inventoryId}/outputs/ai-services
+
+The task_id field associates each AI Service result with the evaluation task that generated the indicators.
 
 ## API Call Processing for application view
 
