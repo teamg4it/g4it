@@ -56,39 +56,41 @@ The connected user must have the write access for that module on the selected wo
 | 1         | New Server or Edit Server | title        |                                                                         |
 | 2         | Name                      | label input  |                                                                         |
 | 3         | Dedicated or Shared       | Radio button |                                                                         |
-| 4         | Compute or Storage        | Radio button |                                                                         |
+| 4         | Compute or Storage or AI  | Radio button |                                                                         |
 | 5         | Cancel                    | button       | <li><u>_action rules_</u>: That button open the window Network details. |
 | 6         | Next                      | button       |                                                                         |
 
 {{% /expand %}}
 
-### Step 2—field depending on the "Dedicated/Shared" & "Compute/Storage" options
+### Step 2—field depending on the "Dedicated/Shared" & "Compute/Storage/AI" options
 
 _example:_
 ![uc3_add_visualize_equipments_NCServerAdd_Step2.png](../../../images/uc3_add_visualize_equipments_NCServerAdd_Step2.png)
+![uc3_add_visualize_equipments_NCServerAdd_Step2_1.png](../../../images/uc3_add_visualize_equipments_NCServerAdd_Step2_1.png)
 
 {{% expand title="Show the behavior detail" expanded="false" center="true"%}}
 
-| Reference | Group                | Elements                             | Type                 | Dedicated / Compute | Shared / Compute | Shared/Storage | Dedicated/Storage | Description                                                             |
-| --------- | -------------------- | ------------------------------------ | -------------------- | ------------------- | ---------------- | -------------- | ----------------- | ----------------------------------------------------------------------- |
-|           | Header               |                                      |                      |                     |                  |                |                   |                                                                         |
-| 1         |                      | Server name                          | title                | Yes                 | Yes              | Yes            | Yes               |                                                                         |
-| 2         |                      | Server profile                       | sub-title            | Yes                 | Yes              | Yes            | Yes               |                                                                         |
-| 3         |                      | Host                                 | Dropdown             | Yes                 | Yes              | Yes            | Yes               |                                                                         |
-|           | Additional parameter |                                      |                      |                     |                  |                |                   |                                                                         |
-| A         |                      | Datacenter                           | Dropdown             | Yes                 | Yes              | Yes            | Yes               |                                                                         |
-|           |                      | Add Datacenter                       | button               | Yes                 | Yes              | Yes            | Yes               |                                                                         |
-| C         |                      | Quantity                             | Entire number input  | Yes                 |                  |                | Yes               |                                                                         |
-| E         |                      | Total vCPU                           | Entire number input  | Yes                 | Yes              |                |                   |                                                                         |
-| F         |                      | Server lifespan (Year)               | Decimal number input | Yes                 | Yes              | Yes            | Yes               |                                                                         |
-| D         |                      | Annual electricity consumption (kwH) | Entire number input  | Yes                 | Yes              | Yes            | Yes               |                                                                         |
-| G         |                      | Annual Operating time (hour)         | Entire number input  | Yes                 |                  |                | Yes               |                                                                         |
-| H         |                      | Total Disk (GB)                      | Entire number input  |                     |                  | Yes            | Yes               |                                                                         |
-|           | Footer               |                                      |                      |                     |                  |                |                   |                                                                         |
-| 4         |                      | Cancel                               | button               | Yes                 | Yes              | Yes            | Yes               | <li><u>_action rules_</u>: That button open the window Network details. |
-| 5         |                      | Previous                             | button               | Yes                 | Yes              | Yes            | Yes               |                                                                         |
-| 6         |                      | Create                               | button               | Yes                 |                  |                | Yes               |                                                                         |
-| 6         |                      | Next                                 | button               |                     | Yes              | Yes            |                   |                                                                         |
+| Reference | Group                | Elements                             | Type                 | Dedicated / Compute | Shared / Compute | AI/Compute  |   Shared/Storage | Dedicated/Storage |  AI/Storage    | Description                                                             |
+| --------- | -------------------- | ------------------------------------ | -------------------- | ------------------- | ---------------- |------------ |----------------- | ----------------- |----------------|--------------------------------------------------------- |
+|           | Header               |                                      |                      |                     |                  |             |                  |                   |                |                                                                         |
+| 1         |                      | Server name                          | title                | Yes                 | Yes              | Yes         |   Yes            | Yes               |  Yes           |                                                                         |
+| 2         |                      | Server profile                       | sub-title            | Yes                 | Yes              | Yes         |   Yes            | Yes               |  Yes           |                                                                         |
+| 3         |                      | Host                                 | Dropdown             | Yes                 | Yes              | Yes         |   Yes            | Yes               |  Yes           |                                                                         |
+|           | Additional parameter |                                      |                      |                     |                  |             |                  |                   |                |                                                                         |
+| A         |                      | Datacenter                           | Dropdown             | Yes                 | Yes              | Yes         |   Yes            | Yes               |  Yes           |                                                                         |
+|           |                      | Add Datacenter                       | button               | Yes                 | Yes              | Yes         |   Yes            | Yes               |  Yes           |                                                                         |
+| C         |                      | Quantity                             | Entire number input  | Yes                 |                  | Yes         |                  | Yes               |                |                                                                         |
+| E         |                      | Total vCPU                           | Entire number input  | Yes                 | Yes              |             |                  |                   |                |                                                                         |
+| F         |                      | Server lifespan (Year)               | Decimal number input | Yes                 | Yes              | Yes         |   Yes            | Yes               |  Yes           |                                                                         |
+| D         |                      | Annual electricity consumption (kwH) | Entire number input  | Yes                 | Yes              | Yes         |   Yes            | Yes               |  Yes           |                                                                         |
+| G         |                      | Annual Operating time (hour)         | Entire number input  | Yes                 |                  | Yes         |                  | Yes               |                |                                                                         |
+| H         |                      | Total Disk (GB)                      | Entire number input  |                     |                  |             |   Yes            | Yes               |                |                                                                         |
+| I         |                      | Total vRAM                           | Entire number input  |                     |                  | Yes         |                  |                   |  Yes           |                                                                         |
+|           | Footer               |                                      |                      |                     |                  |             |                  |                   |                |                                                                         |
+| 4         |                      | Cancel                               | button               | Yes                 | Yes              |             |   Yes            | Yes               |                | <li><u>_action rules_</u>: That button open the window Network details. |
+| 5         |                      | Previous                             | button               | Yes                 | Yes              |             |   Yes            | Yes               |                |                                                                         |
+| 6         |                      | Create                               | button               | Yes                 |                  |             |                  | Yes               |                |                                                                         |
+| 6         |                      | Next                                 | button               |                     | Yes              |             |   Yes            |                   |                |                                                                         |
 
 {{% /expand %}}
 

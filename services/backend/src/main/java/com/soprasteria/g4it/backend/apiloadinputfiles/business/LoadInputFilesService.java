@@ -33,6 +33,7 @@ import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
 import com.soprasteria.g4it.backend.common.utils.StringUtils;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -48,6 +49,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -55,34 +57,24 @@ import java.util.stream.Stream;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class LoadInputFilesService {
 
-    @Autowired
-    WorkspaceService workspaceService;
-
-    @Autowired
-    TaskRepository taskRepository;
-
-    @Autowired
-    InventoryRepository inventoryRepository;
-    @Autowired
-    DigitalServiceVersionRepository digitalServiceVersionRepository;
-    @Autowired
-    InVirtualEquipmentRepository inVirtualEquipmentRepository;
-    @Autowired
-    UserRepository userRepository;
-    @Autowired
-    @Qualifier("taskExecutorLoading")
-    TaskExecutor taskExecutor;
+    private final WorkspaceService workspaceService;
+    private final TaskRepository taskRepository;
+    private final InventoryRepository inventoryRepository;
+    private final DigitalServiceVersionRepository digitalServiceVersionRepository;
+    private final InVirtualEquipmentRepository inVirtualEquipmentRepository;
+    private final UserRepository userRepository;
+    private final TaskExecutor taskExecutor;
+    private final Clock clock;
     /**
      * Async Service where is executed the file loading
      */
-    @Autowired
-    AsyncLoadFilesService asyncLoadFilesService;
-    @Autowired
-    private FileSystemService fileSystemService;
-    @Autowired
-    AuthService authService;
+    private final AsyncLoadFilesService asyncLoadFilesService;
+    private final FileSystemService fileSystemService;
+    private final AuthService authService;
+
 
     @Value("${local.working.folder}")
     private String localWorkingFolder;
@@ -97,6 +89,7 @@ public class LoadInputFilesService {
      * @param physicalEquipments the physical equipment files
      * @param virtualEquipments  the virtual equipment files
      * @param applications       the application files
+     * @param aiServices         the AI service files
      * @return the Task created
      */
     public Task loadFiles(final String organization,
@@ -105,7 +98,9 @@ public class LoadInputFilesService {
                           final List<MultipartFile> datacenters,
                           final List<MultipartFile> physicalEquipments,
                           final List<MultipartFile> virtualEquipments,
-                          final List<MultipartFile> applications) {
+                          final List<MultipartFile> applications,
+                          final List<MultipartFile> aiServices) {
+
         final Map<FileType, List<MultipartFile>> allFiles =
                 new EnumMap<>(FileType.class);
 
@@ -131,6 +126,11 @@ public class LoadInputFilesService {
             allFiles.put(FileType.APPLICATION, applications);
         }
 
+        if (aiServices != null) {
+            allFiles.put(FileType.AI_SERVICE, aiServices);
+        }
+
+
         if (allFiles.isEmpty()) return new Task();
 
         Inventory inventory = inventoryRepository.findById(inventoryId).orElseThrow();
@@ -145,7 +145,7 @@ public class LoadInputFilesService {
                 .workspaceId(workspaceId)
                 .workspaceName(workspaceService.getWorkspaceById(workspaceId).getName())
                 .inventoryId(inventoryId)
-                .datetime(LocalDateTime.now())
+                .datetime(LocalDateTime.now(clock))
                 .hasVirtualEquipments(inventory.getVirtualEquipmentCount() > 0)
                 .hasApplications(inventory.getApplicationCount() > 0)
                 .build();
@@ -157,7 +157,12 @@ public class LoadInputFilesService {
         final Map<FileType, List<StoredFile>> storedFiles =
                 detachFiles(allFiles, true);
 
-        FileValidatorUtils.validateFiles(storedFiles);
+        try {
+            FileValidatorUtils.validateFiles(storedFiles);
+        } catch (RuntimeException e) {
+            cleanupStoredFiles(storedFiles);
+            throw e;
+        }
 
         /*
          * Now work ONLY with StoredFile.
@@ -241,12 +246,17 @@ public class LoadInputFilesService {
                 .workspaceId(workspaceId)
                 .workspaceName(workspaceService.getWorkspaceById(workspaceId).getName())
                 .digitalServiceVersionUid(digitalServiceVersionUid)
-                .datetime(LocalDateTime.now())
+                .datetime(LocalDateTime.now(clock))
                 .build();
         final Map<FileType, List<StoredFile>> storedFiles =
                 detachFiles(allFiles, false);
 
-        FileValidatorUtils.validateFiles(storedFiles);
+        try {
+            FileValidatorUtils.validateFiles(storedFiles);
+        } catch (RuntimeException e) {
+            cleanupStoredFiles(storedFiles);
+            throw e;
+        }
 
         List<String> filenames=persistRenamedFiles(context,storedFiles);
         User user = getAuthenticatedUser();
@@ -276,7 +286,7 @@ public class LoadInputFilesService {
     public void restartLoadingFiles() {
         List<Task> inProgressLoadingTasks = taskRepository.findByStatusAndType(TaskStatus.IN_PROGRESS.toString(), TaskType.LOADING.toString());
         if (inProgressLoadingTasks.isEmpty()) return;
-        final LocalDateTime now = LocalDateTime.now();
+        final LocalDateTime now = LocalDateTime.now(clock);
         // check tasks to restart
         inProgressLoadingTasks.stream()
                 .filter(task -> task.getLastUpdateDate().plusMinutes(15).isBefore(now))
@@ -340,7 +350,7 @@ public class LoadInputFilesService {
                     // ensures the original filename can be properly matched with regex later
                     originalFilename = originalFilename == null ? "" : originalFilename.replace("_", "-");
                     String extension = StringUtils.getFilenameExtension(originalFilename);
-                    return String.format("%s_%s_%s.%s", type.toString(), originalFilename, UUID.randomUUID(), extension);
+                    return type + "_" + originalFilename + "_" + UUID.randomUUID() + "." + extension;
                 })
                 .toList();
     }
@@ -350,9 +360,11 @@ public class LoadInputFilesService {
             boolean isInventory) {
 
         try {
-            Path workingDir = isInventory
-                    ? Path.of(localWorkingFolder, "input", "inventory")
-                    : Path.of(localWorkingFolder, "input", "digital-service");
+            Path workingDir = Path.of(
+                    localWorkingFolder,
+                    "input",
+                    isInventory ? "inventory" : "digital-service"
+            );
 
             String extension = StringUtils.getFilenameExtension(
                     multipartFile.getOriginalFilename()
@@ -431,7 +443,8 @@ public class LoadInputFilesService {
                             FileType.DATACENTER,
                             FileType.EQUIPEMENT_PHYSIQUE,
                             FileType.EQUIPEMENT_VIRTUEL,
-                            FileType.APPLICATION )
+                            FileType.APPLICATION,
+                            FileType.AI_SERVICE)
                     .map(fileType -> {
                         List<StoredFile> files = storedFiles.get(fileType);
                         List<String> typeFileNames = newFilenames(files, fileType);

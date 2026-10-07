@@ -92,7 +92,8 @@ export class InventoryItemComponent implements OnInit {
     equipmentLimitExceed = computed(
         () =>
             (this.inventory().outVirtualCount ?? 0) >
-            Number(environment.equipmentMaxLimit),
+                Number(environment.equipmentMaxLimit) ||
+            (this.inventory().outAiCount ?? 0) > Number(environment.equipmentMaxLimit),
     );
     applicationLimitExceed = computed(
         () =>
@@ -160,7 +161,8 @@ export class InventoryItemComponent implements OnInit {
         return (
             this.inventory().lastTaskEvaluating &&
             (this.inventory().physicalEquipmentCount > 0 ||
-                this.inventory().virtualEquipmentCount > 0)
+                this.inventory().virtualEquipmentCount > 0 ||
+                (this.inventory().aiServiceCount ?? 0) > 0)
         );
     };
 
@@ -208,7 +210,8 @@ export class InventoryItemComponent implements OnInit {
             case "equipment":
                 if (
                     this.inventory().physicalEquipmentCount > 0 ||
-                    this.inventory().virtualEquipmentCount > 0
+                    this.inventory().virtualEquipmentCount > 0 ||
+                    (this.inventory().aiServiceCount ?? 0) > 0
                 ) {
                     uri = criteriaUri;
                 }
@@ -222,7 +225,7 @@ export class InventoryItemComponent implements OnInit {
 
         if (uri === undefined) return;
 
-        this.router.navigate([`${this.inventory().id}/footprint/${uri}`], {
+        void this.router.navigate([`${this.inventory().id}/footprint/${uri}`], {
             relativeTo: this.route,
         });
     }
@@ -246,10 +249,11 @@ export class InventoryItemComponent implements OnInit {
     }
 
     isEstimationDisabled() {
-        // If there is no physical equipement and no virtual equipment, disable button
+        // If there is no physical equipement, no virtual equipment and no AI service, disable button
         if (
             this.inventory().physicalEquipmentCount <= 0 &&
-            this.inventory().virtualEquipmentCount <= 0
+            this.inventory().virtualEquipmentCount <= 0 &&
+            (this.inventory().aiServiceCount ?? 0) <= 0
         )
             return true;
 
@@ -285,7 +289,7 @@ export class InventoryItemComponent implements OnInit {
         this.openSidebarForNote.emit(this.inventory().id);
     }
 
-    async onSelectedChange(id: number, event: any) {
+    onSelectedChange(id: number, event: any) {
         if (event === undefined) return;
         if (event === true) {
             this.openTab.emit(id);
@@ -300,11 +304,16 @@ export class InventoryItemComponent implements OnInit {
 
     displayPopupFct() {
         const defaultCriteria = Object.keys(this.global.criteriaList()).slice(0, 5);
-        this.selectedCriteria =
-            this.inventory().criteria ??
-            this.workspace?.criteriaIs ??
-            this.organization?.criteria ??
-            defaultCriteria;
+        const inventoryCriteria = this.inventory()?.criteria;
+
+        if (inventoryCriteria?.length) {
+            this.selectedCriteria = inventoryCriteria;
+        } else {
+            this.selectedCriteria =
+                this.workspace?.criteriaIs ??
+                this.organization?.criteria ??
+                defaultCriteria;
+        }
         this.displayPopup = true;
     }
 

@@ -11,8 +11,9 @@ package com.soprasteria.g4it.backend.apiinventory.business;
 import com.soprasteria.g4it.backend.TestUtils;
 import com.soprasteria.g4it.backend.apiinout.repository.OutPhysicalEquipmentRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.OutVirtualEquipmentRepository;
-import com.soprasteria.g4it.backend.apiinventory.mapper.InventoryMapperImpl;
+import com.soprasteria.g4it.backend.apiinventory.mapper.InventoryMapper;
 import com.soprasteria.g4it.backend.apiinventory.model.InventoryBO;
+import org.mapstruct.factory.Mappers;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
 import com.soprasteria.g4it.backend.apiuser.business.RoleService;
@@ -65,6 +66,9 @@ class InventoryServiceTest {
     private WorkspaceService workspaceService;
 
     @Mock
+    private InventoryMapper inventoryMapper;
+
+    @Mock
     private InventoryRepository inventoryRepo;
     @Mock
     private TaskRepository taskRepo;
@@ -87,7 +91,11 @@ class InventoryServiceTest {
 
     @BeforeEach
     void init() {
-        ReflectionTestUtils.setField(inventoryService, "inventoryMapper", new InventoryMapperImpl());
+        ReflectionTestUtils.setField(
+                inventoryService,
+                "inventoryMapper",
+                Mappers.getMapper(InventoryMapper.class)
+        );
     }
 
     @Test
@@ -204,7 +212,9 @@ class InventoryServiceTest {
                 .outApplicationCount(0L)
                 .outVirtualCount(0L)
                 .outPhysicalCount(0L)
+                .outAiCount(0L)
                 .tasks(List.of())
+                .aiServiceCount(0L)
                 .enableDataInconsistency(false)
                 .build();
 

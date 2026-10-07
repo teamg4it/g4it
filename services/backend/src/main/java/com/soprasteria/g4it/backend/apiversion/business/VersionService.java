@@ -34,6 +34,7 @@ public class VersionService {
 
     @Value("${ecologits.version}")
     private String ecologits;
+
     /**
      * Get the NumEcoEval version
      *

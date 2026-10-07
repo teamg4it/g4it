@@ -6,14 +6,7 @@
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
 import { AsyncPipe } from "@angular/common";
-import {
-    Component,
-    DestroyRef,
-    inject,
-    OnDestroy,
-    OnInit,
-    ViewChild,
-} from "@angular/core";
+import { Component, DestroyRef, inject, OnDestroy, OnInit } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormsModule } from "@angular/forms";
 import { ActivatedRoute, Event, NavigationEnd, Router } from "@angular/router";
@@ -39,7 +32,7 @@ import { GlobalStoreService } from "src/app/core/store/global.store";
 import { Constants } from "src/constants";
 import { CommonEditorComponent } from "../common/common-editor/common-editor.component";
 import { RenewServicePopupComponent } from "../common/renew-service-popup/renew-service-popup.component";
-import { FilePanelComponent } from "./file-panel/file-panel.component";
+import { InvFilePanelComponent } from "./file-panel/inv-file-panel.component";
 import { InventoryItemComponent } from "./inventory-item/inventory-item.component";
 
 @Component({
@@ -50,7 +43,6 @@ import { InventoryItemComponent } from "./inventory-item/inventory-item.componen
     imports: [
         ToastModule,
         DrawerModule,
-        FilePanelComponent,
         CommonEditorComponent,
         Button,
         ScrollPanelModule,
@@ -61,6 +53,7 @@ import { InventoryItemComponent } from "./inventory-item/inventory-item.componen
         RenewServicePopupComponent,
         AsyncPipe,
         TranslatePipe,
+        InvFilePanelComponent,
     ],
 })
 export class InventoriesComponent implements OnInit, OnDestroy {
@@ -68,7 +61,6 @@ export class InventoriesComponent implements OnInit, OnDestroy {
     private readonly global = inject(GlobalStoreService);
     private readonly route = inject(ActivatedRoute);
 
-    @ViewChild(FilePanelComponent) filePanelComponent: FilePanelComponent | undefined;
     sidebarVisible: boolean = false;
     sidebarPurpose: string = "";
     array = Array;
@@ -103,7 +95,7 @@ export class InventoriesComponent implements OnInit, OnDestroy {
     ) {}
 
     ngOnInit(): void {
-        (async () => {
+        void (async () => {
             this.userService.currentWorkspace$
                 .pipe(takeUntil(this.ngUnsubscribe))
                 .subscribe((workspace: Workspace) => {
@@ -153,7 +145,7 @@ export class InventoriesComponent implements OnInit, OnDestroy {
                         }
 
                         if (this.isAllowedInventory) {
-                            this.reloadInventories().then(() => {
+                            void this.reloadInventories().then(() => {
                                 if (this.doLoop) {
                                     this.loopLoadInventories();
                                 }
@@ -336,7 +328,7 @@ export class InventoriesComponent implements OnInit, OnDestroy {
                     summary: this.translate.instant("common.note.delete"),
                     sticky: false,
                 });
-                this.reloadInventory(this.selectedInventory.id);
+                void this.reloadInventory(this.selectedInventory.id);
             });
     }
 

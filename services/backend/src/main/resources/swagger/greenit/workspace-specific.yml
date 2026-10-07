@@ -1,0 +1,29 @@
+openapi: "3.0.3"
+info:
+  title: Swagger GreenIT - Open API 3.0 - TemplateFileSystem
+  description: This is a Inventory Server based on the OpenAPI 3.0 specification.
+  version: '1.0.0'
+
+tags:
+  - name: workspace-specific
+    description: All endpoint to interact with workspace-specific
+
+paths:
+  /organizations/{organization}/workspaces/{workspace}/is-workspace-specific:
+    parameters:
+      - $ref: '#/components/parameters/organizationPathParam'
+      - $ref: '#/components/parameters/workspacePathParam'
+    get:
+      summary: Get boolean value for is-workspace-specific
+      description:
+      operationId: isWorkspaceSpecific
+      x-custom-role: "hasRole('INVENTORY_READ') OR hasRole('DIGITAL_SERVICE_READ')"
+      tags:
+        - workspace-specific
+      responses:
+        '200':
+          description: Return boolean value for is-workspace-specific
+          content:
+            application/json:
+              schema:
+                type: boolean
