@@ -28,24 +28,30 @@ describe("Information System", () => {
 
         // switch to simulation
         cy.get('[id="simulation-radio-button"]').click();
-        cy.get('[id="input-simulation-text"]').type(
-            `test-cypress-information-system${Math.random().toFixed(2)}`,
-        );
+        const simulationName = `test-cypress-information-system${Math.random().toFixed(6)}`;
+        cy.get('[id="input-simulation-text"]').type(simulationName);
 
-        // load files
-        cy.get("[id=file0] input").selectFile(
+        // Infrastructure files
+        cy.get('[id="space-menu-item-1"]').click();
+        cy.get('[id="space-menu-item-1"]').should("have.class", "active");
+        cy.get("#file0 input[type='file']").selectFile(
             "cypress/dataset/input/information-system/datacenter.csv",
             { force: true },
         );
-        cy.get("[id=file1] input").selectFile(
+        cy.get("#file1 input[type='file']").selectFile(
             "cypress/dataset/input/information-system/physical_equipment.csv",
             { force: true },
         );
-        cy.get("[id=file2] input").selectFile(
+
+        // Visit End-user Devices before Application Services
+        cy.get('[id="space-menu-item-2"]').click();
+        cy.get('[id="space-menu-item-3"]').click();
+        cy.get('[id="space-menu-item-3"]').should("have.class", "active");
+        cy.get("#file3 input[type='file']").selectFile(
             "cypress/dataset/input/information-system/virtual_equipment.csv",
             { force: true },
         );
-        cy.get("[id=file3] input").selectFile(
+        cy.get("#file4 input[type='file']").selectFile(
             "cypress/dataset/input/information-system/application.csv",
             { force: true },
         );
@@ -62,15 +68,19 @@ describe("Information System", () => {
         });
 
         // add new inventory
-        cy.get("#add-new-inventory button").click({ force: true });
+        cy.get("#add-new-inventory button").last().click({ force: true });
 
         // access to equipment view
         cy.then(() => setPage("Equipment multicriteria page"));
         cy.wait(3000);
-        cy.get("#launch-estimate button").click();
+        cy.contains("app-inventory-item", simulationName).within(() => {
+            cy.get("#launch-estimate button").click({ force: true });
+        });
         cy.contains("Yes").click();
         cy.wait(15000);
-        cy.get("#inventory-equipment-button").last().click();
+        cy.contains("app-inventory-item", simulationName).within(() => {
+            cy.get("#inventory-equipment-button button").click();
+        });
         cy.checkA11y(
             { exclude: [[".p-scrollpanel-bar"]] },
             {
@@ -125,7 +135,9 @@ describe("Information System", () => {
 
         // access to application view
         cy.then(() => setPage("Application multicriteria page"));
-        cy.get('[id="inventory-application-button"]').last().click();
+        cy.contains("app-inventory-item", simulationName).within(() => {
+            cy.get("#inventory-application-button button").click();
+        });
         cy.checkA11y(
             { exclude: [[".p-scrollpanel-bar"]] },
             {
@@ -177,7 +189,9 @@ describe("Information System", () => {
         cy.get('[id="my-is-return-button"]').click();
 
         // delete test data after cypress testing
-        cy.get("#delete-inventory button").click({ force: true });
+        cy.contains("app-inventory-item", simulationName).within(() => {
+            cy.get("#delete-inventory button").click({ force: true });
+        });
         cy.contains("Yes").click();
     });
 });
