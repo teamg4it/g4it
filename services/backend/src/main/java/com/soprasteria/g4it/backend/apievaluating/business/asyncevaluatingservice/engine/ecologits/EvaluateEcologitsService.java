@@ -69,7 +69,6 @@ public class EvaluateEcologitsService {
                     resolvedLocation
             );
         } catch (ExternalApiException e) {
-            log.warn("EcoLogits estimation failed for AI service '{}' ({}/{})", aiService.getServiceName(), aiService.getProvider(), aiService.getModel(), e);
             return buildErrorRows(activeCriteriaCodes, lifecycleSteps, e.getMessage());
         }
 
@@ -82,8 +81,6 @@ public class EvaluateEcologitsService {
                     .map(message -> String.format("%s: %s", message.getCode(), message.getMessage()))
                     .reduce((left, right) -> left + "; " + right)
                     .orElse("EcoLogits returned calculation errors");
-            log.warn("EcoLogits returned business errors for AI service '{}' ({}/{}): {}",
-                    aiService.getServiceName(), aiService.getProvider(), aiService.getModel(), errorMessage);
             return buildErrorRows(activeCriteriaCodes, lifecycleSteps, errorMessage);
         }
 
