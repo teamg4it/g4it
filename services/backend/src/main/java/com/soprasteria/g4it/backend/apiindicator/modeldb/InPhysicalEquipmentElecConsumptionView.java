@@ -32,7 +32,7 @@ import java.io.Serializable;
 @NamedNativeQuery(name = "InPhysicalEquipmentElecConsumptionView.findPhysicalEquipmentElecConsumptionIndicators",
         resultSetMapping = "InPhysicalEquipmentElecConsumptionIndicatorsMapping", query = """
         SELECT
-        ROW_NUMBER() OVER ()      AS id,
+        (:taskId * 1000000000) + ROW_NUMBER() OVER ()      AS id,
         "location"                AS country,
         equipment_type            AS type,
         common_filters[1]         AS nom_entite,

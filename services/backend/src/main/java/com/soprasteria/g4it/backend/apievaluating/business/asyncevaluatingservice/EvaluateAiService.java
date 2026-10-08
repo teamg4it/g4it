@@ -465,7 +465,7 @@ public class EvaluateAiService {
                 .countValue(1L)
                 .unitImpact(impact)
                 .peopleEqImpact(sipValue == null ? 0d : impact / sipValue)
-                .electricityConsumption(elecConsumption == null ? 0d : elecConsumption)
+                .electricityConsumption(elecConsumption == null ? 0d : elecConsumption * localQuantity)
                 .quantity(localQuantity)
                 .lifespan(lifespan == null ? 0d : lifespan * localQuantity)
                 .usageDuration(usageDuration == null ? 0d : usageDuration)

@@ -957,7 +957,7 @@ public class EvaluateService {
                 .countValue(1L)
                 .unitImpact(impact)
                 .peopleEqImpact(input.sipValue() == null ? 0d : impact / input.sipValue())
-                .electricityConsumption(input.elecConsumption() == null ? 0d : input.elecConsumption())
+                .electricityConsumption(input.elecConsumption() == null ? 0d : input.elecConsumption() * localQuantity)
                 .quantity(localQuantity)
                 .lifespan(input.lifespan() == null ? 0d : input.lifespan() * localQuantity)
                 .usageDuration(input.usageDuration() == null ? 0d : input.usageDuration())
