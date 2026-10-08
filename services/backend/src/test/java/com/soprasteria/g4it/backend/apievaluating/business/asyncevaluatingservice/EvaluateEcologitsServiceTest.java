@@ -5,9 +5,12 @@ import com.soprasteria.g4it.backend.apievaluating.model.ImpactBO;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InAiService;
 import com.soprasteria.g4it.backend.exception.ExternalApiException;
 import com.soprasteria.g4it.backend.external.ecologits.business.EcologitsService;
+import com.soprasteria.g4it.backend.external.ecologits.client.EcologitsClient;
+import com.soprasteria.g4it.backend.external.ecologits.model.request.EcoEstimationRequestRest;
 import com.soprasteria.g4it.backend.external.ecologits.model.response.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -16,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -256,6 +260,26 @@ class EvaluateEcologitsServiceTest {
         assertEquals("ERROR", endOfLife.getIndicatorStatus());
         assertEquals(0d, endOfLife.getUnitImpact());
         assertTrue(endOfLife.getTrace().contains("does not provide end_of_life impacts"));
+    }
+
+    @Test
+    void ecologitsService_runEstimation_buildsRequestAndReturnsClientResponse() {
+        EcologitsClient ecologitsClientMock = mock(EcologitsClient.class);
+        EcologitsService realEcologitsService = new EcologitsService(ecologitsClientMock);
+
+        EcoEstimationResponseRest expectedResponse = responseWithImpacts();
+        ArgumentCaptor<EcoEstimationRequestRest> requestCaptor = ArgumentCaptor.forClass(EcoEstimationRequestRest.class);
+        when(ecologitsClientMock.runEstimation(requestCaptor.capture())).thenReturn(expectedResponse);
+
+        EcoEstimationResponseRest actualResponse = realEcologitsService.runEstimation("openai", "gpt-4o-mini", 1000L, "FRA");
+
+        assertSame(expectedResponse, actualResponse);
+
+        EcoEstimationRequestRest capturedRequest = requestCaptor.getValue();
+        assertEquals("openai", capturedRequest.getProvider());
+        assertEquals("gpt-4o-mini", capturedRequest.getModelName());
+        assertEquals(1000L, capturedRequest.getOutputTokenCount());
+        assertEquals("FRA", capturedRequest.getElectricityMixZone());
     }
 
     private EcoEstimationResponseRest responseWithImpacts() {
