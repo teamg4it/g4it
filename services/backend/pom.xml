@@ -60,6 +60,13 @@
         <azure-communication-email.version>1.0.11</azure-communication-email.version>
         <!-- Netty version override to remediate CVE-2026-59901 and related vulnerabilities -->
         <netty.version>4.2.17.Final</netty.version>
+        <!-- Jackson 2.x override to remediate CVE-2026-89407, CVE-2026-89425, CVE-2026-68497, CVE-2026-91776, CVE-2026-91777 -->
+        <jackson2-core.version>2.21.7</jackson2-core.version>
+        <jackson2-annotations.version>2.21</jackson2-annotations.version>
+        <!-- Jackson 3.x (tools.jackson) override to remediate the same CVE family -->
+        <jackson3.version>3.1.7</jackson3.version>
+        <!-- Spring Framework override to remediate CVE-2026-47884 (RCE in XsltView) -->
+        <spring-framework.version>7.0.9</spring-framework.version>
         <sonar.coverage.exclusions>
             **/gen/**/*.java,
             **/controller/**/*.java,
@@ -310,7 +317,7 @@
         <dependency>
             <groupId>org.jsoup</groupId>
             <artifactId>jsoup</artifactId>
-            <version>1.23.1</version>
+            <version>1.23.2</version>
         </dependency>
         <dependency>
             <groupId>com.azure</groupId>
@@ -378,6 +385,42 @@
                 <artifactId>netty-codec-http2</artifactId>
                 <version>${netty.version}</version>
             </dependency>
+
+            <!-- Jackson 2.x fixes: CVE-2026-89407, CVE-2026-89425, CVE-2026-68497, CVE-2026-91776, CVE-2026-91777 -->
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-core</artifactId>
+                <version>${jackson2-core.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${jackson2-core.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-annotations</artifactId>
+                <version>${jackson2-annotations.version}</version>
+            </dependency>
+
+            <!-- Jackson 3.x (tools.jackson) fixes: CVE-2026-89407, CVE-2026-89425, CVE-2026-68497, CVE-2026-91776, CVE-2026-91777 -->
+            <dependency>
+                <groupId>tools.jackson.core</groupId>
+                <artifactId>jackson-core</artifactId>
+                <version>${jackson3.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>tools.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${jackson3.version}</version>
+            </dependency>
+
+            <!-- Spring Framework RCE fix: CVE-2026-47884 -->
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-webmvc</artifactId>
+                <version>${spring-framework.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -387,7 +430,7 @@
             <plugin>
                 <groupId>org.sonarsource.scanner.maven</groupId>
                 <artifactId>sonar-maven-plugin</artifactId>
-                <version>3.9.1.2184</version>
+                <version>3.10.0.2594</version>
             </plugin>
 
             <!-- Merge all yaml swagger file for greenIT -->
