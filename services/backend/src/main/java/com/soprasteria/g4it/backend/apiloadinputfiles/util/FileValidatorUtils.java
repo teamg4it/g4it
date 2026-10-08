@@ -10,12 +10,15 @@ import org.apache.poi.openxml4j.util.ZipSecureFile;
 import org.apache.poi.xssf.eventusermodel.XSSFReader;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringReader;
 import java.io.UncheckedIOException;
 import java.util.Collection;
 import java.util.List;
@@ -119,9 +122,7 @@ public final class FileValidatorUtils {
 
                 XSSFReader reader = new XSSFReader(opcPackage);
 
-                XMLReader parser = SAXParserFactory.newInstance()
-                        .newSAXParser()
-                        .getXMLReader();
+                XMLReader parser = createSecureXmlReader();
 
                 XSSFReader.SheetIterator sheets =
                         (XSSFReader.SheetIterator)
@@ -168,6 +169,54 @@ public final class FileValidatorUtils {
                     Constants.READ_EXCEL_ERROR
             );
         }
+    }
+
+    /**
+     * Creates a {@link XMLReader} hardened against XXE (XML External Entity) attacks.
+     * Disables DTD processing and external general/parameter entities so that
+     * untrusted XML content (e.g. xlsx sheet XML) cannot trigger loading of
+     * external resources or entity expansion.
+     *
+     * @return a securely configured XMLReader
+     * @throws ParserConfigurationException if the underlying parser cannot be configured
+     * @throws SAXException                 if the underlying parser does not support a feature
+     */
+    private static XMLReader createSecureXmlReader()
+            throws ParserConfigurationException, SAXException {
+
+        SAXParserFactory factory = SAXParserFactory.newInstance();
+
+        // Disable DTDs entirely - the primary defense against XXE.
+        factory.setFeature(
+                "http://apache.org/xml/features/disallow-doctype-decl",
+                true
+        );
+
+        // Defense in depth: disable external entities even if DTDs were allowed.
+        factory.setFeature(
+                "http://xml.org/sax/features/external-general-entities",
+                false
+        );
+        factory.setFeature(
+                "http://xml.org/sax/features/external-parameter-entities",
+                false
+        );
+        factory.setFeature(
+                "http://apache.org/xml/features/nonvalidating/load-external-dtd",
+                false
+        );
+
+        factory.setXIncludeAware(false);
+        factory.setNamespaceAware(true);
+
+        XMLReader xmlReader = factory.newSAXParser().getXMLReader();
+
+        // Ensure no external entity resolution occurs at the reader level too.
+        xmlReader.setEntityResolver(
+                (publicId, systemId) -> new InputSource(new StringReader(""))
+        );
+
+        return xmlReader;
     }
 
     private static void throwMaxRowsException(String filename) {

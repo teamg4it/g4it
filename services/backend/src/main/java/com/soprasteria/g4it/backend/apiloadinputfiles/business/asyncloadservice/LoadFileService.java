@@ -82,6 +82,27 @@ public class LoadFileService {
     }
 
     /**
+     * Validates that the given converted file's path stays within the expected
+     * local working directory, protecting against path traversal before performing
+     * local disk access (read). Uses lexical normalization only (no filesystem
+     * access such as canonicalization), so the validation itself never touches
+     * disk with the untrusted value prior to the boundary check.
+     *
+     * @param convertedFile the file to validate
+     * @param context       the context, used for error logging
+     * @return the validated file
+     */
+    private File validateConvertedFile(final File convertedFile, final Context context) {
+        Path safePath = convertedFile.toPath().normalize();
+        Path baseDir = Path.of(localWorkingFolder).normalize();
+        if (!safePath.startsWith(baseDir)) {
+            throw new AsyncTaskException(String.format("%s - Invalid converted file path '%s'",
+                    context.log(), convertedFile.getName()));
+        }
+        return safePath.toFile();
+    }
+
+    /**
      * Manage an uploaded file
      * <p>
      * Converts the original file to a CSV file and processes the data
@@ -109,7 +130,7 @@ public class LoadFileService {
         List<String> errors = new ArrayList<>();
         List<LineError> readErrors;
 
-        try (BufferedReader reader = new BufferedReader(new FileReader(fileToLoad.getConvertedFile()))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(validateConvertedFile(fileToLoad.getConvertedFile(), context)))) {
             CSVParser records = CSVFormat.RFC4180.builder()
                     .setHeader()
                     .setDelimiter(CsvUtils.DELIMITER)
@@ -168,15 +189,29 @@ public class LoadFileService {
         String rejectedFileName = String.join("_", REJECTED, fileType.getFileName(), context.getDatetime().format(Constants.FILE_DATE_TIME_FORMATTER)) + Constants.CSV;
         String pathId = context.getInventoryId() != null ? String.valueOf(context.getInventoryId()) : context.getDigitalServiceVersionUid();
 
-        String path = localWorkingFolder + File.separator + REJECTED + File.separator + pathId + File.separator + rejectedFileName;
+        // Validate the rejected output path stays within the expected working
+        // directory, protecting against path traversal via a crafted pathId
+        // (e.g. digitalServiceVersionUid) before performing local disk access.
+        // Pure lexical normalization + startsWith checks (no filesystem access).
+        Path rejectedBaseDir = Path.of(localWorkingFolder, REJECTED).normalize();
+        Path rejectedDir = rejectedBaseDir.resolve(pathId).normalize();
+        if (!rejectedDir.startsWith(rejectedBaseDir)) {
+            throw new AsyncTaskException(String.format("%s - Invalid rejected folder path for pathId '%s'", context.log(), pathId));
+        }
+        Path rejectedFilePath = rejectedDir.resolve(rejectedFileName).normalize();
+        if (!rejectedFilePath.startsWith(rejectedDir)) {
+            throw new AsyncTaskException(String.format("%s - Invalid rejected file path '%s'", context.log(), rejectedFileName));
+        }
+        File rejectedDirFile = rejectedDir.toFile();
+        File rejectedFile = rejectedFilePath.toFile();
 
         try {
-            Files.createDirectories(Path.of(localWorkingFolder).resolve(REJECTED).resolve(pathId));
+            Files.createDirectories(rejectedDirFile.toPath());
         } catch (IOException e) {
             throw new AsyncTaskException(String.format("%s - Cannot create local rejected folder", context.log()), e);
         }
-        try (Reader reader = new FileReader(file);
-             BufferedWriter writer = new BufferedWriter(new FileWriter(new File(path), true))
+        try (Reader reader = new FileReader(validateConvertedFile(file, context));
+             BufferedWriter writer = new BufferedWriter(new FileWriter(rejectedFile, true))
         ) {
 
             int lineNumber = 2;
@@ -394,7 +429,7 @@ public class LoadFileService {
             for (FileToLoad fileToLoad : context.getFilesToLoad()) {
                 if (fileType.equals(fileToLoad.getFileType())) {
 
-                    try (BufferedReader reader = new BufferedReader(new FileReader(fileToLoad.getConvertedFile()))) {
+                    try (BufferedReader reader = new BufferedReader(new FileReader(validateConvertedFile(fileToLoad.getConvertedFile(), context)))) {
                         CSVParser records = CSVFormat.RFC4180.builder()
                                 .setHeader()
                                 .setDelimiter(CsvUtils.DELIMITER)
