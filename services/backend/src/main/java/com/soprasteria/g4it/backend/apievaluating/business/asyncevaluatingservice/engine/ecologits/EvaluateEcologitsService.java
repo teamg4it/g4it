@@ -69,7 +69,6 @@ public class EvaluateEcologitsService {
                     resolvedLocation
             );
         } catch (ExternalApiException e) {
-            log.warn("EcoLogits estimation failed for AI service '{}' ({}/{})", aiService.getServiceName(), aiService.getProvider(), aiService.getModel(), e);
             return buildErrorRows(activeCriteriaCodes, lifecycleSteps, e.getMessage());
         }
 
