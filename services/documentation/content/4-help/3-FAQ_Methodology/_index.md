@@ -68,7 +68,7 @@ EcoLogits is used by G4IT to estimate the environmental impacts associated with 
 
 The calculation uses information such as the AI service provider, model, number of output tokens and location / electricity mix zone.
 
-Here the step by step information about the EcoLogits calculation engine: [EcoLogits Calculation Engine](7-EcoLogits_Calculation_Engine.md).
+Here the step by step information about the EcoLogits calculation engine: [EcoLogits Calculation Engine](../../3-technical-documentation/4-backend_documentation/EcoLogits_Calculation_Engine.md).
 {{% /expand %}}
 
 

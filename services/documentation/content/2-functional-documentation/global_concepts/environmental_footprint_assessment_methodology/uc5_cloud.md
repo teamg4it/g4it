@@ -15,4 +15,5 @@ mermaid: true
 Boavizta footprint assessment methodology for cloud instances is described in the
 [Boavizta Documentation](https://doc.api.boavizta.org/Explanations/services/cloud/).
 
-_The current version of Boavizta in use is 1.3.10._
+_The current version of Boavizta in use is 2.4.1
+
