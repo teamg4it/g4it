@@ -98,6 +98,8 @@ front ->> back: GET /api/{organization}/{workspace}/digital-services/server-host
 DataBase-->> back: Get networks from ref_server_host table in which type is Compute
 front ->> back: GET /api/{organization}/{workspace}/digital-services/server-host?type=Storage
 DataBase-->> back: Get networks from ref_server_host table in which type is Storage
+front ->> back: GET /api/{organization}/{workspace}/digital-services/server-host?type=AI
+DataBase-->> back: Get networks from ref_server_host table in which type is AI
 front ->> back: GET /api/referential/boaviztapi/countries
 DataBase --> back : Get referential countries from boaviztapi
 back ->> front: Display the service in the suited list

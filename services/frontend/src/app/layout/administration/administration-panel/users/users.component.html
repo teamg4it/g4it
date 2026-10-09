@@ -189,16 +189,18 @@
                             <td class="text-center">{{ user?.role | translate }}</td>
                             <td class="text-center">
                                 @if (!user.isOrganizationAdmin) {
-                                    <div>
+                                    <div [id]="'user-actions-' + rowIndex">
                                         @if (user.roles.length > 0) {
                                             <p-button
-                                                styleClass="p-button-text bg-white p-0 m-0"
+                                                styleClass="p-button-text bg-white p-1 m-2"
                                                 (onClick)="
                                                     openSidepanelForAddORUpdateOrg(
                                                         user,
-                                                        isEcoMindEnabledForCurrentOrganizationSelected
+                                                        isEcoMindEnabledForCurrentOrganizationSelected,
+                                                        rowIndex
                                                     )
                                                 "
+                                                id="edit-button"
                                                 id="edit-button"
                                             >
                                                 <img
@@ -218,7 +220,7 @@
                                         }
                                         @if (user.roles.length > 0) {
                                             <p-button
-                                                styleClass="p-button-text bg-white py-0 my-0"
+                                                styleClass="p-button-text bg-white p-1 m-1"
                                                 (onClick)="
                                                     isConfirmDialogVisible.set(true);
                                                     deleteUserDetails($event, user)
@@ -245,7 +247,8 @@
                                                 (onClick)="
                                                     openSidepanelForAddORUpdateOrg(
                                                         user,
-                                                        isEcoMindEnabledForCurrentOrganizationSelected
+                                                        isEcoMindEnabledForCurrentOrganizationSelected,
+                                                        rowIndex
                                                     )
                                                 "
                                                 icon="pi pi-plus"
@@ -269,14 +272,14 @@
             [style]="{ width: '35%' }"
             position="right"
             [showCloseIcon]="true"
-            (onHide)="clearForm = true; searchList(); sidebarVisible = false"
+            (onHide)="closeSidebar()"
             ariaCloseLabel="Close"
         >
             <app-add-workspace
                 #addOrganisationPanel
                 [userDetailEcoMind]="userDetailEcoMind"
                 [userDetail]="userDetail"
-                (outClose)="searchList(); sidebarVisible = false"
+                (outClose)="closeSidebar()"
                 [workspace]="workspace"
                 [clearForm]="clearForm"
                 [updateOrganizationEnable]="!sidebarCreateMode"

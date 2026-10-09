@@ -84,9 +84,9 @@ export class DigitalServicesCloudServicesSidePanelComponent implements OnInit {
     ngOnInit(): void {
         this.isNew = this.cloud.idFront === undefined;
         this.initForm();
-        this.getBoaviztaReferentials();
+        void this.getBoaviztaReferentials();
         if (!this.cloud.idFront) {
-            this.resetCloudServices();
+            void this.resetCloudServices();
         }
     }
 

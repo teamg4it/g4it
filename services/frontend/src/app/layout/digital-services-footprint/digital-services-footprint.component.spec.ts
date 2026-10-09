@@ -44,7 +44,7 @@ describe("DigitalServicesFootprintComponent", () => {
         get: () => of(mockDigitalService),
         getNetworkReferential: () => of([]),
         getDeviceReferential: () => of([]),
-        getHostServerReferential: () => of([]),
+        getHostServerReferential: (_type: string) => of([] as { value: string }[]),
         update: () => of(mockDigitalService),
         digitalService$: of(mockDigitalService),
         getServiceRenewalDetails: () => of(null),
@@ -159,5 +159,48 @@ describe("DigitalServicesFootprintComponent", () => {
         component.ngOnInit();
 
         expect(asyncInitSpy).toHaveBeenCalledWith("ABC-123");
+    });
+
+    it("should sort server host referentials and set server types without mutating the original arrays", async () => {
+        const computeItems = [
+            { value: "Custom Compute B" },
+            { value: "Server Compute M" },
+            { value: "Custom Compute A" },
+        ];
+        const storageItems = [
+            { value: "Custom Storage B" },
+            { value: "Server Storage M" },
+        ];
+        const aiItems = [{ value: "AI B" }, { value: "AI A" }];
+
+        const originalComputeItems = [...computeItems];
+        const originalStorageItems = [...storageItems];
+        const originalAiItems = [...aiItems];
+
+        spyOn(mockDigitalServicesDataService, "getHostServerReferential").and.callFake(
+            (type: string) => {
+                if (type === "Compute") return of(computeItems);
+                if (type === "Storage") return of(storageItems);
+                return of(aiItems);
+            },
+        );
+
+        component.isEcoMindAi = false;
+        await (component as any).asyncInit("test-uid");
+
+        expect(mockDigitalServiceStoreService.setServerTypes).toHaveBeenCalledWith([
+            { value: "Server Storage M" },
+            { value: "Server Compute M" },
+            { value: "Custom Compute A" },
+            { value: "Custom Compute B" },
+            { value: "Custom Storage B" },
+            { value: "AI A" },
+            { value: "AI B" },
+        ]);
+
+        // The source arrays returned by the data service must remain untouched.
+        expect(computeItems).toEqual(originalComputeItems);
+        expect(storageItems).toEqual(originalStorageItems);
+        expect(aiItems).toEqual(originalAiItems);
     });
 });

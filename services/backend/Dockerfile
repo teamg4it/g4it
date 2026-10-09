@@ -17,4 +17,4 @@ RUN mkdir /app/storagetmp && \
 USER 1001
 EXPOSE 8080
 ENTRYPOINT ["java", "-Xmx1g", "-Xms1g", "-jar", "application.jar"]
-HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 CMD curl -f -s localhost:8080/actuator/health | grep UP || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=600s --retries=3 CMD curl -f -s localhost:8080/actuator/health | grep UP || exit 1

@@ -32,6 +32,11 @@ export const BasicRoles = [
     Role.DigitalServiceWrite,
 ];
 
+export const BasicSopraRoles = [
+    Role.DigitalServiceRead,
+    Role.DigitalServiceWrite,
+]
+
 export const RoleRightMap: any = {
     ROLE_INVENTORY_READ: "read",
     ROLE_DIGITAL_SERVICE_READ: "read",

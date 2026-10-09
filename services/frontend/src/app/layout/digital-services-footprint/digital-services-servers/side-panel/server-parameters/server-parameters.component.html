@@ -89,30 +89,41 @@
                         }
                         @if (userService.isAllowedDigitalServiceWrite$ | async) {
                             <p-button
+                                #addDcButton
                                 (onClick)="addSidebarVisible = true"
                                 styleClass="black-button white-space-nowrap"
                             >
                                 {{ "common.add" | translate }}
                                 {{ "digital-services-servers.datacenter" | translate }}
                             </p-button>
-                        }
-                        @if (addSidebarVisible) {
-                            <p-drawer
-                                styleClass="drawer-lg"
-                                [visible]="true"
-                                position="right"
-                                appendTo="body"
-                                (onHide)="childSidePanel.close()"
-                            >
-                                <app-panel-datacenter
-                                    #childSidePanel
-                                    [server]="server()"
-                                    [addSidebarVisible]="addSidebarVisible"
-                                    (addSidebarVisibleChange)="addSidebarVisible = $event"
-                                    (serverChange)="addDatacenter($event)"
+                            @if (addSidebarVisible) {
+                                <p-drawer
+                                    styleClass="drawer-lg"
+                                    [visible]="true"
+                                    position="right"
+                                    appendTo="body"
+                                    (onHide)="
+                                        addDcButton?.el?.nativeElement
+                                            ?.querySelector('button')
+                                            ?.focus();
+                                        childSidePanel.close()
+                                    "
                                 >
-                                </app-panel-datacenter>
-                            </p-drawer>
+                                    <app-panel-datacenter
+                                        #childSidePanel
+                                        [server]="server()"
+                                        [addSidebarVisible]="addSidebarVisible"
+                                        (addSidebarVisibleChange)="
+                                            addDcButton?.el?.nativeElement
+                                                ?.querySelector('button')
+                                                ?.focus();
+                                            addSidebarVisible = $event
+                                        "
+                                        (serverChange)="addDatacenter($event)"
+                                    >
+                                    </app-panel-datacenter>
+                                </p-drawer>
+                            }
                         }
                     </div>
                 </div>
@@ -167,7 +178,7 @@
                                 [min]="0"
                                 styleClass="inputnumber-small"
                                 [(ngModel)]="server().totalVCpu"
-                                (onInput)="verifyValue(server())"
+                                (onBlur)="verifyValue(server())"
                                 name="vcpu"
                                 ngDefaultControl
                                 locale="fr-FR"
@@ -226,6 +237,7 @@
                                 [min]="0"
                                 styleClass="inputnumber-small"
                                 [(ngModel)]="server().totalDisk"
+                                (onBlur)="verifyValue(server())"
                                 name="disk"
                                 ngDefaultControl
                                 locale="fr-FR"
@@ -246,6 +258,76 @@
                                         "digital-services-servers.total.disk" | translate
                                     }}
                                     {{ "common.mandatory" | translate }}
+                                </p>
+                            }
+                            @if (serverForm.get("disk")?.hasError("isValueTooHigh")) {
+                                <p class="error-text">
+                                    {{
+                                        "digital-services-servers.error.totaldisk"
+                                            | translate
+                                                : {
+                                                      totalVmvCpu: totalVmvCpu,
+                                                      totalVmvCpuUnit:
+                                                          "digital-services-servers.disk"
+                                                          | translate,
+                                                  }
+                                    }}
+                                </p>
+                            }
+                        </div>
+                    }
+                    @if (server().type === "AI") {
+                        <div
+                            [ngClass]="
+                                server().mutualizationType == 'Dedicated'
+                                    ? 'label-input-div label-input-div-server'
+                                    : 'label-input-div-medium'
+                            "
+                        >
+                            <label for="disk">
+                                {{ "digital-services-servers.total.vram" | translate }}
+                            </label>
+                            <p-inputNumber
+                                formControlName="vram"
+                                [required]="true"
+                                [min]="0"
+                                styleClass="inputnumber-small"
+                                [(ngModel)]="server().totalVram"
+                                (onBlur)="verifyValue(server())"
+                                name="vram"
+                                ngDefaultControl
+                                locale="fr-FR"
+                                id="vram"
+                            />
+                            <div>
+                                <p class="flex text-xs">
+                                    <i class="pi pi-exclamation-circle mr-1"></i>
+                                    {{
+                                        "digital-services-servers.total.vram-tooltip"
+                                            | translate
+                                    }}
+                                </p>
+                            </div>
+                            @if (serverForm.get("vram")?.hasError("required")) {
+                                <p class="error-text">
+                                    {{
+                                        "digital-services-servers.total.vram" | translate
+                                    }}
+                                    {{ "common.mandatory" | translate }}
+                                </p>
+                            }
+                            @if (serverForm.get("vram")?.hasError("isValueTooHigh")) {
+                                <p class="error-text">
+                                    {{
+                                        "digital-services-servers.error.totalvram"
+                                            | translate
+                                                : {
+                                                      totalVmvCpu: totalVmvCpu,
+                                                      totalVmvCpuUnit:
+                                                          "digital-services-servers.vcpu"
+                                                          | translate,
+                                                  }
+                                    }}
                                 </p>
                             }
                         </div>

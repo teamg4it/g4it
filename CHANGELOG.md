@@ -1,11 +1,33 @@
 # G4IT
+
+## 3.15.0
+
+### Major Changes
+
+- 2329 | Digital Services - Add new AI server type into G4IT
+- 2338 | Integrate EcoLogits Calculation Engine into G4IT
+- 2335 | Addition of a new import file dedicated to AI services
+- 2339 | Calculating the impact of AI services on an inventory
+- 2337 | Update Data Model documentation to version 3.2.0 for AI services import
+- 2336 | Review of the user journey for creating a new inventory
+
+### Minor Changes
+
+- 2433 | Restrict inventory module access by default for new sopra steria users
+- 2445 | Fix Incorrect return navigation from EcoMind AI Version comparison
+
 ## 3.14.1
 
 ### Major Changes
 
+- 2384 | Improve performances and scalability for large datasets
+- 2386 | Improve scheduler and concurrent processing management
+
 ### Minor Changes
+
 - 2232 | Redesign digital service input journey to improve clarity, guidance, and usability
 - 2376 | Resolve accessibility issues at 200% zoom
+- 2371 | Resolve accessibility fixes for drawer and other issues
 
 ## 3.14.0
 
@@ -14,10 +36,11 @@
 - 2141 | Require explicit access request for EcomindIA module in new workspaces
 - 2196 | Managing the context and calculation assumptions for a digital service
 - 2158 | Reverse Axes on the main Radial graph
-- 2150 | Modifying the rendering of the main graph when more than 5 items 
+- 2150 | Modifying the rendering of the main graph when more than 5 items
 - 2195 | Explicit checks during the creation of an inventory by importing a file
-  
+
 ### Minor Changes
+
 - 2318 | Correct calculation of total equipment count and average lifespan in Inventory module
 - 2183 | New data model file for importing workspace reference data + updating platform data model
 - 2193 | Administration - Explicit checks during the loading of workspace reference data files

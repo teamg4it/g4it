@@ -18,6 +18,8 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 
 /**
  * In Datacenter JPA repository.
@@ -42,6 +44,10 @@ public interface InDatacenterRepository extends JpaRepository<InDatacenter, Long
      */
     List<InDatacenter> findByDigitalServiceVersionUid(String digitalServiceVersionUid);
 
+    List<InDatacenter> findByDigitalServiceVersionUid(
+            String digitalServiceVersionUid,
+            Pageable pageable);
+
     /**
      * Find datacenter by the functionally unique fields
      *
@@ -58,6 +64,10 @@ public interface InDatacenterRepository extends JpaRepository<InDatacenter, Long
      * @return return a list of datacenters
      */
     List<InDatacenter> findByInventoryId(Long inventoryId);
+
+    List<InDatacenter> findByInventoryIdOrderByIdAsc(
+            Long inventoryId,
+            Pageable pageable);
 
     @Transactional
     @Modifying

@@ -8,10 +8,10 @@
 import { Component, DestroyRef, inject, OnInit } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { Router } from "@angular/router";
-import { TranslateService, TranslatePipe } from "@ngx-translate/core";
+import { TranslatePipe, TranslateService } from "@ngx-translate/core";
+import { Button } from "primeng/button";
 import { UserService } from "src/app/core/service/business/user.service";
 import { SuperAdminDataService } from "src/app/core/service/data/super-admin-data.service";
-import { Button } from "primeng/button";
 
 @Component({
     selector: "app-super-admin",
@@ -33,7 +33,7 @@ export class SuperAdminComponent implements OnInit {
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe((user) => {
                 if (!user.isSuperAdmin) {
-                    this.router.navigateByUrl(`something-went-wrong/403`);
+                    void this.router.navigateByUrl(`something-went-wrong/403`);
                 }
             });
     }

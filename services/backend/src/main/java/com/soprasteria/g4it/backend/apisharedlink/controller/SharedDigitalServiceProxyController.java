@@ -100,6 +100,7 @@ public class SharedDigitalServiceProxyController implements SharedLinkDigitalSer
                 .computeServerTypes(digitalServiceReferentialRestMapper.toServerHostDto(digitalServiceReferentialService.getServerHosts("Compute")))
                 .storageServerTypes(digitalServiceReferentialRestMapper.toServerHostDto(digitalServiceReferentialService.getServerHosts("Storage")))
                 .countries(digitalServiceReferentialService.getBoaviztaCountryMap())
+                .aiServerTypes(digitalServiceReferentialRestMapper.toServerHostDto(digitalServiceReferentialService.getServerHosts("AI")))
                 .build());
     }
 

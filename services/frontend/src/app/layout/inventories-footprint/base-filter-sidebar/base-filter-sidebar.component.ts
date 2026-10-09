@@ -16,6 +16,7 @@ import { CheckboxModule } from "primeng/checkbox";
 import { DrawerModule } from "primeng/drawer";
 import { FocusTrapModule } from "primeng/focustrap";
 import { ScrollPanelModule } from "primeng/scrollpanel";
+import { AutofocusDirective } from "src/app/core/directives/auto-focus.directive";
 import { Filter } from "src/app/core/interfaces/filter.interface";
 import { Constants } from "src/constants";
 import {
@@ -33,6 +34,7 @@ export type FilterTab = string | { field: string; children?: any[] };
     styleUrls: ["./base-filter-sidebar.component.scss"],
     standalone: true,
     imports: [
+        AutofocusDirective,
         DrawerModule,
         FocusTrapModule,
         Button,

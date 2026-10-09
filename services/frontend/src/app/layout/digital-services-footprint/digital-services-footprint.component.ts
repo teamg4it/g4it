@@ -81,7 +81,7 @@ export class DigitalServicesFootprintComponent
     ngOnInit(): void {
         this.route.paramMap.subscribe((params) => {
             this.dsvUid = params.get("digitalServiceVersionId") ?? "";
-            this.asyncInit(this.dsvUid);
+            void this.asyncInit(this.dsvUid);
         });
     }
     private async asyncInit(uid: string) {
@@ -135,6 +135,9 @@ export class DigitalServicesFootprintComponent
             const serverHostRefStorage = await firstValueFrom(
                 this.digitalServicesData.getHostServerReferential("Storage"),
             );
+            const serverHostRefAi = await firstValueFrom(
+                this.digitalServicesData.getHostServerReferential("AI"),
+            );
             const shortCuts = [
                 ...serverHostRefCompute.filter((item) =>
                     item.value.startsWith("Server "),
@@ -144,6 +147,10 @@ export class DigitalServicesFootprintComponent
                 ),
             ].sort(sortByProperty("value", "desc"));
 
+            const sortedServerHostRefAi = [...serverHostRefAi].sort(
+                sortByProperty("value", "asc"),
+            );
+
             this.digitalServiceStore.setServerTypes([
                 ...shortCuts,
                 ...serverHostRefCompute
@@ -152,11 +159,12 @@ export class DigitalServicesFootprintComponent
                 ...serverHostRefStorage
                     .filter((item) => !item.value.startsWith("Server "))
                     .sort(sortByProperty("value", "asc")),
+                ...sortedServerHostRefAi,
             ]);
         }
         this.global.setLoading(false);
 
-        this.digitalBusinessService.initCountryMap();
+        await this.digitalBusinessService.initCountryMap();
     }
 
     ngAfterViewInit() {
@@ -172,7 +180,7 @@ export class DigitalServicesFootprintComponent
 
     onTabChange(tab: any) {
         if (tab?.routerLink) {
-            this.router.navigate([tab.routerLink], { relativeTo: this.route });
+            void this.router.navigate([tab.routerLink], { relativeTo: this.route });
         }
     }
 
@@ -249,8 +257,8 @@ export class DigitalServicesFootprintComponent
             this.digitalServicesData.update(this.digitalService),
         );
 
-        this.digitalServiceStore.initInPhysicalEquipments(this.dsvUid);
-        this.digitalServiceStore.initInVirtualEquipments(this.dsvUid);
+        void this.digitalServiceStore.initInPhysicalEquipments(this.dsvUid);
+        void this.digitalServiceStore.initInVirtualEquipments(this.dsvUid);
         this.updateTabItems();
     }
 }

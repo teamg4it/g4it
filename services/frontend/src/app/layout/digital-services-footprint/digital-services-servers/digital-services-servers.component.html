@@ -29,7 +29,7 @@
         position="right"
         styleClass="drawer-lg"
         appendTo="body"
-        (onHide)="closeSidebar()"
+        (onHide)="focusServerButton(); closeSidebar()"
         ariaCloseLabel="Close"
     >
         <router-outlet></router-outlet>

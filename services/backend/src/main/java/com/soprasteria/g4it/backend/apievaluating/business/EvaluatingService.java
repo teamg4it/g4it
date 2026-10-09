@@ -100,6 +100,13 @@ public class EvaluatingService {
                            final Long workspaceId,
                            final Long inventoryId) {
 
+        // Explicit validation of the externally-supplied identifier before use,
+        // breaking taint propagation at the source (sanitization point).
+        if (inventoryId == null || inventoryId <= 0) {
+            log.error("Invalid inventory id: {}", inventoryId);
+            throw new G4itRestException("400", "inventory.invalid.identity");
+        }
+
         Inventory inventory = inventoryRepository.findById(inventoryId)
                 .orElseThrow(() -> new G4itRestException("404", "Inventory not found."));
 
@@ -125,7 +132,7 @@ public class EvaluatingService {
                 .filter(criteria -> !criteria.isEmpty())
                 .orElseGet(() -> Constants.CRITERIA_LIST.subList(0, 5));
 
-        User user = userRepository.findById(authService.getUser().getId()).orElseThrow();
+        User user = getAuthenticatedUser();
 
         // create task with type EVALUATING
         Task task = Task.builder()
@@ -202,7 +209,7 @@ public class EvaluatingService {
                 .filter(criteria -> !criteria.isEmpty())
                 .orElseGet(() -> Constants.CRITERIA_LIST.subList(0, 5));
 
-        User user = userRepository.findById(authService.getUser().getId()).orElseThrow();
+        User user = getAuthenticatedUser();
 
         // create task with type EVALUATING_DIGITAL_SERVICE
         Task task = Task.builder()
@@ -350,6 +357,25 @@ public class EvaluatingService {
                 .forEach(task -> {
                     taskRepository.deleteTask(task.getId());
                     exportService.cleanExport(task.getId(), organization, String.valueOf(workspaceId));
+                });
+    }
+
+    // Get authenticated user from database to ensure we have all the needed info (like locale) for task execution
+    private User getAuthenticatedUser() {
+        Long userId = authService.getUser().getId();
+
+        // Explicit validation of the externally-derived identifier before use,
+        // breaking taint propagation at the source (sanitization point) instead
+        // of patching every downstream consumer of the returned User object.
+        if (userId == null || userId <= 0) {
+            log.error("Invalid authenticated user id: {}", userId);
+            throw new G4itRestException("401", "user.invalid.identity");
+        }
+
+        return userRepository.findById(userId)
+                .orElseThrow(() -> {
+                    log.error("Authenticated user id {} not found in database", userId);
+                    return new G4itRestException("404", "user.not.found");
                 });
     }
 

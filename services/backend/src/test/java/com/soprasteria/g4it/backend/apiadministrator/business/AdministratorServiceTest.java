@@ -64,7 +64,8 @@ class AdministratorServiceTest {
     void init() {
         organizationId = workspace.getOrganization().getId();
         workspaceId = workspace.getId();
-        lenient().when(cacheManager.getCache(any())).thenReturn(mock(Cache.class));
+        Cache cache = mock(Cache.class);
+        lenient().when(cacheManager.getCache(any())).thenReturn(cache);
     }
 
 

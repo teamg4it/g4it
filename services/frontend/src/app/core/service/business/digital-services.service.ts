@@ -144,6 +144,7 @@ export class DigitalServiceBusinessService {
             durationHour: server.annualOperatingTime,
             cpuCoreNumber: server.totalVCpu,
             sizeDiskGb: server.totalDisk,
+            sizeMemoryGb: server.totalVram,
             description: server.host?.value,
         } as InPhysicalEquipmentRest;
     }
@@ -162,19 +163,48 @@ export class DigitalServiceBusinessService {
             name: vm.name,
             quantity: vm.quantity,
             vcpuCoreNumber: vm.vCpu,
+            sizeMemoryGb: vm.vRam,
             sizeDiskGb: vm.disk,
-            type: server.type === "Compute" ? "calcul" : "stockage",
+            type: this.getVmType(server),
             physicalEquipmentName: server.name,
             electricityConsumption: vm?.electricityConsumption,
-            allocationFactor:
-                server.type === "Compute" && server.mutualizationType === "Shared"
-                    ? (vm.vCpu / server.totalVCpu!) *
-                      (vm.annualOperatingTime / 8760) *
-                      vm.quantity
-                    : (vm.disk / server.totalDisk!) *
-                      (vm.annualOperatingTime / 8760) *
-                      vm.quantity,
+            allocationFactor: this.getAllocationFactor(vm, server),
         } as InVirtualEquipmentRest;
+    }
+
+    private getVmType(server: DigitalServiceServerConfig): string {
+        if (server.type === "Compute") {
+            return "calcul";
+        } else if (server.type === "Storage") {
+            return "stockage";
+        } else {
+            return "AI";
+        }
+    }
+
+    private getAllocationFactor(
+        vm: ServerVM,
+        server: DigitalServiceServerConfig,
+    ): number {
+        if (server.type === "Compute" && server.mutualizationType === "Shared") {
+            return (
+                (vm.vCpu / server.totalVCpu!) *
+                (vm.annualOperatingTime / 8760) *
+                vm.quantity
+            );
+        } else if (server.type === "Storage" && server.mutualizationType === "Shared") {
+            return (
+                (vm.disk / server.totalDisk!) *
+                (vm.annualOperatingTime / 8760) *
+                vm.quantity
+            );
+        } else {
+            return (
+                (vm.vRam! / server.totalVram!) *
+                (vm.annualOperatingTime / 8760) *
+                vm.quantity
+            );
+        }
     }
 
     updateDsCriteria(

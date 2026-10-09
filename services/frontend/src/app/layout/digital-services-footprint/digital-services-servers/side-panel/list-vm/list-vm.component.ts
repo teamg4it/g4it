@@ -45,21 +45,7 @@ export class PanelListVmComponent {
     index: number | undefined;
     headerFields = computed(() => {
         const { type } = this.digitalServiceStore.server();
-        return type === "Compute"
-            ? [
-                  "name",
-                  "quantity",
-                  "vCpu",
-                  "annualOperatingTime",
-                  "electricityConsumption",
-              ]
-            : [
-                  "name",
-                  "quantity",
-                  "disk",
-                  "annualOperatingTime",
-                  "electricityConsumption",
-              ];
+        return this.getHeaderFields(type);
     });
     vmData = computed(() => {
         return [...this.digitalServiceStore.server().vm];
@@ -74,6 +60,34 @@ export class PanelListVmComponent {
         private readonly route: ActivatedRoute,
         public userService: UserService,
     ) {}
+
+    private getHeaderFields(type: string | undefined): string[] {
+        if (type === "Compute") {
+            return [
+                "name",
+                "quantity",
+                "vCpu",
+                "annualOperatingTime",
+                "electricityConsumption",
+            ];
+        } else if (type === "AI") {
+            return [
+                "name",
+                "quantity",
+                "vRam",
+                "annualOperatingTime",
+                "electricityConsumption",
+            ];
+        } else {
+            return [
+                "name",
+                "quantity",
+                "disk",
+                "annualOperatingTime",
+                "electricityConsumption",
+            ];
+        }
+    }
 
     resetIndex() {
         this.index = undefined;
@@ -95,11 +109,11 @@ export class PanelListVmComponent {
     }
 
     previousStep() {
-        this.router.navigate(["../panel-parameters"], { relativeTo: this.route });
+        void this.router.navigate(["../panel-parameters"], { relativeTo: this.route });
     }
 
-    async submitServer() {
-        this.digitalServiceBusiness.submitServerForm(
+    async submitServer(): Promise<void> {
+        await this.digitalServiceBusiness.submitServerForm(
             this.digitalServiceStore.server(),
             this.digitalServiceStore.digitalService(),
         );
@@ -112,5 +126,18 @@ export class PanelListVmComponent {
 
     openSidePanel() {
         this.digitalServiceBusiness.openPanel();
+    }
+
+    focusVmButton() {
+        setTimeout(() => {
+            if (this.index !== undefined) {
+                document
+                    .getElementById("add-vm" + (this.index + 1))
+                    ?.querySelector("button")
+                    ?.focus();
+            } else {
+                document.getElementById("add-vm")?.querySelector("button")?.focus();
+            }
+        }, 400);
     }
 }

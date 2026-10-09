@@ -42,7 +42,7 @@
         }
     }
 
-    footer {
+    .about-links {
         a {
             color: var(--tints-black-80);
             text-decoration: none;
@@ -64,7 +64,7 @@
     }
 
     .help-center a:not(.p-disabled) {
-        outline-width: 0;
+        outline: 0;
 
         &:before {
             content: "";

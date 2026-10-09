@@ -1,8 +1,11 @@
 <!-- Header -->
 <div pFocusTrap class="create-ds-sidebar">
     <div class="space-form">
-        <h2>{{ "digital-services.configure-view" | translate }}</h2>
+        <h2>
+            {{ "digital-services.configure-view" | translate }}
+        </h2>
         <p-button
+            appAutofocus
             (onClick)="closeSidebar()"
             [link]="true"
             [rounded]="true"

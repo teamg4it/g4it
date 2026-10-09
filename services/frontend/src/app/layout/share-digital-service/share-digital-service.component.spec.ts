@@ -62,6 +62,7 @@ describe("ShareDigitalServiceComponent", () => {
                 computeServerTypes: [{ value: "C1" }],
                 storageServerTypes: [{ value: "S1" }],
                 countries: { FR: "France", US: "United States" },
+                aiServerTypes: [{ value: "AI1" }],
             }),
         ),
     };

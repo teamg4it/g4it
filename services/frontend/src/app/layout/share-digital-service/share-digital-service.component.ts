@@ -42,7 +42,7 @@ export class ShareDigitalServiceComponent implements OnInit {
     isMobile = signal(false);
 
     ngOnInit(): void {
-        this.initComponent();
+        void this.initComponent();
     }
 
     async initComponent(): Promise<void> {
@@ -90,6 +90,7 @@ export class ShareDigitalServiceComponent implements OnInit {
         this.digitalServiceStoreService.setServerTypes([
             ...referentialData.computeServerTypes,
             ...referentialData.storageServerTypes,
+            ...referentialData.aiServerTypes,
         ]);
 
         const countryMap: MapString = {};
@@ -128,7 +129,7 @@ export class ShareDigitalServiceComponent implements OnInit {
 
     onTabChange(tab: any): void {
         if (tab?.routerLink) {
-            this.router.navigate([tab.routerLink], { relativeTo: this.route });
+            void this.router.navigate([tab.routerLink], { relativeTo: this.route });
         }
     }
 

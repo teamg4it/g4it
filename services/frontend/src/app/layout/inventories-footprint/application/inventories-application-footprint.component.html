@@ -167,6 +167,7 @@
                     </button>
                 </div>
                 <p-button
+                    #configureButton
                     (onClick)="filterSidebarVisible = true"
                     styleClass="p-button-secondary-blue uppercase mx-3"
                     id="filter"
@@ -251,16 +252,14 @@
 }
 
 @if (filterSidebarVisible) {
-    <p-drawer
-        [(visible)]="filterSidebarVisible"
-        position="right"
-        styleClass="w-5"
-        (onHide)="filterSidebarVisible = false"
-    >
+    <p-drawer [(visible)]="filterSidebarVisible" position="right" styleClass="w-5">
         <ng-template #headless>
             <app-configure-view-filters
                 (filtersApplied)="handleFilters($event)"
-                (sidebarVisibleChange)="filterSidebarVisible = $event"
+                (sidebarVisibleChange)="
+                    configureButton?.el?.nativeElement?.querySelector('button')?.focus();
+                    filterSidebarVisible = $event
+                "
                 [enableDataInconsistency]="inventory().enableDataInconsistency"
                 [selectedUnit]="selectedUnit"
             ></app-configure-view-filters>

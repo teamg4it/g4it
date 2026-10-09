@@ -19,6 +19,7 @@ export interface Inventory {
     physicalEquipmentCount: number;
     virtualEquipmentCount: number;
     applicationCount: number;
+    aiServiceCount?: number;
     enableDataInconsistency: boolean;
     date?: Date;
     note?: Note;
@@ -28,6 +29,10 @@ export interface Inventory {
     lastTaskEvaluating?: TaskRest;
     workspaceId?: number;
     expiryDate?: string;
+    outApplicationCount?: number;
+    outPhysicalCount?: number;
+    outVirtualCount?: number;
+    outAiCount?: number;
 }
 
 export interface CreateInventory {

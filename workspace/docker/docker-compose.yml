@@ -43,6 +43,11 @@ services:
       file: shared-docker-compose.yml
       service: ecomind-api
 
+  ecologits-api:
+    extends:
+      file: shared-docker-compose.yml
+      service: ecologits-api
+
 
       
 volumes:

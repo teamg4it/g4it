@@ -13,8 +13,9 @@
         ((userService.isAllowedEcoMindAiWrite$ | async) && isEcoMindAi())
     ) {
         <p-button
+            #addButton
             styleClass="black-button matomo-add-digital-service"
-            (onClick)="newDsSidebarVisible = true"
+            (onClick)="openNewDsDrawer($event); newDsSidebarVisible = true"
             id="add-digital"
         >
             {{
@@ -59,13 +60,13 @@
         styleClass="w-10"
         [showCloseIcon]="true"
         appendTo="body"
-        (onHide)="newDsSidebarVisible = false"
+        (onHide)="focusNewDsButton(); newDsSidebarVisible = false"
         ariaCloseLabel="Close"
     >
         <ng-template #headless>
             <app-create-digital-services-sidebar
                 [allDigitalServices]="allDigitalServices"
-                (sidebarVisibleChange)="newDsSidebarVisible = $event"
+                (sidebarVisibleChange)="focusNewDsButton(); newDsSidebarVisible = $event"
                 (submitCreateDsForm)="createNewDigitalServices($event)"
                 [isEcoMindAi]="isEcoMindAi()"
             />

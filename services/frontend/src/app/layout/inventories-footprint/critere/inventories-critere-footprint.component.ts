@@ -410,7 +410,7 @@ export class InventoriesCritereFootprintComponent
     }
 
     moveToMultiCriteria() {
-        this.router.navigate(["../", "multi-criteria"], {
+        void this.router.navigate(["../", "multi-criteria"], {
             relativeTo: this.route,
         });
     }

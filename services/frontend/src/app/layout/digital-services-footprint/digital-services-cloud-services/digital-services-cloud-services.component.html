@@ -25,7 +25,7 @@
         position="right"
         styleClass="drawer-md"
         appendTo="body"
-        (onHide)="childSidePanel.close()"
+        (onHide)="focusCloudButton(); childSidePanel.close()"
         ariaCloseLabel="Close"
     >
         <app-digital-services-cloud-services-side-panel
@@ -33,7 +33,7 @@
             [cloud]="cloud"
             [sidebarVisible]="sidebarVisible"
             [cloudServices]="cloudServices()"
-            (sidebarVisibleChange)="sidebarVisible = $event"
+            (sidebarVisibleChange)="focusCloudButton(); sidebarVisible = $event"
             (updateCloudServices)="updateCloudServices($event)"
             (deleteCloudServices)="deleteCloudServices($event)"
         >

@@ -134,7 +134,7 @@ export class UpdateWorkspaceReferenceComponent implements OnInit {
     }
 
     downloadTemplateFile(selectedFileName: string) {
-        this.templateFileService.getdownloadTemplateFile(selectedFileName);
+        void this.templateFileService.getdownloadTemplateFile(selectedFileName);
     }
 
     startUpload() {

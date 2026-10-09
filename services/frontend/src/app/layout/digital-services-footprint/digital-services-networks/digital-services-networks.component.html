@@ -28,12 +28,12 @@
         position="right"
         styleClass="drawer-lg"
         appendTo="body"
-        (onHide)="networkSidePanel.close()"
+        (onHide)="focusNetworkButton(); networkSidePanel.close()"
         ariaCloseLabel="Close"
     >
         <app-digital-services-networks-side-panel
             #networkSidePanel
-            (sidebarVisible)="(sidebarVisible)"
+            (sidebarVisible)="focusNetworkButton(); sidebarVisible = false"
             [existingNames]="existingNames()"
             [network]="network"
             [networkData]="networkData()"

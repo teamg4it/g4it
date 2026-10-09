@@ -79,90 +79,163 @@ public interface CheckVirtualEquipmentRepository extends JpaRepository<CheckVirt
     List<DuplicateEquipmentDTO> findDuplicateDigitalServiceVirtualEqp(@Param("taskId") Long taskId);
 
     @Query(nativeQuery = true, value = """
-            select filename,
+            WITH valid_parents AS (
+                SELECT ipe.name
+                FROM in_physical_equipment ipe
+                WHERE ipe.inventory_id = :inventoryId
+                
+                UNION
+                
+                SELECT cilpe.physical_equipment_name as name
+                FROM check_inv_load_physical_equipment cilpe
+                WHERE cilpe.task_id = :taskId
+                  AND cilpe.physical_equipment_name NOT IN (:parentDuplicates)
+            )
+            SELECT filename,
                    line_nb as lineNb,
                    physical_equipment_name as parentEquipmentName,
                    virtual_equipment_name as equipmentName
-            from check_inv_load_virtual_equipment cilve
-            where cilve.infrastructure_type != 'CLOUD_SERVICES'
-            and cilve.physical_equipment_name is null
-            and cilve.task_id = :taskId
+            FROM check_inv_load_virtual_equipment cilve
+            WHERE cilve.infrastructure_type != 'CLOUD_SERVICES'
+              AND cilve.physical_equipment_name IS NULL
+              AND cilve.task_id = :taskId
             
-            UNION
+            UNION ALL
             
-            select filename,
+            SELECT filename,
                    line_nb as lineNb,
                    physical_equipment_name as parentEquipmentName,
                    virtual_equipment_name as equipmentName
-            from check_inv_load_virtual_equipment cilve
-            where cilve.infrastructure_type != 'CLOUD_SERVICES'
-            and not exists (
-                select physical_equipment_name
-                from in_physical_equipment ipe
-                where
-                (
-                  (:inventoryId IS NOT NULL AND ipe.inventory_id = :inventoryId)
-                  OR
-                  (:digitalServiceVersionUid IS NOT NULL AND ipe.digital_service_version_uid = :digitalServiceVersionUid)
-                )
-            
-                and cilve.physical_equipment_name = ipe.name
-            )
-            and not exists (
-                select physical_equipment_name
-                from check_inv_load_physical_equipment cilpe
-                where cilpe.task_id = cilve.task_id
-                and cilve.physical_equipment_name = cilpe.physical_equipment_name
-                and cilpe.physical_equipment_name not in (:parentDuplicates)
-            )
-            and cilve.physical_equipment_name is not null
-            and cilve.task_id = :taskId
-            
+            FROM check_inv_load_virtual_equipment cilve
+            WHERE cilve.infrastructure_type != 'CLOUD_SERVICES'
+              AND cilve.physical_equipment_name IS NOT NULL
+              AND cilve.task_id = :taskId
+              AND NOT EXISTS (
+                  SELECT 1 FROM valid_parents vp 
+                  WHERE vp.name = cilve.physical_equipment_name
+              )
             """)
-    List<CoherenceParentDTO> findIncoherentVirtualEquipments(@Param("taskId") Long taskId, @Param("inventoryId") Long inventoryId,
-                                                             @Param("digitalServiceVersionUid") String digitalServiceVersionUid,
-                                                             @Param("parentDuplicates") List<String> parentDuplicates);
+    List<CoherenceParentDTO> findIncoherentVirtualEquipmentsByInventory(@Param("taskId") Long taskId,
+                                                                        @Param("inventoryId") Long inventoryId,
+                                                                        @Param("parentDuplicates") List<String> parentDuplicates);
 
     @Query(nativeQuery = true, value = """
-             select filename,
-                    line_nb as lineNb,
-                    physical_equipment_name as parentEquipmentName,
-                    virtual_equipment_name as equipmentName
-             from check_inv_load_virtual_equipment cilve
-             where cilve.infrastructure_type != 'CLOUD_SERVICES'
-             and cilve.physical_equipment_name is null
-             and cilve.task_id = :taskId
-            
-             UNION
-            
-             select filename,
-                    line_nb as lineNb,
-                    physical_equipment_name as parentEquipmentName,
-                    virtual_equipment_name as equipmentName
-             from check_inv_load_virtual_equipment cilve
-             where cilve.infrastructure_type != 'CLOUD_SERVICES'
-             and not exists (
-                 select physical_equipment_name
-                 from in_physical_equipment ipe
-                 where(
-                  (:inventoryId IS NOT NULL AND ipe.inventory_id = :inventoryId)
-                  OR
-                  (:digitalServiceVersionUid IS NOT NULL AND ipe.digital_service_version_uid = :digitalServiceVersionUid)
-                )
-                 and cilve.physical_equipment_name = ipe.name
-             )
-             and not exists (
-                 select physical_equipment_name
-                 from check_inv_load_physical_equipment cilpe
-                 where cilpe.task_id = cilve.task_id
-                 and cilve.physical_equipment_name = cilpe.physical_equipment_name
-             )
-             and cilve.physical_equipment_name is not null
-             and cilve.task_id = :taskId
-            
+            WITH valid_parents AS (
+                SELECT ipe.name
+                FROM in_physical_equipment ipe
+                WHERE ipe.digital_service_version_uid = :digitalServiceVersionUid
+
+                UNION
+
+                SELECT cilpe.physical_equipment_name as name
+                FROM check_inv_load_physical_equipment cilpe
+                WHERE cilpe.task_id = :taskId
+                  AND cilpe.physical_equipment_name NOT IN (:parentDuplicates)
+            )
+            SELECT filename,
+                   line_nb as lineNb,
+                   physical_equipment_name as parentEquipmentName,
+                   virtual_equipment_name as equipmentName
+            FROM check_inv_load_virtual_equipment cilve
+            WHERE cilve.infrastructure_type != 'CLOUD_SERVICES'
+              AND cilve.physical_equipment_name IS NULL
+              AND cilve.task_id = :taskId
+
+            UNION ALL
+
+            SELECT filename,
+                   line_nb as lineNb,
+                   physical_equipment_name as parentEquipmentName,
+                   virtual_equipment_name as equipmentName
+            FROM check_inv_load_virtual_equipment cilve
+            WHERE cilve.infrastructure_type != 'CLOUD_SERVICES'
+              AND cilve.physical_equipment_name IS NOT NULL
+              AND cilve.task_id = :taskId
+              AND NOT EXISTS (
+                  SELECT 1 FROM valid_parents vp
+                  WHERE vp.name = cilve.physical_equipment_name
+              )
             """)
-    List<CoherenceParentDTO> findIncoherentVirtualEquipments(@Param("taskId") Long taskId,
-                                                             @Param("inventoryId") Long inventoryId,
-                                                             @Param("digitalServiceVersionUid") String digitalServiceVersionUid);
+    List<CoherenceParentDTO> findIncoherentVirtualEquipmentsByDsv(@Param("taskId") Long taskId,
+                                                                  @Param("digitalServiceVersionUid") String digitalServiceVersionUid,
+                                                                  @Param("parentDuplicates") List<String> parentDuplicates);
+
+    @Query(nativeQuery = true, value = """
+            WITH valid_parents AS (
+                SELECT ipe.name
+                FROM in_physical_equipment ipe
+                WHERE ipe.inventory_id = :inventoryId
+
+                UNION
+
+                SELECT cilpe.physical_equipment_name as name
+                FROM check_inv_load_physical_equipment cilpe
+                WHERE cilpe.task_id = :taskId
+            )
+            SELECT filename,
+                   line_nb as lineNb,
+                   physical_equipment_name as parentEquipmentName,
+                   virtual_equipment_name as equipmentName
+            FROM check_inv_load_virtual_equipment cilve
+            WHERE cilve.infrastructure_type != 'CLOUD_SERVICES'
+              AND cilve.physical_equipment_name IS NULL
+              AND cilve.task_id = :taskId
+
+            UNION ALL
+
+            SELECT filename,
+                   line_nb as lineNb,
+                   physical_equipment_name as parentEquipmentName,
+                   virtual_equipment_name as equipmentName
+            FROM check_inv_load_virtual_equipment cilve
+            WHERE cilve.infrastructure_type != 'CLOUD_SERVICES'
+              AND cilve.physical_equipment_name IS NOT NULL
+              AND cilve.task_id = :taskId
+              AND NOT EXISTS (
+                  SELECT 1 FROM valid_parents vp
+                  WHERE vp.name = cilve.physical_equipment_name
+              )
+            """)
+    List<CoherenceParentDTO> findIncoherentVirtualEquipmentsByInventory(@Param("taskId") Long taskId,
+                                                                        @Param("inventoryId") Long inventoryId);
+
+    @Query(nativeQuery = true, value = """
+            WITH valid_parents AS (
+                SELECT ipe.name
+                FROM in_physical_equipment ipe
+                WHERE ipe.digital_service_version_uid = :digitalServiceVersionUid
+
+                UNION
+
+                SELECT cilpe.physical_equipment_name as name
+                FROM check_inv_load_physical_equipment cilpe
+                WHERE cilpe.task_id = :taskId
+            )
+            SELECT filename,
+                   line_nb as lineNb,
+                   physical_equipment_name as parentEquipmentName,
+                   virtual_equipment_name as equipmentName
+            FROM check_inv_load_virtual_equipment cilve
+            WHERE cilve.infrastructure_type != 'CLOUD_SERVICES'
+              AND cilve.physical_equipment_name IS NULL
+              AND cilve.task_id = :taskId
+
+            UNION ALL
+
+            SELECT filename,
+                   line_nb as lineNb,
+                   physical_equipment_name as parentEquipmentName,
+                   virtual_equipment_name as equipmentName
+            FROM check_inv_load_virtual_equipment cilve
+            WHERE cilve.infrastructure_type != 'CLOUD_SERVICES'
+              AND cilve.physical_equipment_name IS NOT NULL
+              AND cilve.task_id = :taskId
+              AND NOT EXISTS (
+                  SELECT 1 FROM valid_parents vp
+                  WHERE vp.name = cilve.physical_equipment_name
+              )
+            """)
+    List<CoherenceParentDTO> findIncoherentVirtualEquipmentsByDsv(@Param("taskId") Long taskId,
+                                                                  @Param("digitalServiceVersionUid") String digitalServiceVersionUid);
 
 }

@@ -84,13 +84,20 @@ export abstract class Constants {
         sharedDs: "shared",
         dsv: "dsv",
         referentialWorkspace: "referential-workspace",
+        isWorkspaceSpecific: "is-workspace-specific",
     };
 
     static readonly ERRORS: any = {
         404: "not-found",
     };
 
-    static readonly FILE_TYPES = ["datacenter", "physical", "virtual", "application"];
+    static readonly FILE_TYPES = [
+        "datacenter",
+        "physical",
+        "virtual",
+        "application",
+        "AIservices",
+    ];
 
     static readonly INTEGRATION_BATCH_COMPLETED_FAILED_STATUSES = [
         "COMPLETED",

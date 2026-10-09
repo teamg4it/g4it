@@ -55,6 +55,7 @@ export class DigitalServicesServersComponent implements OnInit, OnDestroy {
     digitalService: DigitalService = {} as DigitalService;
     sidebarVisible: boolean = false;
     existingNames: string[] = [];
+    rowIndex: number | undefined;
 
     headerFields = [
         "name",
@@ -124,6 +125,7 @@ export class DigitalServicesServersComponent implements OnInit, OnDestroy {
                     differenceInDays(item.dateWithdrawal!, item.datePurchase!) / 365,
                 totalVCpu: item.cpuCoreNumber,
                 totalDisk: item.sizeDiskGb,
+                totalVram: item.sizeMemoryGb,
                 vm: vms.map((vm: InVirtualEquipmentRest) => {
                     return {
                         name: vm.name,
@@ -132,6 +134,7 @@ export class DigitalServicesServersComponent implements OnInit, OnDestroy {
                         quantity: vm.quantity,
                         uid: vm.id.toString(),
                         vCpu: vm.vcpuCoreNumber,
+                        vRam: vm.sizeMemoryGb,
                         electricityConsumption: vm.electricityConsumption,
                         digitalServiceUid: item.digitalServiceUid,
                     } as ServerVM;
@@ -157,9 +160,15 @@ export class DigitalServicesServersComponent implements OnInit, OnDestroy {
         this.digitalServicesBusiness.panelSubject$
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe((res) => {
+                if (!res) {
+                    this.focusServerButton();
+                }
+
                 this.sidebarVisible = res;
                 if (res === false && !this.router.url.endsWith("/resources")) {
-                    this.router.navigate(["../resources"], { relativeTo: this.route });
+                    void this.router.navigate(["../resources"], {
+                        relativeTo: this.route,
+                    });
                 }
             });
     }
@@ -169,6 +178,7 @@ export class DigitalServicesServersComponent implements OnInit, OnDestroy {
     }
 
     setItem(event: any) {
+        this.rowIndex = event.index;
         delete event.index;
         event.uid = event.id.toString();
         this.updateServer(event);
@@ -198,6 +208,7 @@ export class DigitalServicesServersComponent implements OnInit, OnDestroy {
     }
 
     addNewServer() {
+        this.rowIndex = undefined;
         let newServer: DigitalServiceServerConfig = {
             uid: "",
             name: this.digitalServicesBusiness.getNextAvailableName(
@@ -218,14 +229,14 @@ export class DigitalServicesServersComponent implements OnInit, OnDestroy {
         };
 
         this.digitalServiceStore.setServer(newServer);
-        this.router.navigate(["panel-create"], { relativeTo: this.route });
+        void this.router.navigate(["panel-create"], { relativeTo: this.route });
 
         this.digitalServicesBusiness.openPanel();
     }
 
     updateServer(server: DigitalServiceServerConfig) {
         this.digitalServiceStore.setServer(server);
-        this.router.navigate(["panel-parameters"], { relativeTo: this.route });
+        void this.router.navigate(["panel-parameters"], { relativeTo: this.route });
 
         this.digitalServicesBusiness.openPanel();
     }
@@ -248,6 +259,18 @@ export class DigitalServicesServersComponent implements OnInit, OnDestroy {
     closeSidebar() {
         this.digitalServicesBusiness.closePanel();
     }
+
+    focusServerButton() {
+        setTimeout(() => {
+            const id =
+                this.rowIndex !== undefined
+                    ? `add-servers${this.rowIndex}`
+                    : "add-servers";
+
+            document.getElementById(id)?.querySelector("button")?.focus();
+        }, 400);
+    }
+
     ngOnDestroy() {
         if (!this.router.url.includes("resources") && this.sidebarVisible) {
             this.digitalServicesBusiness.closePanel();

@@ -1,10 +1,10 @@
 import { Component, inject, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { Subscription } from "rxjs";
-import { DigitalServicesTerminalsComponent } from "../digital-services-terminals/digital-services-terminals.component";
+import { DigitalServicesCloudServicesComponent } from "../digital-services-cloud-services/digital-services-cloud-services.component";
 import { DigitalServicesNetworksComponent } from "../digital-services-networks/digital-services-networks.component";
 import { DigitalServicesServersComponent } from "../digital-services-servers/digital-services-servers.component";
-import { DigitalServicesCloudServicesComponent } from "../digital-services-cloud-services/digital-services-cloud-services.component";
+import { DigitalServicesTerminalsComponent } from "../digital-services-terminals/digital-services-terminals.component";
 
 @Component({
     selector: "app-digital-services-resources",
@@ -25,7 +25,7 @@ export class DigitalServicesResourcesComponent implements OnInit, OnDestroy {
         this.setDsVerId();
     }
 
-    async setDsVerId(): Promise<void> {
+    setDsVerId(): void {
         this.sub = this.route.parent!.paramMap.subscribe((params) => {
             this.dsVersionUid = params.get("digitalServiceVersionId") ?? "";
         });

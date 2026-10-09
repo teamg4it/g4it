@@ -1,0 +1,50 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-inventory-output-counts
+      author: G4IT Dev Team
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - columnExists:
+                tableName: inventory
+                columnName: out_application_count
+      changes:
+        - addColumn:
+            tableName: inventory
+            columns:
+              - column:
+                  name: out_application_count
+                  type: bigint
+                  defaultValueNumeric: 0
+                  constraints:
+                    nullable: true
+              - column:
+                  name: out_virtual_count
+                  type: bigint
+                  defaultValueNumeric: 0
+                  constraints:
+                    nullable: true
+              - column:
+                  name: out_physical_count
+                  type: bigint
+                  defaultValueNumeric: 0
+                  constraints:
+                    nullable: true
+        - sql:
+            comment: Initialize output counts to 0 for existing inventories
+            sql: >
+              UPDATE inventory 
+              SET out_application_count = 0,
+                  out_virtual_count = 0,
+                  out_physical_count = 0
+              WHERE out_application_count IS NULL
+      rollback:
+        - dropColumn:
+            tableName: inventory
+            columnName: out_application_count
+        - dropColumn:
+            tableName: inventory
+            columnName: out_virtual_count
+        - dropColumn:
+            tableName: inventory
+            columnName: out_physical_count

@@ -77,6 +77,7 @@ export interface DigitalServiceServerConfig {
     datacenterName?: string;
     totalVCpu?: number;
     totalDisk?: number;
+    totalVram?: number;
     lifespan?: number;
     annualElectricConsumption?: number;
     annualOperatingTime?: number;
@@ -341,6 +342,7 @@ export interface ServerVM {
     annualOperatingTime: number;
     electricityConsumption: number;
     digitalServiceUid?: string;
+    vRam?: number;
 }
 
 export interface ServerDC {

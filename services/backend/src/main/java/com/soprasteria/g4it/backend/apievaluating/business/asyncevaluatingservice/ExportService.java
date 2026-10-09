@@ -42,7 +42,7 @@ public class ExportService {
      * @param taskId the task id
      */
     public Path createExportDirectory(Long taskId) {
-        Path exportDirectory = Path.of(localWorkingFolder).resolve("export").resolve(String.valueOf(taskId));
+        Path exportDirectory = resolveExportPath(taskId);
 
         try {
             Files.createDirectories(exportDirectory);
@@ -50,6 +50,28 @@ public class ExportService {
             throw new AsyncTaskException("Cannot create export directory", e);
         }
 
+        return exportDirectory;
+    }
+
+    /**
+     * Resolve and validate the export directory path for a task id, protecting
+     * against path traversal before performing local disk access. Uses lexical
+     * normalization only (no filesystem access such as canonicalization), so the
+     * validation itself never touches disk with the value prior to the boundary
+     * check.
+     *
+     * @param taskId the task id
+     * @return the validated export directory path
+     */
+    private Path resolveExportPath(Long taskId) {
+        if (taskId == null || taskId <= 0) {
+            throw new AsyncTaskException("Invalid task id for export directory: " + taskId);
+        }
+        Path baseDir = Path.of(localWorkingFolder).resolve("export").normalize();
+        Path exportDirectory = baseDir.resolve(String.valueOf(taskId)).normalize();
+        if (!exportDirectory.startsWith(baseDir)) {
+            throw new AsyncTaskException("Invalid export directory path for task id: " + taskId);
+        }
         return exportDirectory;
     }
 
@@ -64,7 +86,7 @@ public class ExportService {
     public void uploadExportZip(Long taskId, String organization, String workspaceId) {
         FileStorage fileStorage = fileSystem.mount(organization, workspaceId);
         try {
-            final Path exportPath = Path.of(localWorkingFolder).resolve("export").resolve(String.valueOf(taskId));
+            final Path exportPath = resolveExportPath(taskId);
             if (Files.exists(exportPath) && !localFileService.isEmpty(exportPath)) {
                 // create rejected zip file
                 final File exportZipFile = localFileService.createZipFile(exportPath, exportPath.resolve(taskId + Constants.ZIP).toString());
@@ -88,7 +110,7 @@ public class ExportService {
      */
     public void clean(Long taskId) {
         try {
-            FileSystemUtils.deleteRecursively(Path.of(localWorkingFolder).resolve("export").resolve(String.valueOf(taskId)));
+            FileSystemUtils.deleteRecursively(resolveExportPath(taskId));
         } catch (IOException e) {
             throw new AsyncTaskException("An error occurred on cleaning files in local file storage", e);
         }

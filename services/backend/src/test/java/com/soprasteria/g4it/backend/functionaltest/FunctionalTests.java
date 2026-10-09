@@ -8,10 +8,8 @@
 
 package com.soprasteria.g4it.backend.functionaltest;
 
-import com.soprasteria.g4it.backend.apiinout.repository.InApplicationRepository;
-import com.soprasteria.g4it.backend.apiinout.repository.InDatacenterRepository;
-import com.soprasteria.g4it.backend.apiinout.repository.InPhysicalEquipmentRepository;
-import com.soprasteria.g4it.backend.apiinout.repository.InVirtualEquipmentRepository;
+import com.soprasteria.g4it.backend.apiaiinfra.repository.InAiInfrastructureRepository;
+import com.soprasteria.g4it.backend.apiinout.repository.*;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
 import com.soprasteria.g4it.backend.apiloadinputfiles.controller.LoadInputFilesController;
@@ -19,6 +17,7 @@ import com.soprasteria.g4it.backend.apiloadinputfiles.repository.CheckApplicatio
 import com.soprasteria.g4it.backend.apiloadinputfiles.repository.CheckDatacenterRepository;
 import com.soprasteria.g4it.backend.apiloadinputfiles.repository.CheckPhysicalEquipmentRepository;
 import com.soprasteria.g4it.backend.apiloadinputfiles.repository.CheckVirtualEquipmentRepository;
+import com.soprasteria.g4it.backend.apiparameterai.repository.InAiParameterRepository;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
 import com.soprasteria.g4it.backend.apiuser.repository.WorkspaceRepository;
@@ -86,7 +85,12 @@ class FunctionalTests {
     CheckPhysicalEquipmentRepository checkPhysicalEquipmentRepository;
     @Autowired
     CheckApplicationRepository checkApplicationRepository;
-
+    @Autowired
+    InAiServiceRepository inAiServiceRepository;
+    @Autowired
+    InAiInfrastructureRepository inAiInfrastructureRepository;
+    @Autowired
+    InAiParameterRepository inAiParameterRepository;
 
     @MockitoBean
     BoaviztapiService boaviztapiService;
@@ -115,7 +119,7 @@ class FunctionalTests {
         ResponseEntity<TaskIdRest> response =
                 loadInputFilesController.launchloadInputFiles(
                         ORGANIZATION, workspace.getId(), inventory.getId(),
-                        "fr", null, null, null, null);
+                        "fr", null, null, null, null,null);
 
         Long taskId = response.getBody().getTaskId();
         Assertions.assertNull(taskId);
@@ -146,6 +150,10 @@ class FunctionalTests {
         inPhysicalEquipmentRepository.deleteAll();
         inVirtualEquipmentRepository.deleteAll();
         inApplicationRepository.deleteAll();
+        inAiServiceRepository.deleteAll();
+        inAiInfrastructureRepository.deleteAll();
+        inAiParameterRepository.deleteAll();
+
         taskRepository.deleteAll();
     }
 }

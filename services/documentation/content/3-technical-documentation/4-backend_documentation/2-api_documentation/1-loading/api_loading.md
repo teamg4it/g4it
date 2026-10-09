@@ -92,6 +92,8 @@ Bellow you will find the entities used to load the metadata of the files to load
 | com.soprasteria.g4it.backend.apiloadinputfiles.modeldb | CheckPhysicalEquipment | [check_inv_load_physical_equipment](../../db_documentation/information_system_and_digital_service_input_data/digital_service_input_data) |
 | com.soprasteria.g4it.backend.apiloadinputfiles.modeldb | CheckVirtualEquipment  | [check_inv_load_virtual_equipment](../../db_documentation/information_system_and_digital_service_input_data/digital_service_input_data)  |
 
+AI Services do not use a dedicated metadata/check table. They follow the common loading process and are loaded directly into the `in_aiservices` table during the file processing phase.
+
 These entities are loaded by the loader in the package apiloadinputfiles.business.asyncloadservice.loadmetadata.loaders
 using repository in the package apiloadinputfiles.repository
 
@@ -143,6 +145,8 @@ Bellow you will find the entities used to load the metadata of the files to load
 | com.soprasteria.g4it.backend.apiinout.modeldb | InDatacenter        | [in_datacenter](../../db_documentation/information_system_and_digital_service_input_data/digital_service_input_data)         |
 | com.soprasteria.g4it.backend.apiinout.modeldb | InPhysicalEquipment | [in_physical_equipment](../../db_documentation/information_system_and_digital_service_input_data/digital_service_input_data) |
 | com.soprasteria.g4it.backend.apiinout.modeldb | InVirtualEquipment  | [in_virtual_equipment](../../db_documentation/information_system_and_digital_service_input_data/digital_service_input_data)  |
+| com.soprasteria.g4it.backend.apiinout.modeldb | InAiService         | [in_aiservices](../../db_documentation/information_system_and_digital_service_input_data/digital_service_input_data)          |
+
 
 ### Handling rejected files
 

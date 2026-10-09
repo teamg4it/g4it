@@ -28,7 +28,7 @@
         [(visible)]="sidebarVisible"
         position="right"
         styleClass="drawer-lg"
-        (onHide)="sidebarVisible = false"
+        (onHide)="focusTerminalButton(); sidebarVisible = false"
         appendTo="body"
         ariaCloseLabel="Close"
     >
@@ -37,7 +37,7 @@
             [terminal]="terminal"
             [terminalData]="terminalData()"
             [sidebarVisible]="sidebarVisible"
-            (sidebarVisibleChange)="sidebarVisible = $event"
+            (sidebarVisibleChange)="focusTerminalButton(); sidebarVisible = $event"
             (updateTerminals)="updateTerminals($event)"
             (deleteTerminals)="deleteItem($event)"
         >

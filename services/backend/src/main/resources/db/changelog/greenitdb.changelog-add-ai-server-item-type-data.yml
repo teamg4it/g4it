@@ -1,0 +1,48 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-ref-item-type-data-for-ai-servers
+      author: G4IT Dev Team
+      preConditions:
+        onFail: MARK_RAN
+        sqlCheck:
+          expectedResult: "0"
+          sql: SELECT COUNT(*) FROM ref_item_type WHERE type LIKE '%AI Server%'
+      changes:
+        - loadData:
+            file: db/changelog/referential-data/ref_item_type_ai_server.csv
+            tableName: ref_item_type
+            separator: ;
+            encoding: UTF-8
+            columns:
+              - column:
+                  name: type
+                  type: varchar(255)
+              - column:
+                  name: category
+                  type: varchar(255)
+              - column:
+                  name: comment
+                  type: varchar(255)
+              - column:
+                  name: default_lifespan
+                  type: double
+              - column:
+                  name: is_server
+                  type: boolean
+              - column:
+                  name: source
+                  type: varchar(255)
+              - column:
+                  name: ref_default_item
+                  type: varchar(255)
+              - column:
+                  name: subscriber
+                  type: varchar(255)
+              - column:
+                  name: version
+                  type: varchar(255)
+      rollback:
+        - delete:
+            tableName: ref_item_type
+            where: "type LIKE '%AI Server%'"
+

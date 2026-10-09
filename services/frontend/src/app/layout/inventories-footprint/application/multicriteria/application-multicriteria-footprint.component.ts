@@ -325,7 +325,7 @@ export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboar
 
         setTimeout(() => {
             this.globalStore.setLoading(false);
-            this.router.navigate([`../${criteriaName}`], {
+            void this.router.navigate([`../${criteriaName}`], {
                 relativeTo: this.route,
             });
         }, 10);

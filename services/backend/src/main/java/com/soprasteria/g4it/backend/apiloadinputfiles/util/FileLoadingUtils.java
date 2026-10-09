@@ -166,12 +166,24 @@ public class FileLoadingUtils {
 
     public List<FileToLoad> mapFileToLoad(List<String> filenames, boolean isInventory) {
         String inputPath = isInventory ? "input/inventory" : "input/digital-service";
+        Path baseDir = Path.of(localWorkingFolder).resolve(inputPath).normalize();
+
         return filenames.stream().map(filename -> {
             FileToLoad fileToLoadDto = new FileToLoad();
             fileToLoadDto.setFilename(filename);
             fileToLoadDto.computeFileType();
             fileToLoadDto.setOriginalFileName(getOriginalFilename(fileToLoadDto.getFileType(), filename));
-            fileToLoadDto.setFilePath(Path.of(localWorkingFolder).resolve(inputPath).resolve(filename));
+
+            Path resolvedPath = baseDir.resolve(filename).normalize();
+
+            // Ensure the resolved path stays within the expected base directory,
+            // preventing path traversal via a crafted filename (e.g. "../../etc/passwd").
+            if (!resolvedPath.startsWith(baseDir)) {
+                throw new SecurityException(
+                        "Invalid file path (path traversal attempt) for file: " + filename);
+            }
+
+            fileToLoadDto.setFilePath(resolvedPath);
             return fileToLoadDto;
         }).toList();
 
@@ -181,11 +193,7 @@ public class FileLoadingUtils {
 
         for (FileToLoad fileToLoad : context.getFilesToLoad()) {
             try {
-                Path safePath = fileToLoad.getFilePath().normalize();
-                Path baseDir = fileToLoad.getFilePath().getParent().normalize();
-                if (!safePath.startsWith(baseDir)) {
-                    throw new SecurityException("Invalid file path for file: " + fileToLoad.getOriginalFileName());
-                }
+                Path safePath = validateAndNormalize(fileToLoad.getFilePath(), fileToLoad.getOriginalFileName());
                 fileToLoad.setConvertedFile(fileConversionService.convertFileToCsv(safePath.toFile(), fileToLoad.getOriginalFileName()));
             } catch (Exception e) {
                 throw new AsyncTaskException(String.format("%s - Error while converting file '%s'", context.log(),
@@ -193,6 +201,34 @@ public class FileLoadingUtils {
             }
         }
 
+    }
+
+    /**
+     * Normalizes the given file path and ensures it does not escape its expected
+     * base directory, protecting against path traversal (e.g. "../../etc/passwd").
+     * <p>
+     * When the application's configured working folder is available, it is used
+     * as the trusted root boundary (strongest guarantee). Otherwise, the path's
+     * own parent directory is used as the boundary (e.g. in unit tests that build
+     * {@link FileToLoad} instances directly without wiring the full Spring context).
+     *
+     * @param rawPath          the candidate file path, potentially derived from user input
+     * @param originalFileName the original filename, used for error reporting only
+     * @return the normalized, validated path
+     */
+    private Path validateAndNormalize(Path rawPath, String originalFileName) {
+
+        Path safePath = rawPath.normalize();
+
+        Path baseDir = (localWorkingFolder != null && !localWorkingFolder.isBlank())
+                ? Path.of(localWorkingFolder).normalize()
+                : rawPath.getParent().normalize();
+
+        if (!safePath.startsWith(baseDir)) {
+            throw new SecurityException("Invalid file path for file: " + originalFileName);
+        }
+
+        return safePath;
     }
 
     public void cleanConvertedFiles(Context context) {

@@ -87,6 +87,7 @@ export class UsersComponent implements OnInit {
     sidebarCreateMode = false; // true for create mode, false for update mode
     sidebarVisible = false;
     errorMessageVisible = false;
+    private drawerTriggerRowIndex: number | null = null;
 
     displayPopup = false;
     selectedCriteriaIS: string[] = [];
@@ -158,10 +159,10 @@ export class UsersComponent implements OnInit {
 
         user.isWorkspaceAdmin = user.roles.includes(Role.WorkspaceAdmin);
         user.isOrganizationAdmin = user.roles.includes(Role.OrganizationAdmin);
-        user.isModule = this.getRole(user.roles, "INVENTORY_");
-        user.dsModule = this.getRole(user.roles, "DIGITAL_SERVICE_");
-        user.role = this.getRole(user.roles, "ADMINISTRATOR");
-        user.ecomindModule = this.getRole(user.roles, "ECO_MIND_AI_");
+        user.isModule = this.getRole(user, "INVENTORY_");
+        user.dsModule = this.getRole(user, "DIGITAL_SERVICE_");
+        user.role = this.getRole(user, "ADMINISTRATOR");
+        user.ecomindModule = this.getRole(user, "ECO_MIND_AI_");
         return user;
     }
 
@@ -199,13 +200,17 @@ export class UsersComponent implements OnInit {
         );
     }
 
-    getRole(roles: string[], type: string) {
+    getRole(user: any, type: string) {
+        const roles: string[] = user.roles;
         if (!roles || roles.length === 0) return "";
+        const isSopraUser = this.userService.isSopraUser(user.email);
+
+        if (type === "INVENTORY_" && isSopraUser) {
+            return this.getModuleRole(roles, Role.InventoryWrite, Role.InventoryRead);
+        }
 
         if (type === "ECO_MIND_AI_") {
-            if (roles.includes(Role.EcoMindAiWrite)) return "administration.role.write";
-            if (roles.includes(Role.EcoMindAiRead)) return "administration.role.read";
-            return "";
+            return this.getModuleRole(roles, Role.EcoMindAiWrite, Role.EcoMindAiRead);
         }
 
         if (type === "ADMINISTRATOR") {
@@ -227,6 +232,12 @@ export class UsersComponent implements OnInit {
         }
 
         return userRoles[0] || "";
+    }
+
+    private getModuleRole(roles: string[], writeRole: Role, readRole: Role): string {
+        if (roles.includes(writeRole)) return "administration.role.write";
+        if (roles.includes(readRole)) return "administration.role.read";
+        return "";
     }
 
     async deleteUserDetails(event: Event, user: UserDetails) {
@@ -269,7 +280,7 @@ export class UsersComponent implements OnInit {
                     .fetchUserInfo()
                     .pipe(take(1))
                     .subscribe(() => {
-                        this.router.navigateByUrl(Constants.WELCOME_PAGE);
+                        void this.router.navigateByUrl(Constants.WELCOME_PAGE);
                     });
             } else {
                 this.searchList();
@@ -281,11 +292,29 @@ export class UsersComponent implements OnInit {
     openSidepanelForAddORUpdateOrg(
         user: UserDetails,
         isEcoMindEnabledForCurrentOrganizationSelected: boolean,
+        rowIndex: number,
     ) {
+        this.drawerTriggerRowIndex = rowIndex;
         this.sidebarVisible = true;
         this.sidebarCreateMode = user.roles.length === 0;
         this.userDetail = user;
         this.userDetailEcoMind = isEcoMindEnabledForCurrentOrganizationSelected;
+    }
+
+    closeSidebar(): void {
+        this.clearForm = true;
+        this.searchList();
+        this.sidebarVisible = false;
+
+        const rowIndex = this.drawerTriggerRowIndex;
+        this.drawerTriggerRowIndex = null;
+        // get focus on edit/add after drawer close
+        setTimeout(() => {
+            document
+                .getElementById(`user-actions-${rowIndex}`)
+                ?.querySelector<HTMLElement>("button")
+                ?.focus();
+        }, 200);
     }
 
     displayPopupFct() {

@@ -55,7 +55,7 @@ function getErrorMessage(
         ) {
             if (!error.url.includes(Constants.ENDPOINTS.sharedDs)) {
                 let [_, _1, organization, _2, workspace] = router.url.split("/");
-                router.navigateByUrl(
+                void router.navigateByUrl(
                     `/organizations/${organization}/workspaces/${workspace}/digital-services`,
                 );
             }
@@ -78,7 +78,7 @@ function getErrorMessage(
 
 function handleUnauthorizedError(error: any, router: Router): void {
     if (environment?.keycloak?.enabled === "true" && keycloak.isTokenExpired()) {
-        keycloak.login({
+        void keycloak.login({
             redirectUri: globalThis.location.href,
         });
     } else {
@@ -91,7 +91,7 @@ function navigateToErrorPage(router: Router, statusCode: number): void {
     const targetErrorUrl = `/something-went-wrong/${statusCode}`;
 
     if (!currentUrl.includes(targetErrorUrl)) {
-        router.navigate(["/something-went-wrong", statusCode]);
+        void router.navigate(["/something-went-wrong", statusCode]);
     }
 }
 

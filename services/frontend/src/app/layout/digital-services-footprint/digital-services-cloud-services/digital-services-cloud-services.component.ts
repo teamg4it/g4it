@@ -74,11 +74,11 @@ export class DigitalServicesCloudServicesComponent implements OnInit {
 
     ngOnInit(): void {
         this.digitalServiceUid = this.router.url.split("/")[6];
-        this.getCloudServices();
+        void this.getCloudServices();
     }
 
     async getCloudServices() {
-        this.digitalServiceStore.initInVirtualEquipments(this.digitalServiceUid);
+        await this.digitalServiceStore.initInVirtualEquipments(this.digitalServiceUid);
     }
 
     changeSidebar(event: boolean) {
@@ -175,5 +175,16 @@ export class DigitalServicesCloudServicesComponent implements OnInit {
             annualUsage: virtualEq.durationHour!,
             averageWorkload: virtualEq.workload! * 100,
         };
+    }
+
+    focusCloudButton() {
+        setTimeout(() => {
+            const id =
+                this.cloud.idFront !== undefined
+                    ? `add-cloud${this.cloud.idFront}`
+                    : "add-cloud";
+
+            document.getElementById(id)?.querySelector("button")?.focus();
+        }, 400);
     }
 }

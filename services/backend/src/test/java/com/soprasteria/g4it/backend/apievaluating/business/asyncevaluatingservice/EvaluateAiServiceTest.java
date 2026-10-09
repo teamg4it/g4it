@@ -142,8 +142,9 @@ class EvaluateAiServiceTest {
         when(task.getCriteria()).thenReturn(List.of("CLIMATE_CHANGE"));
 
         InAiParameter aiParam = mockAiParameter();
+        InAiInfrastructure inAiInfrastructure = mock(InAiInfrastructure.class);
         when(inAIParameterRepository.findByDigitalServiceVersionUid("uid")).thenReturn(aiParam);
-        when(inAiInfrastructureRepository.findByDigitalServiceVersionUid("uid")).thenReturn(mock(InAiInfrastructure.class));
+        when(inAiInfrastructureRepository.findByDigitalServiceVersionUid("uid")).thenReturn(inAiInfrastructure);
 
         InDatacenter datacenter = mockDatacenter("DC1", "FR");
         when(inDatacenterRepository.findByDigitalServiceVersionUid("uid")).thenReturn(List.of(datacenter));
@@ -164,7 +165,8 @@ class EvaluateAiServiceTest {
         estimation.setRuntime(BigDecimal.valueOf(200f));
         estimation.setRecommendations(List.of(new Recommendation()));
 
-        when(aiConfigurationMapper.toAIModelConfigRest(any())).thenReturn(List.of(mock(AIConfigurationRest.class)));
+        AIConfigurationRest aiConfigurationRest = mock(AIConfigurationRest.class);
+        when(aiConfigurationMapper.toAIModelConfigRest(any())).thenReturn(List.of(aiConfigurationRest));
         when(aiService.runEstimation(any())).thenReturn(estimation);
 
         CriterionRest criterionRest = new CriterionRest();
@@ -389,13 +391,16 @@ class EvaluateAiServiceTest {
         when(evaluateNumEcoEvalService.getTotalVcpuCoreNumber(any())).thenReturn(4.0);
         when(evaluateNumEcoEvalService.getTotalDiskSize(any())).thenReturn(100.0);
 
+        ImpactEquipementPhysique physicalImpact = mock(ImpactEquipementPhysique.class);
         when(evaluateNumEcoEvalService.calculatePhysicalEquipment(any(), any(), any(), any(), any(), any(),any(),anyLong()))
-                .thenReturn(List.of(mock(ImpactEquipementPhysique.class)));
+                .thenReturn(List.of(physicalImpact));
 
+        ImpactEquipementVirtuel virtualImpact = mock(ImpactEquipementVirtuel.class);
         when(evaluateNumEcoEvalService.calculateVirtualEquipment(any(), any(), anyInt(), any(), any(), any(), any()))
-                .thenReturn(List.of(mock(ImpactEquipementVirtuel.class)));
+                .thenReturn(List.of(virtualImpact));
 
-        when(csvFileService.getPrinter(any(), any())).thenReturn(mock(CSVPrinter.class));
+        CSVPrinter printer = mock(CSVPrinter.class);
+        when(csvFileService.getPrinter(any(), any())).thenReturn(printer);
 
         // ACT
         aiEvaluationService.doEvaluateAi(context, task, Path.of("tmp"));
@@ -509,17 +514,22 @@ class EvaluateAiServiceTest {
         when(evaluateNumEcoEvalService.getTotalVcpuCoreNumber(any())).thenReturn(4.0);
         when(evaluateNumEcoEvalService.getTotalDiskSize(any())).thenReturn(100.0);
 
+        ImpactEquipementPhysique physicalImpact = mock(ImpactEquipementPhysique.class);
         when(evaluateNumEcoEvalService.calculatePhysicalEquipment(any(), any(), any(), any(), any(), any(),any(),anyLong()))
-                .thenReturn(List.of(mock(ImpactEquipementPhysique.class)));
+                .thenReturn(List.of(physicalImpact));
 
+
+
+        ImpactEquipementVirtuel virtualImpact = mock(ImpactEquipementVirtuel.class);
         when(evaluateNumEcoEvalService.calculateVirtualEquipment(any(), any(), anyInt(), any(), any(), any(), any()))
-                .thenReturn(List.of(mock(ImpactEquipementVirtuel.class)));
+                .thenReturn(List.of(virtualImpact));
 
         when(aggregationToOutput.keyVirtualEquipment(any(), any(), any(), any(), any()))
                 .thenReturn(List.of("SAME_KEY"));
 
+        CSVPrinter printer = mock(CSVPrinter.class);
         when(csvFileService.getPrinter(any(), any()))
-                .thenReturn(mock(CSVPrinter.class));
+                .thenReturn(printer);
 
         when(aiService.runEstimation(any()))
                 .thenReturn(new OutputEstimation());

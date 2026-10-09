@@ -17,6 +17,7 @@ export const environment = {
         "template-files",
         "download-reject",
         "task",
+        "is-workspace-specific",
     ],
     keycloak: {
         issuer: "${KEYCLOAK_URL}",
@@ -34,4 +35,6 @@ export const environment = {
         },
     },
     isEcomindEnabled: true,
+    applicationMaxLimit: "${APPLICATION_MAX_LIMIT}",
+    equipmentMaxLimit: "${EQUIPMENT_MAX_LIMIT}",
 };

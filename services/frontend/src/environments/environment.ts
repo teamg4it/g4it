@@ -20,6 +20,7 @@ export const environment = {
         "template-files",
         "download-reject",
         "task",
+        "is-workspace-specific",
     ],
     apiBaseUrl: "http://localhost:8080",
     keycloak: {
@@ -37,6 +38,8 @@ export const environment = {
             containerUrl: "",
         },
     },
+    applicationMaxLimit: 300000,
+    equipmentMaxLimit: 300000,
 };
 
 /*

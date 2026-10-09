@@ -19,6 +19,7 @@ export const environment = {
         "template-files",
         "download-reject",
         "task",
+        "is-workspace-specific",
     ],
     apiBaseUrl: "",
     frontEndUrl: "http://localhost:4200",
@@ -36,4 +37,6 @@ export const environment = {
             containerUrl: "",
         },
     },
+    applicationMaxLimit: 300000,
+    equipmentMaxLimit: 300000,
 };

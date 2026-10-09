@@ -10,7 +10,10 @@ import { DigitalServiceManageVersionTableComponent } from "./digital-service-man
     selector: "app-digital-service-manage-version",
     templateUrl: "./digital-service-manage-version.component.html",
     standalone: true,
-    imports: [DigitalServicesFootprintHeaderComponent, DigitalServiceManageVersionTableComponent],
+    imports: [
+        DigitalServicesFootprintHeaderComponent,
+        DigitalServiceManageVersionTableComponent,
+    ],
 })
 export class DigitalServiceManageVersionComponent implements OnInit {
     digitalService: DigitalService = {} as DigitalService;
@@ -18,7 +21,7 @@ export class DigitalServiceManageVersionComponent implements OnInit {
     private readonly route = inject(ActivatedRoute);
 
     ngOnInit(): void {
-        this.getDigitalService();
+        void this.getDigitalService();
     }
 
     async getDigitalService(): Promise<void> {

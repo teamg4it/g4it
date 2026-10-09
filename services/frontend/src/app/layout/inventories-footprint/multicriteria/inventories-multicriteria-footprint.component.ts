@@ -288,7 +288,7 @@ export class InventoriesMultiCriteriaFootprintComponent extends AbstractDashboar
             return;
         }
 
-        this.router.navigate([`../${criteriaName}`], {
+        void this.router.navigate([`../${criteriaName}`], {
             relativeTo: this.route,
         });
     }

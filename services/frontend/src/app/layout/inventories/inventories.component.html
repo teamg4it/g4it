@@ -8,21 +8,24 @@
         <p-drawer
             [(visible)]="sidebarVisible"
             position="right"
-            styleClass="drawer-md"
-            (onHide)="filePanel.close()"
+            styleClass="drawer-lg"
+            (onHide)="focusLoadButton(); sidebarVisible = false"
             ariaCloseLabel="Close"
         >
-            <app-file-panel
-                #filePanel
-                [purpose]="sidebarPurpose"
-                [name]="name"
-                [inventoryId]="id"
-                [allSimulations]="inventoriesForSimulationsAll"
-                [inventories]="inventories.get('INFORMATION_SYSTEM')!"
-                (sidebarPurposeChange)="sidebarPurpose = $event"
-                (sidebarVisibleChange)="sidebarVisible = $event"
-                (reloadInventoriesAndLoop)="reloadInventoriesAndLoop($event)"
-            ></app-file-panel>
+            <ng-template #headless>
+                <app-inv-file-panel
+                    #filePanel
+                    [purpose]="sidebarPurpose"
+                    [name]="name"
+                    [inventoryId]="id"
+                    [allSimulations]="inventoriesForSimulationsAll"
+                    [inventories]="inventories.get('INFORMATION_SYSTEM')!"
+                    (sidebarPurposeChange)="sidebarPurpose = $event"
+                    (sidebarVisibleChange)="focusLoadButton(); sidebarVisible = $event"
+                    (reloadInventoriesAndLoop)="reloadInventoriesAndLoop($event)"
+                    (reloadInventoriesApi)="reloadInventories()"
+                ></app-inv-file-panel>
+            </ng-template>
         </p-drawer>
     }
     @if (sidebarType === "NOTE" && sidebarVisible) {
@@ -30,7 +33,7 @@
             [(visible)]="sidebarVisible"
             position="right"
             styleClass=" w-7"
-            (onHide)="sidebarVisible = false"
+            (onHide)="focusNoteButton(); sidebarVisible = false"
             ariaCloseLabel="Close"
         >
             <app-common-editor
@@ -38,8 +41,8 @@
                 [title]="'Note - ' + selectedInventory.name"
                 [isWriteRole]="userService.isAllowedInventoryWrite$ | async"
                 (saveValue)="noteSaveValue($event)"
-                (outClose)="sidebarVisible = $event"
-                (delete)="noteDelete($event); sidebarVisible = $event"
+                (outClose)="focusNoteButton(); sidebarVisible = $event"
+                (delete)="noteDelete($event); focusNoteButton(); sidebarVisible = $event"
                 styleClass="m-0"
             >
             </app-common-editor>

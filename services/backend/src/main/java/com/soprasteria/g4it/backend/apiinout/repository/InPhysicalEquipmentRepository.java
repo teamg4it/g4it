@@ -20,6 +20,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 
 /**
  * In Physical Equipment JPA repository.
@@ -54,8 +56,10 @@ public interface InPhysicalEquipmentRepository extends JpaRepository<InPhysicalE
      * @param digitalServiceVersionUid digital service Identifier
      * @return return a list of physical equipments
      */
-    List<InPhysicalEquipment> findByDigitalServiceVersionUidOrderByName(String digitalServiceVersionUid);
-
+    // List<InPhysicalEquipment> findByDigitalServiceVersionUidOrderByName(String digitalServiceVersionUid);
+    List<InPhysicalEquipment> findByDigitalServiceVersionUidOrderByName(
+            String digitalServiceVersionUid,
+            Pageable pageable);
     /**
      * Find physical equipment by the functionally unique fields
      *
@@ -71,7 +75,10 @@ public interface InPhysicalEquipmentRepository extends JpaRepository<InPhysicalE
      * @param inventoryId inventory id
      * @return return a list of physical equipments
      */
-    List<InPhysicalEquipment> findByInventoryId(Long inventoryId);
+    // List<InPhysicalEquipment> findByInventoryId(Long inventoryId);
+    List<InPhysicalEquipment> findByInventoryIdOrderByIdAsc(
+            Long inventoryId,
+            Pageable pageable);
 
     List<InPhysicalEquipment> findByInventoryId(Long inventoryId, Pageable pageable);
 
