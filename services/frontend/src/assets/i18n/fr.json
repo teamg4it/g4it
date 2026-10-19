@@ -1391,6 +1391,12 @@
         "workspace-reference": {
             "data-model-text": "Si nécessaire, ce fichier peut vous aider à renseigner vos données de référence.",
             "loading-result": "Chargement résultat"
+        },
+        "release-notes-referential": "Notes de version",
+        "release-notes-paragraph": "Saisissez le contenu des notes de version qui seront affichées aux utilisateurs après leur connexion afin de mettre en évidence les nouvelles fonctionnalités, les améliorations, les corrections de bugs et autres mises à jour importantes.",
+        "release-notes": {
+            "undo": "Annuler les modifications",
+            "publish": "Publier les notes de version"
         }
     },
     "error-graph": {

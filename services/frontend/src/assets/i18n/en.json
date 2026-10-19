@@ -1395,6 +1395,12 @@
         "workspace-reference": {
             "data-model-text": "If necessary, this file can assist you in filling in your reference data.",
             "loading-result": "Loading result"
+        },
+        "release-notes-referential": "Release notes",
+        "release-notes-paragraph": "Enter the content of the release notes that will be displayed to users after login to highlight new features, enhancements, bug fixes, and other important updates.",
+        "release-notes": {
+            "undo": "Undo changes",
+            "publish": "Publish the release notes"
         }
     },
     "error-graph": {
