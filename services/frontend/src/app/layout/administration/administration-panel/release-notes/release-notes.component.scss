@@ -1,0 +1,13 @@
+.release-notes {
+    display: grid;
+    grid-template-columns: 1fr;
+
+    .form-buttons {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: end;
+        gap: 1rem;
+        margin-inline: 1.5rem;
+    }
+}
