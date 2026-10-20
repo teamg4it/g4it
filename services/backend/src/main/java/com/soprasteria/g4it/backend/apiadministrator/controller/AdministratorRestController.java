@@ -10,6 +10,7 @@ package com.soprasteria.g4it.backend.apiadministrator.controller;
 import com.soprasteria.g4it.backend.apiadministrator.business.AdministratorRoleService;
 import com.soprasteria.g4it.backend.apiadministrator.business.AdministratorService;
 import com.soprasteria.g4it.backend.apiadministrator.business.AdministratorWorkspaceService;
+import com.soprasteria.g4it.backend.apiadministrator.business.ReleaseNotesService;
 import com.soprasteria.g4it.backend.apiuser.business.AuthService;
 import com.soprasteria.g4it.backend.apiuser.mapper.OrganizationRestMapper;
 import com.soprasteria.g4it.backend.apiuser.mapper.RoleRestMapper;
@@ -42,6 +43,8 @@ public class AdministratorRestController implements AdministratorApiDelegate {
 
     @Autowired
     AdministratorRoleService administratorRoleService;
+    @Autowired
+    ReleaseNotesService releaseNotesService;
     @Autowired
     AuthService authService;
     @Autowired
@@ -163,5 +166,16 @@ public class AdministratorRestController implements AdministratorApiDelegate {
         return ResponseEntity.noContent().<Void>build();
     }
 
-}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ResponseEntity<Void> saveReleaseNotes(
+            ReleaseNotesPublishRest request) {
+        administratorRoleService.hasAdminRightsOnAnyOrganizationOrAnyWorkspace(authService.getUser());
+        releaseNotesService.publish(request.getContent());
+        return ResponseEntity.noContent().build();
+    }
 
+
+}

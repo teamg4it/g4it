@@ -1469,3 +1469,13 @@ components:
         responseMessage:
           type: string
           description: Response message for the renewal update action
+
+    ReleaseNotesPublishRest:
+      type: object
+      description: Request body for publishing release notes
+      required:
+        - content
+      properties:
+        content:
+          type: string
+          description: Content of the release notes

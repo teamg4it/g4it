@@ -1,0 +1,26 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-release-notes
+      author: G4IT Dev Team
+      changes:
+        - createTable:
+            tableName: release_notes
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: release_notes_id_pk
+              - column:
+                  name: content
+                  type: text
+                  constraints:
+                    nullable: false
+              - column:
+                  name: creation_date
+                  type: timestamp
+              - column:
+                  name: last_update_date
+                  type: timestamp
