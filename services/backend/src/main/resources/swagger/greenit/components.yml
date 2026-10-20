@@ -1479,3 +1479,19 @@ components:
         content:
           type: string
           description: Content of the release notes
+
+
+    ReleaseNoteRest:
+      type: object
+      description: A published release note
+      required:
+        - id
+        - content
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Database identifier of this release note
+        content:
+          type: string
+          description: Content of the release notes

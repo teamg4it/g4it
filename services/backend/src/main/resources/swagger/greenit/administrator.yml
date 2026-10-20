@@ -7,6 +7,8 @@ info:
 tags:
   - name: administrator
     description: Endpoint for organization and workspace administration
+  - name: release-notes
+    description: User-facing release notes and acknowledgement
 
 paths:
   /administrator/organizations:
@@ -332,5 +334,39 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
         '403':
           description: Forbidden - user is not an organization or workspace administrator
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /release-notes:
+    get:
+      tags:
+        - release-notes
+      summary: Get the latest release notes if the current user has not marked them as seen
+      operationId: getReleaseNotes
+      responses:
+        '200':
+          description: The latest release notes not yet marked as seen by this user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReleaseNoteRest'
+        '204':
+          description: No release notes have been published or the latest notes were already marked as seen
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /release-notes/seen:
+    post:
+      tags:
+        - release-notes
+      summary: Mark the latest release notes as seen by the current user
+      operationId: markReleaseNotesSeen
+      responses:
+        '204':
+          description: Latest release notes marked as seen, or no release notes have been published
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
         '500':
           $ref: '#/components/responses/InternalServerError'

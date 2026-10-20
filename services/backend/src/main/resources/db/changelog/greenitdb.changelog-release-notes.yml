@@ -24,3 +24,20 @@ databaseChangeLog:
               - column:
                   name: last_update_date
                   type: timestamp
+  - changeSet:
+      id: add-last-seen-release-note-to-user
+      author: G4IT Dev Team
+      changes:
+        - addColumn:
+            tableName: g4it_user
+            columns:
+              - column:
+                  name: last_seen_release_note_id
+                  type: bigint
+        - addForeignKeyConstraint:
+            baseTableName: g4it_user
+            baseColumnNames: last_seen_release_note_id
+            referencedTableName: release_notes
+            referencedColumnNames: id
+            constraintName: g4it_user_last_seen_release_note_fk
+            onDelete: SET NULL
