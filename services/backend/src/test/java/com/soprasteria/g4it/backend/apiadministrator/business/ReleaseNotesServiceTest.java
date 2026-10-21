@@ -55,6 +55,21 @@ class ReleaseNotesServiceTest {
     }
 
     @Test
+    void returnsLatestNoteRegardlessOfSeenState() {
+        ReleaseNote latest = ReleaseNote.builder().id(12L).content("Latest").build();
+        when(releaseNotesRepository.findFirstByOrderByIdDesc()).thenReturn(Optional.of(latest));
+
+        assertThat(service.getLatestReleaseNote()).contains(latest);
+    }
+
+    @Test
+    void returnsEmptyWhenNoLatestNoteExists() {
+        when(releaseNotesRepository.findFirstByOrderByIdDesc()).thenReturn(Optional.empty());
+
+        assertThat(service.getLatestReleaseNote()).isEmpty();
+    }
+
+    @Test
     void returnsEmptyWhenUserHasSeenLatestNote() {
         ReleaseNote latest = ReleaseNote.builder().id(12L).content("Latest").build();
         when(releaseNotesRepository.findLatestUnseenByUserId(4L)).thenReturn(Optional.empty());

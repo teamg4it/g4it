@@ -11,6 +11,8 @@ import com.soprasteria.g4it.backend.apiadministrator.business.AdministratorRoleS
 import com.soprasteria.g4it.backend.apiadministrator.business.AdministratorService;
 import com.soprasteria.g4it.backend.apiadministrator.business.AdministratorWorkspaceService;
 import com.soprasteria.g4it.backend.apiadministrator.business.ReleaseNotesService;
+import com.soprasteria.g4it.backend.apiadministrator.modeldb.ReleaseNote;
+import com.soprasteria.g4it.backend.apiadministrator.modeldb.ReleaseNote;
 import com.soprasteria.g4it.backend.apiuser.business.AuthService;
 import com.soprasteria.g4it.backend.apiuser.mapper.OrganizationRestMapper;
 import com.soprasteria.g4it.backend.apiuser.mapper.RoleRestMapper;
@@ -164,6 +166,25 @@ public class AdministratorRestController implements AdministratorApiDelegate {
     public ResponseEntity<Void> deleteUserWorkspaceLink(final LinkUserRoleRest linkUserRoleRest) {
         administratorWorkspaceService.deleteUserWorkLink(linkUserRoleRest, authService.getUser());
         return ResponseEntity.noContent().<Void>build();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ResponseEntity<ReleaseNoteRest> getLatestReleaseNote() {
+        administratorRoleService.hasAdminRightsOnAnyOrganizationOrAnyWorkspace(authService.getUser());
+        var latestReleaseNote = releaseNotesService.getLatestReleaseNote();
+        if (latestReleaseNote.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        ReleaseNote releaseNote = latestReleaseNote.get();
+        ReleaseNoteRest response = ReleaseNoteRest.builder()
+                .id(releaseNote.getId())
+                .content(releaseNote.getContent())
+                .build();
+        return ResponseEntity.ok(response);
     }
 
     /**

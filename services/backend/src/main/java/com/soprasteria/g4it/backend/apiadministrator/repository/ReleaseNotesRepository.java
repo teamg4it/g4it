@@ -17,6 +17,8 @@ import java.util.Optional;
 
 @Repository
 public interface ReleaseNotesRepository extends JpaRepository<ReleaseNote, Long> {
+    Optional<ReleaseNote> findFirstByOrderByIdDesc();
+
     @Query("""
             SELECT releaseNote
             FROM ReleaseNote releaseNote, User u

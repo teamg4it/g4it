@@ -25,6 +25,11 @@ public class ReleaseNotesService {
         return releaseNotesRepository.findLatestUnseenByUserId(userId);
     }
 
+    @Transactional(readOnly = true)
+    public Optional<ReleaseNote> getLatestReleaseNote() {
+        return releaseNotesRepository.findFirstByOrderByIdDesc();
+    }
+
     @Transactional
     public void markLatestReleaseNoteAsSeen(long userId) {
         userRepository.markLatestReleaseNoteAsSeen(userId);
