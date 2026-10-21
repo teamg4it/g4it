@@ -207,7 +207,13 @@
         "environment.all": "Tous les environnements",
         "equipmentType.all": "Tous les types d'équipements",
         "lifeCycle.all": "Tous les cycles de vie",
-        "domain.all": "Tous les domaines et sous-domaines"
+        "domain.all": "Tous les domaines et sous-domaines",
+        "release-notes": {
+            "title": "Notes de Version",
+            "hide": "Ne plus afficher ces notes de version",
+            "give-feedback": "Donner mon avis",
+            "close": "Fermer"
+        }
     },
     "useful-information": {
         "computing-engines": "Moteurs de calcul",

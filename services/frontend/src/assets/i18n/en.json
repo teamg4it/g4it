@@ -208,7 +208,13 @@
         "environment.all": "All Environments",
         "equipmentType.all": "All Equipment Types",
         "lifeCycle.all": "All Lifecycles",
-        "domain.all": "All Domains and Subdomains"
+        "domain.all": "All Domains and Subdomains",
+        "release-notes": {
+            "title": "Release Notes",
+            "hide": "Don't show these release notes again",
+            "give-feedback": "Give feedback",
+            "close": "Close"
+        }
     },
     "useful-information": {
         "computing-engines": "Computing engines",

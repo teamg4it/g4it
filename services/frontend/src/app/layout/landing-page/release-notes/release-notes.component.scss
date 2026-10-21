@@ -1,0 +1,81 @@
+dialog[open] {
+    margin: 10% 15%;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    gap: 1rem;
+    width: auto;
+    height: auto;
+    padding: 2.3rem 3rem;
+    background-color: var(--light-grey-color);
+    border: none;
+    outline: none;
+
+    &::backdrop {
+        background-color: hsla(132, 8%, 12%, 0.4);
+    }
+
+    .title {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+
+        h2 {
+            font-size: 1.75rem;
+            font-weight: 600;
+            padding: 0;
+            text-box-trim: trim-both;
+        }
+    }
+
+    section.ql-editor {
+        padding: 1rem 1.5rem;
+        outline: 1px solid black;
+        overflow-y: scroll;
+        overflow-x: hidden;
+    }
+
+    .footer {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        gap: 1rem;
+
+        div {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+
+            label {
+                text-box-trim: trim-both;
+            }
+
+            a {
+                text-decoration: none;
+            }
+        }
+    }
+}
+
+:host ::ng-deep section.ql-editor {
+    ul {
+        padding-inline-start: 1lh;
+
+        li {
+            list-style-type: disc;
+            padding-left: 0;
+        }
+    }
+
+    ol li::marker {
+        color: gray;
+        font-family: sans-serif;
+        font-size: 0.8em;
+    }
+
+    p {
+        font-size: 1rem;
+        margin-block: 0.75rem;
+    }
+}

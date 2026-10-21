@@ -1,0 +1,42 @@
+<dialog #releaseNotesDialog id="release-notes-dialog" closedby="any">
+    <div class="title">
+        <h2>{{ 'common.release-notes.title' | translate }}</h2>
+        <p-button
+            icon="pi pi-times"
+            iconOnly
+            rounded
+            variant="text"
+            aria-label="Cancel"
+            styleClass="p-button p-button-plain"
+            (onClick)="closeDialog()"
+        ></p-button>
+    </div>
+
+    <section #releaseNotesSection class="ql-editor"></section>
+
+    <div class="footer">
+        <div>
+            <p-checkbox
+                inputId="hide"
+                [(ngModel)]="checked"
+                [value]="checked"
+            ></p-checkbox>
+            <label pLabel for="hide" class="text-sm">
+                {{ 'common.release-notes.hide' | translate }}
+            </label>
+        </div>
+        <div>
+            <a
+                class="p-ripple p-button p-button-secondary-blue p-component uppercase"
+                href="https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=fa-Hi0eGx02N9F9pogEbtYlEKhwfEnZBmEwKdeDS-wJUNDE5TTRNUllFU1pCSzJYN1hCRVZURUZEQi4u"
+            >
+                {{ 'common.release-notes.give-feedback' | translate }}
+            </a>
+            <p-button
+                styleClass="uppercase bg-light-green"
+                [label]="'common.release-notes.close' | translate"
+                (onClick)="closeDialog()"
+            ></p-button>
+        </div>
+    </div>
+</dialog>

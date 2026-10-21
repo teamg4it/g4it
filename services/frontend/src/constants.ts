@@ -74,6 +74,7 @@ export abstract class Constants {
         organizationById: "administrator/organization",
         adminWorkspaces: "administrator/workspaces",
         releaseNotes: "release-notes",
+        releaseNotesSeen: "release-notes/seen",
         adminReleaseNotes: "administrator/release-notes",
         ecomindaiModelConfig: "ecomindai/aiModelConfig/type",
         actions: "administrator-actions",
