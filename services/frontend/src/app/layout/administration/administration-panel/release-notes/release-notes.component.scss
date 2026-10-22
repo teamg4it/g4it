@@ -1,6 +1,8 @@
 .release-notes {
     display: grid;
     grid-template-columns: 1fr;
+    overflow-y: auto;
+    max-height: 100%;
 
     .form-buttons {
         display: flex;
