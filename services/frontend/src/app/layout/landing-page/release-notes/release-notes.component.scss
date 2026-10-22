@@ -47,8 +47,13 @@ dialog[open] {
             align-items: center;
             gap: 1rem;
 
+            input {
+                cursor: pointer;
+            }
+
             label {
                 text-box-trim: trim-both;
+                cursor: pointer;
             }
 
             a {

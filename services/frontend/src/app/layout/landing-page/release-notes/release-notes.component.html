@@ -18,9 +18,11 @@
         <div>
             <p-checkbox
                 inputId="hide"
-                [(ngModel)]="checked"
-                [value]="checked"
+                [ngModel]="checked()"
+                (ngModelChange)="checked.set($event)"
+                [binary]="true"
             ></p-checkbox>
+
             <label pLabel for="hide" class="text-sm">
                 {{ 'common.release-notes.hide' | translate }}
             </label>

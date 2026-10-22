@@ -17,7 +17,7 @@ export class ReleaseNotesComponent {
     @ViewChild("releaseNotesSection")
     section!: ElementRef<HTMLElement>;
 
-    checked = signal(false)
+    checked = signal<boolean>(false)
 
     constructor(
         public releaseNotesService: ReleaseNotesService
@@ -38,7 +38,6 @@ export class ReleaseNotesComponent {
                 this.dialog.nativeElement.showModal()
             }
         })
-
     }
 
     closeDialog() {
