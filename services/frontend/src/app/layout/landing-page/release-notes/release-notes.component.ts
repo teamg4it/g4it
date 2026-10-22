@@ -28,9 +28,17 @@ export class ReleaseNotesComponent {
             if (notes) {
                 // setHTML is a new method to set the inner HTML in a XSS-safe way
                 // see: https://developer.mozilla.org/en-US/docs/Web/API/Element/setHTML
-                if ('setHTML' in this.section.nativeElement && typeof this.section.nativeElement['setHTML'] === 'function') {
-                    this.section.nativeElement.setHTML(notes.content)
+                if ('setHTML' in this.section.nativeElement
+                    && typeof this.section.nativeElement['setHTML'] === 'function'
+                    && 'Sanitizer' in window
+                    && typeof window['Sanitizer'] === 'function'
+                ) {
+                    const sanitizer = new (window as any).Sanitizer();
+                    sanitizer.allowAttribute("class")
+                    sanitizer.allowElement("br")
+                    this.section.nativeElement.setHTML(notes.content, { sanitizer })
                 } else {
+                    console.log("Using innerHTML to set the release notes content")
                     // but not widely available so define a fallback
                     this.section.nativeElement.innerHTML = notes.content
                 }
