@@ -1,6 +1,7 @@
 import { Component, inject, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { Subscription } from "rxjs";
+import { DigitalServicesAIServicesComponent } from "../digital-services-ai-services/digital-services-ai-services.component";
 import { DigitalServicesCloudServicesComponent } from "../digital-services-cloud-services/digital-services-cloud-services.component";
 import { DigitalServicesNetworksComponent } from "../digital-services-networks/digital-services-networks.component";
 import { DigitalServicesServersComponent } from "../digital-services-servers/digital-services-servers.component";
@@ -15,6 +16,7 @@ import { DigitalServicesTerminalsComponent } from "../digital-services-terminals
         DigitalServicesNetworksComponent,
         DigitalServicesServersComponent,
         DigitalServicesCloudServicesComponent,
+        DigitalServicesAIServicesComponent,
     ],
 })
 export class DigitalServicesResourcesComponent implements OnInit, OnDestroy {

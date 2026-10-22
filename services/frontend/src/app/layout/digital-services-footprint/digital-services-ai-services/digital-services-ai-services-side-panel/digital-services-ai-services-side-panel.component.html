@@ -1,0 +1,215 @@
+<form [formGroup]="aiForm" (ngSubmit)="submitFormData()">
+    <p-scrollPanel [style]="{ width: '100%', height: 'calc(100vh - 120px)' }">
+        <div class="lg-file-panel-margin">
+            @if (isNew) {
+                <div
+                    class="side-panel-title"
+                    role="heading"
+                    aria-level="2"
+                    appAutofocus
+                    tabindex="-1"
+                >
+                    {{ "digital-services-ai-services.new" | translate }}
+                </div>
+            } @else {
+                <div
+                    class="side-panel-title"
+                    role="heading"
+                    aria-level="2"
+                    appAutofocus
+                    tabindex="-1"
+                >
+                    {{ "digital-services-ai-services.edit" | translate }}
+                </div>
+            }
+
+            <div class="information-section my-3">
+                <h3 class="m-0 text-lg mb-2 font-semibold">
+                    {{ "digital-services-ai-services.ai-description" | translate }}
+                </h3>
+                <p
+                    [innerHTML]="
+                        'digital-services-ai-services.ai-description-text' | translate
+                    "
+                ></p>
+            </div>
+
+            <div class="w-30rem">
+                <div class="flex flex-column">
+                    <label for="cloudName">{{
+                        "digital-services-ai-services.name" | translate
+                    }}</label>
+                    <input
+                        pInputText
+                        formControlName="name"
+                        [required]="true"
+                        [(ngModel)]="ai.name"
+                        name="name"
+                        ngDefaultControl
+                        locale="fr-FR"
+                        id="aiName"
+                    />
+                    @if (aiForm.get("name")?.hasError("required")) {
+                        <p class="error-text">
+                            {{ "digital-services-ai-services.name" | translate }}
+                            {{ "common.mandatory" | translate }}
+                        </p>
+                    }
+                    @if (aiForm.get("name")?.hasError("uniqueName")) {
+                        <p class="error-text">
+                            {{
+                                "digital-services-ai-services.error.service-already-exists"
+                                    | translate
+                            }}
+                        </p>
+                    }
+                </div>
+
+                <div class="underlined-div">
+                    <p>
+                        {{ "digital-services-ai-services.configuration" | translate }}
+                    </p>
+                </div>
+
+                <div class="flex flex-column my-2">
+                    <label for="aiProvider" class="text-xs">{{
+                        "digital-services-ai-services.aiProvider" | translate
+                    }}</label>
+                    <p-select
+                        appendTo="body"
+                        [options]="aiProviders"
+                        styleClass="w-full"
+                        formControlName="aiProvider"
+                        [required]="true"
+                        [(ngModel)]="ai.aiProvider"
+                        [filter]="true"
+                        filterPlaceholder="Search"
+                        name="aiProvider"
+                        ngDefaultControl
+                        id="aiProvider"
+                        [ariaLabel]="
+                            'digital-services-ai-services.aiProvider' | translate
+                        "
+                    >
+                    </p-select>
+                    @if (aiForm.get("aiProvider")?.hasError("required")) {
+                        <p class="error-text">
+                            {{ "digital-services-ai-services.aiProvider" | translate }}
+                            {{ "common.mandatory" | translate }}
+                        </p>
+                    }
+                </div>
+                <div class="flex flex-column my-2">
+                    <label class="text-xs" for="aiModel">{{
+                        "digital-services-ai-services.aiModel" | translate
+                    }}</label>
+                    <p-select
+                        appendTo="body"
+                        [options]="aiModelsByProvider.get(ai.aiProvider)"
+                        styleClass="w-full"
+                        formControlName="aiModel"
+                        [required]="true"
+                        [(ngModel)]="ai.aiModel"
+                        [filter]="true"
+                        filterPlaceholder="Search"
+                        name="aiModel"
+                        ngDefaultControl
+                        [virtualScroll]="true"
+                        [virtualScrollItemSize]="50"
+                        id="aiModel"
+                        [ariaLabel]="'digital-services-ai-services.aiModel' | translate"
+                    >
+                    </p-select>
+                    @if (aiForm.get("aiModel")?.hasError("required")) {
+                        <p class="error-text">
+                            {{ "digital-services-ai-services.aiModel" | translate }}
+                            {{ "common.mandatory" | translate }}
+                        </p>
+                    }
+                </div>
+
+                <div class="flex flex-column my-2">
+                    <label class="text-xs" for="tokenQuantity">{{
+                        "digital-services-ai-services.tokenQuantity" | translate
+                    }}</label>
+                    <p-inputNumber
+                        formControlName="tokenQuantity"
+                        [required]="true"
+                        [min]="1"
+                        [(ngModel)]="ai.tokenQuantity"
+                        styleClass="w-full"
+                        name="tokenQuantity"
+                        ngDefaultControl
+                        locale="fr-FR"
+                        id="tokenQuantity"
+                        [ariaLabel]="
+                            'digital-services-ai-services.tokenQuantity' | translate
+                        "
+                    />
+                    @if (aiForm.get("tokenQuantity")?.hasError("required")) {
+                        <p class="error-text">
+                            {{ "digital-services-ai-services.tokenQuantity" | translate }}
+                            {{ "common.mandatory" | translate }}
+                        </p>
+                    }
+                </div>
+
+                <div class="flex flex-column my-2">
+                    <label class="text-xs" for="location">{{
+                        "digital-services-ai-services.location" | translate
+                    }}</label>
+                    <p-select
+                        appendTo="body"
+                        [options]="countries"
+                        optionLabel="name"
+                        styleClass="w-full"
+                        formControlName="location"
+                        [required]="true"
+                        [(ngModel)]="ai.location"
+                        [filter]="true"
+                        filterPlaceholder="Search"
+                        name="location"
+                        ngDefaultControl
+                        id="location"
+                        [ariaLabel]="'digital-services-ai-services.location' | translate"
+                    >
+                    </p-select>
+                    @if (aiForm.get("location")?.hasError("required")) {
+                        <p class="error-text">
+                            {{ "digital-services-ai-services.location" | translate }}
+                            {{ "common.mandatory" | translate }}
+                        </p>
+                    }
+                </div>
+            </div>
+        </div>
+    </p-scrollPanel>
+    <div class="button-bottom-right">
+        @if (aiForm.hasError("xssDetected") && aiForm.dirty) {
+            <div class="error-text block">
+                {{ "digital-services.error.xss-detected" | translate }}
+            </div>
+        }
+        @if (!isNew && (userService.isAllowedDigitalServiceWrite$ | async)) {
+            <p-button styleClass="grey-button  " (onClick)="deleteServerAI()">{{
+                "common.delete" | translate
+            }}</p-button>
+        }
+        <p-button styleClass="white-button" (onClick)="close()" id="ai-cancel">{{
+            "common.cancel" | translate
+        }}</p-button>
+        @if (userService.isAllowedDigitalServiceWrite$ | async) {
+            <p-button
+                styleClass="yellow-button"
+                [disabled]="aiForm.invalid"
+                type="submit"
+            >
+                @if (isNew) {
+                    <span>{{ "common.add" | translate }}</span>
+                } @else {
+                    <span>{{ "common.save" | translate }}</span>
+                }
+            </p-button>
+        }
+    </div>
+</form>

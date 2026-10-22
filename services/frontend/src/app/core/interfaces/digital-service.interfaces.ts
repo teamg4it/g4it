@@ -101,6 +101,19 @@ export interface DigitalServiceCloudServiceConfig {
     idFront?: number;
 }
 
+export interface DigitalServiceAIServiceConfig {
+    id: number;
+    digitalServiceUid: string;
+    creationDate?: number;
+    name: string;
+    aiProvider: string;
+    aiModel: string;
+    tokenQuantity: number;
+    location: DropdownValue;
+    locationValue: string;
+    idFront?: number;
+}
+
 export interface DigitalServicesAiInfrastructure {
     infrastructureType: "SERVER_DC" | "LAPTOP" | "DESKTOP";
     nbCpuCores: number;

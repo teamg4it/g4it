@@ -235,6 +235,7 @@
         "Terminal": "Terminaux",
         "Server": "Infrastructures privées",
         "CloudService": "Clouds Publics - IaaS",
+        "AIService": "Service IA",
         "infrastructure": "Infrastructure",
         "AiParameters": "Paramètres AI",
         "Network": "Réseaux",
@@ -549,6 +550,22 @@
         "server-parameter-li3": "Démarrez par une approximation maitrisée et affinez ensuite.",
         "server-vm-text": "Décrivez la proportion de ressources utilisées par votre service sur un serveur partagé.</br> Cela correspond généralement à des machines virtuelles (VM) ou à des conteneurs (ex : Kubernetes)."
     },
+    "digital-services-resources": {
+        "categories": {
+            "label": "Catégories de ressources",
+            "section-title": "Tiers",
+            "collapse": "Réduire le bandeau",
+            "expand": "Développer le bandeau",
+            "devices": "Terminaux",
+            "networks": "Réseaux",
+            "private-infrastructures": "Infrastructures privées",
+            "external-services": "Services externes"
+        }
+    },
+    "digital-services-external-services": {
+        "information-step": "ÉTAPE 4",
+        "information-text": "Décrivez les services externes utilisés par votre service numérique, pouvant être des services Cloud et/ou IA fournis par des fournisseurs tiers."
+    },
     "digital-services-cloud-services": {
         "new": "Nouvelle instance Cloud",
         "edit": "Édition instance Cloud",
@@ -574,9 +591,24 @@
         "configuration": "Instance configuration",
         "error.service-already-exists": "Le service cloud existe déjà",
         "tooltip_average_workload": "Charge de travail moyenne",
-        "tooltip_annual_usage": "Utilisation annuelle",
+        "tooltip_annual_usage": "Utilisation annuelle"
+    },
+    "digital-services-ai-services": {
+        "id": "#",
+        "name": "Nom du service",
+        "aiProvider": "Fournisseur IA",
+        "aiModel": "Modèle IA",
+        "tokenQuantity": "Nombre de jetons en sortie",
+        "location": "Localisation",
+        "locationValue": "Localisation",
+        "new": "Nouveau service IA",
+        "ai-services": "Services IA",
+        "ai-service": "Service IA",
+        "configuration": "Paramètre du service IA",
+        "error.service-already-exists": "Le service IA existe déjà",
         "information-step": "ÉTAPE 4",
-        "information-text": "Décrivez les serveurs IaaS fournis par les principaux service cloud provider."
+        "ai-description": "Configuration du service IA",
+        "ai-description-text": "Configurez le service IA utilisé par votre service numérique. Le fournisseur, le modèle, le nombre de jetons et la localisation sont exigé par l'API EcoLogits afin de calculer les impacts environnementaux associé aux charges de travail d’inférence par IA."
     },
     "digital-services-ai-parameter": {
         "new": "Nouveau terminal",

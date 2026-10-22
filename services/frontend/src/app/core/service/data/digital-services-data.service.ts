@@ -116,6 +116,16 @@ export class DigitalServicesDataService {
             `referential/boaviztapi/cloud/providers/instances?provider=${providerName}`,
         );
     }
+    // <[BDT]> api boavizta pour les IA non dispo
+    getBoaviztapiAIProviders(): Observable<string[]> {
+        return this.http.get<string[]>(`referential/boaviztapi/ai/providers`);
+    }
+    getBoaviztapiAIModel(providerName: string): Observable<string[]> {
+        return this.http.get<string[]>(
+            `referential/boaviztapi/ai/providers/models?provider=${providerName}`,
+        );
+    }
+    // </[BDT]>
 
     getModels(model: string): Observable<AiModelConfig[]> {
         return this.http.get<AiModelConfig[]>(`${ecomindaiModelConfig}/${model}`);

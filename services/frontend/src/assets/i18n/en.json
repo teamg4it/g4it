@@ -237,6 +237,7 @@
         "Terminal": "Terminals",
         "Server": "Private Infrastructures",
         "CloudService": "Public Clouds - IaaS",
+        "AIService": "AI Services",
         "Network": "Networks",
         "visualize": "Visualize",
         "infrastructure": "Infrastructure",
@@ -551,6 +552,22 @@
         "server-parameter-li3": "Start with a controlled approximation and then refine it.",
         "server-vm-text": "Describe the proportion of resources used by your service on a shared server.</br> This typically corresponds to virtual machines (VMs) or containers (e.g., Kubernetes)."
     },
+    "digital-services-resources": {
+        "categories": {
+            "label": "Resource categories",
+            "section-title": "Third parties",
+            "collapse": "Collapse sidebar",
+            "expand": "Expand sidebar",
+            "devices": "Devices",
+            "networks": "Networks",
+            "private-infrastructures": "Private infrastructures",
+            "external-services": "External services"
+        }
+    },
+    "digital-services-external-services": {
+        "information-step": "Step 4",
+        "information-text": "Describe the external services used by your digital service, including Cloud and/or AI services provided by third-party providers."
+    },
     "digital-services-cloud-services": {
         "new": "New Cloud Instance",
         "edit": "Edit Cloud Instance",
@@ -576,9 +593,24 @@
         "configuration": "Instance configuration",
         "error.service-already-exists": "Cloud service already exists",
         "tooltip_average_workload": "Average workload",
-        "tooltip_annual_usage": "Annual usage",
-        "information-step": "Step 4",
-        "information-text": "Describe the IaaS servers provided by major cloud service providers."
+        "tooltip_annual_usage": "Annual usage"
+    },
+    "digital-services-ai-services": {
+        "id": "#",
+        "name": "Service name",
+        "aiProvider": "AI provider",
+        "aiModel": "AI model",
+        "tokenQuantity": "Number of output tokens",
+        "location": "Location",
+        "locationValue": "Location",
+        "new": "New AI service",
+        "ai-services": "AI Services",
+        "ai-service": "AI Service",
+        "configuration": "AI service parameters",
+        "error.service-already-exists": "AI service already exists",
+        "information-step": "Step 5",
+        "ai-description": "AI Service Configuration",
+        "ai-description-text": "Configure the AI service used by your digital service. The provider, model, number of tokens and hosting location are required by the EcoLogits API to calculate the environmental impacts associated with AI inference workloads."
     },
     "digital-services-ai-parameter": {
         "devices": "Algorithm",
