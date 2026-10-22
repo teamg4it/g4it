@@ -29,11 +29,12 @@ dialog[open] {
         }
     }
 
-    section.ql-editor {
+    section.release-note-content {
+        width: 100%;
         padding: 1rem 1.5rem;
         outline: 1px solid black;
-        overflow-y: scroll;
-        overflow-x: hidden;
+        overflow-y: auto;
+        background-color: white;
     }
 
     .footer {
@@ -63,24 +64,35 @@ dialog[open] {
     }
 }
 
-:host ::ng-deep section.ql-editor {
-    //     ul {
-    //         padding-inline-start: 1lh;
-    //
-    //         li {
-    //             list-style-type: disc;
-    //             padding-left: 0;
-    //         }
-    //     }
-    //
-    //     ol li::marker {
-    //         color: gray;
-    //         font-family: sans-serif;
-    //         font-size: 0.8em;
-    //     }
+:host ::ng-deep section.release-note-content {
+    p,
+    li {
+        margin: 0;
+        font-size: 1rem;
+    }
+
+    ul {
+        padding-inline-start: 1lh;
+
+        li {
+            list-style-type: disc;
+            padding-left: 0;
+
+            &::before {
+                content: "";
+                display: inline;
+                margin: 0;
+            }
+        }
+    }
+
+    ol li::marker {
+        color: gray;
+        font-family: sans-serif;
+        font-size: 0.8em;
+    }
 
     p {
-        font-size: 1rem;
         margin-block: 0.75rem;
     }
 }

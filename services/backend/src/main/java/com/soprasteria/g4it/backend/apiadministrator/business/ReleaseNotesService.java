@@ -17,7 +17,7 @@ public class ReleaseNotesService {
 
     @Transactional
     public void publish(String content) {
-        releaseNotesRepository.save(ReleaseNote.builder().content(content).build());
+        releaseNotesRepository.save(ReleaseNote.builder().content(content.replaceAll("&nbsp;", " ")).build());
     }
 
     @Transactional(readOnly = true)

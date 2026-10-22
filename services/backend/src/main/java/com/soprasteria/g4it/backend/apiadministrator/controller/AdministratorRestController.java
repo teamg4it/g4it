@@ -12,7 +12,6 @@ import com.soprasteria.g4it.backend.apiadministrator.business.AdministratorServi
 import com.soprasteria.g4it.backend.apiadministrator.business.AdministratorWorkspaceService;
 import com.soprasteria.g4it.backend.apiadministrator.business.ReleaseNotesService;
 import com.soprasteria.g4it.backend.apiadministrator.modeldb.ReleaseNote;
-import com.soprasteria.g4it.backend.apiadministrator.modeldb.ReleaseNote;
 import com.soprasteria.g4it.backend.apiuser.business.AuthService;
 import com.soprasteria.g4it.backend.apiuser.mapper.OrganizationRestMapper;
 import com.soprasteria.g4it.backend.apiuser.mapper.RoleRestMapper;
