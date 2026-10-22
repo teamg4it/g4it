@@ -71,7 +71,7 @@ class ReleaseNotesServiceTest {
 
     @Test
     void returnsEmptyWhenUserHasSeenLatestNote() {
-        ReleaseNote latest = ReleaseNote.builder().id(12L).content("Latest").build();
+        ReleaseNote.builder().id(12L).content("Latest").build();
         when(releaseNotesRepository.findLatestUnseenByUserId(4L)).thenReturn(Optional.empty());
 
         assertThat(service.getUnseenReleaseNote(4L)).isEmpty();
