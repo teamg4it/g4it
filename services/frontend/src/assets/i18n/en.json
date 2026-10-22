@@ -1406,7 +1406,11 @@
         "release-notes-paragraph": "Enter the content of the release notes that will be displayed to users after login to highlight new features, enhancements, bug fixes, and other important updates.",
         "release-notes": {
             "undo": "Undo changes",
-            "publish": "Publish the release notes"
+            "publish": "Publish the release notes",
+            "save-success": "Release notes published successfully",
+            "save-error": "An error occurred while publishing the release notes.",
+            "save-invalid": "Enter release notes before publishing.",
+            "save-unchanged": "There are no changes to publish."
         }
     },
     "error-graph": {

@@ -64,20 +64,20 @@ dialog[open] {
 }
 
 :host ::ng-deep section.ql-editor {
-    ul {
-        padding-inline-start: 1lh;
-
-        li {
-            list-style-type: disc;
-            padding-left: 0;
-        }
-    }
-
-    ol li::marker {
-        color: gray;
-        font-family: sans-serif;
-        font-size: 0.8em;
-    }
+    //     ul {
+    //         padding-inline-start: 1lh;
+    //
+    //         li {
+    //             list-style-type: disc;
+    //             padding-left: 0;
+    //         }
+    //     }
+    //
+    //     ol li::marker {
+    //         color: gray;
+    //         font-family: sans-serif;
+    //         font-size: 0.8em;
+    //     }
 
     p {
         font-size: 1rem;

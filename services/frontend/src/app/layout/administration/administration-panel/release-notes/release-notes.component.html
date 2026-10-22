@@ -19,14 +19,14 @@
             (onClick)="undoChanges()"
             [label]="'administration.release-notes.undo' | translate"
             [ariaLabel]="'administration.release-notes.undo' | translate"
-            [disabled]="form.pristine"
+            [disabled]="form.pristine || form.value.releaseNotes === initialNotes()"
         ></p-button>
         <p-button
             styleClass="uppercase bg-light-green"
             (onClick)="saveReleaseNotes()"
             [label]="'administration.release-notes.publish' | translate"
             [ariaLabel]="'administration.release-notes.publish' | translate"
-            [disabled]="form.pristine"
+            [disabled]="form.pristine || form.value.releaseNotes === initialNotes()"
         ></p-button>
     </div>
 </section>

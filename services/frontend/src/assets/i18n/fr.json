@@ -1402,7 +1402,11 @@
         "release-notes-paragraph": "Saisissez le contenu des notes de version qui seront affichées aux utilisateurs après leur connexion afin de mettre en évidence les nouvelles fonctionnalités, les améliorations, les corrections de bugs et autres mises à jour importantes.",
         "release-notes": {
             "undo": "Annuler les modifications",
-            "publish": "Publier les notes de version"
+            "publish": "Publier les notes de version",
+            "save-success": "Notes de version publiées avec succès",
+            "save-error": "Une erreur est survenue lors de la publication des notes de version.",
+            "save-invalid": "Saisissez les notes de version avant de les publier.",
+            "save-unchanged": "Aucune modification à publier."
         }
     },
     "error-graph": {

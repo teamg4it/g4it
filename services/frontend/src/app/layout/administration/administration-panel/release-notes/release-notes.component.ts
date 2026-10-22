@@ -1,7 +1,7 @@
-import { Component, type WritableSignal } from "@angular/core";
-import { signal } from "@angular/core";
-import { CommonEditorComponent } from "../../../common/common-editor/common-editor.component"
-import { TranslatePipe } from "@ngx-translate/core";
+import { Component, type WritableSignal, signal } from "@angular/core";
+import { CommonEditorComponent } from "../../../common/common-editor/common-editor.component";
+import { TranslatePipe, TranslateService } from "@ngx-translate/core";
+import { MessageService } from "primeng/api";
 import { Button } from "primeng/button";
 import {
     FormControl,
@@ -24,7 +24,9 @@ export class ReleaseNotesComponent {
     }>
 
     constructor(
-        public administrationService: AdministrationService
+        public administrationService: AdministrationService,
+        private readonly messageService: MessageService,
+        private readonly translate: TranslateService,
     ) { }
 
     ngOnInit(): void {
@@ -34,7 +36,6 @@ export class ReleaseNotesComponent {
         })
 
         this.administrationService.getLatestReleaseNotes().subscribe(({ content: notes }) => {
-            console.log("notes", notes)
             if (!!notes) {
                 this.initialNotes.set(notes);
                 this.form.patchValue({
@@ -52,12 +53,43 @@ export class ReleaseNotesComponent {
     }
 
     saveReleaseNotes() {
-        if (this.form.valid && this.form.value.releaseNotes && this.form.value.releaseNotes !== this.initialNotes()) {
-            this.administrationService.saveReleaseNotes({ content: this.form.value.releaseNotes }).subscribe(() => {
-                this.initialNotes.set(this.form.value.releaseNotes as string);
-                this.form.markAsPristine();
+        const content = this.form.value.releaseNotes;
+        if (!this.form.valid || !content) {
+            this.messageService.add({
+                severity: "warn",
+                summary: this.translate.instant("common.attention"),
+                detail: this.translate.instant("administration.release-notes.save-invalid"),
             });
+            return;
         }
+
+        if (content === this.initialNotes()) {
+            this.messageService.add({
+                severity: "info",
+                summary: this.translate.instant("common.attention"),
+                detail: this.translate.instant("administration.release-notes.save-unchanged"),
+            });
+            return;
+        }
+
+        this.administrationService.saveReleaseNotes({ content }).subscribe({
+            next: () => {
+                this.initialNotes.set(content);
+                this.form.markAsPristine();
+                this.messageService.add({
+                    severity: "success",
+                    summary: this.translate.instant("common.success"),
+                    detail: this.translate.instant("administration.release-notes.save-success"),
+                });
+            },
+            error: () => {
+                this.messageService.add({
+                    severity: "error",
+                    summary: this.translate.instant("common.error"),
+                    detail: this.translate.instant("administration.release-notes.save-error"),
+                });
+            },
+        });
     }
 
     undoChanges() {
