@@ -1,4 +1,4 @@
-import { Component, ElementRef, signal, ViewChild } from "@angular/core";
+import { Component, ElementRef, signal, ViewChild, type OnInit } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { TranslatePipe } from "@ngx-translate/core";
 import { Button } from "primeng/button";
@@ -11,7 +11,7 @@ import { ReleaseNotesService } from "src/app/core/service/business/release-notes
     templateUrl: "./release-notes.component.html",
     styleUrl: "./release-notes.component.scss",
 })
-export class ReleaseNotesComponent {
+export class ReleaseNotesComponent implements OnInit {
     @ViewChild("releaseNotesDialog")
     dialog!: ElementRef<HTMLDialogElement>;
     @ViewChild("releaseNotesSection")

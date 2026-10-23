@@ -1,4 +1,4 @@
-import { Component, type WritableSignal, signal } from "@angular/core";
+import { Component, type WritableSignal, signal, type OnInit } from "@angular/core";
 import { CommonEditorComponent } from "../../../common/common-editor/common-editor.component";
 import { TranslatePipe, TranslateService } from "@ngx-translate/core";
 import { MessageService } from "primeng/api";
@@ -17,7 +17,7 @@ import { AdministrationService } from "src/app/core/service/business/administrat
     templateUrl: "./release-notes.component.html",
     styleUrl: "./release-notes.component.scss",
 })
-export class ReleaseNotesComponent {
+export class ReleaseNotesComponent implements OnInit {
     initialNotes!: WritableSignal<string>
     form!: FormGroup<{
         releaseNotes: FormControl<string | null>
@@ -36,7 +36,7 @@ export class ReleaseNotesComponent {
         })
 
         this.administrationService.getLatestReleaseNotes().subscribe(({ content: notes }) => {
-            if (!!notes) {
+            if (notes) {
                 this.initialNotes.set(notes);
                 this.form.patchValue({
                     releaseNotes: notes,
