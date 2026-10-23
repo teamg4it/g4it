@@ -40,6 +40,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
      */
     Optional<User> findBySub(final String subject);
 
+    // save latest release notes as seen in one query
+    // avoids race conditions and more efficient than fetching the user and updating it
     @Modifying
     @Query(value = """
             UPDATE g4it_user

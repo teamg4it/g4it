@@ -35,6 +35,8 @@ export class ReleaseNotesComponent implements OnInit {
             releaseNotes: new FormControl<string>(this.initialNotes(), [Validators.required])
         })
 
+        // Load the latest release notes from the backend
+        // This allows the admin to edit the existing notes
         this.administrationService.getLatestReleaseNotes().subscribe(({ content: notes }) => {
             if (notes) {
                 this.initialNotes.set(notes);
@@ -49,6 +51,7 @@ export class ReleaseNotesComponent implements OnInit {
         this.form.patchValue({
             releaseNotes: content,
         });
+        // enables the save button
         this.form.markAsDirty();
     }
 
@@ -74,6 +77,7 @@ export class ReleaseNotesComponent implements OnInit {
 
         this.administrationService.saveReleaseNotes({ content }).subscribe({
             next: () => {
+                // save the new content to backend and as new initialNotes
                 this.initialNotes.set(content);
                 this.form.markAsPristine();
                 this.messageService.add({
@@ -93,6 +97,7 @@ export class ReleaseNotesComponent implements OnInit {
     }
 
     undoChanges() {
+        // reset to last saved release notes
         this.form.reset({
             releaseNotes: this.initialNotes()
         })
