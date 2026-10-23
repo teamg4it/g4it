@@ -50,6 +50,8 @@ export class ReleaseNotesComponent implements OnInit {
     closeDialog() {
         this.dialog.nativeElement.close();
 
+        // if the user has checked the checkbox, mark the release notes as seen
+        // and never show them this release's notes again
         if (this.checked()) {
             this.releaseNotesService.markAsSeen().subscribe(() => {
                 this.checked.set(true)

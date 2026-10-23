@@ -17,7 +17,8 @@ public class ReleaseNotesService {
 
     @Transactional
     public void publish(String content) {
-        releaseNotesRepository.save(ReleaseNote.builder().content(content.replaceAll("&nbsp;", " ")).build());
+        // replace &nbsp; with space to avoid issues with line wrapping in the frontend
+        releaseNotesRepository.save(ReleaseNote.builder().content(content.replace("&nbsp;", " ")).build());
     }
 
     @Transactional(readOnly = true)

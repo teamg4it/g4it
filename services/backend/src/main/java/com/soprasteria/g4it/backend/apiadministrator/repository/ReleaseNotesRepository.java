@@ -19,6 +19,7 @@ import java.util.Optional;
 public interface ReleaseNotesRepository extends JpaRepository<ReleaseNote, Long> {
     Optional<ReleaseNote> findFirstByOrderByIdDesc();
 
+    // make one query to get the latest release note that the user has not seen yet
     @Query("""
             SELECT releaseNote
             FROM ReleaseNote releaseNote, User u
