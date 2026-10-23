@@ -26,7 +26,7 @@ export class ReleaseNotesComponent implements OnInit {
     ngOnInit() {
         this.releaseNotesService.getLatestReleaseNotes().subscribe((notes) => {
             if (notes) {
-                // setHTML is a new method to set the inner HTML in a XSS-safe way
+                // setHTML is a new method to set the inner HTML in a XSS-safe way.
                 // see: https://developer.mozilla.org/en-US/docs/Web/API/Element/setHTML
                 if ('setHTML' in this.section.nativeElement
                     && typeof this.section.nativeElement['setHTML'] === 'function'
@@ -38,7 +38,6 @@ export class ReleaseNotesComponent implements OnInit {
                     sanitizer.allowElement("br")
                     this.section.nativeElement.setHTML(notes.content, { sanitizer })
                 } else {
-                    console.log("Using innerHTML to set the release notes content")
                     // but not widely available so define a fallback
                     this.section.nativeElement.innerHTML = notes.content
                 }
