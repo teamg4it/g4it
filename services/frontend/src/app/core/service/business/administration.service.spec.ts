@@ -14,7 +14,7 @@ describe("AdministrationService", () => {
     let searchName = "sop";
     let workspaceId = 1;
 
-    const mockUserService = jasmine.createSpyObj('UserService', ['getRoles']);
+    const mockUserService = jasmine.createSpyObj("UserService", ["getRoles"]);
 
     beforeEach(() => {
         mockUserService.getRoles.and.returnValue([]);
@@ -149,6 +149,28 @@ describe("AdministrationService", () => {
 
         const req = httpMock.expectOne(`administrator/workspaces/users`);
         expect(req.request.method).toEqual("DELETE");
+
+        httpMock.verify();
+    });
+
+    it("should get the latest release notes for administrators", () => {
+        service.getLatestReleaseNotes().subscribe();
+
+        const req = httpMock.expectOne(Constants.ENDPOINTS.adminReleaseNotes);
+        expect(req.request.method).toEqual("GET");
+        req.flush({ content: "Published notes" });
+
+        httpMock.verify();
+    });
+
+    it("should publish release notes for administrators", () => {
+        const body = { content: "Updated notes" };
+        service.saveReleaseNotes(body).subscribe();
+
+        const req = httpMock.expectOne(Constants.ENDPOINTS.adminReleaseNotes);
+        expect(req.request.method).toEqual("POST");
+        expect(req.request.body).toEqual(body);
+        req.flush({});
 
         httpMock.verify();
     });
