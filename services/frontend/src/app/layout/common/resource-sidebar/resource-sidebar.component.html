@@ -1,0 +1,45 @@
+<div class="resource-menu-div force-bg-white">
+    <div
+        class="flex align-items-center"
+        [ngClass]="!isCollapsed ? 'justify-content-between' : 'justify-content-center'"
+    >
+        @if (!isCollapsed) {
+            <h3 class="resource-menu-title">
+                {{ "digital-services-resources.categories.label" | translate }}
+            </h3>
+            <p-button
+                (onClick)="onCollapseToggle(true)"
+                styleClass="collapsible-button border-none"
+                icon="pi pi-angle-double-left"
+                id="collapse-button"
+                [aria-label]="
+                    'digital-services-resources.categories.collapse-resource' | translate
+                "
+            />
+        } @else {
+            <p-button
+                (onClick)="onCollapseToggle(false)"
+                styleClass="collapsible-button"
+                icon="pi pi-angle-double-right"
+                id="expand-button"
+                [ariaLabel]="
+                    'digital-services-resources.categories.expand-resource' | translate
+                "
+                [outlined]="false"
+            />
+        }
+    </div>
+
+    @if (!isCollapsed) {
+        <div class="resource-menu-categories flex flex-column w-full border-round mr-5">
+            @for (category of categories; track category.id) {
+                <app-resource-button
+                    [category]="category.id"
+                    [translationKey]="category.translationKey"
+                    [isSelected]="selectedCategory === category.id"
+                    (selectedCategoryChange)="selectCategory($event)"
+                ></app-resource-button>
+            }
+        </div>
+    }
+</div>

@@ -1,10 +1,31 @@
-<app-digital-services-terminals [dsVersionUid]="dsVersionUid">
-</app-digital-services-terminals>
-<app-digital-services-networks [dsVersionUid]="dsVersionUid">
-</app-digital-services-networks>
-<app-digital-services-servers [dsVersionUid]="dsVersionUid">
-</app-digital-services-servers>
-<app-digital-services-cloud-services [dsVersionUid]="dsVersionUid">
-</app-digital-services-cloud-services>
-<app-digital-services-ai-services [dsVersionUid]="dsVersionUid">
-</app-digital-services-ai-services>
+<div class="flex align-items-start gap-3">
+    <app-resource-sidebar
+        [selectedCategory]="selectedCategory"
+        [isCollapsed]="isSidebarCollapsed"
+        (selectedCategoryChange)="selectCategory($event)"
+        (isCollapsedChange)="isSidebarCollapsed = $event"
+    ></app-resource-sidebar>
+
+    <div class="flex-1 min-w-0">
+        @switch (selectedCategory) {
+            @case ("devices") {
+                <app-digital-services-terminals [dsVersionUid]="dsVersionUid">
+                </app-digital-services-terminals>
+            }
+            @case ("networks") {
+                <app-digital-services-networks [dsVersionUid]="dsVersionUid">
+                </app-digital-services-networks>
+            }
+            @case ("private-infrastructures") {
+                <app-digital-services-servers [dsVersionUid]="dsVersionUid">
+                </app-digital-services-servers>
+            }
+            @case ("external-services") {
+                <app-digital-services-cloud-services [dsVersionUid]="dsVersionUid">
+                </app-digital-services-cloud-services>
+                <app-digital-services-ai-services [dsVersionUid]="dsVersionUid">
+                </app-digital-services-ai-services>
+            }
+        }
+    </div>
+</div>

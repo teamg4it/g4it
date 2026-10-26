@@ -83,13 +83,13 @@ export class DigitalServicesAIServicesSidePanelComponent implements OnInit {
     ngOnInit(): void {
         this.isNew = this.ai.idFront === undefined;
         this.initForm();
-        void this.getBoaviztaReferentials();
+        void this.getEcologitsReferentials();
         if (!this.ai.idFront) {
             void this.resetAIServices();
         }
     }
 
-    async getBoaviztaReferentials() {
+    async getEcologitsReferentials() {
         this.countries = [];
         const countryMap = this.digitalServiceStore.countryMap();
 
@@ -103,7 +103,7 @@ export class DigitalServicesAIServicesSidePanelComponent implements OnInit {
         this.countries.sort((a, b) => a.name.localeCompare(b.name));
 
         this.aiProviders = await lastValueFrom(
-            this.digitalDataService.getBoaviztapiAIProviders(),
+            this.digitalDataService.getEcologitsApiAIProviders(),
         );
         if (!this.ai.idFront) {
             this.ai.aiProvider = this.aiProviders[0];
@@ -111,7 +111,7 @@ export class DigitalServicesAIServicesSidePanelComponent implements OnInit {
 
         for (const aiProvider of this.aiProviders) {
             const instances = await lastValueFrom(
-                this.digitalDataService.getBoaviztapiInstanceTypes(aiProvider),
+                this.digitalDataService.getEcologitsApiAIModel(aiProvider),
             );
             this.aiModelsByProvider.set(aiProvider, instances);
         }

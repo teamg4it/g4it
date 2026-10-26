@@ -35,7 +35,7 @@ describe("DigitalServicesAIServicesSidePanelComponent", () => {
     beforeEach(async () => {
         const digitalServicesDataServiceSpy = jasmine.createSpyObj(
             "DigitalServicesDataService",
-            ["getBoaviztapiAIProviders", "getBoaviztapiAIModels"],
+            ["getEcologitsApiAIProviders", "getEcologitsApiAIModel"],
         );
         const digitalServiceBusinessServiceSpy = jasmine.createSpyObj(
             "DigitalServiceBusinessService",
@@ -53,11 +53,11 @@ describe("DigitalServicesAIServicesSidePanelComponent", () => {
             }),
         };
 
-        digitalServicesDataServiceSpy.getBoaviztapiAIProviders.and.returnValue(
-            of(["aws", "azure", "gcp"]),
+        digitalServicesDataServiceSpy.getEcologitsApiAIProviders.and.returnValue(
+            of(["anthropic", "mistralai", "openai"]),
         );
-        digitalServicesDataServiceSpy.getBoaviztapiInstanceTypes.and.returnValue(
-            of(["instance-1", "instance-2", "instance-3"]),
+        digitalServicesDataServiceSpy.getEcologitsApiAIModel.and.returnValue(
+            of(["model-1", "model-2", "model-3"]),
         );
         digitalServiceBusinessServiceSpy.getNextAvailableName.and.returnValue(
             "AI Service 1",
@@ -147,15 +147,13 @@ describe("DigitalServicesAIServicesSidePanelComponent", () => {
         spyOn(component.sidebarVisibleChange, "emit");
 
         component.aiForm.controls["name"].setValue("Updated AI Service");
-        component.aiForm.controls["aiProvider"].setValue("azure");
-        component.aiForm.controls["instanceType"].setValue("instance-2");
+        component.aiForm.controls["aiProvider"].setValue("mistralai");
+        component.aiForm.controls["aiModel"].setValue("model-2");
         component.aiForm.controls["location"].setValue({
             code: "FR",
             name: "France",
         });
-        component.aiForm.controls["quantity"].setValue("5");
-        component.aiForm.controls["averageWorkload"].setValue("75");
-        component.aiForm.controls["annualUsage"].setValue("7000");
+        component.aiForm.controls["tokenQuantity"].setValue("5");
 
         component.submitFormData();
 
@@ -197,56 +195,56 @@ describe("DigitalServicesAIServicesSidePanelComponent", () => {
         expect(component.existingNames).toEqual(["AI Service 2"]);
     });
 
-    it("should load Boavizta referentials on init", async () => {
-        await component.getBoaviztaReferentials();
+    it("should load Ecologits referentials on init", async () => {
+        await component.getEcologitsReferentials();
 
         expect(component.countries.length).toBeGreaterThan(0);
         expect(component.countries).toContain(
             jasmine.objectContaining({ code: "FR", name: "France" }),
         );
-        expect(component.aiProviders).toEqual(["aws", "azure", "gcp"]);
-        expect(digitalServicesDataService.getBoaviztapiAIProviders).toHaveBeenCalled();
-        expect(digitalServicesDataService.getBoaviztapiAIModel).toHaveBeenCalledWith(
-            "aws",
+        expect(component.aiProviders).toEqual(["anthropic", "mistralai", "openai"]);
+        expect(digitalServicesDataService.getEcologitsApiAIProviders).toHaveBeenCalled();
+        expect(digitalServicesDataService.getEcologitsApiAIModel).toHaveBeenCalledWith(
+            "anthropic",
         );
-        expect(digitalServicesDataService.getBoaviztapiAIModel).toHaveBeenCalledWith(
-            "azure",
+        expect(digitalServicesDataService.getEcologitsApiAIModel).toHaveBeenCalledWith(
+            "mistralai",
         );
-        expect(digitalServicesDataService.getBoaviztapiAIModel).toHaveBeenCalledWith(
-            "gcp",
+        expect(digitalServicesDataService.getEcologitsApiAIModel).toHaveBeenCalledWith(
+            "openai",
         );
     });
 
     it("should set default ai provider when ai has no idFront", async () => {
         component.ai = { idFront: undefined } as any;
-        await component.getBoaviztaReferentials();
+        await component.getEcologitsReferentials();
 
-        expect(component.ai.aiProvider).toBe("aws");
+        expect(component.ai.aiProvider).toBe("anthropic");
     });
 
     it("should populate aiModelsByProvider map", async () => {
-        await component.getBoaviztaReferentials();
+        await component.getEcologitsReferentials();
 
         expect(component.aiModelsByProvider.size).toBe(3);
-        expect(component.aiModelsByProvider.get("aws")).toEqual([
-            "instance-1",
-            "instance-2",
-            "instance-3",
+        expect(component.aiModelsByProvider.get("anthropic")).toEqual([
+            "model-1",
+            "model-2",
+            "model-3",
         ]);
-        expect(component.aiModelsByProvider.get("azure")).toEqual([
-            "instance-1",
-            "instance-2",
-            "instance-3",
+        expect(component.aiModelsByProvider.get("mistralai")).toEqual([
+            "model-1",
+            "model-2",
+            "model-3",
         ]);
-        expect(component.aiModelsByProvider.get("gcp")).toEqual([
-            "instance-1",
-            "instance-2",
-            "instance-3",
+        expect(component.aiModelsByProvider.get("openai")).toEqual([
+            "model-1",
+            "model-2",
+            "model-3",
         ]);
     });
 
     it("should sort countries alphabetically by name", async () => {
-        await component.getBoaviztaReferentials();
+        await component.getEcologitsReferentials();
 
         expect(component.countries[0].name).toBe("Europe");
         expect(component.countries[1].name).toBe("France");

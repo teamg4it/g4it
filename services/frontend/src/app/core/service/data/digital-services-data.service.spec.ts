@@ -400,4 +400,16 @@ describe("DigitalServicesDataService", () => {
         );
         expect(req.request.method).toBe("GET");
     });
+
+    it("getEcologitsApiAIModel should send the provider as a query parameter", () => {
+        service.getEcologitsApiAIModel("mistral ai").subscribe();
+
+        const req = httpMock.expectOne(
+            (request) =>
+                request.url === "referential/ecologits/ai/providers/models" &&
+                request.params.get("provider") === "mistral ai",
+        );
+        expect(req.request.method).toBe("GET");
+        req.flush(["model-1"]);
+    });
 });

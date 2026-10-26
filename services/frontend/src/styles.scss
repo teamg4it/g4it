@@ -1130,6 +1130,59 @@ app-inventory-item {
     color: var(--black-color);
     font-weight: 800;
 }
+
+.collapsible-button {
+    border: 1px solid #f4f4f4;
+    background-color: var(--white-color);
+    color: var(--black-color);
+    font-weight: 800;
+}
+.resource-menu-div {
+    height: 804px;
+    border-radius: 8px;
+    opacity: 1;
+    gap: 24px;
+    padding-top: 32px;
+    padding-bottom: 32px;
+}
+
+.resource-menu-categories {
+    height: 676px;
+    opacity: 1;
+    background: var(--Form-Layout-background, #ffffff);
+}
+
+app-resource-button {
+    display: block;
+    width: 250px;
+    height: 45px;
+    opacity: 1;
+
+    .p-button.resource-button {
+        padding: 16px;
+        gap: 12px;
+        justify-content: flex-start;
+        border-left: 4px solid transparent;
+        border-radius: 0;
+        background: #ffffff;
+        color: var(--black-color);
+    }
+
+    .p-button.resource-button:focus:not(:focus-visible) {
+        outline: none;
+    }
+
+    .p-button.resource-button:not(.resource-button-selected):hover {
+        background: var(--tertiary-color);
+        color: #ffffff;
+    }
+
+    .p-button.resource-button-selected {
+        border-left-color: var(--light-green-color);
+        color: var(--light-green-color);
+    }
+}
+
 .multifile-upload.cancel-creation-button .p-fileupload-choose-button {
     border: none;
     background-color: #f4f4f4;

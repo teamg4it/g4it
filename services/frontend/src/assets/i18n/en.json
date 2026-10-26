@@ -554,8 +554,7 @@
     },
     "digital-services-resources": {
         "categories": {
-            "label": "Resource categories",
-            "section-title": "Third parties",
+            "label": "Tiers",
             "collapse": "Collapse sidebar",
             "expand": "Expand sidebar",
             "devices": "Devices",

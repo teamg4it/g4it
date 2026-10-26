@@ -552,8 +552,7 @@
     },
     "digital-services-resources": {
         "categories": {
-            "label": "Catégories de ressources",
-            "section-title": "Tiers",
+            "label": "Tiers",
             "collapse": "Réduire le bandeau",
             "expand": "Développer le bandeau",
             "devices": "Terminaux",
