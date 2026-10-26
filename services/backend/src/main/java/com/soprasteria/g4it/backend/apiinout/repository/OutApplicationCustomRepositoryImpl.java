@@ -27,6 +27,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -230,10 +231,14 @@ public class OutApplicationCustomRepositoryImpl implements OutApplicationCustomR
      * <ul>
      *     <li>{@code iso_map} binds the external (Boavizta) ISO -&gt; country name
      *     mapping, since that mapping is not itself stored in the database;</li>
-     *     <li>{@code criterion_quartile}/{@code country_score}/{@code threshold}/
-     *     {@code country_low_impact} replicate {@code LowImpactService.isLowImpact}
+     *     <li>{@code criterion_percentiles}/{@code criterion_quartile}/{@code country_score}/
+     *     {@code threshold}/{@code country_low_impact} replicate {@code LowImpactService.isLowImpact}
      *     (per-criterion electricity-mix quartile, summed per country, compared to
-     *     the first quartile of all countries) using window functions;</li>
+     *     the first quartile of all countries). Note: PostgreSQL does not support
+     *     {@code PERCENTILE_CONT(...) OVER (PARTITION BY ...)} (ordered-set aggregates
+     *     cannot be used as window functions - SQLState 0A000), so percentiles per
+     *     criterion are pre-computed with a plain {@code GROUP BY} in
+     *     {@code criterion_percentiles} and then joined back onto each row;</li>
      *     <li>{@code distinct_applications} replicates the exact collapsing GROUP BY
      *     used by the legacy {@code InVirtualEquipmentLowImpactView} native query
      *     (virtual_equipment_name, name, location, lifecycle_step, domain, subDomain,
@@ -258,18 +263,32 @@ public class OutApplicationCustomRepositoryImpl implements OutApplicationCustomR
                 WITH iso_map AS (
                     SELECT iso, country FROM unnest(:isoCodes, :countryNames) AS t(iso, country)
                 ),
-                criterion_quartile AS (
-                    SELECT location AS country,
-                        CASE
-                            WHEN value <= PERCENTILE_CONT(0.25) WITHIN GROUP (ORDER BY value) OVER (PARTITION BY criterion) THEN 1
-                            WHEN value <= PERCENTILE_CONT(0.50) WITHIN GROUP (ORDER BY value) OVER (PARTITION BY criterion) THEN 2
-                            WHEN value <= PERCENTILE_CONT(0.75) WITHIN GROUP (ORDER BY value) OVER (PARTITION BY criterion) THEN 3
-                            ELSE 4
-                        END AS quartile
+                criterion_percentiles AS (
+                    SELECT
+                        criterion,
+                        PERCENTILE_CONT(0.25) WITHIN GROUP (ORDER BY value) AS p25,
+                        PERCENTILE_CONT(0.50) WITHIN GROUP (ORDER BY value) AS p50,
+                        PERCENTILE_CONT(0.75) WITHIN GROUP (ORDER BY value) AS p75
                     FROM ref_item_impact
                     WHERE category = 'electricity-mix'
                       AND criterion = ANY(:criteria)
                       AND (workspace_id = :workspaceId OR workspace_id IS NULL)
+                    GROUP BY criterion
+                ),
+                criterion_quartile AS (
+                    SELECT
+                        ri.location AS country,
+                        CASE
+                            WHEN ri.value <= cp.p25 THEN 1
+                            WHEN ri.value <= cp.p50 THEN 2
+                            WHEN ri.value <= cp.p75 THEN 3
+                            ELSE 4
+                        END AS quartile
+                    FROM ref_item_impact ri
+                    JOIN criterion_percentiles cp ON cp.criterion = ri.criterion
+                    WHERE ri.category = 'electricity-mix'
+                      AND ri.criterion = ANY(:criteria)
+                      AND (ri.workspace_id = :workspaceId OR ri.workspace_id IS NULL)
                 ),
                 country_score AS (
                     SELECT country, SUM(quartile) AS total_score FROM criterion_quartile GROUP BY country
@@ -330,6 +349,12 @@ public class OutApplicationCustomRepositoryImpl implements OutApplicationCustomR
         query.setParameter("isoCodes", isoCodes);
         query.setParameter("countryNames", countryNames);
         bindParameters(query, bindings);
+        final StringBuilder debugSql = new StringBuilder(sql);
+        System.out.println("countVirtualEquipmentLowImpact SQL: " + debugSql);
+        System.out.println("countVirtualEquipmentLowImpact params: taskId=" + taskId + ", inventoryId=" + inventoryId + ", workspaceId=" + workspaceId + ", criteria=" + Arrays.toString(criteria) + ", isoCodes=" + Arrays.toString(isoCodes) + ", countryNames=" + Arrays.toString(countryNames));
+        for (final Object[] binding : bindings) {
+            System.out.println("  bound param " + binding[0] + " = " + (binding[1] instanceof Object[] arr ? Arrays.toString(arr) : binding[1]));
+        }
 
         final Object[] row = (Object[]) query.getSingleResult();
         return new VirtualEquipmentLowImpactCountProjectionImpl(toLong(row[0]), toLong(row[1]));
