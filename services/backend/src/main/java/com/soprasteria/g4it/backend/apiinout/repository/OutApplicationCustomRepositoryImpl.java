@@ -812,7 +812,6 @@ public class OutApplicationCustomRepositoryImpl implements OutApplicationCustomR
         public Double getElecConsumptionSum() {
             return elecConsumptionSum;
         }
-
         @Override
         public Long getQuantitySum() {
             return quantitySum;
