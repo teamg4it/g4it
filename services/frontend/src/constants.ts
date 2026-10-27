@@ -85,7 +85,7 @@ export abstract class Constants {
         dsv: "dsv",
         referentialWorkspace: "referential-workspace",
         isWorkspaceSpecific: "is-workspace-specific",
-    };
+    } as const;
 
     static readonly ERRORS: any = {
         404: "not-found",

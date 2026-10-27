@@ -133,27 +133,37 @@
         <div class="flex flex-column p-3 border-top-2 border-primary">
             <div class="flex flex-wrap justify-content-between">
                 <!-- inventory count grid -->
-                <div class="flex flex-column basis-1/3">
-                    <div class="flex align-items-center">
-                        <app-equipments-card
-                            [count]="inventory().dataCenterCount"
-                            [type]="'datacenter'"
-                        ></app-equipments-card>
-                        <app-equipments-card
-                            [count]="inventory().physicalEquipmentCount"
-                            [type]="'physical'"
-                        ></app-equipments-card>
-                    </div>
-                    <div class="flex align-items-center">
-                        <app-equipments-card
-                            [count]="inventory().virtualEquipmentCount"
-                            [type]="'virtual'"
-                        ></app-equipments-card>
-                        <app-equipments-card
-                            [count]="inventory().applicationCount"
-                            [type]="'app'"
-                        ></app-equipments-card>
-                    </div>
+                <div class="inventory-card">
+                    <app-equipments-card
+                        [count]="inventory().dataCenterCount"
+                        [category]="inventory().name"
+                        type="datacenter"
+                    ></app-equipments-card>
+                    <app-equipments-card
+                        [count]="inventory().virtualEquipmentCount"
+                        [category]="inventory().name"
+                        type="virtual"
+                    ></app-equipments-card>
+                    <app-equipments-card
+                        [count]="inventory().physicalEquipmentCount"
+                        [category]="inventory().name"
+                        type="physical"
+                    ></app-equipments-card>
+                    <app-equipments-card
+                        [count]="inventory().applicationCount"
+                        [category]="inventory().name"
+                        type="app"
+                    ></app-equipments-card>
+                    <app-equipments-card
+                        [count]="inventory().cloudServiceCount ?? 0"
+                        [category]="inventory().name"
+                        type="cloud"
+                    ></app-equipments-card>
+                    <app-equipments-card
+                        [count]="inventory().aiServiceCount ?? 0"
+                        [category]="inventory().name"
+                        type="ai"
+                    ></app-equipments-card>
                 </div>
 
                 <!-- loading history column -->

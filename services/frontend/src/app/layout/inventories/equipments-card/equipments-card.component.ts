@@ -6,41 +6,56 @@
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
 import { Component, Input, OnInit } from "@angular/core";
+import { NgIcon } from "@ng-icons/core";
 import { DecimalsPipe } from "../../../core/pipes/decimal.pipe";
 import { TranslatePipe } from "@ngx-translate/core";
+
+const mapping = {
+    datacenter: {
+        icon: "heroBuildingOffice2",
+        translateText: "inventories.dc"
+    },
+    physical: {
+        icon: "heroServerStack",
+        translateText: "inventories.eq-phys"
+    },
+    virtual: {
+        icon: "heroCircleStack",
+        translateText: "inventories.eq-virt"
+    },
+    app: {
+        icon: "heroSquares2x2",
+        translateText: "inventories.app"
+    },
+    cloud: {
+        icon: "heroCloud",
+        translateText: "inventories.cloud"
+    },
+    ai: {
+        icon: "heroCpuChip",
+        translateText: "inventories.ai"
+    }
+} as const;
+
+type EquipmentType = keyof typeof mapping;
 
 @Component({
     selector: "app-equipments-card",
     templateUrl: "./equipments-card.component.html",
+    styleUrl: "./equipments-card.component.scss",
     standalone: true,
-    imports: [DecimalsPipe, TranslatePipe],
+    imports: [DecimalsPipe, NgIcon, TranslatePipe],
 })
 export class EquipmentsCardComponent implements OnInit {
-    @Input() type: string = "";
+    @Input() type!: EquipmentType;
     @Input() count: number = 0;
-    imgSrc: string = "";
+    @Input() category = "";
+    icon: string = "";
     translateText: string = "";
 
     ngOnInit(): void {
-        switch (this.type) {
-            case "datacenter":
-                this.imgSrc = "assets/images/icons/icon-datacenter.svg";
-                this.translateText = "inventories.dc";
-                break;
-            case "physical":
-                this.imgSrc = "assets/images/icons/icon-computer-desktop.svg";
-                this.translateText = "inventories.eq-phys";
-                break;
-            case "virtual":
-                this.imgSrc = "assets/images/icons/icon-computer-desktop.svg";
-                this.translateText = "inventories.eq-virt";
-                break;
-            case "app":
-                this.imgSrc = "assets/images/icons/icon-application.svg";
-                this.translateText = "inventories.app";
-                break;
-            default:
-                break;
-        }
+        const { icon, translateText } = mapping[this.type] || { icon: "", translateText: "" };
+        this.icon = icon;
+        this.translateText = translateText;
     }
 }

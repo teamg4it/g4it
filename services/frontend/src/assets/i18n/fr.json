@@ -743,8 +743,10 @@
         "no-results": "Resultats indisponibles",
         "dc": "Centres de données",
         "eq-phys": "Équipements",
-        "eq-virt": "Éqts. Virtuels",
+        "eq-virt": "Équipements Virtuels",
         "app": "Applications",
+        "cloud": "Services cloud",
+        "ai": "Services IA",
         "date": "La date au format MM/AAAA",
         "type": {
             "is-version": "Version du SI",
