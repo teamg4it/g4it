@@ -62,7 +62,8 @@ public class DatabaseCacheConfiguration {
             "applicationMultiCriteria",
             "applicationHierarchyCounts",
             "applicationFilters",
-            "virtualEquipmentLowImpactCount"
+            "virtualEquipmentLowImpactCount",
+            "virtualEquipmentElecConsumptionSum"
     }, allEntries = true)
     @Scheduled(fixedRateString = "${g4it.cache.short.ttl}")
     public void emptyShortTtlCaches() {

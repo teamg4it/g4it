@@ -15,6 +15,7 @@ import com.soprasteria.g4it.backend.apiinout.repository.projection.ApplicationFi
 import com.soprasteria.g4it.backend.apiinout.repository.projection.HierarchyCountsProjection;
 import com.soprasteria.g4it.backend.apiinout.repository.projection.MultiCriteriaAggregateProjection;
 import com.soprasteria.g4it.backend.apiinout.repository.projection.MultiCriteriaImpactProjection;
+import com.soprasteria.g4it.backend.apiinout.repository.projection.VirtualEquipmentElecConsumptionSumProjection;
 import com.soprasteria.g4it.backend.apiinout.repository.projection.VirtualEquipmentLowImpactCountProjection;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -80,4 +81,16 @@ public interface OutApplicationCustomRepository {
                                                                              String[] isoCodes,
                                                                              String[] countryNames,
                                                                              ApplicationCriteriaFilterBO filters);
+
+    /**
+     * Aggregated electricity consumption sum and virtual equipment quantity sum,
+     * filtered by the shared dimensions. Replicates the exact two-level GROUP BY
+     * used by the legacy {@code InVirtualEquipmentElecConsumptionView} native
+     * query (dedup by virtual_equipment_name/infrastructure_type/quantity, then
+     * re-aggregated per application collapsing CLOUD_SERVICES vs non-cloud
+     * infrastructure types) before summing, to stay consistent with the legacy
+     * per-row endpoint.
+     */
+    VirtualEquipmentElecConsumptionSumProjection sumVirtualEquipmentElecConsumption(Long taskId,
+                                                                                     ApplicationCriteriaFilterBO filters);
 }

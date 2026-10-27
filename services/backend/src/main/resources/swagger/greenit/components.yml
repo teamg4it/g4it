@@ -792,6 +792,17 @@ components:
           type: integer
           format: int64
 
+    VirtualEquipmentElecConsumptionSumRest:
+      type: object
+      description: Aggregated electricity consumption sum and virtual equipment quantity sum, filtered by the shared dimensions. 100% database-side aggregation.
+      properties:
+        elecConsumptionSum:
+          type: number
+          format: double
+        noOfVirtualEquipmentsSum:
+          type: integer
+          format: int64
+
     ApplicationFiltersRest:
       type: object
       description: Distinct filter values available for the inventory's latest task, used to populate the application view's filter selectors (see solution.md §4.0). domains links each domain to its distinct subDomains as a tree.

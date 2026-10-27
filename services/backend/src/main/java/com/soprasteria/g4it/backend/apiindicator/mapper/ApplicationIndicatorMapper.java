@@ -14,6 +14,7 @@ import com.soprasteria.g4it.backend.apiinout.repository.projection.ApplicationFi
 import com.soprasteria.g4it.backend.apiinout.repository.projection.HierarchyCountsProjection;
 import com.soprasteria.g4it.backend.apiinout.repository.projection.MultiCriteriaAggregateProjection;
 import com.soprasteria.g4it.backend.apiinout.repository.projection.MultiCriteriaImpactProjection;
+import com.soprasteria.g4it.backend.apiinout.repository.projection.VirtualEquipmentElecConsumptionSumProjection;
 import com.soprasteria.g4it.backend.apiinout.repository.projection.VirtualEquipmentLowImpactCountProjection;
 import com.soprasteria.g4it.backend.common.utils.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -173,6 +174,17 @@ public interface ApplicationIndicatorMapper {
         return VirtualEquipmentLowImpactCountBO.builder()
                 .virtualEquipmentTotalCount(source.getTotalCount())
                 .lowImpactVirtualEquipmentCount(source.getLowImpactCount())
+                .build();
+    }
+
+    /**
+     * Pure 1:1 mapping of the single aggregated virtual equipment electricity
+     * consumption sum row (elecConsumption sum / quantity sum).
+     */
+    default VirtualEquipmentElecConsumptionSumBO toVirtualEquipmentElecConsumptionSumBO(final VirtualEquipmentElecConsumptionSumProjection source) {
+        return VirtualEquipmentElecConsumptionSumBO.builder()
+                .elecConsumptionSum(source.getElecConsumptionSum())
+                .noOfVirtualEquipmentsSum(source.getQuantitySum())
                 .build();
     }
 

@@ -16,11 +16,13 @@ import com.soprasteria.g4it.backend.apiinout.repository.projection.ApplicationFi
 import com.soprasteria.g4it.backend.apiinout.repository.projection.HierarchyCountsProjection;
 import com.soprasteria.g4it.backend.apiinout.repository.projection.MultiCriteriaAggregateProjection;
 import com.soprasteria.g4it.backend.apiinout.repository.projection.MultiCriteriaImpactProjection;
+import com.soprasteria.g4it.backend.apiinout.repository.projection.VirtualEquipmentElecConsumptionSumProjection;
 import com.soprasteria.g4it.backend.apiinout.repository.projection.VirtualEquipmentLowImpactCountProjection;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -43,6 +45,7 @@ import java.util.Objects;
  * injection risk despite the query being built dynamically.
  */
 @Repository
+@Slf4j
 public class OutApplicationCustomRepositoryImpl implements OutApplicationCustomRepository {
 
     @PersistenceContext
@@ -349,15 +352,108 @@ public class OutApplicationCustomRepositoryImpl implements OutApplicationCustomR
         query.setParameter("isoCodes", isoCodes);
         query.setParameter("countryNames", countryNames);
         bindParameters(query, bindings);
-        final StringBuilder debugSql = new StringBuilder(sql);
-        System.out.println("countVirtualEquipmentLowImpact SQL: " + debugSql);
-        System.out.println("countVirtualEquipmentLowImpact params: taskId=" + taskId + ", inventoryId=" + inventoryId + ", workspaceId=" + workspaceId + ", criteria=" + Arrays.toString(criteria) + ", isoCodes=" + Arrays.toString(isoCodes) + ", countryNames=" + Arrays.toString(countryNames));
-        for (final Object[] binding : bindings) {
-            System.out.println("  bound param " + binding[0] + " = " + (binding[1] instanceof Object[] arr ? Arrays.toString(arr) : binding[1]));
-        }
-
         final Object[] row = (Object[]) query.getSingleResult();
         return new VirtualEquipmentLowImpactCountProjectionImpl(toLong(row[0]), toLong(row[1]));
+    }
+
+    /**
+     * Aggregated electricity consumption sum and virtual equipment quantity sum,
+     * filtered by the shared dimensions. Entirely computed in SQL, replicating the
+     * exact two-level GROUP BY used by the legacy {@code InVirtualEquipmentElecConsumptionView}
+     * native query:
+     * <ul>
+     *     <li>{@code distinct_applications} replicates the inner "sub" subquery:
+     *     one row per (virtual_equipment_name, location, domain, subDomain,
+     *     environment, equipmentType, application name, infrastructure_type,
+     *     quantity), restricted to the USING lifecycle step (the only step for
+     *     which electricity consumption is computed);</li>
+     *     <li>{@code application_elec_consumption} replicates the outer
+     *     aggregation: per application, sums the scaled electricity consumption
+     *     of all non-CLOUD_SERVICES virtual equipment plus (at most once) the
+     *     CLOUD_SERVICES one, and takes the virtual equipment quantity - this is
+     *     the same row-per-application granularity as the legacy
+     *     {@code InVirtualEquipmentElecConsumptionView} rows;</li>
+     *     <li>the final SELECT sums elecConsumption/quantity over that
+     *     deduplicated, filtered set.</li>
+     * </ul>
+     */
+    @Override
+    public VirtualEquipmentElecConsumptionSumProjection sumVirtualEquipmentElecConsumption(
+            final Long taskId, final ApplicationCriteriaFilterBO filters) {
+        final StringBuilder sql = new StringBuilder("""
+                WITH distinct_applications AS (
+                    SELECT
+                        oa.virtual_equipment_name,
+                        COALESCE(dc.location, ive.location, 'Unknown') AS location,
+                        oa.filters[1] AS domain,
+                        oa.filters[2] AS sub_domain,
+                        oa.environment,
+                        oa.equipment_type,
+                        oa.name AS application_name,
+                        ive.infrastructure_type,
+                        ive.quantity AS virtual_equipment_quantity,
+                        MAX(oa.electricity_consumption) * ive.quantity AS vm_elec_scaled
+                    FROM out_application oa
+                    JOIN task t ON t.id = oa.task_id AND t.status = 'COMPLETED' AND t.id = :taskId
+                    JOIN in_virtual_equipment ive
+                          ON ive.name = oa.virtual_equipment_name AND ive.inventory_id = t.inventory_id
+                    LEFT JOIN in_datacenter dc
+                          ON dc.name = ive.datacenter_name AND dc.inventory_id = ive.inventory_id
+                    WHERE oa.lifecycle_step = 'USING'
+                    GROUP BY
+                        oa.virtual_equipment_name,
+                        COALESCE(dc.location, ive.location, 'Unknown'),
+                        oa.filters[1],
+                        oa.filters[2],
+                        oa.environment,
+                        oa.equipment_type,
+                        oa.name,
+                        ive.infrastructure_type,
+                        ive.quantity
+                ),
+                application_elec_consumption AS (
+                    SELECT
+                        da.virtual_equipment_name,
+                        da.location,
+                        da.domain,
+                        da.sub_domain,
+                        da.environment,
+                        da.equipment_type,
+                        da.application_name,
+                        SUM(CASE WHEN da.infrastructure_type <> 'CLOUD_SERVICES' THEN da.vm_elec_scaled ELSE 0 END)
+                            + COALESCE(MAX(CASE WHEN da.infrastructure_type = 'CLOUD_SERVICES' THEN da.vm_elec_scaled END), 0) AS elec_consumption,
+                        MAX(da.virtual_equipment_quantity) AS quantity
+                    FROM distinct_applications da
+                    GROUP BY
+                        da.virtual_equipment_name,
+                        da.location,
+                        da.domain,
+                        da.sub_domain,
+                        da.environment,
+                        da.equipment_type,
+                        da.application_name
+                )
+                SELECT
+                    COALESCE(SUM(elec_consumption), 0) AS elec_consumption_sum,
+                    COALESCE(SUM(quantity), 0)          AS quantity_sum
+                FROM application_elec_consumption
+                WHERE 1 = 1
+                """);
+
+        final List<Object[]> bindings = new ArrayList<>();
+        if (filters != null) {
+            appendInPredicate(sql, bindings, "environment", filters.getEnvironment());
+            appendInPredicate(sql, bindings, "equipment_type", filters.getEquipmentType());
+            appendInPredicate(sql, bindings, "domain", filters.getDomain());
+            appendInPredicate(sql, bindings, "sub_domain", filters.getSubDomain());
+            appendInPredicate(sql, bindings, "application_name", filters.getApplicationName());
+        }
+
+        final Query query = entityManager.createNativeQuery(sql.toString());
+        query.setParameter("taskId", taskId);
+        bindParameters(query, bindings);
+        final Object[] row = (Object[]) query.getSingleResult();
+        return new VirtualEquipmentElecConsumptionSumProjectionImpl(toDouble(row[0]), toLong(row[1]));
     }
 
     @Override
@@ -704,6 +800,22 @@ public class OutApplicationCustomRepositoryImpl implements OutApplicationCustomR
         @Override
         public Long getLowImpactCount() {
             return lowImpactCount;
+        }
+    }
+
+    /**
+     * Simple POJO implementation of {@link VirtualEquipmentElecConsumptionSumProjection}.
+     */
+    private record VirtualEquipmentElecConsumptionSumProjectionImpl(Double elecConsumptionSum,
+                                                                      Long quantitySum) implements VirtualEquipmentElecConsumptionSumProjection {
+        @Override
+        public Double getElecConsumptionSum() {
+            return elecConsumptionSum;
+        }
+
+        @Override
+        public Long getQuantitySum() {
+            return quantitySum;
         }
     }
 }

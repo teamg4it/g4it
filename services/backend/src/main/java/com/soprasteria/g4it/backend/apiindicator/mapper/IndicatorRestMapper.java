@@ -71,6 +71,8 @@ public interface IndicatorRestMapper {
 
     VirtualEquipmentLowImpactCountRest toVirtualEquipmentLowImpactCountDto(final VirtualEquipmentLowImpactCountBO source);
 
+    VirtualEquipmentElecConsumptionSumRest toVirtualEquipmentElecConsumptionSumDto(final VirtualEquipmentElecConsumptionSumBO source);
+
     ApplicationIndicatorsPageRest toApplicationIndicatorsPageDto(final ApplicationIndicatorsPageBO source);
 
     ApplicationFiltersRest toApplicationFiltersDto(final ApplicationFiltersBO source);

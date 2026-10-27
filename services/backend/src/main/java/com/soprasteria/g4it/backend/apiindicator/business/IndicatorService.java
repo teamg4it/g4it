@@ -360,4 +360,21 @@ public class IndicatorService {
         return virtualEquipmentIndicatorService.getVirtualEquipmentElecConsumption(taskId);
     }
 
+    /**
+     * Retrieve aggregated electricity consumption sum and virtual equipment
+     * quantity sum, filtered by the shared dimensions. 100% database-side
+     * aggregation, replacing the client-side reduce previously performed on the
+     * full virtualEquipmentsElecConsumption list.
+     *
+     * @param taskId  the task id.
+     * @param filters the shared filter dimensions.
+     * @return the aggregated electricity consumption and quantity sums.
+     */
+    @org.springframework.cache.annotation.Cacheable(value = "virtualEquipmentElecConsumptionSum", key = "{#taskId, #filters}")
+    public VirtualEquipmentElecConsumptionSumBO getVirtualEquipmentElecConsumptionSum(final Long taskId,
+                                                                                       final ApplicationCriteriaFilterBO filters) {
+        return applicationIndicatorMapper.toVirtualEquipmentElecConsumptionSumBO(
+                outApplicationRepository.sumVirtualEquipmentElecConsumption(taskId, filters));
+    }
+
 }

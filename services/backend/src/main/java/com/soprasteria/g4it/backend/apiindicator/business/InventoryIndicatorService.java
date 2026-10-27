@@ -224,7 +224,8 @@ public class InventoryIndicatorService {
             @org.springframework.cache.annotation.CacheEvict(value = "applicationMultiCriteria", allEntries = true),
             @org.springframework.cache.annotation.CacheEvict(value = "applicationHierarchyCounts", allEntries = true),
             @org.springframework.cache.annotation.CacheEvict(value = "applicationFilters", allEntries = true),
-            @org.springframework.cache.annotation.CacheEvict(value = "virtualEquipmentLowImpactCount", allEntries = true)
+            @org.springframework.cache.annotation.CacheEvict(value = "virtualEquipmentLowImpactCount", allEntries = true),
+            @org.springframework.cache.annotation.CacheEvict(value = "virtualEquipmentElecConsumptionSum", allEntries = true)
     })
 
     public void deleteIndicators(final String organization, final Long workspaceId, final Long inventoryId) {
@@ -294,5 +295,23 @@ public class InventoryIndicatorService {
                 .getVirtualEquipmentElecConsumption(
                         task.getId()
                 );
+    }
+
+    /**
+     * Get aggregated electricity consumption sum and virtual equipment quantity
+     * sum, filtered by the shared dimensions.
+     *
+     * @param organization the organization.
+     * @param workspaceId  the workspaceId.
+     * @param inventoryId  the inventory id.
+     * @param filters      the shared filter dimensions.
+     * @return the aggregated electricity consumption and quantity sums.
+     */
+    public VirtualEquipmentElecConsumptionSumBO getVirtualEquipmentElecConsumptionSum(final String organization,
+                                                                                       final Long workspaceId,
+                                                                                       final Long inventoryId,
+                                                                                       final ApplicationCriteriaFilterBO filters) {
+        final InventoryBO inventory = inventoryService.getInventory(organization, workspaceId, inventoryId);
+        return indicatorService.getVirtualEquipmentElecConsumptionSum(getLastTaskId(inventory), filters);
     }
 }
