@@ -76,5 +76,6 @@ databaseChangeLog:
       file: db/changelog/greenitdb.changelog-add-ai-server-matching-item-data.yml
   - include:
       file: db/changelog/greenitdb.changelog-add-ai-server-item-type-data.yml
-
+  - include:
+      file: db/changelog/greenitdb.changelog-add-digital-service-uid-indexes.yml
 
