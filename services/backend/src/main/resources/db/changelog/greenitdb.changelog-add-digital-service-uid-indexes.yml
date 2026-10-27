@@ -1,0 +1,93 @@
+databaseChangeLog:
+  # These tables are shared between inventories and digital services. Deleting a digital service
+  # (DigitalServiceService#deleteDigitalService) filters in_virtual_equipment, in_physical_equipment,
+  # in_datacenter, in_ai_parameters and in_ai_infrastructure by digital_service_uid, but that column
+  # had no index. Without it, Postgres has to sequentially scan the whole table - which also holds all
+  # inventories' data - to find the handful of rows belonging to the digital service being deleted.
+  # This makes deletion slow (potentially slow enough to hit a gateway timeout) regardless of how small
+  # the digital service itself is, since the cost depends on the overall table size, not on the digital
+  # service size.
+  - changeSet:
+      id: add-index-digital-service-uid-in-virtual-equipment
+      author: G4IT Dev Team
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - indexExists:
+                tableName: in_virtual_equipment
+                indexName: idx_in_virtual_equipment_digital_service_uid
+      changes:
+        - createIndex:
+            tableName: in_virtual_equipment
+            indexName: idx_in_virtual_equipment_digital_service_uid
+            columns:
+              - column:
+                  name: digital_service_uid
+
+  - changeSet:
+      id: add-index-digital-service-uid-in-physical-equipment
+      author: G4IT Dev Team
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - indexExists:
+                tableName: in_physical_equipment
+                indexName: idx_in_physical_equipment_digital_service_uid
+      changes:
+        - createIndex:
+            tableName: in_physical_equipment
+            indexName: idx_in_physical_equipment_digital_service_uid
+            columns:
+              - column:
+                  name: digital_service_uid
+
+  - changeSet:
+      id: add-index-digital-service-uid-in-datacenter
+      author: G4IT Dev Team
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - indexExists:
+                tableName: in_datacenter
+                indexName: idx_in_datacenter_digital_service_uid
+      changes:
+        - createIndex:
+            tableName: in_datacenter
+            indexName: idx_in_datacenter_digital_service_uid
+            columns:
+              - column:
+                  name: digital_service_uid
+
+  - changeSet:
+      id: add-index-digital-service-uid-in-ai-parameters
+      author: G4IT Dev Team
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - indexExists:
+                tableName: in_ai_parameters
+                indexName: idx_in_ai_parameters_digital_service_uid
+      changes:
+        - createIndex:
+            tableName: in_ai_parameters
+            indexName: idx_in_ai_parameters_digital_service_uid
+            columns:
+              - column:
+                  name: digital_service_uid
+
+  - changeSet:
+      id: add-index-digital-service-uid-in-ai-infrastructure
+      author: G4IT Dev Team
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - indexExists:
+                tableName: in_ai_infrastructure
+                indexName: idx_in_ai_infrastructure_digital_service_uid
+      changes:
+        - createIndex:
+            tableName: in_ai_infrastructure
+            indexName: idx_in_ai_infrastructure_digital_service_uid
+            columns:
+              - column:
+                  name: digital_service_uid
