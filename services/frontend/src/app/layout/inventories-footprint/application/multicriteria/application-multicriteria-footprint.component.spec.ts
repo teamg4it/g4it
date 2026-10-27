@@ -11,10 +11,12 @@ import { ComponentFixture, TestBed, fakeAsync, tick } from "@angular/core/testin
 import { ActivatedRoute, Router } from "@angular/router";
 import { TranslateModule, TranslateService } from "@ngx-translate/core";
 import { NGX_ECHARTS_CONFIG } from "ngx-echarts";
+import { of } from "rxjs";
 import { DecimalsPipe } from "src/app/core/pipes/decimal.pipe";
 import { IntegerPipe } from "src/app/core/pipes/integer.pipe";
 import { FilterService } from "src/app/core/service/business/filter.service";
 import { FootprintService } from "src/app/core/service/business/footprint.service";
+import { FootprintDataService } from "src/app/core/service/data/footprint-data.service";
 import { FootprintStoreService } from "src/app/core/store/footprint.store";
 import { GlobalStoreService } from "src/app/core/store/global.store";
 import { Constants } from "src/constants";
@@ -28,6 +30,7 @@ describe("ApplicationMulticriteriaFootprintComponent", () => {
     let translateService: TranslateService;
     let filterServiceSpy: jasmine.SpyObj<FilterService>;
     let footprintServiceSpy: jasmine.SpyObj<FootprintService>;
+    let footprintDataServiceSpy: jasmine.SpyObj<FootprintDataService>;
     let footprintStoreSpy: any;
     let appComponentSpy: any;
 
@@ -80,7 +83,15 @@ describe("ApplicationMulticriteriaFootprintComponent", () => {
         filterServiceSpy = jasmine.createSpyObj("FilterService", ["getFilterincludes"]);
         filterServiceSpy.getFilterincludes.and.returnValue(true);
 
-        footprintServiceSpy = jasmine.createSpyObj("FootprintService", ["calculate"]);
+        footprintServiceSpy = jasmine.createSpyObj("FootprintService", [
+            "calculate",
+            "mapApplicationSummaryFilters",
+        ]);
+        footprintServiceSpy.mapApplicationSummaryFilters.and.returnValue({});
+        footprintDataServiceSpy = jasmine.createSpyObj("FootprintDataService", [
+            "getApplicationMultiCriteriaGraph",
+        ]);
+        footprintDataServiceSpy.getApplicationMultiCriteriaGraph.and.returnValue(of([]));
         footprintServiceSpy.calculate.and.returnValue({
             footprintCalculated: [
                 {
@@ -128,6 +139,10 @@ describe("ApplicationMulticriteriaFootprintComponent", () => {
 
         footprintStoreSpy = {
             appDimension: jasmine.createSpy().and.returnValue("domain"),
+            appGraphType: jasmine.createSpy().and.returnValue("global"),
+            appDomain: jasmine.createSpy().and.returnValue(""),
+            appSubDomain: jasmine.createSpy().and.returnValue(""),
+            appApplication: jasmine.createSpy().and.returnValue(""),
             applicationSelectedFilters: jasmine.createSpy().and.returnValue({
                 domain: [
                     {
@@ -173,6 +188,10 @@ describe("ApplicationMulticriteriaFootprintComponent", () => {
                     useValue: footprintServiceSpy,
                 },
                 {
+                    provide: FootprintDataService,
+                    useValue: footprintDataServiceSpy,
+                },
+                {
                     provide: FootprintStoreService,
                     useValue: footprintStoreSpy,
                 },
@@ -205,6 +224,9 @@ describe("ApplicationMulticriteriaFootprintComponent", () => {
                     title: "Resource Use",
                     unit: "kgSbeq",
                 },
+            },
+            acvStep: {
+                END_OF_LIFE: "End of Life",
             },
             common: {
                 peopleeq: "People eq.",
@@ -249,6 +271,166 @@ describe("ApplicationMulticriteriaFootprintComponent", () => {
 
     it("should create the component", () => {
         expect(component).toBeTruthy();
+    });
+
+    it("loads and transforms the multi-criteria graph response", () => {
+        const response = ["resource-use", "climate-change"].map((criteria) => ({
+            criteria,
+            unit: "kgCO2eq",
+            nodes: [
+                {
+                    impact: 100,
+                    sip: 50,
+                    countValue: 1,
+                    consistentCount: 1,
+                    inconsistentCount: 0,
+                    repartitions: [
+                        {
+                            label: "Production",
+                            impact: 100,
+                            sip: 50,
+                            countValue: 1,
+                            consistentCount: 1,
+                            inconsistentCount: 0,
+                        },
+                    ],
+                },
+            ],
+        }));
+        footprintDataServiceSpy.getApplicationMultiCriteriaGraph.and.returnValue(
+            of(response),
+        );
+        fixture.componentRef.setInput("criteria", ["climate-change", "resource-use"]);
+        fixture.componentRef.setInput("filterMetadata", {
+            environment: ["PRODUCTION"],
+            equipmentType: [],
+            lifeCycle: [],
+            domains: [],
+        });
+        fixture.detectChanges();
+
+        expect(
+            footprintDataServiceSpy.getApplicationMultiCriteriaGraph,
+        ).toHaveBeenCalledWith(1, {
+            criteria: ["climate-change", "resource-use"],
+            graphLevel: "global",
+            repartition: "lifeCycle",
+            filters: {},
+        });
+        expect(component.criteriaCalculated().footprints[0].data).toBe("Production");
+        expect(
+            component
+                .criteriaCalculated()
+                .footprints[0].impacts.map((impact) => impact.criteria),
+        ).toEqual(
+            ["climate-change", "resource-use"].sort(
+                (a, b) =>
+                    component.criteriakeys.indexOf(a) - component.criteriakeys.indexOf(b),
+            ),
+        );
+    });
+
+    it("translates lifecycle repartitions and legend labels in non-inverted mode", () => {
+        footprintStoreSpy.appDimension.and.returnValue("lifeCycle");
+        footprintDataServiceSpy.getApplicationMultiCriteriaGraph.and.returnValue(
+            of([
+                {
+                    criteria: "climate-change",
+                    unit: "kgCO2eq",
+                    nodes: [
+                        {
+                            impact: 100,
+                            sip: 50,
+                            countValue: 2,
+                            consistentCount: 0,
+                            inconsistentCount: 1,
+                            repartitions: [
+                                {
+                                    label: "END_OF_LIFE",
+                                    impact: 100,
+                                    sip: 50,
+                                    countValue: 4,
+                                    consistentCount: 1,
+                                    inconsistentCount: 1,
+                                },
+                                {
+                                    label: "CUSTOM_STEP",
+                                    impact: 0,
+                                    sip: 0,
+                                    countValue: 0,
+                                    consistentCount: 0,
+                                    inconsistentCount: 0,
+                                },
+                            ],
+                        },
+                    ],
+                },
+            ]),
+        );
+        fixture.componentRef.setInput("criteria", ["climate-change"]);
+        fixture.componentRef.setInput("filterMetadata", {
+            environment: [],
+            equipmentType: [],
+            lifeCycle: [],
+            domains: [],
+        });
+        fixture.detectChanges();
+
+        const calculated = component.criteriaCalculated();
+        const chart = component.renderChart(calculated, "lifeCycle");
+        const legend = chart.legend as any;
+
+        expect(calculated.footprints.map(({ data }) => data)).toEqual([
+            "End of Life",
+            "CUSTOM_STEP",
+        ]);
+        expect(calculated.criteriasCount?.["climate-change"].status).toEqual({
+            ok: 1,
+            error: 1,
+            total: 2,
+        });
+        expect(legend.formatter("END_OF_LIFE")).toBe("End of Life");
+    });
+
+    it("requests the graph using summary criteria without legacy footprint rows", () => {
+        (component as any).footprint = signal([]);
+        fixture.componentRef.setInput("criteria", ["climate-change"]);
+        fixture.componentRef.setInput("filterMetadata", {
+            environment: ["PRODUCTION"],
+            equipmentType: [],
+            lifeCycle: [],
+            domains: [],
+        });
+        fixture.detectChanges();
+
+        expect(
+            footprintDataServiceSpy.getApplicationMultiCriteriaGraph,
+        ).toHaveBeenCalledWith(1, {
+            criteria: ["climate-change"],
+            graphLevel: "global",
+            repartition: "lifeCycle",
+            filters: {},
+        });
+    });
+
+    it("sends an empty criteria array when the sidebar has no selected criteria", () => {
+        fixture.componentRef.setInput("criteria", []);
+        fixture.componentRef.setInput("filterMetadata", {
+            environment: [],
+            equipmentType: [],
+            lifeCycle: [],
+            domains: [],
+        });
+        fixture.detectChanges();
+
+        expect(
+            footprintDataServiceSpy.getApplicationMultiCriteriaGraph,
+        ).toHaveBeenCalledWith(1, {
+            criteria: [],
+            graphLevel: "global",
+            repartition: "lifeCycle",
+            filters: {},
+        });
     });
 
     describe("Component Initialization", () => {
@@ -573,8 +755,13 @@ describe("ApplicationMulticriteriaFootprintComponent", () => {
             expect(result.legend).toBeDefined();
         });
 
-        it("should populate xAxisInput with translated criteria", () => {
+        it("should populate xAxisInput from API criteria when the input criteria are empty", () => {
             (component as any).footprint = signal(mockFootprintData);
+            fixture.componentRef.setInput("criteria", []);
+            (component as any).graphResponse.set([
+                { criteria: "climate-change" },
+                { criteria: "resource-use" },
+            ]);
             const criteriaCalculated = {
                 footprints: [
                     {
@@ -604,7 +791,8 @@ describe("ApplicationMulticriteriaFootprintComponent", () => {
 
             component.renderChart(criteriaCalculated, "domain");
 
-            expect(component.xAxisInput.length).toBeGreaterThan(0);
+            expect(component.criteria()).toEqual([]);
+            expect(component.xAxisInput.length).toBe(2);
         });
 
         it("should set polar radius and center", () => {
@@ -894,6 +1082,31 @@ describe("ApplicationMulticriteriaFootprintComponent", () => {
             expect(component.textDescriptionImpacts[0].impactNameVisible).toBe(
                 "Climate Change",
             );
+        });
+
+        it("limits text description impacts to the top three", () => {
+            const criteriaCalculated = {
+                impactsWithMaxDimensions: [1, 4, 2, 3].map((peopleeq) => ({
+                    name: `criterion-${peopleeq}`,
+                    title: `Criterion ${peopleeq}`,
+                    peopleeq,
+                    raw: peopleeq * 2,
+                    unite: "kg",
+                    maxCriteria: {
+                        name: `Dimension ${peopleeq}`,
+                        peopleeq,
+                        raw: peopleeq * 2,
+                    },
+                })),
+            } as any;
+
+            component.getTextDescription(
+                "ds-graph-description.global-vision.",
+                criteriaCalculated,
+            );
+
+            expect(component.textDescriptionImpacts.length).toBe(3);
+            expect(component.textDescriptionImpacts[0].impactName).toBe("criterion-4");
         });
 
         it("should generate text description with impacts", () => {

@@ -208,12 +208,15 @@
                             <app-application-multicriteria-footprint
                                 [filterFields]="filterFields"
                                 [footprint]="footprint()"
+                                [criteria]="summaryCriteria()"
+                                [filterMetadata]="filterMetadata()"
                                 [inventory]="inventory()"
                             ></app-application-multicriteria-footprint>
                         } @else {
                             <app-application-criteria-footprint
                                 [filterFields]="filterFields"
                                 [footprint]="criteriaFootprint"
+                                [filterMetadata]="filterMetadata()"
                                 [selectedInventoryId]="inventoryId"
                                 [allUnmodifiedFilters]="allUnmodifiedFilters()"
                                 [inventory]="inventory()"
@@ -222,11 +225,13 @@
                         }
                     } @else {
                         <app-application-table-view
+                            [inventoryId]="inventoryId"
                             [footprint]="
                                 footprintStore.applicationCriteria() === multiCriteria
                                     ? footprint()
                                     : [criteriaFootprint]
                             "
+                            [filterMetadata]="filterMetadata()"
                             [isMulticriteria]="
                                 footprintStore.applicationCriteria() === multiCriteria
                             "

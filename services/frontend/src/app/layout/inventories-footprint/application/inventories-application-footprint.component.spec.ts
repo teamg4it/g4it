@@ -3,7 +3,8 @@ import { NO_ERRORS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
 import { TranslateModule, TranslateService } from "@ngx-translate/core";
-import { of } from "rxjs";
+import { of, Subject } from "rxjs";
+import { ApplicationMultiCriteriaImpact } from "src/app/core/interfaces/footprint.interface";
 import { DecimalsPipe } from "src/app/core/pipes/decimal.pipe";
 import { IntegerPipe } from "src/app/core/pipes/integer.pipe";
 import { FootprintService } from "src/app/core/service/business/footprint.service";
@@ -18,6 +19,16 @@ import { InventoriesApplicationFootprintComponent } from "./inventories-applicat
 const mockTranslateService = {
     currentLang: "en",
     instant: jasmine.createSpy("instant").and.callFake((key: string) => key),
+    get: jasmine.createSpy("get").and.callFake((key: string) => of(key)),
+    getParsedResult: jasmine
+        .createSpy("getParsedResult")
+        .and.callFake(
+            (translations: Record<string, string>, key: string) =>
+                translations?.[key] ?? key,
+        ),
+    onTranslationChange: of({ lang: "en", translations: {} }),
+    onLangChange: of({ lang: "en", translations: {} }),
+    onDefaultLangChange: of({ lang: "en", translations: {} }),
     translations: {
         en: {
             criteria: {
@@ -61,10 +72,17 @@ const mockInventoryService = {
 };
 
 const mockFootprintDataService = {
+    getApplicationMultiCriteriaImpacts: jasmine.createSpy().and.returnValue(of([])),
     getApplicationKeyIndicators: jasmine.createSpy().and.returnValue(of([[], [], []])),
+    getApplicationFilters: jasmine
+        .createSpy()
+        .and.returnValue(
+            of({ environment: [], equipmentType: [], lifeCycle: [], domains: [] }),
+        ),
 };
 
 const mockFootprintService = {
+    mapApplicationSummaryFilters: jasmine.createSpy().and.returnValue({}),
     initApplicationFootprint: jasmine.createSpy().and.returnValue(of([])),
     getUniqueValues: jasmine.createSpy().and.returnValue({
         domain: [],
@@ -76,6 +94,7 @@ const mockFootprintService = {
 };
 
 const mockFootprintStore = {
+    applicationSelectedFilters: jasmine.createSpy().and.returnValue({}),
     setApplicationCriteria: jasmine.createSpy(),
     setDomain: jasmine.createSpy(),
     setSubDomain: jasmine.createSpy(),
@@ -83,6 +102,7 @@ const mockFootprintStore = {
     appGraphType: jasmine.createSpy().and.returnValue("global"),
     appDomain: jasmine.createSpy().and.returnValue(""),
     appSubDomain: jasmine.createSpy().and.returnValue(""),
+    appApplication: jasmine.createSpy().and.returnValue(""),
     applicationCriteria: jasmine.createSpy().and.returnValue("someCriteria"),
 };
 
@@ -95,27 +115,176 @@ describe("Inventory Application footprint", () => {
     let fixture: ComponentFixture<InventoriesApplicationFootprintComponent>;
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-    imports: [HttpClientTestingModule, TranslateModule.forRoot(), InventoriesApplicationFootprintComponent],
-    schemas: [NO_ERRORS_SCHEMA],
-    providers: [
-        { provide: ActivatedRoute, useValue: mockActivatedRoute },
-        { provide: TranslateService, useValue: mockTranslateService },
-        { provide: UserService, useValue: mockUserService },
-        { provide: InventoryService, useValue: mockInventoryService },
-        { provide: FootprintDataService, useValue: mockFootprintDataService },
-        { provide: FootprintService, useValue: mockFootprintService },
-        { provide: FootprintStoreService, useValue: mockFootprintStore },
-        { provide: GlobalStoreService, useValue: mockGlobalStore },
-        DecimalsPipe,
-        IntegerPipe,
-    ],
-}).compileComponents();
+            imports: [
+                HttpClientTestingModule,
+                TranslateModule.forRoot(),
+                InventoriesApplicationFootprintComponent,
+            ],
+            schemas: [NO_ERRORS_SCHEMA],
+            providers: [
+                { provide: ActivatedRoute, useValue: mockActivatedRoute },
+                { provide: TranslateService, useValue: mockTranslateService },
+                { provide: UserService, useValue: mockUserService },
+                { provide: InventoryService, useValue: mockInventoryService },
+                { provide: FootprintDataService, useValue: mockFootprintDataService },
+                { provide: FootprintService, useValue: mockFootprintService },
+                { provide: FootprintStoreService, useValue: mockFootprintStore },
+                { provide: GlobalStoreService, useValue: mockGlobalStore },
+                DecimalsPipe,
+                IntegerPipe,
+            ],
+        }).compileComponents();
         fixture = TestBed.createComponent(InventoriesApplicationFootprintComponent);
         component = fixture.componentInstance;
     });
 
     it("should create the component", () => {
         expect(component).toBeTruthy();
+    });
+
+    it("should translate canonical and legacy lifecycle filter values", () => {
+        mockTranslateService.instant.and.callFake((key: string) =>
+            key.startsWith("acvStep.") ? key.replace("acvStep.", "Translated ") : key,
+        );
+        const lifecycleMap = new Map([
+            ["FABRICATION", "MANUFACTURING"],
+            ["DISTRIBUTION", "TRANSPORTATION"],
+            ["UTILISATION", "USING"],
+            ["FIN_DE_VIE", "END_OF_LIFE"],
+        ]);
+        const canonicalValues = [
+            "END_OF_LIFE",
+            "MANUFACTURING",
+            "TRANSPORTATION",
+            "USING",
+        ];
+
+        for (const value of canonicalValues) {
+            expect(component["mapLifecycle"](value, lifecycleMap)).toBe(
+                `Translated ${value}`,
+            );
+            expect(mockTranslateService.instant).toHaveBeenCalledWith(`acvStep.${value}`);
+        }
+
+        expect(component["mapLifecycle"]("FABRICATION", lifecycleMap)).toBe(
+            "Translated MANUFACTURING",
+        );
+        mockTranslateService.instant.and.callFake((key: string) => key);
+    });
+
+    describe("sidebar summaries", () => {
+        const metadata = {
+            environment: ["PRODUCTION"],
+            equipmentType: [],
+            lifeCycle: [],
+            domains: [],
+        };
+        const impacts: ApplicationMultiCriteriaImpact[] = [
+            {
+                criteria: "someCriteria",
+                unit: "kg",
+                impact: 42,
+                sip: 7,
+                countValue: 3,
+            },
+        ];
+        let response: Subject<ApplicationMultiCriteriaImpact[]>;
+
+        beforeEach(() => {
+            response = new Subject<ApplicationMultiCriteriaImpact[]>();
+            mockFootprintDataService.getApplicationMultiCriteriaImpacts.calls.reset();
+            mockFootprintDataService.getApplicationMultiCriteriaImpacts.and.returnValue(
+                response,
+            );
+            mockFootprintService.mapApplicationSummaryFilters.and.returnValue({
+                environment: ["PRODUCTION"],
+                equipmentType: [],
+                lifeCycle: [],
+                domain: [],
+                subDomain: [],
+            });
+        });
+
+        afterEach(() => {
+            fixture.destroy();
+            mockFootprintDataService.getApplicationMultiCriteriaImpacts.and.returnValue(
+                of([]),
+            );
+            mockFootprintService.mapApplicationSummaryFilters.and.returnValue({});
+        });
+
+        function loadSummary() {
+            component["filterMetadata"].set({ ...metadata });
+            TestBed.tick();
+        }
+
+        it("uses returned totals directly", () => {
+            loadSummary();
+            expect(
+                mockFootprintDataService.getApplicationMultiCriteriaImpacts,
+            ).toHaveBeenCalledWith(1, {});
+            response.next(impacts);
+            response.complete();
+            expect(component.impacts()).toEqual([
+                {
+                    name: "someCriteria",
+                    title: "criteria.someCriteria.title",
+                    unite: "kg",
+                    raw: 42,
+                    peopleeq: 7,
+                },
+            ]);
+        });
+
+        it("sends the full mapped filter object after its initial request", () => {
+            loadSummary();
+            loadSummary();
+            expect(
+                mockFootprintDataService.getApplicationMultiCriteriaImpacts,
+            ).toHaveBeenCalledTimes(2);
+            expect(
+                mockFootprintDataService.getApplicationMultiCriteriaImpacts,
+            ).toHaveBeenCalledWith(1, {
+                environment: ["PRODUCTION"],
+                equipmentType: [],
+                lifeCycle: [],
+                domain: [],
+                subDomain: [],
+            });
+        });
+
+        it("preserves successful totals during replacement and on failure", () => {
+            component.summaryImpacts.set(impacts);
+            loadSummary();
+            expect(component.summaryImpacts()).toEqual(impacts);
+            response.error(new Error("failed request"));
+            expect(component.summaryImpacts()).toEqual(impacts);
+            expect(component.summaryError()).toBeTrue();
+        });
+
+        it("cancels stale requests when metadata refreshes", () => {
+            loadSummary();
+            const newerResponse = new Subject<ApplicationMultiCriteriaImpact[]>();
+            mockFootprintDataService.getApplicationMultiCriteriaImpacts.and.returnValue(
+                newerResponse,
+            );
+            loadSummary();
+            newerResponse.next(impacts);
+            response.next([{ ...impacts[0], impact: 999 }]);
+            expect(component.summaryImpacts()).toEqual(impacts);
+            expect(
+                mockFootprintDataService.getApplicationMultiCriteriaImpacts,
+            ).toHaveBeenCalledTimes(2);
+        });
+
+        it("clears previous totals on a successful empty response", () => {
+            component.summaryImpacts.set(impacts);
+            loadSummary();
+            response.next([]);
+            response.complete();
+            expect(component.impacts()).toEqual([]);
+            expect(component.summaryError()).toBeFalse();
+        });
     });
 
     it('should set graph type to "subdomain" if domain has one child', async () => {
@@ -129,16 +298,18 @@ describe("Inventory Application footprint", () => {
             },
         ];
         mockFootprintService.initApplicationFootprint.and.returnValue(of([]));
-        mockFootprintService.getUniqueValues.and.returnValue({
-            domain: testDomainFilter.slice(1),
-            lifeCycle: [],
-            equipmentType: [],
-            environment: [],
-            location: [],
-        });
+        mockFootprintDataService.getApplicationFilters.and.returnValue(
+            of({
+                environment: [],
+                equipmentType: [],
+                lifeCycle: [],
+                domains: [{ domain: "Domain1", subDomains: ["SubDomain1"] }],
+            }),
+        );
 
         await component["initializeOnInit"]();
 
+        expect(mockFootprintDataService.getApplicationFilters).toHaveBeenCalledWith(1);
         expect(mockFootprintStore.setDomain).toHaveBeenCalledWith("Domain1");
         expect(mockFootprintStore.setSubDomain).toHaveBeenCalledWith("SubDomain1");
         expect(mockFootprintStore.setGraphType).toHaveBeenCalledWith("subdomain");
@@ -149,13 +320,17 @@ describe("Inventory Application footprint", () => {
         spyOn(component, "allUnmodifiedFilters").and.returnValue({
             domain: [{ label: "ALL" }, { label: "Domain1" }, { label: "Domain2" }],
         });
-        mockFootprintService.getUniqueValues.and.returnValue({
-            domain: [],
-            lifeCycle: [],
-            equipmentType: [],
-            environment: [],
-            location: [],
-        });
+        mockFootprintDataService.getApplicationFilters.and.returnValue(
+            of({
+                environment: [],
+                equipmentType: [],
+                lifeCycle: [],
+                domains: [
+                    { domain: "Domain1", subDomains: ["Child1", "Child2"] },
+                    { domain: "Domain2", subDomains: [] },
+                ],
+            }),
+        );
         await component["initializeOnInit"]();
 
         expect(mockFootprintStore.setGraphType).toHaveBeenCalledWith("global");
@@ -172,13 +347,14 @@ describe("Inventory Application footprint", () => {
                 },
             ],
         });
-        mockFootprintService.getUniqueValues.and.returnValue({
-            domain: [],
-            lifeCycle: [],
-            equipmentType: [],
-            environment: [],
-            location: [],
-        });
+        mockFootprintDataService.getApplicationFilters.and.returnValue(
+            of({
+                environment: [],
+                equipmentType: [],
+                lifeCycle: [],
+                domains: [{ domain: "Domain1", subDomains: ["Child1", "Child2"] }],
+            }),
+        );
         await component["initializeOnInit"]();
 
         expect(mockFootprintStore.setDomain).toHaveBeenCalledWith("Domain1");

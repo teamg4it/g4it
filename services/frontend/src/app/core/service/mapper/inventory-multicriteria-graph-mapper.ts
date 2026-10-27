@@ -7,12 +7,242 @@
  */
 import { TranslateService } from "@ngx-translate/core";
 import { StatusCountMap } from "src/app/core/interfaces/digital-service.interfaces";
-import { FootprintCalculated, Impact } from "src/app/core/interfaces/footprint.interface";
+import {
+    ApplicationGraphLevel,
+    ApplicationMultiCriteriaResponse,
+    CriteriaCalculated,
+    FootprintCalculated,
+    Impact,
+} from "src/app/core/interfaces/footprint.interface";
 import * as LifeCycleUtils from "src/app/core/utils/lifecycle";
 import { Constants } from "src/constants";
 import { DecimalsPipe } from "../../pipes/decimal.pipe";
 import { IntegerPipe } from "../../pipes/integer.pipe";
 import { getColorFormatter, getLabelFormatter } from "./graphs-mapper";
+
+type GraphStatus = { ok: number; error: number; total: number };
+type CriteriaTotal = { impact: number; sip: number; max: Impact | null };
+
+interface GraphBuckets {
+    categories: Map<string, Map<string, Impact>>;
+    categoryStatuses: Map<string, GraphStatus>;
+    criteriaStatuses: Map<string, GraphStatus>;
+    criteriaTotals: Map<string, CriteriaTotal>;
+}
+
+const emptyStatus = (): GraphStatus => ({ ok: 0, error: 0, total: 0 });
+
+const emptyTotal = (): CriteriaTotal => ({ impact: 0, sip: 0, max: null });
+
+const graphStatus = (
+    countValue: number | undefined,
+    consistentCount = 0,
+    inconsistentCount = 0,
+): GraphStatus => {
+    const total = countValue ?? consistentCount + inconsistentCount;
+    const ok =
+        countValue === undefined
+            ? consistentCount
+            : Math.max(0, total - inconsistentCount);
+    return { ok, error: inconsistentCount, total };
+};
+
+const addGraphStatus = (target: GraphStatus, status: GraphStatus): void => {
+    target.ok += status.ok;
+    target.error += status.error;
+    target.total += status.total;
+};
+
+const graphCategory = (
+    nodeLabel: string | null | undefined,
+    repartitionLabel: string,
+    graphLevel: ApplicationGraphLevel,
+) =>
+    graphLevel === "global" || !nodeLabel
+        ? repartitionLabel
+        : `${nodeLabel} / ${repartitionLabel}`;
+
+const collectGraphBuckets = (
+    response: ApplicationMultiCriteriaResponse[],
+    graphLevel: ApplicationGraphLevel,
+): GraphBuckets => {
+    const buckets: GraphBuckets = {
+        categories: new Map(),
+        categoryStatuses: new Map(),
+        criteriaStatuses: new Map(),
+        criteriaTotals: new Map(),
+    };
+    for (const criterion of response) {
+        const criterionStatus =
+            buckets.criteriaStatuses.get(criterion.criteria) ?? emptyStatus();
+        const criterionTotal =
+            buckets.criteriaTotals.get(criterion.criteria) ?? emptyTotal();
+        for (const node of criterion.nodes ?? []) {
+            addGraphStatus(
+                criterionStatus,
+                graphStatus(
+                    node.countValue,
+                    node.consistentCount,
+                    node.inconsistentCount,
+                ),
+            );
+            for (const repartition of node.repartitions ?? []) {
+                const category = graphCategory(node.label, repartition.label, graphLevel);
+                const impact = {
+                    criteria: criterion.criteria,
+                    sumImpact: repartition.impact,
+                    sumSip: repartition.sip,
+                } as Impact;
+                const categoryImpacts =
+                    buckets.categories.get(category) ?? new Map<string, Impact>();
+                categoryImpacts.set(criterion.criteria, impact);
+                buckets.categories.set(category, categoryImpacts);
+
+                const categoryStatus =
+                    buckets.categoryStatuses.get(category) ?? emptyStatus();
+                addGraphStatus(
+                    categoryStatus,
+                    graphStatus(
+                        repartition.countValue,
+                        repartition.consistentCount,
+                        repartition.inconsistentCount,
+                    ),
+                );
+                buckets.categoryStatuses.set(category, categoryStatus);
+
+                criterionTotal.impact += repartition.impact ?? 0;
+                criterionTotal.sip += repartition.sip ?? 0;
+                if (
+                    !criterionTotal.max ||
+                    (repartition.sip ?? 0) > (criterionTotal.max.sumSip ?? 0)
+                ) {
+                    criterionTotal.max = {
+                        ...impact,
+                        criteria: category,
+                    } as Impact;
+                }
+            }
+        }
+        buckets.criteriaStatuses.set(criterion.criteria, criterionStatus);
+        buckets.criteriaTotals.set(criterion.criteria, criterionTotal);
+    }
+    return buckets;
+};
+
+const buildGraphFootprints = (
+    response: ApplicationMultiCriteriaResponse[],
+    buckets: GraphBuckets,
+    isAxisInverted: boolean,
+): FootprintCalculated[] => {
+    if (isAxisInverted) {
+        return response.map((criterion) => ({
+            data: criterion.criteria,
+            impacts: [...buckets.categories.entries()].map(
+                ([category, values]) =>
+                    ({
+                        criteria: category,
+                        sumImpact: values.get(criterion.criteria)?.sumImpact ?? 0,
+                        sumSip: values.get(criterion.criteria)?.sumSip ?? 0,
+                    }) as Impact,
+            ),
+            total: buckets.criteriaTotals.get(criterion.criteria) ?? {
+                impact: 0,
+                sip: 0,
+                max: null,
+            },
+            status: buckets.criteriaStatuses.get(criterion.criteria) ?? emptyStatus(),
+        }));
+    }
+    return [...buckets.categories.entries()].map(([category, values]) => {
+        const impacts = response.map(
+            (criterion) =>
+                values.get(criterion.criteria) ??
+                ({
+                    criteria: criterion.criteria,
+                    sumImpact: 0,
+                    sumSip: 0,
+                } as Impact),
+        );
+        const total = impacts.reduce(
+            (sum, impact) => ({
+                impact: sum.impact + (impact.sumImpact ?? 0),
+                sip: sum.sip + (impact.sumSip ?? 0),
+            }),
+            { impact: 0, sip: 0 },
+        );
+        return {
+            data: category,
+            impacts,
+            total,
+            status: buckets.categoryStatuses.get(category) ?? emptyStatus(),
+        };
+    });
+};
+
+const buildCriteriaCountMap = (
+    buckets: GraphBuckets,
+    isAxisInverted: boolean,
+): StatusCountMap => {
+    const result: StatusCountMap = {};
+    if (isAxisInverted) {
+        for (const [category, status] of buckets.categoryStatuses) {
+            result[category] = { status };
+        }
+    } else {
+        for (const [criteria, status] of buckets.criteriaStatuses) {
+            result[criteria] = { status };
+        }
+    }
+    return result;
+};
+
+const buildMaxDimensionImpacts = (
+    response: ApplicationMultiCriteriaResponse[],
+    criteriaTotals: Map<string, CriteriaTotal>,
+) =>
+    response.map((criterion) => {
+        const total = criteriaTotals.get(criterion.criteria) ?? emptyTotal();
+        const max = total.max;
+        return {
+            name: criterion.criteria,
+            title: criterion.criteria,
+            unite: criterion.unit,
+            raw: total.impact,
+            peopleeq: total.sip,
+            maxCriteria: {
+                name: max?.criteria ?? "",
+                raw: max?.sumImpact ?? 0,
+                peopleeq: max?.sumSip ?? 0,
+            },
+        };
+    });
+
+export const transformApplicationMultiCriteriaGraph = (
+    response: ApplicationMultiCriteriaResponse[],
+    graphLevel: ApplicationGraphLevel,
+    isAxisInverted: boolean,
+): CriteriaCalculated => {
+    const buckets = collectGraphBuckets(response, graphLevel);
+    const footprints = buildGraphFootprints(response, buckets, isAxisInverted);
+    return {
+        footprints,
+        hasError: [...buckets.categoryStatuses.values()].some(
+            (status) => status.error > 0,
+        ),
+        total: footprints.reduce(
+            (sum, footprint) => ({
+                impact: sum.impact + footprint.total.impact,
+                sip: sum.sip + footprint.total.sip,
+            }),
+            { impact: 0, sip: 0 },
+        ),
+        criteriasCount: buildCriteriaCountMap(buckets, isAxisInverted),
+        impactsWithMaxDimensions: buildMaxDimensionImpacts(
+            response,
+            buckets.criteriaTotals,
+        ),
+    };
+};
 
 /**
  * Configuration options for radial chart creation
@@ -60,6 +290,12 @@ export const getCriteriaDimensionTranslation = (
 ): string => {
     if (isInverted) {
         return translate.instant(`criteria.${dimension}`).title;
+    }
+
+    if (selectedView === "lifeCycle" || selectedView === Constants.ACV_STEP) {
+        const translationKey = `acvStep.${dimension}`;
+        const translatedDimension = translate.instant(translationKey);
+        return translatedDimension === translationKey ? dimension : translatedDimension;
     }
 
     return existingTranslation(dimension, selectedView, translate);
@@ -271,10 +507,10 @@ export const getTextDescription = (
     const iteratePrefix = translate.instant(
         `${translationKey}text-description-iterate-prefix`,
     );
-    for (const [
-        index,
-        impact,
-    ] of criteriaCalculated?.impactsWithMaxDimensions?.entries() ?? []) {
+    const topImpacts = [...(criteriaCalculated?.impactsWithMaxDimensions ?? [])]
+        .sort((a, b) => (b.peopleeq ?? 0) - (a.peopleeq ?? 0))
+        .slice(0, 3);
+    for (const [index, impact] of topImpacts.entries()) {
         const prefix = index === 0 ? firstPrefix : iteratePrefix;
 
         if (index === 0) {

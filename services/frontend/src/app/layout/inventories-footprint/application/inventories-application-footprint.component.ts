@@ -10,11 +10,13 @@ import {
     Component,
     computed,
     DestroyRef,
+    effect,
     inject,
     OnDestroy,
     OnInit,
     signal,
     Signal,
+    untracked,
     WritableSignal,
 } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
@@ -30,6 +32,7 @@ import {
     WorkspaceCriteriaRest,
 } from "src/app/core/interfaces/administration.interfaces";
 import {
+    ApplicationFiltersRest,
     ConstantApplicationFilter,
     Filter,
     TransformedDomain,
@@ -37,6 +40,7 @@ import {
 } from "src/app/core/interfaces/filter.interface";
 import {
     ApplicationFootprint,
+    ApplicationMultiCriteriaImpact,
     Stat,
     VirtualEquipmentElectricityConsumption,
     VirtualEquipmentLowImpact,
@@ -149,25 +153,55 @@ export class InventoriesApplicationFootprintComponent implements OnInit, OnDestr
     elecConsumptionData = signal<VirtualEquipmentElectricityConsumption[]>([]);
     isCollapsed = false;
     view: "graph" | "table" = "graph";
-    impacts: Signal<any> = computed(() => {
-        const filterImpacts = this.formatLifecycleCriteriaImpact(this.footprint()).map(
-            (f) => ({
-                ...f,
-                impacts: f.impacts.filter((impact) => {
-                    return this.filterService.getFilterincludes(
-                        this.footprintStore.applicationSelectedFilters(),
-                        impact,
-                    );
-                }),
-            }),
-        );
-        return this.footprintService
-            .filterCriteriaImpact(filterImpacts)
+    readonly filterMetadata = signal<ApplicationFiltersRest | null>(null);
+    readonly summaryError = signal(false);
+    readonly summaryImpacts = signal<ApplicationMultiCriteriaImpact[]>([]);
+    readonly summaryCriteria = computed(() => {
+        const criteria = this.footprintStore.applicationCriteria();
+        return criteria && criteria !== this.multiCriteria ? [criteria] : [];
+    });
+    private readonly summaryRequest = computed(
+        () => {
+            const metadata = this.filterMetadata();
+            if (!metadata) return null;
+            const level = this.footprintStore.appGraphType();
+            return {
+                inventoryId: this.inventoryId,
+                metadata,
+                filters: this.footprintService.mapApplicationSummaryFilters(
+                    this.footprintStore.applicationSelectedFilters(),
+                    metadata,
+                    {
+                        domain: level !== "global" ? this.footprintStore.appDomain() : "",
+                        subDomain:
+                            level === "subdomain" || level === "application"
+                                ? this.footprintStore.appSubDomain()
+                                : "",
+                    },
+                ),
+            };
+        },
+        {
+            equal: (previous, current) =>
+                previous?.inventoryId === current?.inventoryId &&
+                previous?.metadata === current?.metadata &&
+                JSON.stringify(previous?.filters) === JSON.stringify(current?.filters),
+        },
+    );
+    impacts = computed(() =>
+        this.summaryImpacts()
+            .map((impact) => ({
+                name: impact.criteria,
+                title: this.translate.instant(`criteria.${impact.criteria}.title`),
+                unite: impact.unit,
+                raw: impact.impact,
+                peopleeq: impact.sip,
+            }))
             .sort(
                 (a, b) =>
                     this.criteriakeys.indexOf(a.name) - this.criteriakeys.indexOf(b.name),
-            );
-    });
+            ),
+    );
 
     showDomainByApplication = computed(() => {
         if ((this.allUnmodifiedFilters() as any)["domain"]?.length > 2) {
@@ -293,12 +327,31 @@ export class InventoriesApplicationFootprintComponent implements OnInit, OnDestr
     inventoryInterval: any;
     waitingLoop = 10000;
     toReloadInventory = false;
+    private initialSummaryRequestSent = false;
 
     constructor(
         private readonly activatedRoute: ActivatedRoute,
         public readonly footprintService: FootprintService,
         private readonly translate: TranslateService,
-    ) {}
+    ) {
+        effect((onCleanup) => {
+            const request = this.summaryRequest();
+            if (!request) return;
+            untracked(() => {
+                const { inventoryId } = request;
+                const filters = this.initialSummaryRequestSent ? request.filters : {};
+                this.initialSummaryRequestSent = true;
+                this.summaryError.set(false);
+                const subscription = this.footprintDataService
+                    .getApplicationMultiCriteriaImpacts(inventoryId, filters)
+                    .subscribe({
+                        next: (impacts) => this.summaryImpacts.set(impacts),
+                        error: () => this.summaryError.set(true),
+                    });
+                onCleanup(() => subscription.unsubscribe());
+            });
+        });
+    }
 
     ngOnInit() {
         void this.checkStatusAndLoopApis();
@@ -402,11 +455,52 @@ export class InventoriesApplicationFootprintComponent implements OnInit, OnDestr
             })),
         );
 
-        const uniqueFilterSet = this.footprintService.getUniqueValues(
-            this.footprint(),
-            Constants.APPLICATION_FILTERS,
-            false,
-        );
+        const filterMetadata = await firstValueFrom(
+            this.footprintDataService.getApplicationFilters(this.inventoryId),
+        ).catch(() => null);
+        if (!filterMetadata) {
+            if (!this.filterMetadata()) {
+                this.filterMetadata.set({
+                    environment: [],
+                    equipmentType: [],
+                    lifeCycle: [],
+                    domains: [],
+                });
+            }
+            this.globalStore.setLoading(false);
+            this.getApplicationKeyIndicatorsData();
+            return;
+        }
+        const normalizeFilterValue = (value: string) =>
+            value?.trim() ? value : Constants.UNSPECIFIED;
+        const uniqueFilterSet = {
+            environment: filterMetadata.environment.map(normalizeFilterValue),
+            equipmentType: filterMetadata.equipmentType.map(normalizeFilterValue),
+            lifeCycle: filterMetadata.lifeCycle.map(normalizeFilterValue),
+            domain: filterMetadata.domains
+                .map((domain) => {
+                    const label = normalizeFilterValue(domain.domain);
+                    return {
+                        field: "domain",
+                        label,
+                        key: label.toLowerCase(),
+                        checked: true,
+                        visible: true,
+                        collapsed: true,
+                        children: domain.subDomains.map((subDomain) => {
+                            const childLabel = normalizeFilterValue(subDomain);
+                            return {
+                                field: "subDomain",
+                                label: childLabel,
+                                key: childLabel.toLowerCase(),
+                                checked: true,
+                                visible: true,
+                            };
+                        }),
+                    } as TransformedDomain;
+                })
+                .sort((left, right) => left.label.localeCompare(right.label)),
+        };
 
         let unmodifyFilter: Filter<string | TransformedDomain> = {};
         for (const filter of Constants.APPLICATION_FILTERS) {
@@ -442,6 +536,7 @@ export class InventoriesApplicationFootprintComponent implements OnInit, OnDestr
         } else {
             this.footprintStore.setGraphType("global");
         }
+        this.filterMetadata.set(filterMetadata);
         this.globalStore.setLoading(false);
 
         this.getApplicationKeyIndicatorsData();
@@ -626,9 +721,11 @@ export class InventoriesApplicationFootprintComponent implements OnInit, OnDestr
     }
 
     private mapLifecycle(lifecycle: string, lifecyleMap: Map<string, string>): string {
-        return (
-            this.translate.instant("acvStep." + lifecyleMap.get(lifecycle)) || lifecycle
-        );
+        const lifecycleKey = lifecyleMap.get(lifecycle) ?? lifecycle;
+        const translationKey = `acvStep.${lifecycleKey}`;
+        const translatedLifecycle = this.translate.instant(translationKey);
+
+        return translatedLifecycle === translationKey ? lifecycle : translatedLifecycle;
     }
 
     formatLifecycles(lifeCycles: string[]): string[] {

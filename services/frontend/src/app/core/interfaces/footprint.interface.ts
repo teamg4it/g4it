@@ -1,3 +1,88 @@
+export interface ApplicationMultiCriteriaImpactsRequest {
+    environment?: string[];
+    equipmentType?: string[];
+    lifeCycle?: string[];
+    domain?: string[];
+    subDomain?: string[];
+}
+
+export interface ApplicationIndicatorsPageRequest extends ApplicationMultiCriteriaImpactsRequest {
+    applicationName?: string[];
+    criterion?: string[];
+}
+
+export interface ApplicationIndicatorRow {
+    applicationName: string;
+    criteria: string;
+    sip: number;
+    impact: number;
+    unit: string;
+}
+
+export interface ApplicationIndicatorsPage {
+    content: ApplicationIndicatorRow[];
+    pageNumber: number;
+    pageSize: number;
+    totalElements: number;
+    totalPages: number;
+}
+
+export interface ApplicationMultiCriteriaImpact {
+    criteria: string;
+    unit: string;
+    impact: number;
+    sip: number;
+    countValue: number;
+}
+
+export type ApplicationGraphLevel =
+    | "global"
+    | "domain"
+    | "subDomain"
+    | "application"
+    | "virtualEquipment";
+
+export type ApplicationGraphRepartition = "lifeCycle" | "environment" | "equipmentType";
+
+export interface ApplicationMultiCriteriaRequest {
+    criteria: string[];
+    graphLevel: ApplicationGraphLevel;
+    repartition: ApplicationGraphRepartition;
+    filters?: ApplicationMultiCriteriaImpactsRequest & {
+        applicationName?: string[];
+    };
+}
+
+export interface ApplicationMultiCriteriaRepartition {
+    label: string;
+    impact: number;
+    sip: number;
+    countValue: number;
+    consistentCount: number;
+    inconsistentCount: number;
+}
+
+export interface ApplicationMultiCriteriaNode {
+    label?: string | null;
+    impact: number;
+    sip: number;
+    countValue: number;
+    consistentCount: number;
+    inconsistentCount: number;
+    subDomainCount?: number;
+    applicationCount?: number;
+    cluster?: string;
+    equipmentType?: string;
+    environment?: string;
+    repartitions: ApplicationMultiCriteriaRepartition[];
+}
+
+export interface ApplicationMultiCriteriaResponse {
+    criteria: string;
+    unit: string;
+    nodes: ApplicationMultiCriteriaNode[];
+}
+
 export interface Stat {
     label: string;
     value?: number;

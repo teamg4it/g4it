@@ -7,6 +7,18 @@ export interface FilterRest {
     filters: FilterTreeNodeRest[];
 }
 
+export interface ApplicationFiltersRest {
+    environment: string[];
+    equipmentType: string[];
+    lifeCycle: string[];
+    domains: ApplicationDomainHierarchyRest[];
+}
+
+export interface ApplicationDomainHierarchyRest {
+    domain: string;
+    subDomains: string[];
+}
+
 export interface FilterTreeNodeRest {
     filter: string;
     filters: FilterTreeNodeRest[];

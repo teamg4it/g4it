@@ -8,6 +8,7 @@
 import {
     Component,
     computed,
+    effect,
     inject,
     input,
     Input,
@@ -27,12 +28,16 @@ import {
     StatusCountMap,
 } from "src/app/core/interfaces/digital-service.interfaces";
 import {
+    ApplicationFiltersRest,
     ConstantApplicationFilter,
     Filter,
     TransformedDomain,
 } from "src/app/core/interfaces/filter.interface";
 import {
     ApplicationFootprint,
+    ApplicationGraphLevel,
+    ApplicationMultiCriteriaRequest,
+    ApplicationMultiCriteriaResponse,
     CriteriaCalculated,
     Criterias,
     Stat,
@@ -42,6 +47,7 @@ import { DecimalsPipe } from "src/app/core/pipes/decimal.pipe";
 import { IntegerPipe } from "src/app/core/pipes/integer.pipe";
 import { FilterService } from "src/app/core/service/business/filter.service";
 import { FootprintService } from "src/app/core/service/business/footprint.service";
+import { FootprintDataService } from "src/app/core/service/data/footprint-data.service";
 import { getUniqueColorFromText } from "src/app/core/service/mapper/graphs-mapper";
 import * as InventoryMultiCriteriaViewMapper from "src/app/core/service/mapper/inventory-multicriteria-graph-mapper";
 import { createStackBarChartConfig } from "src/app/core/service/mapper/multicriteria-stack-bar-chart.mapper";
@@ -74,6 +80,7 @@ import { GraphDescriptionComponent } from "../../../digital-services-footprint/d
 })
 export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboard {
     footprint: InputSignal<ApplicationFootprint[]> = input([] as any);
+    criteria = input<string[]>([]);
     @Input() filterFields: ConstantApplicationFilter[] = [];
     inventory = input<Inventory>();
     showInconsitencyGraph = false;
@@ -84,6 +91,11 @@ export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboar
     protected footprintStore = inject(FootprintStoreService);
     private readonly filterService = inject(FilterService);
     private readonly footprintService = inject(FootprintService);
+    private readonly footprintDataService = inject(FootprintDataService);
+    filterMetadata = input<ApplicationFiltersRest | null>(null);
+    private readonly graphResponse = signal<ApplicationMultiCriteriaResponse[] | null>(
+        null,
+    );
 
     selectedInventoryDate: string = "";
     domainFilter: string[] = [];
@@ -97,8 +109,55 @@ export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboar
     }[] = [];
     isAxisInverted = signal<boolean>(false);
 
+    private readonly graphRequest = computed(() => {
+        const metadata = this.filterMetadata();
+        const criteria: string[] = this.criteria();
+        if (!metadata) return null;
+
+        const currentLevel = this.footprintStore.appGraphType();
+        const graphLevel: ApplicationGraphLevel = this.getGraphLevel(currentLevel);
+        const filters: ApplicationMultiCriteriaRequest["filters"] = {
+            ...this.footprintService.mapApplicationSummaryFilters(
+                this.footprintStore.applicationSelectedFilters(),
+                metadata,
+                {
+                    domain:
+                        currentLevel !== "global" ? this.footprintStore.appDomain() : "",
+                    subDomain:
+                        currentLevel === "subdomain" || currentLevel === "application"
+                            ? this.footprintStore.appSubDomain()
+                            : "",
+                },
+            ),
+        };
+        if (currentLevel === "application" && this.footprintStore.appApplication()) {
+            filters.applicationName = [this.footprintStore.appApplication()];
+        }
+        const selectedRepartition = this.selectedDimension();
+        const repartition = this.dimensions.includes(selectedRepartition)
+            ? (selectedRepartition as "lifeCycle" | "environment" | "equipmentType")
+            : "lifeCycle";
+        return {
+            inventoryId: this.inventory()?.id,
+            request: {
+                criteria,
+                graphLevel,
+                repartition,
+                filters,
+            },
+        };
+    });
+
     shouldShowStackBarChart = computed(() => {
         const isInverted = this.isAxisInverted();
+        const graphResponse = this.graphResponse();
+
+        if (graphResponse !== null) {
+            const graphSize = isInverted
+                ? this.countGraphCategories(graphResponse)
+                : graphResponse.length;
+            return graphSize > Constants.MAX_NUMBER_OF_CRITERIA_RADAR;
+        }
 
         if (isInverted) {
             // When inverted, count the number of data points (axes) from footprint
@@ -132,6 +191,44 @@ export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboar
     });
 
     criteriaCalculated: Signal<CriteriaCalculated> = computed(() => {
+        const response = this.graphResponse();
+        if (response !== null) {
+            const isInverted = this.isAxisInverted();
+            const orderedResponse = isInverted
+                ? response
+                : [...response].sort(
+                      (a, b) =>
+                          this.criteriakeys.indexOf(a.criteria) -
+                          this.criteriakeys.indexOf(b.criteria),
+                  );
+            const graphResponse =
+                !isInverted && this.selectedDimension() === "lifeCycle"
+                    ? orderedResponse.map((criterion) => ({
+                          ...criterion,
+                          nodes: criterion.nodes.map((node) => ({
+                              ...node,
+                              repartitions: node.repartitions.map((repartition) => {
+                                  const label = repartition.label;
+                                  const translationKey = `acvStep.${label}`;
+                                  const translatedLabel =
+                                      this.translate.instant(translationKey);
+                                  return {
+                                      ...repartition,
+                                      label:
+                                          translatedLabel === translationKey
+                                              ? label
+                                              : translatedLabel,
+                                  };
+                              }),
+                          })),
+                      }))
+                    : orderedResponse;
+            return InventoryMultiCriteriaViewMapper.transformApplicationMultiCriteriaGraph(
+                graphResponse,
+                this.getGraphLevel(this.footprintStore.appGraphType()),
+                isInverted,
+            );
+        }
         const isInverted = this.isAxisInverted();
         const criteriaFootprint = this.footprint().reduce((acc, f) => {
             acc[f.criteria] = {
@@ -223,6 +320,51 @@ export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboar
         override decimalsPipe: DecimalsPipe,
     ) {
         super(translate, integerPipe, decimalsPipe, globalStore);
+        effect((onCleanup) => {
+            const graphRequest = this.graphRequest();
+            if (!graphRequest?.inventoryId) return;
+
+            this.graphResponse.set(null);
+            const subscription = this.footprintDataService
+                .getApplicationMultiCriteriaGraph(
+                    graphRequest.inventoryId,
+                    graphRequest.request,
+                )
+                .subscribe({
+                    next: (response) => this.graphResponse.set(response),
+                    error: () => this.graphResponse.set(null),
+                });
+            onCleanup(() => subscription.unsubscribe());
+        });
+    }
+
+    private getGraphLevel(level: string): ApplicationGraphLevel {
+        switch (level) {
+            case "domain":
+                return "domain";
+            case "subdomain":
+                return "subDomain";
+            case "application":
+                return "virtualEquipment";
+            default:
+                return "global";
+        }
+    }
+
+    private countGraphCategories(response: ApplicationMultiCriteriaResponse[]): number {
+        const categories = new Set<string>();
+        response.forEach((criterion) =>
+            criterion.nodes?.forEach((node) =>
+                node.repartitions?.forEach((repartition) => {
+                    categories.add(
+                        this.footprintStore.appGraphType() === "global" || !node.label
+                            ? repartition.label
+                            : `${node.label} / ${repartition.label}`,
+                    );
+                }),
+            ),
+        );
+        return categories.size;
     }
 
     renderChart(
@@ -254,14 +396,19 @@ export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboar
                   )
                 : InventoryMultiCriteriaViewMapper.sortAlphabetically(dataSource);
         } else {
-            this.xAxisInput = this.footprint()
-                .flatMap((f) => f.criteria)
+            const graphResponse = this.graphResponse();
+            const criteria =
+                graphResponse !== null
+                    ? graphResponse.map((item) => item.criteria)
+                    : this.footprint().map((item) => item.criteria);
+            this.xAxisInput = [...criteria]
                 .sort(
                     (a, b) => this.criteriakeys.indexOf(a) - this.criteriakeys.indexOf(b),
                 )
                 .map((criteria) => {
                     return this.translate.instant(`criteria.${criteria}`).title;
                 });
+            console.log(this.xAxisInput);
         }
 
         const criteriaCountMap = criteriaCalculated.criteriasCount || {};
