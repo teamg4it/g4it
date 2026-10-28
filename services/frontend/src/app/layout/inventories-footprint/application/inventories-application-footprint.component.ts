@@ -156,6 +156,28 @@ export class InventoriesApplicationFootprintComponent implements OnInit, OnDestr
     readonly filterMetadata = signal<ApplicationFiltersRest | null>(null);
     readonly summaryError = signal(false);
     readonly summaryImpacts = signal<ApplicationMultiCriteriaImpact[]>([]);
+    private readonly selectedFiltersInitialized = computed(
+        () =>
+            Object.keys(this.allUnmodifiedFilters()).length === 0 ||
+            Object.keys(this.footprintStore.applicationSelectedFilters()).length > 0,
+    );
+    private readonly inventoryTasksCompleted = computed(() => {
+        const inventory = this.inventory();
+        const isDone = (task?: { status?: string } | null) =>
+            !task ||
+            Constants.EVALUATION_BATCH_COMPLETED_FAILED_STATUSES.includes(task.status!);
+        return (
+            !!inventory.id &&
+            isDone(inventory.lastTaskLoading) &&
+            isDone(inventory.lastTaskEvaluating)
+        );
+    });
+    // Graphs request their data only after the filters and the inventory tasks are ready
+    readonly graphFilterMetadata = computed(() =>
+        this.inventoryTasksCompleted() && this.selectedFiltersInitialized()
+            ? this.filterMetadata()
+            : null,
+    );
     readonly summaryCriteria = computed(() => {
         const criteria = this.footprintStore.applicationCriteria();
         return criteria && criteria !== this.multiCriteria ? [criteria] : [];
@@ -165,11 +187,7 @@ export class InventoriesApplicationFootprintComponent implements OnInit, OnDestr
             const metadata = this.filterMetadata();
             // Wait for the filter component to initialise the selected filters,
             // otherwise the first request is superseded right away
-            const awaitingSelectedFilters =
-                Object.keys(this.allUnmodifiedFilters()).length > 0 &&
-                Object.keys(this.footprintStore.applicationSelectedFilters()).length ===
-                    0;
-            if (!metadata || awaitingSelectedFilters) return null;
+            if (!metadata || !this.selectedFiltersInitialized()) return null;
             const level = this.footprintStore.appGraphType();
             return {
                 inventoryId: this.inventoryId,

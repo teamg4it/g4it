@@ -209,14 +209,14 @@
                                 [filterFields]="filterFields"
                                 [footprint]="footprint()"
                                 [criteria]="summaryCriteria()"
-                                [filterMetadata]="filterMetadata()"
+                                [filterMetadata]="graphFilterMetadata()"
                                 [inventory]="inventory()"
                             ></app-application-multicriteria-footprint>
                         } @else {
                             <app-application-criteria-footprint
                                 [filterFields]="filterFields"
                                 [footprint]="criteriaFootprint"
-                                [filterMetadata]="filterMetadata()"
+                                [filterMetadata]="graphFilterMetadata()"
                                 [selectedInventoryId]="inventoryId"
                                 [allUnmodifiedFilters]="allUnmodifiedFilters()"
                                 [inventory]="inventory()"

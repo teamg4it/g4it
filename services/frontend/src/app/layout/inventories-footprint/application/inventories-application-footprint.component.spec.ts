@@ -176,6 +176,48 @@ describe("Inventory Application footprint", () => {
         mockTranslateService.instant.and.callFake((key: string) => key);
     });
 
+    describe("graph filter metadata", () => {
+        const metadata = {
+            environment: [],
+            equipmentType: [],
+            lifeCycle: [],
+            domains: [],
+        };
+
+        afterEach(() => {
+            mockFootprintStore.applicationSelectedFilters.and.returnValue({});
+        });
+
+        it("is withheld until the inventory tasks are completed", () => {
+            component.filterMetadata.set(metadata);
+            component.inventory.set({
+                id: 1,
+                lastTaskLoading: { status: "IN_PROGRESS" },
+            } as any);
+            expect(component.graphFilterMetadata()).toBeNull();
+
+            component.inventory.set({
+                id: 1,
+                lastTaskLoading: { status: "COMPLETED" },
+            } as any);
+            expect(component.graphFilterMetadata()).toEqual(metadata);
+        });
+
+        it("is withheld until the selected filters are initialized", () => {
+            const selectedFilters = signal<Filter>({});
+            mockFootprintStore.applicationSelectedFilters.and.callFake(() =>
+                selectedFilters(),
+            );
+            component.filterMetadata.set(metadata);
+            component.inventory.set({ id: 1 } as any);
+            component.allUnmodifiedFilters.set({ environment: ["All"] });
+            expect(component.graphFilterMetadata()).toBeNull();
+
+            selectedFilters.set({ environment: ["All"] });
+            expect(component.graphFilterMetadata()).toEqual(metadata);
+        });
+    });
+
     describe("sidebar summaries", () => {
         const metadata = {
             environment: ["PRODUCTION"],
