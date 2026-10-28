@@ -499,16 +499,18 @@ public class OutApplicationCustomRepositoryImpl implements OutApplicationCustomR
     @Override
     public Page<OutApplication> findByTaskId(final Long taskId, final ApplicationCriteriaFilterBO filters,
                                               final Pageable pageable) {
-        final StringBuilder dataSql = new StringBuilder("SELECT * FROM out_application WHERE task_id = :taskId");
+        final StringBuilder dataSql = new StringBuilder("WITH filtered AS materialized (SELECT * FROM out_application WHERE task_id = :taskId");
         final List<Object[]> dataBindings = new ArrayList<>();
         appendFilterPredicates(dataSql, dataBindings, filters);
         appendInPredicate(dataSql, dataBindings, "criterion", filters == null ? null : filters.getCriterion());
-        dataSql.append(" ORDER BY id");
+        dataSql.append(") SELECT * FROM filtered");
+        dataSql.append(" ORDER BY ").append(buildOrderByClause(pageable.getSort()));
 
-        final StringBuilder countSql = new StringBuilder("SELECT COUNT(*) FROM out_application WHERE task_id = :taskId");
+        final StringBuilder countSql = new StringBuilder("WITH filtered AS materialized (SELECT COUNT(*) FROM out_application WHERE task_id = :taskId");
         final List<Object[]> countBindings = new ArrayList<>();
         appendFilterPredicates(countSql, countBindings, filters);
         appendInPredicate(countSql, countBindings, "criterion", filters == null ? null : filters.getCriterion());
+        countSql.append(") SELECT * FROM filtered");
 
         final Query dataQuery = entityManager.createNativeQuery(dataSql.toString(), OutApplication.class);
         dataQuery.setParameter("taskId", taskId);
@@ -525,6 +527,35 @@ public class OutApplicationCustomRepositoryImpl implements OutApplicationCustomR
         final long total = ((Number) countQuery.getSingleResult()).longValue();
 
         return new PageImpl<>(content, pageable, total);
+    }
+
+    /**
+     * Builds a safe {@code ORDER BY} clause from the pageable's {@link org.springframework.data.domain.Sort},
+     * restricted to {@link ApplicationIndicatorSortFields#ALLOWED}. Any requested
+     * sort field outside that whitelist is silently ignored (never interpolated
+     * into the SQL). Always appends {@code id} as a trailing tie-breaker so
+     * pagination stays stable/deterministic across rows sharing the same
+     * sip/impact/criterion/name value.
+     */
+    private static String buildOrderByClause(final org.springframework.data.domain.Sort sort) {
+        final StringBuilder clause = new StringBuilder();
+        if (sort != null) {
+            for (final org.springframework.data.domain.Sort.Order order : sort) {
+                final String column = ApplicationIndicatorSortFields.ALLOWED.get(order.getProperty());
+                if (column == null) {
+                    continue;
+                }
+                if (clause.length() > 0) {
+                    clause.append(", ");
+                }
+                clause.append(column).append(order.isDescending() ? " DESC" : " ASC");
+            }
+        }
+        if (clause.length() > 0) {
+            clause.append(", ");
+        }
+        clause.append("id");
+        return clause.toString();
     }
 
     /**
