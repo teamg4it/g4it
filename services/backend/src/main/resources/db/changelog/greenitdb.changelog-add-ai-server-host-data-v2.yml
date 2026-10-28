@@ -13,7 +13,7 @@ databaseChangeLog:
             columns:
               - column:
                   name: description
-                  value: Server-ai-4-L40S
+                  value: "Specific : Server-ai-4-L40S"
               - column:
                   name: reference
                   value: Server-ai-4-L40S
@@ -51,7 +51,7 @@ databaseChangeLog:
             columns:
               - column:
                   name: description
-                  value: Server-ai-8-B300
+                  value: "Specific : Server-ai-8-B300"
               - column:
                   name: reference
                   value: Server-ai-8-B300
