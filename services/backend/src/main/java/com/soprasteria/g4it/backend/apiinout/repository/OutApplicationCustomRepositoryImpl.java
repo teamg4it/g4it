@@ -435,7 +435,8 @@ public class OutApplicationCustomRepositoryImpl implements OutApplicationCustomR
                 )
                 SELECT
                     COALESCE(SUM(elec_consumption), 0) AS elec_consumption_sum,
-                    COALESCE(SUM(quantity), 0)          AS quantity_sum
+                    COALESCE(SUM(quantity), 0)          AS quantity_sum,
+                    COUNT(DISTINCT application_name)    AS application_count
                 FROM application_elec_consumption
                 WHERE 1 = 1
                 """);
@@ -453,7 +454,7 @@ public class OutApplicationCustomRepositoryImpl implements OutApplicationCustomR
         query.setParameter("taskId", taskId);
         bindParameters(query, bindings);
         final Object[] row = (Object[]) query.getSingleResult();
-        return new VirtualEquipmentElecConsumptionSumProjectionImpl(toDouble(row[0]), toLong(row[1]));
+        return new VirtualEquipmentElecConsumptionSumProjectionImpl(toDouble(row[0]), toLong(row[1]), toLong(row[2]));
     }
 
     @Override
@@ -807,7 +808,8 @@ public class OutApplicationCustomRepositoryImpl implements OutApplicationCustomR
      * Simple POJO implementation of {@link VirtualEquipmentElecConsumptionSumProjection}.
      */
     private record VirtualEquipmentElecConsumptionSumProjectionImpl(Double elecConsumptionSum,
-                                                                      Long quantitySum) implements VirtualEquipmentElecConsumptionSumProjection {
+                                                                      Long quantitySum,
+                                                                      Long applicationCount) implements VirtualEquipmentElecConsumptionSumProjection {
         @Override
         public Double getElecConsumptionSum() {
             return elecConsumptionSum;
@@ -815,6 +817,11 @@ public class OutApplicationCustomRepositoryImpl implements OutApplicationCustomR
         @Override
         public Long getQuantitySum() {
             return quantitySum;
+        }
+
+        @Override
+        public Long getApplicationCount() {
+            return applicationCount;
         }
     }
 }

@@ -794,12 +794,15 @@ components:
 
     VirtualEquipmentElecConsumptionSumRest:
       type: object
-      description: Aggregated electricity consumption sum and virtual equipment quantity sum, filtered by the shared dimensions. 100% database-side aggregation.
+      description: Aggregated electricity consumption sum, virtual equipment quantity sum and distinct application count, filtered by the shared dimensions. 100% database-side aggregation.
       properties:
         elecConsumptionSum:
           type: number
           format: double
         noOfVirtualEquipmentsSum:
+          type: integer
+          format: int64
+        applicationCount:
           type: integer
           format: int64
 

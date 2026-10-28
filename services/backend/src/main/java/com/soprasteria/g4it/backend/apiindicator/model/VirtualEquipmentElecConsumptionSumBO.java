@@ -26,5 +26,7 @@ public class VirtualEquipmentElecConsumptionSumBO {
     private Double elecConsumptionSum;
 
     private Long noOfVirtualEquipmentsSum;
+
+    private Long applicationCount;
 }
 

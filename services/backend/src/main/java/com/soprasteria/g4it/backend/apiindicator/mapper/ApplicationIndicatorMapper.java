@@ -185,6 +185,7 @@ public interface ApplicationIndicatorMapper {
         return VirtualEquipmentElecConsumptionSumBO.builder()
                 .elecConsumptionSum(source.getElecConsumptionSum())
                 .noOfVirtualEquipmentsSum(source.getQuantitySum())
+                .applicationCount(source.getApplicationCount())
                 .build();
     }
 
