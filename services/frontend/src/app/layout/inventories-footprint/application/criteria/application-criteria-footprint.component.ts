@@ -9,6 +9,7 @@ import { NgClass, NgTemplateOutlet } from "@angular/common";
 import {
     Component,
     computed,
+    DestroyRef,
     effect,
     inject,
     input,
@@ -26,6 +27,7 @@ import { NgxEchartsDirective } from "ngx-echarts";
 import { PrimeTemplate } from "primeng/api";
 import { Button } from "primeng/button";
 import { SelectModule } from "primeng/select";
+import { finalize } from "rxjs";
 import { sortByProperty } from "sort-by-property";
 import {
     GraphDescriptionContent,
@@ -102,6 +104,7 @@ export class ApplicationCriteriaFootprintComponent
     private readonly filterService = inject(FilterService);
     private readonly footprintService = inject(FootprintService);
     private readonly footprintDataService = inject(FootprintDataService);
+    private readonly destroyRef = inject(DestroyRef);
     private readonly graphResponse = signal<ApplicationMultiCriteriaResponse[] | null>(
         null,
     );
@@ -249,14 +252,26 @@ export class ApplicationCriteriaFootprintComponent
             const inventoryId = graphRequest?.inventoryId || this.selectedInventoryId;
             if (!graphRequest || !inventoryId) return;
             this.graphResponse.set([]);
+            let superseded = false;
+            this.globalStore.setLoading(true);
             const subscription = this.footprintDataService
                 .getApplicationMultiCriteriaGraph(inventoryId, graphRequest.request)
+                .pipe(
+                    finalize(() => {
+                        // A newer request takes over the loader
+                        if (!superseded) this.globalStore.setLoading(false);
+                    }),
+                )
                 .subscribe({
                     next: (response) => this.graphResponse.set(response),
                     error: () => this.graphResponse.set([]),
                 });
-            onCleanup(() => subscription.unsubscribe());
+            onCleanup(() => {
+                superseded = true;
+                subscription.unsubscribe();
+            });
         });
+        this.destroyRef.onDestroy(() => this.globalStore.setLoading(false));
     }
 
     ngOnChanges(changes: SimpleChanges): void {

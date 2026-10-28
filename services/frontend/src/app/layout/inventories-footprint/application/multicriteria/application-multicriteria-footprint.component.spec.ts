@@ -11,7 +11,7 @@ import { ComponentFixture, TestBed, fakeAsync, tick } from "@angular/core/testin
 import { ActivatedRoute, Router } from "@angular/router";
 import { TranslateModule, TranslateService } from "@ngx-translate/core";
 import { NGX_ECHARTS_CONFIG } from "ngx-echarts";
-import { of } from "rxjs";
+import { of, Subject } from "rxjs";
 import { DecimalsPipe } from "src/app/core/pipes/decimal.pipe";
 import { IntegerPipe } from "src/app/core/pipes/integer.pipe";
 import { FilterService } from "src/app/core/service/business/filter.service";
@@ -528,6 +528,50 @@ describe("ApplicationMulticriteriaFootprintComponent", () => {
             repartition: "lifeCycle",
             filters: {},
         });
+    });
+
+    it("shows the global loader while the graph request is pending", () => {
+        const response = new Subject<any[]>();
+        footprintDataServiceSpy.getApplicationMultiCriteriaGraph.and.returnValue(
+            response,
+        );
+        const setLoading = TestBed.inject(GlobalStoreService).setLoading as jasmine.Spy;
+        setLoading.calls.reset();
+        fixture.componentRef.setInput("criteria", ["climate-change"]);
+        fixture.componentRef.setInput("filterMetadata", {
+            environment: [],
+            equipmentType: [],
+            lifeCycle: [],
+            domains: [],
+        });
+        fixture.detectChanges();
+
+        expect(setLoading).toHaveBeenCalledWith(true);
+        response.next([]);
+        response.complete();
+        expect(setLoading.calls.mostRecent().args).toEqual([false]);
+    });
+
+    it("requests the global graph level when no criteria are selected", () => {
+        footprintStoreSpy.appGraphType.and.returnValue("domain");
+        footprintStoreSpy.appDomain.and.returnValue("Domain1");
+        fixture.componentRef.setInput("criteria", []);
+        fixture.componentRef.setInput("filterMetadata", {
+            environment: [],
+            equipmentType: [],
+            lifeCycle: [],
+            domains: [],
+        });
+        fixture.detectChanges();
+
+        expect(
+            footprintDataServiceSpy.getApplicationMultiCriteriaGraph,
+        ).toHaveBeenCalledWith(1, jasmine.objectContaining({ graphLevel: "global" }));
+        expect(footprintServiceSpy.mapApplicationSummaryFilters).toHaveBeenCalledWith(
+            jasmine.anything(),
+            jasmine.anything(),
+            { domain: "", subDomain: "" },
+        );
     });
 
     it("sends an empty criteria array when the sidebar has no selected criteria", () => {

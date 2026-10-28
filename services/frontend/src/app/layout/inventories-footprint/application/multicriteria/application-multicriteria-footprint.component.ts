@@ -8,6 +8,7 @@
 import {
     Component,
     computed,
+    DestroyRef,
     effect,
     inject,
     input,
@@ -23,6 +24,7 @@ import { EChartsOption } from "echarts";
 import { PrimeTemplate } from "primeng/api";
 import { Button } from "primeng/button";
 import { SelectModule } from "primeng/select";
+import { finalize } from "rxjs";
 import {
     GraphDescriptionContent,
     StatusCountMap,
@@ -92,6 +94,7 @@ export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboar
     private readonly filterService = inject(FilterService);
     private readonly footprintService = inject(FootprintService);
     private readonly footprintDataService = inject(FootprintDataService);
+    private readonly destroyRef = inject(DestroyRef);
     filterMetadata = input<ApplicationFiltersRest | null>(null);
     private readonly graphResponse = signal<ApplicationMultiCriteriaResponse[] | null>(
         null,
@@ -109,12 +112,17 @@ export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboar
     }[] = [];
     isAxisInverted = signal<boolean>(false);
 
+    // Criteria are mandatory for any level other than global
+    private readonly currentLevel = computed(() =>
+        this.criteria().length ? this.footprintStore.appGraphType() : "global",
+    );
+
     private readonly graphRequest = computed(() => {
         const metadata = this.filterMetadata();
         const criteria: string[] = this.criteria();
         if (!metadata) return null;
 
-        const currentLevel = this.footprintStore.appGraphType();
+        const currentLevel = this.currentLevel();
         const graphLevel: ApplicationGraphLevel = this.getGraphLevel(currentLevel);
         const filters: ApplicationMultiCriteriaRequest["filters"] = {
             ...this.footprintService.mapApplicationSummaryFilters(
@@ -226,7 +234,7 @@ export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboar
             const calculated =
                 InventoryMultiCriteriaViewMapper.transformApplicationMultiCriteriaGraph(
                     graphResponse,
-                    this.getGraphLevel(this.footprintStore.appGraphType()),
+                    this.getGraphLevel(this.currentLevel()),
                     isInverted,
                     this.shouldShowStackBarChart(),
                 );
@@ -337,17 +345,29 @@ export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboar
             if (!graphRequest?.inventoryId) return;
 
             this.graphResponse.set(null);
+            let superseded = false;
+            this.globalStore.setLoading(true);
             const subscription = this.footprintDataService
                 .getApplicationMultiCriteriaGraph(
                     graphRequest.inventoryId,
                     graphRequest.request,
                 )
+                .pipe(
+                    finalize(() => {
+                        // A newer request takes over the loader
+                        if (!superseded) this.globalStore.setLoading(false);
+                    }),
+                )
                 .subscribe({
                     next: (response) => this.graphResponse.set(response),
                     error: () => this.graphResponse.set(null),
                 });
-            onCleanup(() => subscription.unsubscribe());
+            onCleanup(() => {
+                superseded = true;
+                subscription.unsubscribe();
+            });
         });
+        this.destroyRef.onDestroy(() => this.globalStore.setLoading(false));
     }
 
     private getGraphLevel(level: string): ApplicationGraphLevel {
@@ -369,7 +389,7 @@ export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboar
             criterion.nodes?.forEach((node) =>
                 node.repartitions?.forEach((repartition) => {
                     categories.add(
-                        this.footprintStore.appGraphType() === "global" || !node.label
+                        this.currentLevel() === "global" || !node.label
                             ? repartition.label
                             : `${node.label} / ${repartition.label}`,
                     );
