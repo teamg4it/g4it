@@ -317,4 +317,19 @@ public class InventoryIndicatorController implements InventoryIndicatorApiDelega
                 )
         );
     }
+
+    /**
+     * {@inheritDoc}
+     * Aggregated electricity consumption sum and virtual equipment quantity sum, filtered by the shared dimensions.
+     */
+    @Override
+    public ResponseEntity<VirtualEquipmentElecConsumptionSumRest> getVirtualEquipmentsElecConsumptionSum(
+            final String organization,
+            final Long workspace,
+            final Long inventoryId,
+            final ApplicationCriteriaFilterRest requestRest) {
+        final var filters = requestRest == null ? null : applicationIndicatorMapper.toFilterBO(requestRest);
+        return ResponseEntity.ok(indicatorRestMapper.toVirtualEquipmentElecConsumptionSumDto(
+                inventoryIndicatorService.getVirtualEquipmentElecConsumptionSum(organization, workspace, inventoryId, filters)));
+    }
 }

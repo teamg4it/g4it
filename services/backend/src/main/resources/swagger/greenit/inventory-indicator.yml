@@ -477,4 +477,42 @@ paths:
         "500":
           $ref: '#/components/responses/InternalServerError'
 
+  /organizations/{organization}/workspaces/{workspace}/inventories/{inventoryId}/indicators/virtualEquipmentsElecConsumption/sum:
+    parameters:
+      - $ref: '#/components/parameters/organizationPathParam'
+      - $ref: '#/components/parameters/workspacePathParam'
+      - $ref: '#/components/parameters/inventoryIdPathParam'
+    post:
+      summary: endpoint to retrieve aggregated electricity consumption sum and virtual equipment quantity sum
+      description: >
+        Returns the aggregated electricity consumption sum and virtual equipment quantity sum for the given
+        filters. 100% database-side aggregation, replacing the client-side reduce previously performed on the
+        full virtualEquipmentsElecConsumption list. POST + JSON body is used because the filter lists
+        (environment/equipmentType/lifeCycle/domain/subDomain) may contain several thousand values, following
+        the same pattern as the other application indicator endpoints.
+      tags:
+        - inventory-indicator
+      operationId: getVirtualEquipmentsElecConsumptionSum
+      x-custom-role: "hasRole('INVENTORY_READ')"
+      requestBody:
+        description: shared filter dimensions
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ApplicationCriteriaFilterRest"
+      responses:
+        "200":
+          description: return the aggregated electricity consumption sum and virtual equipment quantity sum
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VirtualEquipmentElecConsumptionSumRest'
+        "400":
+          $ref: '#/components/responses/BadRequestError'
+        "401":
+          $ref: '#/components/responses/UnauthorizedError'
+        "500":
+          $ref: '#/components/responses/InternalServerError'
+
 
