@@ -250,8 +250,7 @@
         "popup": {
             "delete-question": "Are you sure you want to delete the digital service",
             "delete-text": "All information and associated footprint indicators will be definitely deleted.",
-            "delete-question-shared": "By removing the link to this digital service, you will no longer have access to it. Are you sure ?",
-            "delete-error": "An error occurred while deleting the digital service. Please try again."
+            "delete-question-shared": "By removing the link to this digital service, you will no longer have access to it. Are you sure ?"
         },
         "return": "Return to my digital services list",
         "choose-criteria": "Choose criteria for digital service {{digitalServiceName}}",

@@ -143,18 +143,6 @@ public class DigitalServiceService {
 
     /**
      * Delete a digital service.
-     * Also evicts the "digitalServiceExists" cache entries so a deleted digital service is no longer
-     * wrongly considered existing by the authorization checks.
-     * <p>
-     * The digital service row itself is removed through a single native delete statement
-     * ({@link DigitalServiceRepository#deleteByUidNative}) instead of the JPA {@code deleteById}.
-     * {@code deleteById} would first eagerly load the digital service together with every one of its
-     * versions and tasks (mapped as EAGER + {@code cascade = CascadeType.ALL}), then issue one DELETE
-     * statement per child row. For a digital service with a long version/task history this can take
-     * long enough to exceed the gateway timeout even though it eventually commits. The database already
-     * cascades the deletion of versions, tasks, shared links and notes through "ON DELETE CASCADE"
-     * foreign keys, so a single native delete lets it clean up everything in one round trip and is also
-     * idempotent (safe to call again if the digital service was already deleted).
      *
      * @param digitalServiceUid the digital service UID.
      */

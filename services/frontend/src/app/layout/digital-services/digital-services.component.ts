@@ -216,18 +216,7 @@ export class DigitalServicesComponent implements OnInit {
                     this.global.setLoading(false);
                 }),
             )
-            .subscribe({
-                next: () => this.retrieveDigitalServices(),
-                error: () => {
-                    this.messageService.add({
-                        severity: "error",
-                        summary: this.translate.instant(
-                            "digital-services.popup.delete-error",
-                        ),
-                        sticky: false,
-                    });
-                },
-            });
+            .subscribe(() => this.retrieveDigitalServices());
     }
 
     openNewDsDrawer(event: Event): void {

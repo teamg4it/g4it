@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute, NavigationEnd, NavigationStart, Router } from "@angular/router";
 import { TranslateModule, TranslateService } from "@ngx-translate/core";
 import { ConfirmationService, MessageService } from "primeng/api";
-import { of, Subject, throwError } from "rxjs";
+import { of, Subject } from "rxjs";
 import { DigitalService } from "src/app/core/interfaces/digital-service.interfaces";
 import { Role } from "src/app/core/interfaces/roles.interfaces";
 import { Organization, Workspace } from "src/app/core/interfaces/user.interfaces";
@@ -121,24 +121,6 @@ describe("DigitalServicesComponent", () => {
         expect(mockGlobalStore.setLoading).toHaveBeenCalledWith(true);
         expect(mockDigitalServicesData.delete).toHaveBeenCalledWith("1");
         expect(component.retrieveDigitalServices).toHaveBeenCalled();
-    });
-
-    it("should show an error message and stop loading when deletion fails", () => {
-        mockDigitalServicesData.delete.and.returnValue(
-            throwError(() => new Error("delete failed")),
-        );
-        spyOn(component, "retrieveDigitalServices");
-        const messageService = fixture.debugElement.injector.get(MessageService);
-        spyOn(messageService, "add");
-
-        component.itemDelete("1");
-
-        expect(mockGlobalStore.setLoading).toHaveBeenCalledWith(true);
-        expect(mockGlobalStore.setLoading).toHaveBeenCalledWith(false);
-        expect(messageService.add).toHaveBeenCalledWith(
-            jasmine.objectContaining({ severity: "error" }),
-        );
-        expect(component.retrieveDigitalServices).not.toHaveBeenCalled();
     });
 
     it("should retrieve digital services on NavigationEnd event when isAllowedDigitalService is true", () => {

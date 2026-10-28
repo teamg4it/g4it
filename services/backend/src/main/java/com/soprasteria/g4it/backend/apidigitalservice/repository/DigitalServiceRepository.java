@@ -56,14 +56,7 @@ public interface DigitalServiceRepository extends JpaRepository<DigitalService, 
     void updateLastUpdateDate(LocalDateTime lastUpdateDate, String digitalServiceUid);
 
     /**
-     * Delete a digital service by its uid using a single native statement.
-     * Unlike {@link JpaRepository#deleteById}, this does NOT load the entity nor its eager
-     * collections (tasks, digital service versions) into the persistence context beforehand,
-     * and does NOT throw when the row no longer exists (idempotent, safe to retry).
-     * Child rows (digital_service_version, task, digital_service_shared_link, note) are removed
-     * by the database itself through the existing "ON DELETE CASCADE" foreign keys, in one round trip,
-     * instead of Hibernate issuing one DELETE statement per child row.
-     *
+     * Delete a digital service by its uid using a single native statement.*
      * @param digitalServiceUid the digital service uid.
      */
     @Modifying

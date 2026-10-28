@@ -248,8 +248,7 @@
         "popup": {
             "delete-question": "Êtes-vous sûr de vouloir supprimer le service numérique",
             "delete-text": "Toutes les informations et les indicateurs d'impact associés seront définitivement supprimés.",
-            "delete-question-shared": "En supprimant le lien vers ce service numérique, vous n'y aurez plus accès. Êtes-vous sûr ?",
-            "delete-error": "Une erreur est survenue lors de la suppression du service numérique. Veuillez réessayer."
+            "delete-question-shared": "En supprimant le lien vers ce service numérique, vous n'y aurez plus accès. Êtes-vous sûr ?"
         },
         "return": "Retourner à la liste de mes services numériques",
         "choose-criteria": "Choisir les critères pour le service numérique {{digitalServiceName}}",

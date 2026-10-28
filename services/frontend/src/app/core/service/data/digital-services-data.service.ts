@@ -7,7 +7,7 @@
  */
 import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { map, Observable, ReplaySubject, tap, timeout } from "rxjs";
+import { map, Observable, ReplaySubject, tap} from "rxjs";
 import { Constants } from "src/constants";
 import { environment } from "src/environments/environment";
 import { DigitalServiceVersionRequestBody } from "../../interfaces/digital-service-version.interface";
@@ -82,12 +82,7 @@ export class DigitalServicesDataService {
     }
 
     delete(uid: DigitalService["uid"]): Observable<string> {
-        // Guard against the backend/gateway hanging indefinitely (e.g. slow cascade
-        // delete): stop waiting client-side after 30s so the UI can surface an
-        // explicit error instead of spinning forever.
-        return this.http
-            .delete<string>(`${endpoint}/${uid}`)
-            .pipe(timeout({ each: 30000 }));
+        return this.http.delete<string>(`${endpoint}/${uid}`);
     }
 
     deleteVersion(uid: DigitalService["uid"]): Observable<string> {

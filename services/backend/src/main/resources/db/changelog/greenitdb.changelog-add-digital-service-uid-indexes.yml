@@ -1,12 +1,4 @@
 databaseChangeLog:
-  # These tables are shared between inventories and digital services. Deleting a digital service
-  # (DigitalServiceService#deleteDigitalService) filters in_virtual_equipment, in_physical_equipment,
-  # in_datacenter, in_ai_parameters and in_ai_infrastructure by digital_service_uid, but that column
-  # had no index. Without it, Postgres has to sequentially scan the whole table - which also holds all
-  # inventories' data - to find the handful of rows belonging to the digital service being deleted.
-  # This makes deletion slow (potentially slow enough to hit a gateway timeout) regardless of how small
-  # the digital service itself is, since the cost depends on the overall table size, not on the digital
-  # service size.
   - changeSet:
       id: add-index-digital-service-uid-in-virtual-equipment
       author: G4IT Dev Team
