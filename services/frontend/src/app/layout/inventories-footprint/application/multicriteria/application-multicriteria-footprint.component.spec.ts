@@ -6,7 +6,7 @@
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
 import { HttpClientTestingModule } from "@angular/common/http/testing";
-import { signal } from "@angular/core";
+import { signal, WritableSignal } from "@angular/core";
 import { ComponentFixture, TestBed, fakeAsync, tick } from "@angular/core/testing";
 import { ActivatedRoute, Router } from "@angular/router";
 import { TranslateModule, TranslateService } from "@ngx-translate/core";
@@ -33,6 +33,7 @@ describe("ApplicationMulticriteriaFootprintComponent", () => {
     let footprintDataServiceSpy: jasmine.SpyObj<FootprintDataService>;
     let footprintStoreSpy: any;
     let appComponentSpy: any;
+    let appDimensionSignal: WritableSignal<string>;
 
     const mockFootprintData = [
         {
@@ -78,6 +79,7 @@ describe("ApplicationMulticriteriaFootprintComponent", () => {
     ];
 
     beforeEach(async () => {
+        appDimensionSignal = signal("domain");
         routerSpy = jasmine.createSpyObj("Router", ["navigate"]);
 
         filterServiceSpy = jasmine.createSpyObj("FilterService", ["getFilterincludes"]);
@@ -138,7 +140,7 @@ describe("ApplicationMulticriteriaFootprintComponent", () => {
         });
 
         footprintStoreSpy = {
-            appDimension: jasmine.createSpy().and.returnValue("domain"),
+            appDimension: jasmine.createSpy().and.callFake(() => appDimensionSignal()),
             appGraphType: jasmine.createSpy().and.returnValue("global"),
             appDomain: jasmine.createSpy().and.returnValue(""),
             appSubDomain: jasmine.createSpy().and.returnValue(""),
@@ -227,6 +229,9 @@ describe("ApplicationMulticriteriaFootprintComponent", () => {
             },
             acvStep: {
                 END_OF_LIFE: "End of Life",
+                MANUFACTURING: "Manufacturing",
+                TRANSPORTATION: "Transportation",
+                USE: "Using",
             },
             common: {
                 peopleeq: "People eq.",
@@ -330,8 +335,120 @@ describe("ApplicationMulticriteriaFootprintComponent", () => {
         );
     });
 
+    it("uses criteria as stack chart categories when there are more than five criteria", () => {
+        appDimensionSignal.set("lifeCycle");
+        const criteria = [
+            "climate-change",
+            "particulate-matter",
+            "resource-use",
+            "acidification",
+            "water-use",
+            "ionising-radiation",
+        ];
+        const repartitionLabels = [
+            "END_OF_LIFE",
+            "MANUFACTURING",
+            "TRANSPORTATION",
+            "USE",
+        ];
+        footprintDataServiceSpy.getApplicationMultiCriteriaGraph.and.returnValue(
+            of(
+                criteria.map((criterion) => ({
+                    criteria: criterion,
+                    unit: "kgCO2eq",
+                    nodes: [
+                        {
+                            impact: 100,
+                            sip: 50,
+                            countValue: 1,
+                            consistentCount: 1,
+                            inconsistentCount: 0,
+                            repartitions: repartitionLabels.map((label) => ({
+                                label,
+                                impact: 25,
+                                sip: 12.5,
+                                countValue: 1,
+                                consistentCount: 1,
+                                inconsistentCount: 0,
+                            })),
+                        },
+                    ],
+                })),
+            ),
+        );
+        fixture.componentRef.setInput("criteria", criteria);
+        fixture.componentRef.setInput("filterMetadata", {
+            environment: [],
+            equipmentType: [],
+            lifeCycle: [],
+            domains: [],
+        });
+        fixture.detectChanges();
+
+        const calculated = component.criteriaCalculated();
+        const chart = component.renderChart(calculated, "lifeCycle");
+        const xAxis = (chart.xAxis as any[])[0];
+        const series = chart.series as any[];
+
+        expect(component.shouldShowStackBarChart()).toBeTrue();
+        expect(xAxis.data.length).toBe(criteria.length);
+        expect(xAxis.data).toEqual(jasmine.arrayContaining(criteria));
+        expect(xAxis.axisLabel.formatter("climate-change")).toContain("Climate Change");
+        expect(series.map(({ name }) => name).sort()).toEqual([
+            "End of Life",
+            "Manufacturing",
+            "Transportation",
+            "Using",
+        ]);
+    });
+
+    it("translates lifecycle labels on the data consistency axis when axes are inverted", () => {
+        appDimensionSignal.set("lifeCycle");
+        footprintDataServiceSpy.getApplicationMultiCriteriaGraph.and.returnValue(
+            of([
+                {
+                    criteria: "climate-change",
+                    unit: "kgCO2eq",
+                    nodes: [
+                        {
+                            impact: 100,
+                            sip: 50,
+                            countValue: 2,
+                            consistentCount: 1,
+                            inconsistentCount: 1,
+                            repartitions: ["USE", "END_OF_LIFE"].map((label) => ({
+                                label,
+                                impact: 10,
+                                sip: 5,
+                                countValue: 1,
+                                consistentCount: 1,
+                                inconsistentCount: 0,
+                            })),
+                        },
+                    ],
+                },
+            ]),
+        );
+        fixture.componentRef.setInput("criteria", ["climate-change"]);
+        fixture.componentRef.setInput("filterMetadata", {
+            environment: [],
+            equipmentType: [],
+            lifeCycle: [],
+            domains: [],
+        });
+        component.isAxisInverted.set(true);
+        fixture.detectChanges();
+
+        component.renderChart(component.criteriaCalculated(), "lifeCycle");
+
+        expect(component.xAxisInput).toEqual(["End of Life", "Using"]);
+        expect(Object.keys(component.criteriaCalculated().criteriasCount!)).toEqual(
+            component.xAxisInput,
+        );
+    });
+
     it("translates lifecycle repartitions and legend labels in non-inverted mode", () => {
-        footprintStoreSpy.appDimension.and.returnValue("lifeCycle");
+        appDimensionSignal.set("lifeCycle");
         footprintDataServiceSpy.getApplicationMultiCriteriaGraph.and.returnValue(
             of([
                 {

@@ -16,6 +16,7 @@ import { FootprintDataService } from "src/app/core/service/data/footprint-data.s
 import { SharedChartsModule } from "src/app/core/shared/common-chart-module";
 import { SharedModule } from "src/app/core/shared/shared.module";
 import { FootprintStoreService } from "src/app/core/store/footprint.store";
+import { GlobalStoreService } from "src/app/core/store/global.store";
 
 @Component({
     selector: "app-application-table-view",
@@ -33,6 +34,7 @@ export class ApplicationTableViewComponent {
     private readonly filterService = inject(FilterService);
     private readonly footprintService = inject(FootprintService);
     private readonly footprintDataService = inject(FootprintDataService);
+    private readonly globalStore = inject(GlobalStoreService);
     protected readonly translate = inject(TranslateService);
     protected readonly integerPipe = inject(IntegerPipe);
     protected readonly decimalsPipe = inject(DecimalsPipe);
@@ -40,7 +42,6 @@ export class ApplicationTableViewComponent {
     readonly rows = signal(10);
     readonly sortField = signal("sip");
     readonly sortOrder = signal<-1 | 1>(-1);
-    readonly loading = signal(false);
     private readonly pageData = signal<ApplicationIndicatorsPage>({
         content: [],
         pageNumber: 0,
@@ -90,7 +91,7 @@ export class ApplicationTableViewComponent {
         const sortDirection = this.sortOrder() === 1 ? "asc" : "desc";
         if (!inventoryId) return;
 
-        this.loading.set(true);
+        this.globalStore.setLoading(true);
         const subscription = this.footprintDataService
             .getApplicationIndicatorsPage(
                 inventoryId,
@@ -103,7 +104,7 @@ export class ApplicationTableViewComponent {
             .subscribe({
                 next: (page) => {
                     this.pageData.set(page);
-                    this.loading.set(false);
+                    this.globalStore.setLoading(false);
                 },
                 error: () => {
                     this.pageData.set({
@@ -113,7 +114,7 @@ export class ApplicationTableViewComponent {
                         totalElements: 0,
                         totalPages: 0,
                     });
-                    this.loading.set(false);
+                    this.globalStore.setLoading(false);
                 },
             });
         onCleanup(() => subscription.unsubscribe());
