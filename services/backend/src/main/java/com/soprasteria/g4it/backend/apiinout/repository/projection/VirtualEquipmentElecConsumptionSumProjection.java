@@ -16,5 +16,7 @@ public interface VirtualEquipmentElecConsumptionSumProjection {
     Double getElecConsumptionSum();
 
     Long getQuantitySum();
+
+    Long getApplicationCount();
 }
 
