@@ -122,7 +122,7 @@ export class DigitalServicesDataService {
     }
     getEcologitsApiAIModel(providerName: string): Observable<string[]> {
         return this.http.get<string[]>(
-            `referential/ecologits/ai/providers/models`,
+            `referential/ecologits/ai/models`,
             { params: new HttpParams().set("provider", providerName) },
         );
     }

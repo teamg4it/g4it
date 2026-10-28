@@ -23,6 +23,7 @@ import com.soprasteria.g4it.backend.apidigitalservice.repository.ServerHostRefRe
 import com.soprasteria.g4it.backend.apireferential.business.ReferentialGetService;
 import com.soprasteria.g4it.backend.exception.InvalidReferentialException;
 import com.soprasteria.g4it.backend.external.boavizta.business.BoaviztapiService;
+import com.soprasteria.g4it.backend.external.ecologits.business.EcologitsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -68,10 +69,16 @@ public class DigitalServiceReferentialService {
     private DigitalServiceReferentialMapper digitalServiceReferentialMapper;
 
     /**
-     * Boaviztapi  Service.
+     * Boaviztapi Service.
      */
     @Autowired
     private BoaviztapiService boaviztapiService;
+
+    /**
+     * Ecologits Service.
+     */
+    @Autowired
+    private EcologitsService ecologitsService;
 
     /**
      * Referential Service.
@@ -171,6 +178,7 @@ public class DigitalServiceReferentialService {
 
         return allHosts;
     }
+
     /**
      * Get server host referential data.
      *
@@ -207,5 +215,23 @@ public class DigitalServiceReferentialService {
      */
     public List<String> getCloudInstances(String cloudProviderName) {
         return boaviztapiService.getInstanceList(cloudProviderName);
+    }
+
+    /**
+     * Get Ecologits AI providers.
+     *
+     * @return providers name list (string).
+     */
+    public List<String> getAIProviders() {
+        return ecologitsService.getAIProviderList();
+    }
+
+    /**
+     * Get BoaviztAPI instances for one specific cloud provider.
+     *
+     * @return instances name list (string).
+     */
+    public List<String> getAIModels(String aiProviderName) {
+        return ecologitsService.getAIModelList(aiProviderName);
     }
 }

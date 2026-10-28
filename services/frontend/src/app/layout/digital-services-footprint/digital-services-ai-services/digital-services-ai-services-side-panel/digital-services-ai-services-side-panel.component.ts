@@ -110,10 +110,10 @@ export class DigitalServicesAIServicesSidePanelComponent implements OnInit {
         }
 
         for (const aiProvider of this.aiProviders) {
-            const instances = await lastValueFrom(
+            const models = await lastValueFrom(
                 this.digitalDataService.getEcologitsApiAIModel(aiProvider),
             );
-            this.aiModelsByProvider.set(aiProvider, instances);
+            this.aiModelsByProvider.set(aiProvider, models);
         }
     }
 

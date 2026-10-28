@@ -406,7 +406,7 @@ describe("DigitalServicesDataService", () => {
 
         const req = httpMock.expectOne(
             (request) =>
-                request.url === "referential/ecologits/ai/providers/models" &&
+                request.url === "referential/ecologits/ai/models" &&
                 request.params.get("provider") === "mistral ai",
         );
         expect(req.request.method).toBe("GET");

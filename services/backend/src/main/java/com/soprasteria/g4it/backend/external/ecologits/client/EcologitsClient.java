@@ -21,6 +21,10 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientRequestException;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
+import tools.jackson.databind.JsonNode;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * HTTP client calling the EcoLogits calculation engine (EcoLogits API).
@@ -34,6 +38,51 @@ public class EcologitsClient {
     @Autowired
     @Qualifier("webClientEcologits")
     WebClient webClient;
+
+    /**
+     * Get all available AI providers from Ecologits API
+     *
+     * @return the list of AI providers
+     */
+    public List<String> getAllAIProviders() {
+        try {
+            JsonNode response = webClient.get().uri("/v1beta/providers").retrieve().bodyToMono(JsonNode.class).block();
+            return extractNames(response, "providers", null);
+        } catch (WebClientRequestException e) {
+            throw new ExternalApiException(404, "ecologits-no-ai-provider-found");
+        }
+    }
+
+    /**
+     * Get all available models for one AI provider from Ecologits API
+     *
+     * @return the list of AI models
+     */
+    public List<String> getAllAIModels(String aiProvider) {
+        try {
+            JsonNode response = webClient.get().uri("/v1beta/models/" + aiProvider).retrieve().bodyToMono(JsonNode.class).block();
+            return extractNames(response, "models", "name");
+        } catch (WebClientRequestException e) {
+            throw new ExternalApiException(404, "ecologits-no-ai-provider-found");
+        }
+    }
+
+    private List<String> extractNames(final JsonNode response, final String arrayField, final String valueField) {
+        JsonNode values = response == null ? null : response.get(arrayField);
+        if (values == null || !values.isArray()) {
+            throw new ExternalApiException(502, "ecologits-invalid-referential-response");
+        }
+
+        List<String> names = new ArrayList<>(values.size());
+        for (JsonNode value : values) {
+            JsonNode name = valueField == null ? value : value.get(valueField);
+            if (name == null || !name.isString()) {
+                throw new ExternalApiException(502, "ecologits-invalid-referential-response");
+            }
+            names.add(name.stringValue());
+        }
+        return names;
+    }
 
     /**
      * Run the environmental impact estimation of an LLM usage on EcoLogits.
