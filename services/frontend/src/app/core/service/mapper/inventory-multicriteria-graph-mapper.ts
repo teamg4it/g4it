@@ -221,9 +221,12 @@ export const transformApplicationMultiCriteriaGraph = (
     response: ApplicationMultiCriteriaResponse[],
     graphLevel: ApplicationGraphLevel,
     isAxisInverted: boolean,
+    shouldShowStackBarChart = false,
 ): CriteriaCalculated => {
+    // The stack bar chart uses the opposite axes: criteria on x, repartitions as series
+    const isCategoryFirst = isAxisInverted !== shouldShowStackBarChart;
     const buckets = collectGraphBuckets(response, graphLevel);
-    const footprints = buildGraphFootprints(response, buckets, isAxisInverted);
+    const footprints = buildGraphFootprints(response, buckets, isCategoryFirst);
     return {
         footprints,
         hasError: [...buckets.categoryStatuses.values()].some(

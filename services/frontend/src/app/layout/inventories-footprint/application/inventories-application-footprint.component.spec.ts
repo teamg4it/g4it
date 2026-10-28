@@ -1,9 +1,10 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
-import { NO_ERRORS_SCHEMA } from "@angular/core";
+import { NO_ERRORS_SCHEMA, signal } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
 import { TranslateModule, TranslateService } from "@ngx-translate/core";
 import { of, Subject } from "rxjs";
+import { Filter } from "src/app/core/interfaces/filter.interface";
 import { ApplicationMultiCriteriaImpact } from "src/app/core/interfaces/footprint.interface";
 import { DecimalsPipe } from "src/app/core/pipes/decimal.pipe";
 import { IntegerPipe } from "src/app/core/pipes/integer.pipe";
@@ -73,6 +74,7 @@ const mockInventoryService = {
 
 const mockFootprintDataService = {
     getApplicationMultiCriteriaImpacts: jasmine.createSpy().and.returnValue(of([])),
+    getApplicationMultiCriteriaGraph: jasmine.createSpy().and.returnValue(of([])),
     getApplicationKeyIndicators: jasmine.createSpy().and.returnValue(of([[], [], []])),
     getApplicationFilters: jasmine
         .createSpy()
@@ -95,6 +97,7 @@ const mockFootprintService = {
 
 const mockFootprintStore = {
     applicationSelectedFilters: jasmine.createSpy().and.returnValue({}),
+    setApplicationSelectedFilters: jasmine.createSpy(),
     setApplicationCriteria: jasmine.createSpy(),
     setDomain: jasmine.createSpy(),
     setSubDomain: jasmine.createSpy(),
@@ -104,6 +107,7 @@ const mockFootprintStore = {
     appSubDomain: jasmine.createSpy().and.returnValue(""),
     appApplication: jasmine.createSpy().and.returnValue(""),
     applicationCriteria: jasmine.createSpy().and.returnValue("someCriteria"),
+    appDimension: jasmine.createSpy().and.returnValue("lifeCycle"),
 };
 
 const mockGlobalStore = {
@@ -172,6 +176,48 @@ describe("Inventory Application footprint", () => {
         mockTranslateService.instant.and.callFake((key: string) => key);
     });
 
+    describe("graph filter metadata", () => {
+        const metadata = {
+            environment: [],
+            equipmentType: [],
+            lifeCycle: [],
+            domains: [],
+        };
+
+        afterEach(() => {
+            mockFootprintStore.applicationSelectedFilters.and.returnValue({});
+        });
+
+        it("is withheld until the inventory tasks are completed", () => {
+            component.filterMetadata.set(metadata);
+            component.inventory.set({
+                id: 1,
+                lastTaskLoading: { status: "IN_PROGRESS" },
+            } as any);
+            expect(component.graphFilterMetadata()).toBeNull();
+
+            component.inventory.set({
+                id: 1,
+                lastTaskLoading: { status: "COMPLETED" },
+            } as any);
+            expect(component.graphFilterMetadata()).toEqual(metadata);
+        });
+
+        it("is withheld until the selected filters are initialized", () => {
+            const selectedFilters = signal<Filter>({});
+            mockFootprintStore.applicationSelectedFilters.and.callFake(() =>
+                selectedFilters(),
+            );
+            component.filterMetadata.set(metadata);
+            component.inventory.set({ id: 1 } as any);
+            component.allUnmodifiedFilters.set({ environment: ["All"] });
+            expect(component.graphFilterMetadata()).toBeNull();
+
+            selectedFilters.set({ environment: ["All"] });
+            expect(component.graphFilterMetadata()).toEqual(metadata);
+        });
+    });
+
     describe("sidebar summaries", () => {
         const metadata = {
             environment: ["PRODUCTION"],
@@ -234,6 +280,55 @@ describe("Inventory Application footprint", () => {
                     peopleeq: 7,
                 },
             ]);
+        });
+
+        it("shows the loader while the summary request is pending", () => {
+            mockGlobalStore.setLoading.calls.reset();
+            loadSummary();
+            expect(mockGlobalStore.setLoading).toHaveBeenCalledWith(true);
+            response.next(impacts);
+            response.complete();
+            expect(mockGlobalStore.setLoading.calls.mostRecent().args).toEqual([false]);
+        });
+
+        it("hides the loader when the summary request fails", () => {
+            loadSummary();
+            mockGlobalStore.setLoading.calls.reset();
+            response.error(new Error("failed request"));
+            expect(mockGlobalStore.setLoading).toHaveBeenCalledOnceWith(false);
+        });
+
+        it("keeps the loader while a newer summary request replaces a pending one", () => {
+            loadSummary();
+            mockFootprintDataService.getApplicationMultiCriteriaImpacts.and.returnValue(
+                new Subject<ApplicationMultiCriteriaImpact[]>(),
+            );
+            mockGlobalStore.setLoading.calls.reset();
+            loadSummary();
+            expect(mockGlobalStore.setLoading).toHaveBeenCalledOnceWith(true);
+        });
+
+        it("waits for the selected filters before requesting the summary", () => {
+            const selectedFilters = signal<Filter>({});
+            mockFootprintStore.applicationSelectedFilters.and.callFake(() =>
+                selectedFilters(),
+            );
+            component.allUnmodifiedFilters.set({ environment: ["All", "PRODUCTION"] });
+
+            loadSummary();
+            expect(
+                mockFootprintDataService.getApplicationMultiCriteriaImpacts,
+            ).not.toHaveBeenCalled();
+
+            selectedFilters.set({ environment: ["All", "PRODUCTION"] });
+            TestBed.tick();
+            expect(
+                mockFootprintDataService.getApplicationMultiCriteriaImpacts,
+            ).toHaveBeenCalledTimes(1);
+            expect(
+                mockFootprintDataService.getApplicationMultiCriteriaImpacts,
+            ).toHaveBeenCalledWith(1, {});
+            mockFootprintStore.applicationSelectedFilters.and.returnValue({});
         });
 
         it("sends the full mapped filter object after its initial request", () => {

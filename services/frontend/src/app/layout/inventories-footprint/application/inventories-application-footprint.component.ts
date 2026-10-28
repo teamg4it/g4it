@@ -156,6 +156,28 @@ export class InventoriesApplicationFootprintComponent implements OnInit, OnDestr
     readonly filterMetadata = signal<ApplicationFiltersRest | null>(null);
     readonly summaryError = signal(false);
     readonly summaryImpacts = signal<ApplicationMultiCriteriaImpact[]>([]);
+    private readonly selectedFiltersInitialized = computed(
+        () =>
+            Object.keys(this.allUnmodifiedFilters()).length === 0 ||
+            Object.keys(this.footprintStore.applicationSelectedFilters()).length > 0,
+    );
+    private readonly inventoryTasksCompleted = computed(() => {
+        const inventory = this.inventory();
+        const isDone = (task?: { status?: string } | null) =>
+            !task ||
+            Constants.EVALUATION_BATCH_COMPLETED_FAILED_STATUSES.includes(task.status!);
+        return (
+            !!inventory.id &&
+            isDone(inventory.lastTaskLoading) &&
+            isDone(inventory.lastTaskEvaluating)
+        );
+    });
+    // Graphs request their data only after the filters and the inventory tasks are ready
+    readonly graphFilterMetadata = computed(() =>
+        this.inventoryTasksCompleted() && this.selectedFiltersInitialized()
+            ? this.filterMetadata()
+            : null,
+    );
     readonly summaryCriteria = computed(() => {
         const criteria = this.footprintStore.applicationCriteria();
         return criteria && criteria !== this.multiCriteria ? [criteria] : [];
@@ -163,7 +185,9 @@ export class InventoriesApplicationFootprintComponent implements OnInit, OnDestr
     private readonly summaryRequest = computed(
         () => {
             const metadata = this.filterMetadata();
-            if (!metadata) return null;
+            // Wait for the filter component to initialise the selected filters,
+            // otherwise the first request is superseded right away
+            if (!metadata || !this.selectedFiltersInitialized()) return null;
             const level = this.footprintStore.appGraphType();
             return {
                 inventoryId: this.inventoryId,
@@ -342,15 +366,27 @@ export class InventoriesApplicationFootprintComponent implements OnInit, OnDestr
                 const filters = this.initialSummaryRequestSent ? request.filters : {};
                 this.initialSummaryRequestSent = true;
                 this.summaryError.set(false);
+                let superseded = false;
+                this.globalStore.setLoading(true);
                 const subscription = this.footprintDataService
                     .getApplicationMultiCriteriaImpacts(inventoryId, filters)
+                    .pipe(
+                        finalize(() => {
+                            // A newer request takes over the loader
+                            if (!superseded) this.globalStore.setLoading(false);
+                        }),
+                    )
                     .subscribe({
                         next: (impacts) => this.summaryImpacts.set(impacts),
                         error: () => this.summaryError.set(true),
                     });
-                onCleanup(() => subscription.unsubscribe());
+                onCleanup(() => {
+                    superseded = true;
+                    subscription.unsubscribe();
+                });
             });
         });
+        this.destroyRef.onDestroy(() => this.globalStore.setLoading(false));
     }
 
     ngOnInit() {
@@ -428,6 +464,9 @@ export class InventoriesApplicationFootprintComponent implements OnInit, OnDestr
         const criteria = this.activatedRoute.snapshot.paramMap.get("criteria");
         this.selectedCriteria = criteria!;
         this.globalStore.setLoading(true);
+
+        // Drop filters of a previous load so the summary waits for fresh ones
+        this.footprintStore.setApplicationSelectedFilters({});
 
         this.getOrganizationAndWorkspace();
 

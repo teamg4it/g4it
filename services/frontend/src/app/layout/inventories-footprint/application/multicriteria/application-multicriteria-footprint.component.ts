@@ -202,7 +202,7 @@ export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboar
                           this.criteriakeys.indexOf(b.criteria),
                   );
             const graphResponse =
-                !isInverted && this.selectedDimension() === "lifeCycle"
+                this.selectedDimension() === "lifeCycle"
                     ? orderedResponse.map((criterion) => ({
                           ...criterion,
                           nodes: criterion.nodes.map((node) => ({
@@ -223,11 +223,23 @@ export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboar
                           })),
                       }))
                     : orderedResponse;
-            return InventoryMultiCriteriaViewMapper.transformApplicationMultiCriteriaGraph(
-                graphResponse,
-                this.getGraphLevel(this.footprintStore.appGraphType()),
-                isInverted,
-            );
+            const calculated =
+                InventoryMultiCriteriaViewMapper.transformApplicationMultiCriteriaGraph(
+                    graphResponse,
+                    this.getGraphLevel(this.footprintStore.appGraphType()),
+                    isInverted,
+                    this.shouldShowStackBarChart(),
+                );
+            if (isInverted && calculated.criteriasCount) {
+                const counts = calculated.criteriasCount;
+                calculated.criteriasCount = Object.keys(counts)
+                    .sort((a, b) => a.localeCompare(b))
+                    .reduce((acc: StatusCountMap, key) => {
+                        acc[key] = counts[key];
+                        return acc;
+                    }, {});
+            }
+            return calculated;
         }
         const isInverted = this.isAxisInverted();
         const criteriaFootprint = this.footprint().reduce((acc, f) => {
@@ -382,7 +394,10 @@ export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboar
 
         const isAcvStep = this.selectedDimension() === Constants.ACV_STEP;
 
-        if (isInverted) {
+        if (isInverted && this.graphResponse() !== null) {
+            // Keep the axis aligned with the status map used by the data consistency graph
+            this.xAxisInput = Object.keys(criteriaCalculated.criteriasCount ?? {});
+        } else if (isInverted) {
             // Determine data source: footprint data for stack bar, criteria for radial
             const dataSource = showStackBar
                 ? footprintCalculated?.map((fp) => fp.data) || []
