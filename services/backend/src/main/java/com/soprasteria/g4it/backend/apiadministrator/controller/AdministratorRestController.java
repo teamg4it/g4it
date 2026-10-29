@@ -172,7 +172,7 @@ public class AdministratorRestController implements AdministratorApiDelegate {
      */
     @Override
     public ResponseEntity<ReleaseNoteRest> getLatestReleaseNote() {
-        administratorRoleService.hasAdminRightsOnAnyOrganizationOrAnyWorkspace(authService.getUser());
+        administratorRoleService.hasSuperAdminRights(authService.getUser());
         var latestReleaseNote = releaseNotesService.getLatestReleaseNote();
         if (latestReleaseNote.isEmpty()) {
             return ResponseEntity.noContent().build();
@@ -192,7 +192,7 @@ public class AdministratorRestController implements AdministratorApiDelegate {
     @Override
     public ResponseEntity<Void> saveReleaseNotes(
             ReleaseNotesPublishRest request) {
-        administratorRoleService.hasAdminRightsOnAnyOrganizationOrAnyWorkspace(authService.getUser());
+        administratorRoleService.hasSuperAdminRights(authService.getUser());
         releaseNotesService.publish(request.getContent());
         return ResponseEntity.noContent().build();
     }
