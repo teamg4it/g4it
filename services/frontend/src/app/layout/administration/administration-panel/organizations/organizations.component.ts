@@ -6,6 +6,7 @@
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
 import { DatePipe } from "@angular/common";
+import { ScrollingModule } from "@angular/cdk/scrolling";
 import { Component, DestroyRef, inject, OnInit, signal } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormsModule } from "@angular/forms";
@@ -50,6 +51,7 @@ import { CriteriaPopupComponent } from "../../../common/criteria-popup/criteria-
         ConfirmDialogModule,
         DatePipe,
         TranslatePipe,
+        ScrollingModule,
     ],
 })
 export class OrganizationsComponent implements OnInit {
@@ -82,6 +84,10 @@ export class OrganizationsComponent implements OnInit {
 
     ngOnInit() {
         this.init();
+    }
+
+    trackByWorkspaceId(_index: number, workspace: Workspace): number {
+        return workspace.id;
     }
 
     init(organization: string | undefined = undefined) {

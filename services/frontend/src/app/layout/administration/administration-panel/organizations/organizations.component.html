@@ -148,8 +148,17 @@
                         {{ "administration.organization.spaceValidation" | translate }}
                     </p>
                 }
-                @for (workspace of organization.workspaces; track workspace) {
-                    <div>
+                <cdk-virtual-scroll-viewport
+                    itemSize="60"
+                    class="workspace-list-viewport"
+                    style="height: calc(100vh - 430px); width: 100%"
+                >
+                    <div
+                        *cdkVirtualFor="
+                            let workspace of organization.workspaces;
+                            trackBy: trackByWorkspaceId
+                        "
+                    >
                         <label
                             [for]="'workspace-name-' + workspace.id"
                             class="text-hidden"
@@ -257,7 +266,7 @@
                             </p>
                         }
                     </div>
-                }
+                </cdk-virtual-scroll-viewport>
             </div>
         }
     </p-scrollPanel>
