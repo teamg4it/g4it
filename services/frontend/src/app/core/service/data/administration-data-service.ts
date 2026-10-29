@@ -21,12 +21,13 @@ const endpoint = Constants.ENDPOINTS.organizations;
 const endpointById = Constants.ENDPOINTS.organizationById;
 const endpointForWorkspace = Constants.ENDPOINTS.adminWorkspaces;
 const endpointForUser = Constants.ENDPOINTS.users;
+const endpointForReleaseNotes = Constants.ENDPOINTS.adminReleaseNotes;
 
 @Injectable({
     providedIn: "root",
 })
 export class AdministrationDataService {
-    constructor(private readonly http: HttpClient) {}
+    constructor(private readonly http: HttpClient) { }
 
     getOrganizations(): Observable<Organization[]> {
         return this.http.get<Organization[]>(`${endpoint}`);
@@ -100,5 +101,13 @@ export class AdministrationDataService {
         return this.http.delete<any>(`${endpointForWorkspace}/users`, {
             body,
         });
+    }
+
+    getLatestReleaseNotes(): Observable<any> {
+        return this.http.get<any>(`${endpointForReleaseNotes}`);
+    }
+
+    postNewReleaseNotes(body: any): Observable<any> {
+        return this.http.post<any>(`${endpointForReleaseNotes}`, body);
     }
 }

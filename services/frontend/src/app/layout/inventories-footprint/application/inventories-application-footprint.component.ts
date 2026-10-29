@@ -173,9 +173,9 @@ export class InventoriesApplicationFootprintComponent implements OnInit, OnDestr
         if ((this.allUnmodifiedFilters() as any)["domain"]?.length > 2) {
             const domainSelected: any = this.footprintStore
                 .applicationSelectedFilters()
-                [
-                    "domain"
-                ].find((d) => (d as TransformedDomain).label === this.footprintStore.appDomain());
+            [
+                "domain"
+            ].find((d) => (d as TransformedDomain).label === this.footprintStore.appDomain());
             if (domainSelected?.children.length <= 1) {
                 return true;
             }
@@ -298,7 +298,7 @@ export class InventoriesApplicationFootprintComponent implements OnInit, OnDestr
         private readonly activatedRoute: ActivatedRoute,
         public readonly footprintService: FootprintService,
         private readonly translate: TranslateService,
-    ) {}
+    ) { }
 
     ngOnInit() {
         void this.checkStatusAndLoopApis();
@@ -413,11 +413,11 @@ export class InventoriesApplicationFootprintComponent implements OnInit, OnDestr
             unmodifyFilter[filter.field] = [
                 filter.field === "domain"
                     ? {
-                          label: Constants.ALL,
-                          checked: true,
-                          visible: true,
-                          children: [],
-                      }
+                        label: Constants.ALL,
+                        checked: true,
+                        visible: true,
+                        children: [],
+                    }
                     : Constants.ALL,
                 ...this.getValues(uniqueFilterSet, filter),
             ];
@@ -604,11 +604,11 @@ export class InventoriesApplicationFootprintComponent implements OnInit, OnDestr
         modifiedFilter[filter.field] = [
             filter.field === "domain"
                 ? {
-                      label: Constants.ALL,
-                      checked: true,
-                      visible: true,
-                      children: [],
-                  }
+                    label: Constants.ALL,
+                    checked: true,
+                    visible: true,
+                    children: [],
+                }
                 : Constants.ALL,
             ...this.getValues(uniqueFilters, filter),
         ];
@@ -857,7 +857,8 @@ export class InventoriesApplicationFootprintComponent implements OnInit, OnDestr
         );
 
         const elecConsumptionSum = filteredEquipmentsElecConsumption.reduce(
-            (sum, { elecConsumption = 0 }) => sum + elecConsumption,
+            (sum, { elecConsumption = 0, quantity = 0 }) =>
+                sum + elecConsumption * quantity,
             0,
         );
         return elecConsumptionSum;

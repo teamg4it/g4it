@@ -72,6 +72,16 @@ export class AdministrationPanelComponent implements OnInit {
                     id: "update-workspace-referential-tab",
                 });
             }
+
+            if (user.isSuperAdmin) {
+                this.tabMenuList.push({
+                    label: this.translate.instant(
+                        "administration.release-notes-referential",
+                    ),
+                    routerLink: "release-notes",
+                    id: "release-notes",
+                });
+            }
         });
     }
 }

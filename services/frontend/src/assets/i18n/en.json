@@ -208,7 +208,13 @@
         "environment.all": "All Environments",
         "equipmentType.all": "All Equipment Types",
         "lifeCycle.all": "All Lifecycles",
-        "domain.all": "All Domains and Subdomains"
+        "domain.all": "All Domains and Subdomains",
+        "release-notes": {
+            "title": "Release Notes",
+            "hide": "Don't show these release notes again",
+            "give-feedback": "Give feedback",
+            "close": "Close"
+        }
     },
     "useful-information": {
         "computing-engines": "Computing engines",
@@ -1395,6 +1401,16 @@
         "workspace-reference": {
             "data-model-text": "If necessary, this file can assist you in filling in your reference data.",
             "loading-result": "Loading result"
+        },
+        "release-notes-referential": "Release notes",
+        "release-notes-paragraph": "Enter the content of the release notes that will be displayed to users after login to highlight new features, enhancements, bug fixes, and other important updates.",
+        "release-notes": {
+            "undo": "Undo changes",
+            "publish": "Publish the release notes",
+            "save-success": "Release notes published successfully",
+            "save-error": "An error occurred while publishing the release notes.",
+            "save-invalid": "Enter release notes before publishing.",
+            "save-unchanged": "There are no changes to publish."
         }
     },
     "error-graph": {

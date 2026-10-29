@@ -1,0 +1,134 @@
+dialog[open] {
+    margin: 10% 15%;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    gap: 1rem;
+    width: auto;
+    height: auto;
+    padding: 2.3rem 3rem;
+    background-color: var(--light-grey-color);
+    border: none;
+    outline: none;
+
+    &::backdrop {
+        background-color: hsla(132, 8%, 12%, 0.4);
+    }
+
+    @media screen and (max-width: 990px) {
+        margin: 10% 5%;
+        padding: 1rem 1.5rem;
+    }
+
+    .title {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+
+        h2 {
+            font-size: 1.75rem;
+            font-weight: 600;
+            padding: 0;
+            text-box-trim: trim-both;
+        }
+    }
+
+    section.release-note-content {
+        width: 100%;
+        padding: 1rem 1.5rem;
+        outline: 1px solid black;
+        overflow-y: auto;
+        background-color: white;
+    }
+
+    .footer {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap-reverse;
+        justify-content: space-between;
+        gap: 1rem;
+
+        @media screen and (max-width: 750px) {
+            justify-content: end;
+
+            div.hide {
+                flex-direction: row-reverse;
+
+                label {
+                    text-align: right;
+                }
+            }
+
+            div.actions {
+                flex-wrap: wrap;
+            }
+        }
+
+        div {
+            display: flex;
+            align-items: center;
+            justify-content: end;
+            gap: 1rem;
+
+            input {
+                cursor: pointer;
+            }
+
+            label {
+                text-box-trim: trim-both;
+                cursor: pointer;
+            }
+
+            &.actions {
+                flex-wrap: wrap-reverse;
+
+                a {
+                    text-decoration: none;
+                }
+            }
+        }
+    }
+}
+
+:host ::ng-deep section.release-note-content {
+    p,
+    li {
+        margin: 0;
+        font-size: clamp(12px, 1rem, 4vw);
+    }
+
+    ul {
+        padding-inline-start: 1lh;
+
+        li {
+            list-style-type: disc;
+            padding-left: 0;
+
+            &::before {
+                content: "";
+                display: inline;
+                margin: 0;
+            }
+        }
+    }
+
+    ol li::marker {
+        color: gray;
+        font-family: sans-serif;
+        font-size: 0.8em;
+    }
+
+    p {
+        margin-block: 0.75rem;
+    }
+
+    pre {
+        color: #f8f8f2;
+        background-color: #23241f;
+        margin-block: 5px;
+        padding: 5px 10px;
+        border-radius: 3px;
+        font-family: monospace;
+    }
+}

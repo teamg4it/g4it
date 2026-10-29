@@ -25,12 +25,13 @@ import { SharedModule } from "src/app/core/shared/shared.module";
 import { GlobalStoreService } from "src/app/core/store/global.store";
 import { LeftSidebarComponent } from "../header/header-siderbar/left-sidebar/left-sidebar.component";
 import { TopHeaderComponent } from "../header/header-siderbar/top-header/top-header.component";
+import { ReleaseNotesComponent } from "./release-notes/release-notes.component";
 
 @Component({
     selector: "app-landing-page",
     templateUrl: "./landing-page.component.html",
     standalone: true,
-    imports: [RouterModule, SharedModule, TopHeaderComponent, LeftSidebarComponent],
+    imports: [RouterModule, SharedModule, TopHeaderComponent, LeftSidebarComponent, ReleaseNotesComponent],
 })
 export class LandingPageComponent implements OnInit, AfterViewInit {
     private readonly globalStore = inject(GlobalStoreService);

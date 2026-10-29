@@ -26,7 +26,7 @@ import { UserService } from "./user.service";
 export class AdministrationService {
     private readonly userService = inject(UserService);
 
-    constructor(private readonly administrationDataService: AdministrationDataService) {}
+    constructor(private readonly administrationDataService: AdministrationDataService) { }
 
     getUsersTriggered = signal<boolean>(false);
 
@@ -135,5 +135,13 @@ export class AdministrationService {
         setTimeout(() => {
             this.getUsersTriggered.set(false);
         });
+    }
+
+    getLatestReleaseNotes(): Observable<any> {
+        return this.administrationDataService.getLatestReleaseNotes();
+    }
+
+    saveReleaseNotes(body: any): Observable<any> {
+        return this.administrationDataService.postNewReleaseNotes(body);
     }
 }

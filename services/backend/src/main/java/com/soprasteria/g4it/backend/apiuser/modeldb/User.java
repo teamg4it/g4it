@@ -62,6 +62,12 @@ public class User extends AbstractBaseEntity implements Serializable {
     private String domain;
 
     /**
+     * The latest release note the user chose not to see again.
+     */
+    @Column(name = "last_seen_release_note_id")
+    private Long lastSeenReleaseNoteId;
+
+    /**
      * User's organizations.
      */
     @ToString.Exclude
