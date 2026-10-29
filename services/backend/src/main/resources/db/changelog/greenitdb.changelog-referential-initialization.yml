@@ -690,3 +690,12 @@ databaseChangeLog:
               SET source = 'This step is an addition by G4IT Team to avoid error on indicators for POE equipment'
               WHERE lifecycle_step = 'USING'
                 AND name IN ('wifi-hotspot-1', 'WiFi hotspot');
+
+  - changeSet:
+      id: change-ref-item-impact-description-to-text
+      author: G4IT Dev Team
+      changes:
+        - modifyDataType:
+            tableName: ref_item_impact
+            columnName: description
+            newDataType: text
