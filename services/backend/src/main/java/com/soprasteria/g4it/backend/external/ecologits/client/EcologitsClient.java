@@ -47,7 +47,7 @@ public class EcologitsClient {
     public List<String> getAllAIProviders() {
         try {
             JsonNode response = webClient.get().uri("/v1beta/providers").retrieve().bodyToMono(JsonNode.class).block();
-            return extractNames(response, "providers", null);
+            return extractFieldValues(response, "providers", null);
         } catch (WebClientRequestException e) {
             throw new ExternalApiException(404, "ecologits-no-ai-provider-found");
         }
@@ -61,27 +61,41 @@ public class EcologitsClient {
     public List<String> getAllAIModels(String aiProvider) {
         try {
             JsonNode response = webClient.get().uri("/v1beta/models/" + aiProvider).retrieve().bodyToMono(JsonNode.class).block();
-            return extractNames(response, "models", "name");
+            return extractFieldValues(response, "models", "name");
         } catch (WebClientRequestException e) {
             throw new ExternalApiException(404, "ecologits-no-ai-provider-found");
         }
     }
 
-    private List<String> extractNames(final JsonNode response, final String arrayField, final String valueField) {
-        JsonNode values = response == null ? null : response.get(arrayField);
-        if (values == null || !values.isArray()) {
-            throw new ExternalApiException(502, "ecologits-invalid-referential-response");
+    /**
+     * Extract field values from a JSON array
+     *
+     * @param response  : the JSON response
+     * @param arrayName : the name of the array from which the field is to be searched
+     * @param fieldName : the name of the field from which the value is to be extracted
+     * @return the list of values
+     */
+    private List<String> extractFieldValues(final JsonNode response, final String arrayName, final String fieldName) {
+        // Getting the JSON array from the response if not null.
+        JsonNode arrayValues = response == null ? null : response.get(arrayName);
+        if (arrayValues == null || !arrayValues.isArray()) {
+            throw new ExternalApiException(502, "ecologits-invalid-response");
         }
 
-        List<String> names = new ArrayList<>(values.size());
-        for (JsonNode value : values) {
-            JsonNode name = valueField == null ? value : value.get(valueField);
-            if (name == null || !name.isString()) {
-                throw new ExternalApiException(502, "ecologits-invalid-referential-response");
+        // Set the list of values to return
+        List<String> fields = new ArrayList<>(arrayValues.size());
+
+        // Browse the array to look for field that matches fieldName
+        for (JsonNode value : arrayValues) {
+            // If the field is found, get its value
+            JsonNode field = fieldName == null ? value : value.get(fieldName);
+            if (field == null || !field.isString()) {
+                throw new ExternalApiException(502, "ecologits-invalid-response");
             }
-            names.add(name.stringValue());
+            // Add the field value to the list of values
+            fields.add(field.stringValue());
         }
-        return names;
+        return fields;
     }
 
     /**

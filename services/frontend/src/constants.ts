@@ -42,11 +42,13 @@ export abstract class Constants {
     ];
     static readonly CLOUD_SERVICE = "CloudService";
     static readonly TERMINAL = "Terminal";
+    static readonly AI_SERVICE = "AIService";
     static readonly DIGITAL_SERVICES_CHART_ORDER = [
         this.TERMINAL,
         "Network",
         "Server",
         this.CLOUD_SERVICE,
+        this.AI_SERVICE,
     ];
     static readonly GREEN_COLOR_SET = ["#FFF6B0", "#ADDC6F", "#2FA255", "#006734"];
     static readonly PURPLE_COLOR_SET = [

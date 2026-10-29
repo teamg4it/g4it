@@ -73,6 +73,17 @@ export const convertToGlobalVision = (
         });
     }
 
+    const aiData = virtualEquipments.filter(
+        (ve) => ve.infrastructureType === "AI_SERVICES",
+    );
+
+    if (aiData.length > 0) {
+        globalVision.push({
+            tier: "AIService",
+            impacts: aggregateAndMap(aiData),
+        });
+    }
+
     return globalVision;
 };
 
