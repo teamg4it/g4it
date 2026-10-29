@@ -85,5 +85,9 @@ databaseChangeLog:
       file: db/changelog/greenitdb.changelog-add-ai-server-item-impact-data-v2.yml
   - include:
       file: db/changelog/greenitdb.changelog-add-ai-server-host-data-v2.yml
+  - include:
+      file: db/changelog/referential-data/ref-nonitactivity-impact-table.yml
+  - include:
+      file: db/changelog/greenitdb.changelog-add-inventory-nonit-output-count.yml
 
 

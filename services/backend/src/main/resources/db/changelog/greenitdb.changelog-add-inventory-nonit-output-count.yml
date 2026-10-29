@@ -1,0 +1,30 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-inventory-nonit-output-count
+      author: G4IT Dev Team
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - columnExists:
+                tableName: inventory
+                columnName: out_nonit_count
+      changes:
+        - addColumn:
+            tableName: inventory
+            columns:
+              - column:
+                  name: out_nonit_count
+                  type: bigint
+                  defaultValueNumeric: 0
+                  constraints:
+                    nullable: true
+        - sql:
+            comment: Initialize non-IT activity output count to 0 for existing inventories
+            sql: >
+              UPDATE inventory
+              SET out_nonit_count = 0
+              WHERE out_nonit_count IS NULL
+      rollback:
+        - dropColumn:
+            tableName: inventory
+            columnName: out_nonit_count

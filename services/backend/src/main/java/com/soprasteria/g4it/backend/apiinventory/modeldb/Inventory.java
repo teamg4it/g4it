@@ -108,6 +108,9 @@ public class Inventory extends AbstractBaseEntity implements Serializable {
     private Long outAiCount = 0L;
 
     @Builder.Default
+    private Long outNonItCount = 0L;
+
+    @Builder.Default
     @ToString.Exclude
     @OneToMany(mappedBy = "inventory", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Task> tasks = new ArrayList<>();

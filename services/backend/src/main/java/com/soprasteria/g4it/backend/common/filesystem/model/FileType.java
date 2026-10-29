@@ -47,7 +47,9 @@ public enum FileType {
 
     AI_SERVICE("AI_SERVICE"),
 
-    NON_IT_ACTIVITIES("NON_IT_ACTIVITIES");
+    NON_IT_ACTIVITIES("NON_IT_ACTIVITIES"),
+
+    NON_IT_ACTIVITIES_INDICATOR("NON_IT_ACTIVITIES_INDICATOR");
 
     private String value;
 
@@ -77,6 +79,7 @@ public enum FileType {
             case "IN_AI_INFRASTRUCTURE" -> "ai_infrastructure";
             case "AI_SERVICE" -> "AIservices";
             case "NON_IT_ACTIVITIES" -> "nonitactivities";
+            case "NON_IT_ACTIVITIES_INDICATOR" -> "ind_nonitactivities";
             default -> this.getValue();
         };
     }

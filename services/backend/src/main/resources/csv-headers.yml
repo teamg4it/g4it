@@ -370,6 +370,42 @@ filesystem.config.headers:
     - name: "errors"
       optional: false
 
+  nonItActivityIndicator:
+    - name: "inventoryName"
+      optional: false
+    - name: "calculationDate"
+      optional: false
+    - name: "batchDate"
+      optional: false
+    - name: "batchName"
+      optional: false
+    - name: "criteria"
+      optional: false
+    - name: "category"
+      optional: false
+    - name: "subcategory"
+      optional: true
+    - name: "reference"
+      optional: false
+    - name: "activityName"
+      optional: false
+    - name: "entityName"
+      optional: true
+    - name: "source"
+      optional: true
+    - name: "indicatorStatus"
+      optional: false
+    - name: "quantity"
+      optional: false
+    - name: "unitImpact"
+      optional: false
+    - name: "unit"
+      optional: false
+    - name: "sipImpact"
+      optional: false
+    - name: "errors"
+      optional: false
+
   physicalEquipmentIndicatorDigitalService:
     - name: "digitalServiceName"
       optional: false

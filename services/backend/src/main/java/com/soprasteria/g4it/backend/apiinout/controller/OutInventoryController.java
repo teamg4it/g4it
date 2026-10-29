@@ -23,6 +23,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import com.soprasteria.g4it.backend.apiinout.business.OutAiServiceService;
 import com.soprasteria.g4it.backend.server.gen.api.dto.OutAiServiceRest;
+import com.soprasteria.g4it.backend.apiinout.business.OutNonItActivityService;
+import com.soprasteria.g4it.backend.server.gen.api.dto.OutNonItActivityRest;
 
 /**
  * Digital Service Input Virtual Equipment Service.
@@ -48,6 +50,8 @@ public class OutInventoryController implements InventoryOutputsApiDelegate {
     private OutApplicationService outApplicationService;
 
     private OutAiServiceService outAiServiceService;
+
+    private OutNonItActivityService outNonItActivityService;
 
     /**
      * {@inheritDoc}
@@ -84,6 +88,13 @@ public class OutInventoryController implements InventoryOutputsApiDelegate {
                                                                                     Long workspace,
                                                                                     Long inventoryId) {
         return ResponseEntity.ok().body(outAiServiceService.getByInventory(Inventory.builder().id(inventoryId).build()));
+    }
+
+    @Override
+    public ResponseEntity<List<OutNonItActivityRest>> getInventoryOutputsNonItActivitiesRest(String organization,
+                                                                                               Long workspace,
+                                                                                               Long inventoryId) {
+        return ResponseEntity.ok().body(outNonItActivityService.getByInventory(Inventory.builder().id(inventoryId).build()));
     }
 
 }

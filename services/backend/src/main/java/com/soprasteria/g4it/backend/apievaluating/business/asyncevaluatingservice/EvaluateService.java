@@ -66,6 +66,11 @@ import com.soprasteria.g4it.backend.apievaluating.mapper.AiServiceImpactToCsvRec
 import com.soprasteria.g4it.backend.apiinout.mapper.AiServiceToCsvRecord;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InAiService;
 import com.soprasteria.g4it.backend.apiinout.modeldb.OutAiService;
+import com.soprasteria.g4it.backend.apievaluating.mapper.NonItActivityImpactToCsvRecord;
+import com.soprasteria.g4it.backend.apiinout.mapper.NonItActivityToCsvRecord;
+import com.soprasteria.g4it.backend.apiinout.modeldb.InNonItActivity;
+import com.soprasteria.g4it.backend.apiinout.modeldb.OutNonItActivity;
+import com.soprasteria.g4it.backend.apireferential.modeldb.RefNonItActivityImpact;
 
 @Service
 @Slf4j
@@ -94,6 +99,9 @@ public class EvaluateService {
     private final AiServiceImpactToCsvRecord aiServiceImpactToCsvRecord;
     private final AiServiceToCsvRecord aiServiceToCsvRecord;
     private final EvaluateEcologitsService evaluateEcologitsService;
+    private final InNonItActivityRepository inNonItActivityRepository;
+    private final NonItActivityImpactToCsvRecord nonItActivityImpactToCsvRecord;
+    private final NonItActivityToCsvRecord nonItActivityToCsvRecord;
     private final Clock clock;
 
     @Value("${local.working.folder}")
@@ -189,15 +197,18 @@ public class EvaluateService {
         try (CSVPrinter csvPhysicalEquipment = csvFileService.getPrinter(totalsInfo.physicalEquipmentIndicator(), exportDirectory);
              CSVPrinter csvVirtualEquipment = csvFileService.getPrinter(totalsInfo.virtualEquipmentIndicator(), exportDirectory);
              CSVPrinter csvAiService = csvFileService.getPrinter(FileType.AI_SERVICE_INDICATOR, exportDirectory);
+             CSVPrinter csvNonItActivity = csvFileService.getPrinter(FileType.NON_IT_ACTIVITIES_INDICATOR, exportDirectory);
              CSVPrinter csvApplication = csvFileService.getPrinter(FileType.APPLICATION_INDICATOR, exportDirectory);
              CSVPrinter csvInDatacenter = csvFileService.getPrinter(FileType.DATACENTER, exportDirectory);
              CSVPrinter csvInPhysicalEquipment = csvFileService.getPrinter(FileType.EQUIPEMENT_PHYSIQUE, exportDirectory);
              CSVPrinter csvInVirtualEquipment = csvFileService.getPrinter(FileType.VIRTUAL_EQUIPMENT, exportDirectory);
              CSVPrinter csvInAiService = csvFileService.getPrinter(FileType.AI_SERVICE, exportDirectory);
+             CSVPrinter csvInNonItActivity = csvFileService.getPrinter(FileType.NON_IT_ACTIVITIES, exportDirectory);
              CSVPrinter csvInApplication = csvFileService.getPrinter(FileType.APPLICATION, exportDirectory);
         ) {
             CsvPrinters printers = new CsvPrinters(csvPhysicalEquipment, csvVirtualEquipment, csvAiService, csvApplication,
-                    csvInDatacenter, csvInPhysicalEquipment, csvInVirtualEquipment, csvInAiService, csvInApplication);
+                    csvInDatacenter, csvInPhysicalEquipment, csvInVirtualEquipment, csvInAiService, csvInApplication,
+                    csvNonItActivity, csvInNonItActivity);
 
             writeDatacentersCsv(evaluateReportBO, datacenterByNameMap, printers);
 
@@ -225,6 +236,7 @@ public class EvaluateService {
 
             if (context.getInventoryId() != null) {
                 processAiServicePages(runContext, state);
+                processNonItActivityPages(runContext, state);
             }
 
         } catch (IOException e) {
@@ -234,9 +246,10 @@ public class EvaluateService {
 
         saveRemainingAggregations(taskId, criteriaSetup.refShortcutBO(), state);
 
-        log.info("End evaluating impacts for {}/{} in {}s and sizes: {}/{}/{}/{}", context.log(), taskId,
+        log.info("End evaluating impacts for {}/{} in {}s and sizes: {}/{}/{}/{}/{}", context.log(), taskId,
                 (System.currentTimeMillis() - start) / 1000,
-                state.outPhysicalEquipmentSize, state.outVirtualEquipmentSize, state.outApplicationSize, state.outAiServiceSize);
+                state.outPhysicalEquipmentSize, state.outVirtualEquipmentSize, state.outApplicationSize, state.outAiServiceSize,
+                state.outNonItActivitySize);
 
         saveOutputCounts(inventory, state);
 
@@ -315,6 +328,7 @@ public class EvaluateService {
                 .nbVirtualEquipmentLines(0)
                 .nbApplicationLines(0)
                 .nbAiServiceLines(0)
+                .nbNonItActivityLines(0)
                 .taskId(taskId)
                 .name(inventoryName)
                 .build();
@@ -331,7 +345,8 @@ public class EvaluateService {
                 inVirtualEquipmentRepository.countByInventoryIdAndInfrastructureType(context.getInventoryId(), CLOUD_SERVICES.name());
 
         long totalAiServices = context.getInventoryId() == null ? 0L : inAiServiceRepository.countByInventoryId(context.getInventoryId());
-        long totalEquipments = totalPhysicalEquipments + totalCloudVirtualEquipments + totalAiServices;
+        long totalNonItActivities = context.getInventoryId() == null ? 0L : inNonItActivityRepository.countByInventoryId(context.getInventoryId());
+        long totalEquipments = totalPhysicalEquipments + totalCloudVirtualEquipments + totalAiServices + totalNonItActivities;
         FileType physicalEquipmentIndicator = context.getDigitalServiceVersionUid() == null ? FileType.PHYSICAL_EQUIPMENT_INDICATOR :
                 FileType.PHYSICAL_EQUIPMENT_INDICATOR_DIGITAL_SERVICE;
         FileType virtualEquipmentIndicator = context.getDigitalServiceVersionUid() == null ? FileType.VIRTUAL_EQUIPMENT_INDICATOR :
@@ -561,6 +576,63 @@ public class EvaluateService {
         }
     }
 
+    private void processNonItActivityPages(EvaluationRunContext runCtx, EvaluationState state) throws IOException {
+        Context context = runCtx.context();
+        CriteriaSetup criteriaSetup = runCtx.criteriaSetup();
+        CSVPrinter csvNonItActivity = runCtx.printers().nonItActivity();
+
+        final Sort sortById = Sort.by("id");
+        int pageNumber = 0;
+        while (true) {
+            Pageable page = PageRequest.of(pageNumber, Constants.BATCH_SIZE, sortById);
+            List<InNonItActivity> nonItActivities = inNonItActivityRepository.findByInventoryIdOrderByIdAsc(context.getInventoryId(), page);
+            if (nonItActivities.isEmpty()) {
+                break;
+            }
+
+            List<OutNonItActivity> outNonItActivities = new ArrayList<>(
+                    nonItActivities.size() * Math.max(criteriaSetup.criteriaCodes().size(), 1));
+            for (InNonItActivity nonItActivity : nonItActivities) {
+                processOneNonItActivity(runCtx, state, nonItActivity, outNonItActivities);
+            }
+
+            state.outNonItActivitySize += saveService.saveOutNonItActivities(outNonItActivities);
+            csvNonItActivity.flush();
+            pageNumber++;
+            nonItActivities.clear();
+        }
+    }
+
+    private void processOneNonItActivity(EvaluationRunContext runCtx, EvaluationState state, InNonItActivity nonItActivity,
+                                          List<OutNonItActivity> outNonItActivities) throws IOException {
+        EvaluateReportBO evaluateReportBO = runCtx.evaluateReportBO();
+        CriteriaSetup criteriaSetup = runCtx.criteriaSetup();
+        CsvPrinters printers = runCtx.printers();
+        Long workspaceId = runCtx.context().getWorkspaceId();
+
+        if (evaluateReportBO.isExport()) {
+            printers.inNonItActivity().printRecord(nonItActivityToCsvRecord.toCsv(nonItActivity));
+        }
+
+        for (String criterion : criteriaSetup.criteriaCodes()) {
+            Optional<RefNonItActivityImpact> refImpact = referentialGetService.getNonItActivityImpact(
+                    nonItActivity.getReference(), criterion, workspaceId);
+
+            OutNonItActivity outNonItActivity = toOutNonItActivity(runCtx.taskId(), nonItActivity, criterion, refImpact,
+                    criteriaSetup.criteriaUnitMap(), criteriaSetup.refSip());
+            outNonItActivities.add(outNonItActivity);
+            if (evaluateReportBO.isExport()) {
+                printers.nonItActivity().printRecord(nonItActivityImpactToCsvRecord.toCsv(runCtx.context(), runCtx.taskId(), runCtx.inventoryName(), nonItActivity, outNonItActivity));
+            }
+            evaluateReportBO.setNbNonItActivityLines(evaluateReportBO.getNbNonItActivityLines() + 1);
+        }
+
+        state.processed++;
+        if (state.processed % 20 == 0 || state.processed == runCtx.totalsInfo().totalEquipments()) {
+            updateProgress(runCtx.taskId(), state.processed, runCtx.totalsInfo().totalEquipments(), runCtx.processFactor());
+        }
+    }
+
     // Store aggregated indicators remaining in memory after paging is complete
     private void saveRemainingAggregations(Long taskId, RefShortcutBO refShortcutBO, EvaluationState state) {
         log.info("Saving aggregated indicators");
@@ -588,10 +660,12 @@ public class EvaluateService {
                 (long) state.outPhysicalEquipmentSize,
                 (long) state.outVirtualEquipmentSize,
                 (long) state.outApplicationSize,
-                (long) state.outAiServiceSize
+                (long) state.outAiServiceSize,
+                (long) state.outNonItActivitySize
         );
-        log.info("Saved output counts to inventory: physical={}, virtual={}, application={}, aiService={}",
-                state.outPhysicalEquipmentSize, state.outVirtualEquipmentSize, state.outApplicationSize, state.outAiServiceSize);
+        log.info("Saved output counts to inventory: physical={}, virtual={}, application={}, aiService={}, nonItActivity={}",
+                state.outPhysicalEquipmentSize, state.outVirtualEquipmentSize, state.outApplicationSize, state.outAiServiceSize,
+                state.outNonItActivitySize);
     }
 
     // clean files if empty
@@ -627,6 +701,9 @@ public class EvaluateService {
             if (evaluateReportBO.getNbAiServiceLines() == 0 || !evaluateReportBO.isExport()) {
                 Files.deleteIfExists(exportDirectory.resolve(FileType.AI_SERVICE.getFileName() + Constants.CSV));
             }
+            if (evaluateReportBO.getNbNonItActivityLines() == 0 || !evaluateReportBO.isExport()) {
+                Files.deleteIfExists(exportDirectory.resolve(FileType.NON_IT_ACTIVITIES.getFileName() + Constants.CSV));
+            }
         } catch (IOException e) {
             log.error("Cannot delete export local files", e);
             throw new AsyncTaskException("An error occurred on deleting empty csv files", e);
@@ -655,7 +732,8 @@ public class EvaluateService {
     // Bundles the CSV printers opened for the duration of the evaluation
     private record CsvPrinters(CSVPrinter physicalEquipment, CSVPrinter virtualEquipment, CSVPrinter aiService,
                                 CSVPrinter application, CSVPrinter inDatacenter, CSVPrinter inPhysicalEquipment,
-                                CSVPrinter inVirtualEquipment, CSVPrinter inAiService, CSVPrinter inApplication) {
+                                CSVPrinter inVirtualEquipment, CSVPrinter inAiService, CSVPrinter inApplication,
+                                CSVPrinter nonItActivity, CSVPrinter inNonItActivity) {
     }
 
     // Bundles the parameters shared across the physical-equipment and AI-service paged processing steps
@@ -679,6 +757,7 @@ public class EvaluateService {
         private int outVirtualEquipmentSize;
         private int outApplicationSize;
         private int outAiServiceSize;
+        private int outNonItActivitySize;
 
         private EvaluationState(Map<List<String>, AggValuesBO> aggregationVirtualEquipments,
                                  Map<List<String>, AggValuesBO> aggregationApplications) {
@@ -1041,6 +1120,42 @@ public class EvaluateService {
                 .commonFilters(commonFilters)
                 .filters(List.of(aiService.getProvider()))
                 .source(aiService.getSource())
+                .errors(errors)
+                .build();
+    }
+
+    private OutNonItActivity toOutNonItActivity(final Long taskId,
+                                                 final InNonItActivity nonItActivity,
+                                                 final String criterion,
+                                                 final Optional<RefNonItActivityImpact> refImpact,
+                                                 final Map<String, String> criteriaUnitMap,
+                                                 final Map<String, Double> refSip) {
+        final Long quantity = nonItActivity.getQuantity();
+        final boolean isOk = refImpact.isPresent() && refImpact.get().getValue() != null;
+        final Double unitImpact = isOk ? quantity * refImpact.get().getValue() : 0d;
+        final Double sipValue = refSip.get(criterion);
+        final Double peopleEqImpact = isOk && sipValue != null && sipValue != 0 ? unitImpact / sipValue : 0d;
+        final Set<String> errors = isOk ? null :
+                Set.of(String.format("No impact factor found for reference '%s' and criterion '%s'", nonItActivity.getReference(), criterion));
+        final String category = refImpact.map(RefNonItActivityImpact::getCategory).orElse(null);
+        final String subcategory = refImpact.map(RefNonItActivityImpact::getSubcategory).orElse(null);
+        final String unit = refImpact.map(RefNonItActivityImpact::getUnit).orElseGet(() -> criteriaUnitMap.get(criterion));
+        final List<String> commonFilters = nonItActivity.getEntity() == null ? List.of() : List.of(nonItActivity.getEntity());
+
+        return OutNonItActivity.builder()
+                .taskId(taskId)
+                .name(nonItActivity.getActivityName())
+                .criterion(criterion)
+                .category(category)
+                .subcategory(subcategory)
+                .reference(nonItActivity.getReference())
+                .statusIndicator(isOk ? "OK" : "NOK")
+                .quantity(quantity)
+                .unitImpact(unitImpact)
+                .peopleEqImpact(peopleEqImpact)
+                .unit(unit)
+                .commonFilters(commonFilters)
+                .source(nonItActivity.getSource())
                 .errors(errors)
                 .build();
     }

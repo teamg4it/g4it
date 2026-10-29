@@ -143,7 +143,7 @@ describe("InvFilePanelComponent", () => {
             { start: 2, direction: "previous", target: 1, focused: "previous" },
             { start: 1, direction: "previous", target: 0, focused: "next" },
             { start: 1, direction: "next", target: 2, focused: "next" },
-            { start: 3, direction: "next", target: 4, focused: "previous" },
+            { start: 4, direction: "next", target: 5, focused: "previous" },
         ]) {
             it(`should focus ${scenario.focused} after ${scenario.direction} from tab ${scenario.start}`, fakeAsync(() => {
                 component.selectTab(scenario.start);

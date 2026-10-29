@@ -13,6 +13,7 @@ import com.soprasteria.g4it.backend.apireferential.mapper.ReferentialMapper;
 import com.soprasteria.g4it.backend.apireferential.modeldb.ItemImpact;
 import com.soprasteria.g4it.backend.apireferential.modeldb.ItemType;
 import com.soprasteria.g4it.backend.apireferential.modeldb.MatchingItem;
+import com.soprasteria.g4it.backend.apireferential.modeldb.RefNonItActivityImpact;
 import com.soprasteria.g4it.backend.apireferential.repository.*;
 import com.soprasteria.g4it.backend.common.utils.StringUtils;
 import com.soprasteria.g4it.backend.server.gen.api.dto.*;
@@ -39,6 +40,7 @@ public class ReferentialGetService {
     private MatchingItemRepository matchingItemRepository;
     private HypothesisRepository hypothesisRepository;
     private ItemTypeRepository itemTypeRepository;
+    private RefNonItActivityImpactRepository refNonItActivityImpactRepository;
 
     private ReferentialMapper refRestMapper;
     private final String electricityMix = "electricity-mix";
@@ -286,6 +288,26 @@ public class ReferentialGetService {
 
     public long countItemImpactsForWorkspace(Long workspaceId) {
         return itemImpactRepository.countByWorkspaceId(workspaceId);
+    }
+
+    /**
+     * Get the Non-IT activity impact factor for a reference and criterion.
+     * Tries the workspace-specific override first, then falls back to the global (non workspace-specific) value.
+     *
+     * @param reference   the activity reference code
+     * @param criterion   the criterion code
+     * @param workspaceId the workspace id, may be null
+     * @return the matching impact row, if any
+     */
+    public Optional<RefNonItActivityImpact> getNonItActivityImpact(final String reference, final String criterion, final Long workspaceId) {
+        if (workspaceId != null) {
+            Optional<RefNonItActivityImpact> workspaceImpact = refNonItActivityImpactRepository
+                    .findByReferenceAndCriterionAndWorkspaceId(reference, criterion, workspaceId);
+            if (workspaceImpact.isPresent()) {
+                return workspaceImpact;
+            }
+        }
+        return refNonItActivityImpactRepository.findByReferenceAndCriterionAndWorkspaceIdIsNull(reference, criterion);
     }
 
 

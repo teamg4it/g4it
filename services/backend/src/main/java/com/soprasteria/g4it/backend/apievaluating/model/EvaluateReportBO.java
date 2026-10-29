@@ -22,6 +22,7 @@ public class EvaluateReportBO {
     private int nbVirtualEquipmentLines;
     private int nbApplicationLines;
     private int nbAiServiceLines;
+    private int nbNonItActivityLines;
     private Long taskId;
     private String name;
 }

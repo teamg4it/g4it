@@ -703,3 +703,48 @@ components:
         lastUpdateDate:
           type: string
           format: date-time
+
+    OutNonItActivityRest:
+      description: Out Non-IT activity rest
+      type: object
+      properties:
+        name:
+          type: string
+        criterion:
+          type: string
+        category:
+          type: string
+        subcategory:
+          type: string
+        reference:
+          type: string
+        statusIndicator:
+          type: string
+        quantity:
+          type: integer
+          format: int64
+        unitImpact:
+          type: number
+          format: double
+        peopleEqImpact:
+          type: number
+          format: double
+        unit:
+          type: string
+        commonFilters:
+          type: array
+          maxItems: 5
+          items:
+            type: string
+        errors:
+          type: array
+          items:
+            type: string
+        source:
+          type: string
+        creationDate:
+          type: string
+          format: date-time
+        lastUpdateDate:
+          type: string
+          format: date-time

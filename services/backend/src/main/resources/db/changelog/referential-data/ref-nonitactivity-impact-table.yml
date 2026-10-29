@@ -1,0 +1,102 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-ref_nonitactivity_impact
+      author: G4IT Dev Team
+      changes:
+        - createTable:
+            tableName: ref_nonitactivity_impact
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  incrementBy: 100
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: ref_nonitactivity_impact_pk
+              - column:
+                  name: reference
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: criterion
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: category
+                  type: varchar(255)
+              - column:
+                  name: subcategory
+                  type: varchar(255)
+              - column:
+                  name: value
+                  type: double
+              - column:
+                  name: unit
+                  type: varchar(255)
+              - column:
+                  name: source
+                  type: varchar(255)
+              - column:
+                  name: version
+                  type: varchar(255)
+              - column:
+                  name: workspace_id
+                  type: bigint
+        - createIndex:
+            tableName: ref_nonitactivity_impact
+            indexName: idx_ref_nonitactivity_impact_reference_criterion
+            columns:
+              - column:
+                  name: reference
+              - column:
+                  name: criterion
+        - createIndex:
+            tableName: ref_nonitactivity_impact
+            indexName: idx_ref_nonitactivity_impact_workspace
+            columns:
+              - column:
+                  name: workspace_id
+
+  - changeSet:
+      id: referential-init-ref_nonitactivity_impact-table
+      author: G4IT Dev Team
+      preConditions:
+        onFail: MARK_RAN
+        sqlCheck:
+          expectedResult: 0
+          sql: SELECT COUNT(*) FROM ref_nonitactivity_impact
+      changes:
+        - loadData:
+            columns:
+              - column:
+                  name: reference
+                  type: varchar(255)
+              - column:
+                  name: criterion
+                  type: varchar(255)
+              - column:
+                  name: category
+                  type: varchar(255)
+              - column:
+                  name: subcategory
+                  type: varchar(255)
+              - column:
+                  name: value
+                  type: double
+              - column:
+                  name: unit
+                  type: varchar(255)
+              - column:
+                  name: source
+                  type: varchar(255)
+              - column:
+                  name: version
+                  type: varchar(255)
+            file: db/changelog/referential-data/ref_nonitactivity_impact.csv
+            primaryKey: id
+            tableName: ref_nonitactivity_impact
+            separator: ;
+            encoding: UTF-8

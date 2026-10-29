@@ -76,6 +76,7 @@ public interface InventoryRepository extends JpaRepository<Inventory, Long> {
      * @param outVirtualCount      the output virtual equipment count
      * @param outApplicationCount  the output application count
      * @param outAiCount           the output ai service count
+     * @param outNonItCount        the output non-IT activity count
      */
     @Transactional
     @Modifying
@@ -84,13 +85,15 @@ public interface InventoryRepository extends JpaRepository<Inventory, Long> {
             set i.outPhysicalCount = :outPhysicalCount,
                 i.outVirtualCount = :outVirtualCount,
                 i.outApplicationCount = :outApplicationCount,
-                i.outAiCount = :outAiCount
+                i.outAiCount = :outAiCount,
+                i.outNonItCount = :outNonItCount
             where i.id = :inventoryId
             """)
     void updateOutputCounts(@Param("inventoryId") final Long inventoryId,
                             @Param("outPhysicalCount") final Long outPhysicalCount,
                             @Param("outVirtualCount") final Long outVirtualCount,
                             @Param("outApplicationCount") final Long outApplicationCount,
-                            @Param("outAiCount") final Long outAiCount);
+                            @Param("outAiCount") final Long outAiCount,
+                            @Param("outNonItCount") final Long outNonItCount);
 
 }

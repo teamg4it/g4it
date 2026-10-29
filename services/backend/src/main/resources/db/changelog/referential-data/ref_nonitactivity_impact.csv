@@ -1,0 +1,14 @@
+reference;criterion;category;subcategory;value;unit;source;version
+building-office-m2-year;CLIMATE_CHANGE;Buildings;;45.2;kg CO2e;Placeholder RCP SI data;1.0
+building-office-m2-year;RESOURCE_USE;Buildings;;0.0021;kg Sb eq;Placeholder RCP SI data;1.0
+building-datacenter-m2-year;CLIMATE_CHANGE;Buildings;;320.5;kg CO2e;Placeholder RCP SI data;1.0
+building-datacenter-m2-year;ACIDIFICATION;Buildings;;1.15;mol H+ eq;Placeholder RCP SI data;1.0
+itpro-consulting-day;CLIMATE_CHANGE;IT Pro Services;;12.8;kg CO2e;Placeholder RCP SI data;1.0
+itpro-onsite-support-day;CLIMATE_CHANGE;IT Pro Services;;18.4;kg CO2e;Placeholder RCP SI data;1.0
+itpro-onsite-support-day;RESOURCE_USE;IT Pro Services;;0.0009;kg Sb eq;Placeholder RCP SI data;1.0
+travel-car-km;CLIMATE_CHANGE;Travels;Car;0.192;kg CO2e;Placeholder RCP SI data;1.0
+travel-train-km;CLIMATE_CHANGE;Travels;Train;0.0037;kg CO2e;Placeholder RCP SI data;1.0
+travel-plane-short-haul-km;CLIMATE_CHANGE;Travels;Plane;0.258;kg CO2e;Placeholder RCP SI data;1.0
+travel-plane-short-haul-km;ACIDIFICATION;Travels;Plane;0.00095;mol H+ eq;Placeholder RCP SI data;1.0
+travel-plane-long-haul-km;CLIMATE_CHANGE;Travels;Plane;0.151;kg CO2e;Placeholder RCP SI data;1.0
+travel-plane-long-haul-km;RESOURCE_USE;Travels;Plane;0.00012;kg Sb eq;Placeholder RCP SI data;1.0

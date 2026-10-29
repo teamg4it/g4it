@@ -10,6 +10,8 @@ package com.soprasteria.g4it.backend.apievaluating.business.asyncevaluatingservi
 
 import com.soprasteria.g4it.backend.apiinout.modeldb.OutAiService;
 import com.soprasteria.g4it.backend.apiinout.repository.OutAiServiceRepository;
+import com.soprasteria.g4it.backend.apiinout.modeldb.OutNonItActivity;
+import com.soprasteria.g4it.backend.apiinout.repository.OutNonItActivityRepository;
 import com.soprasteria.g4it.backend.apievaluating.mapper.AggregationToOutput;
 import com.soprasteria.g4it.backend.apievaluating.model.AggValuesBO;
 import com.soprasteria.g4it.backend.apievaluating.model.RefShortcutBO;
@@ -46,6 +48,8 @@ public class SaveService {
     private final OutVirtualEquipmentRepository outVirtualEquipmentRepository;
 
     private final OutAiServiceRepository outAiServiceRepository;
+
+    private final OutNonItActivityRepository outNonItActivityRepository;
 
     private final OutApplicationRepository outApplicationRepository;
 
@@ -197,6 +201,22 @@ public class SaveService {
             fromIndex = toIndex;
         }
         return outAiServices.size();
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public int saveOutNonItActivities(final List<OutNonItActivity> outNonItActivities) {
+        if (outNonItActivities.isEmpty()) {
+            return 0;
+        }
+
+        int fromIndex = 0;
+        while (fromIndex < outNonItActivities.size()) {
+            int toIndex = Math.min(fromIndex + Constants.BATCH_SIZE, outNonItActivities.size());
+            outNonItActivityRepository.saveAll(outNonItActivities.subList(fromIndex, toIndex));
+            flushAndClearEntityManager();
+            fromIndex = toIndex;
+        }
+        return outNonItActivities.size();
     }
 }
 
