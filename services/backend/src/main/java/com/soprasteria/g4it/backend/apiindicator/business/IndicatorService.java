@@ -10,6 +10,7 @@ package com.soprasteria.g4it.backend.apiindicator.business;
 import com.soprasteria.g4it.backend.apiindicator.mapper.ApplicationIndicatorMapper;
 import com.soprasteria.g4it.backend.apiindicator.mapper.EquipmentIndicatorMapper;
 import com.soprasteria.g4it.backend.apiindicator.model.*;
+import com.soprasteria.g4it.backend.apiindicator.utils.CriteriaUtils;
 import com.soprasteria.g4it.backend.apiindicator.utils.LifecycleStepUtils;
 import com.soprasteria.g4it.backend.apiinout.modeldb.OutApplication;
 import com.soprasteria.g4it.backend.apiinout.modeldb.OutPhysicalEquipment;
@@ -17,11 +18,14 @@ import com.soprasteria.g4it.backend.apiinout.repository.OutApplicationRepository
 import com.soprasteria.g4it.backend.apiinout.repository.OutPhysicalEquipmentRepository;
 import com.soprasteria.g4it.backend.apiuser.business.WorkspaceService;
 import com.soprasteria.g4it.backend.common.utils.Constants;
+import com.soprasteria.g4it.backend.common.utils.StringUtils;
+import com.soprasteria.g4it.backend.external.boavizta.business.BoaviztapiService;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -30,6 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 
@@ -64,6 +69,16 @@ public class IndicatorService {
 
     @Autowired
     private OutApplicationRepository outApplicationRepository;
+
+    @Autowired
+    private BoaviztapiService boaviztapiService;
+
+    /**
+     * Set containing the criteria, used to compute the virtual equipment
+     * low-impact country quartiles (same source as {@link LowImpactService}).
+     */
+    @Value("${g4it.criteria}")
+    private Set<String> criterias;
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -166,6 +181,129 @@ public class IndicatorService {
 
 
     /**
+     * §4.4 - retrieve a single DB-side page (WHERE + LIMIT/OFFSET) of flattened
+     * application indicator rows, filtered by the shared dimensions, for the
+     * table view.
+     *
+     * @param taskId   the task id.
+     * @param filters  the shared filter dimensions.
+     * @param pageable the page/size request.
+     * @return the requested page.
+     */
+    public ApplicationIndicatorsPageBO getApplicationIndicatorsPage(final Long taskId,
+                                                                     final ApplicationCriteriaFilterBO filters,
+                                                                     final org.springframework.data.domain.Pageable pageable) {
+        final org.springframework.data.domain.Page<OutApplication> page = outApplicationRepository.findByTaskId(taskId, filters, pageable);
+        page.getContent().forEach(app -> app.setLifecycleStep(LifecycleStepUtils.getReverse(app.getLifecycleStep())));
+
+        return ApplicationIndicatorsPageBO.builder()
+                .content(applicationIndicatorMapper.toRowBO(page.getContent()))
+                .pageNumber(page.getNumber())
+                .pageSize(page.getSize())
+                .totalElements(page.getTotalElements())
+                .totalPages(page.getTotalPages())
+                .build();
+    }
+
+    /**
+     * §4.1 - retrieve aggregated impact totals per criterion, filtered by the
+     * shared dimensions. 100% database-side aggregation - see
+     * spec/applicationViewOptimizationFeature/solution.md §4.1.
+     *
+     * @param taskId  the task id.
+     * @param filters the shared filter dimensions.
+     * @return one aggregated entry per matching criterion.
+     */
+    @org.springframework.cache.annotation.Cacheable(value = "applicationMultiCriteriaImpacts", key = "{#taskId, #filters}")
+    public List<ApplicationMultiCriteriaImpactBO> getApplicationMultiCriteriaImpacts(final Long taskId,
+                                                                                      final ApplicationCriteriaFilterBO filters) {
+        return applicationIndicatorMapper.toMultiCriteriaImpactBO(
+                outApplicationRepository.aggregateMultiCriteriaImpacts(taskId, filters));
+    }
+
+    /**
+     * §4.2/§4.3 - retrieve the dual-axis (graphLevel x repartition) aggregation
+     * for the graph view, including drill-down navigation. 100% database-side
+     * aggregation - see spec/applicationViewOptimizationFeature/solution.md
+     * §4.2/§4.3.
+     *
+     * @param taskId      the task id.
+     * @param criteria    the criteria to aggregate.
+     * @param graphLevel  the current drill/tree position (primary grouping).
+     * @param repartition the fixed secondary breakdown axis.
+     * @param filters     the shared + click-path filter dimensions.
+     * @return one entry per requested criterion, with nested nodes/repartitions.
+     */
+    @org.springframework.cache.annotation.Cacheable(value = "applicationMultiCriteria",
+            key = "{#taskId, #criteria, #graphLevel, #repartition, #filters}")
+    public List<ApplicationMultiCriteriaBO> getApplicationMultiCriteriaIndicators(final Long taskId,
+                                                                                   final List<String> criteria,
+                                                                                   final GraphLevel graphLevel,
+                                                                                   final RepartitionType repartition,
+                                                                                   final ApplicationCriteriaFilterBO filters) {
+        return applicationIndicatorMapper.toMultiCriteriaBO(
+                outApplicationRepository.aggregateMultiCriteria(taskId, criteria, graphLevel, repartition, filters));
+    }
+
+    /**
+     * §4.3 (optional) - retrieve standing hierarchy counts (header KPIs) for the
+     * whole current filter scope.
+     *
+     * @param taskId  the task id.
+     * @param filters the shared filter dimensions.
+     * @return the aggregated hierarchy counts.
+     */
+    @org.springframework.cache.annotation.Cacheable(value = "applicationHierarchyCounts", key = "{#taskId, #filters}")
+    public ApplicationHierarchyCountsBO getApplicationHierarchyCounts(final Long taskId,
+                                                                       final ApplicationCriteriaFilterBO filters) {
+        return applicationIndicatorMapper.toHierarchyCountsBO(outApplicationRepository.countHierarchy(taskId, filters));
+    }
+
+    /**
+     * Retrieve aggregated total and low-impact virtual equipment counts, filtered
+     * by the shared dimensions. 100% database-side aggregation, replacing the
+     * client-side reduce previously performed on the full virtualEquipmentsLowImpact
+     * list (see {@link VirtualEquipmentIndicatorService#getVirtualEquipmentsLowImpact}).
+     *
+     * @param taskId      the task id.
+     * @param inventoryId the inventory id.
+     * @param workspaceId the workspace id.
+     * @param filters     the shared filter dimensions.
+     * @return the aggregated total and low-impact counts.
+     */
+    @org.springframework.cache.annotation.Cacheable(value = "virtualEquipmentLowImpactCount", key = "{#taskId, #inventoryId, #workspaceId, #filters}")
+    public VirtualEquipmentLowImpactCountBO getVirtualEquipmentLowImpactCount(final Long taskId,
+                                                                               final Long inventoryId,
+                                                                               final Long workspaceId,
+                                                                               final ApplicationCriteriaFilterBO filters) {
+        final Map<String, String> countryToIso = boaviztapiService.getCountryMap();
+        final String[] countryNames = countryToIso.keySet().toArray(new String[0]);
+        final String[] isoCodes = countryToIso.values().toArray(new String[0]);
+
+        final String[] criteria = criterias.stream()
+                .map(criterion -> StringUtils.kebabToSnakeCase(CriteriaUtils.transformCriteriaNameToCriteriaKey(criterion)))
+                .collect(Collectors.toSet())
+                .toArray(new String[0]);
+
+        return applicationIndicatorMapper.toVirtualEquipmentLowImpactCountBO(
+                outApplicationRepository.countVirtualEquipmentLowImpact(
+                        taskId, inventoryId, workspaceId, criteria, isoCodes, countryNames, filters));
+    }
+
+    /**
+     * §4.0 - retrieve distinct environment/equipmentType/lifeCycle/domain/subDomain
+     * values for the given task, used to populate the application view's filter
+     * selectors.
+     *
+     * @param taskId the task id.
+     * @return the distinct filter values.
+     */
+    @org.springframework.cache.annotation.Cacheable(value = "applicationFilters", key = "#taskId")
+    public ApplicationFiltersBO getApplicationFilters(final Long taskId) {
+        return applicationIndicatorMapper.toFiltersBO(outApplicationRepository.getDistinctFilters(taskId));
+    }
+
+    /**
      * Retrieve datacenter indicators.
      *
      * @param inventoryId the inventory id.
@@ -220,6 +358,23 @@ public class IndicatorService {
 
     public List<VirtualEquipmentElecConsumptionBO> getVirtualEquipmentElecConsumption(final Long taskId) {
         return virtualEquipmentIndicatorService.getVirtualEquipmentElecConsumption(taskId);
+    }
+
+    /**
+     * Retrieve aggregated electricity consumption sum and virtual equipment
+     * quantity sum, filtered by the shared dimensions. 100% database-side
+     * aggregation, replacing the client-side reduce previously performed on the
+     * full virtualEquipmentsElecConsumption list.
+     *
+     * @param taskId  the task id.
+     * @param filters the shared filter dimensions.
+     * @return the aggregated electricity consumption and quantity sums.
+     */
+    @org.springframework.cache.annotation.Cacheable(value = "virtualEquipmentElecConsumptionSum", key = "{#taskId, #filters}")
+    public VirtualEquipmentElecConsumptionSumBO getVirtualEquipmentElecConsumptionSum(final Long taskId,
+                                                                                       final ApplicationCriteriaFilterBO filters) {
+        return applicationIndicatorMapper.toVirtualEquipmentElecConsumptionSumBO(
+                outApplicationRepository.sumVirtualEquipmentElecConsumption(taskId, filters));
     }
 
 }
