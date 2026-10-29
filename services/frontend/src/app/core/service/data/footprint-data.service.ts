@@ -24,8 +24,8 @@ import {
     PhysicalEquipmentAvgAge,
     PhysicalEquipmentLowImpact,
     PhysicalEquipmentsElecConsumption,
-    VirtualEquipmentElectricityConsumption,
-    VirtualEquipmentLowImpact,
+    VirtualEquipmentElecConsumptionSum,
+    VirtualEquipmentLowImpactCount,
 } from "../../interfaces/footprint.interface";
 import { transformEquipmentType } from "../mapper/array";
 
@@ -155,15 +155,24 @@ export class FootprintDataService {
         });
     }
 
-    getApplicationKeyIndicators(inventoryId: number) {
-        const lowImpact$ = this.http.get<VirtualEquipmentLowImpact[]>(
-            `${endpoint}/${inventoryId}/indicators/virtualEquipmentsLowImpact`,
+    getApplicationLowImpactCount(
+        inventoryId: number,
+        filters: ApplicationIndicatorsPageRequest,
+    ): Observable<VirtualEquipmentLowImpactCount> {
+        return this.http.post<VirtualEquipmentLowImpactCount>(
+            `${endpoint}/${inventoryId}/indicators/virtualEquipmentsLowImpact/count`,
+            filters,
         );
-        const elecConsumption$ = this.http.get<VirtualEquipmentElectricityConsumption[]>(
-            `${endpoint}/${inventoryId}/indicators/virtualEquipmentsElecConsumption`,
-        );
+    }
 
-        return forkJoin([lowImpact$, elecConsumption$]);
+    getApplicationElecConsumptionSum(
+        inventoryId: number,
+        filters: ApplicationIndicatorsPageRequest,
+    ): Observable<VirtualEquipmentElecConsumptionSum> {
+        return this.http.post<VirtualEquipmentElecConsumptionSum>(
+            `${endpoint}/${inventoryId}/indicators/virtualEquipmentsElecConsumption/sum`,
+            filters,
+        );
     }
 
     getSourceList(inventoryId: number) {
