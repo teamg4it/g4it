@@ -26,7 +26,7 @@ import { MenuItem } from "primeng/api";
 import { Button } from "primeng/button";
 import { DrawerModule } from "primeng/drawer";
 import { ScrollPanelModule } from "primeng/scrollpanel";
-import { finalize, firstValueFrom } from "rxjs";
+import { finalize, firstValueFrom, forkJoin } from "rxjs";
 import {
     OrganizationCriteriaRest,
     WorkspaceCriteriaRest,
@@ -40,10 +40,11 @@ import {
 } from "src/app/core/interfaces/filter.interface";
 import {
     ApplicationFootprint,
+    ApplicationIndicatorsPageRequest,
     ApplicationMultiCriteriaImpact,
     Stat,
-    VirtualEquipmentElectricityConsumption,
-    VirtualEquipmentLowImpact,
+    VirtualEquipmentElecConsumptionSum,
+    VirtualEquipmentLowImpactCount,
 } from "src/app/core/interfaces/footprint.interface";
 import { StatGroup } from "src/app/core/interfaces/indicator.interface";
 import {
@@ -148,9 +149,8 @@ export class InventoriesApplicationFootprintComponent implements OnInit, OnDestr
     };
     selectedCriterias: string[] = [];
     filterSidebarVisible = false;
-    appCount: number = 0;
-    lowImpactData = signal<VirtualEquipmentLowImpact[]>([]);
-    elecConsumptionData = signal<VirtualEquipmentElectricityConsumption[]>([]);
+    lowImpactCount = signal<VirtualEquipmentLowImpactCount | null>(null);
+    elecConsumptionSum = signal<VirtualEquipmentElecConsumptionSum | null>(null);
     isCollapsed = false;
     view: "graph" | "table" = "graph";
     readonly filterMetadata = signal<ApplicationFiltersRest | null>(null);
@@ -212,6 +212,27 @@ export class InventoriesApplicationFootprintComponent implements OnInit, OnDestr
                 JSON.stringify(previous?.filters) === JSON.stringify(current?.filters),
         },
     );
+    private readonly keyIndicatorsRequest = computed(
+        () => {
+            const request = this.summaryRequest();
+            if (!request) return null;
+            const filters: ApplicationIndicatorsPageRequest = { ...request.filters };
+            const level = this.footprintStore.appGraphType();
+            if (level === "application" && this.footprintStore.appApplication()) {
+                filters.applicationName = [this.footprintStore.appApplication()];
+            }
+            const criterion = this.footprintStore.applicationCriteria();
+            if (criterion && criterion !== this.multiCriteria) {
+                filters.criterion = [criterion];
+            }
+            return { inventoryId: request.inventoryId, filters };
+        },
+        {
+            equal: (previous, current) =>
+                previous?.inventoryId === current?.inventoryId &&
+                JSON.stringify(previous?.filters) === JSON.stringify(current?.filters),
+        },
+    );
     impacts = computed(() =>
         this.summaryImpacts()
             .map((impact) => ({
@@ -259,25 +280,28 @@ export class InventoriesApplicationFootprintComponent implements OnInit, OnDestr
     });
 
     applicationStats = computed<Stat[]>(() => {
-        const localFootprint = this.formatLifecycleImpact(this.footprint());
-        return this.computeApplicationStats(
-            localFootprint,
-            this.footprintStore.applicationSelectedFilters(),
-        );
+        const applicationCount = this.elecConsumptionSum()?.applicationCount;
+        return [
+            {
+                label: this.decimalsPipe.transform(applicationCount ?? Number.NaN),
+                value: applicationCount ?? undefined,
+                description: this.translate.instant(
+                    "inventories-footprint.application.tooltip.nb-app",
+                ),
+                title: this.translate.instant(
+                    "inventories-footprint.application.applications",
+                ),
+            },
+        ];
     });
 
     lowImpactStat = computed<Stat>(() => {
-        const filteredDomainSubdomain =
-            this.getFilterByDomainSubDomain<VirtualEquipmentLowImpact>(
-                this.lowImpactData(),
-                this.footprintStore.appDomain(),
-                this.footprintStore.appSubDomain(),
-                this.footprintStore.appApplication(),
-            );
-        const lowImpact = this.filterLowImpact(
-            filteredDomainSubdomain,
-            this.footprintStore.applicationSelectedFilters(),
-        );
+        const counts = this.lowImpactCount();
+        const lowImpact = counts?.virtualEquipmentTotalCount
+            ? (counts.lowImpactVirtualEquipmentCount /
+                  counts.virtualEquipmentTotalCount) *
+              100
+            : Number.NaN;
         return {
             label: `${this.integerPipe.transform(lowImpact)}`,
             value: Number.isNaN(Number(lowImpact)) ? undefined : lowImpact,
@@ -290,22 +314,9 @@ export class InventoriesApplicationFootprintComponent implements OnInit, OnDestr
     });
 
     electrictyConsumtion = computed<Stat[]>(() => {
-        const filteredDomainSubdomain =
-            this.getFilterByDomainSubDomain<VirtualEquipmentElectricityConsumption>(
-                this.elecConsumptionData(),
-                this.footprintStore.appDomain(),
-                this.footprintStore.appSubDomain(),
-                this.footprintStore.appApplication(),
-            );
-        const elecConsumption = this.filterElecConsumption(
-            filteredDomainSubdomain,
-            this.footprintStore.applicationSelectedFilters(),
-        );
-
-        const count = this.filterNoOfVirtualEquipments(
-            filteredDomainSubdomain,
-            this.footprintStore.applicationSelectedFilters(),
-        );
+        const sum = this.elecConsumptionSum();
+        const elecConsumption = sum?.elecConsumptionSum ?? Number.NaN;
+        const count = sum?.noOfVirtualEquipmentsSum ?? Number.NaN;
         return [
             {
                 label: `${this.decimalsPipe.transform(elecConsumption)}`,
@@ -384,6 +395,32 @@ export class InventoriesApplicationFootprintComponent implements OnInit, OnDestr
                     superseded = true;
                     subscription.unsubscribe();
                 });
+            });
+        });
+        effect((onCleanup) => {
+            const request = this.keyIndicatorsRequest();
+            if (!request) return;
+            untracked(() => {
+                const subscription = forkJoin([
+                    this.footprintDataService.getApplicationLowImpactCount(
+                        request.inventoryId,
+                        request.filters,
+                    ),
+                    this.footprintDataService.getApplicationElecConsumptionSum(
+                        request.inventoryId,
+                        request.filters,
+                    ),
+                ]).subscribe({
+                    next: ([lowImpact, elecConsumption]) => {
+                        this.lowImpactCount.set(lowImpact);
+                        this.elecConsumptionSum.set(elecConsumption);
+                    },
+                    error: () => {
+                        this.lowImpactCount.set(null);
+                        this.elecConsumptionSum.set(null);
+                    },
+                });
+                onCleanup(() => subscription.unsubscribe());
             });
         });
         this.destroyRef.onDestroy(() => this.globalStore.setLoading(false));
@@ -507,7 +544,6 @@ export class InventoriesApplicationFootprintComponent implements OnInit, OnDestr
                 });
             }
             this.globalStore.setLoading(false);
-            this.getApplicationKeyIndicatorsData();
             return;
         }
         const normalizeFilterValue = (value: string) =>
@@ -577,8 +613,6 @@ export class InventoriesApplicationFootprintComponent implements OnInit, OnDestr
         }
         this.filterMetadata.set(filterMetadata);
         this.globalStore.setLoading(false);
-
-        this.getApplicationKeyIndicatorsData();
 
         // React on criteria url param change
         this.activatedRoute.paramMap.subscribe((params) => {
@@ -908,127 +942,6 @@ export class InventoriesApplicationFootprintComponent implements OnInit, OnDestr
                     this.inventory.set(res);
                 });
         }
-    }
-
-    private computeApplicationStats(
-        applications: ApplicationFootprint[],
-        filters: Filter,
-    ): Stat[] {
-        applications = applications || [];
-        let applicationCount = 0;
-        let appNameList: string[] = [];
-        for (const application of applications) {
-            for (const impact of application.impacts) {
-                let { applicationName } = impact;
-                if (
-                    this.filterService.getFilterincludes(filters, impact) &&
-                    !appNameList.includes(applicationName)
-                ) {
-                    appNameList.push(applicationName);
-                    applicationCount += 1;
-                }
-            }
-        }
-
-        this.appCount = applicationCount;
-        return [
-            {
-                label: this.decimalsPipe.transform(this.appCount),
-                value: Number.isNaN(this.appCount) ? undefined : this.appCount,
-                description: this.translate.instant(
-                    "inventories-footprint.application.tooltip.nb-app",
-                ),
-                title: this.translate.instant(
-                    "inventories-footprint.application.applications",
-                ),
-            },
-        ];
-    }
-
-    private checkAllFilters(filters: Filter): boolean {
-        return Object.keys(filters).every((key) => {
-            const filterValue = filters[key];
-            if (Array.isArray(filterValue)) {
-                return filterValue.some(
-                    (item) =>
-                        item === Constants.ALL ||
-                        ((item as any)?.label === Constants.ALL &&
-                            (item as any)?.checked),
-                );
-            }
-            return false;
-        });
-    }
-
-    filterLowImpact(lowImpactData: VirtualEquipmentLowImpact[], filters: Filter) {
-        const hasAllFilters = this.checkAllFilters(filters);
-        const filteredEquipmentsLowImpact = lowImpactData.filter(
-            (equipment) =>
-                hasAllFilters ||
-                this.filterService.getFilterincludes(filters, equipment as any),
-        );
-
-        const { physicalEquipmentTotalCount, lowImpactPhysicalEquipmentCount } =
-            filteredEquipmentsLowImpact.reduce(
-                (acc, { quantity = 0, lowImpact }) => {
-                    acc.physicalEquipmentTotalCount += quantity;
-                    if (lowImpact) acc.lowImpactPhysicalEquipmentCount += quantity;
-                    return acc;
-                },
-                { physicalEquipmentTotalCount: 0, lowImpactPhysicalEquipmentCount: 0 },
-            );
-
-        return (lowImpactPhysicalEquipmentCount / physicalEquipmentTotalCount) * 100;
-    }
-
-    filterElecConsumption(
-        elecConsumptionData: VirtualEquipmentElectricityConsumption[],
-        filters: Filter,
-    ) {
-        const hasAllFilters = this.checkAllFilters(filters);
-        const filteredEquipmentsElecConsumption = elecConsumptionData.filter(
-            (equipment) =>
-                hasAllFilters ||
-                this.filterService.getFilterincludes(filters, equipment as any),
-        );
-
-        const elecConsumptionSum = filteredEquipmentsElecConsumption.reduce(
-            (sum, { elecConsumption = 0 }) => sum + elecConsumption,
-            0,
-        );
-        return elecConsumptionSum;
-    }
-
-    filterNoOfVirtualEquipments(
-        noOfVirtualEquipmentsData: VirtualEquipmentElectricityConsumption[],
-        filters: Filter,
-    ) {
-        const hasAllFilters = this.checkAllFilters(filters);
-        const filteredEquipmentsNoOfVirtualEquipments = noOfVirtualEquipmentsData.filter(
-            (equipment) =>
-                hasAllFilters ||
-                this.filterService.getFilterincludes(filters, equipment as any),
-        );
-
-        const noOfVirtualEquipmentsSum = filteredEquipmentsNoOfVirtualEquipments.reduce(
-            (sum, { quantity = 0 }) => sum + quantity,
-            0,
-        );
-        return noOfVirtualEquipmentsSum;
-    }
-
-    getApplicationKeyIndicatorsData() {
-        const translateLifeCycle = (item: any) => ({
-            ...item,
-            lifeCycle: this.translate.instant("acvStep." + item.lifeCycle),
-        });
-
-        this.footprintDataService
-            .getApplicationKeyIndicators(this.inventoryId)
-            .subscribe(([lowImpact, elecConsumption]) => {
-                this.lowImpactData.set(lowImpact.map(translateLifeCycle));
-                this.elecConsumptionData.set(elecConsumption.map(translateLifeCycle));
-            });
     }
 
     getFilterByDomainSubDomain<

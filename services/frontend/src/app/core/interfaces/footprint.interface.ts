@@ -352,29 +352,13 @@ export interface ApplicationGraphPosition {
     graph: string;
 }
 
-export interface VirtualEquipmentLowImpact {
-    location: string;
-    domain: string;
-    environment: string;
-    equipmentType: string;
-    id: number;
-    lifeCycle: string;
-    lowImpact: boolean;
-    virtualEquipmentName: string;
-    applicationName: string;
-    quantity: number;
-    subDomain: string;
+export interface VirtualEquipmentLowImpactCount {
+    virtualEquipmentTotalCount: number;
+    lowImpactVirtualEquipmentCount: number;
 }
 
-export interface VirtualEquipmentElectricityConsumption {
-    location: string;
-    domain: string;
-    elecConsumption: number;
-    environment: string;
-    equipmentType: string;
-    lifeCycle: string;
-    virtualEquipmentName: string;
-    subDomain: string;
-    quantity: number;
-    applicationName: string;
+export interface VirtualEquipmentElecConsumptionSum {
+    elecConsumptionSum: number;
+    noOfVirtualEquipmentsSum: number;
+    applicationCount: number;
 }
