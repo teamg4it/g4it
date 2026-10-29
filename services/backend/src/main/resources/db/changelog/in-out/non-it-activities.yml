@@ -1,0 +1,57 @@
+databaseChangeLog:
+  - changeSet:
+      id: in-out-create-in-table-nonitactivities
+      author: G4IT Dev Team
+      changes:
+        - createTable:
+            tableName: in_nonitactivities
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  incrementBy: 100
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: in_nonitactivities_pk
+              - column:
+                  name: activity_name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: inventory_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: in_nonitactivities_inventory_id_fk
+                    references: inventory(id)
+                    deleteCascade: true
+              - column:
+                  name: quantity
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: reference
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: entity
+                  type: varchar(255)
+              - column:
+                  name: source
+                  type: varchar(255)
+              - column:
+                  name: creation_date
+                  type: timestamp
+              - column:
+                  name: last_update_date
+                  type: timestamp
+        - createIndex:
+            tableName: in_nonitactivities
+            indexName: idx_in_nonitactivities_inventory_id
+            columns:
+              - column:
+                  name: inventory_id

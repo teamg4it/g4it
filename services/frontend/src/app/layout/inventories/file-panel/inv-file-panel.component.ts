@@ -144,6 +144,11 @@ export class InvFilePanelComponent implements OnInit, OnDestroy, OnChanges {
                 textKey: "inventories.create-drawer.external-services.description",
                 config: common,
             },
+            {
+                titleKey: "inventories.create-drawer.non-it-activities.title",
+                textKey: "inventories.create-drawer.non-it-activities.description",
+                config: common,
+            },
         ];
 
         return {
@@ -158,6 +163,7 @@ export class InvFilePanelComponent implements OnInit, OnDestroy, OnChanges {
                 { name: "endUser" },
                 { name: "appServices" },
                 { name: "externalServices" },
+                { name: "nonItActivities" },
             ],
         };
     }
@@ -168,6 +174,7 @@ export class InvFilePanelComponent implements OnInit, OnDestroy, OnChanges {
         endUser: new FormControl<string | undefined>(undefined),
         appServices: new FormControl<string | undefined>(undefined),
         externalServices: new FormControl<string | undefined>(undefined),
+        nonItActivities: new FormControl<string | undefined>(undefined),
     });
 
     invalidDates: Date[] = [];
@@ -449,6 +456,12 @@ export class InvFilePanelComponent implements OnInit, OnDestroy, OnChanges {
         else if (this.selectedMenuIndex === 3)
             return files.filter((file) =>
                 ["datamodel", "virtualequipment", "application"].some((type) =>
+                    file.name?.toLowerCase()?.includes(type),
+                ),
+            );
+        else if (this.selectedMenuIndex === 5)
+            return files.filter((file) =>
+                ["datamodel", "nonitactivities"].some((type) =>
                     file.name?.toLowerCase()?.includes(type),
                 ),
             );

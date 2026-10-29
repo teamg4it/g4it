@@ -117,7 +117,7 @@ public class AsyncLoadFilesService implements ITaskExecute {
             }
 
             int fileNumber = 0;
-            for (FileType fileType : List.of(FileType.DATACENTER, FileType.EQUIPEMENT_PHYSIQUE, FileType.EQUIPEMENT_VIRTUEL, FileType.APPLICATION, FileType.AI_SERVICE)) {
+            for (FileType fileType : List.of(FileType.DATACENTER, FileType.EQUIPEMENT_PHYSIQUE, FileType.EQUIPEMENT_VIRTUEL, FileType.APPLICATION, FileType.AI_SERVICE, FileType.NON_IT_ACTIVITIES)) {
                 for (FileToLoad fileToLoad : context.getFilesToLoad()) {
                     if (fileType.equals(fileToLoad.getFileType())) {
 

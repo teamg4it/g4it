@@ -47,6 +47,38 @@ components:
         lastUpdateDate:
           type: string
           format: date-time
+    InNonItActivityRest:
+      description: In Non-IT Activity
+      type: object
+      required: [ activityName, reference, quantity ]
+      properties:
+        id:
+          type: integer
+          format: int64
+        inventoryId:
+          type: integer
+          format: int64
+        activityName:
+          type: string
+          maxLength: 255
+        reference:
+          type: string
+          maxLength: 255
+        quantity:
+          type: integer
+          format: int64
+        entity:
+          type: string
+          maxLength: 255
+        source:
+          type: string
+          maxLength: 255
+        creationDate:
+          type: string
+          format: date-time
+        lastUpdateDate:
+          type: string
+          format: date-time
     InDatacenterRest:
       description: Version
       type: object

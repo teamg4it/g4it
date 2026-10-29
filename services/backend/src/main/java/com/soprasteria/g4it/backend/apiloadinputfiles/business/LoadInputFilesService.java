@@ -90,6 +90,7 @@ public class LoadInputFilesService {
      * @param virtualEquipments  the virtual equipment files
      * @param applications       the application files
      * @param aiServices         the AI service files
+     * @param nonItActivities    the non-IT activity files
      * @return the Task created
      */
     public Task loadFiles(final String organization,
@@ -99,7 +100,8 @@ public class LoadInputFilesService {
                           final List<MultipartFile> physicalEquipments,
                           final List<MultipartFile> virtualEquipments,
                           final List<MultipartFile> applications,
-                          final List<MultipartFile> aiServices) {
+                          final List<MultipartFile> aiServices,
+                          final List<MultipartFile> nonItActivities) {
 
         final Map<FileType, List<MultipartFile>> allFiles =
                 new EnumMap<>(FileType.class);
@@ -128,6 +130,10 @@ public class LoadInputFilesService {
 
         if (aiServices != null) {
             allFiles.put(FileType.AI_SERVICE, aiServices);
+        }
+
+        if (nonItActivities != null) {
+            allFiles.put(FileType.NON_IT_ACTIVITIES, nonItActivities);
         }
 
 
@@ -444,7 +450,8 @@ public class LoadInputFilesService {
                             FileType.EQUIPEMENT_PHYSIQUE,
                             FileType.EQUIPEMENT_VIRTUEL,
                             FileType.APPLICATION,
-                            FileType.AI_SERVICE)
+                            FileType.AI_SERVICE,
+                            FileType.NON_IT_ACTIVITIES)
                     .map(fileType -> {
                         List<StoredFile> files = storedFiles.get(fileType);
                         List<String> typeFileNames = newFilenames(files, fileType);

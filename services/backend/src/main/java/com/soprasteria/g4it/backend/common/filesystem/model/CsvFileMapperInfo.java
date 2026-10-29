@@ -64,6 +64,14 @@ public class CsvFileMapperInfo implements FileMapperInfo {
             Header.builder().name("nomSourceDonnee").optional(true).build()
     );
 
+    private List<Header> nonItActivities = List.of(
+            Header.builder().name("nomActivite").optional(false).build(),
+            Header.builder().name("refActivite").optional(false).build(),
+            Header.builder().name("quantite").optional(false).build(),
+            Header.builder().name("nomEntite").optional(true).build(),
+            Header.builder().name("nomSourceDonnee").optional(true).build()
+    );
+
     @Override
     public List<Header> getMapping(final FileType type) {
         return switch (type) {
@@ -86,6 +94,7 @@ public class CsvFileMapperInfo implements FileMapperInfo {
             case IN_AI_PARAMETERS -> new ArrayList<>(safe(aiParameters));
             case IN_AI_INFRASTRUCTURE -> new ArrayList<>(safe(aiInfrastructure));
             case AI_SERVICE -> new ArrayList<>(safe(aiService));
+            case NON_IT_ACTIVITIES -> new ArrayList<>(safe(nonItActivities));
         };
     }
 

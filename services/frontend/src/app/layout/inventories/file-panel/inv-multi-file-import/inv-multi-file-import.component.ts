@@ -119,6 +119,15 @@ export class InvMultiFileImportComponent implements OnChanges {
                         ),
                     },
                 ];
+            case 5: // Non-IT Activities
+                return [
+                    {
+                        key: "NON_IT_ACTIVITIES",
+                        label: this.translate.instant(
+                            "digital-services-import.non-it-activities",
+                        ),
+                    },
+                ];
             default:
                 return [];
         }

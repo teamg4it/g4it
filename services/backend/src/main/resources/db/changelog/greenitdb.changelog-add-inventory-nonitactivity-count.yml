@@ -1,0 +1,36 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-inventory-nonitactivity-count
+      author: G4IT Dev Team
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - columnExists:
+                tableName: inventory
+                columnName: non_it_activity_count
+
+      changes:
+        - addColumn:
+            tableName: inventory
+            columns:
+              - column:
+                  name: non_it_activity_count
+                  type: bigint
+                  defaultValueNumeric: 0
+                  constraints:
+                    nullable: false
+
+        - sql:
+            comment: Backfill non-IT activity counts for existing inventories from in_nonitactivities table
+            sql: >
+              UPDATE inventory
+              SET non_it_activity_count = (
+                SELECT COUNT(*)
+                FROM in_nonitactivities
+                WHERE in_nonitactivities.inventory_id = inventory.id
+              )
+
+      rollback:
+        - dropColumn:
+            tableName: inventory
+            columnName: non_it_activity_count

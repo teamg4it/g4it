@@ -1,0 +1,4 @@
+nomActivite;refActivite;quantite;nomEntite;nomSourceDonnee
+IT Facility Management;REF001;10;Entity1;Source1
+Office Cleaning;REF002;5;Entity2;Source2
+Catering Services;REF003;20;Entity1;Source3

@@ -97,6 +97,7 @@ export abstract class Constants {
         "virtual",
         "application",
         "AIservices",
+        "nonitactivities",
     ];
 
     static readonly INTEGRATION_BATCH_COMPLETED_FAILED_STATUSES = [

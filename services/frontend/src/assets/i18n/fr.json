@@ -639,7 +639,8 @@
         "physical-equipment": "Équipement physique",
         "virtual-equipment": "Équipement virtuel",
         "application": "Application",
-        "ai-services": "Services IA"
+        "ai-services": "Services IA",
+        "non-it-activities": "Activités non informatiques"
     },
     "welcome-page": {
         "title": "Page de bienvenue",
@@ -715,6 +716,10 @@
                 "title": "Services Externes",
                 "description": "Cette catégorie englobe les services fournis par des prestataires externes, tels que le cloud computing, et les fournisseurs de services d'IA. Ces services sont managés en dehors de l'organisation mais sont nécessaires pour que l'organisation délivre sa valeur. Ils doivent donc être comptabilisés."
             },
+            "non-it-activities": {
+                "title": "Activités non informatiques",
+                "description": "Cette section vous permet d'inclure des éléments non informatiques soutenant le système d'information, notamment les installations informatiques, les activités des fournisseurs de services informatiques (journées-personnes) et les voyages d'affaires liés aux employés du département informatique."
+            },
             "create-inventory": "Créer un inventaire",
             "update-inventory": "Mettre à jour l'inventaire"
         },
@@ -777,6 +782,7 @@
             "virtual-template-file": "Fichier de modèle d'équipement virtuel",
             "application-template-file": "Fichier de modèle d'application",
             "AIservices-template-file": "Fichier de modèle de services IA",
+            "nonitactivities-template-file": "Modèle Activités non informatiques",
             "all-template-files": "Tous les fichiers modèles",
             "data-model": "Modèle de données de la plateforme",
             "starter-pack": "Kit de départ",
