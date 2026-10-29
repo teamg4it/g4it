@@ -90,9 +90,12 @@
             style="color: lightgray"
         ></div>
     </div>
-    <p-scrollPanel [style]="{ width: '100%', height: 'calc(100vh - 330px)' }">
+    <div
+        class="flex flex-column"
+        style="width: 100%; height: calc(100vh - 330px); overflow: hidden"
+    >
         @if (organization) {
-            <div class="my-2">
+            <div class="my-2" style="flex: 0 0 auto">
                 @if (editable) {
                     <div>
                         @if (
@@ -148,128 +151,122 @@
                         {{ "administration.organization.spaceValidation" | translate }}
                     </p>
                 }
-                <cdk-virtual-scroll-viewport
-                    itemSize="60"
-                    class="workspace-list-viewport"
-                    style="height: calc(100vh - 430px); width: 100%"
-                >
-                    <div
-                        *cdkVirtualFor="
-                            let workspace of organization.workspaces;
-                            trackBy: trackByWorkspaceId
-                        "
-                    >
-                        <label
-                            [for]="'workspace-name-' + workspace.id"
-                            class="text-hidden"
-                        >
-                            {{ workspace.name }}
-                        </label>
-                        <input
-                            [id]="'workspace-name-' + workspace.id"
-                            class="label-input-div-medium input-width inline-block p-2 mx-1"
-                            [class.ng-invalid]="
-                                workspace.uiStatus !== undefined &&
-                                workspace.uiStatus !== 'OK'
-                            "
-                            [class.ng-dirty]="
-                                workspace.uiStatus !== undefined &&
-                                workspace.uiStatus !== 'OK'
-                            "
-                            [(ngModel)]="workspace.name"
-                            name="name"
-                            placeholder="Name"
-                            pInputText
-                            [disabled]="
-                                !editable ||
-                                (!workspace?.roles?.includes(Role.OrganizationAdmin) &&
-                                    workspace.status === status.TO_BE_DELETED)
-                            "
-                            (ngModelChange)="
-                                checkOrganization($event, workspace, organization)
-                            "
-                        />
-                        @if (editable && workspace.status === status.ACTIVE) {
-                            <p-button
-                                styleClass="p-button-text"
-                                [ariaLabel]="
-                                    'administration.accessibility.on-deletion' | translate
-                                "
-                                class="mx-1"
-                                (onClick)="
-                                    isConfirmDialogVisible.set(true);
-                                    confirmDelete($event, workspace)
-                                "
-                                id="delete-organization-button"
-                            >
-                                <img
-                                    src="assets/images/icons/icon-bin.svg"
-                                    alt="{{ 'common.delete' | translate }}"
-                                />
-                            </p-button>
-                        }
-                        @if (workspace.status === status.TO_BE_DELETED) {
-                            <p-button
-                                [ariaLabel]="
-                                    'administration.cancel-deletion-accessibility'
-                                        | translate: { organizationName: workspace.name }
-                                "
-                                class="mx-2"
-                                styleClass="black-button-sidebar"
-                                (onClick)="confirmToActive(workspace)"
-                                [disabled]="
-                                    !organization.roles.includes(Role.OrganizationAdmin)
-                                "
-                                >{{
-                                    "administration.cancel-deletion" | translate
-                                }}</p-button
-                            >
-                        }
-                        @if (workspace.status === status.TO_BE_DELETED) {
-                            <small class="mx-1">
-                                {{
-                                    "administration.cancel-deletion-message"
-                                        | translate
-                                            : {
-                                                  date:
-                                                      workspace.deletionDate
-                                                      | date: "dd/MM/yyyy",
-                                              }
-                                }}</small
-                            >
-                        }
-                        @if (
-                            !organization.roles.includes(Role.OrganizationAdmin) &&
-                            workspace.status === status.TO_BE_DELETED
-                        ) {
-                            <small class="mx-1"
-                                >{{
-                                    "administration.cancel-deletion-non-SubscriberAdmin"
-                                        | translate: { organizationName: workspace.name }
-                                }}
-                            </small>
-                        }
-                        @if (workspace.uiStatus === "DUPLICATE") {
-                            <p class="error-text">
-                                {{
-                                    "administration.organization.duplicateOrganizationValidation"
-                                        | translate
-                                }}
-                            </p>
-                        }
-                        @if (workspace.uiStatus === "SPACE") {
-                            <p class="error-text">
-                                {{
-                                    "administration.organization.spaceValidation"
-                                        | translate
-                                }}
-                            </p>
-                        }
-                    </div>
-                </cdk-virtual-scroll-viewport>
             </div>
+            <cdk-virtual-scroll-viewport
+                itemSize="60"
+                class="workspace-list-viewport"
+                style="flex: 1 1 auto; width: 100%; overflow-y: auto"
+            >
+                <div
+                    *cdkVirtualFor="
+                        let workspace of organization.workspaces;
+                        trackBy: trackByWorkspaceId
+                    "
+                >
+                    <label [for]="'workspace-name-' + workspace.id" class="text-hidden">
+                        {{ workspace.name }}
+                    </label>
+                    <input
+                        [id]="'workspace-name-' + workspace.id"
+                        class="label-input-div-medium input-width inline-block p-2 mx-1"
+                        [class.ng-invalid]="
+                            workspace.uiStatus !== undefined &&
+                            workspace.uiStatus !== 'OK'
+                        "
+                        [class.ng-dirty]="
+                            workspace.uiStatus !== undefined &&
+                            workspace.uiStatus !== 'OK'
+                        "
+                        [(ngModel)]="workspace.name"
+                        name="name"
+                        placeholder="Name"
+                        pInputText
+                        [disabled]="
+                            !editable ||
+                            (!workspace?.roles?.includes(Role.OrganizationAdmin) &&
+                                workspace.status === status.TO_BE_DELETED)
+                        "
+                        (ngModelChange)="
+                            checkOrganization($event, workspace, organization)
+                        "
+                    />
+                    @if (editable && workspace.status === status.ACTIVE) {
+                        <p-button
+                            styleClass="p-button-text"
+                            [ariaLabel]="
+                                'administration.accessibility.on-deletion' | translate
+                            "
+                            class="mx-1"
+                            (onClick)="
+                                isConfirmDialogVisible.set(true);
+                                confirmDelete($event, workspace)
+                            "
+                            id="delete-organization-button"
+                        >
+                            <img
+                                src="assets/images/icons/icon-bin.svg"
+                                alt="{{ 'common.delete' | translate }}"
+                            />
+                        </p-button>
+                    }
+                    @if (workspace.status === status.TO_BE_DELETED) {
+                        <p-button
+                            [ariaLabel]="
+                                'administration.cancel-deletion-accessibility'
+                                    | translate: { organizationName: workspace.name }
+                            "
+                            class="mx-2"
+                            styleClass="black-button-sidebar"
+                            (onClick)="confirmToActive(workspace)"
+                            [disabled]="
+                                !organization.roles.includes(Role.OrganizationAdmin)
+                            "
+                            >{{ "administration.cancel-deletion" | translate }}</p-button
+                        >
+                    }
+                    @if (workspace.status === status.TO_BE_DELETED) {
+                        <small class="mx-1">
+                            {{
+                                "administration.cancel-deletion-message"
+                                    | translate
+                                        : {
+                                              date:
+                                                  workspace.deletionDate
+                                                  | date: "dd/MM/yyyy",
+                                          }
+                            }}</small
+                        >
+                    }
+                    @if (
+                        !organization.roles.includes(Role.OrganizationAdmin) &&
+                        workspace.status === status.TO_BE_DELETED
+                    ) {
+                        <small class="mx-1"
+                            >{{
+                                "administration.cancel-deletion-non-SubscriberAdmin"
+                                    | translate: { organizationName: workspace.name }
+                            }}
+                        </small>
+                    }
+                    @if (workspace.uiStatus === "DUPLICATE") {
+                        <p class="error-text">
+                            {{
+                                "administration.organization.duplicateOrganizationValidation"
+                                    | translate
+                            }}
+                        </p>
+                    }
+                    @if (workspace.uiStatus === "SPACE") {
+                        <p class="error-text">
+                            {{
+                                "administration.organization.spaceValidation" | translate
+                            }}
+                        </p>
+                    }
+                </div>
+            </cdk-virtual-scroll-viewport>
         }
-    </p-scrollPanel>
+    </div>
     <div class="card flex justify-content-center gap-2">
         <p-toast></p-toast>
 

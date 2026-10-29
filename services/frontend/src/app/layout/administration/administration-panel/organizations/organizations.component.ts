@@ -15,7 +15,6 @@ import { ConfirmationService, MessageService } from "primeng/api";
 import { Button } from "primeng/button";
 import { ConfirmDialogModule } from "primeng/confirmdialog";
 import { InputTextModule } from "primeng/inputtext";
-import { ScrollPanelModule } from "primeng/scrollpanel";
 import { SelectModule } from "primeng/select";
 import { ToastModule } from "primeng/toast";
 import { firstValueFrom, take } from "rxjs";
@@ -45,7 +44,6 @@ import { CriteriaPopupComponent } from "../../../common/criteria-popup/criteria-
         FormsModule,
         Button,
         CriteriaPopupComponent,
-        ScrollPanelModule,
         InputTextModule,
         ToastModule,
         ConfirmDialogModule,
