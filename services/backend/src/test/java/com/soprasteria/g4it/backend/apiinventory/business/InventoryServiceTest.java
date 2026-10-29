@@ -208,6 +208,7 @@ class InventoryServiceTest {
                 .dataCenterCount(0L)
                 .physicalEquipmentCount(0L)
                 .virtualEquipmentCount(0L)
+                .cloudServiceCount(0L)
                 .applicationCount(0L)
                 .outApplicationCount(0L)
                 .outVirtualCount(0L)
