@@ -418,6 +418,12 @@ export class InventoriesApplicationFootprintComponent implements OnInit, OnDestr
                 onCleanup(() => subscription.unsubscribe());
             });
         });
+        // Child components hide the shared loader when their own requests end
+        effect(() => {
+            if (!this.globalStore.loading() && this.pendingRequests > 0) {
+                untracked(() => this.globalStore.setLoading(true));
+            }
+        });
         this.destroyRef.onDestroy(() => this.globalStore.setLoading(false));
     }
 
