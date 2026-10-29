@@ -11,6 +11,7 @@ import { map, tap } from "rxjs";
 import {
     ApplicationFootprint,
     ApplicationImpact,
+    ApplicationMultiCriteriaImpactsRequest,
     Criterias,
     Impact,
     RepartitionImpact,
@@ -20,6 +21,7 @@ import * as LifeCycleUtils from "src/app/core/utils/lifecycle";
 import { Constants } from "src/constants";
 import { StatusCount, StatusCountMap } from "../../interfaces/digital-service.interfaces";
 import {
+    ApplicationFiltersRest,
     ConstantApplicationFilter,
     Filter,
     TransformedDomain,
@@ -36,6 +38,79 @@ export class FootprintService {
         private readonly footprintDataService: FootprintDataService,
         private readonly translate: TranslateService,
     ) {}
+
+    mapApplicationSummaryFilters(
+        filters: Filter,
+        metadata: ApplicationFiltersRest,
+        scope: { domain?: string; subDomain?: string } = {},
+    ): ApplicationMultiCriteriaImpactsRequest {
+        const request: ApplicationMultiCriteriaImpactsRequest = {
+            environment: [],
+            equipmentType: [],
+            lifeCycle: [],
+            domain: [],
+            subDomain: [],
+        };
+        const displayValue = (value: string) =>
+            value?.trim() ? value : Constants.UNSPECIFIED;
+        const lifecycleMap = LifeCycleUtils.getLifeCycleMap();
+        const lifecycleLabel = (value: string) => {
+            const key = `acvStep.${lifecycleMap.get(value) ?? value}`;
+            const translated = this.translate.instant(key);
+            return translated === key ? displayValue(value) : translated;
+        };
+        const domains = (filters["domain"] ?? []) as TransformedDomain[];
+
+        for (const field of ["environment", "equipmentType", "lifeCycle"] as const) {
+            const selected = filters[field] as string[] | undefined;
+            if (!selected?.length) continue;
+            const values = metadata[field].filter((value) =>
+                selected.includes(
+                    field === "lifeCycle" ? lifecycleLabel(value) : displayValue(value),
+                ),
+            );
+            if (values.length) request[field] = values;
+        }
+
+        const selectedDomains = metadata.domains.filter((entry) => {
+            const selected = domains.find(
+                (domain) => domain.label === displayValue(entry.domain),
+            );
+            return (
+                selected?.checked || selected?.children?.some((child) => child.checked)
+            );
+        });
+        const domainValues = selectedDomains.map((entry) => entry.domain);
+        const subDomainValues = selectedDomains.flatMap((entry) => {
+            const selected = domains.find(
+                (domain) => domain.label === displayValue(entry.domain),
+            );
+            return entry.subDomains.filter((value) =>
+                selected?.children?.some(
+                    (child) => child.checked && child.label === displayValue(value),
+                ),
+            );
+        });
+        if (domainValues.length) request.domain = domainValues;
+        if (subDomainValues.length) request.subDomain = [...new Set(subDomainValues)];
+
+        if (scope.domain) {
+            const domain = metadata.domains.find(
+                (entry) => displayValue(entry.domain) === scope.domain,
+            );
+            if (domain) request.domain = [domain.domain];
+        }
+        if (scope.subDomain) {
+            const values = metadata.domains
+                .filter(
+                    (entry) => !request.domain || request.domain.includes(entry.domain),
+                )
+                .flatMap((entry) => entry.subDomains)
+                .filter((value) => displayValue(value) === scope.subDomain);
+            if (values.length) request.subDomain = [...new Set(values)];
+        }
+        return request;
+    }
 
     deleteIndicators(inventoryId: number) {
         return this.footprintDataService.deleteIndicators(inventoryId);

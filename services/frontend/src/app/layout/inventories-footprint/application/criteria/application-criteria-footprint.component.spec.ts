@@ -1,11 +1,15 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { signal } from "@angular/core";
 import { ComponentFixture, TestBed, fakeAsync, tick } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
 import { TranslateModule } from "@ngx-translate/core";
 import { NGX_ECHARTS_CONFIG } from "ngx-echarts";
+import { of } from "rxjs";
 import { DecimalsPipe } from "src/app/core/pipes/decimal.pipe";
 import { IntegerPipe } from "src/app/core/pipes/integer.pipe";
 import { FilterService } from "src/app/core/service/business/filter.service";
+import { FootprintService } from "src/app/core/service/business/footprint.service";
+import { FootprintDataService } from "src/app/core/service/data/footprint-data.service";
 import { FootprintStoreService } from "src/app/core/store/footprint.store";
 import { GlobalStoreService } from "src/app/core/store/global.store";
 import { Constants } from "src/constants";
@@ -19,8 +23,18 @@ describe("ApplicationCriteriaFootprintComponent", () => {
     let filterService: any;
     let translate: any;
     let globalStore: any;
+    let footprintDataService: jasmine.SpyObj<FootprintDataService>;
+    let footprintService: jasmine.SpyObj<FootprintService>;
 
     beforeEach(async () => {
+        footprintDataService = jasmine.createSpyObj("FootprintDataService", [
+            "getApplicationMultiCriteriaGraph",
+        ]);
+        footprintDataService.getApplicationMultiCriteriaGraph.and.returnValue(of([]));
+        footprintService = jasmine.createSpyObj("FootprintService", [
+            "mapApplicationSummaryFilters",
+        ]);
+        footprintService.mapApplicationSummaryFilters.and.returnValue({});
         footprintStore = {
             applicationCriteria: jasmine.createSpy().and.returnValue("co2"),
             applicationSelectedFilters: jasmine.createSpy().and.returnValue({}),
@@ -28,7 +42,7 @@ describe("ApplicationCriteriaFootprintComponent", () => {
             appDomain: jasmine.createSpy().and.returnValue("Domain1"),
             appSubDomain: jasmine.createSpy().and.returnValue("SubDomain1"),
             appApplication: jasmine.createSpy().and.returnValue("App1"),
-            appDimension: jasmine.createSpy().and.returnValue("domain"),
+            appDimension: signal("domain"),
             setDomain: jasmine.createSpy(),
             setSubDomain: jasmine.createSpy(),
             setGraphType: jasmine.createSpy(),
@@ -65,6 +79,8 @@ describe("ApplicationCriteriaFootprintComponent", () => {
                 { provide: DecimalsPipe, useValue: { transform: (v: any) => v } },
                 { provide: GlobalStoreService, useValue: globalStore },
                 { provide: FilterService, useValue: filterService },
+                { provide: FootprintService, useValue: footprintService },
+                { provide: FootprintDataService, useValue: footprintDataService },
                 { provide: FootprintStoreService, useValue: footprintStore },
                 {
                     provide: ActivatedRoute,
@@ -104,11 +120,176 @@ describe("ApplicationCriteriaFootprintComponent", () => {
         expect(component).toBeTruthy();
     });
 
+    it("should render the selected criterion description without a legacy footprint", () => {
+        const emptyFixture = TestBed.createComponent(
+            ApplicationCriteriaFootprintComponent,
+        );
+        emptyFixture.componentRef.setInput("footprint", undefined);
+        expect(() => emptyFixture.detectChanges()).not.toThrow();
+        expect(emptyFixture.componentInstance.getContentText().description).toBe(
+            "ds-graph-description.criteria.description",
+        );
+        emptyFixture.destroy();
+    });
+
+    it("should request and render the selected criterion using the multi-criteria API", () => {
+        footprintStore.applicationCriteria.and.returnValue("climate-change");
+        footprintDataService.getApplicationMultiCriteriaGraph.and.returnValue(
+            of([
+                {
+                    criteria: "CLIMATE_CHANGE",
+                    unit: "kg",
+                    nodes: [
+                        {
+                            label: "Domain1",
+                            impact: 12,
+                            sip: 3,
+                            countValue: 5,
+                            consistentCount: 4,
+                            inconsistentCount: 1,
+                            applicationCount: 2,
+                            subDomainCount: 1,
+                            repartitions: [
+                                {
+                                    label: "use",
+                                    impact: 12,
+                                    sip: 3,
+                                    countValue: 5,
+                                    consistentCount: 4,
+                                    inconsistentCount: 1,
+                                },
+                            ],
+                        },
+                    ],
+                },
+            ]),
+        );
+        fixture.componentRef.setInput("selectedInventoryId", 42);
+        fixture.componentRef.setInput("filterMetadata", {
+            environment: [],
+            equipmentType: [],
+            lifeCycle: [],
+            domains: [],
+        });
+        fixture.detectChanges();
+
+        expect(
+            footprintDataService.getApplicationMultiCriteriaGraph,
+        ).toHaveBeenCalledWith(42, {
+            criteria: ["CLIMATE_CHANGE"],
+            graphLevel: "domain",
+            repartition: "lifeCycle",
+            filters: {},
+        });
+        const result = component.computeData([], {}, "climate-change", "lifeCycle");
+        expect(result.xAxis).toEqual(["Domain1"]);
+        expect(result.yAxis[0].data[0].slice(0, 3)).toEqual(["Domain1", 12, 3]);
+        expect(result.status.Domain1.status).toEqual({ ok: 4, error: 1, total: 5 });
+        expect(component.noData()).toBeFalse();
+
+        const contentText = component.getContentText();
+        expect(contentText.textDescription).toBeTruthy();
+        expect(component.textDescriptionImpacts).toHaveSize(1);
+        expect(component.textDescriptionImpacts[0].impactNameVisible).toBe("Domain1");
+    });
+
+    it("should translate lifecycle series names in the legend and tooltip", () => {
+        translate.instant.and.callFake((key: string) =>
+            key === "acvStep.USING" ? "Using" : key,
+        );
+        (component as any).graphResponse.set([
+            {
+                criteria: "CO2",
+                unit: "kg",
+                nodes: [
+                    {
+                        label: "Domain1",
+                        impact: 10,
+                        sip: 2,
+                        countValue: 1,
+                        consistentCount: 1,
+                        inconsistentCount: 0,
+                        repartitions: [
+                            {
+                                label: "USING",
+                                impact: 10,
+                                sip: 2,
+                                countValue: 1,
+                                consistentCount: 1,
+                                inconsistentCount: 0,
+                            },
+                        ],
+                    },
+                ],
+            },
+        ]);
+
+        const chart = component.loadBarChartOption(
+            {},
+            [],
+            "co2",
+            { enableDataInconsistency: false } as any,
+            "lifeCycle",
+        );
+        const tooltip = (chart.tooltip as any).formatter({
+            data: ["Domain1", 10, 2, [], []],
+            seriesName: "USING",
+        });
+
+        expect((chart.legend as any).formatter("USING")).toBe("Using");
+        expect(tooltip).toContain("Using");
+        expect((chart.legend as any).formatter("UNKNOWN_STEP")).toBe("UNKNOWN_STEP");
+    });
+
     it("should reset showInconsitencyGraph on ngOnChanges", () => {
         component.showInconsitencyGraph = true;
         component.ngOnChanges({});
         expect(component.showInconsitencyGraph).toBeFalse();
     });
+
+    for (const [level, graphLevel] of [
+        ["domain", "subDomain"],
+        ["subdomain", "application"],
+        ["application", "virtualEquipment"],
+    ] as const) {
+        it(`should request the ${level} drill-down with its filters`, () => {
+            footprintStore.appGraphType.and.returnValue(level);
+            footprintStore.appDimension.set("environment");
+            footprintService.mapApplicationSummaryFilters.and.returnValue({
+                environment: ["Prod"],
+            });
+            fixture.componentRef.setInput("selectedInventoryId", 42);
+            fixture.componentRef.setInput("filterMetadata", {
+                environment: ["Prod"],
+                equipmentType: [],
+                lifeCycle: [],
+                domains: [],
+            });
+            fixture.detectChanges();
+
+            expect(footprintService.mapApplicationSummaryFilters).toHaveBeenCalledWith(
+                {},
+                jasmine.any(Object),
+                {
+                    domain: "Domain1",
+                    subDomain: level === "domain" ? "" : "SubDomain1",
+                },
+            );
+            expect(
+                footprintDataService.getApplicationMultiCriteriaGraph,
+            ).toHaveBeenCalledWith(42, {
+                criteria: ["CO2"],
+                graphLevel,
+                repartition: "environment",
+                filters:
+                    level === "application"
+                        ? { environment: ["Prod"], applicationName: ["App1"] }
+                        : { environment: ["Prod"] },
+            });
+            expect(component.noData()).toBeTrue();
+            expect(component.computeData([], {}, "co2", "environment").xAxis).toEqual([]);
+        });
+    }
 
     describe("onChartClick", () => {
         it("should set domain + subdomain if global and children <=1", fakeAsync(() => {
