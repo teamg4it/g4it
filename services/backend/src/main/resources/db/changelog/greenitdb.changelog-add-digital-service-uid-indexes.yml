@@ -1,0 +1,85 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-index-digital-service-uid-in-virtual-equipment
+      author: G4IT Dev Team
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - indexExists:
+                tableName: in_virtual_equipment
+                indexName: idx_in_virtual_equipment_digital_service_uid
+      changes:
+        - createIndex:
+            tableName: in_virtual_equipment
+            indexName: idx_in_virtual_equipment_digital_service_uid
+            columns:
+              - column:
+                  name: digital_service_uid
+
+  - changeSet:
+      id: add-index-digital-service-uid-in-physical-equipment
+      author: G4IT Dev Team
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - indexExists:
+                tableName: in_physical_equipment
+                indexName: idx_in_physical_equipment_digital_service_uid
+      changes:
+        - createIndex:
+            tableName: in_physical_equipment
+            indexName: idx_in_physical_equipment_digital_service_uid
+            columns:
+              - column:
+                  name: digital_service_uid
+
+  - changeSet:
+      id: add-index-digital-service-uid-in-datacenter
+      author: G4IT Dev Team
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - indexExists:
+                tableName: in_datacenter
+                indexName: idx_in_datacenter_digital_service_uid
+      changes:
+        - createIndex:
+            tableName: in_datacenter
+            indexName: idx_in_datacenter_digital_service_uid
+            columns:
+              - column:
+                  name: digital_service_uid
+
+  - changeSet:
+      id: add-index-digital-service-uid-in-ai-parameters
+      author: G4IT Dev Team
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - indexExists:
+                tableName: in_ai_parameters
+                indexName: idx_in_ai_parameters_digital_service_uid
+      changes:
+        - createIndex:
+            tableName: in_ai_parameters
+            indexName: idx_in_ai_parameters_digital_service_uid
+            columns:
+              - column:
+                  name: digital_service_uid
+
+  - changeSet:
+      id: add-index-digital-service-uid-in-ai-infrastructure
+      author: G4IT Dev Team
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - indexExists:
+                tableName: in_ai_infrastructure
+                indexName: idx_in_ai_infrastructure_digital_service_uid
+      changes:
+        - createIndex:
+            tableName: in_ai_infrastructure
+            indexName: idx_in_ai_infrastructure_digital_service_uid
+            columns:
+              - column:
+                  name: digital_service_uid
