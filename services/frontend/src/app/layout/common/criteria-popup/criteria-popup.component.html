@@ -19,6 +19,13 @@
                     </p>
                 </div>
             }
+            @if (type === "ds") {
+                <div class="information-section my-3">
+                    <p class="m-0 text-lg">
+                        {{ "digital-services.criteria-note" | translate }}
+                    </p>
+                </div>
+            }
             @if (type !== "workspace") {
                 <div class="ml-3 pb-2 pt-3">
                     <div class="field-checkbox">

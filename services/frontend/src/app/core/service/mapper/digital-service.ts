@@ -4,6 +4,7 @@ import {
     CloudImpactTypeLocation,
     CloudsImpact,
     DigitalServiceCloudImpact,
+    DigitalServiceAiImpact,
     DigitalServiceFootprint,
     DigitalServiceFootprintImpact,
     DigitalServiceNetworksImpact,
@@ -251,6 +252,29 @@ export const transformOutVirtualEquipmentsToCloudData = (
     const results: DigitalServiceCloudImpact[] = [];
     for (const criterion in cloudByCriterion) {
         const impacts = cloudByCriterion[criterion];
+        results.push({
+            criteria: criterion,
+            impactLocation: getImpactsForCloud(impacts, "location", countryMap),
+            impactInstance: getImpactsForCloud(impacts, "instanceType"),
+        });
+    }
+
+    return results;
+};
+
+export const transformOutVirtualEquipmentsToAiData = (
+    virtualEquipments: OutVirtualEquipmentRest[],
+    countryMap: MapString,
+): DigitalServiceAiImpact[] => {
+    const ai = virtualEquipments.filter(
+        (pe) => pe.infrastructureType === "AI_SERVICES",
+    );
+
+    const aiByCriterion = groupByCriterion(ai);
+
+    const results: DigitalServiceAiImpact[] = [];
+    for (const criterion in aiByCriterion) {
+        const impacts = aiByCriterion[criterion];
         results.push({
             criteria: criterion,
             impactLocation: getImpactsForCloud(impacts, "location", countryMap),

@@ -17,6 +17,7 @@ import {
 import { EChartsOption } from "echarts";
 import {
     DigitalServiceCloudImpact,
+    DigitalServiceAiImpact,
     DigitalServiceNetworksImpact,
     DigitalServiceServersImpact,
     DigitalServiceTerminalsImpact,
@@ -62,6 +63,7 @@ export class BarChartComponent extends AbstractDashboard implements OnChanges {
     @Input() serverData: DigitalServiceServersImpact[] = [];
     @Input() terminalData: DigitalServiceTerminalsImpact[] = [];
     @Input() cloudData: DigitalServiceCloudImpact[] = [];
+    @Input() aiData: DigitalServiceAiImpact[] = [];
 
     @Output() barChartChildChange: EventEmitter<any> = new EventEmitter();
     @Output() selectedDetailParamChange: EventEmitter<any> = new EventEmitter();
@@ -101,6 +103,7 @@ export class BarChartComponent extends AbstractDashboard implements OnChanges {
     ];
     terminalsRadioButtonSelected: string = "type";
     cloudRadioButtonSelected: string = "instance";
+    aiRadioButtonSelected: string = "instance";
     serversOptions = [
         {
             key: "lifecycle",
@@ -123,6 +126,8 @@ export class BarChartComponent extends AbstractDashboard implements OnChanges {
                 this.options = this.loadStackBarOptionTerminal(this.terminalData);
             } else if (this.selectedParam === Constants.CLOUD_SERVICE) {
                 this.options = this.loadStackBarOptionCloud(this.cloudData);
+            } else if (this.selectedParam === Constants.AI_SERVICE) {
+                this.options = this.loadStackBarOptionAi(this.aiData);
             } else if (this.selectedParam === "Server" && !this.barChartChild) {
                 this.options = this.loadStackBarOptionServer(this.serverData);
             } else if (this.selectedParam === "Server" && this.barChartChild) {
@@ -135,7 +140,8 @@ export class BarChartComponent extends AbstractDashboard implements OnChanges {
         if (
             (this.selectedParam == "Terminal" ||
                 this.selectedParam == "Server" ||
-                this.selectedParam === Constants.CLOUD_SERVICE) &&
+                this.selectedParam === Constants.CLOUD_SERVICE ||
+                this.selectedParam === Constants.AI_SERVICE) &&
             !this.barChartChild
         ) {
             this.barChartChildChange.emit(true);
@@ -451,6 +457,16 @@ export class BarChartComponent extends AbstractDashboard implements OnChanges {
         return this.loadStackBarOption(
             barChartData,
             this.cloudRadioButtonSelected,
+            "impactInstance",
+            "impactLocation",
+            Constants.CLOUD_SERVICE,
+        );
+    }
+
+    loadStackBarOptionAi(barChartData: DigitalServiceAiImpact[]): EChartsOption {
+        return this.loadStackBarOption(
+            barChartData,
+            this.aiRadioButtonSelected,
             "impactInstance",
             "impactLocation",
             Constants.CLOUD_SERVICE,

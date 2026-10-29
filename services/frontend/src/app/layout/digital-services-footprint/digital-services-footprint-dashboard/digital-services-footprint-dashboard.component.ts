@@ -58,6 +58,7 @@ import {
     transformOutPhysicalEquipmentstoServerData,
     transformOutPhysicalEquipmentsToTerminalData,
     transformOutVirtualEquipmentsToCloudData,
+    transformOutVirtualEquipmentsToAiData
 } from "src/app/core/service/mapper/digital-service";
 import { DigitalServiceStoreService } from "src/app/core/store/digital-service.store";
 import { GlobalStoreService } from "src/app/core/store/global.store";
@@ -157,6 +158,14 @@ export class DigitalServicesFootprintDashboardComponent
     cloudData = computed(() => {
         if (this.outVirtualEquipments === undefined) return [];
         return transformOutVirtualEquipmentsToCloudData(
+            this.outVirtualEquipments,
+            this.digitalServiceStore.countryMap(),
+        );
+    });
+
+    aiData = computed(() => {
+        if (this.outVirtualEquipments === undefined) return [];
+        return transformOutVirtualEquipmentsToAiData(
             this.outVirtualEquipments,
             this.digitalServiceStore.countryMap(),
         );

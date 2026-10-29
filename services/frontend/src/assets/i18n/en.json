@@ -255,6 +255,7 @@
         },
         "return": "Return to my digital services list",
         "choose-criteria": "Choose criteria for digital service {{digitalServiceName}}",
+        "criteria-note": "For AI services, only the following factors are taken into account in the calculation: climate change, resource use, resource use fossils and water use.",
         "delete-criteria": "Delete digital service {{digitalServiceName}}",
         "unlink-digital-service": "Delete link with digital service {{digitalServiceName}}",
         "import": "Import",

@@ -202,6 +202,12 @@ export interface DigitalServiceCloudImpact {
     impactInstance: CloudImpactTypeLocation[];
 }
 
+export interface DigitalServiceAiImpact {
+    criteria: string;
+    impactLocation: AiImpactTypeLocation[];
+    impactInstance: AiImpactTypeLocation[];
+}
+
 export interface TerminalsImpact {
     rawValue?: any;
     unit?: any;
@@ -235,6 +241,17 @@ export interface CloudsImpact {
     impact: ImpactCloudsACVStep[];
 }
 
+export interface AiImpact {
+    rawValue?: any;
+    unit?: any;
+    name: string;
+    totalSipValue: number;
+    totalQuantity: number;
+    totalAvgUsage: number;
+    totalAvgWorkLoad: number;
+    impact: ImpactAiACVStep[];
+}
+
 export interface CloudImpactGroup {
     [location: string]: {
         [cloudName: string]: CloudNameImpact[];
@@ -258,6 +275,12 @@ export interface CloudNameImpact {
 export interface CloudImpactTypeLocation {
     name: string;
     clouds: CloudsImpact[];
+    status: StatusCount;
+}
+
+export interface AiImpactTypeLocation {
+    name: string;
+    clouds: AiImpact[];
     status: StatusCount;
 }
 
@@ -315,6 +338,19 @@ export interface ImpactTerminalsACVStep {
 }
 
 export interface ImpactCloudsACVStep {
+    acvStep: string;
+    sipValue: number;
+    rawValue: number;
+    unit: string;
+    status?: string;
+    statusCount?: {
+        ok: number;
+        error: number;
+        total: number;
+    };
+}
+
+export interface ImpactAiACVStep {
     acvStep: string;
     sipValue: number;
     rawValue: number;
