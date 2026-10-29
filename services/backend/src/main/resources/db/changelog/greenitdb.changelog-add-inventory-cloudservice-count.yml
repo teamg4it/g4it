@@ -1,0 +1,52 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-inventory-cloudservice-count
+      author: G4IT Dev Team
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - columnExists:
+                tableName: inventory
+                columnName: cloud_service_count
+
+      changes:
+        - addColumn:
+            tableName: inventory
+            columns:
+              - column:
+                  name: cloud_service_count
+                  type: bigint
+                  defaultValueNumeric: 0
+                  constraints:
+                    nullable: false
+
+        - sql:
+            comment: Backfill cloud and non-cloud virtual equipment counts for existing inventories
+            sql: >
+              UPDATE inventory i
+              SET cloud_service_count = COALESCE((
+                    SELECT SUM(ve.quantity)
+                    FROM (
+                      SELECT inventory_id, name, quantity
+                      FROM in_virtual_equipment
+                      WHERE infrastructure_type = 'CLOUD_SERVICES'
+                      GROUP BY inventory_id, name, quantity
+                    ) ve
+                    WHERE ve.inventory_id = i.id
+                  ), 0),
+                  virtual_equipment_count = COALESCE((
+                    SELECT SUM(ve.quantity)
+                    FROM (
+                      SELECT inventory_id, name, quantity
+                      FROM in_virtual_equipment
+                      WHERE infrastructure_type IS NULL
+                         OR infrastructure_type <> 'CLOUD_SERVICES'
+                      GROUP BY inventory_id, name, quantity
+                    ) ve
+                    WHERE ve.inventory_id = i.id
+                  ), 0)
+
+      rollback:
+        - dropColumn:
+            tableName: inventory
+            columnName: cloud_service_count

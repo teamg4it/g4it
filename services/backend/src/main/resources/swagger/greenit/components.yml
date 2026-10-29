@@ -411,6 +411,9 @@ components:
         virtualEquipmentCount:
           type: integer
           format: int64
+        cloudServiceCount:
+          type: integer
+          format: int64
         applicationCount:
           type: integer
           format: int64
