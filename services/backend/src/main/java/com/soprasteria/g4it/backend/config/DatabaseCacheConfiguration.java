@@ -58,8 +58,7 @@ public class DatabaseCacheConfiguration {
             "getCountryList",
             "isLowImpact",
             "inventoryExists",
-            "digitalServiceExists"
-            "inventoryExists",
+            "digitalServiceExists",
             "applicationMultiCriteriaImpacts",
             "applicationMultiCriteria",
             "applicationHierarchyCounts",
