@@ -7,7 +7,7 @@
  */
 import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { map, Observable, ReplaySubject, tap} from "rxjs";
+import { map, Observable, ReplaySubject, tap } from "rxjs";
 import { Constants } from "src/constants";
 import { environment } from "src/environments/environment";
 import { DigitalServiceVersionRequestBody } from "../../interfaces/digital-service-version.interface";
