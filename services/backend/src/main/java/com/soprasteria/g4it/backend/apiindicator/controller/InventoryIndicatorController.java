@@ -9,8 +9,11 @@ package com.soprasteria.g4it.backend.apiindicator.controller;
 
 import com.azure.storage.blob.models.BlobErrorCode;
 import com.azure.storage.blob.models.BlobStorageException;
+import com.soprasteria.g4it.backend.apiindicator.model.GraphLevel;
+import com.soprasteria.g4it.backend.apiindicator.model.RepartitionType;
 import com.soprasteria.g4it.backend.apifiles.business.FileSystemService;
 import com.soprasteria.g4it.backend.apiindicator.business.InventoryIndicatorService;
+import com.soprasteria.g4it.backend.apiindicator.mapper.ApplicationIndicatorMapper;
 import com.soprasteria.g4it.backend.apiindicator.mapper.IndicatorRestMapper;
 import com.soprasteria.g4it.backend.apiindicator.model.ApplicationImpactBO;
 import com.soprasteria.g4it.backend.apiindicator.model.ApplicationIndicatorBO;
@@ -33,6 +36,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -59,6 +63,8 @@ public class InventoryIndicatorController implements InventoryIndicatorApiDelega
     @Autowired
     private IndicatorRestMapper indicatorRestMapper;
     @Autowired
+    private ApplicationIndicatorMapper applicationIndicatorMapper;
+    @Autowired
     private FileSystemService fileSystemService;
     @Autowired
     private AuthService authService;
@@ -82,13 +88,123 @@ public class InventoryIndicatorController implements InventoryIndicatorApiDelega
 
     /**
      * {@inheritDoc}
+     * §4.4 - DB-side filtered + paginated table view, using the same shared
+     * filter dimensions as §4.1-4.3, including criterion. POST + JSON body is
+     * used because the filter lists can contain large numbers of values.
+     * {@code sort} is restricted to {@link com.soprasteria.g4it.backend.apiinout.repository.ApplicationIndicatorSortFields#ALLOWED}
+     * (applicationName, criteria, sip, impact); any other value is ignored.
      */
     @Override
-    public ResponseEntity<List<ApplicationIndicatorRest>> getApplicationIndicators(final String organization,
+    public ResponseEntity<ApplicationIndicatorsPageRest> getApplicationIndicators(final String organization,
                                                                                    final Long workspace,
-                                                                                   final Long inventoryId) {
-        final List<ApplicationIndicatorBO<ApplicationImpactBO>> indicators = inventoryIndicatorService.getApplicationIndicators(organization, workspace, inventoryId);
-        return ResponseEntity.ok().body(this.indicatorRestMapper.toApplicationIndicatorDto(indicators));
+                                                                                   final Long inventoryId,
+                                                                                   final Integer page,
+                                                                                   final Integer size,
+                                                                                   final String sort,
+                                                                                   final ApplicationCriteriaFilterRest requestRest) {
+        final int pageNumber = page == null ? 0 : page;
+        final int pageSize = size == null || size < 1 ? 20 : size;
+        final var filters = requestRest == null ? null : applicationIndicatorMapper.toFilterBO(requestRest);
+        final org.springframework.data.domain.Sort sortOrder = parseApplicationIndicatorsSort(sort);
+        final org.springframework.data.domain.Pageable pageable = sortOrder.isSorted()
+                ? PageRequest.of(pageNumber, pageSize, sortOrder)
+                : PageRequest.of(pageNumber, pageSize);
+        return ResponseEntity.ok().body(indicatorRestMapper.toApplicationIndicatorsPageDto(
+                inventoryIndicatorService.getApplicationIndicatorsPage(organization, workspace, inventoryId,
+                        filters, pageable)));
+    }
+
+    /**
+     * Parses the {@code sort} query parameter ("field,direction", e.g.
+     * "sip,desc") into a {@link org.springframework.data.domain.Sort},
+     * restricted to {@link com.soprasteria.g4it.backend.apiinout.repository.ApplicationIndicatorSortFields#ALLOWED}.
+     * Falls back to unsorted if missing, blank or not whitelisted.
+     */
+    private static org.springframework.data.domain.Sort parseApplicationIndicatorsSort(final String sort) {
+        if (sort == null || sort.isBlank()) {
+            return org.springframework.data.domain.Sort.unsorted();
+        }
+        final String[] parts = sort.split(",", 2);
+        final String field = parts[0].trim();
+        if (!com.soprasteria.g4it.backend.apiinout.repository.ApplicationIndicatorSortFields.ALLOWED.containsKey(field)) {
+            return org.springframework.data.domain.Sort.unsorted();
+        }
+        final org.springframework.data.domain.Sort.Direction direction =
+                parts.length > 1 && "desc".equalsIgnoreCase(parts[1].trim())
+                        ? org.springframework.data.domain.Sort.Direction.DESC
+                        : org.springframework.data.domain.Sort.Direction.ASC;
+        return org.springframework.data.domain.Sort.by(direction, field);
+    }
+
+
+    /**
+     * {@inheritDoc}
+     * §4.1 - aggregated impact totals per criterion, filtered by the shared dimensions.
+     */
+    @Override
+    public ResponseEntity<List<ApplicationMultiCriteriaImpactRest>> getApplicationMultiCriteriaImpacts(
+            final String organization,
+            final Long workspace,
+            final Long inventoryId,
+            final ApplicationMultiCriteriaImpactsRequestRest requestRest) {
+        final var filters = requestRest == null ? null : applicationIndicatorMapper.toFilterBO(requestRest);
+        return ResponseEntity.ok().body(indicatorRestMapper.toApplicationMultiCriteriaImpactDto(
+                inventoryIndicatorService.getApplicationMultiCriteriaImpacts(organization, workspace, inventoryId, filters)));
+    }
+
+    /**
+     * {@inheritDoc}
+     * §4.2/§4.3 - dual-axis (graphLevel x repartition) graph aggregation, including drill-down.
+     */
+    @Override
+    public ResponseEntity<List<ApplicationMultiCriteriaRest>> getApplicationMultiCriteriaIndicators(
+            final String organization,
+            final Long workspace,
+            final Long inventoryId,
+            final ApplicationMultiCriteriaRequestRest requestRest) {
+        final GraphLevel graphLevel = GraphLevel.valueOf(requestRest.getGraphLevel().name());
+        final RepartitionType repartition = RepartitionType.valueOf(requestRest.getRepartition().name());
+        final var filters = requestRest.getFilters() == null ? null : applicationIndicatorMapper.toFilterBO(requestRest.getFilters());
+
+        // criteria is optional only at graphLevel=global (null/empty = all criteria);
+        // required (non-empty) at every other graphLevel - see solution.md §4.2/§6.
+        if (graphLevel != GraphLevel.GLOBAL
+                && (requestRest.getCriteria() == null || requestRest.getCriteria().isEmpty())) {
+            throw new G4itRestException("400", "criteria is required when graphLevel is not 'global'");
+        }
+
+        return ResponseEntity.ok().body(indicatorRestMapper.toApplicationMultiCriteriaDto(
+                inventoryIndicatorService.getApplicationMultiCriteriaIndicators(organization, workspace, inventoryId,
+                        requestRest.getCriteria(), graphLevel, repartition, filters)));
+    }
+
+    /**
+     * {@inheritDoc}
+     * §4.3 (optional) - standing hierarchy counts (header KPIs) for the current filter scope.
+     */
+    @Override
+    public ResponseEntity<ApplicationHierarchyCountsRest> getApplicationHierarchyCounts(
+            final String organization,
+            final Long workspace,
+            final Long inventoryId,
+            final ApplicationCriteriaFilterRest requestRest) {
+        final var filters = requestRest == null ? null : applicationIndicatorMapper.toFilterBO(requestRest);
+        return ResponseEntity.ok().body(indicatorRestMapper.toApplicationHierarchyCountsDto(
+                inventoryIndicatorService.getApplicationHierarchyCounts(organization, workspace, inventoryId, filters)));
+    }
+
+    /**
+     * {@inheritDoc}
+     * §4.0 - distinct environment/equipmentType/lifeCycle/domain/subDomain values for the
+     * inventory's latest task, used to populate the application view's filter selectors.
+     */
+    @Override
+    public ResponseEntity<ApplicationFiltersRest> getApplicationFilters(
+            final String organization,
+            final Long workspace,
+            final Long inventoryId) {
+        return ResponseEntity.ok().body(indicatorRestMapper.toApplicationFiltersDto(
+                inventoryIndicatorService.getApplicationFilters(organization, workspace, inventoryId)));
     }
 
     /**
@@ -100,6 +216,7 @@ public class InventoryIndicatorController implements InventoryIndicatorApiDelega
                                                                                                final Long inventoryId) {
         return ResponseEntity.ok(indicatorRestMapper.toLowImpactDto(inventoryIndicatorService.getPhysicalEquipmentsLowImpact(organization, workspace, inventoryId)));
     }
+
 
     /**
      * {@inheritDoc}
@@ -201,6 +318,21 @@ public class InventoryIndicatorController implements InventoryIndicatorApiDelega
         );
     }
 
+    /**
+     * {@inheritDoc}
+     * Aggregated total and low-impact virtual equipment counts, filtered by the shared dimensions.
+     */
+    @Override
+    public ResponseEntity<VirtualEquipmentLowImpactCountRest> getVirtualEquipmentsLowImpactCount(
+            final String organization,
+            final Long workspace,
+            final Long inventoryId,
+            final ApplicationCriteriaFilterRest requestRest) {
+        final var filters = requestRest == null ? null : applicationIndicatorMapper.toFilterBO(requestRest);
+        return ResponseEntity.ok(indicatorRestMapper.toVirtualEquipmentLowImpactCountDto(
+                inventoryIndicatorService.getVirtualEquipmentLowImpactCount(organization, workspace, inventoryId, filters)));
+    }
+
     @Override
     public ResponseEntity<List<VirtualEquipmentElecConsumptionRest>>
     getVirtualEquipmentElecConsumption(final String organization, final Long workspace, final Long inventoryId) {
@@ -214,5 +346,20 @@ public class InventoryIndicatorController implements InventoryIndicatorApiDelega
                         )
                 )
         );
+    }
+
+    /**
+     * {@inheritDoc}
+     * Aggregated electricity consumption sum and virtual equipment quantity sum, filtered by the shared dimensions.
+     */
+    @Override
+    public ResponseEntity<VirtualEquipmentElecConsumptionSumRest> getVirtualEquipmentsElecConsumptionSum(
+            final String organization,
+            final Long workspace,
+            final Long inventoryId,
+            final ApplicationCriteriaFilterRest requestRest) {
+        final var filters = requestRest == null ? null : applicationIndicatorMapper.toFilterBO(requestRest);
+        return ResponseEntity.ok(indicatorRestMapper.toVirtualEquipmentElecConsumptionSumDto(
+                inventoryIndicatorService.getVirtualEquipmentElecConsumptionSum(organization, workspace, inventoryId, filters)));
     }
 }

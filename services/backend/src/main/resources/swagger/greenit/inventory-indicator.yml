@@ -61,25 +61,194 @@ paths:
       - $ref: '#/components/parameters/organizationPathParam'
       - $ref: '#/components/parameters/workspacePathParam'
       - $ref: '#/components/parameters/inventoryIdPathParam'
-    get:
-      description: Endpoint to retrieve application indicators following unit calculations of ecological impact.
+    post:
+      description: >
+        Endpoint to retrieve application indicators following unit calculations of ecological impact.
+        POST + JSON body is used because the filter lists (environment/equipmentType/lifeCycle/
+        domain/subDomain/criterion) may contain several thousand values (see solution.md §4.4).
       tags:
         - inventory-indicator
       operationId: getApplicationIndicators
       x-custom-role: "hasRole('INVENTORY_READ')"
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 0
+          required: false
+        - in: query
+          name: size
+          schema:
+            type: integer
+            default: 10
+          required: false
+        - in: query
+          name: sort
+          description: >
+            Sort directive as "field,direction" (e.g. "sip,desc"). Only
+            applicationName, criteria, sip and impact are accepted; any
+            other value is ignored and the default (id ascending) is used.
+          schema:
+            type: string
+          required: false
+      requestBody:
+        description: shared filter dimensions, including criterion
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ApplicationCriteriaFilterRest"
       responses:
         "200":
-          description: Return application indicators
+          description: Return a page of flattened application indicator rows
+          content:
+            'application/json':
+              schema:
+                $ref: "#/components/schemas/ApplicationIndicatorsPageRest"
+        "400":
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        "500":
+          $ref: '#/components/responses/InternalServerError'
+
+  /organizations/{organization}/workspaces/{workspace}/inventories/{inventoryId}/indicators/applications/multi-criteria-impacts:
+    parameters:
+      - $ref: '#/components/parameters/organizationPathParam'
+      - $ref: '#/components/parameters/workspacePathParam'
+      - $ref: '#/components/parameters/inventoryIdPathParam'
+    post:
+      description: >
+        Endpoint to retrieve, for each matching criterion, aggregated impact totals
+        (impact/sip/countValue) filtered by Environment/EquipmentType/Lifecycle/Domain/SubDomain.
+        POST + JSON body is used because domain/subDomain filter lists may contain several
+        thousand values (see solution.md §4.1).
+      tags:
+        - inventory-indicator
+      operationId: getApplicationMultiCriteriaImpacts
+      x-custom-role: "hasRole('INVENTORY_READ')"
+      requestBody:
+        description: shared filter dimensions
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ApplicationMultiCriteriaImpactsRequestRest"
+      responses:
+        "200":
+          description: Return the aggregated impact totals per criterion
           content:
             'application/json':
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/ApplicationIndicatorRest"
+                  $ref: "#/components/schemas/ApplicationMultiCriteriaImpactRest"
         "400":
           $ref: '#/components/responses/BadRequestError'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
+        "500":
+          $ref: '#/components/responses/InternalServerError'
+
+  /organizations/{organization}/workspaces/{workspace}/inventories/{inventoryId}/indicators/applications/multi-criteria:
+    parameters:
+      - $ref: '#/components/parameters/organizationPathParam'
+      - $ref: '#/components/parameters/workspacePathParam'
+      - $ref: '#/components/parameters/inventoryIdPathParam'
+    post:
+      description: >
+        Endpoint to retrieve the dual-axis (graphLevel x repartition) aggregation powering the
+        graph view and its click-through drill-down (Global -> Domain -> SubDomain -> Application -> VM).
+        graphLevel=global performs no node/hierarchy grouping (see solution.md §4.2/§4.3).
+      tags:
+        - inventory-indicator
+      operationId: getApplicationMultiCriteriaIndicators
+      x-custom-role: "hasRole('INVENTORY_READ')"
+      requestBody:
+        description: criteria, drill/repartition selection and shared + click-path filters
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ApplicationMultiCriteriaRequestRest"
+      responses:
+        "200":
+          description: Return the dual-axis aggregated graph data
+          content:
+            'application/json':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApplicationMultiCriteriaRest"
+        "400":
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        "500":
+          $ref: '#/components/responses/InternalServerError'
+
+  /organizations/{organization}/workspaces/{workspace}/inventories/{inventoryId}/indicators/applications/multi-criteria/counts:
+    parameters:
+      - $ref: '#/components/parameters/organizationPathParam'
+      - $ref: '#/components/parameters/workspacePathParam'
+      - $ref: '#/components/parameters/inventoryIdPathParam'
+    post:
+      description: >
+        Optional endpoint to retrieve standing hierarchy counts (header KPIs) for the whole
+        current filter scope, independent of any single drill node (see solution.md §4.3).
+      tags:
+        - inventory-indicator
+      operationId: getApplicationHierarchyCounts
+      x-custom-role: "hasRole('INVENTORY_READ')"
+      requestBody:
+        description: shared filter dimensions
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ApplicationCriteriaFilterRest"
+      responses:
+        "200":
+          description: Return the standing hierarchy counts
+          content:
+            'application/json':
+              schema:
+                $ref: "#/components/schemas/ApplicationHierarchyCountsRest"
+        "400":
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        "500":
+          $ref: '#/components/responses/InternalServerError'
+
+  /organizations/{organization}/workspaces/{workspace}/inventories/{inventoryId}/indicators/applications/filters:
+    parameters:
+      - $ref: '#/components/parameters/organizationPathParam'
+      - $ref: '#/components/parameters/workspacePathParam'
+      - $ref: '#/components/parameters/inventoryIdPathParam'
+    get:
+      description: >
+        Endpoint to retrieve all distinct environment/equipmentType/lifeCycle/domain/subDomain
+        values available for the inventory's latest task, used to populate the application
+        view's filter selectors (see solution.md §4.0).
+      tags:
+        - inventory-indicator
+      operationId: getApplicationFilters
+      x-custom-role: "hasRole('INVENTORY_READ')"
+      responses:
+        "200":
+          description: Return the distinct filter values
+          content:
+            'application/json':
+              schema:
+                $ref: "#/components/schemas/ApplicationFiltersRest"
+        "400":
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        "404":
+          $ref: '#/components/responses/NotFoundError'
         "500":
           $ref: '#/components/responses/InternalServerError'
 
@@ -250,6 +419,45 @@ paths:
         "500":
           $ref: '#/components/responses/InternalServerError'
 
+  /organizations/{organization}/workspaces/{workspace}/inventories/{inventoryId}/indicators/virtualEquipmentsLowImpact/count:
+    parameters:
+      - $ref: '#/components/parameters/organizationPathParam'
+      - $ref: '#/components/parameters/workspacePathParam'
+      - $ref: '#/components/parameters/inventoryIdPathParam'
+    post:
+      summary: endpoint to retrieve aggregated total and low-impact virtual equipment counts
+      description: >
+        Returns the aggregated total and low-impact virtual equipment counts for the given
+        filters. 100% database-side aggregation, replacing the client-side reduce previously
+        performed on the full virtualEquipmentsLowImpact list. POST + JSON body is used because
+        the filter lists (environment/equipmentType/lifeCycle/domain/subDomain) may contain
+        several thousand values, following the same pattern as the other application indicator
+        endpoints.
+      tags:
+        - inventory-indicator
+      operationId: getVirtualEquipmentsLowImpactCount
+      x-custom-role: "hasRole('INVENTORY_READ')"
+      requestBody:
+        description: shared filter dimensions
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ApplicationCriteriaFilterRest"
+      responses:
+        "200":
+          description: return the aggregated total and low-impact virtual equipment counts
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VirtualEquipmentLowImpactCountRest'
+        "400":
+          $ref: '#/components/responses/BadRequestError'
+        "401":
+          $ref: '#/components/responses/UnauthorizedError'
+        "500":
+          $ref: '#/components/responses/InternalServerError'
+
   /organizations/{organization}/workspaces/{workspace}/inventories/{inventoryId}/indicators/virtualEquipmentsElecConsumption:
     parameters:
       - $ref: '#/components/parameters/organizationPathParam'
@@ -274,6 +482,44 @@ paths:
         "400":
           $ref: '#/components/responses/BadRequestError'
         '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        "500":
+          $ref: '#/components/responses/InternalServerError'
+
+  /organizations/{organization}/workspaces/{workspace}/inventories/{inventoryId}/indicators/virtualEquipmentsElecConsumption/sum:
+    parameters:
+      - $ref: '#/components/parameters/organizationPathParam'
+      - $ref: '#/components/parameters/workspacePathParam'
+      - $ref: '#/components/parameters/inventoryIdPathParam'
+    post:
+      summary: endpoint to retrieve aggregated electricity consumption sum and virtual equipment quantity sum
+      description: >
+        Returns the aggregated electricity consumption sum and virtual equipment quantity sum for the given
+        filters. 100% database-side aggregation, replacing the client-side reduce previously performed on the
+        full virtualEquipmentsElecConsumption list. POST + JSON body is used because the filter lists
+        (environment/equipmentType/lifeCycle/domain/subDomain) may contain several thousand values, following
+        the same pattern as the other application indicator endpoints.
+      tags:
+        - inventory-indicator
+      operationId: getVirtualEquipmentsElecConsumptionSum
+      x-custom-role: "hasRole('INVENTORY_READ')"
+      requestBody:
+        description: shared filter dimensions
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ApplicationCriteriaFilterRest"
+      responses:
+        "200":
+          description: return the aggregated electricity consumption sum and virtual equipment quantity sum
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VirtualEquipmentElecConsumptionSumRest'
+        "400":
+          $ref: '#/components/responses/BadRequestError'
+        "401":
           $ref: '#/components/responses/UnauthorizedError'
         "500":
           $ref: '#/components/responses/InternalServerError'

@@ -5,20 +5,27 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { Observable, forkJoin } from "rxjs";
+import { Observable, forkJoin, of } from "rxjs";
 import { Constants } from "src/constants";
+import { ApplicationFiltersRest } from "../../interfaces/filter.interface";
 import {
     ApplicationCriteriaFootprint,
     ApplicationFootprint,
+    ApplicationIndicatorsPage,
+    ApplicationIndicatorsPageRequest,
+    ApplicationMultiCriteriaImpact,
+    ApplicationMultiCriteriaImpactsRequest,
+    ApplicationMultiCriteriaRequest,
+    ApplicationMultiCriteriaResponse,
     Criterias,
     Datacenter,
     PhysicalEquipmentAvgAge,
     PhysicalEquipmentLowImpact,
     PhysicalEquipmentsElecConsumption,
-    VirtualEquipmentElectricityConsumption,
-    VirtualEquipmentLowImpact,
+    VirtualEquipmentElecConsumptionSum,
+    VirtualEquipmentLowImpactCount,
 } from "../../interfaces/footprint.interface";
 import { transformEquipmentType } from "../mapper/array";
 
@@ -37,8 +44,54 @@ export class FootprintDataService {
     }
 
     getApplicationFootprint(inventoryId: number): Observable<ApplicationFootprint[]> {
-        return this.http.get<ApplicationFootprint[]>(
+        // return this.http.get<ApplicationFootprint[]>(
+        //     `${endpoint}/${inventoryId}/indicators/applications`,
+        // );
+        return of([]);
+    }
+
+    getApplicationIndicatorsPage(
+        inventoryId: number,
+        request: ApplicationIndicatorsPageRequest,
+        page: number,
+        size: number,
+        sortField: string,
+        sortDirection: "asc" | "desc",
+    ): Observable<ApplicationIndicatorsPage> {
+        const params = new HttpParams()
+            .set("page", page)
+            .set("size", size)
+            .set("sort", `${sortField},${sortDirection}`);
+        return this.http.post<ApplicationIndicatorsPage>(
             `${endpoint}/${inventoryId}/indicators/applications`,
+            request,
+            { params },
+        );
+    }
+
+    getApplicationFilters(inventoryId: number): Observable<ApplicationFiltersRest> {
+        return this.http.get<ApplicationFiltersRest>(
+            `${endpoint}/${inventoryId}/indicators/applications/filters`,
+        );
+    }
+
+    getApplicationMultiCriteriaImpacts(
+        inventoryId: number,
+        filters: ApplicationMultiCriteriaImpactsRequest,
+    ): Observable<ApplicationMultiCriteriaImpact[]> {
+        return this.http.post<ApplicationMultiCriteriaImpact[]>(
+            `${endpoint}/${inventoryId}/indicators/applications/multi-criteria-impacts`,
+            filters,
+        );
+    }
+
+    getApplicationMultiCriteriaGraph(
+        inventoryId: number,
+        request: ApplicationMultiCriteriaRequest,
+    ): Observable<ApplicationMultiCriteriaResponse[]> {
+        return this.http.post<ApplicationMultiCriteriaResponse[]>(
+            `${endpoint}/${inventoryId}/indicators/applications/multi-criteria`,
+            request,
         );
     }
 
@@ -102,15 +155,24 @@ export class FootprintDataService {
         });
     }
 
-    getApplicationKeyIndicators(inventoryId: number) {
-        const lowImpact$ = this.http.get<VirtualEquipmentLowImpact[]>(
-            `${endpoint}/${inventoryId}/indicators/virtualEquipmentsLowImpact`,
+    getApplicationLowImpactCount(
+        inventoryId: number,
+        filters: ApplicationIndicatorsPageRequest,
+    ): Observable<VirtualEquipmentLowImpactCount> {
+        return this.http.post<VirtualEquipmentLowImpactCount>(
+            `${endpoint}/${inventoryId}/indicators/virtualEquipmentsLowImpact/count`,
+            filters,
         );
-        const elecConsumption$ = this.http.get<VirtualEquipmentElectricityConsumption[]>(
-            `${endpoint}/${inventoryId}/indicators/virtualEquipmentsElecConsumption`,
-        );
+    }
 
-        return forkJoin([lowImpact$, elecConsumption$]);
+    getApplicationElecConsumptionSum(
+        inventoryId: number,
+        filters: ApplicationIndicatorsPageRequest,
+    ): Observable<VirtualEquipmentElecConsumptionSum> {
+        return this.http.post<VirtualEquipmentElecConsumptionSum>(
+            `${endpoint}/${inventoryId}/indicators/virtualEquipmentsElecConsumption/sum`,
+            filters,
+        );
     }
 
     getSourceList(inventoryId: number) {

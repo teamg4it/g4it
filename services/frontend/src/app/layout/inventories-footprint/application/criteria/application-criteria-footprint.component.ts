@@ -9,6 +9,8 @@ import { NgClass, NgTemplateOutlet } from "@angular/common";
 import {
     Component,
     computed,
+    DestroyRef,
+    effect,
     inject,
     input,
     Input,
@@ -25,19 +27,24 @@ import { NgxEchartsDirective } from "ngx-echarts";
 import { PrimeTemplate } from "primeng/api";
 import { Button } from "primeng/button";
 import { SelectModule } from "primeng/select";
+import { finalize } from "rxjs";
 import { sortByProperty } from "sort-by-property";
 import {
     GraphDescriptionContent,
     StatusCountMap,
 } from "src/app/core/interfaces/digital-service.interfaces";
 import {
+    ApplicationFiltersRest,
     ConstantApplicationFilter,
     Filter,
     TransformedDomain,
 } from "src/app/core/interfaces/filter.interface";
 import {
     ApplicationFootprint,
+    ApplicationGraphLevel,
     ApplicationImpact,
+    ApplicationMultiCriteriaRequest,
+    ApplicationMultiCriteriaResponse,
     ImpactGraph,
     RepartitionYAxisKeys,
 } from "src/app/core/interfaces/footprint.interface";
@@ -45,6 +52,8 @@ import { Inventory } from "src/app/core/interfaces/inventory.interfaces";
 import { DecimalsPipe } from "src/app/core/pipes/decimal.pipe";
 import { IntegerPipe } from "src/app/core/pipes/integer.pipe";
 import { FilterService } from "src/app/core/service/business/filter.service";
+import { FootprintService } from "src/app/core/service/business/footprint.service";
+import { FootprintDataService } from "src/app/core/service/data/footprint-data.service";
 import {
     getColorFormatter,
     getLabelFormatter,
@@ -84,6 +93,7 @@ export class ApplicationCriteriaFootprintComponent
     @Input() filterFields: ConstantApplicationFilter[] = [];
     @Input() selectedInventoryId!: number;
     inventory = input<Inventory>();
+    filterMetadata = input<ApplicationFiltersRest | null>(null);
     allUnmodifiedFilters = input<Filter<string | TransformedDomain>>({});
     showDataConsistencyBtn = false;
     showInconsitencyGraph = false;
@@ -92,6 +102,12 @@ export class ApplicationCriteriaFootprintComponent
     allCriteriaMap: StatusCountMap = {};
     protected footprintStore = inject(FootprintStoreService);
     private readonly filterService = inject(FilterService);
+    private readonly footprintService = inject(FootprintService);
+    private readonly footprintDataService = inject(FootprintDataService);
+    private readonly destroyRef = inject(DestroyRef);
+    private readonly graphResponse = signal<ApplicationMultiCriteriaResponse[] | null>(
+        null,
+    );
     private readonly router = inject(Router);
     private readonly route = inject(ActivatedRoute);
     textDescriptionImpacts: {
@@ -108,6 +124,10 @@ export class ApplicationCriteriaFootprintComponent
 
     selectedUnit: string = "peopleeq";
     noData: Signal<boolean> = computed(() => {
+        const response = this.graphResponse();
+        if (response !== null) {
+            return !response.some((item) => item.nodes.length > 0);
+        }
         return this.checkIfNoData(this.footprintStore.applicationSelectedFilters());
     });
     domainFilter: string[] = [];
@@ -118,6 +138,48 @@ export class ApplicationCriteriaFootprintComponent
     yAxislist: string[] = [];
     dimensions = Constants.APPLICATION_DIMENSIONS;
     selectedDimension = computed(() => this.footprintStore.appDimension());
+    private readonly graphRequest = computed(() => {
+        const metadata = this.filterMetadata();
+        if (!metadata) return null;
+        const level = this.footprintStore.appGraphType();
+        const graphLevels: Record<string, ApplicationGraphLevel> = {
+            global: "domain",
+            domain: "subDomain",
+            subdomain: "application",
+            application: "virtualEquipment",
+        };
+        const filters: ApplicationMultiCriteriaRequest["filters"] = {
+            ...this.footprintService.mapApplicationSummaryFilters(
+                this.footprintStore.applicationSelectedFilters(),
+                metadata,
+                {
+                    domain: level !== "global" ? this.footprintStore.appDomain() : "",
+                    subDomain:
+                        level === "subdomain" || level === "application"
+                            ? this.footprintStore.appSubDomain()
+                            : "",
+                },
+            ),
+        };
+        if (level === "application" && this.footprintStore.appApplication()) {
+            filters.applicationName = [this.footprintStore.appApplication()];
+        }
+        const dimension = this.selectedDimension();
+        const request: ApplicationMultiCriteriaRequest = {
+            criteria: [
+                this.footprintStore
+                    .applicationCriteria()
+                    .replaceAll("-", "_")
+                    .toUpperCase(),
+            ],
+            graphLevel: graphLevels[level] ?? "domain",
+            repartition: this.dimensions.includes(dimension)
+                ? (dimension as ApplicationMultiCriteriaRequest["repartition"])
+                : "lifeCycle",
+            filters,
+        };
+        return { inventoryId: this.inventory()?.id, request };
+    });
     showBackButton = computed(() => {
         if (this.allUnmodifiedFilters()["domain"]?.length <= 2) {
             if (
@@ -165,7 +227,9 @@ export class ApplicationCriteriaFootprintComponent
     });
 
     options: Signal<EChartsOption> = computed(() => {
-        const localFootprint = this.appComponent.formatLifecycleImpact([this.footprint]);
+        const localFootprint = this.appComponent.formatLifecycleImpact(
+            this.footprint ? [this.footprint] : [],
+        );
         return this.loadBarChartOption(
             this.footprintStore.applicationSelectedFilters(),
             localFootprint,
@@ -183,6 +247,31 @@ export class ApplicationCriteriaFootprintComponent
         override globalStore: GlobalStoreService,
     ) {
         super(translate, integerPipe, decimalsPipe, globalStore);
+        effect((onCleanup) => {
+            const graphRequest = this.graphRequest();
+            const inventoryId = graphRequest?.inventoryId || this.selectedInventoryId;
+            if (!graphRequest || !inventoryId) return;
+            this.graphResponse.set([]);
+            let superseded = false;
+            this.globalStore.setLoading(true);
+            const subscription = this.footprintDataService
+                .getApplicationMultiCriteriaGraph(inventoryId, graphRequest.request)
+                .pipe(
+                    finalize(() => {
+                        // A newer request takes over the loader
+                        if (!superseded) this.globalStore.setLoading(false);
+                    }),
+                )
+                .subscribe({
+                    next: (response) => this.graphResponse.set(response),
+                    error: () => this.graphResponse.set([]),
+                });
+            onCleanup(() => {
+                superseded = true;
+                subscription.unsubscribe();
+            });
+        });
+        this.destroyRef.onDestroy(() => this.globalStore.setLoading(false));
     }
 
     ngOnChanges(changes: SimpleChanges): void {
@@ -275,6 +364,10 @@ export class ApplicationCriteriaFootprintComponent
         selectedCriteria: string,
         selectedDimension: string,
     ) {
+        const response = this.graphResponse();
+        if (response !== null) {
+            return this.computeApiGraphData(response, selectedCriteria);
+        }
         this.processBarChartData(
             barChartData,
             selectedFilters,
@@ -282,6 +375,61 @@ export class ApplicationCriteriaFootprintComponent
             selectedDimension,
         );
         return this.initGraphData(this.impactOrder);
+    }
+
+    private computeApiGraphData(
+        response: ApplicationMultiCriteriaResponse[],
+        selectedCriteria: string,
+    ) {
+        const apiCriteria = selectedCriteria.replaceAll("-", "_").toUpperCase();
+        const nodes = [
+            ...(response.find(
+                (item) =>
+                    item.criteria.replaceAll("-", "_").toUpperCase() === apiCriteria,
+            )?.nodes ?? []),
+        ].sort((first, second) => second.sip - first.sip);
+        const result = {
+            xAxis: [] as string[],
+            yAxis: [] as any[],
+            unitImpact: [] as number[],
+            subdomainCount: [] as number[],
+            appCount: [] as number[],
+            equipmentList: [] as string[],
+            environmentList: [] as string[],
+            clusterList: [] as string[],
+            status: {} as StatusCountMap,
+        };
+        for (const node of nodes) {
+            const label = node.label || Constants.EMPTY;
+            result.xAxis.push(label);
+            result.unitImpact.push(node.impact);
+            result.subdomainCount.push(node.subDomainCount ?? 0);
+            result.appCount.push(node.applicationCount ?? 0);
+            result.equipmentList.push(node.equipmentType ?? "");
+            result.environmentList.push(node.environment ?? "");
+            result.clusterList.push(node.cluster ?? "");
+            result.status[label] = {
+                status: {
+                    ok: node.consistentCount,
+                    error: node.inconsistentCount,
+                    total: node.consistentCount + node.inconsistentCount,
+                },
+            };
+            for (const repartition of node.repartitions) {
+                this.addYAxisEntry(result.yAxis, repartition.label || Constants.EMPTY, [
+                    label,
+                    repartition.impact,
+                    repartition.sip,
+                    node.applicationCount ?? 0,
+                    node.subDomainCount ?? 0,
+                    node.cluster,
+                    node.environment,
+                    node.equipmentType,
+                ]);
+            }
+        }
+        result.yAxis.sort((first, second) => second.name.localeCompare(first.name));
+        return result;
     }
 
     private processBarChartData(
@@ -484,6 +632,13 @@ export class ApplicationCriteriaFootprintComponent
         return value === undefined || value === null || value === ""
             ? Constants.EMPTY
             : String(value);
+    }
+
+    private translateSeriesName(name: string, selectedDimension: string): string {
+        if (selectedDimension !== "lifeCycle") return name;
+        const translationKey = `acvStep.${name}`;
+        const translatedName = this.translate.instant(translationKey);
+        return translatedName === translationKey ? name : translatedName;
     }
 
     initGraphData(impactOrder: any[]): any {
@@ -705,11 +860,17 @@ export class ApplicationCriteriaFootprintComponent
                         // Use pre-cached translations for better performance
                         const graphType = this.footprintStore.appGraphType();
                         let extraInfo = "";
+                        const applicationCount = Array.isArray(params.data[3])
+                            ? params.data[3].length
+                            : params.data[3];
+                        const subDomainCount = Array.isArray(params.data[4])
+                            ? params.data[4].length
+                            : params.data[4];
 
                         if (graphType === "global") {
-                            extraInfo = `<br>${tooltipTranslations.nbSd} : ${params.data[4]?.length}<br>${tooltipTranslations.nbApp} : ${params.data[3]?.length}`;
+                            extraInfo = `<br>${tooltipTranslations.nbSd} : ${subDomainCount}<br>${tooltipTranslations.nbApp} : ${applicationCount}`;
                         } else if (graphType === "domain") {
-                            extraInfo = `<br>${tooltipTranslations.nbApp} : ${params.data[3]?.length}`;
+                            extraInfo = `<br>${tooltipTranslations.nbApp} : ${applicationCount}`;
                         } else if (graphType === "application") {
                             extraInfo = `<br>${tooltipTranslations.cluster} : ${params.data[5]}<br>${tooltipTranslations.equipment} : ${params.data[7]}<br>${tooltipTranslations.environment} : ${params.data[6]}`;
                         }
@@ -731,13 +892,18 @@ export class ApplicationCriteriaFootprintComponent
 
                     return `
                         <div>
-                            <span style="font-weight: bold; margin-right: 15px;">${
-                                params.seriesName
-                            } : </span>
+                            <span style="font-weight: bold; margin-right: 15px;">${this.translateSeriesName(
+                                params.seriesName,
+                                selectedDimension,
+                            )} : </span>
                             ${impact}
                         </div>
                     `;
                 },
+            },
+            legend: {
+                formatter: (name: string) =>
+                    this.translateSeriesName(name, selectedDimension),
             },
             grid: {
                 left: "3%",
@@ -832,9 +998,9 @@ export class ApplicationCriteriaFootprintComponent
 
         return {
             description: this.translate.instant(`${translationKey}description`, {
-                criteria: Object.keys(this.footprint)
-                    .map((impact) => this.translate.instant(`criteria.${impact}`).title)
-                    .join(", "),
+                criteria: this.translate.instant(
+                    `criteria.${this.footprintStore.applicationCriteria()}.title`,
+                ),
                 module: this.translate.instant("ds-graph-module.inventory"),
             }),
             scale: this.translate.instant(`${key}scale`),
@@ -856,7 +1022,30 @@ export class ApplicationCriteriaFootprintComponent
         let textDescription = "";
         let textImpacts = [];
         const criteriaKey = this.footprintStore.applicationCriteria();
-        const filterImpacts = [...this.impactOrder]
+        const graphResponse = this.graphResponse();
+        const normalizedCriteria = criteriaKey.replaceAll("-", "_").toUpperCase();
+        const apiImpacts = graphResponse
+            ?.find(
+                (item) =>
+                    item.criteria.replaceAll("-", "_").toUpperCase() ===
+                    normalizedCriteria,
+            )
+            ?.nodes.map((node) => ({
+                sipImpact: node.sip,
+                unitImpact: node.impact,
+                repartYaxis: Object.fromEntries(
+                    node.repartitions.map((repartition) => [
+                        repartition.label,
+                        {
+                            sip: repartition.sip,
+                            raw: repartition.impact,
+                        },
+                    ]),
+                ),
+            }));
+        const filterImpacts = [
+            ...(graphResponse === null ? this.impactOrder : (apiImpacts ?? [])),
+        ]
             .sort((a, b) => b.sipImpact - a.sipImpact)
             .slice(0, 3);
         for (const [index, impact] of filterImpacts.entries()) {
