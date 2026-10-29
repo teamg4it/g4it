@@ -125,10 +125,14 @@ class LoadVirtualEquipmentServiceTest {
     }
 
     @Test
-    void testGetVirtualEquipmentCount() {
+    void testGetVirtualAndCloudServiceCountsSeparately() {
         when(inVirtualEquipmentRepository.countQuantityByDistinctNameByInventoryId(1L)).thenReturn(3L);
-        Long result = service.getVirtualEquipmentCount(1L);
-        assertEquals(3L, result);
+        when(inVirtualEquipmentRepository.countCloudServiceQuantityByDistinctNameByInventoryId(1L)).thenReturn(5L);
+
+        assertEquals(3L, service.getVirtualEquipmentCount(1L));
+        assertEquals(5L, service.getCloudServiceCount(1L));
+
         verify(inVirtualEquipmentRepository).countQuantityByDistinctNameByInventoryId(1L);
+        verify(inVirtualEquipmentRepository).countCloudServiceQuantityByDistinctNameByInventoryId(1L);
     }
 }
