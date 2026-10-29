@@ -91,6 +91,8 @@ public class InventoryIndicatorController implements InventoryIndicatorApiDelega
      * §4.4 - DB-side filtered + paginated table view, using the same shared
      * filter dimensions as §4.1-4.3, including criterion. POST + JSON body is
      * used because the filter lists can contain large numbers of values.
+     * {@code sort} is restricted to {@link com.soprasteria.g4it.backend.apiinout.repository.ApplicationIndicatorSortFields#ALLOWED}
+     * (applicationName, criteria, sip, impact); any other value is ignored.
      */
     @Override
     public ResponseEntity<ApplicationIndicatorsPageRest> getApplicationIndicators(final String organization,
@@ -98,14 +100,42 @@ public class InventoryIndicatorController implements InventoryIndicatorApiDelega
                                                                                    final Long inventoryId,
                                                                                    final Integer page,
                                                                                    final Integer size,
+                                                                                   final String sort,
                                                                                    final ApplicationCriteriaFilterRest requestRest) {
         final int pageNumber = page == null ? 0 : page;
         final int pageSize = size == null || size < 1 ? 20 : size;
         final var filters = requestRest == null ? null : applicationIndicatorMapper.toFilterBO(requestRest);
+        final org.springframework.data.domain.Sort sortOrder = parseApplicationIndicatorsSort(sort);
+        final org.springframework.data.domain.Pageable pageable = sortOrder.isSorted()
+                ? PageRequest.of(pageNumber, pageSize, sortOrder)
+                : PageRequest.of(pageNumber, pageSize);
         return ResponseEntity.ok().body(indicatorRestMapper.toApplicationIndicatorsPageDto(
                 inventoryIndicatorService.getApplicationIndicatorsPage(organization, workspace, inventoryId,
-                        filters, PageRequest.of(pageNumber, pageSize))));
+                        filters, pageable)));
     }
+
+    /**
+     * Parses the {@code sort} query parameter ("field,direction", e.g.
+     * "sip,desc") into a {@link org.springframework.data.domain.Sort},
+     * restricted to {@link com.soprasteria.g4it.backend.apiinout.repository.ApplicationIndicatorSortFields#ALLOWED}.
+     * Falls back to unsorted if missing, blank or not whitelisted.
+     */
+    private static org.springframework.data.domain.Sort parseApplicationIndicatorsSort(final String sort) {
+        if (sort == null || sort.isBlank()) {
+            return org.springframework.data.domain.Sort.unsorted();
+        }
+        final String[] parts = sort.split(",", 2);
+        final String field = parts[0].trim();
+        if (!com.soprasteria.g4it.backend.apiinout.repository.ApplicationIndicatorSortFields.ALLOWED.containsKey(field)) {
+            return org.springframework.data.domain.Sort.unsorted();
+        }
+        final org.springframework.data.domain.Sort.Direction direction =
+                parts.length > 1 && "desc".equalsIgnoreCase(parts[1].trim())
+                        ? org.springframework.data.domain.Sort.Direction.DESC
+                        : org.springframework.data.domain.Sort.Direction.ASC;
+        return org.springframework.data.domain.Sort.by(direction, field);
+    }
+
 
     /**
      * {@inheritDoc}

@@ -83,6 +83,15 @@ paths:
             type: integer
             default: 10
           required: false
+        - in: query
+          name: sort
+          description: >
+            Sort directive as "field,direction" (e.g. "sip,desc"). Only
+            applicationName, criteria, sip and impact are accepted; any
+            other value is ignored and the default (id ascending) is used.
+          schema:
+            type: string
+          required: false
       requestBody:
         description: shared filter dimensions, including criterion
         required: false
