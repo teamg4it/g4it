@@ -443,7 +443,6 @@ export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboar
                 .map((criteria) => {
                     return this.translate.instant(`criteria.${criteria}`).title;
                 });
-            console.log(this.xAxisInput);
         }
 
         const criteriaCountMap = criteriaCalculated.criteriasCount || {};

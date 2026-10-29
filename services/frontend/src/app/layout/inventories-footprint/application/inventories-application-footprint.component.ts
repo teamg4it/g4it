@@ -363,6 +363,7 @@ export class InventoriesApplicationFootprintComponent implements OnInit, OnDestr
     waitingLoop = 10000;
     toReloadInventory = false;
     private initialSummaryRequestSent = false;
+    private pendingRequests = 0;
 
     constructor(
         private readonly activatedRoute: ActivatedRoute,
@@ -377,30 +378,22 @@ export class InventoriesApplicationFootprintComponent implements OnInit, OnDestr
                 const filters = this.initialSummaryRequestSent ? request.filters : {};
                 this.initialSummaryRequestSent = true;
                 this.summaryError.set(false);
-                let superseded = false;
-                this.globalStore.setLoading(true);
+                this.startLoading();
                 const subscription = this.footprintDataService
                     .getApplicationMultiCriteriaImpacts(inventoryId, filters)
-                    .pipe(
-                        finalize(() => {
-                            // A newer request takes over the loader
-                            if (!superseded) this.globalStore.setLoading(false);
-                        }),
-                    )
+                    .pipe(finalize(() => this.stopLoading()))
                     .subscribe({
                         next: (impacts) => this.summaryImpacts.set(impacts),
                         error: () => this.summaryError.set(true),
                     });
-                onCleanup(() => {
-                    superseded = true;
-                    subscription.unsubscribe();
-                });
+                onCleanup(() => subscription.unsubscribe());
             });
         });
         effect((onCleanup) => {
             const request = this.keyIndicatorsRequest();
             if (!request) return;
             untracked(() => {
+                this.startLoading();
                 const subscription = forkJoin([
                     this.footprintDataService.getApplicationLowImpactCount(
                         request.inventoryId,
@@ -410,20 +403,32 @@ export class InventoriesApplicationFootprintComponent implements OnInit, OnDestr
                         request.inventoryId,
                         request.filters,
                     ),
-                ]).subscribe({
-                    next: ([lowImpact, elecConsumption]) => {
-                        this.lowImpactCount.set(lowImpact);
-                        this.elecConsumptionSum.set(elecConsumption);
-                    },
-                    error: () => {
-                        this.lowImpactCount.set(null);
-                        this.elecConsumptionSum.set(null);
-                    },
-                });
+                ])
+                    .pipe(finalize(() => this.stopLoading()))
+                    .subscribe({
+                        next: ([lowImpact, elecConsumption]) => {
+                            this.lowImpactCount.set(lowImpact);
+                            this.elecConsumptionSum.set(elecConsumption);
+                        },
+                        error: () => {
+                            this.lowImpactCount.set(null);
+                            this.elecConsumptionSum.set(null);
+                        },
+                    });
                 onCleanup(() => subscription.unsubscribe());
             });
         });
         this.destroyRef.onDestroy(() => this.globalStore.setLoading(false));
+    }
+
+    private startLoading() {
+        this.pendingRequests++;
+        this.globalStore.setLoading(true);
+    }
+
+    private stopLoading() {
+        this.pendingRequests = Math.max(0, this.pendingRequests - 1);
+        if (this.pendingRequests === 0) this.globalStore.setLoading(false);
     }
 
     ngOnInit() {
