@@ -1478,6 +1478,7 @@ components:
       properties:
         content:
           type: string
+          minLength: 8
           description: Content of the release notes
 
 
