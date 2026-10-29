@@ -60,7 +60,6 @@ public class DatabaseCacheConfiguration {
             "inventoryExists",
             "applicationMultiCriteriaImpacts",
             "applicationMultiCriteria",
-            "applicationHierarchyCounts",
             "applicationFilters",
             "virtualEquipmentLowImpactCount",
             "virtualEquipmentElecConsumptionSum"

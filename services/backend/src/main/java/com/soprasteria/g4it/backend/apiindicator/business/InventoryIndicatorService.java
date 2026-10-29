@@ -160,24 +160,6 @@ public class InventoryIndicatorService {
     }
 
     /**
-     * §4.3 (optional) - get standing hierarchy counts (header KPIs) for the whole
-     * current filter scope.
-     *
-     * @param organization the organization.
-     * @param workspaceId  the workspaceId.
-     * @param inventoryId  the inventory id.
-     * @param filters      the shared filter dimensions.
-     * @return the aggregated hierarchy counts.
-     */
-    public ApplicationHierarchyCountsBO getApplicationHierarchyCounts(final String organization,
-                                                                       final Long workspaceId,
-                                                                       final Long inventoryId,
-                                                                       final ApplicationCriteriaFilterBO filters) {
-        final InventoryBO inventory = inventoryService.getInventory(organization, workspaceId, inventoryId);
-        return indicatorService.getApplicationHierarchyCounts(getLastTaskId(inventory), filters);
-    }
-
-    /**
      * Get aggregated total and low-impact virtual equipment counts, filtered by
      * the shared dimensions.
      *

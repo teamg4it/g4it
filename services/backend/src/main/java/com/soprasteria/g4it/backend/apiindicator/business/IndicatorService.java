@@ -245,21 +245,7 @@ public class IndicatorService {
                 outApplicationRepository.aggregateMultiCriteria(taskId, criteria, graphLevel, repartition, filters));
     }
 
-    /**
-     * §4.3 (optional) - retrieve standing hierarchy counts (header KPIs) for the
-     * whole current filter scope.
-     *
-     * @param taskId  the task id.
-     * @param filters the shared filter dimensions.
-     * @return the aggregated hierarchy counts.
-     */
-    @org.springframework.cache.annotation.Cacheable(value = "applicationHierarchyCounts", key = "{#taskId, #filters}")
-    public ApplicationHierarchyCountsBO getApplicationHierarchyCounts(final Long taskId,
-                                                                       final ApplicationCriteriaFilterBO filters) {
-        return applicationIndicatorMapper.toHierarchyCountsBO(outApplicationRepository.countHierarchy(taskId, filters));
-    }
-
-    /**
+     /**
      * Retrieve aggregated total and low-impact virtual equipment counts, filtered
      * by the shared dimensions. 100% database-side aggregation, replacing the
      * client-side reduce previously performed on the full virtualEquipmentsLowImpact

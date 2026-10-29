@@ -12,7 +12,6 @@ import com.soprasteria.g4it.backend.apiindicator.model.GraphLevel;
 import com.soprasteria.g4it.backend.apiindicator.model.RepartitionType;
 import com.soprasteria.g4it.backend.apiinout.modeldb.OutApplication;
 import com.soprasteria.g4it.backend.apiinout.repository.projection.ApplicationFiltersProjection;
-import com.soprasteria.g4it.backend.apiinout.repository.projection.HierarchyCountsProjection;
 import com.soprasteria.g4it.backend.apiinout.repository.projection.MultiCriteriaAggregateProjection;
 import com.soprasteria.g4it.backend.apiinout.repository.projection.MultiCriteriaImpactProjection;
 import com.soprasteria.g4it.backend.apiinout.repository.projection.VirtualEquipmentElecConsumptionSumProjection;
@@ -47,11 +46,6 @@ public interface OutApplicationCustomRepository {
                                                                    RepartitionType repartition,
                                                                    ApplicationCriteriaFilterBO filters);
 
-    /**
-     * §4.3 - optional standing hierarchy counts (header KPIs) for the whole
-     * current filter scope.
-     */
-    HierarchyCountsProjection countHierarchy(Long taskId, ApplicationCriteriaFilterBO filters);
 
     /**
      * §4.0 - distinct environment/equipmentType/lifeCycle/domain/subDomain values
