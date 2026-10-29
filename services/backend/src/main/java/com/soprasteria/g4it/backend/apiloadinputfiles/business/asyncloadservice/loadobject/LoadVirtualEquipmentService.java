@@ -99,4 +99,8 @@ public class LoadVirtualEquipmentService {
     public Long getVirtualEquipmentCount(Long inventoryId) {
         return inVirtualEquipmentRepository.countQuantityByDistinctNameByInventoryId(inventoryId);
     }
+
+    public Long getCloudServiceCount(Long inventoryId) {
+        return inVirtualEquipmentRepository.countCloudServiceQuantityByDistinctNameByInventoryId(inventoryId);
+    }
 }

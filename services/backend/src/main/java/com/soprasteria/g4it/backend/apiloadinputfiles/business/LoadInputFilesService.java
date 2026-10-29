@@ -146,7 +146,8 @@ public class LoadInputFilesService {
                 .workspaceName(workspaceService.getWorkspaceById(workspaceId).getName())
                 .inventoryId(inventoryId)
                 .datetime(LocalDateTime.now(clock))
-                .hasVirtualEquipments(inventory.getVirtualEquipmentCount() > 0)
+                .hasVirtualEquipments(inventory.getVirtualEquipmentCount() > 0
+                        || (inventory.getCloudServiceCount() != null && inventory.getCloudServiceCount() > 0))
                 .hasApplications(inventory.getApplicationCount() > 0)
                 .build();
 
@@ -307,7 +308,8 @@ public class LoadInputFilesService {
                                 .inventoryId(task.getInventory().getId())
                                 .locale(Locale.getDefault())
                                 .datetime(now)
-                                .hasVirtualEquipments(inventory.getVirtualEquipmentCount() > 0)
+                                .hasVirtualEquipments(inventory.getVirtualEquipmentCount() > 0
+                                        || (inventory.getCloudServiceCount() != null && inventory.getCloudServiceCount() > 0))
                                 .hasApplications(inventory.getApplicationCount() > 0)
                                 .build();
                     } else {
