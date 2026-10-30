@@ -45,6 +45,8 @@ public class InventoryBO {
 
     private Long virtualEquipmentCount;
 
+    private Long cloudServiceCount;
+
     private Long applicationCount;
 
     private Long aiServiceCount;

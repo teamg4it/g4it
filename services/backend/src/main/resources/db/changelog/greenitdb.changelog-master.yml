@@ -69,6 +69,8 @@ databaseChangeLog:
   - include:
       file: db/changelog/greenitdb.changelog-add-inventory-aiservice-count.yml
   - include:
+      file: db/changelog/greenitdb.changelog-add-inventory-cloudservice-count.yml
+  - include:
       file: db/changelog/greenitdb.changelog-add-ai-server-host-data.yml
   - include:
       file: db/changelog/greenitdb.changelog-add-ai-server-item-impact-data.yml
@@ -83,5 +85,4 @@ databaseChangeLog:
       file: db/changelog/greenitdb.changelog-add-ai-server-item-impact-data-v2.yml
   - include:
       file: db/changelog/greenitdb.changelog-add-ai-server-host-data-v2.yml
-
 
