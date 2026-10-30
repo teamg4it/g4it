@@ -312,6 +312,7 @@ class LoadInputFilesServiceTest {
                         null,
                         null,
                         null,
+                        null,
                         null
                 )
         );
@@ -399,6 +400,7 @@ class LoadInputFilesServiceTest {
                 workspaceId,
                 inventoryId,
                 List.of(datacenter),
+                null,
                 null,
                 null,
                 null,
@@ -494,6 +496,7 @@ class LoadInputFilesServiceTest {
                         null,
                         null,
                         null,
+                        null,
                         null
                 )
         );
@@ -514,6 +517,7 @@ class LoadInputFilesServiceTest {
                 "testOrganization",
                 1L,
                 1L,
+                null,
                 null,
                 null,
                 null,
@@ -543,6 +547,7 @@ class LoadInputFilesServiceTest {
                 "testOrganization",
                 1L,
                 inventoryId,
+                null,
                 null,
                 null,
                 null,

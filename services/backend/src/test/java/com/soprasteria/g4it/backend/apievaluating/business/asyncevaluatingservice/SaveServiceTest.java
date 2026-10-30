@@ -17,6 +17,7 @@ import com.soprasteria.g4it.backend.apiinout.modeldb.OutPhysicalEquipment;
 import com.soprasteria.g4it.backend.apiinout.modeldb.OutVirtualEquipment;
 import com.soprasteria.g4it.backend.apiinout.repository.OutAiServiceRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.OutApplicationRepository;
+import com.soprasteria.g4it.backend.apiinout.repository.OutNonItActivityRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.OutPhysicalEquipmentRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.OutVirtualEquipmentRepository;
 import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
@@ -62,6 +63,9 @@ class SaveServiceTest {
     private OutAiServiceRepository outAiServiceRepository;
 
     @Mock
+    private OutNonItActivityRepository outNonItActivityRepository;
+
+    @Mock
     private OutApplicationRepository outApplicationRepository;
 
     @Mock
@@ -86,6 +90,7 @@ class SaveServiceTest {
                 outPhysicalEquipmentRepository,
                 outVirtualEquipmentRepository,
                 outAiServiceRepository,
+                outNonItActivityRepository,
                 outApplicationRepository,
                 aggregationToOutput,
                 taskRepository,

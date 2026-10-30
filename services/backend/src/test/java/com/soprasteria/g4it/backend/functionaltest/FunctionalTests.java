@@ -119,7 +119,7 @@ class FunctionalTests {
         ResponseEntity<TaskIdRest> response =
                 loadInputFilesController.launchloadInputFiles(
                         ORGANIZATION, workspace.getId(), inventory.getId(),
-                        "fr", null, null, null, null,null);
+                        "fr", null, null, null, null, null, null);
 
         Long taskId = response.getBody().getTaskId();
         Assertions.assertNull(taskId);
