@@ -23,6 +23,7 @@ import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
 import com.soprasteria.g4it.backend.apiuser.modeldb.User;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
 import com.soprasteria.g4it.backend.apiuser.repository.UserRepository;
+import com.soprasteria.g4it.backend.common.model.Context;
 import com.soprasteria.g4it.backend.common.task.model.BackgroundTask;
 import com.soprasteria.g4it.backend.common.task.model.TaskStatus;
 import com.soprasteria.g4it.backend.common.task.model.TaskType;
@@ -212,7 +213,8 @@ class LoadInputFilesServiceTest {
                                 .name("Test Workspace")
                                 .organization(Organization.builder().name("testOrganization").build())
                                 .build())
-                        .virtualEquipmentCount(1L)
+                        .virtualEquipmentCount(0L)
+                        .cloudServiceCount(1L)
                         .applicationCount(1L)
                         .build())
                 .build();
@@ -223,8 +225,71 @@ class LoadInputFilesServiceTest {
         loadInputFilesService.restartLoadingFiles();
 
         verify(taskRepository).save(any(Task.class));
-        verify(taskExecutor).execute(any(BackgroundTask.class));
+        ArgumentCaptor<BackgroundTask> taskCaptor = ArgumentCaptor.forClass(BackgroundTask.class);
+        verify(taskExecutor).execute(taskCaptor.capture());
+        assertTrue(taskCaptor.getValue().getContext().isHasVirtualEquipments());
     }
+
+    @Test
+    void restartLoadingFiles_cloudServiceCountIsNull_setsNoVirtualEquipmentFlag() {
+        Task staleTask = Task.builder()
+                .id(1L)
+                .lastUpdateDate(referenceTime.minusMinutes(20))
+                .status(TaskStatus.IN_PROGRESS.toString())
+                .type(TaskType.LOADING.toString())
+                .inventory(Inventory.builder()
+                        .id(1L)
+                        .workspace(Workspace.builder()
+                                .id(1L)
+                                .name("Test Workspace")
+                                .organization(Organization.builder().name("testOrganization").build())
+                                .build())
+                        .virtualEquipmentCount(0L)
+                        .cloudServiceCount(null)
+                        .applicationCount(0L)
+                        .build())
+                .build();
+
+        when(taskRepository.findByStatusAndType(TaskStatus.IN_PROGRESS.toString(), TaskType.LOADING.toString()))
+                .thenReturn(List.of(staleTask));
+
+        loadInputFilesService.restartLoadingFiles();
+
+        ArgumentCaptor<BackgroundTask> taskCaptor = ArgumentCaptor.forClass(BackgroundTask.class);
+        verify(taskExecutor).execute(taskCaptor.capture());
+        assertFalse(taskCaptor.getValue().getContext().isHasVirtualEquipments());
+    }
+
+    @Test
+    void restartLoadingFiles_zeroEquipmentCounts_setsNoVirtualEquipmentFlag() {
+        Task staleTask = Task.builder()
+                .id(1L)
+                .lastUpdateDate(referenceTime.minusMinutes(20))
+                .status(TaskStatus.IN_PROGRESS.toString())
+                .type(TaskType.LOADING.toString())
+                .inventory(Inventory.builder()
+                        .id(1L)
+                        .workspace(Workspace.builder()
+                                .id(1L)
+                                .name("Test Workspace")
+                                .organization(Organization.builder().name("testOrganization").build())
+                                .build())
+                        .virtualEquipmentCount(0L)
+                        .cloudServiceCount(0L)
+                        .applicationCount(0L)
+                        .build())
+                .build();
+
+        when(taskRepository.findByStatusAndType(TaskStatus.IN_PROGRESS.toString(), TaskType.LOADING.toString()))
+                .thenReturn(List.of(staleTask));
+
+        loadInputFilesService.restartLoadingFiles();
+
+        ArgumentCaptor<BackgroundTask> taskCaptor = ArgumentCaptor.forClass(BackgroundTask.class);
+        verify(taskExecutor).execute(taskCaptor.capture());
+        assertFalse(taskCaptor.getValue().getContext().isHasVirtualEquipments());
+    }
+
 
     @Test
     void restartDigitalService_LoadingFiles_restartsTasks_whenTasksAreStale() {
@@ -359,6 +424,7 @@ class LoadInputFilesServiceTest {
         Inventory inventory = Inventory.builder()
                 .id(inventoryId)
                 .virtualEquipmentCount(0L)
+                .cloudServiceCount(1L)
                 .applicationCount(0L)
                 .build();
 
@@ -409,7 +475,75 @@ class LoadInputFilesServiceTest {
         assertNotNull(result);
 
         verify(taskRepository).save(any(Task.class));
-        verify(taskExecutor).execute(any(Runnable.class));
+        ArgumentCaptor<Runnable> runnableCaptor = ArgumentCaptor.forClass(Runnable.class);
+        verify(taskExecutor).execute(runnableCaptor.capture());
+        runnableCaptor.getValue().run();
+
+        ArgumentCaptor<Context> contextCaptor = ArgumentCaptor.forClass(Context.class);
+        verify(asyncLoadFilesService).execute(contextCaptor.capture(), any());
+        assertTrue(contextCaptor.getValue().isHasVirtualEquipments());
+    }
+
+    @Test
+    void loadFiles_onlyVirtualEquipment_setsVirtualEquipmentFlag() {
+        Long inventoryId = 1L;
+        Inventory inventory = Inventory.builder()
+                .id(inventoryId)
+                .virtualEquipmentCount(1L)
+                .cloudServiceCount(0L)
+                .applicationCount(0L)
+                .build();
+        Workspace workspace = Workspace.builder().id(1L).name("Test Workspace").build();
+        UserBO userBO = UserBO.builder().id(1L).build();
+        User user = User.builder().id(1L).build();
+
+        when(inventoryRepository.findById(inventoryId)).thenReturn(Optional.of(inventory));
+        when(taskRepository.findByInventoryAndStatusAndType(any(), any(), any()))
+                .thenReturn(Collections.emptyList());
+        when(workspaceService.getWorkspaceById(1L)).thenReturn(workspace);
+        when(authService.getUser()).thenReturn(userBO);
+        when(userRepository.findById(userBO.getId())).thenReturn(Optional.of(user));
+
+        loadInputFilesService.loadFiles(
+                "testOrganization",
+                1L,
+                inventoryId,
+                List.of(new MockMultipartFile("datacenters", "datacenter.csv", "text/csv", "data".getBytes())),
+                null,
+                null,
+                null,
+                null
+        );
+
+        ArgumentCaptor<Runnable> runnableCaptor = ArgumentCaptor.forClass(Runnable.class);
+        verify(taskExecutor).execute(runnableCaptor.capture());
+        runnableCaptor.getValue().run();
+        ArgumentCaptor<Context> contextCaptor = ArgumentCaptor.forClass(Context.class);
+        verify(asyncLoadFilesService).execute(contextCaptor.capture(), any());
+        assertTrue(contextCaptor.getValue().isHasVirtualEquipments());
+    }
+
+    @Test
+    void loadFiles_nullCloudServiceCount_setsNoVirtualEquipmentFlag() throws Exception {
+        Long inventoryId = 1L;
+        Inventory inventory = Inventory.builder()
+                .id(inventoryId)
+                .virtualEquipmentCount(0L)
+                .cloudServiceCount(null)
+                .applicationCount(0L)
+                .build();
+        Workspace workspace = Workspace.builder().id(1L).name("Test Workspace").build();
+        MultipartFile file = mock(MultipartFile.class);
+        when(file.getOriginalFilename()).thenReturn("test.csv");
+        when(file.getInputStream()).thenThrow(new java.io.IOException("Unable to read file"));
+        when(inventoryRepository.findById(inventoryId)).thenReturn(Optional.of(inventory));
+        when(taskRepository.findByInventoryAndStatusAndType(any(), any(), any()))
+                .thenReturn(Collections.emptyList());
+        when(workspaceService.getWorkspaceById(1L)).thenReturn(workspace);
+
+        assertThrows(ResponseStatusException.class, () -> loadInputFilesService.loadFiles(
+                "testOrganization", 1L, inventoryId, List.of(file), null, null, null, null));
+        verify(file).getInputStream();
     }
 
     @Test
