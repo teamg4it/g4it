@@ -13,57 +13,29 @@ An example of docker-compose file is located in workspace/docker:
 - docker-compose-all.yml
 - shared-docker-compose.yml
 
-## Build
+## Build and install
 
-Currently, G4IT images are not available in a public docker registry, so it is needed to build frontend and backend images locally.
-
-### Backend commands:
-
-*can be executed from IntelliJ Maven view*
-```
-mvn -P SKIP-ALL-TEST clean package
-```
-
-```
-cd services/backend
-podman build . -t g4it-backend -f Dockerfile-opensource
-```
-
-### Frontend commands:
-
-```
-cd services/frontend
-npm install
-npm run build
-podman build . -t g4it-frontend -f Dockerfile-opensource
-```
-
-## Install
-
-```
-# check g4it-backend and g4it-frontend images are created
-podman images
-
-# start all
+```shell
 cd workspace/docker
+podman-compose -f docker-compose-all.yml build
 podman-compose -f docker-compose-all.yml up -d
 ```
 
-Connect to the UI url : http://localhost:4200
-- Login with `admin@g4it.com` user, default password is `password`
+This builds the frontend and backend using their Dockerfiles, then starts the stack.
+
+Open [http://localhost:4200](http://localhost:4200) and sign in as `admin@g4it.com` with
+the default password `password`.
 
 If G4IT is deployed in a secured environment, don't forget to change passwords.
 
-## Configuration
+## Maven troubleshooting
 
-### Auto configuration 
+For a manual backend build, run Maven from `services/backend`:
 
-Once the application in started, automatic setups are executed :
-- user admin@g4it.com is created in database, table g4it_user with super admin rights
-- an organization/workspace `SUBSCRIBER-DEMO/DEMO` is created
-- open-source referential is uploaded and is located in ref_* tables
+```shell
+cd services/backend
+mvn -P SKIP-ALL-TEST clean package
+```
 
-### Manual configuration
-
-Specific referential data must be uploaded 
-
+An HTTP `429 Too Many Requests` while downloading dependencies may be a temporary Maven
+Central rate limit. Wait and retry, or try another network.

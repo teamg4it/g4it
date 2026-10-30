@@ -36,6 +36,9 @@ services:
   g4it-backend:
     image: g4it/backend:${G4IT_TAG}
     container_name: g4it-backend
+    build:
+      context: ../../services/backend
+      dockerfile: Dockerfile
     ports:
       - "8080:8080"
     volumes:
@@ -82,6 +85,9 @@ services:
   g4it-frontend:
     image: g4it/frontend:${G4IT_TAG}
     container_name: g4it-frontend
+    build:
+      context: ../../services/frontend
+      dockerfile: Dockerfile
     ports:
       - "4200:4200"
     environment:
@@ -95,16 +101,16 @@ services:
       - numecoeval
     depends_on:
       - g4it-backend
-      
-    boaviztapi:
-      extends:
-        file: shared-docker-compose.yml
-        service: boaviztapi
 
-    ecologits-api:
-      extends:
-        file: shared-docker-compose.yml
-        service: ecologits-api
+  boaviztapi:
+    extends:
+      file: shared-docker-compose.yml
+      service: boaviztapi
+
+  ecologits-api:
+    extends:
+      file: shared-docker-compose.yml
+      service: ecologits-api
 
 volumes:
   numecoeval_postgres_data:
