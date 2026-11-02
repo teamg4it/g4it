@@ -765,22 +765,6 @@ components:
           items:
             $ref: "#/components/schemas/ApplicationNodeRest"
 
-    ApplicationHierarchyCountsRest:
-      type: object
-      properties:
-        domainCount:
-          type: integer
-          format: int64
-        subDomainCount:
-          type: integer
-          format: int64
-        applicationCount:
-          type: integer
-          format: int64
-        virtualEquipmentCount:
-          type: integer
-          format: int64
-
     VirtualEquipmentLowImpactCountRest:
       type: object
       description: Aggregated total and low-impact virtual equipment counts, filtered by the shared dimensions. 100% database-side aggregation.

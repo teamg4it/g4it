@@ -61,7 +61,6 @@ public class DatabaseCacheConfiguration {
             "digitalServiceExists",
             "applicationMultiCriteriaImpacts",
             "applicationMultiCriteria",
-            "applicationHierarchyCounts",
             "applicationFilters",
             "virtualEquipmentLowImpactCount",
             "virtualEquipmentElecConsumptionSum"

@@ -188,39 +188,6 @@ paths:
         "500":
           $ref: '#/components/responses/InternalServerError'
 
-  /organizations/{organization}/workspaces/{workspace}/inventories/{inventoryId}/indicators/applications/multi-criteria/counts:
-    parameters:
-      - $ref: '#/components/parameters/organizationPathParam'
-      - $ref: '#/components/parameters/workspacePathParam'
-      - $ref: '#/components/parameters/inventoryIdPathParam'
-    post:
-      description: >
-        Optional endpoint to retrieve standing hierarchy counts (header KPIs) for the whole
-        current filter scope, independent of any single drill node (see solution.md §4.3).
-      tags:
-        - inventory-indicator
-      operationId: getApplicationHierarchyCounts
-      x-custom-role: "hasRole('INVENTORY_READ')"
-      requestBody:
-        description: shared filter dimensions
-        required: false
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/ApplicationCriteriaFilterRest"
-      responses:
-        "200":
-          description: Return the standing hierarchy counts
-          content:
-            'application/json':
-              schema:
-                $ref: "#/components/schemas/ApplicationHierarchyCountsRest"
-        "400":
-          $ref: '#/components/responses/BadRequestError'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        "500":
-          $ref: '#/components/responses/InternalServerError'
 
   /organizations/{organization}/workspaces/{workspace}/inventories/{inventoryId}/indicators/applications/filters:
     parameters:

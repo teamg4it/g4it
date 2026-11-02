@@ -11,7 +11,6 @@ import com.soprasteria.g4it.backend.apiindicator.model.*;
 import com.soprasteria.g4it.backend.apiinout.modeldb.OutApplication;
 import com.soprasteria.g4it.backend.apiinout.repository.projection.ApplicationDomainHierarchyProjection;
 import com.soprasteria.g4it.backend.apiinout.repository.projection.ApplicationFiltersProjection;
-import com.soprasteria.g4it.backend.apiinout.repository.projection.HierarchyCountsProjection;
 import com.soprasteria.g4it.backend.apiinout.repository.projection.MultiCriteriaAggregateProjection;
 import com.soprasteria.g4it.backend.apiinout.repository.projection.MultiCriteriaImpactProjection;
 import com.soprasteria.g4it.backend.apiinout.repository.projection.VirtualEquipmentElecConsumptionSumProjection;
@@ -151,18 +150,6 @@ public interface ApplicationIndicatorMapper {
                 .equipmentType(first.getEquipmentType())
                 .environment(first.getEnvironment())
                 .repartitions(repartitions)
-                .build();
-    }
-
-    /**
-     * §4.3 (optional) - pure 1:1 mapping of the single aggregated counts row.
-     */
-    default ApplicationHierarchyCountsBO toHierarchyCountsBO(final HierarchyCountsProjection source) {
-        return ApplicationHierarchyCountsBO.builder()
-                .domainCount(source.getDomainCount())
-                .subDomainCount(source.getSubDomainCount())
-                .applicationCount(source.getApplicationCount())
-                .virtualEquipmentCount(source.getVirtualEquipmentCount())
                 .build();
     }
 

@@ -13,7 +13,6 @@ import com.soprasteria.g4it.backend.apiindicator.model.RepartitionType;
 import com.soprasteria.g4it.backend.apiinout.modeldb.OutApplication;
 import com.soprasteria.g4it.backend.apiinout.repository.projection.ApplicationDomainHierarchyProjection;
 import com.soprasteria.g4it.backend.apiinout.repository.projection.ApplicationFiltersProjection;
-import com.soprasteria.g4it.backend.apiinout.repository.projection.HierarchyCountsProjection;
 import com.soprasteria.g4it.backend.apiinout.repository.projection.MultiCriteriaAggregateProjection;
 import com.soprasteria.g4it.backend.apiinout.repository.projection.MultiCriteriaImpactProjection;
 import com.soprasteria.g4it.backend.apiinout.repository.projection.VirtualEquipmentElecConsumptionSumProjection;
@@ -21,7 +20,6 @@ import com.soprasteria.g4it.backend.apiinout.repository.projection.VirtualEquipm
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -29,9 +27,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Implementation of {@link OutApplicationCustomRepository}. Every method builds a
@@ -206,28 +202,6 @@ public class OutApplicationCustomRepositoryImpl implements OutApplicationCustomR
         }
         return result;
     }
-
-    @Override
-    public HierarchyCountsProjection countHierarchy(final Long taskId, final ApplicationCriteriaFilterBO filters) {
-        final StringBuilder sql = new StringBuilder("""
-                SELECT COUNT(DISTINCT filters[1])         AS domain_count,
-                       COUNT(DISTINCT filters[2])         AS sub_domain_count,
-                       COUNT(DISTINCT name)                AS application_count,
-                       COUNT(DISTINCT virtual_equipment_name) AS virtual_equipment_count
-                FROM out_application
-                WHERE task_id = :taskId
-                """);
-        final List<Object[]> bindings = new ArrayList<>();
-        appendFilterPredicates(sql, bindings, filters);
-
-        final Query query = entityManager.createNativeQuery(sql.toString());
-        query.setParameter("taskId", taskId);
-        bindParameters(query, bindings);
-
-        final Object[] row = (Object[]) query.getSingleResult();
-        return new HierarchyCountsProjectionImpl(toLong(row[0]), toLong(row[1]), toLong(row[2]), toLong(row[3]));
-    }
-
     /**
      * Aggregated total and low-impact virtual equipment counts, filtered by the
      * shared dimensions. Entirely computed in SQL:
@@ -747,32 +721,6 @@ public class OutApplicationCustomRepositoryImpl implements OutApplicationCustomR
         @Override
         public String getEnvironment() {
             return environment;
-        }
-    }
-
-    /**
-     * Simple POJO implementation of {@link HierarchyCountsProjection}.
-     */
-    private record HierarchyCountsProjectionImpl(Long domainCount, Long subDomainCount, Long applicationCount,
-                                                  Long virtualEquipmentCount) implements HierarchyCountsProjection {
-        @Override
-        public Long getDomainCount() {
-            return domainCount;
-        }
-
-        @Override
-        public Long getSubDomainCount() {
-            return subDomainCount;
-        }
-
-        @Override
-        public Long getApplicationCount() {
-            return applicationCount;
-        }
-
-        @Override
-        public Long getVirtualEquipmentCount() {
-            return virtualEquipmentCount;
         }
     }
 

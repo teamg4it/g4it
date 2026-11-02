@@ -180,21 +180,6 @@ public class InventoryIndicatorController implements InventoryIndicatorApiDelega
 
     /**
      * {@inheritDoc}
-     * §4.3 (optional) - standing hierarchy counts (header KPIs) for the current filter scope.
-     */
-    @Override
-    public ResponseEntity<ApplicationHierarchyCountsRest> getApplicationHierarchyCounts(
-            final String organization,
-            final Long workspace,
-            final Long inventoryId,
-            final ApplicationCriteriaFilterRest requestRest) {
-        final var filters = requestRest == null ? null : applicationIndicatorMapper.toFilterBO(requestRest);
-        return ResponseEntity.ok().body(indicatorRestMapper.toApplicationHierarchyCountsDto(
-                inventoryIndicatorService.getApplicationHierarchyCounts(organization, workspace, inventoryId, filters)));
-    }
-
-    /**
-     * {@inheritDoc}
      * §4.0 - distinct environment/equipmentType/lifeCycle/domain/subDomain values for the
      * inventory's latest task, used to populate the application view's filter selectors.
      */
