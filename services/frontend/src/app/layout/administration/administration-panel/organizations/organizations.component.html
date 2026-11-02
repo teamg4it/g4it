@@ -85,17 +85,14 @@
             ></app-criteria-popup>
         }
 
-        <div
-            class="h-0rem border-top-2 border-primary p-0 mt-3"
-            style="color: lightgray"
-        ></div>
+        <div class="h-0rem border-top-2 border-primary p-0 mt-3"></div>
     </div>
     <div
-        class="flex flex-column"
-        style="width: 100%; height: calc(100vh - 330px); overflow: hidden"
+        class="flex flex-column w-full overflow-hidden"
+        [style]="{ height: 'calc(100vh - 330px)' }"
     >
         @if (organization) {
-            <div class="my-2" style="flex: 0 0 auto">
+            <div class="my-2 flex-none">
                 @if (editable) {
                     <div>
                         @if (
@@ -154,8 +151,7 @@
             </div>
             <cdk-virtual-scroll-viewport
                 itemSize="60"
-                class="workspace-list-viewport"
-                style="flex: 1 1 auto; width: 100%; overflow-y: auto"
+                class="workspace-list-viewport flex-auto w-full overflow-y-auto"
             >
                 <div
                     *cdkVirtualFor="
