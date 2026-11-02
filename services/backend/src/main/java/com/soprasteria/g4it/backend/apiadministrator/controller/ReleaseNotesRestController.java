@@ -25,7 +25,7 @@ public class ReleaseNotesRestController implements ReleaseNotesApiDelegate {
     @Override
     public ResponseEntity<ReleaseNoteRest> getReleaseNotes() {
         return releaseNotesService.getUnseenReleaseNote(authService.getUser().getId())
-                .map(releaseNote -> ResponseEntity.ok(ReleaseNoteRest.builder()
+                .<ResponseEntity<ReleaseNoteRest>>map(releaseNote -> ResponseEntity.ok(ReleaseNoteRest.builder()
                         .id(releaseNote.getId())
                         .content(releaseNote.getContent())
                         .build()))
