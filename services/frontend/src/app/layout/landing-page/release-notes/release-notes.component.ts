@@ -35,6 +35,8 @@ export class ReleaseNotesComponent implements OnInit {
                 ) {
                     const sanitizer = new (window as any).Sanitizer();
                     sanitizer.allowAttribute("class")
+                    sanitizer.allowAttribute("target")
+                    sanitizer.allowAttribute("rel")
                     sanitizer.allowElement("br")
                     this.section.nativeElement.setHTML(notes.content, { sanitizer })
                 } else {
