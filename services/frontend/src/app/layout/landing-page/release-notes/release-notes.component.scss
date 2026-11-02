@@ -113,10 +113,22 @@ dialog[open] {
         }
     }
 
-    ol li::marker {
-        color: gray;
-        font-family: sans-serif;
-        font-size: 0.8em;
+    ol {
+        counter-reset: notes-list 0;
+
+        li {
+            counter-increment: notes-list 1;
+
+            &::before {
+                content: counter(notes-list, decimal) ". ";
+            }
+
+            &::marker {
+                color: gray;
+                font-family: sans-serif;
+                font-size: 0.8em;
+            }
+        }
     }
 
     p {
