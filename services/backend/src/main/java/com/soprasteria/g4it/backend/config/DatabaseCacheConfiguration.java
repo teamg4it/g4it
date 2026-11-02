@@ -59,6 +59,7 @@ public class DatabaseCacheConfiguration {
             "isLowImpact",
             "inventoryExists",
             "digitalServiceExists",
+            "digitalServiceExists",
             "applicationMultiCriteriaImpacts",
             "applicationMultiCriteria",
             "applicationFilters",
