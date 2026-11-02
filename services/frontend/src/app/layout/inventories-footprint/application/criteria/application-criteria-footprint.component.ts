@@ -105,7 +105,7 @@ export class ApplicationCriteriaFootprintComponent
     private readonly footprintService = inject(FootprintService);
     private readonly footprintDataService = inject(FootprintDataService);
     private readonly destroyRef = inject(DestroyRef);
-    private readonly graphResponse = signal<ApplicationMultiCriteriaResponse[] | null>(
+    protected readonly graphResponse = signal<ApplicationMultiCriteriaResponse[] | null>(
         null,
     );
     private readonly router = inject(Router);
@@ -138,7 +138,7 @@ export class ApplicationCriteriaFootprintComponent
     yAxislist: string[] = [];
     dimensions = Constants.APPLICATION_DIMENSIONS;
     selectedDimension = computed(() => this.footprintStore.appDimension());
-    private readonly graphRequest = computed(() => {
+    protected readonly graphRequest = computed(() => {
         const metadata = this.filterMetadata();
         if (!metadata) return null;
         const level = this.footprintStore.appGraphType();
