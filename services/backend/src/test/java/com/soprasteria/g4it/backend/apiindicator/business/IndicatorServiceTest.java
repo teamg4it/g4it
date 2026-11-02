@@ -15,6 +15,12 @@ import com.soprasteria.g4it.backend.apiinout.modeldb.OutApplication;
 import com.soprasteria.g4it.backend.apiinout.modeldb.OutPhysicalEquipment;
 import com.soprasteria.g4it.backend.apiinout.repository.OutApplicationRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.OutPhysicalEquipmentRepository;
+import com.soprasteria.g4it.backend.apiinout.repository.projection.ApplicationFiltersProjection;
+import com.soprasteria.g4it.backend.apiinout.repository.projection.MultiCriteriaAggregateProjection;
+import com.soprasteria.g4it.backend.apiinout.repository.projection.MultiCriteriaImpactProjection;
+import com.soprasteria.g4it.backend.apiinout.repository.projection.VirtualEquipmentElecConsumptionSumProjection;
+import com.soprasteria.g4it.backend.apiinout.repository.projection.VirtualEquipmentLowImpactCountProjection;
+import com.soprasteria.g4it.backend.external.boavizta.business.BoaviztapiService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -25,11 +31,15 @@ import jakarta.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -65,6 +75,9 @@ class IndicatorServiceTest {
 
     @Mock
     private EntityManager entityManager;
+
+    @Mock
+    private BoaviztapiService boaviztapiService;
 
 
     @Test
@@ -311,5 +324,142 @@ class IndicatorServiceTest {
                         organization,
                         workspaceId,
                         inventoryId);
+    }
+
+    @Test
+    void getApplicationIndicatorsPageReturnsMappedPage() {
+        Long taskId = 1L;
+        ApplicationCriteriaFilterBO filters = ApplicationCriteriaFilterBO.builder().build();
+        Pageable pageable = org.springframework.data.domain.PageRequest.of(0, 20);
+
+        OutApplication app = new OutApplication();
+        Page<OutApplication> page = new PageImpl<>(List.of(app), pageable, 1);
+
+        when(outApplicationRepository.findByTaskId(taskId, filters, pageable)).thenReturn(page);
+        when(applicationIndicatorMapper.toRowBO(page.getContent()))
+                .thenReturn(List.of(new ApplicationIndicatorRowBO()));
+
+        ApplicationIndicatorsPageBO result = indicatorService.getApplicationIndicatorsPage(taskId, filters, pageable);
+
+        assertNotNull(result);
+        assertEquals(1, result.getContent().size());
+        assertEquals(0, result.getPageNumber());
+        assertEquals(20, result.getPageSize());
+        assertEquals(1, result.getTotalElements());
+        assertEquals(1, result.getTotalPages());
+
+        verify(outApplicationRepository).findByTaskId(taskId, filters, pageable);
+        verify(applicationIndicatorMapper).toRowBO(page.getContent());
+    }
+
+    @Test
+    void getApplicationMultiCriteriaImpactsReturnsMappedImpacts() {
+        Long taskId = 1L;
+        ApplicationCriteriaFilterBO filters = ApplicationCriteriaFilterBO.builder().build();
+
+        List<MultiCriteriaImpactProjection> projections = List.of(mock(MultiCriteriaImpactProjection.class));
+        List<ApplicationMultiCriteriaImpactBO> expected = List.of(ApplicationMultiCriteriaImpactBO.builder().build());
+
+        when(outApplicationRepository.aggregateMultiCriteriaImpacts(taskId, filters)).thenReturn(projections);
+        when(applicationIndicatorMapper.toMultiCriteriaImpactBO(projections)).thenReturn(expected);
+
+        List<ApplicationMultiCriteriaImpactBO> result =
+                indicatorService.getApplicationMultiCriteriaImpacts(taskId, filters);
+
+        assertEquals(expected, result);
+        verify(outApplicationRepository).aggregateMultiCriteriaImpacts(taskId, filters);
+        verify(applicationIndicatorMapper).toMultiCriteriaImpactBO(projections);
+    }
+
+    @Test
+    void getApplicationMultiCriteriaIndicatorsReturnsMappedIndicators() {
+        Long taskId = 1L;
+        List<String> criteria = List.of("climate-change");
+        GraphLevel graphLevel = GraphLevel.GLOBAL;
+        RepartitionType repartition = RepartitionType.ENVIRONMENT;
+        ApplicationCriteriaFilterBO filters = ApplicationCriteriaFilterBO.builder().build();
+
+        List<MultiCriteriaAggregateProjection> projections = List.of(mock(MultiCriteriaAggregateProjection.class));
+        List<ApplicationMultiCriteriaBO> expected = List.of(ApplicationMultiCriteriaBO.builder().build());
+
+        when(outApplicationRepository.aggregateMultiCriteria(taskId, criteria, graphLevel, repartition, filters))
+                .thenReturn(projections);
+        when(applicationIndicatorMapper.toMultiCriteriaBO(projections)).thenReturn(expected);
+
+        List<ApplicationMultiCriteriaBO> result = indicatorService.getApplicationMultiCriteriaIndicators(
+                taskId, criteria, graphLevel, repartition, filters);
+
+        assertEquals(expected, result);
+        verify(outApplicationRepository).aggregateMultiCriteria(taskId, criteria, graphLevel, repartition, filters);
+        verify(applicationIndicatorMapper).toMultiCriteriaBO(projections);
+    }
+
+    @Test
+    void getVirtualEquipmentLowImpactCountReturnsAggregatedCounts() {
+        ReflectionTestUtils.setField(indicatorService, "criterias", Set.of("climate-change"));
+
+        Long taskId = 1L;
+        Long inventoryId = 2L;
+        Long workspaceId = 3L;
+        ApplicationCriteriaFilterBO filters = ApplicationCriteriaFilterBO.builder().build();
+
+        Map<String, String> countryMap = Map.of("France", "FR");
+        VirtualEquipmentLowImpactCountProjection projection = mock(VirtualEquipmentLowImpactCountProjection.class);
+        VirtualEquipmentLowImpactCountBO expected = VirtualEquipmentLowImpactCountBO.builder()
+                .virtualEquipmentTotalCount(10L)
+                .lowImpactVirtualEquipmentCount(2L)
+                .build();
+
+        when(boaviztapiService.getCountryMap()).thenReturn(countryMap);
+        when(outApplicationRepository.countVirtualEquipmentLowImpact(
+                eq(taskId), eq(inventoryId), eq(workspaceId), any(), any(), any(), eq(filters)))
+                .thenReturn(projection);
+        when(applicationIndicatorMapper.toVirtualEquipmentLowImpactCountBO(projection)).thenReturn(expected);
+
+        VirtualEquipmentLowImpactCountBO result =
+                indicatorService.getVirtualEquipmentLowImpactCount(taskId, inventoryId, workspaceId, filters);
+
+        assertEquals(expected, result);
+        verify(boaviztapiService).getCountryMap();
+        verify(applicationIndicatorMapper).toVirtualEquipmentLowImpactCountBO(projection);
+    }
+
+    @Test
+    void getApplicationFiltersReturnsMappedFilters() {
+        Long taskId = 1L;
+        ApplicationFiltersProjection projection = mock(ApplicationFiltersProjection.class);
+        ApplicationFiltersBO expected = ApplicationFiltersBO.builder().build();
+
+        when(outApplicationRepository.getDistinctFilters(taskId)).thenReturn(projection);
+        when(applicationIndicatorMapper.toFiltersBO(projection)).thenReturn(expected);
+
+        ApplicationFiltersBO result = indicatorService.getApplicationFilters(taskId);
+
+        assertEquals(expected, result);
+        verify(outApplicationRepository).getDistinctFilters(taskId);
+        verify(applicationIndicatorMapper).toFiltersBO(projection);
+    }
+
+    @Test
+    void getVirtualEquipmentElecConsumptionSumReturnsMappedSum() {
+        Long taskId = 1L;
+        ApplicationCriteriaFilterBO filters = ApplicationCriteriaFilterBO.builder().build();
+
+        VirtualEquipmentElecConsumptionSumProjection projection = mock(VirtualEquipmentElecConsumptionSumProjection.class);
+        VirtualEquipmentElecConsumptionSumBO expected = VirtualEquipmentElecConsumptionSumBO.builder()
+                .elecConsumptionSum(100d)
+                .noOfVirtualEquipmentsSum(5L)
+                .applicationCount(2L)
+                .build();
+
+        when(outApplicationRepository.sumVirtualEquipmentElecConsumption(taskId, filters)).thenReturn(projection);
+        when(applicationIndicatorMapper.toVirtualEquipmentElecConsumptionSumBO(projection)).thenReturn(expected);
+
+        VirtualEquipmentElecConsumptionSumBO result =
+                indicatorService.getVirtualEquipmentElecConsumptionSum(taskId, filters);
+
+        assertEquals(expected, result);
+        verify(outApplicationRepository).sumVirtualEquipmentElecConsumption(taskId, filters);
+        verify(applicationIndicatorMapper).toVirtualEquipmentElecConsumptionSumBO(projection);
     }
 }
