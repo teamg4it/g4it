@@ -13,6 +13,7 @@ import { NGX_ECHARTS_CONFIG, NgxEchartsModule } from "ngx-echarts";
 import { ButtonModule } from "primeng/button";
 import {
     DigitalServiceCloudImpact,
+    DigitalServiceAiImpact,
     DigitalServiceNetworksImpact,
     DigitalServiceServersImpact,
     DigitalServiceTerminalsImpact,
@@ -21,6 +22,7 @@ import {
 import { DigitalServiceBusinessService } from "src/app/core/service/business/digital-services.service";
 import {
     transformOutPhysicalEquipmentsToTerminalData,
+    transformOutVirtualEquipmentsToAiData,
     transformOutVirtualEquipmentsToCloudData,
 } from "src/app/core/service/mapper/digital-service";
 import {
@@ -264,6 +266,59 @@ describe("BarChartComponent", () => {
 
         const echartsOption: EChartsOption =
             component.loadStackBarOptionCloud(barChartData);
+
+        expect(echartsOption).toBeTruthy();
+        expect(echartsOption.series).toBeTruthy();
+    });
+
+    it("should generate valid EChartsOption for AI Services", () => {
+        const barChartData = transformOutVirtualEquipmentsToAiData(
+            [
+                {
+                    name: "AI service 1",
+                    criterion: "CLIMATE_CHANGE",
+                    lifecycleStep: "USING",
+                    datacenterName: "",
+                    physicalEquipmentName: "",
+                    infrastructureType: "AI_SERVICES",
+                    instanceType: "Model 1",
+                    type: "",
+                    provider: "OpenAI",
+                    equipmentType: "",
+                    location: "FR",
+                    engineName: "",
+                    engineVersion: "",
+                    referentialVersion: "",
+                    statusIndicator: "OK",
+                    countValue: 1,
+                    quantity: 100,
+                    unitImpact: 10,
+                    peopleEqImpact: 0.1,
+                    electricityConsumption: 0,
+                    unit: "kWh",
+                    usageDuration: 8760,
+                    workload: 1,
+                },
+            ] as any[],
+            { EEE: "Europe" },
+        );
+        component.selectedCriteria = "climate-change";
+        component.aiRadioButtonSelected = "model";
+
+        const echartsOption: EChartsOption =
+            component.loadStackBarOptionAi(barChartData);
+
+        expect(echartsOption).toBeTruthy();
+        expect(echartsOption.series).toBeTruthy();
+    });
+
+    it("should handle empty data for Ai Services", () => {
+        const barChartData: DigitalServiceAiImpact[] = [];
+        component.selectedCriteria = "climate-change";
+        component.aiRadioButtonSelected = "model";
+
+        const echartsOption: EChartsOption =
+            component.loadStackBarOptionAi(barChartData);
 
         expect(echartsOption).toBeTruthy();
         expect(echartsOption.series).toBeTruthy();

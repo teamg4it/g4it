@@ -1,15 +1,15 @@
 <div class="resource-menu-div force-bg-white">
     <div
-        class="flex align-items-center"
+        class="flex align-items-center resource-menu-title-div"
         [ngClass]="!isCollapsed ? 'justify-content-between' : 'justify-content-center'"
     >
         @if (!isCollapsed) {
-            <h3 class="resource-menu-title">
+            <div class="resource-menu-title-label">
                 {{ "digital-services-resources.categories.label" | translate }}
-            </h3>
+            </div>
             <p-button
                 (onClick)="onCollapseToggle(true)"
-                styleClass="collapsible-button border-none"
+                styleClass="collapsible-button"
                 icon="pi pi-angle-double-left"
                 id="collapse-button"
                 [aria-label]="

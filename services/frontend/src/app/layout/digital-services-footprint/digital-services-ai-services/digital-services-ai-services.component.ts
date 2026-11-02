@@ -136,7 +136,7 @@ export class DigitalServicesAIServicesComponent implements OnInit {
             quantity: ai.tokenQuantity,
             provider: ai.aiProvider,
             instanceType: ai.aiModel,
-            location: ai.locationValue,
+            location: ai.location.code,
         };
     }
 

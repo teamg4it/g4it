@@ -603,6 +603,7 @@
         "tokenQuantity": "Number of output tokens",
         "location": "Location",
         "locationValue": "Location",
+        "model": "Model",
         "new": "New AI service",
         "ai-services": "AI Services",
         "ai-service": "AI Service",
@@ -1171,6 +1172,21 @@
             "text-description-iterate": "- {{impactName}} with {{impactValue}} people equivalent ({{rawValue}} {{unit}})",
             "analysis": "This graph shows the distribution of impacts related to your service's cloud hosting based on its lifecycle. <br /><br />Please note: Unlike on-premise servers, cloud service providers reveal little information about the physical resources allocated. We therefore use a calculation method that is not the same as that used by cloud providers.",
             "to-go-further": "To reduce the impact of use, you need to reduce the amount of energy consumed by your server or VM. To do this, you can migrate to a more efficient data center (i.e., one with a lower <a target='_blank' href='https://en.wikipedia.org/wiki/Power_usage_effectiveness'>PUE</a> and located in a country with a lower-impact electricity mix— <a target='_blank' href='https://innersource.soprasteria.com/g4it/docs/-/blob/main/Hosting%20Efficiency.md'>see the table on the impact of electricity mixes</a>).<br />For a computing server, this means reducing the amount of calculations performed (by selecting <a target='_blank' href='https://thenewstack.io/which-programming-languages-use-the-least-electricity/'>less energy-intensive technologies</a>, removing features, optimizing processing, etc. – <a href='https://cnrs.hal.science/ECOINFO/hal-03977001v1' target='_blank'>see best practices in eco-design of digital services for developers</a>).<br />For a storage server, the main objective is to reduce read/write operations and optimize fill rates to limit the number of servers required.<br />For other impacts, the levers depend on the servers, their lifespan, their level of sharing, and their type."
+        },
+        "aiservice-model": {
+            "description": "This graph shows the distribution of the impact of your various AI models.",
+            "text-description": "The AI models with the greatest impact in descending order are: <br />",
+            "text-description-iterate": "- {{impactName}} with {{impactValue}} people equivalent ({{rawValue}} {{unit}})",
+            "resource-text-description": "The AI models with the greatest impact on service usage, in descending order, are:<br />",
+            "analysis": "[WIP]",
+            "to-go-further": "[WIP]"
+        },
+        "ai-lifecycle": {
+            "description": "This graph shows the distribution of the impact of your AI models based on their lifecycle.",
+            "text-description": "The stages of the life cycle of the  AI model {{aiModelName}} with the greatest impact in descending order are: <br />",
+            "text-description-iterate": "- {{impactName}} with {{impactValue}} people equivalent ({{rawValue}} {{unit}})",
+            "analysis": "[WIP]",
+            "to-go-further": "[WIP]"
         }
     },
     "ds-description-heading": {

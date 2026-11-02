@@ -46,11 +46,11 @@ import { FormsModule } from "@angular/forms";
     templateUrl: "./bar-chart.component.html",
     standalone: true,
     imports: [
-    StackBarChartComponent,
-    NgxEchartsDirective,
-    RadioButtonModule,
-    FormsModule
-],
+        StackBarChartComponent,
+        NgxEchartsDirective,
+        RadioButtonModule,
+        FormsModule
+    ],
 })
 export class BarChartComponent extends AbstractDashboard implements OnChanges {
     @Input() barChartChild: boolean = false;
@@ -101,9 +101,21 @@ export class BarChartComponent extends AbstractDashboard implements OnChanges {
             name: this.translate.instant("digital-services-cloud-services.location"),
         },
     ];
+    aiOptions = [
+        {
+            key: "model",
+            value: "model",
+            name: this.translate.instant("digital-services-ai-services.model"),
+        },
+        {
+            key: "location",
+            value: "location",
+            name: this.translate.instant("digital-services-ai-services.location"),
+        },
+    ];
     terminalsRadioButtonSelected: string = "type";
     cloudRadioButtonSelected: string = "instance";
-    aiRadioButtonSelected: string = "instance";
+    aiRadioButtonSelected: string = "model";
     serversOptions = [
         {
             key: "lifecycle",
@@ -290,12 +302,18 @@ export class BarChartComponent extends AbstractDashboard implements OnChanges {
         const isTerminal = type === Constants.TERMINAL;
         const xAxis: any[] = [];
         const yAxis: any[] = [];
+        const options =
+            type === Constants.TERMINAL
+                ? this.terminalsOptions
+                : type === Constants.AI_SERVICE
+                  ? this.aiOptions
+                  : this.cloudOptions;
         const seriesData = this.extractSelectedData(
             barChartData,
             radioButtonSelected,
             impactType,
             impactLocation,
-            isTerminal,
+            options,
         );
 
         let okMap = this.processParentOrChildData(seriesData, xAxis, yAxis, type);
@@ -419,21 +437,15 @@ export class BarChartComponent extends AbstractDashboard implements OnChanges {
         radioButtonSelected: string,
         impactType: string,
         impactLocation: string,
-        isTerminal: boolean,
+        options: { value: string }[],
     ): any[] {
-        if (
-            radioButtonSelected ===
-            (isTerminal ? this.terminalsOptions[0].value : this.cloudOptions[0].value)
-        ) {
+        if (radioButtonSelected === options[0].value) {
             return this.getSelectedCriteriaData(
                 barChartData,
                 impactType,
                 this.selectedCriteria,
             );
-        } else if (
-            radioButtonSelected ===
-            (isTerminal ? this.terminalsOptions[1].value : this.cloudOptions[1].value)
-        ) {
+        } else if (radioButtonSelected === options[1].value) {
             return this.getSelectedCriteriaData(
                 barChartData,
                 impactLocation,
@@ -467,9 +479,9 @@ export class BarChartComponent extends AbstractDashboard implements OnChanges {
         return this.loadStackBarOption(
             barChartData,
             this.aiRadioButtonSelected,
-            "impactInstance",
+            "impactModel",
             "impactLocation",
-            Constants.CLOUD_SERVICE,
+            Constants.AI_SERVICE,
         );
     }
 
@@ -480,12 +492,11 @@ export class BarChartComponent extends AbstractDashboard implements OnChanges {
         type: string,
     ): StatusCountMap {
         let okMap = {};
-        const isTerminals = type === Constants.TERMINAL;
 
         if (this.barChartChild) {
-            return this.processChildData(seriesData, xAxis, yAxis, okMap, isTerminals);
+            return this.processChildData(seriesData, xAxis, yAxis, okMap, type);
         } else {
-            return this.processParentData(seriesData, xAxis, yAxis, okMap, isTerminals);
+            return this.processParentData(seriesData, xAxis, yAxis, okMap, type);
         }
     }
 
@@ -494,8 +505,10 @@ export class BarChartComponent extends AbstractDashboard implements OnChanges {
         xAxis: string[],
         yAxis: any[],
         okMap: StatusCountMap,
-        isTerminals: boolean,
+        type: string,
     ): StatusCountMap {
+        const isTerminals = type === Constants.TERMINAL;
+
         for (const impact of seriesData) {
             okMap[impact.name] = {
                 status: {
@@ -506,7 +519,7 @@ export class BarChartComponent extends AbstractDashboard implements OnChanges {
             };
             xAxis.push(impact.name);
 
-            const items = isTerminals ? impact.terminals : impact.clouds;
+            const items = this.getServiceDataItems(impact, type);
             for (const [index, item] of items.entries()) {
                 const data = [
                     impact.name,
@@ -547,7 +560,7 @@ export class BarChartComponent extends AbstractDashboard implements OnChanges {
             .sort((a, b) => b.totalSipValue - a.totalSipValue) // descending order
             .slice(0, 3); // top 3
         const topThree = [...seriesData].map((item) => {
-            const items = isTerminals ? item.terminals : item.clouds;
+            const items = this.getServiceDataItems(item, type);
             const totalSipValue =
                 items?.reduce((sum: number, t: any) => sum + (t.totalSipValue ?? 0), 0) ??
                 0;
@@ -572,18 +585,17 @@ export class BarChartComponent extends AbstractDashboard implements OnChanges {
         xAxis: string[],
         yAxis: any[],
         okMap: StatusCountMap,
-        isTerminals: boolean,
+        type: string,
     ): StatusCountMap {
-        let childData;
-        if (isTerminals) {
-            childData = seriesData
-                .find((item: any) => item.name === this.selectedDetailParam)
-                .terminals.find((term: any) => term.name === this.selectedDetailName);
-        } else {
-            childData = seriesData
-                .find((item: any) => item.name === this.selectedDetailParam)
-                .clouds.find((c: any) => c.name === this.selectedDetailName);
-        }
+        const isTerminals = type === Constants.TERMINAL;
+        const selectedGroup = seriesData.find(
+            (item: any) => item.name === this.selectedDetailParam,
+        );
+        const childData = selectedGroup
+            ? this.getServiceDataItems(selectedGroup, type).find(
+                  (item: any) => item.name === this.selectedDetailName,
+              )
+            : undefined;
 
         const stepKey = "acvStep";
 
@@ -640,6 +652,19 @@ export class BarChartComponent extends AbstractDashboard implements OnChanges {
             this.barChartTopThreeImpact.emit(topThree);
         }
         return okMap;
+    }
+
+    private getServiceDataItems(impact: any, type: string): any[] {
+        switch (type) {
+            case Constants.TERMINAL:
+                return impact.terminals;
+            case Constants.AI_SERVICE:
+                return impact.ai;
+            case Constants.CLOUD_SERVICE:
+                return impact.clouds;
+            default:
+                throw new Error(`Unsupported chart type: ${type}`);
+        }
     }
 
     loadStackBarOptionServer(barChartData: any): EChartsOption {
@@ -1042,8 +1067,11 @@ export class BarChartComponent extends AbstractDashboard implements OnChanges {
         this.options = this.loadStackBarOptionCloud(this.cloudData);
     }
 
+    changeAiRadioButtonSelected() {
+        this.options = this.loadStackBarOptionAi(this.aiData);
+    }
+
     changeServersRadioButtonSelected() {
         this.options = this.loadStackBarOptionServerChild(this.serverData);
     }
-
 }

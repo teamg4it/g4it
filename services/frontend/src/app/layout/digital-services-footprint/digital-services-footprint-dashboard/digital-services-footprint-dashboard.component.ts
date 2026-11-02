@@ -486,24 +486,32 @@ export class DigitalServicesFootprintDashboardComponent
     getBarTranslateKey(): string {
         const isServer = this.selectedParam === "Server";
         const isCloudService = this.selectedParam === Constants.CLOUD_SERVICE;
+        const isAiService = this.selectedParam === Constants.AI_SERVICE;
         const isTerminal = this.selectedParam === Constants.TERMINAL;
         const isBarChartChild = this.barChartChild === true;
+        const translationPrefix = "ds-graph-description";
+        const lowerCaseSelectedParam = this.selectedParam.toLowerCase().replaceAll(/\s+/g, "-");
 
         let translationKey = "";
+        
         if (!isBarChartChild && isServer) {
-            translationKey = `ds-graph-description.server.`;
+            translationKey = `${translationPrefix}.server.`;
         } else if (isBarChartChild && isServer) {
-            translationKey = `ds-graph-description.${this.selectedParam.toLowerCase().replaceAll(/\s+/g, "-")}-${this.barChartComponents?.first?.serversRadioButtonSelected}.`;
+            translationKey = `${translationPrefix}.${lowerCaseSelectedParam}-${this.barChartComponents?.first?.serversRadioButtonSelected}.`;
         } else if (!isBarChartChild && isCloudService) {
-            translationKey = `ds-graph-description.${this.selectedParam.toLowerCase().replaceAll(/\s+/g, "-")}-${this.barChartComponents?.first?.cloudRadioButtonSelected}.`;
+            translationKey = `${translationPrefix}.${lowerCaseSelectedParam}-${this.barChartComponents?.first?.cloudRadioButtonSelected}.`;
         } else if (isBarChartChild && isCloudService) {
-            translationKey = "ds-graph-description.cloud-lifecycle.";
+            translationKey = `${translationPrefix}.cloud-lifecycle.`;
+        } else if (!isBarChartChild && isAiService) {
+            translationKey = `${translationPrefix}.${lowerCaseSelectedParam}-${this.barChartComponents?.first?.aiRadioButtonSelected}.`;
+        } else if (isBarChartChild && isAiService) {
+            translationKey = `${translationPrefix}.ai-lifecycle.`;
         } else if (!isBarChartChild && isTerminal) {
-            translationKey = `ds-graph-description.${this.selectedParam.toLowerCase().replaceAll(/\s+/g, "-")}-${this.barChartComponents?.first?.terminalsRadioButtonSelected}.`;
+            translationKey = `${translationPrefix}.${lowerCaseSelectedParam}-${this.barChartComponents?.first?.terminalsRadioButtonSelected}.`;
         } else if (isBarChartChild && isTerminal) {
-            translationKey = "ds-graph-description.terminal-lifecycle.";
+            translationKey = `${translationPrefix}.terminal-lifecycle.`;
         } else {
-            translationKey = `ds-graph-description.${this.selectedParam.toLowerCase().replaceAll(/\s+/g, "-")}.`;
+            translationKey = `${translationPrefix}.${lowerCaseSelectedParam}.`;
         }
         return translationKey;
     }

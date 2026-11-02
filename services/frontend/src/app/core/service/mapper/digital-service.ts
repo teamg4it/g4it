@@ -3,6 +3,9 @@ import {
     CloudImpactGroup,
     CloudImpactTypeLocation,
     CloudsImpact,
+    AiImpactGroup,
+    AiImpactTypeLocation,
+    AiImpact,
     DigitalServiceCloudImpact,
     DigitalServiceAiImpact,
     DigitalServiceFootprint,
@@ -277,8 +280,8 @@ export const transformOutVirtualEquipmentsToAiData = (
         const impacts = aiByCriterion[criterion];
         results.push({
             criteria: criterion,
-            impactLocation: getImpactsForCloud(impacts, "location", countryMap),
-            impactInstance: getImpactsForCloud(impacts, "instanceType"),
+            impactLocation: getImpactsForAi(impacts, "location", countryMap),
+            impactModel: getImpactsForAi(impacts, "instanceType"),
         });
     }
 
@@ -535,6 +538,102 @@ const getImpactsForCloud = (
                     countryMap[name] ||
                     `${impactWithProvider!?.provider?.toUpperCase()}-${name}`,
                 clouds: cloudNameArray,
+                status,
+            };
+        },
+    );
+
+    results.sort((a, b) => a?.name?.localeCompare(b?.name));
+    return results;
+};
+
+const getImpactsForAi = (
+    data: OutVirtualEquipmentRest[],
+    projection: string,
+    countryMap: MapString = {},
+) => {
+    const impactTmp: AiImpactGroup = data.reduce((acc: any, obj: any) => {
+        const key = obj[projection];
+
+        const nameKey = obj.name;
+        acc[key] = acc[key] ?? {};
+        acc[key][nameKey] = acc[key][nameKey] ?? [];
+
+        acc[key][nameKey].push({
+            lifecycleStep: obj.lifecycleStep,
+            peopleEqImpact: obj.peopleEqImpact,
+            unitImpact: obj.unitImpact,
+            quantity: obj.quantity,
+            usageDuration: obj.usageDuration,
+            workload: obj.workload,
+            unit: obj.unit,
+            statusIndicator: obj.statusIndicator,
+            countValue: obj.countValue,
+            provider: obj.provider,
+            statusCount: {
+                ok: obj.statusIndicator === "OK" ? obj.countValue : 0,
+                error: obj.statusIndicator === "OK" ? 0 : obj.countValue,
+                total: obj.countValue,
+            },
+        });
+        return acc;
+    }, {});
+    const results: AiImpactTypeLocation[] = Object.entries(impactTmp).map(
+        ([name, impactTmpName]) => {
+            const aiNameArray: AiImpact[] = Object.entries(impactTmpName).map(
+                ([aiName, impacts]) => {
+                    const unit = impacts.find((i: any) => i.unit !== "null");
+                    const totalQuantity = sumByProperty(impacts, "quantity");
+                    return {
+                        name: aiName,
+                        totalAvgUsage:
+                            sumByProperty(impacts, "usageDuration") / totalQuantity,
+                        totalAvgWorkLoad: (sumByProperty(impacts, "workload") * 100) / 4,
+                        totalQuantity,
+                        totalSipValue: sumByProperty(impacts, "peopleEqImpact"),
+                        rawValue: sumByProperty(impacts, "unitImpact"),
+                        unit: unit?.unit ?? "",
+                        impact: aggregateImpacts(impacts, [
+                            "lifecycleStep",
+                            "unit",
+                            "statusIndicator",
+                        ]).map((item) => ({
+                            acvStep: item.lifecycleStep,
+                            unit: item.unit,
+                            status: item.statusIndicator,
+                            rawValue: item.unitImpact,
+                            sipValue: item.peopleEqImpact,
+                            statusCount: item.statusCount,
+                        })),
+                    };
+                },
+            );
+
+            const filteredImpacts = data.filter(
+                (d) => d[projection as keyof OutVirtualEquipmentRest] === name,
+            );
+
+            const status = filteredImpacts.reduce(
+                (acc, i) => {
+                    const isOk = i.statusIndicator === Constants.DATA_QUALITY_STATUS.ok;
+                    return {
+                        ok: acc.ok + (isOk ? i.countValue : 0),
+                        error: acc.error + (isOk ? 0 : i.countValue),
+                        total: acc.total + (i.countValue ?? 0),
+                    };
+                },
+                { ok: 0, error: 0, total: 0 },
+            );
+
+            const impactWithProvider = Object.values(impactTmpName)
+                .flat()
+                .find((i: any) => i.provider);
+
+            return {
+                name:
+                    countryMap[name] ||
+                    `${impactWithProvider!?.provider?.toUpperCase()}-${name}`,
+                ai: aiNameArray,
                 status,
             };
         },
