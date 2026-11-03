@@ -21,18 +21,22 @@ __Tree folder:__
 - __extensions__ : home-idp-discovery extension
 - __imports__ : auto-import the g4it realm with default configuration
 - __themes__: custom theme for login
-- __Dockerfile__: container build, it uses official image bitnamilegacy/keycloak
+- __Dockerfile__: builds a custom image based on `quay.io/keycloak/keycloak:26.0.7`
 
 ## Install the docker image
 
-The __local dev environment__ uses podman-compose to start the keycloak instance (in `workspace/numecoeval/docker-compose.yml`)
-- Docker image used: bitnamilegacy/keycloak
+The __local dev environment__ uses `podman-compose` from `workspace/docker` to start
+Keycloak and the supporting services defined in `docker-compose.yml` and
+`shared-docker-compose.yml`.
+- Docker image used: `quay.io/keycloak/keycloak:26.0.7`
 - URL : http://localhost:8180/auth
 - It uses this [extension](https://github.com/sventorben/keycloak-home-idp-discovery) located in `extensions` folder
 
 ## Keycloak admin users
 
-*Note: applicative roles are not configured inside Keycloak, but in the G4IT backend.*
+*Note: G4IT application roles are not configured inside Keycloak; they are managed by the
+G4IT backend. Keycloak's `admin` account administers Keycloak and is separate from the
+G4IT application account `admin@g4it.com`.*
 
 On the first setup, all users have `password` as password
 
@@ -79,15 +83,15 @@ Here are the configurations used in __g4it__ realm :
 On the extension used, it is possible to add a custom configuration for domains authorized on an identity provider.
 
 ```shell
-# Go into the keycloak container
+# Run the Keycloak admin CLI inside the container
 
 # Example for an identity provider named 'microsoft'
 
 # Get the config
-/opt/bitnami/keycloak/bin/kcadm.sh get identity-provider/instances/microsoft --server http://localhost:8080/auth -r g4it --user admin --realm master
+podman exec -it keycloak /opt/keycloak/bin/kcadm.sh get identity-provider/instances/microsoft --server http://localhost:8080/auth -r g4it --user admin --realm master
 # > Enter admin password
 
 # Set the config for domains : example.com, test.com
-/opt/bitnami/keycloak/bin/kcadm.sh update identity-provider/instances/microsoft --server http://localhost:8080/auth -r g4it --user admin --realm master -s 'config."home.idp.discovery.domains"="example.com##test.com"'
+podman exec -it keycloak /opt/keycloak/bin/kcadm.sh update identity-provider/instances/microsoft --server http://localhost:8080/auth -r g4it --user admin --realm master -s 'config."home.idp.discovery.domains"="example.com##test.com"'
 # > Enter admin password
 ```
