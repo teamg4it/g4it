@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { TranslateService } from "@ngx-translate/core";
+import { TranslateModule, TranslateService } from "@ngx-translate/core";
 import { of } from "rxjs";
 import { ApplicationIndicatorsPage } from "src/app/core/interfaces/footprint.interface";
 import { FilterService } from "src/app/core/service/business/filter.service";
@@ -19,7 +19,6 @@ describe("ApplicationTableViewComponent", () => {
     let mockFootprintDataService: jasmine.SpyObj<FootprintDataService>;
 
     beforeEach(async () => {
-        mockTranslateService = jasmine.createSpyObj("TranslateService", ["instant"]);
         mockFilterService = jasmine.createSpyObj("FilterService", ["getFilterincludes"]);
         mockFootprintService = jasmine.createSpyObj("FootprintService", [
             "mapApplicationSummaryFilters",
@@ -44,15 +43,20 @@ describe("ApplicationTableViewComponent", () => {
         };
 
         await TestBed.configureTestingModule({
-            imports: [ApplicationTableViewComponent],
+            imports: [TranslateModule.forRoot(), ApplicationTableViewComponent],
             providers: [
-                { provide: TranslateService, useValue: mockTranslateService },
                 { provide: FootprintStoreService, useValue: mockFootprintStore },
                 { provide: FilterService, useValue: mockFilterService },
                 { provide: FootprintService, useValue: mockFootprintService },
                 { provide: FootprintDataService, useValue: mockFootprintDataService },
             ],
         }).compileComponents();
+
+        // The template's translate pipe needs the real service; only instant() is stubbed.
+        const translateService = TestBed.inject(TranslateService);
+        spyOn(translateService, "instant").and.callFake((key: any) => key);
+        mockTranslateService =
+            translateService as unknown as jasmine.SpyObj<TranslateService>;
 
         fixture = TestBed.createComponent(ApplicationTableViewComponent);
         component = fixture.componentInstance;
