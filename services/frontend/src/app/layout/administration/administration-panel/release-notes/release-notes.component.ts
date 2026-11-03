@@ -37,11 +37,11 @@ export class ReleaseNotesComponent implements OnInit {
 
         // Load the latest release notes from the backend
         // This allows the admin to edit the existing notes
-        this.administrationService.getLatestReleaseNotes().subscribe(({ content: notes }) => {
-            if (notes) {
-                this.initialNotes.set(notes);
+        this.administrationService.getLatestReleaseNotes().subscribe((res) => {
+            if (res?.content) {
+                this.initialNotes.set(res.content);
                 this.form.patchValue({
-                    releaseNotes: notes,
+                    releaseNotes: res.content,
                 });
             }
         });

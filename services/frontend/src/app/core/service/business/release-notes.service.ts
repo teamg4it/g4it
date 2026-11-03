@@ -7,7 +7,6 @@
  */
 
 import { Injectable } from "@angular/core";
-import { Observable } from "rxjs";
 import { ReleaseNoteDataService } from "../data/release-notes-data.service";
 
 @Injectable({
@@ -16,11 +15,11 @@ import { ReleaseNoteDataService } from "../data/release-notes-data.service";
 export class ReleaseNotesService {
     constructor(private readonly administrationDataService: ReleaseNoteDataService) { }
 
-    getLatestReleaseNotes(): Observable<any> {
+    getLatestReleaseNotes() {
         return this.administrationDataService.getLatestReleaseNotes();
     }
 
-    markAsSeen(): Observable<any> {
+    markAsSeen() {
         return this.administrationDataService.postReleaseNotesSeen();
     }
 }

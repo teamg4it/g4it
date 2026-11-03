@@ -8,6 +8,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Constants } from "src/constants";
+import type { ReleaseNoteRest } from "../../interfaces/release-notes.interfaces";
 
 const releaseNotesEndpoint = Constants.ENDPOINTS.releaseNotes;
 const releaseNotesSeenEndpoint = Constants.ENDPOINTS.releaseNotesSeen;
@@ -20,10 +21,10 @@ export class ReleaseNoteDataService {
     constructor(private readonly http: HttpClient) { }
 
     getLatestReleaseNotes() {
-        return this.http.get(releaseNotesEndpoint);
+        return this.http.get<ReleaseNoteRest>(releaseNotesEndpoint);
     }
 
     postReleaseNotesSeen() {
-        return this.http.post(releaseNotesSeenEndpoint, undefined)
+        return this.http.post<null>(releaseNotesSeenEndpoint, undefined)
     }
 }

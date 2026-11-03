@@ -16,6 +16,7 @@ import {
     WorkspaceCriteriaRest,
     WorkspaceUpsertRest,
 } from "../../interfaces/administration.interfaces";
+import type { ReleaseNoteRest, ReleaseNotesPublishRest } from "../../interfaces/release-notes.interfaces";
 
 const endpoint = Constants.ENDPOINTS.organizations;
 const endpointById = Constants.ENDPOINTS.organizationById;
@@ -103,11 +104,11 @@ export class AdministrationDataService {
         });
     }
 
-    getLatestReleaseNotes(): Observable<any> {
-        return this.http.get<any>(`${endpointForReleaseNotes}`);
+    getLatestReleaseNotes() {
+        return this.http.get<ReleaseNoteRest>(`${endpointForReleaseNotes}`);
     }
 
-    postNewReleaseNotes(body: any): Observable<any> {
-        return this.http.post<any>(`${endpointForReleaseNotes}`, body);
+    postNewReleaseNotes(body: ReleaseNotesPublishRest) {
+        return this.http.post<null>(`${endpointForReleaseNotes}`, body);
     }
 }

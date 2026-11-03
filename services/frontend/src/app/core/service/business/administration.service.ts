@@ -19,6 +19,7 @@ import {
 import { Role } from "../../interfaces/roles.interfaces";
 import { AdministrationDataService } from "../data/administration-data-service";
 import { UserService } from "./user.service";
+import { ReleaseNotesPublishRest } from "../../interfaces/release-notes.interfaces";
 
 @Injectable({
     providedIn: "root",
@@ -137,11 +138,11 @@ export class AdministrationService {
         });
     }
 
-    getLatestReleaseNotes(): Observable<any> {
+    getLatestReleaseNotes() {
         return this.administrationDataService.getLatestReleaseNotes();
     }
 
-    saveReleaseNotes(body: any): Observable<any> {
+    saveReleaseNotes(body: ReleaseNotesPublishRest) {
         return this.administrationDataService.postNewReleaseNotes(body);
     }
 }
