@@ -7,7 +7,7 @@
  */
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { signal, WritableSignal } from "@angular/core";
-import { ComponentFixture, TestBed, fakeAsync, tick } from "@angular/core/testing";
+import { ComponentFixture, fakeAsync, TestBed, tick } from "@angular/core/testing";
 import { ActivatedRoute, Router } from "@angular/router";
 import { TranslateModule, TranslateService } from "@ngx-translate/core";
 import { NGX_ECHARTS_CONFIG } from "ngx-echarts";
@@ -391,7 +391,7 @@ describe("ApplicationMulticriteriaFootprintComponent", () => {
         const series = chart.series as any[];
 
         expect(component.shouldShowStackBarChart()).toBeTrue();
-        expect(xAxis.data.length).toBe(criteria.length);
+        expect(xAxis.data).toHaveSize(criteria.length);
         expect(xAxis.data).toEqual(jasmine.arrayContaining(criteria));
         expect(xAxis.axisLabel.formatter("climate-change")).toContain("Climate Change");
         expect(series.map(({ name }) => name).sort()).toEqual([
@@ -953,7 +953,7 @@ describe("ApplicationMulticriteriaFootprintComponent", () => {
             component.renderChart(criteriaCalculated, "domain");
 
             expect(component.criteria()).toEqual([]);
-            expect(component.xAxisInput.length).toBe(2);
+            expect(component.xAxisInput).toHaveSize(2);
         });
 
         it("should set polar radius and center", () => {
@@ -1266,7 +1266,7 @@ describe("ApplicationMulticriteriaFootprintComponent", () => {
                 criteriaCalculated,
             );
 
-            expect(component.textDescriptionImpacts.length).toBe(3);
+            expect(component.textDescriptionImpacts).toHaveSize(3);
             expect(component.textDescriptionImpacts[0].impactName).toBe("criterion-4");
         });
 

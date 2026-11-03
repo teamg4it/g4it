@@ -13,6 +13,7 @@ import { IntegerPipe } from "src/app/core/pipes/integer.pipe";
 import { FilterService } from "src/app/core/service/business/filter.service";
 import { FootprintService } from "src/app/core/service/business/footprint.service";
 import { FootprintDataService } from "src/app/core/service/data/footprint-data.service";
+import { toApiCriterion, transformCriterion } from "src/app/core/service/mapper/array";
 import { SharedChartsModule } from "src/app/core/shared/common-chart-module";
 import { SharedModule } from "src/app/core/shared/shared.module";
 import { FootprintStoreService } from "src/app/core/store/footprint.store";
@@ -69,7 +70,8 @@ export class ApplicationTableViewComponent {
               )
             : {};
         const criterion = this.footprintStore.applicationCriteria();
-        if (!this.isMulticriteria() && criterion) filters.criterion = [criterion];
+        if (!this.isMulticriteria() && criterion)
+            filters.criterion = [toApiCriterion(criterion)];
         return filters;
     });
     private previousFiltersKey?: string;
@@ -171,6 +173,22 @@ export class ApplicationTableViewComponent {
         });
     }
 
+    private readonly descriptionCriteria = computed<string[]>(() => {
+        const fromFootprint = this.footprint()
+            .map((impact) => impact?.criteria)
+            .filter(Boolean);
+        const criterion = this.footprintStore.applicationCriteria();
+        let keys: string[];
+        if (fromFootprint.length > 0) {
+            keys = fromFootprint;
+        } else if (!this.isMulticriteria() && criterion) {
+            keys = [criterion];
+        } else {
+            keys = this.pageData().content.map((row) => row.criteria);
+        }
+        return [...new Set(keys.filter(Boolean).map(transformCriterion))];
+    });
+
     getContentText = computed((): GraphDescriptionContent => {
         let translationKey: string;
         let textResourceDescription: string = "";
@@ -178,10 +196,10 @@ export class ApplicationTableViewComponent {
         let key = "";
         translationKey = `ds-graph-description.global-vision.`;
         descriptionData = this.translate.instant(`${translationKey}description`, {
-            criteria: this.footprint()
+            criteria: this.descriptionCriteria()
                 .map(
-                    (impact) =>
-                        this.translate.instant(`criteria.${impact.criteria}`).title,
+                    (criteria) =>
+                        this.translate.instant(`criteria.${criteria}`)?.title ?? criteria,
                 )
                 .join(", "),
             module: this.translate.instant("ds-graph-module.inventory"),

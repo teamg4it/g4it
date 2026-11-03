@@ -60,6 +60,7 @@ import { InventoryService } from "src/app/core/service/business/inventory.servic
 import { UserService } from "src/app/core/service/business/user.service";
 import { EvaluationDataService } from "src/app/core/service/data/evaluation-data.service";
 import { FootprintDataService } from "src/app/core/service/data/footprint-data.service";
+import { toApiCriterion } from "src/app/core/service/mapper/array";
 import { resetColorMap } from "src/app/core/service/mapper/graphs-mapper";
 import { FootprintStoreService } from "src/app/core/store/footprint.store";
 import { GlobalStoreService } from "src/app/core/store/global.store";
@@ -223,7 +224,7 @@ export class InventoriesApplicationFootprintComponent implements OnInit, OnDestr
             }
             const criterion = this.footprintStore.applicationCriteria();
             if (criterion && criterion !== this.multiCriteria) {
-                filters.criterion = [criterion];
+                filters.criterion = [toApiCriterion(criterion)];
             }
             return { inventoryId: request.inventoryId, filters };
         },

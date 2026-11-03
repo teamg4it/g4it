@@ -595,11 +595,8 @@ export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboar
         );
         return {
             description: this.translate.instant(`${translationKey}description`, {
-                criteria: this.footprint()
-                    .map(
-                        (impact) =>
-                            this.translate.instant(`criteria.${impact.criteria}`).title,
-                    )
+                criteria: (this.graphResponse() ?? this.footprint())
+                    .map((impact) => this.getCriteriaTitle(impact.criteria))
                     .join(", "),
                 module: this.translate.instant("ds-graph-module.inventory"),
             }),
@@ -615,13 +612,26 @@ export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboar
         };
     });
 
+    private getCriteriaTitle(criteria: string, fallback: string = criteria): string {
+        return this.translate.instant(`criteria.${criteria}`)?.title ?? fallback;
+    }
+
     getTextDescription(
         translationKey: string,
         criteriaCalculated: CriteriaCalculated,
     ): string {
+        const translatedCriteria = {
+            ...criteriaCalculated,
+            impactsWithMaxDimensions: (
+                criteriaCalculated?.impactsWithMaxDimensions ?? []
+            ).map((impact) => ({
+                ...impact,
+                title: this.getCriteriaTitle(impact.name, impact.title),
+            })),
+        };
         const result = InventoryMultiCriteriaViewMapper.getTextDescription(
             translationKey,
-            criteriaCalculated,
+            translatedCriteria,
             this.translate,
             this.integerPipe,
             this.decimalsPipe,

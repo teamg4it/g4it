@@ -401,13 +401,14 @@ export class ApplicationCriteriaFootprintComponent
         };
         for (const node of nodes) {
             const label = node.label || Constants.EMPTY;
+            const cluster = node.cluster || Constants.UNSPECIFIED;
             result.xAxis.push(label);
             result.unitImpact.push(node.impact);
             result.subdomainCount.push(node.subDomainCount ?? 0);
             result.appCount.push(node.applicationCount ?? 0);
             result.equipmentList.push(node.equipmentType ?? "");
             result.environmentList.push(node.environment ?? "");
-            result.clusterList.push(node.cluster ?? "");
+            result.clusterList.push(cluster);
             result.status[label] = {
                 status: {
                     ok: node.consistentCount,
@@ -422,7 +423,7 @@ export class ApplicationCriteriaFootprintComponent
                     repartition.sip,
                     node.applicationCount ?? 0,
                     node.subDomainCount ?? 0,
-                    node.cluster,
+                    cluster,
                     node.environment,
                     node.equipmentType,
                 ]);
