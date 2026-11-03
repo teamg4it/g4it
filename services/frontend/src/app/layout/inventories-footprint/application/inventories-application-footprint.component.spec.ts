@@ -75,7 +75,8 @@ const mockInventoryService = {
 const mockFootprintDataService = {
     getApplicationMultiCriteriaImpacts: jasmine.createSpy().and.returnValue(of([])),
     getApplicationMultiCriteriaGraph: jasmine.createSpy().and.returnValue(of([])),
-    getApplicationKeyIndicators: jasmine.createSpy().and.returnValue(of([[], [], []])),
+    getApplicationLowImpactCount: jasmine.createSpy().and.returnValue(of(null)),
+    getApplicationElecConsumptionSum: jasmine.createSpy().and.returnValue(of(null)),
     getApplicationFilters: jasmine
         .createSpy()
         .and.returnValue(
@@ -112,6 +113,7 @@ const mockFootprintStore = {
 
 const mockGlobalStore = {
     criteriaList: jasmine.createSpy().and.returnValue({}),
+    loading: jasmine.createSpy().and.returnValue(false),
     setLoading: jasmine.createSpy(),
 };
 describe("Inventory Application footprint", () => {

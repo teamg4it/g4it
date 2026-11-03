@@ -2,7 +2,7 @@ import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { signal } from "@angular/core";
 import { ComponentFixture, TestBed, fakeAsync, tick } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
-import { TranslateModule } from "@ngx-translate/core";
+import { TranslateModule, TranslateService } from "@ngx-translate/core";
 import { NGX_ECHARTS_CONFIG } from "ngx-echarts";
 import { of } from "rxjs";
 import { DecimalsPipe } from "src/app/core/pipes/decimal.pipe";
@@ -194,7 +194,7 @@ describe("ApplicationCriteriaFootprintComponent", () => {
     });
 
     it("should translate lifecycle series names in the legend and tooltip", () => {
-        translate.instant.and.callFake((key: string) =>
+        spyOn(TestBed.inject(TranslateService), "instant").and.callFake((key: any) =>
             key === "acvStep.USING" ? "Using" : key,
         );
         (component as any).graphResponse.set([

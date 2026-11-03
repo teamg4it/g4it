@@ -26,7 +26,7 @@ import { MenuItem } from "primeng/api";
 import { Button } from "primeng/button";
 import { DrawerModule } from "primeng/drawer";
 import { ScrollPanelModule } from "primeng/scrollpanel";
-import { finalize, firstValueFrom, forkJoin } from "rxjs";
+import { finalize, firstValueFrom, forkJoin, Subscription } from "rxjs";
 import {
     OrganizationCriteriaRest,
     WorkspaceCriteriaRest,
@@ -364,29 +364,34 @@ export class InventoriesApplicationFootprintComponent implements OnInit, OnDestr
     toReloadInventory = false;
     private initialSummaryRequestSent = false;
     private pendingRequests = 0;
+    private summarySubscription?: Subscription;
 
     constructor(
         private readonly activatedRoute: ActivatedRoute,
         public readonly footprintService: FootprintService,
         private readonly translate: TranslateService,
     ) {
-        effect((onCleanup) => {
+        effect(() => {
             const request = this.summaryRequest();
-            if (!request) return;
             untracked(() => {
+                if (!request) {
+                    this.summarySubscription?.unsubscribe();
+                    return;
+                }
                 const { inventoryId } = request;
                 const filters = this.initialSummaryRequestSent ? request.filters : {};
                 this.initialSummaryRequestSent = true;
                 this.summaryError.set(false);
                 this.startLoading();
-                const subscription = this.footprintDataService
+                // Cancel the previous request only after the new one has started, so the loader does not flicker.
+                this.summarySubscription?.unsubscribe();
+                this.summarySubscription = this.footprintDataService
                     .getApplicationMultiCriteriaImpacts(inventoryId, filters)
                     .pipe(finalize(() => this.stopLoading()))
                     .subscribe({
                         next: (impacts) => this.summaryImpacts.set(impacts),
                         error: () => this.summaryError.set(true),
                     });
-                onCleanup(() => subscription.unsubscribe());
             });
         });
         effect((onCleanup) => {
@@ -424,7 +429,10 @@ export class InventoriesApplicationFootprintComponent implements OnInit, OnDestr
                 untracked(() => this.globalStore.setLoading(true));
             }
         });
-        this.destroyRef.onDestroy(() => this.globalStore.setLoading(false));
+        this.destroyRef.onDestroy(() => {
+            this.summarySubscription?.unsubscribe();
+            this.globalStore.setLoading(false);
+        });
     }
 
     private startLoading() {
