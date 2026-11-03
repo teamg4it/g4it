@@ -835,7 +835,7 @@
             "acvStep": "Lifecycle",
             "country": "Country",
             "entity": "Entity",
-            "equipment": "Equipment",
+            "equipment": "Item",
             "status": "Status"
         },
         "application-round-button": {

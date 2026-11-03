@@ -157,9 +157,9 @@ export abstract class Constants {
     static readonly ACV_STEP = "acvStep";
     static readonly EQUIPMENT_DIMENSIONS = [
         "acvStep",
+        "equipment",
         "country",
         "entity",
-        "equipment",
         "status",
     ];
     static readonly APPLICATION_DIMENSIONS = [
