@@ -49,6 +49,7 @@ import { StackBarChartComponent } from "../../common/stack-bar-chart/stack-bar-c
 import { GraphDescriptionComponent } from "../../digital-services-footprint/digital-services-footprint-dashboard/graph-description/graph-description.component";
 import { AbstractDashboard } from "../abstract-dashboard";
 import { InventoriesFootprintComponent } from "../inventories-footprint.component";
+import { createSunburstChartConfig } from "src/app/core/service/mapper/sunburst-chart.mapper";
 
 @Component({
     selector: "app-inventories-critere-footprint",
@@ -68,8 +69,7 @@ import { InventoriesFootprintComponent } from "../inventories-footprint.componen
 })
 export class InventoriesCritereFootprintComponent
     extends AbstractDashboard
-    implements OnChanges
-{
+    implements OnChanges {
     protected footprintStore = inject(FootprintStoreService);
     private readonly footprintService = inject(FootprintService);
     protected readonly inventoryComponent = inject(InventoriesFootprintComponent);
@@ -281,6 +281,108 @@ export class InventoriesCritereFootprintComponent
             this.checkDataStatus(data);
         }
         this.allErrorData = echartsData?.every((f) => !f.status.ok);
+
+        if (selectedView == "equipment") {
+            return createSunburstChartConfig({
+                data: [
+                    {
+                        name: 'Devices',
+                        children: [
+                            {
+                                name: 'Other',
+                                value: 1,
+                            },
+                            {
+                                name: 'Desktop',
+                                value: 2,
+                            },
+                            {
+                                name: 'Mobile Phone',
+                                value: 3,
+                            },
+                            {
+                                name: 'Monitor',
+                                value: 6,
+                            },
+                            {
+                                name: 'Laptop',
+                                value: 43,
+                            },
+                        ],
+                    },
+                    {
+                        name: 'Infrastructure',
+                        children: [
+                            {
+                                name: 'Switch',
+                                value: 4,
+                            },
+                            {
+                                name: 'AI Server',
+                                value: 6,
+                            },
+                            {
+                                name: 'Storage Server',
+                                value: 5,
+                            },
+                            {
+                                name: 'Compute Server',
+                                value: 10,
+                            },
+                        ],
+                    },
+                    {
+                        name: 'Ext. Services',
+                        children: [
+                            {
+                                name: 'AI',
+                                children: [
+                                    {
+                                        name: 'Mistral',
+                                        value: 5,
+                                    },
+                                    {
+                                        name: 'Claude',
+                                        value: 1,
+                                    },
+                                ],
+                            },
+                            {
+                                name: 'Cloud',
+                                children: [
+                                    {
+                                        name: 'AWS',
+                                        value: 3,
+                                    },
+                                    {
+                                        name: 'Azure',
+                                        value: 1,
+                                    },
+                                ],
+                            },
+                        ],
+                    },
+                    {
+                        name: 'Non-IT',
+                        children: [
+                            {
+                                name: 'Furnitures',
+                                value: 1,
+                            },
+                            {
+                                name: 'Travel',
+                                value: 4,
+                            },
+                            {
+                                name: 'Building',
+                                value: 5,
+                            },
+                        ],
+                    },
+                ],
+            })
+        }
+
         return {
             height: 700,
             tooltip: {
@@ -348,8 +450,8 @@ export class InventoriesCritereFootprintComponent
         const translatedUnit =
             unit === Constants.PEOPLEEQ
                 ? this.translate.instant(
-                      `common.${Constants.PEOPLEEQ.toLocaleLowerCase()}`,
-                  )
+                    `common.${Constants.PEOPLEEQ.toLocaleLowerCase()}`,
+                )
                 : unit;
 
         const pipe = unit === Constants.PEOPLEEQ ? this.integerPipe : this.decimalsPipe;
@@ -377,8 +479,8 @@ export class InventoriesCritereFootprintComponent
         const titleDiv =
             tooltipLines.length > 1
                 ? `${this.getCircleColorHtml(color)} ${this.translate.instant(
-                      "common.otherLegend",
-                  )}`
+                    "common.otherLegend",
+                )}`
                 : "";
 
         return `
