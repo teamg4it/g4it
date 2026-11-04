@@ -1,6 +1,7 @@
 import {
     DigitalServiceCloudImpact,
     DigitalServiceFootprint,
+    DigitalServiceAiImpact,
     DigitalServiceNetworksImpact,
     DigitalServiceServersImpact,
     DigitalServiceTerminalsImpact,
@@ -18,6 +19,7 @@ import {
     transformOutPhysicalEquipmentsToNetworkData,
     transformOutPhysicalEquipmentstoServerData,
     transformOutPhysicalEquipmentsToTerminalData,
+    transformOutVirtualEquipmentsToAiData,
     transformOutVirtualEquipmentsToCloudData,
 } from "./digital-service";
 
@@ -115,6 +117,18 @@ describe("Digital Service Mapper", () => {
             expect(Array.isArray(result)).toBe(true);
         });
     });
+
+    describe("transformOutVirtualEquipmentsToAiData", () => {
+        it("should transform virtual equipment to ai data", () => {
+            const virtualEquipments: OutVirtualEquipmentRest[] = [];
+            const countryMap: MapString = {};
+            const result: DigitalServiceAiImpact[] =
+                transformOutVirtualEquipmentsToAiData(virtualEquipments, countryMap);
+            expect(result).toBeDefined();
+            expect(Array.isArray(result)).toBe(true);
+        });
+    });
+
     describe("transformOutPhysicalEquipmentsToNetworkData", () => {
         it("should return an empty array when no physical equipment is provided", () => {
             const physicalEquipments: OutPhysicalEquipmentRest[] = [];

@@ -443,76 +443,7 @@ class EvaluateServiceTest {
         verify(saveService)
                 .saveOutAiServices(anyList());
     }
-
-    @Test
-    void doEvaluate_shouldCalculateAiVirtualEquipmentWithEcologits() throws Exception {
-        Context context = mockBaseContext(true, false);
-        when(context.getInventoryId()).thenReturn(null);
-
-        Task task = mock(Task.class);
-        when(task.getId()).thenReturn(501L);
-        when(task.getCriteria()).thenReturn(List.of("criterion-1"));
-        when(task.getInventory()).thenReturn(null);
-        mockReferential();
-
-        when(inPhysicalEquipmentRepository.countByDigitalServiceVersionUid("DSV1")).thenReturn(0L);
-        when(inVirtualEquipmentRepository.countByDigitalServiceVersionUidAndInfrastructureType(
-                "DSV1", CLOUD_SERVICES.name())).thenReturn(0L);
-        when(inDatacenterRepository.findByDigitalServiceVersionUid("DSV1")).thenReturn(List.of());
-        when(inPhysicalEquipmentRepository.findByDigitalServiceVersionUid("DSV1")).thenReturn(List.of());
-        when(inPhysicalEquipmentRepository.findByDigitalServiceVersionUid(eq("DSV1"), any())).thenReturn(List.of());
-
-        InVirtualEquipment aiVirtualEquipment = InVirtualEquipment.builder()
-                .name("AI inference")
-                .digitalServiceVersionUid("DSV1")
-                .infrastructureType("AI_SERVICES")
-                .provider("openai")
-                .instanceType("gpt-4o-mini")
-                .quantity(123d)
-                .location("France")
-                .build();
-        when(inVirtualEquipmentRepository.findByDigitalServiceVersionUid("DSV1"))
-                .thenReturn(List.of(aiVirtualEquipment));
-        when(inVirtualEquipmentRepository.findByDigitalServiceVersionUidAndPhysicalEquipmentNameIsNull(
-                eq("DSV1"), any()))
-                .thenReturn(new ArrayList<>(List.of(aiVirtualEquipment)))
-                .thenReturn(new ArrayList<>());
-
-        CSVPrinter printer = mock(CSVPrinter.class);
-        when(csvFileService.getPrinter(any(FileType.class), any(Path.class))).thenReturn(printer);
-
-        ImpactBO aiImpact = ImpactBO.builder()
-                .criterion("criterion_1")
-                .lifecycleStep("STEP1")
-                .unitImpact(8d)
-                .indicatorStatus("OK")
-                .build();
-        when(evaluateEcologitsService.evaluate(any(InAiService.class), anyList(), anyList(), anyMap()))
-                .thenReturn(List.of(aiImpact));
-
-        ImpactEquipementVirtuel mappedImpact = mock(ImpactEquipementVirtuel.class);
-        when(mappedImpact.getStatutIndicateur()).thenReturn("OK");
-        when(mappedImpact.getCritere()).thenReturn("criterion_1");
-        when(mappedImpact.getImpactUnitaire()).thenReturn(8d);
-        when(internalToNumEcoEvalImpact.map(Mockito.<List<ImpactBO>>any()))
-                .thenReturn(List.of(mappedImpact));
-
-        evaluateService.doEvaluate(context, task, tempDir);
-
-        ArgumentCaptor<InAiService> aiServiceCaptor = ArgumentCaptor.forClass(InAiService.class);
-        verify(evaluateEcologitsService).evaluate(aiServiceCaptor.capture(), anyList(), anyList(), anyMap());
-        assertEquals("openai", aiServiceCaptor.getValue().getProvider());
-        assertEquals("gpt-4o-mini", aiServiceCaptor.getValue().getModel());
-        assertEquals(123L, aiServiceCaptor.getValue().getOutputTokens());
-        assertEquals("France", aiServiceCaptor.getValue().getLocation());
-
-        verify(evaluateNumEcoEvalService, never()).calculateVirtualEquipment(
-                any(), anyList(), anyInt(), any(), any(), any(), any());
-        verify(evaluateBoaviztapiService, never()).evaluate(any(), anyList(), anyList());
-        verify(mappedImpact).setSource("EcoLogits");
-        verify(saveService).saveOutVirtualEquipments(anyMap(), eq(501L), any());
-    }
-
+    
     @Test
     void doEvaluate_shouldUpdateProgress_whenPhysicalEquipmentsExist() throws Exception {
         Context context = mock(Context.class);

@@ -579,7 +579,7 @@ export class DigitalServicesFootprintDashboardComponent
                 textDescription += this.translate.instant(
                     `${translationKey}text-description`,
                     {
-                        cloudInstanceName: this.selectedDetailName,
+                        resourceName: this.selectedDetailName,
                     },
                 );
             }
@@ -605,7 +605,7 @@ export class DigitalServicesFootprintDashboardComponent
                     textResourceDescription += this.translate.instant(
                         `${translationKey}resource-text-description`,
                         {
-                            cloudInstanceName: this.selectedDetailName,
+                            resourceName: this.selectedDetailName,
                         },
                     );
                 }
