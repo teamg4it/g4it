@@ -857,8 +857,7 @@ export class InventoriesApplicationFootprintComponent implements OnInit, OnDestr
         );
 
         const elecConsumptionSum = filteredEquipmentsElecConsumption.reduce(
-            (sum, { elecConsumption = 0, quantity = 0 }) =>
-                sum + elecConsumption * quantity,
+            (sum, { elecConsumption = 0 }) => sum + elecConsumption,
             0,
         );
         return elecConsumptionSum;
