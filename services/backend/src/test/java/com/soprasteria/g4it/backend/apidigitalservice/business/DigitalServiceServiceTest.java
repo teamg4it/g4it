@@ -180,7 +180,7 @@ class DigitalServiceServiceTest {
         verify(inDatacenterRepository).deleteByDigitalServiceUid(digitalServiceUid);
         verify(inAiParameterRepository).deleteByDigitalServiceUid(digitalServiceUid);
         verify(inAiInfrastructureRepository).deleteByDigitalServiceUid(digitalServiceUid);
-        verify(digitalServiceRepository).deleteById(digitalServiceUid);
+        verify(digitalServiceRepository).deleteByUidNative(digitalServiceUid);
     }
 
 

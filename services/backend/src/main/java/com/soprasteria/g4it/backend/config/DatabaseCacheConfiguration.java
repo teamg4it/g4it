@@ -59,7 +59,8 @@ public class DatabaseCacheConfiguration {
             "getElectricityMixQuartiles",
             "getCountryList",
             "isLowImpact",
-            "inventoryExists"
+            "inventoryExists",
+            "digitalServiceExists"
     }, allEntries = true)
     @Scheduled(fixedRateString = "${g4it.cache.short.ttl}")
     public void emptyShortTtlCaches() {
