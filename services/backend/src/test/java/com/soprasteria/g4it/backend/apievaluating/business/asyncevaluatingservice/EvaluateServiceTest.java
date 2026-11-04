@@ -13,16 +13,8 @@ import com.soprasteria.g4it.backend.apievaluating.model.ImpactBO;
 import com.soprasteria.g4it.backend.apievaluating.model.RefShortcutBO;
 import com.soprasteria.g4it.backend.apiinout.mapper.AiServiceToCsvRecord;
 import com.soprasteria.g4it.backend.apiinout.mapper.InputToCsvRecord;
-import com.soprasteria.g4it.backend.apiinout.modeldb.InAiService;
-import com.soprasteria.g4it.backend.apiinout.modeldb.InApplication;
-import com.soprasteria.g4it.backend.apiinout.modeldb.InDatacenter;
-import com.soprasteria.g4it.backend.apiinout.modeldb.InPhysicalEquipment;
-import com.soprasteria.g4it.backend.apiinout.modeldb.InVirtualEquipment;
-import com.soprasteria.g4it.backend.apiinout.repository.InApplicationRepository;
-import com.soprasteria.g4it.backend.apiinout.repository.InAiServiceRepository;
-import com.soprasteria.g4it.backend.apiinout.repository.InDatacenterRepository;
-import com.soprasteria.g4it.backend.apiinout.repository.InPhysicalEquipmentRepository;
-import com.soprasteria.g4it.backend.apiinout.repository.InVirtualEquipmentRepository;
+import com.soprasteria.g4it.backend.apiinout.modeldb.*;
+import com.soprasteria.g4it.backend.apiinout.repository.*;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
 import com.soprasteria.g4it.backend.apireferential.business.ReferentialGetService;
@@ -43,12 +35,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
-import org.mockito.InjectMocks;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Mock;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
-import org.mockito.ArgumentCaptor;
+import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
@@ -68,8 +55,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static com.soprasteria.g4it.backend.common.utils.InfrastructureType.CLOUD_SERVICES;
 import static com.soprasteria.g4it.backend.common.utils.InfrastructureType.AI_SERVICES;
+import static com.soprasteria.g4it.backend.common.utils.InfrastructureType.CLOUD_SERVICES;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
@@ -130,7 +117,6 @@ class EvaluateServiceTest {
 
     @Mock
     AiServiceImpactToCsvRecord aiServiceImpactToCsvRecord;
-
 
 
     @BeforeEach
@@ -444,7 +430,7 @@ class EvaluateServiceTest {
         verify(saveService)
                 .saveOutAiServices(anyList());
     }
-    
+
     @Test
     void doEvaluate_shouldUpdateProgress_whenPhysicalEquipmentsExist() throws Exception {
         Context context = mock(Context.class);
@@ -490,7 +476,7 @@ class EvaluateServiceTest {
         CSVPrinter printer = mock(CSVPrinter.class);
         when(csvFileService.getPrinter(any(FileType.class), any(Path.class))).thenReturn(printer);
 
-        when(evaluateNumEcoEvalService.calculatePhysicalEquipment(any(), any(), anyString(), anyList(), anyList(), anyList(),any(),anyLong()))
+        when(evaluateNumEcoEvalService.calculatePhysicalEquipment(any(), any(), anyString(), anyList(), anyList(), anyList(), any(), anyLong()))
                 .thenReturn(List.of());
 
         evaluateService.doEvaluate(context, task, tempDir);
@@ -543,7 +529,7 @@ class EvaluateServiceTest {
         CSVPrinter printer = mock(CSVPrinter.class);
         when(csvFileService.getPrinter(any(FileType.class), any(Path.class))).thenReturn(printer);
 
-        when(evaluateNumEcoEvalService.calculatePhysicalEquipment(any(), any(), anyString(), anyList(), anyList(), anyList(),anyLong(), anyLong()))
+        when(evaluateNumEcoEvalService.calculatePhysicalEquipment(any(), any(), anyString(), anyList(), anyList(), anyList(), anyLong(), anyLong()))
                 .thenReturn(List.of());
 
         doThrow(new RuntimeException("db down"))
@@ -650,7 +636,7 @@ class EvaluateServiceTest {
         when(impactPE.getCritere()).thenReturn("criterion_1");
         when(impactPE.getDureeDeVie()).thenReturn(5.0);
 
-        when(evaluateNumEcoEvalService.calculatePhysicalEquipment(any(), any(), anyString(), anyList(), anyList(), anyList(),any(),anyLong()))
+        when(evaluateNumEcoEvalService.calculatePhysicalEquipment(any(), any(), anyString(), anyList(), anyList(), anyList(), any(), anyLong()))
                 .thenReturn(List.of(impactPE));
 
         when(aggregationToOutput.keyPhysicalEquipment(any(), any(), any(), any(), anyBoolean()))
@@ -720,7 +706,7 @@ class EvaluateServiceTest {
         when(impactPE.getCritere()).thenReturn("criterion_1");
         when(impactPE.getDureeDeVie()).thenReturn(5.0);
 
-        when(evaluateNumEcoEvalService.calculatePhysicalEquipment(any(), any(), anyString(), anyList(), anyList(), anyList(),anyLong(), anyLong()))
+        when(evaluateNumEcoEvalService.calculatePhysicalEquipment(any(), any(), anyString(), anyList(), anyList(), anyList(), anyLong(), anyLong()))
                 .thenReturn(List.of(impactPE));
 
         when(aggregationToOutput.keyPhysicalEquipment(any(), any(), any(), any(), anyBoolean()))
@@ -761,7 +747,7 @@ class EvaluateServiceTest {
         when(impactPE.getDureeDeVie()).thenReturn(5.0);
 
         when(evaluateNumEcoEvalService.calculatePhysicalEquipment(
-                any(), any(), anyString(), anyList(), anyList(), anyList(),any(),anyLong()
+                any(), any(), anyString(), anyList(), anyList(), anyList(), any(), anyLong()
         )).thenReturn(List.of(impactPE));
 
         when(aggregationToOutput.keyPhysicalEquipment(
@@ -856,7 +842,7 @@ class EvaluateServiceTest {
         when(impactPE.getStatutIndicateur()).thenReturn("OK");
         when(impactPE.getCritere()).thenReturn("criterion_1");
 
-        when(evaluateNumEcoEvalService.calculatePhysicalEquipment(any(), any(), anyString(), anyList(), anyList(), anyList(),anyLong(), anyLong()))
+        when(evaluateNumEcoEvalService.calculatePhysicalEquipment(any(), any(), anyString(), anyList(), anyList(), anyList(), anyLong(), anyLong()))
                 .thenReturn(List.of(impactPE));
 
         when(aggregationToOutput.keyPhysicalEquipment(any(), any(), any(), any(), anyBoolean()))
@@ -871,7 +857,7 @@ class EvaluateServiceTest {
 
         evaluateService.doEvaluate(context, task, tempDir);
 
-        verify(evaluateNumEcoEvalService).calculatePhysicalEquipment(any(), any(), any(), any(), any(), any(),any(), anyLong());
+        verify(evaluateNumEcoEvalService).calculatePhysicalEquipment(any(), any(), any(), any(), any(), any(), any(), anyLong());
 
         verify(evaluateNumEcoEvalService, never())
                 .calculateVirtualEquipment(any(), any(), anyInt(), anyDouble(), anyDouble(), anyDouble(), anyString());
@@ -942,7 +928,7 @@ class EvaluateServiceTest {
         when(impact.getDureeDeVie()).thenReturn(5.0);
 
         when(evaluateNumEcoEvalService.calculatePhysicalEquipment(
-                any(), any(), anyString(), anyList(), anyList(), anyList(),any(),anyLong()
+                any(), any(), anyString(), anyList(), anyList(), anyList(), any(), anyLong()
         )).thenReturn(List.of(impact));
 
         when(aggregationToOutput.keyPhysicalEquipment(
@@ -1120,7 +1106,7 @@ class EvaluateServiceTest {
                 aiServiceCaptor.capture(),
                 eq(List.of("criterion_1")),
                 eq(List.of("STEP1")),
-                eq(Map.of("France", "FR"))
+                eq(Map.of("france", "FR"))
         );
         InAiService evaluatedAiService = aiServiceCaptor.getValue();
         assertEquals("AI_SERVICE", evaluatedAiService.getServiceName());
@@ -1168,8 +1154,8 @@ class EvaluateServiceTest {
 
     // Builds an instance of the private nested EvaluateService.AggValuesInput record via reflection
     private Object newAggValuesInput(String indicatorStatus, String trace, Double quantity, Double elecConsumption,
-                                      Double unitImpact, Double sipValue, Double lifespan, Double usageDuration,
-                                      Double workload, boolean isCloudService, String source) throws Exception {
+                                     Double unitImpact, Double sipValue, Double lifespan, Double usageDuration,
+                                     Double workload, boolean isCloudService, String source) throws Exception {
         Class<?> inputClass = Class.forName(
                 "com.soprasteria.g4it.backend.apievaluating.business.asyncevaluatingservice.EvaluateService$AggValuesInput");
         Constructor<?> constructor = inputClass.getDeclaredConstructors()[0];

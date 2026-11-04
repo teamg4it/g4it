@@ -47,7 +47,7 @@ describe("DigitalServicesResourcesComponent", () => {
             fixture.nativeElement.querySelector("app-digital-services-networks"),
         ).toBeNull();
 
-        fixture.nativeElement.querySelector('[data-category="networks"] button').click();
+        fixture.nativeElement.querySelector("#networks button").click();
         fixture.detectChanges();
 
         expect(
@@ -60,7 +60,7 @@ describe("DigitalServicesResourcesComponent", () => {
 
     it("should show both Cloud and AI tables under external services", () => {
         fixture.nativeElement
-            .querySelector('[data-category="external-services"] button')
+            .querySelector("#external-services button")
             .click();
         fixture.detectChanges();
 
