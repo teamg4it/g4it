@@ -69,6 +69,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import static com.soprasteria.g4it.backend.common.utils.InfrastructureType.CLOUD_SERVICES;
+import static com.soprasteria.g4it.backend.common.utils.InfrastructureType.AI_SERVICES;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
@@ -1071,6 +1072,67 @@ class EvaluateServiceTest {
 
         verify(evaluateBoaviztapiService).evaluate(any(), any(), any());
         verify(saveService).saveOutVirtualEquipments(anyMap(), eq(400L), any());
+    }
+
+    @Test
+    void shouldProcessAiVirtualEquipmentUsingEcologits() throws Exception {
+        Context context = mockBaseContext(true, false);
+        Task task = mockTask(401L);
+        mockReferential();
+
+        CSVPrinter printer = mock(CSVPrinter.class);
+        when(csvFileService.getPrinter(any(), any())).thenReturn(printer);
+
+        InVirtualEquipment aiEquipment = InVirtualEquipment.builder()
+                .name("AI_SERVICE")
+                .infrastructureType(AI_SERVICES.name())
+                .provider("openai")
+                .instanceType("gpt-4o-mini")
+                .quantity(123d)
+                .location("France")
+                .commonFilters(List.of("filter"))
+                .build();
+
+        when(inVirtualEquipmentRepository
+                .findByInventoryIdAndPhysicalEquipmentName(eq(1L), isNull(), any()))
+                .thenReturn(new ArrayList<>(List.of(aiEquipment)))
+                .thenReturn(new ArrayList<>());
+
+        List<ImpactBO> impacts = List.of(ImpactBO.builder()
+                .criterion("criterion_1")
+                .lifecycleStep("STEP1")
+                .unitImpact(10d)
+                .indicatorStatus("OK")
+                .build());
+        when(evaluateEcologitsService.evaluate(any(), anyList(), anyList(), anyMap()))
+                .thenReturn(impacts);
+
+        ImpactEquipementVirtuel mappedImpact = mock(ImpactEquipementVirtuel.class);
+        when(mappedImpact.getCritere()).thenReturn("criterion_1");
+        when(mappedImpact.getStatutIndicateur()).thenReturn("OK");
+        when(mappedImpact.getImpactUnitaire()).thenReturn(10d);
+        when(internalToNumEcoEvalImpact.map(impacts)).thenReturn(List.of(mappedImpact));
+
+        evaluateService.doEvaluate(context, task, tempDir);
+
+        ArgumentCaptor<InAiService> aiServiceCaptor = ArgumentCaptor.forClass(InAiService.class);
+        verify(evaluateEcologitsService).evaluate(
+                aiServiceCaptor.capture(),
+                eq(List.of("criterion_1")),
+                eq(List.of("STEP1")),
+                eq(Map.of("France", "FR"))
+        );
+        InAiService evaluatedAiService = aiServiceCaptor.getValue();
+        assertEquals("AI_SERVICE", evaluatedAiService.getServiceName());
+        assertEquals("openai", evaluatedAiService.getProvider());
+        assertEquals("gpt-4o-mini", evaluatedAiService.getModel());
+        assertEquals(123L, evaluatedAiService.getOutputTokens());
+        assertEquals("France", evaluatedAiService.getLocation());
+        assertEquals(List.of("filter"), evaluatedAiService.getCommonFilters());
+
+        verify(evaluateNumEcoEvalService, never())
+                .calculateVirtualEquipment(any(), any(), anyInt(), any(), any(), any(), any());
+        verify(saveService).saveOutVirtualEquipments(anyMap(), eq(401L), any());
     }
 
 
