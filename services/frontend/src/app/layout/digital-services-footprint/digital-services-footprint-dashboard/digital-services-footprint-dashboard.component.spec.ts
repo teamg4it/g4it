@@ -273,12 +273,20 @@ describe("DigitalServicesFootprintDashboardComponent", () => {
         expect(result).toBe("ds-graph-description.server.");
     });
 
-    it("should return 'ds-graph-description.cloud-lifecycle.' when barChartChild and selectedParam is CLOUD_SERVICE", () => {
+    it("should return 'ds-graph-description.cloudservice-lifecycle.' when barChartChild and selectedParam is CLOUD_SERVICE", () => {
         component.selectedParam = Constants.CLOUD_SERVICE;
         component.barChartChild = true;
         const result = component.getBarTranslateKey();
-        expect(result).toBe("ds-graph-description.cloud-lifecycle.");
+        expect(result).toBe("ds-graph-description.cloudservice-lifecycle.");
     });
+
+    it("should return 'ds-graph-description.aiservice-lifecycle.' when barChartChild and selectedParam is AI_SERVICE", () => {
+        component.selectedParam = Constants.AI_SERVICE;
+        component.barChartChild = true;
+        const result = component.getBarTranslateKey();
+        expect(result).toBe("ds-graph-description.aiservice-lifecycle.");
+    });
+
     it("should return 'ds-graph-description.terminal-lifecycle.' when barChartChild and selectedParam is TERMINAL", () => {
         component.selectedParam = Constants.TERMINAL;
         component.barChartChild = true;

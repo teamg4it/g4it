@@ -484,34 +484,29 @@ export class DigitalServicesFootprintDashboardComponent
     }
 
     getBarTranslateKey(): string {
-        const isServer = this.selectedParam === "Server";
-        const isCloudService = this.selectedParam === Constants.CLOUD_SERVICE;
-        const isAiService = this.selectedParam === Constants.AI_SERVICE;
-        const isTerminal = this.selectedParam === Constants.TERMINAL;
         const isBarChartChild = this.barChartChild === true;
-        const translationPrefix = "ds-graph-description";
-        const lowerCaseSelectedParam = this.selectedParam.toLowerCase().replaceAll(/\s+/g, "-");
+        const dsPrefix = "ds-graph-description";
+        const dsType = this.selectedParam.toLowerCase().replaceAll(/\s+/g, "-");
+        const dsLifecycle = `${dsType}-lifecycle`;
 
-        let translationKey = "";
-        
-        if (!isBarChartChild && isServer) {
-            translationKey = `${translationPrefix}.server.`;
-        } else if (isBarChartChild && isServer) {
-            translationKey = `${translationPrefix}.${lowerCaseSelectedParam}-${this.barChartComponents?.first?.serversRadioButtonSelected}.`;
-        } else if (!isBarChartChild && isCloudService) {
-            translationKey = `${translationPrefix}.${lowerCaseSelectedParam}-${this.barChartComponents?.first?.cloudRadioButtonSelected}.`;
-        } else if (isBarChartChild && isCloudService) {
-            translationKey = `${translationPrefix}.cloud-lifecycle.`;
-        } else if (!isBarChartChild && isAiService) {
-            translationKey = `${translationPrefix}.${lowerCaseSelectedParam}-${this.barChartComponents?.first?.aiRadioButtonSelected}.`;
-        } else if (isBarChartChild && isAiService) {
-            translationKey = `${translationPrefix}.ai-lifecycle.`;
-        } else if (!isBarChartChild && isTerminal) {
-            translationKey = `${translationPrefix}.${lowerCaseSelectedParam}-${this.barChartComponents?.first?.terminalsRadioButtonSelected}.`;
-        } else if (isBarChartChild && isTerminal) {
-            translationKey = `${translationPrefix}.terminal-lifecycle.`;
-        } else {
-            translationKey = `${translationPrefix}.${lowerCaseSelectedParam}.`;
+        let translationKey = `${dsPrefix}.${dsType}`;
+
+        switch (this.selectedParam) {
+            case Constants.SERVER:
+                translationKey = isBarChartChild ? `${translationKey}-${this.barChartComponents?.first?.serversRadioButtonSelected}.` : `${translationKey}.`;
+                break;
+            case Constants.CLOUD_SERVICE:
+                translationKey = isBarChartChild ? `${dsPrefix}.${dsLifecycle}}.` : `${translationKey}-${this.barChartComponents?.first?.cloudRadioButtonSelected}.`;
+                break;
+            case Constants.AI_SERVICE:
+                translationKey = isBarChartChild ? `${dsPrefix}.${dsLifecycle}.` : `${translationKey}-${this.barChartComponents?.first?.aiRadioButtonSelected}.`;
+                break;
+            case Constants.TERMINAL:
+                translationKey = isBarChartChild ? `${dsPrefix}.${dsLifecycle}.` : `${translationKey}-${this.barChartComponents?.first?.terminalsRadioButtonSelected}.`;
+                break;
+            default:
+                translationKey = `${translationKey}.`;
+                break;
         }
         return translationKey;
     }
