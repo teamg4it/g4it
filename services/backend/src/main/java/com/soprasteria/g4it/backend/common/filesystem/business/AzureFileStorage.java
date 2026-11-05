@@ -174,7 +174,8 @@ public class AzureFileStorage implements FileStorage {
     public void delete(final FileFolder folder, final String fileName) {
         final BlobClient blobClient = blobContainerClient.getBlobClient(filePath(folder, fileName));
         if (Boolean.TRUE.equals(blobClient.exists())) {
-            log.info("Deleting {}", blobClient.getBlobUrl());
+            // workspace/file names are user-provided, strip CRLF/control chars before writing to the audit log
+            log.info("Deleting {}", blobClient.getBlobUrl().replaceAll("[\r\n\t]", "_"));
             blobClient.delete();
         }
     }

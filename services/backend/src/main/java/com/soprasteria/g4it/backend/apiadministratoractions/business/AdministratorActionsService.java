@@ -54,37 +54,40 @@ public class AdministratorActionsService {
         int countMissingNetworkEquipment = 0;
         log.info("Digital-service count before evaluation- {}", digitalServices.size());
         for (DigitalService digitalService : digitalServices) {
-            //evaluating
             String digitalServiceUid = digitalService.getUid();
-            Workspace workspace = workspaceRepository.findById(digitalService.getWorkspace().getId()).orElseThrow();
-            Long workspaceId = workspace.getId();
-            String organizationName = workspace.getOrganization().getName();
+            try {
+                Workspace workspace = workspaceRepository.findById(digitalService.getWorkspace().getId()).orElseThrow();
+                Long workspaceId = workspace.getId();
+                String organizationName = workspace.getOrganization().getName();
 
-            List<InPhysicalEquipment> physicalEquipments = physicalEquipmentRepository.findByDigitalServiceUid(digitalServiceUid);
-            if (!physicalEquipments.isEmpty()) {
-                Optional<Task> tasks = taskRepository.findByDigitalService(digitalService);
-                if (tasks.isPresent()) {
-                    Task task = tasks.get();
-                    int day = task.getLastUpdateDate().getDayOfMonth();
-                    int month = task.getLastUpdateDate().getMonthValue();
-                    int year = task.getLastUpdateDate().getYear();
-                    if (now.getDayOfMonth() == day && now.getMonthValue() == month && now.getYear() == year && "COMPLETED".equals(task.getStatus())) {
-                        runEvaluation = false;
-                        skipEvaluationCount++;
-                    } else {
-                        runEvaluation = true;
+                List<InPhysicalEquipment> physicalEquipments = physicalEquipmentRepository.findByDigitalServiceUid(digitalServiceUid);
+                if (!physicalEquipments.isEmpty()) {
+                    Optional<Task> tasks = taskRepository.findByDigitalService(digitalService);
+                    if (tasks.isPresent()) {
+                        Task task = tasks.get();
+                        int day = task.getLastUpdateDate().getDayOfMonth();
+                        int month = task.getLastUpdateDate().getMonthValue();
+                        int year = task.getLastUpdateDate().getYear();
+                        if (now.getDayOfMonth() == day && now.getMonthValue() == month && now.getYear() == year && "COMPLETED".equals(task.getStatus())) {
+                            runEvaluation = false;
+                            skipEvaluationCount++;
+                        } else {
+                            runEvaluation = true;
+                        }
+                    }
+                    List<InPhysicalEquipment> networkEquipments = physicalEquipments.stream().filter(equipment -> "Network".equals(equipment.getType())).toList();
+                    if (networkEquipments.isEmpty()) {
+                        countMissingNetworkEquipment++;
+                        log.info("Network equipment not found - {}", digitalServiceUid);
+                    }
+                    if (!networkEquipments.isEmpty() && runEvaluation) {
+                        count++;
+                        log.info("Digital-service re-evaluation and count- {}: {}", digitalServiceUid, count);
+                        evaluatingService.evaluatingDigitalService(organizationName, workspaceId, digitalServiceUid);
                     }
                 }
-                List<InPhysicalEquipment> networkEquipments = physicalEquipments.stream().filter(equipment -> "Network".equals(equipment.getType())).toList();
-                if (networkEquipments.isEmpty()) {
-                    countMissingNetworkEquipment++;
-                    log.info("Network equipment not found - {}", digitalServiceUid);
-                }
-                if (!networkEquipments.isEmpty() && runEvaluation) {
-                    count++;
-                    log.info("Digital-service re-evaluation and count- {}: {}", digitalServiceUid, count);
-                    evaluatingService.evaluatingDigitalService(organizationName, workspaceId, digitalServiceUid);
-                }
+            } catch (Exception e) {
+                log.error("Error while evaluating digital-service {}", digitalServiceUid, e);
             }
         }
         log.info("Missing Network equipment count - {}", countMissingNetworkEquipment);
