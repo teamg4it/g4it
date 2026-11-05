@@ -11,6 +11,7 @@ import com.soprasteria.g4it.backend.apiindicator.model.*;
 import com.soprasteria.g4it.backend.apiinout.modeldb.OutApplication;
 import com.soprasteria.g4it.backend.apiinout.repository.projection.ApplicationDomainHierarchyProjection;
 import com.soprasteria.g4it.backend.apiinout.repository.projection.ApplicationFiltersProjection;
+import com.soprasteria.g4it.backend.apiinout.repository.projection.ApplicationIndicatorRowProjection;
 import com.soprasteria.g4it.backend.apiinout.repository.projection.MultiCriteriaAggregateProjection;
 import com.soprasteria.g4it.backend.apiinout.repository.projection.MultiCriteriaImpactProjection;
 import com.soprasteria.g4it.backend.apiinout.repository.projection.VirtualEquipmentElecConsumptionSumProjection;
@@ -177,19 +178,23 @@ public interface ApplicationIndicatorMapper {
     }
 
     /**
-     * §4.4 - maps one flattened row of the paginated table view.
+     * §4.4.1 - pure 1:1 mapping of one already-aggregated row (grouped and
+     * summed DB-side by applicationName/criterion/unit - see solution.md
+     * §4.4.1) into the BO. No grouping/summing happens here.
      */
-    @Mapping(target = "criteria", expression = "java(com.soprasteria.g4it.backend.common.utils.StringUtils.snakeToKebabCase(source.getCriterion()))")
-    @Mapping(target = "lifeCycle", source = "lifecycleStep")
-    @Mapping(target = "applicationName", source = "name")
-    @Mapping(target = "impact", source = "unitImpact")
-    @Mapping(target = "sip", source = "peopleEqImpact")
-    @Mapping(target = "domain", expression = "java(java.util.Optional.ofNullable(source.getFilters().get(0)).filter(s -> !s.isEmpty()).orElse(\"Unknown\"))")
-    @Mapping(target = "subDomain", expression = "java(java.util.Optional.ofNullable(source.getFilters().get(1)).filter(s -> !s.isEmpty()).orElse(\"Unknown\"))")
-    @Mapping(target = "cluster", expression = "java(source.getFiltersVirtualEquipment().get(0))")
-    ApplicationIndicatorRowBO toRowBO(final OutApplication source);
+    default ApplicationIndicatorRowBO toRowBO(final ApplicationIndicatorRowProjection source) {
+        return ApplicationIndicatorRowBO.builder()
+                .applicationName(source.getApplicationName())
+                .criteria(StringUtils.snakeToKebabCase(source.getCriterion()))
+                .unit(source.getUnit())
+                .impact(source.getImpact())
+                .sip(source.getSip())
+                .build();
+    }
 
-    List<ApplicationIndicatorRowBO> toRowBO(final List<OutApplication> source);
+    default List<ApplicationIndicatorRowBO> toRowBO(final List<ApplicationIndicatorRowProjection> source) {
+        return source.stream().map(this::toRowBO).toList();
+    }
 
     /**
      * §4.0 - pure 1:1 copy from the DB projection (already distinct/aggregated) to the BO.

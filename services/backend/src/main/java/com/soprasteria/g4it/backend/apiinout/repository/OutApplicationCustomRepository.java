@@ -10,8 +10,8 @@ package com.soprasteria.g4it.backend.apiinout.repository;
 import com.soprasteria.g4it.backend.apiindicator.model.ApplicationCriteriaFilterBO;
 import com.soprasteria.g4it.backend.apiindicator.model.GraphLevel;
 import com.soprasteria.g4it.backend.apiindicator.model.RepartitionType;
-import com.soprasteria.g4it.backend.apiinout.modeldb.OutApplication;
 import com.soprasteria.g4it.backend.apiinout.repository.projection.ApplicationFiltersProjection;
+import com.soprasteria.g4it.backend.apiinout.repository.projection.ApplicationIndicatorRowProjection;
 import com.soprasteria.g4it.backend.apiinout.repository.projection.MultiCriteriaAggregateProjection;
 import com.soprasteria.g4it.backend.apiinout.repository.projection.MultiCriteriaImpactProjection;
 import com.soprasteria.g4it.backend.apiinout.repository.projection.VirtualEquipmentElecConsumptionSumProjection;
@@ -54,11 +54,13 @@ public interface OutApplicationCustomRepository {
     ApplicationFiltersProjection getDistinctFilters(Long taskId);
 
     /**
-     * §4.4 - DB-side filtered + paginated (WHERE + LIMIT/OFFSET) listing of
-     * application rows for the table view, applying the same shared filter
-     * dimensions as §4.1-4.3.
+     * §4.4 - DB-side filtered, aggregated and paginated (WHERE + GROUP BY +
+     * LIMIT/OFFSET) listing of application rows for the table view, applying
+     * the same shared filter dimensions as §4.1-4.3. Rows are grouped by
+     * {@code (applicationName, criterion, unit)}, summing impact/sip - see
+     * solution.md §4.4.1.
      */
-    Page<OutApplication> findByTaskId(Long taskId, ApplicationCriteriaFilterBO filters, Pageable pageable);
+    Page<ApplicationIndicatorRowProjection> findByTaskId(Long taskId, ApplicationCriteriaFilterBO filters, Pageable pageable);
 
     /**
      * Aggregated total and low-impact virtual equipment counts, filtered by the

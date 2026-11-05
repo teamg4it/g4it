@@ -824,27 +824,18 @@ components:
 
     ApplicationIndicatorRowRest:
       type: object
-      description: Flattened row (one per application/criterion) for the §4.4 paginated table view.
+      description: >
+        Aggregated row (one per applicationName/criterion/unit) for the §4.4
+        paginated table view. All lifecycle-step/environment/equipmentType/
+        domain/subDomain variations of the same application+criterion are
+        summed DB-side (SUM(impact), SUM(sip)) into this single row - see
+        solution.md §4.4.1.
       properties:
+        applicationName:
+          type: string
         criteria:
           type: string
         unit:
-          type: string
-        lifeCycle:
-          type: string
-        domain:
-          type: string
-        subDomain:
-          type: string
-        environment:
-          type: string
-        equipmentType:
-          type: string
-        applicationName:
-          type: string
-        virtualEquipmentName:
-          type: string
-        cluster:
           type: string
         impact:
           type: number
@@ -852,12 +843,6 @@ components:
         sip:
           type: number
           format: double
-        statusIndicator:
-          type: string
-        provider:
-          type: string
-        location:
-          type: string
 
     ApplicationIndicatorsPageRest:
       type: object

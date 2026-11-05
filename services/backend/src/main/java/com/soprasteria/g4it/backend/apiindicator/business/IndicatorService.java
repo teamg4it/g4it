@@ -16,6 +16,7 @@ import com.soprasteria.g4it.backend.apiinout.modeldb.OutApplication;
 import com.soprasteria.g4it.backend.apiinout.modeldb.OutPhysicalEquipment;
 import com.soprasteria.g4it.backend.apiinout.repository.OutApplicationRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.OutPhysicalEquipmentRepository;
+import com.soprasteria.g4it.backend.apiinout.repository.projection.ApplicationIndicatorRowProjection;
 import com.soprasteria.g4it.backend.apiuser.business.WorkspaceService;
 import com.soprasteria.g4it.backend.common.utils.Constants;
 import com.soprasteria.g4it.backend.common.utils.StringUtils;
@@ -181,9 +182,12 @@ public class IndicatorService {
 
 
     /**
-     * §4.4 - retrieve a single DB-side page (WHERE + LIMIT/OFFSET) of flattened
+     * §4.4/§4.4.1 - retrieve a single DB-side, aggregated page (WHERE +
+     * GROUP BY applicationName/criterion/unit + SUM + LIMIT/OFFSET) of
      * application indicator rows, filtered by the shared dimensions, for the
-     * table view.
+     * table view. Replicates, 100% database-side, the grouping the Angular
+     * frontend used to perform client-side before this endpoint existed - see
+     * spec/applicationViewOptimizationFeature/solution.md §4.4.1.
      *
      * @param taskId   the task id.
      * @param filters  the shared filter dimensions.
@@ -192,9 +196,9 @@ public class IndicatorService {
      */
     public ApplicationIndicatorsPageBO getApplicationIndicatorsPage(final Long taskId,
                                                                      final ApplicationCriteriaFilterBO filters,
-                                                                     final org.springframework.data.domain.Pageable pageable) {
-        final org.springframework.data.domain.Page<OutApplication> page = outApplicationRepository.findByTaskId(taskId, filters, pageable);
-        page.getContent().forEach(app -> app.setLifecycleStep(LifecycleStepUtils.getReverse(app.getLifecycleStep())));
+                                                                     final Pageable pageable) {
+        final org.springframework.data.domain.Page<ApplicationIndicatorRowProjection> page =
+                outApplicationRepository.findByTaskId(taskId, filters, pageable);
 
         return ApplicationIndicatorsPageBO.builder()
                 .content(applicationIndicatorMapper.toRowBO(page.getContent()))

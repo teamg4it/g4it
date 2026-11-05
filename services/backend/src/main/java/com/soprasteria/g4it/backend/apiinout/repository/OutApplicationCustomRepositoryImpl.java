@@ -10,13 +10,7 @@ package com.soprasteria.g4it.backend.apiinout.repository;
 import com.soprasteria.g4it.backend.apiindicator.model.ApplicationCriteriaFilterBO;
 import com.soprasteria.g4it.backend.apiindicator.model.GraphLevel;
 import com.soprasteria.g4it.backend.apiindicator.model.RepartitionType;
-import com.soprasteria.g4it.backend.apiinout.modeldb.OutApplication;
-import com.soprasteria.g4it.backend.apiinout.repository.projection.ApplicationDomainHierarchyProjection;
-import com.soprasteria.g4it.backend.apiinout.repository.projection.ApplicationFiltersProjection;
-import com.soprasteria.g4it.backend.apiinout.repository.projection.MultiCriteriaAggregateProjection;
-import com.soprasteria.g4it.backend.apiinout.repository.projection.MultiCriteriaImpactProjection;
-import com.soprasteria.g4it.backend.apiinout.repository.projection.VirtualEquipmentElecConsumptionSumProjection;
-import com.soprasteria.g4it.backend.apiinout.repository.projection.VirtualEquipmentLowImpactCountProjection;
+import com.soprasteria.g4it.backend.apiinout.repository.projection.*;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
@@ -470,23 +464,45 @@ public class OutApplicationCustomRepositoryImpl implements OutApplicationCustomR
         );
     }
 
+    /**
+     * §4.4.1 - groups every lifecycle-step/environment/equipmentType/domain/
+     * subDomain variation of a given {@code (applicationName, criterion, unit)}
+     * into a single summed row, entirely in SQL (GROUP BY + SUM), before
+     * paginating - replicating, 100% database-side, the client-side grouping
+     * the Angular frontend used to perform before this endpoint existed (see
+     * solution.md §4.4.1). No raw per-lifecycle-step rows are ever returned
+     * or aggregated in Java.
+     */
     @Override
-    public Page<OutApplication> findByTaskId(final Long taskId, final ApplicationCriteriaFilterBO filters,
-                                              final Pageable pageable) {
-        final StringBuilder dataSql = new StringBuilder("WITH filtered AS materialized (SELECT * FROM out_application WHERE task_id = :taskId");
+    public Page<ApplicationIndicatorRowProjection> findByTaskId(final Long taskId,
+                                                                final ApplicationCriteriaFilterBO filters,
+                                                                final Pageable pageable) {
+        final StringBuilder dataSql = new StringBuilder("""
+                WITH filtered AS materialized (
+                    SELECT name AS application_name, criterion, unit,
+                           SUM(unit_impact)      AS impact,
+                           SUM(people_eq_impact) AS sip
+                    FROM out_application
+                    WHERE task_id = :taskId
+                """);
         final List<Object[]> dataBindings = new ArrayList<>();
         appendFilterPredicates(dataSql, dataBindings, filters);
         appendInPredicate(dataSql, dataBindings, "criterion", filters == null ? null : filters.getCriterion());
-        dataSql.append(") SELECT * FROM filtered");
+        dataSql.append(" GROUP BY name, criterion, unit) SELECT * FROM filtered");
         dataSql.append(" ORDER BY ").append(buildOrderByClause(pageable.getSort()));
 
-        final StringBuilder countSql = new StringBuilder("WITH filtered AS materialized (SELECT COUNT(*) FROM out_application WHERE task_id = :taskId");
+        final StringBuilder countSql = new StringBuilder("""
+                WITH filtered AS materialized (
+                    SELECT 1
+                    FROM out_application
+                    WHERE task_id = :taskId
+                """);
         final List<Object[]> countBindings = new ArrayList<>();
         appendFilterPredicates(countSql, countBindings, filters);
         appendInPredicate(countSql, countBindings, "criterion", filters == null ? null : filters.getCriterion());
-        countSql.append(") SELECT * FROM filtered");
+        countSql.append(" GROUP BY name, criterion, unit) SELECT COUNT(*) FROM filtered");
 
-        final Query dataQuery = entityManager.createNativeQuery(dataSql.toString(), OutApplication.class);
+        final Query dataQuery = entityManager.createNativeQuery(dataSql.toString());
         dataQuery.setParameter("taskId", taskId);
         bindParameters(dataQuery, dataBindings);
         dataQuery.setFirstResult((int) pageable.getOffset());
@@ -496,8 +512,17 @@ public class OutApplicationCustomRepositoryImpl implements OutApplicationCustomR
         countQuery.setParameter("taskId", taskId);
         bindParameters(countQuery, countBindings);
 
-        @SuppressWarnings("unchecked")
-        final List<OutApplication> content = dataQuery.getResultList();
+        final List<Object[]> rows = dataQuery.getResultList();
+        final List<ApplicationIndicatorRowProjection> content = new ArrayList<>(rows.size());
+        for (final Object[] row : rows) {
+            content.add(new ApplicationIndicatorRowProjectionImpl(
+                    (String) row[0],
+                    (String) row[1],
+                    (String) row[2],
+                    toDouble(row[3]),
+                    toDouble(row[4])
+            ));
+        }
         final long total = ((Number) countQuery.getSingleResult()).longValue();
 
         return new PageImpl<>(content, pageable, total);
@@ -507,9 +532,10 @@ public class OutApplicationCustomRepositoryImpl implements OutApplicationCustomR
      * Builds a safe {@code ORDER BY} clause from the pageable's {@link org.springframework.data.domain.Sort},
      * restricted to {@link ApplicationIndicatorSortFields#ALLOWED}. Any requested
      * sort field outside that whitelist is silently ignored (never interpolated
-     * into the SQL). Always appends {@code id} as a trailing tie-breaker so
-     * pagination stays stable/deterministic across rows sharing the same
-     * sip/impact/criterion/name value.
+     * into the SQL). Always appends {@code application_name} as a trailing
+     * tie-breaker so pagination stays stable/deterministic across rows sharing
+     * the same sip/impact/criterion value (there is no surrogate {@code id} on
+     * this aggregated, grouped result set).
      */
     private static String buildOrderByClause(final org.springframework.data.domain.Sort sort) {
         final StringBuilder clause = new StringBuilder();
@@ -528,7 +554,7 @@ public class OutApplicationCustomRepositoryImpl implements OutApplicationCustomR
         if (clause.length() > 0) {
             clause.append(", ");
         }
-        clause.append("id");
+        clause.append("application_name");
         return clause.toString();
     }
 
@@ -609,6 +635,38 @@ public class OutApplicationCustomRepositoryImpl implements OutApplicationCustomR
             throw new IllegalStateException("Unable to read distinct filter values array", e);
         }
         return List.of();
+    }
+
+    /**
+     * Simple POJO implementation of {@link ApplicationIndicatorRowProjection}.
+     */
+    private record ApplicationIndicatorRowProjectionImpl(String applicationName, String criterion, String unit,
+                                                           Double impact,
+                                                           Double sip) implements ApplicationIndicatorRowProjection {
+        @Override
+        public String getApplicationName() {
+            return applicationName;
+        }
+
+        @Override
+        public String getCriterion() {
+            return criterion;
+        }
+
+        @Override
+        public String getUnit() {
+            return unit;
+        }
+
+        @Override
+        public Double getImpact() {
+            return impact;
+        }
+
+        @Override
+        public Double getSip() {
+            return sip;
+        }
     }
 
     /**
