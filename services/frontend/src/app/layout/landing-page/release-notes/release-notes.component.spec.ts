@@ -22,7 +22,7 @@ describe("ReleaseNotesComponent", () => {
             "markAsSeen",
         ]);
         releaseNotesService.getLatestReleaseNotes.and.returnValue(of(null));
-        releaseNotesService.markAsSeen.and.returnValue(of({}));
+        releaseNotesService.markAsSeen.and.returnValue(of(null));
 
         await TestBed.configureTestingModule({
             imports: [TranslateModule.forRoot(), ReleaseNotesComponent],
@@ -58,7 +58,7 @@ describe("ReleaseNotesComponent", () => {
             value: undefined,
         });
         const content = "<p>Release details</p>";
-        releaseNotesService.getLatestReleaseNotes.and.returnValue(of({ content }));
+        releaseNotesService.getLatestReleaseNotes.and.returnValue(of({ id: 0, content }));
         const section = document.createElement("section");
         const dialog = { showModal: jasmine.createSpy("showModal") };
         component.section = new ElementRef(section);
@@ -72,7 +72,7 @@ describe("ReleaseNotesComponent", () => {
 
     it("uses the Sanitizer API while allowing release-note classes and line breaks", () => {
         const content = '<p class="release">Release<br>details</p>';
-        releaseNotesService.getLatestReleaseNotes.and.returnValue(of({ content }));
+        releaseNotesService.getLatestReleaseNotes.and.returnValue(of({ id: 0, content }));
         const allowAttribute = jasmine.createSpy("allowAttribute");
         const allowElement = jasmine.createSpy("allowElement");
         let sanitizerInstance: MockSanitizer;
@@ -97,7 +97,9 @@ describe("ReleaseNotesComponent", () => {
 
         component.ngOnInit();
 
-        expect(allowAttribute).toHaveBeenCalledOnceWith("class");
+        expect(allowAttribute).toHaveBeenCalledWith("class");
+        expect(allowAttribute).toHaveBeenCalledWith("target");
+        expect(allowAttribute).toHaveBeenCalledWith("rel");
         expect(allowElement).toHaveBeenCalledOnceWith("br");
         expect(setHTML).toHaveBeenCalledOnceWith(content, {
             sanitizer: sanitizerInstance!,
