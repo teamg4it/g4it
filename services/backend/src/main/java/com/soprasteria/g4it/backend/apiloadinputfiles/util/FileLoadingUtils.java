@@ -96,7 +96,13 @@ public class FileLoadingUtils {
         try {
             final Path baseDir = Path.of(localWorkingFolder).resolve(inputPath).normalize();
             for (String filename : filenames) {
-                final Path resolved = baseDir.resolve(filename).normalize();
+                // Discard any directory component from the user-supplied filename (e.g. "../../etc/passwd"
+                // becomes "passwd") before resolving, so traversal sequences cannot reach the file system call.
+                final Path fileNameOnly = Path.of(filename).getFileName();
+                if (fileNameOnly == null) {
+                    throw new SecurityException("Invalid file path (path traversal attempt) for file: " + filename);
+                }
+                final Path resolved = baseDir.resolve(fileNameOnly.toString()).normalize();
                 if (!resolved.startsWith(baseDir)) {
                     throw new SecurityException("Invalid file path (path traversal attempt) for file: " + filename);
                 }
