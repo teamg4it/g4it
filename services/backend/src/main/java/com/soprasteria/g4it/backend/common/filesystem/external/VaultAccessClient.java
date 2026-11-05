@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
+import java.util.Locale;
 import java.util.Optional;
 
 /**
@@ -36,7 +37,7 @@ public class VaultAccessClient {
      */
     public String getConnectionStringForOrganization(final String organization) {
         return Optional.ofNullable(organization)
-                .map(sub -> secretClient.getSecret(sub.toUpperCase().replace("_", "-")))
+                .map(sub -> secretClient.getSecret(sub.toUpperCase(Locale.ROOT).replace("_", "-")))
                 .orElseThrow(FileStorageAccessExcepton::new).getValue();
     }
 }

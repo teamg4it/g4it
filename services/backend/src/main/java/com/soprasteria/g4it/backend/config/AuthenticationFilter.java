@@ -87,11 +87,11 @@ public class AuthenticationFilter extends OncePerRequestFilter {
             authService.checkUserRightForInventory(urlSplit);
         } catch (AuthorizationException e) {
             log.error(e.getMessage());
-            response.sendError(e.getStatusCode(), e.getMessage());
+            response.sendError(e.getStatusCode(), "Access denied.");
             return;
         } catch (Exception e) {
             log.error("Unexpected exception", e);
-            response.sendError(500, e.getMessage());
+            response.sendError(500, "Internal server error.");
             return;
         }
 
