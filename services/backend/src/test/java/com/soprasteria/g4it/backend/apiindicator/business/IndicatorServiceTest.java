@@ -16,6 +16,7 @@ import com.soprasteria.g4it.backend.apiinout.modeldb.OutPhysicalEquipment;
 import com.soprasteria.g4it.backend.apiinout.repository.OutApplicationRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.OutPhysicalEquipmentRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.projection.ApplicationFiltersProjection;
+import com.soprasteria.g4it.backend.apiinout.repository.projection.ApplicationIndicatorRowProjection;
 import com.soprasteria.g4it.backend.apiinout.repository.projection.MultiCriteriaAggregateProjection;
 import com.soprasteria.g4it.backend.apiinout.repository.projection.MultiCriteriaImpactProjection;
 import com.soprasteria.g4it.backend.apiinout.repository.projection.VirtualEquipmentElecConsumptionSumProjection;
@@ -332,8 +333,8 @@ class IndicatorServiceTest {
         ApplicationCriteriaFilterBO filters = ApplicationCriteriaFilterBO.builder().build();
         Pageable pageable = org.springframework.data.domain.PageRequest.of(0, 20);
 
-        OutApplication app = new OutApplication();
-        Page<OutApplication> page = new PageImpl<>(List.of(app), pageable, 1);
+        ApplicationIndicatorRowProjection row = mock(ApplicationIndicatorRowProjection.class);
+        Page<ApplicationIndicatorRowProjection> page = new PageImpl<>(List.of(row), pageable, 1);
 
         when(outApplicationRepository.findByTaskId(taskId, filters, pageable)).thenReturn(page);
         when(applicationIndicatorMapper.toRowBO(page.getContent()))

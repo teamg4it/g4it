@@ -576,14 +576,88 @@ Body: ApplicationCriteriaFilterRest { environment[], equipmentType[], lifeCycle[
   it is appended as `AND criterion = ANY(:criterion)` to both the data and count SQL
   statements, via the same generic `appendInPredicate` helper used for the other
   dimensions.
-- The response is flattened to one row per application/criterion (`ApplicationIndicatorRowRest`)
-  which is what a table view needs, rather than the previous "grouped by criteria"
-  shape — avoiding the need to reconstruct groups client-side and keeping the payload
-  minimal per page.
+- The response is **grouped/aggregated** to one row per
+  **`(applicationName, criterion, unit)`** (`ApplicationIndicatorRowRest`), which is what
+  a table view needs — see §4.4.1 for why this grouping is required (rather than a
+  flattened one-row-per-underlying-`out_application`-record shape) and how it is
+  performed 100% DB-side.
 - Backward compatibility: this is a breaking response-shape AND request-shape change
   (GET with a JSON body instead of query-only params), intentionally accepted per the
   source document ("this may involve refactoring the endpoint"); frontend must be
   updated in lockstep (tracked separately from this backend-focused document).
+
+#### 4.4.1 Fix — table rows must be grouped/summed by `(applicationName, criterion, unit)`, not one row per raw `out_application` record
+
+**Bug found during review of the initial §4.4 implementation.** `out_application` stores
+**one row per application × criterion × lifecycle-step** (and, depending on ingestion,
+further split by `environment`/`equipmentType`/`domain`/`subDomain`). The first version of
+`findByTaskId(taskId, filters, pageable)` simply did `SELECT * FROM out_application WHERE
+... LIMIT/OFFSET`, returning these **raw, un-aggregated** rows straight to the table view.
+This reintroduced, at the database level, exactly the duplication the **pre-existing
+Angular frontend used to collapse client-side** (by `applicationName` + `criterion`)
+before this paginated endpoint existed: the same application/criterion pair could appear
+as several separate table rows (one per lifecycle step/environment/equipment
+type/domain/subDomain combination) instead of a single summed row, and — worse — a page
+boundary (`LIMIT`/`OFFSET`) could split a single application's variations across two
+different pages, making the per-page impact figures inconsistent with what the UI showed
+before the migration.
+
+**Fix — group and sum in the same native SQL query, before paginating:**
+```sql
+WITH filtered AS materialized (
+    SELECT name AS application_name, criterion, unit,
+           SUM(unit_impact)      AS impact,
+           SUM(people_eq_impact) AS sip
+    FROM out_application
+    WHERE task_id = :taskId
+      AND (:environments   IS NULL OR environment    = ANY(:environments))
+      AND (:equipmentTypes IS NULL OR equipment_type = ANY(:equipmentTypes))
+      AND (:lifecycleSteps IS NULL OR lifecycle_step = ANY(:lifecycleSteps))
+      AND (:domains        IS NULL OR filters[1]     = ANY(:domains))
+      AND (:subDomains     IS NULL OR filters[2]     = ANY(:subDomains))
+      AND (:criteria       IS NULL OR criterion      = ANY(:criteria))
+    GROUP BY name, criterion, unit
+)
+SELECT * FROM filtered ORDER BY <whitelisted sort column(s)>, application_name
+LIMIT :size OFFSET :offset
+```
+- `GROUP BY name, criterion, unit` collapses every lifecycle-step/environment/equipment
+  type/domain/subDomain variation of a given application+criterion into a **single**
+  summed row — `SUM(unit_impact)` → `impact`, `SUM(people_eq_impact)` → `sip` — exactly
+  mirroring the grouping the Angular frontend performed client-side pre-migration, but
+  now **100% database-side**, before `LIMIT`/`OFFSET` is applied, so a page boundary can
+  never split (or double-count) a single application/criterion's data again.
+- The paired count query is adjusted the same way:
+  `SELECT COUNT(*) FROM (SELECT 1 FROM out_application WHERE ... GROUP BY name,
+  criterion, unit) x` — `totalElements`/`totalPages` reflect the number of **grouped**
+  rows, consistent with `content[]`.
+- The repository method's return type changes from `Page<OutApplication>` (raw entity) to
+  `Page<ApplicationIndicatorRowProjection>` — a new, dedicated **JPA/native projection
+  interface** (`getApplicationName()`, `getCriterion()`, `getUnit()`, `getImpact()`,
+  `getSip()`) — since the result set is no longer shaped like an `OutApplication` entity
+  (no `id`, no `lifecycleStep`, etc. — those dimensions are exactly what got summed
+  away). The application server never loads raw `OutApplication` rows for this endpoint;
+  it only receives the already-grouped/summed result set.
+- `ApplicationIndicatorRowBO`/`ApplicationIndicatorRowRest` are trimmed to the 5 fields
+  that remain meaningful on an aggregated row: `applicationName`, `criteria`, `unit`,
+  `impact`, `sip` (the per-lifecycle-step/domain/etc. fields that used to appear on the
+  flattened shape — `lifeCycle`, `domain`, `subDomain`, `environment`, `equipmentType`,
+  `virtualEquipmentName`, `cluster`, `statusIndicator`, `provider`, `location` — are
+  dropped: they no longer have a single value once rows are summed across them, and the
+  table view never needed them at that granularity). `ApplicationIndicatorMapper.toRowBO`
+  becomes a **pure 1:1 copy** from the projection to the BO (`StringUtils
+  .snakeToKebabCase` still applied to the criterion) — the grouping/summing itself
+  happens entirely in SQL, never in Java.
+- **Sort whitelist updated accordingly** (`ApplicationIndicatorSortFields.ALLOWED`):
+  `sip`/`impact` now map to the aggregated `SUM(...)` aliases (`sip`, `impact`) instead of
+  the old raw per-row columns (`people_eq_impact`, `unit_impact`), since those raw columns
+  no longer exist in the grouped result set; `applicationName`/`criteria` map to
+  `application_name`/`criterion` as before. The stable pagination tie-breaker also moves
+  from `id` (not meaningful anymore — a grouped row has no single source `id`) to
+  `application_name`.
+- No schema change and no behavior change for §4.1/§4.2/§4.3, which already performed
+  their own `GROUP BY`/`SUM` correctly from the start; this fix only affects §4.4's table
+  endpoint.
 
 
 ### 4.5 Caching
@@ -633,11 +707,11 @@ GET /organizations/{organization}/workspaces/{workspace}/inventories/{inventoryI
 | Layer | File | Change |
 |---|---|---|
 | OpenAPI spec | `swagger/greenit/inventory-indicator.yml` | Add `multi-criteria-impacts` (now **`POST`** with a JSON body — see rationale in §4.1) & `multi-criteria` (body includes `criteria`, `graphLevel`, `repartition`, and 6 optional filter arrays) paths; add `page`/`size` params to `applications`; add **`GET .../applications/filters`** (§4.6, no request body) |
-| OpenAPI spec | `swagger/greenit/components.yml` | Add `ApplicationMultiCriteriaImpactsRequestRest` (request body: `environment[]`, `equipmentType[]`, `lifeCycle[]`, `domain[]`, `subDomain[]`), `ApplicationMultiCriteriaImpactRest` (with aggregated `impact`/`sip`/`countValue`), `ApplicationIndicatorRowRest`, `ApplicationIndicatorsPageRest`, `ApplicationMultiCriteriaRequestRest` (fields `criteria[]`, `graphLevel` enum, `repartition` enum, nested `ApplicationCriteriaFilterRest`), `ApplicationMultiCriteriaRest` (with `nodes[]`), `ApplicationNodeRest` (label, impact, sip, countValue, `subDomainCount`, `applicationCount`, `cluster`, `equipmentType`, `environment`, nested `repartitions[]`), `ApplicationRepartitionImpactRest` (label, impact, sip, countValue), `GraphLevelRest` and `RepartitionTypeRest` enum schemas, **`ApplicationFiltersRest`** (§4.6: `environment[]`, `equipmentType[]`, `lifeCycle[]`, `domains[]`) and **`ApplicationDomainHierarchyRest`** (§4.6: `domain`, `subDomains[]` — the linked domain→subDomain tree) |
-| Repository | `OutApplicationRepository` / `OutApplicationCustomRepository(Impl)` | Add `findByTaskId(taskId, Pageable)` (DB-side pagination); add native `@Query`/native-SQL methods `aggregateMultiCriteriaImpacts(...)` (§4.1), `aggregateMultiCriteria(...)` (§4.2/§4.3, dual-axis `graphLevel`/`repartition` `GROUP BY`), `countHierarchy(...)` (§4.3 optional standing counts), and **`getDistinctFilters(taskId)`** (§4.6 — two native queries: one `array_agg(DISTINCT ...) FILTER (WHERE ... IS NOT NULL)` per scalar dimension, one `GROUP BY filters[1]` + `array_agg(DISTINCT filters[2]) FILTER (...)` building the domain→subDomains tree DB-side) — all doing `WHERE` + `GROUP BY`(1 or 2 columns)/`SUM`/`COUNT(DISTINCT ...)`/`array_agg(DISTINCT ...)` in SQL and returning JPA projections — **no entity loading, no in-memory grouping** |
-| Model (BO) | `apiindicator.model` | Add `ApplicationMultiCriteriaImpactBO` (criteria, unit, impact, sip, countValue), `ApplicationCriteriaFilterBO` (environment[], equipmentType[], lifeCycle[], domain[], subDomain[], **applicationName[]** — reused by §4.1/§4.2/§4.3), `ApplicationIndicatorRowBO`, `ApplicationNodeBO` (label, impact, sip, countValue, **consistentCount, inconsistentCount** — always populated, **subDomainCount, applicationCount, cluster, equipmentType, environment** — each nullable, populated only at the relevant `graphLevel`, plus nested `List<ApplicationRepartitionImpactBO>`), `ApplicationRepartitionImpactBO` (label, impact, sip, countValue, **consistentCount, inconsistentCount**), `ApplicationMultiCriteriaBO` (criteria, unit, `List<ApplicationNodeBO> nodes`), `ApplicationHierarchyCountsBO` (domainCount, subDomainCount, applicationCount, virtualEquipmentCount), **`ApplicationFiltersBO`** (§4.6: environment[], equipmentType[], lifeCycle[], `List<ApplicationDomainHierarchyBO> domains`) and **`ApplicationDomainHierarchyBO`** (§4.6: domain, subDomains[]), `GraphLevel` and `RepartitionType` enums |
-| Projection | `apiinout.repository.projection` | Add `MultiCriteriaImpactProjection` and `MultiCriteriaAggregateProjection` (fields `getCriterion()`, `getUnit()`, `getNodeLabel()`, `getRepartitionLabel()`, `getImpact()`, `getSip()`, `getCountValue()`, **`getConsistentCount()`, `getInconsistentCount()`** — always populated via `COUNT(*) FILTER (...)`, plus nullable `getSubDomainCount()`, `getApplicationCount()`, `getCluster()`, `getEquipmentType()`, `getEnvironment()`) JPA projection interfaces, `HierarchyCountsProjection` for the §4.3 optional counts endpoint, and **`ApplicationFiltersProjection`** (§4.6: `getEnvironment()`, `getEquipmentType()`, `getLifeCycle()` returning `List<String>`, plus `getDomains()` returning `List<ApplicationDomainHierarchyProjection>`) with **`ApplicationDomainHierarchyProjection`** (§4.6: `getDomain()`, `getSubDomains()`) |
-| Mapper | `ApplicationIndicatorMapper`, `IndicatorRestMapper` | Add mapping methods that do a **1:1 copy** from the DB projections to BO/DTO, plus a **cheap re-nesting** step that groups already-aggregated projection rows by `nodeLabel` to build `repartitions[]` per node (no `groupingBy`/`summing` collectors — all numeric aggregation already done in SQL); add **`toFiltersBO(ApplicationFiltersProjection)`** (delegates domain tree mapping to **`toDomainHierarchyBO(List<ApplicationDomainHierarchyProjection>)`**, itself a pure 1:1 element-wise copy — the domain→subDomain grouping was already done DB-side) and **`toApplicationFiltersDto(ApplicationFiltersBO)`** (§4.6, pure 1:1 copy, MapStruct auto-maps nested `domains[]`) |
+| OpenAPI spec | `swagger/greenit/components.yml` | Add `ApplicationMultiCriteriaImpactsRequestRest` (request body: `environment[]`, `equipmentType[]`, `lifeCycle[]`, `domain[]`, `subDomain[]`), `ApplicationMultiCriteriaImpactRest` (with aggregated `impact`/`sip`/`countValue`), `ApplicationIndicatorRowRest` (§4.4.1: aggregated row — `applicationName`, `criteria`, `unit`, `impact`, `sip` only), `ApplicationIndicatorsPageRest`, `ApplicationMultiCriteriaRequestRest` (fields `criteria[]`, `graphLevel` enum, `repartition` enum, nested `ApplicationCriteriaFilterRest`), `ApplicationMultiCriteriaRest` (with `nodes[]`), `ApplicationNodeRest` (label, impact, sip, countValue, `subDomainCount`, `applicationCount`, `cluster`, `equipmentType`, `environment`, nested `repartitions[]`), `ApplicationRepartitionImpactRest` (label, impact, sip, countValue), `GraphLevelRest` and `RepartitionTypeRest` enum schemas, **`ApplicationFiltersRest`** (§4.6: `environment[]`, `equipmentType[]`, `lifeCycle[]`, `domains[]`) and **`ApplicationDomainHierarchyRest`** (§4.6: `domain`, `subDomains[]` — the linked domain→subDomain tree) |
+| Repository | `OutApplicationRepository` / `OutApplicationCustomRepository(Impl)` | Add `findByTaskId(taskId, filters, Pageable)` returning `Page<ApplicationIndicatorRowProjection>` (§4.4.1: DB-side `GROUP BY name, criterion, unit` + `SUM` + pagination — **not** a raw entity page); add native `@Query`/native-SQL methods `aggregateMultiCriteriaImpacts(...)` (§4.1), `aggregateMultiCriteria(...)` (§4.2/§4.3, dual-axis `graphLevel`/`repartition` `GROUP BY`), `countHierarchy(...)` (§4.3 optional standing counts), and **`getDistinctFilters(taskId)`** (§4.6 — two native queries: one `array_agg(DISTINCT ...) FILTER (WHERE ... IS NOT NULL)` per scalar dimension, one `GROUP BY filters[1]` + `array_agg(DISTINCT filters[2]) FILTER (...)` building the domain→subDomains tree DB-side) — all doing `WHERE` + `GROUP BY`(1 or 2 columns)/`SUM`/`COUNT(DISTINCT ...)`/`array_agg(DISTINCT ...)` in SQL and returning JPA projections — **no entity loading, no in-memory grouping**. `ApplicationIndicatorSortFields.ALLOWED` updated to map `sip`/`impact` to the aggregated `SUM(...)` aliases (§4.4.1) |
+| Model (BO) | `apiindicator.model` | Add `ApplicationMultiCriteriaImpactBO` (criteria, unit, impact, sip, countValue), `ApplicationCriteriaFilterBO` (environment[], equipmentType[], lifeCycle[], domain[], subDomain[], **applicationName[]** — reused by §4.1/§4.2/§4.3), `ApplicationIndicatorRowBO` (§4.4.1: trimmed to `applicationName`, `criteria`, `unit`, `impact`, `sip` — one aggregated row per application+criterion+unit), `ApplicationNodeBO` (label, impact, sip, countValue, **consistentCount, inconsistentCount** — always populated, **subDomainCount, applicationCount, cluster, equipmentType, environment** — each nullable, populated only at the relevant `graphLevel`, plus nested `List<ApplicationRepartitionImpactBO>`), `ApplicationRepartitionImpactBO` (label, impact, sip, countValue, **consistentCount, inconsistentCount**), `ApplicationMultiCriteriaBO` (criteria, unit, `List<ApplicationNodeBO> nodes`), `ApplicationHierarchyCountsBO` (domainCount, subDomainCount, applicationCount, virtualEquipmentCount), **`ApplicationFiltersBO`** (§4.6: environment[], equipmentType[], lifeCycle[], `List<ApplicationDomainHierarchyBO> domains`) and **`ApplicationDomainHierarchyBO`** (§4.6: domain, subDomains[]), `GraphLevel` and `RepartitionType` enums |
+| Projection | `apiinout.repository.projection` | Add `MultiCriteriaImpactProjection` and `MultiCriteriaAggregateProjection` (fields `getCriterion()`, `getUnit()`, `getNodeLabel()`, `getRepartitionLabel()`, `getImpact()`, `getSip()`, `getCountValue()`, **`getConsistentCount()`, `getInconsistentCount()`** — always populated via `COUNT(*) FILTER (...)`, plus nullable `getSubDomainCount()`, `getApplicationCount()`, `getCluster()`, `getEquipmentType()`, `getEnvironment()`) JPA projection interfaces, `HierarchyCountsProjection` for the §4.3 optional counts endpoint, **`ApplicationIndicatorRowProjection`** (§4.4.1: `getApplicationName()`, `getCriterion()`, `getUnit()`, `getImpact()`, `getSip()` — backs the grouped/summed §4.4 table rows, replacing the raw `OutApplication` entity previously returned by `findByTaskId`), and **`ApplicationFiltersProjection`** (§4.6: `getEnvironment()`, `getEquipmentType()`, `getLifeCycle()` returning `List<String>`, plus `getDomains()` returning `List<ApplicationDomainHierarchyProjection>`) with **`ApplicationDomainHierarchyProjection`** (§4.6: `getDomain()`, `getSubDomains()`) |
+| Mapper | `ApplicationIndicatorMapper`, `IndicatorRestMapper` | Add mapping methods that do a **1:1 copy** from the DB projections to BO/DTO, plus a **cheap re-nesting** step that groups already-aggregated projection rows by `nodeLabel` to build `repartitions[]` per node (no `groupingBy`/`summing` collectors — all numeric aggregation already done in SQL); `toRowBO(ApplicationIndicatorRowProjection)` / `toRowBO(List<...>)` (§4.4.1) replace the previous `OutApplication`-sourced mapping, now a pure 1:1 copy from the already-grouped/summed projection; add **`toFiltersBO(ApplicationFiltersProjection)`** (delegates domain tree mapping to **`toDomainHierarchyBO(List<ApplicationDomainHierarchyProjection>)`**, itself a pure 1:1 element-wise copy — the domain→subDomain grouping was already done DB-side) and **`toApplicationFiltersDto(ApplicationFiltersBO)`** (§4.6, pure 1:1 copy, MapStruct auto-maps nested `domains[]`) |
 | Business | `IndicatorService`, `InventoryIndicatorService` | Add `getApplicationMultiCriteriaImpacts(taskId, filters)`, `getApplicationIndicatorsPage`, `getApplicationMultiCriteriaIndicators(taskId, criteria, graphLevel, repartition, filters)` (dispatch table keyed by the `(graphLevel, repartition)` pair), `getApplicationHierarchyCounts(taskId, filters)`, and **`getApplicationFilters(taskId)`** (§4.6) — each a thin pass-through from repository projections to BOs; add caching. `InventoryIndicatorService` resolves `getLastTaskId(inventory)` before delegating, same as every other method |
 | Controller | `InventoryIndicatorController` | Implement `getApplicationMultiCriteriaImpacts` (now a `POST` delegate method binding the JSON request body into `ApplicationCriteriaFilterBO`) and `getApplicationMultiCriteriaIndicators` (binds request body incl. `graphLevel`, `repartition` and nested filters into `ApplicationCriteriaFilterBO`) delegate methods; update `getApplicationIndicators` to accept `page`/`size` and return the paged DTO; add optional `getApplicationHierarchyCounts` delegate method (§4.3); **add `getApplicationFilters` delegate method (§4.6, no request body)** |
 | Config | `application.yml` / server config | Set/verify request body size limits (e.g. `spring.codec.max-in-memory-size` for WebFlux or servlet container max request size) so that filter payloads with several thousand `domain`/`subDomain` values are accepted; add server-side max-array-size validation on `ApplicationCriteriaFilterBO` |

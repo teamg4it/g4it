@@ -13,8 +13,11 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 /**
- * Flattened row (one per application/criterion) for the §4.4 paginated table
- * view - avoids the "grouped by criteria" shape needed for the graph endpoints.
+ * Aggregated row (one per {@code (applicationName, criterion, unit)}) for the
+ * §4.4 paginated table view - lifecycle-step/environment/equipmentType/domain/
+ * subDomain variations of the same application+criterion are summed into this
+ * single row DB-side (see solution.md §4.4.1), replicating the grouping the
+ * Angular frontend used to perform client-side before this endpoint existed.
  */
 @Data
 @NoArgsConstructor
@@ -22,34 +25,14 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class ApplicationIndicatorRowBO {
 
+    private String applicationName;
+
     private String criteria;
 
     private String unit;
 
-    private String lifeCycle;
-
-    private String domain;
-
-    private String subDomain;
-
-    private String environment;
-
-    private String equipmentType;
-
-    private String applicationName;
-
-    private String virtualEquipmentName;
-
-    private String cluster;
-
     private Double impact;
 
     private Double sip;
-
-    private String statusIndicator;
-
-    private String provider;
-
-    private String location;
 }
 
