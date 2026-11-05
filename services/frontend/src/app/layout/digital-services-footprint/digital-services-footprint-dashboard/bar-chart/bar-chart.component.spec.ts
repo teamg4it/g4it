@@ -220,6 +220,22 @@ describe("BarChartComponent", () => {
         expect(echartsOption.series).toBeTruthy();
     });
 
+    it("should update options when ngOnChanges detects Terminal data", () => {
+        const terminalData: DigitalServiceTerminalsImpact[] = [];
+        const expectedOptions: EChartsOption = { series: [] };
+        const loadTerminalOptionsSpy = spyOn(
+            component,
+            "loadStackBarOptionTerminal",
+        ).and.returnValue(expectedOptions);
+        component.selectedParam = Constants.TERMINAL;
+        component.terminalData = terminalData;
+
+        component.ngOnChanges({});
+
+        expect(loadTerminalOptionsSpy).toHaveBeenCalledOnceWith(terminalData);
+        expect(component.options).toBe(expectedOptions);
+    });    
+
     it("should generate valid EChartsOption for Cloud Services", () => {
         const barChartData = transformOutVirtualEquipmentsToCloudData(
             [
@@ -269,6 +285,22 @@ describe("BarChartComponent", () => {
 
         expect(echartsOption).toBeTruthy();
         expect(echartsOption.series).toBeTruthy();
+    });
+
+    it("should update options when ngOnChanges detects Cloud service data", () => {
+        const cloudData: DigitalServiceCloudImpact[] = [];
+        const expectedOptions: EChartsOption = { series: [] };
+        const loadCloudOptionsSpy = spyOn(
+            component,
+            "loadStackBarOptionCloud",
+        ).and.returnValue(expectedOptions);
+        component.selectedParam = Constants.CLOUD_SERVICE;
+        component.cloudData = cloudData;
+
+        component.ngOnChanges({});
+
+        expect(loadCloudOptionsSpy).toHaveBeenCalledOnceWith(cloudData);
+        expect(component.options).toBe(expectedOptions);
     });
 
     it("should generate valid EChartsOption for AI Services", () => {
@@ -322,6 +354,22 @@ describe("BarChartComponent", () => {
 
         expect(echartsOption).toBeTruthy();
         expect(echartsOption.series).toBeTruthy();
+    });
+
+    it("should update options when ngOnChanges detects AI service data", () => {
+        const aiData: DigitalServiceAiImpact[] = [];
+        const expectedOptions: EChartsOption = { series: [] };
+        const loadAiOptionsSpy = spyOn(
+            component,
+            "loadStackBarOptionAi",
+        ).and.returnValue(expectedOptions);
+        component.selectedParam = Constants.AI_SERVICE;
+        component.aiData = aiData;
+
+        component.ngOnChanges({});
+
+        expect(loadAiOptionsSpy).toHaveBeenCalledOnceWith(aiData);
+        expect(component.options).toBe(expectedOptions);
     });
 
     it("should format tooltip correctly for terminal data", () => {
