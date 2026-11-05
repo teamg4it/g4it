@@ -239,7 +239,7 @@ export class InventoriesApplicationFootprintComponent implements OnInit, OnDestr
             .map((impact) => ({
                 name: impact.criteria,
                 title: this.translate.instant(`criteria.${impact.criteria}.title`),
-                unite: impact.unit,
+                unite: this.translate.instant(`criteria.${impact.criteria}.unite`),
                 raw: impact.impact,
                 peopleeq: impact.sip,
             }))

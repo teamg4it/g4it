@@ -277,7 +277,7 @@ describe("Inventory Application footprint", () => {
                 {
                     name: "someCriteria",
                     title: "criteria.someCriteria.title",
-                    unite: "kg",
+                    unite: "criteria.someCriteria.unite",
                     raw: 42,
                     peopleeq: 7,
                 },
