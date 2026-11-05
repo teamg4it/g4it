@@ -898,14 +898,17 @@ export class InventoriesApplicationFootprintComponent implements OnInit, OnDestr
 
     displayPopupFct() {
         const defaultCriteria = Object.keys(this.globalStore.criteriaList()).slice(0, 5);
-        const criteriasCalculated = this.footprint().flatMap((impact) => impact.criteria);
+        const criteriasCalculated = this.summaryImpacts().map(
+            (impact) => impact.criteria,
+        );
         const inventoryCriteria = this.inventory()?.criteria;
 
         if (inventoryCriteria?.length) {
             this.selectedCriterias = inventoryCriteria;
+        } else if (criteriasCalculated?.length) {
+            this.selectedCriterias = criteriasCalculated;
         } else {
             this.selectedCriterias =
-                criteriasCalculated ??
                 this.workspace?.criteriaIs ??
                 this.organization?.criteria ??
                 defaultCriteria;
