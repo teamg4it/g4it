@@ -902,10 +902,6 @@ export class ApplicationCriteriaFootprintComponent
                     `;
                 },
             },
-            legend: {
-                formatter: (name: string) =>
-                    this.translateSeriesName(name, selectedDimension),
-            },
             grid: {
                 left: "3%",
                 right: "4%",
