@@ -1,0 +1,32 @@
+<section class="release-notes">
+    <p class="text-xl mt-4 line-height-3 px-4 pb-4">
+        {{ "administration.release-notes-paragraph" | translate }}
+    </p>
+
+    <app-common-editor
+        [showTitle]="false"
+        [content]="form.get('releaseNotes')?.value || ''"
+        [isWriteRole]="true"
+        [showButtons]="false"
+        [isScroll]="false"
+        (contentChange)="onEditorContentChange($event)"
+        styleClass="m-0 p-0"
+    ></app-common-editor>
+
+    <div class="form-buttons">
+        <p-button
+            styleClass="cancel-creation-button uppercase"
+            (onClick)="undoChanges()"
+            [label]="'administration.release-notes.undo' | translate"
+            [ariaLabel]="'administration.release-notes.undo' | translate"
+            [disabled]="form.pristine || form.value.releaseNotes === initialNotes()"
+        ></p-button>
+        <p-button
+            styleClass="uppercase bg-light-green"
+            (onClick)="saveReleaseNotes()"
+            [label]="'administration.release-notes.publish' | translate"
+            [ariaLabel]="'administration.release-notes.publish' | translate"
+            [disabled]="form.pristine || form.value.releaseNotes === initialNotes()"
+        ></p-button>
+    </div>
+</section>

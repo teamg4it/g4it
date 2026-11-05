@@ -66,6 +66,13 @@ export const ADMINISTRATION_ROUTES: Routes = [
                     ).then((m) => m.UpdateWorkspaceReferenceComponent),
                 ...titleResolveObject,
             },
+            {
+                path: "release-notes",
+                loadComponent: () =>
+                    import("./administration-panel/release-notes/release-notes.component")
+                    .then((m) => m.ReleaseNotesComponent),
+                ...titleResolveObject,
+            },
         ],
     },
 ];
