@@ -611,11 +611,11 @@
         "locationValue": "Location",
         "model": "Model",
         "new": "New AI service",
+        "edit": "Edit AI Service",
         "ai-services": "AI Services",
         "ai-service": "AI Service",
         "configuration": "AI service parameters",
         "error.service-already-exists": "AI service already exists",
-        "information-step": "Step 5",
         "ai-description": "AI Service Configuration",
         "ai-description-text": "Configure the AI service used by your digital service. The provider, model, number of tokens and hosting location are required by the EcoLogits API to calculate the environmental impacts associated with AI inference workloads."
     },

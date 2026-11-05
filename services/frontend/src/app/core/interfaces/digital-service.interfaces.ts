@@ -252,8 +252,6 @@ export interface CloudNameImpact {
     peopleEqImpact: number;
     unitImpact: number;
     quantity: number;
-    usageDuration: number;
-    workload: number;
     unit: string;
     statusIndicator: string;
     countValue: number;
@@ -273,8 +271,6 @@ export interface AiImpact {
     name: string;
     totalSipValue: number;
     totalQuantity: number;
-    totalAvgUsage: number;
-    totalAvgWorkLoad: number;
     impact: ImpactAiACVStep[];
 }
 
@@ -290,13 +286,10 @@ export interface AiNameImpact {
     peopleEqImpact: number;
     unitImpact: number;
     quantity: number;
-    usageDuration: number;
-    workload: number;
     unit: string;
     statusIndicator: string;
     countValue: number;
     provider: string;
-    statusCount: StatusCount;
 }
 
 export interface AiImpactTypeLocation {

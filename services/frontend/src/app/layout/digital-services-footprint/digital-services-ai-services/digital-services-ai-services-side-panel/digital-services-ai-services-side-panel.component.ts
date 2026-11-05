@@ -85,7 +85,7 @@ export class DigitalServicesAIServicesSidePanelComponent implements OnInit {
         this.initForm();
         void this.getEcologitsReferentials();
         if (!this.ai.idFront) {
-            void this.resetAIServices();
+            this.resetAIServices();
         }
     }
 
@@ -102,22 +102,32 @@ export class DigitalServicesAIServicesSidePanelComponent implements OnInit {
 
         this.countries.sort((a, b) => a.name.localeCompare(b.name));
 
+        // Get AI providers from Ecologits API
         this.aiProviders = await lastValueFrom(
             this.digitalDataService.getEcologitsApiAIProviders(),
         );
+
+        // Set the first provider as the default if no provider is selected
         if (!this.ai.idFront) {
             this.ai.aiProvider = this.aiProviders[0];
         }
 
-        for (const aiProvider of this.aiProviders) {
-            const models = await lastValueFrom(
-                this.digitalDataService.getEcologitsApiAIModel(aiProvider),
-            );
-            this.aiModelsByProvider.set(aiProvider, models);
-        }
+        // Get AI models for each provider and store them in a map
+        const modelsByProvider = await Promise.all(
+            this.aiProviders.map(async (provider) => ({
+                provider,
+                models: await lastValueFrom(
+                    this.digitalDataService.getEcologitsApiAIModel(provider),
+                ),
+            })),
+        );
+
+        modelsByProvider.forEach(({ provider, models }) => {
+            this.aiModelsByProvider.set(provider, models);
+        });
     }
 
-    async resetAIServices() {
+    resetAIServices() {
         this.ai = {
             id: 0,
             digitalServiceUid: this.router.url.split("/")[6],
@@ -168,12 +178,12 @@ export class DigitalServicesAIServicesSidePanelComponent implements OnInit {
         this.sidebarVisibleChange.emit(false);
     }
 
-    async submitFormData() {
+    submitFormData() {
         this.updateAIServices.emit(this.ai);
         this.close();
     }
 
-    async deleteServerAI() {
+    deleteServerAI() {
         this.deleteAIServices.emit(this.ai);
         this.close();
     }

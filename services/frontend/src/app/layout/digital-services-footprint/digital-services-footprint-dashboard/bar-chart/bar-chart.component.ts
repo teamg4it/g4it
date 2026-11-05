@@ -300,14 +300,19 @@ export class BarChartComponent extends AbstractDashboard implements OnChanges {
         type: string,
     ): EChartsOption {
         const isTerminal = type === Constants.TERMINAL;
+        const isAiService = type === Constants.AI_SERVICE;
         const xAxis: any[] = [];
         const yAxis: any[] = [];
-        const options =
-            type === Constants.TERMINAL
-                ? this.terminalsOptions
-                : type === Constants.AI_SERVICE
-                  ? this.aiOptions
-                  : this.cloudOptions;
+        let options;
+
+        if (isTerminal) {
+            options = this.terminalsOptions;
+        } else if (isAiService) {
+            options = this.aiOptions;
+        } else {
+            options = this.cloudOptions;
+        }
+
         const seriesData = this.extractSelectedData(
             barChartData,
             radioButtonSelected,

@@ -2,25 +2,23 @@
     <p-scrollPanel [style]="{ width: '100%', height: 'calc(100vh - 120px)' }">
         <div class="lg-file-panel-margin">
             @if (isNew) {
-                <div
+                <h2
                     class="side-panel-title"
-                    role="heading"
                     aria-level="2"
                     appAutofocus
                     tabindex="-1"
                 >
                     {{ "digital-services-ai-services.new" | translate }}
-                </div>
+            </h2>
             } @else {
-                <div
+                <h2
                     class="side-panel-title"
-                    role="heading"
                     aria-level="2"
                     appAutofocus
                     tabindex="-1"
                 >
                     {{ "digital-services-ai-services.edit" | translate }}
-                </div>
+            </h2>
             }
 
             <div class="information-section my-3">
@@ -36,10 +34,10 @@
 
             <div class="w-30rem">
                 <div class="flex flex-column">
-                    <label for="cloudName">{{
+                    <label for="aiName">{{
                         "digital-services-ai-services.name" | translate
                     }}</label>
-                    <input
+                    <input label="aiName"
                         pInputText
                         formControlName="name"
                         [required]="true"

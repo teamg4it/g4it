@@ -564,8 +564,6 @@ const getImpactsForAi = (
             peopleEqImpact: obj.peopleEqImpact,
             unitImpact: obj.unitImpact,
             quantity: obj.quantity,
-            usageDuration: obj.usageDuration,
-            workload: obj.workload,
             unit: obj.unit,
             statusIndicator: obj.statusIndicator,
             countValue: obj.countValue,
@@ -586,9 +584,6 @@ const getImpactsForAi = (
                     const totalQuantity = sumByProperty(impacts, "quantity");
                     return {
                         name: aiName,
-                        totalAvgUsage:
-                            sumByProperty(impacts, "usageDuration") / totalQuantity,
-                        totalAvgWorkLoad: (sumByProperty(impacts, "workload") * 100) / 4,
                         totalQuantity,
                         totalSipValue: sumByProperty(impacts, "peopleEqImpact"),
                         rawValue: sumByProperty(impacts, "unitImpact"),

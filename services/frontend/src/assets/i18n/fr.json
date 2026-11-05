@@ -609,11 +609,11 @@
         "locationValue": "Localisation",
         "model": "Modèle",
         "new": "Nouveau service IA",
+        "edit": "Édition service IA",
         "ai-services": "Services IA",
         "ai-service": "Service IA",
         "configuration": "Paramètre du service IA",
         "error.service-already-exists": "Le service IA existe déjà",
-        "information-step": "ÉTAPE 4",
         "ai-description": "Configuration du service IA",
         "ai-description-text": "Configurez le service IA utilisé par votre service numérique. Le fournisseur, le modèle, le nombre de jetons et la localisation sont exigé par l'API EcoLogits afin de calculer les impacts environnementaux associé aux charges de travail d’inférence par IA."
     },

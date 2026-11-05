@@ -76,17 +76,13 @@ describe("DigitalServicesResourcesComponent", () => {
         fixture.nativeElement.querySelector("#collapse-button button").click();
         fixture.detectChanges();
 
-        expect(fixture.nativeElement.querySelectorAll("app-resource-button").length).toBe(
-            0,
-        );
+        expect(fixture.nativeElement.querySelectorAll("app-resource-button")).toHaveSize(0);
         expect(component.isSidebarCollapsed).toBeTrue();
 
         fixture.nativeElement.querySelector("#expand-button button").click();
         fixture.detectChanges();
 
-        expect(fixture.nativeElement.querySelectorAll("app-resource-button").length).toBe(
-            4,
-        );
+        expect(fixture.nativeElement.querySelectorAll("app-resource-button")).toHaveSize(4);
         expect(component.isSidebarCollapsed).toBeFalse();
     });
 });
