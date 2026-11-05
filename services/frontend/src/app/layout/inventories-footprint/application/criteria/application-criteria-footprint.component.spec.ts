@@ -193,7 +193,7 @@ describe("ApplicationCriteriaFootprintComponent", () => {
         expect(component.textDescriptionImpacts[0].impactNameVisible).toBe("Domain1");
     });
 
-    it("should translate lifecycle series names in the legend and tooltip", () => {
+    it("should translate lifecycle series names in the tooltip", () => {
         spyOn(TestBed.inject(TranslateService), "instant").and.callFake((key: any) =>
             key === "acvStep.USING" ? "Using" : key,
         );
@@ -236,9 +236,8 @@ describe("ApplicationCriteriaFootprintComponent", () => {
             seriesName: "USING",
         });
 
-        expect((chart.legend as any).formatter("USING")).toBe("Using");
         expect(tooltip).toContain("Using");
-        expect((chart.legend as any).formatter("UNKNOWN_STEP")).toBe("UNKNOWN_STEP");
+        expect(chart.legend).toBeUndefined();
     });
 
     it("should reset showInconsitencyGraph on ngOnChanges", () => {
