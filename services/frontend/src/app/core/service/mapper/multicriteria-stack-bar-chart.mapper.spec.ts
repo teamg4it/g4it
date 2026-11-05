@@ -375,7 +375,7 @@ describe("multicriteria-stack-bar-chart.mapper", () => {
 
                 expect(html).toContain("background-color: #ff0000");
                 expect(html).toContain("Test Series");
-                expect(html).toContain("1,234");
+                expect(html).toContain("1 234");
                 expect(html).toContain("people-eq/min");
             });
 

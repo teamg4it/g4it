@@ -496,7 +496,7 @@ export class DigitalServicesFootprintDashboardComponent
                 translationKey = isBarChartChild ? `${translationKey}-${this.barChartComponents?.first?.serversRadioButtonSelected}.` : `${translationKey}.`;
                 break;
             case Constants.CLOUD_SERVICE:
-                translationKey = isBarChartChild ? `${dsPrefix}.${dsLifecycle}}.` : `${translationKey}-${this.barChartComponents?.first?.cloudRadioButtonSelected}.`;
+                translationKey = isBarChartChild ? `${dsPrefix}.${dsLifecycle}.` : `${translationKey}-${this.barChartComponents?.first?.cloudRadioButtonSelected}.`;
                 break;
             case Constants.AI_SERVICE:
                 translationKey = isBarChartChild ? `${dsPrefix}.${dsLifecycle}.` : `${translationKey}-${this.barChartComponents?.first?.aiRadioButtonSelected}.`;
