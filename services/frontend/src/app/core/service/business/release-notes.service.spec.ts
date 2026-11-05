@@ -13,9 +13,9 @@ describe("ReleaseNotesService", () => {
             "postReleaseNotesSeen",
         ]);
         dataService.getLatestReleaseNotes.and.returnValue(
-            of({ content: "Latest notes" }),
+            of({ id: 0, content: "Latest notes" }),
         );
-        dataService.postReleaseNotesSeen.and.returnValue(of({}));
+        dataService.postReleaseNotesSeen.and.returnValue(of(null));
 
         TestBed.configureTestingModule({
             providers: [
@@ -31,7 +31,7 @@ describe("ReleaseNotesService", () => {
         service.getLatestReleaseNotes().subscribe((notes) => (result = notes));
 
         expect(dataService.getLatestReleaseNotes).toHaveBeenCalled();
-        expect(result).toEqual({ content: "Latest notes" });
+        expect(result).toEqual({ id: 0, content: "Latest notes" });
     });
 
     it("records that the current user has seen the release notes", () => {
@@ -39,6 +39,6 @@ describe("ReleaseNotesService", () => {
         service.markAsSeen().subscribe((response) => (result = response));
 
         expect(dataService.postReleaseNotesSeen).toHaveBeenCalled();
-        expect(result).toEqual({});
+        expect(result).toEqual(null);
     });
 });

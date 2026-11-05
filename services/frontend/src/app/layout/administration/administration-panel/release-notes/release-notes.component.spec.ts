@@ -20,9 +20,9 @@ describe("ReleaseNotesComponent", () => {
             "saveReleaseNotes",
         ]);
         administrationService.getLatestReleaseNotes.and.returnValue(
-            of({ content: "Published notes" }),
+            of({ id: 0, content: "Published notes" }),
         );
-        administrationService.saveReleaseNotes.and.returnValue(of({}));
+        administrationService.saveReleaseNotes.and.returnValue(of(null));
         messageService = jasmine.createSpyObj("MessageService", ["add"]);
         translateService = jasmine.createSpyObj("TranslateService", ["instant"]);
         translateService.instant.and.callFake((key: string) => key);
@@ -50,7 +50,7 @@ describe("ReleaseNotesComponent", () => {
     });
 
     it("keeps the empty initial value when no notes have been published", () => {
-        administrationService.getLatestReleaseNotes.and.returnValue(of({ content: "" }));
+        administrationService.getLatestReleaseNotes.and.returnValue(of({ id: 0, content: "" }));
 
         component.ngOnInit();
 
