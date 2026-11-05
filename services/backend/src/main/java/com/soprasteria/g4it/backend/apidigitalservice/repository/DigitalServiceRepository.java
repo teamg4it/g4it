@@ -13,6 +13,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -54,5 +55,13 @@ public interface DigitalServiceRepository extends JpaRepository<DigitalService, 
     @Query("UPDATE DigitalService ds SET ds.lastUpdateDate = ?1 where ds.uid = ?2")
     void updateLastUpdateDate(LocalDateTime lastUpdateDate, String digitalServiceUid);
 
+    /**
+     * Delete a digital service by its uid using a single native statement.*
+     * @param digitalServiceUid the digital service uid.
+     */
+    @Modifying
+    @Transactional
+    @Query(value = "DELETE FROM digital_service WHERE uid = :digitalServiceUid", nativeQuery = true)
+    void deleteByUidNative(@Param("digitalServiceUid") String digitalServiceUid);
 
 }

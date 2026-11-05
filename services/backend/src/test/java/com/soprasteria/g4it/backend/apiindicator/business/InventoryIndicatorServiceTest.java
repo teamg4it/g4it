@@ -8,12 +8,11 @@
 
 package com.soprasteria.g4it.backend.apiindicator.business;
 
-import com.soprasteria.g4it.backend.apiindicator.model.PhysicalEquipmentElecConsumptionBO;
-import com.soprasteria.g4it.backend.apiindicator.model.VirtualEquipmentElecConsumptionBO;
-import com.soprasteria.g4it.backend.apiindicator.model.VirtualEquipmentLowImpactBO;
+import com.soprasteria.g4it.backend.apiindicator.model.*;
 import com.soprasteria.g4it.backend.apiinventory.business.InventoryService;
 import com.soprasteria.g4it.backend.apiinventory.model.InventoryBO;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
+import com.soprasteria.g4it.backend.common.task.business.TaskService;
 import com.soprasteria.g4it.backend.common.task.modeldb.Task;
 import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
@@ -24,7 +23,11 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
+
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -42,6 +45,8 @@ class InventoryIndicatorServiceTest {
     private IndicatorService indicatorService;
     @Mock
     private TaskRepository taskRepository;
+    @Mock
+    private TaskService taskService;
 
     @InjectMocks
     private InventoryIndicatorService inventoryIndicatorService;
@@ -178,5 +183,260 @@ class InventoryIndicatorServiceTest {
         verify(taskRepository).findByInventoryAndLastCreationDate(any());
         verifyNoInteractions(inventoryService);
         verifyNoInteractions(indicatorService);
+    }
+
+    @Test
+    void getEquipmentIndicatorsDelegatesToIndicatorService() {
+        String organization = "ORG";
+        Long workspaceId = 1L;
+        Long inventoryId = 2L;
+        Long taskId = 3L;
+
+        InventoryBO inventory = new InventoryBO();
+        inventory.setId(inventoryId);
+
+        Map<String, EquipmentIndicatorBO> expected = Map.of("climate-change", EquipmentIndicatorBO.builder().build());
+
+        when(inventoryService.getInventory(organization, workspaceId, inventoryId)).thenReturn(inventory);
+        when(taskRepository.findByInventoryAndLastCreationDate(Mockito.any(Inventory.class)))
+                .thenReturn(Optional.of(Task.builder().id(taskId).build()));
+        when(indicatorService.getEquipmentIndicators(taskId)).thenReturn(expected);
+
+        Map<String, EquipmentIndicatorBO> result =
+                inventoryIndicatorService.getEquipmentIndicators(organization, workspaceId, inventoryId);
+
+        assertEquals(expected, result);
+        verify(indicatorService).getEquipmentIndicators(taskId);
+    }
+
+    @Test
+    void getApplicationIndicatorsDelegatesToIndicatorService() {
+        String organization = "ORG";
+        Long workspaceId = 1L;
+        Long inventoryId = 2L;
+        Long taskId = 3L;
+
+        InventoryBO inventory = new InventoryBO();
+        inventory.setId(inventoryId);
+
+        List<ApplicationIndicatorBO<ApplicationImpactBO>> expected = List.of(new ApplicationIndicatorBO<>());
+
+        when(inventoryService.getInventory(organization, workspaceId, inventoryId)).thenReturn(inventory);
+        when(taskRepository.findByInventoryAndLastCreationDate(Mockito.any(Inventory.class)))
+                .thenReturn(Optional.of(Task.builder().id(taskId).build()));
+        when(indicatorService.getApplicationIndicators(taskId)).thenReturn(expected);
+
+        List<ApplicationIndicatorBO<ApplicationImpactBO>> result =
+                inventoryIndicatorService.getApplicationIndicators(organization, workspaceId, inventoryId);
+
+        assertEquals(expected, result);
+        verify(indicatorService).getApplicationIndicators(taskId);
+    }
+
+    @Test
+    void getApplicationIndicatorsPageDelegatesToIndicatorService() {
+        String organization = "ORG";
+        Long workspaceId = 1L;
+        Long inventoryId = 2L;
+        Long taskId = 3L;
+        ApplicationCriteriaFilterBO filters = ApplicationCriteriaFilterBO.builder().build();
+        Pageable pageable = PageRequest.of(0, 20);
+
+        InventoryBO inventory = new InventoryBO();
+        inventory.setId(inventoryId);
+
+        ApplicationIndicatorsPageBO expected = ApplicationIndicatorsPageBO.builder().build();
+
+        when(inventoryService.getInventory(organization, workspaceId, inventoryId)).thenReturn(inventory);
+        when(taskRepository.findByInventoryAndLastCreationDate(Mockito.any(Inventory.class)))
+                .thenReturn(Optional.of(Task.builder().id(taskId).build()));
+        when(indicatorService.getApplicationIndicatorsPage(taskId, filters, pageable)).thenReturn(expected);
+
+        ApplicationIndicatorsPageBO result = inventoryIndicatorService.getApplicationIndicatorsPage(
+                organization, workspaceId, inventoryId, filters, pageable);
+
+        assertEquals(expected, result);
+        verify(indicatorService).getApplicationIndicatorsPage(taskId, filters, pageable);
+    }
+
+    @Test
+    void getApplicationMultiCriteriaImpactsDelegatesToIndicatorService() {
+        String organization = "ORG";
+        Long workspaceId = 1L;
+        Long inventoryId = 2L;
+        Long taskId = 3L;
+        ApplicationCriteriaFilterBO filters = ApplicationCriteriaFilterBO.builder().build();
+
+        InventoryBO inventory = new InventoryBO();
+        inventory.setId(inventoryId);
+
+        List<ApplicationMultiCriteriaImpactBO> expected = List.of(ApplicationMultiCriteriaImpactBO.builder().build());
+
+        when(inventoryService.getInventory(organization, workspaceId, inventoryId)).thenReturn(inventory);
+        when(taskRepository.findByInventoryAndLastCreationDate(Mockito.any(Inventory.class)))
+                .thenReturn(Optional.of(Task.builder().id(taskId).build()));
+        when(indicatorService.getApplicationMultiCriteriaImpacts(taskId, filters)).thenReturn(expected);
+
+        List<ApplicationMultiCriteriaImpactBO> result = inventoryIndicatorService.getApplicationMultiCriteriaImpacts(
+                organization, workspaceId, inventoryId, filters);
+
+        assertEquals(expected, result);
+        verify(indicatorService).getApplicationMultiCriteriaImpacts(taskId, filters);
+    }
+
+    @Test
+    void getApplicationMultiCriteriaIndicatorsDelegatesToIndicatorService() {
+        String organization = "ORG";
+        Long workspaceId = 1L;
+        Long inventoryId = 2L;
+        Long taskId = 3L;
+        List<String> criteria = List.of("climate-change");
+        GraphLevel graphLevel = GraphLevel.GLOBAL;
+        RepartitionType repartition = RepartitionType.ENVIRONMENT;
+        ApplicationCriteriaFilterBO filters = ApplicationCriteriaFilterBO.builder().build();
+
+        InventoryBO inventory = new InventoryBO();
+        inventory.setId(inventoryId);
+
+        List<ApplicationMultiCriteriaBO> expected = List.of(ApplicationMultiCriteriaBO.builder().build());
+
+        when(inventoryService.getInventory(organization, workspaceId, inventoryId)).thenReturn(inventory);
+        when(taskRepository.findByInventoryAndLastCreationDate(Mockito.any(Inventory.class)))
+                .thenReturn(Optional.of(Task.builder().id(taskId).build()));
+        when(indicatorService.getApplicationMultiCriteriaIndicators(taskId, criteria, graphLevel, repartition, filters))
+                .thenReturn(expected);
+
+        List<ApplicationMultiCriteriaBO> result = inventoryIndicatorService.getApplicationMultiCriteriaIndicators(
+                organization, workspaceId, inventoryId, criteria, graphLevel, repartition, filters);
+
+        assertEquals(expected, result);
+        verify(indicatorService).getApplicationMultiCriteriaIndicators(taskId, criteria, graphLevel, repartition, filters);
+    }
+
+    @Test
+    void getVirtualEquipmentLowImpactCountDelegatesToIndicatorService() {
+        String organization = "ORG";
+        Long workspaceId = 1L;
+        Long inventoryId = 2L;
+        Long taskId = 3L;
+        ApplicationCriteriaFilterBO filters = ApplicationCriteriaFilterBO.builder().build();
+
+        InventoryBO inventory = new InventoryBO();
+        inventory.setId(inventoryId);
+
+        VirtualEquipmentLowImpactCountBO expected = VirtualEquipmentLowImpactCountBO.builder().build();
+
+        when(inventoryService.getInventory(organization, workspaceId, inventoryId)).thenReturn(inventory);
+        when(taskRepository.findByInventoryAndLastCreationDate(Mockito.any(Inventory.class)))
+                .thenReturn(Optional.of(Task.builder().id(taskId).build()));
+        when(indicatorService.getVirtualEquipmentLowImpactCount(taskId, inventoryId, workspaceId, filters))
+                .thenReturn(expected);
+
+        VirtualEquipmentLowImpactCountBO result = inventoryIndicatorService.getVirtualEquipmentLowImpactCount(
+                organization, workspaceId, inventoryId, filters);
+
+        assertEquals(expected, result);
+        verify(indicatorService).getVirtualEquipmentLowImpactCount(taskId, inventoryId, workspaceId, filters);
+    }
+
+    @Test
+    void getApplicationFiltersDelegatesToIndicatorService() {
+        String organization = "ORG";
+        Long workspaceId = 1L;
+        Long inventoryId = 2L;
+        Long taskId = 3L;
+
+        InventoryBO inventory = new InventoryBO();
+        inventory.setId(inventoryId);
+
+        ApplicationFiltersBO expected = ApplicationFiltersBO.builder().build();
+
+        when(inventoryService.getInventory(organization, workspaceId, inventoryId)).thenReturn(inventory);
+        when(taskRepository.findByInventoryAndLastCreationDate(Mockito.any(Inventory.class)))
+                .thenReturn(Optional.of(Task.builder().id(taskId).build()));
+        when(indicatorService.getApplicationFilters(taskId)).thenReturn(expected);
+
+        ApplicationFiltersBO result = inventoryIndicatorService.getApplicationFilters(organization, workspaceId, inventoryId);
+
+        assertEquals(expected, result);
+        verify(indicatorService).getApplicationFilters(taskId);
+    }
+
+    @Test
+    void deleteIndicatorsDelegatesToTaskService() {
+        String organization = "ORG";
+        Long workspaceId = 1L;
+        Long inventoryId = 2L;
+
+        inventoryIndicatorService.deleteIndicators(organization, workspaceId, inventoryId);
+
+        verify(taskService).deleteEvaluatingTasksByInventoryId(organization, workspaceId, inventoryId);
+    }
+
+    @Test
+    void getDataCenterIndicatorsDelegatesToIndicatorService() {
+        Long inventoryId = 1L;
+        List<DataCentersInformationBO> expected = List.of(new DataCentersInformationBO());
+
+        when(indicatorService.getDataCenterIndicators(inventoryId)).thenReturn(expected);
+
+        List<DataCentersInformationBO> result = inventoryIndicatorService.getDataCenterIndicators(inventoryId);
+
+        assertEquals(expected, result);
+        verify(indicatorService).getDataCenterIndicators(inventoryId);
+    }
+
+    @Test
+    void getPhysicalEquipmentAvgAgeDelegatesToIndicatorService() {
+        Long inventoryId = 1L;
+        List<PhysicalEquipmentsAvgAgeBO> expected = List.of(new PhysicalEquipmentsAvgAgeBO());
+
+        when(indicatorService.getPhysicalEquipmentAvgAge(inventoryId)).thenReturn(expected);
+
+        List<PhysicalEquipmentsAvgAgeBO> result = inventoryIndicatorService.getPhysicalEquipmentAvgAge(inventoryId);
+
+        assertEquals(expected, result);
+        verify(indicatorService).getPhysicalEquipmentAvgAge(inventoryId);
+    }
+
+    @Test
+    void getPhysicalEquipmentsLowImpactDelegatesToIndicatorService() {
+        String organization = "ORG";
+        Long workspaceId = 1L;
+        Long inventoryId = 2L;
+        List<PhysicalEquipmentLowImpactBO> expected = List.of(new PhysicalEquipmentLowImpactBO());
+
+        when(indicatorService.getPhysicalEquipmentsLowImpact(organization, workspaceId, inventoryId)).thenReturn(expected);
+
+        List<PhysicalEquipmentLowImpactBO> result =
+                inventoryIndicatorService.getPhysicalEquipmentsLowImpact(organization, workspaceId, inventoryId);
+
+        assertEquals(expected, result);
+        verify(indicatorService).getPhysicalEquipmentsLowImpact(organization, workspaceId, inventoryId);
+    }
+
+    @Test
+    void getVirtualEquipmentElecConsumptionSumDelegatesToIndicatorService() {
+        String organization = "ORG";
+        Long workspaceId = 1L;
+        Long inventoryId = 2L;
+        Long taskId = 3L;
+        ApplicationCriteriaFilterBO filters = ApplicationCriteriaFilterBO.builder().build();
+
+        InventoryBO inventory = new InventoryBO();
+        inventory.setId(inventoryId);
+
+        VirtualEquipmentElecConsumptionSumBO expected = VirtualEquipmentElecConsumptionSumBO.builder().build();
+
+        when(inventoryService.getInventory(organization, workspaceId, inventoryId)).thenReturn(inventory);
+        when(taskRepository.findByInventoryAndLastCreationDate(Mockito.any(Inventory.class)))
+                .thenReturn(Optional.of(Task.builder().id(taskId).build()));
+        when(indicatorService.getVirtualEquipmentElecConsumptionSum(taskId, filters)).thenReturn(expected);
+
+        VirtualEquipmentElecConsumptionSumBO result = inventoryIndicatorService.getVirtualEquipmentElecConsumptionSum(
+                organization, workspaceId, inventoryId, filters);
+
+        assertEquals(expected, result);
+        verify(indicatorService).getVirtualEquipmentElecConsumptionSum(taskId, filters);
     }
 }

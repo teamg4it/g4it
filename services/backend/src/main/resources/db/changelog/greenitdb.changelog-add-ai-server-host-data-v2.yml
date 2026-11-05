@@ -1,0 +1,76 @@
+databaseChangeLog:
+  - changeSet:
+      id: insert-ref-server-host-server-ai-4-l40s
+      author: G4IT Dev Team
+      preConditions:
+        - onFail: MARK_RAN
+        - sqlCheck:
+            expectedResult: 0
+            sql: SELECT COUNT(*) FROM ref_server_host WHERE reference = 'Server-ai-4-L40S'
+      changes:
+        - insert:
+            tableName: ref_server_host
+            columns:
+              - column:
+                  name: description
+                  value: "Specific : Server-ai-4-L40S"
+              - column:
+                  name: reference
+                  value: Server-ai-4-L40S
+              - column:
+                  name: external_referential_description
+                  value: "Rack server NO, 2 processor high-end, 4 SSD 2048 GB each, 0 HDD, 48 RAM, 64 GB each, 4 GPUs Nvidia L40S 48 GB (Custom Hubblo: base nvidia RTX A4500, total weights=1450, GPU surface= 609, video RAM capacity=48, RAM dies=12), electricty consumption based on NegaOctet server with only 1 GPU"
+              - column:
+                  name: type
+                  value: AI
+              - column:
+                  name: nb_of_vcpu
+                  valueNumeric: 48
+              - column:
+                  name: total_disk
+                  value: null
+              - column:
+                  name: lifespan
+                  valueNumeric: 5.0
+      rollback:
+        - delete:
+            tableName: ref_server_host
+            where: "reference = 'Server-ai-4-L40S'"
+
+  - changeSet:
+      id: insert-ref-server-host-server-ai-8-b300
+      author: G4IT Dev Team
+      preConditions:
+        - onFail: MARK_RAN
+        - sqlCheck:
+            expectedResult: 0
+            sql: SELECT COUNT(*) FROM ref_server_host WHERE reference = 'Server-ai-8-B300'
+      changes:
+        - insert:
+            tableName: ref_server_host
+            columns:
+              - column:
+                  name: description
+                  value: "Specific : Server-ai-8-B300"
+              - column:
+                  name: reference
+                  value: Server-ai-8-B300
+              - column:
+                  name: external_referential_description
+                  value: "Rack server NO, 2 processor high-end, 4 SSD 2048 GB each, 0 HDD, 48 RAM, 64 GB each, 8 GPUs Nvidia B300 288 GB (Custom Hubblo: base nvidia H100 PCIe 80GB, video RAM capacity = 288), electricty consumption based on NegaOctet server with only 1 GPU"
+              - column:
+                  name: type
+                  value: AI
+              - column:
+                  name: nb_of_vcpu
+                  valueNumeric: 288
+              - column:
+                  name: total_disk
+                  value: null
+              - column:
+                  name: lifespan
+                  valueNumeric: 5.0
+      rollback:
+        - delete:
+            tableName: ref_server_host
+            where: "reference = 'Server-ai-8-B300'"

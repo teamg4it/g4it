@@ -8,6 +8,7 @@
 package com.soprasteria.g4it.backend.apiuser.repository;
 
 import com.soprasteria.g4it.backend.apiuser.modeldb.User;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -38,6 +39,17 @@ public interface UserRepository extends JpaRepository<User, Long> {
      * @return the user.
      */
     Optional<User> findBySub(final String subject);
+
+    // save latest release notes as seen in one query
+    // avoids race conditions and more efficient than fetching the user and updating it
+    @Modifying
+    @Query(value = """
+            UPDATE g4it_user
+            SET last_seen_release_note_id = (SELECT MAX(id) FROM release_notes)
+            WHERE id = :userId
+              AND EXISTS (SELECT 1 FROM release_notes)
+            """, nativeQuery = true)
+    int markLatestReleaseNoteAsSeen(@Param("userId") long userId);
 
     /**
      * Return all users from g4it_users where the first name, last name or email

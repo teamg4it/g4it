@@ -31,6 +31,7 @@ import com.soprasteria.g4it.backend.exception.G4itRestException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -145,13 +146,14 @@ public class DigitalServiceService {
      *
      * @param digitalServiceUid the digital service UID.
      */
+    @CacheEvict(value = "digitalServiceExists", allEntries = true)
     public void deleteDigitalService(final String digitalServiceUid) {
         inVirtualEquipmentRepository.deleteByDigitalServiceUid(digitalServiceUid);
         inPhysicalEquipmentRepository.deleteByDigitalServiceUid(digitalServiceUid);
         inDatacenterRepository.deleteByDigitalServiceUid(digitalServiceUid);
         inAiParameterRepository.deleteByDigitalServiceUid(digitalServiceUid);
         inAiInfrastructureRepository.deleteByDigitalServiceUid(digitalServiceUid);
-        digitalServiceRepository.deleteById(digitalServiceUid);
+        digitalServiceRepository.deleteByUidNative(digitalServiceUid);
     }
 
     /**

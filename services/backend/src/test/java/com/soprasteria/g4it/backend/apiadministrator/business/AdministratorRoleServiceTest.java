@@ -114,6 +114,22 @@ class AdministratorRoleServiceTest {
     }
 
     @Test
+    void shouldPassWhenUserHasSuperAdminRights() {
+        user.setEmail(Constants.SUPER_ADMIN_EMAIL);
+
+        assertDoesNotThrow(() -> administratorRoleService.hasSuperAdminRights(user));
+    }
+
+    @Test
+    void shouldThrowWhenUserIsNotSuperAdmin() {
+        AuthorizationException exception = assertThrows(
+                AuthorizationException.class,
+                () -> administratorRoleService.hasSuperAdminRights(user));
+
+        assertEquals(403, exception.getStatusCode());
+    }
+
+    @Test
     void shouldPassWhenUserHasAdminRightsOnAnyOrganizationOrWorkspace_Organization() {
         when(roleService.hasAdminRightsOnAnyOrganization(user)).thenReturn(true);
 
