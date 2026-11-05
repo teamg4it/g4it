@@ -1130,6 +1130,84 @@ app-inventory-item {
     color: var(--black-color);
     font-weight: 800;
 }
+
+.collapsible-button {
+    background-color: var(--white-color);
+    color: var(--black-color);
+    font-weight: 800;
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    min-height: 40px;
+    opacity: 1;
+    padding: 8px;
+    border-radius: radius-pill;
+}
+
+.resource-menu-div {
+    height: 804px;
+    border-radius: 8px;
+    opacity: 1;
+    gap: 24px;
+    padding-top: 32px;
+    padding-bottom: 32px;
+    margin-top: 16px;    
+}
+
+.resource-menu-title-div {
+    height: 40px;
+    justify-content: space-between;
+    padding-right: 16px;
+    padding-left: 16px;
+    margin-bottom: 24px;
+}
+
+.resource-menu-title-label {
+    font-weight: 400;
+    font-style: Regular;
+    font-size: 24px;
+    line-height: 100%;
+    letter-spacing: 0%;
+    vertical-align: middle;
+}
+
+app-resource-button {
+    display: block;
+    width: 250px;
+    height: 45px;
+    opacity: 1;
+    letter-spacing: 2px;
+
+    .resource-button {
+        padding: 16px;
+        gap: 12px;
+        justify-content: flex-start;
+        border-radius: 0;
+        background: #ffffff;
+        color: var(--black-color);
+    }
+
+    .p-button.resource button .p-button-label {
+        font-weight: 700;
+        font-style: Bold;
+        font-size: 18px;
+        line-height: 28px;
+        letter-spacing: 0%;
+        width: 306px;
+        height: 13px;
+    }
+
+    .p-button.resource-button:focus:not(:focus-visible) {
+        outline: none;
+    }
+
+
+    .p-button.resource-button-selected {
+        border-left: 4px solid var(--Branding-Olive, #008700);
+        color: var(--Branding-Olive, #008700);
+    }
+}
+
 .multifile-upload.cancel-creation-button .p-fileupload-choose-button {
     border: none;
     background-color: #f4f4f4;

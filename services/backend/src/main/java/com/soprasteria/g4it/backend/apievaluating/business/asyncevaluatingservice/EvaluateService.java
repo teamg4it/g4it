@@ -11,16 +11,16 @@ package com.soprasteria.g4it.backend.apievaluating.business.asyncevaluatingservi
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.soprasteria.g4it.backend.apievaluating.business.asyncevaluatingservice.engine.boaviztapi.EvaluateBoaviztapiService;
+import com.soprasteria.g4it.backend.apievaluating.business.asyncevaluatingservice.engine.ecologits.EvaluateEcologitsService;
 import com.soprasteria.g4it.backend.apievaluating.business.asyncevaluatingservice.engine.numecoeval.EvaluateNumEcoEvalService;
 import com.soprasteria.g4it.backend.apievaluating.mapper.AggregationToOutput;
+import com.soprasteria.g4it.backend.apievaluating.mapper.AiServiceImpactToCsvRecord;
 import com.soprasteria.g4it.backend.apievaluating.mapper.ImpactToCsvRecord;
 import com.soprasteria.g4it.backend.apievaluating.mapper.InternalToNumEcoEvalImpact;
 import com.soprasteria.g4it.backend.apievaluating.model.*;
+import com.soprasteria.g4it.backend.apiinout.mapper.AiServiceToCsvRecord;
 import com.soprasteria.g4it.backend.apiinout.mapper.InputToCsvRecord;
-import com.soprasteria.g4it.backend.apiinout.modeldb.InApplication;
-import com.soprasteria.g4it.backend.apiinout.modeldb.InDatacenter;
-import com.soprasteria.g4it.backend.apiinout.modeldb.InPhysicalEquipment;
-import com.soprasteria.g4it.backend.apiinout.modeldb.InVirtualEquipment;
+import com.soprasteria.g4it.backend.apiinout.modeldb.*;
 import com.soprasteria.g4it.backend.apiinout.repository.*;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
@@ -36,7 +36,8 @@ import com.soprasteria.g4it.backend.common.utils.StringUtils;
 import com.soprasteria.g4it.backend.exception.AsyncTaskException;
 import com.soprasteria.g4it.backend.external.boavizta.business.BoaviztapiService;
 import com.soprasteria.g4it.backend.external.boavizta.model.response.BoaResponseRest;
-import com.soprasteria.g4it.backend.server.gen.api.dto.*;
+import com.soprasteria.g4it.backend.server.gen.api.dto.CriterionRest;
+import com.soprasteria.g4it.backend.server.gen.api.dto.HypothesisRest;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -60,12 +61,8 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static com.soprasteria.g4it.backend.common.utils.InfrastructureType.AI_SERVICES;
 import static com.soprasteria.g4it.backend.common.utils.InfrastructureType.CLOUD_SERVICES;
-import com.soprasteria.g4it.backend.apievaluating.business.asyncevaluatingservice.engine.ecologits.EvaluateEcologitsService;
-import com.soprasteria.g4it.backend.apievaluating.mapper.AiServiceImpactToCsvRecord;
-import com.soprasteria.g4it.backend.apiinout.mapper.AiServiceToCsvRecord;
-import com.soprasteria.g4it.backend.apiinout.modeldb.InAiService;
-import com.soprasteria.g4it.backend.apiinout.modeldb.OutAiService;
 
 @Service
 @Slf4j
@@ -342,7 +339,7 @@ public class EvaluateService {
     }
 
     private void writeDatacentersCsv(EvaluateReportBO evaluateReportBO, Map<String, InDatacenter> datacenterByNameMap,
-                                      CsvPrinters printers) throws IOException {
+                                     CsvPrinters printers) throws IOException {
         if (!evaluateReportBO.isExport()) {
             return;
         }
@@ -387,7 +384,7 @@ public class EvaluateService {
     }
 
     private int processOnePhysicalEquipment(EvaluationRunContext runCtx, EvaluationState state,
-                                             InPhysicalEquipment physicalEquipment, int physicalSaveCounter) throws IOException {
+                                            InPhysicalEquipment physicalEquipment, int physicalSaveCounter) throws IOException {
         Context context = runCtx.context();
         EvaluateReportBO evaluateReportBO = runCtx.evaluateReportBO();
         CriteriaSetup criteriaSetup = runCtx.criteriaSetup();
@@ -445,7 +442,7 @@ public class EvaluateService {
     }
 
     private DatacenterInfo resolveDatacenterInfo(InPhysicalEquipment physicalEquipment,
-                                                  Map<String, InDatacenter> datacenterByNameMap) {
+                                                 Map<String, InDatacenter> datacenterByNameMap) {
         if (physicalEquipment.getDatacenterName() == null) {
             return new DatacenterInfo(null, null, null);
         }
@@ -460,15 +457,15 @@ public class EvaluateService {
 
     // Identify whether the physical equipment has NON-CLOUD VMs attached to it
     private boolean hasNonCloudVirtualMachines(Map<String, List<InVirtualEquipment>> vmsByPhysical,
-                                                InPhysicalEquipment physicalEquipment) {
+                                               InPhysicalEquipment physicalEquipment) {
         List<InVirtualEquipment> allVMs = vmsByPhysical.getOrDefault(physicalEquipment.getName(), List.of());
         return allVMs.stream().anyMatch(vm -> !CLOUD_SERVICES.name().equals(vm.getInfrastructureType()));
     }
 
     // Aggregate physical equipment indicators in memory
     private void aggregatePhysicalEquipmentImpacts(EvaluationRunContext runCtx, EvaluationState state,
-                                                    InPhysicalEquipment physicalEquipment, InDatacenter datacenter,
-                                                    List<ImpactEquipementPhysique> impactEquipementPhysiqueList) throws IOException {
+                                                   InPhysicalEquipment physicalEquipment, InDatacenter datacenter,
+                                                   List<ImpactEquipementPhysique> impactEquipementPhysiqueList) throws IOException {
         EvaluateReportBO evaluateReportBO = runCtx.evaluateReportBO();
         CriteriaSetup criteriaSetup = runCtx.criteriaSetup();
         CSVPrinter csvPhysicalEquipment = runCtx.printers().physicalEquipment();
@@ -498,7 +495,7 @@ public class EvaluateService {
     }
 
     private int flushPhysicalEquipmentsIfFull(Long taskId, RefShortcutBO refShortcutBO, EvaluationState state,
-                                               int physicalSaveCounter) {
+                                              int physicalSaveCounter) {
         if (physicalSaveCounter < 10) {
             return physicalSaveCounter;
         }
@@ -536,7 +533,7 @@ public class EvaluateService {
     }
 
     private void processOneAiService(EvaluationRunContext runCtx, EvaluationState state, InAiService aiService,
-                                      List<OutAiService> outAiServices) throws IOException {
+                                     List<OutAiService> outAiServices) throws IOException {
         EvaluateReportBO evaluateReportBO = runCtx.evaluateReportBO();
         CriteriaSetup criteriaSetup = runCtx.criteriaSetup();
         CsvPrinters printers = runCtx.printers();
@@ -639,13 +636,14 @@ public class EvaluateService {
 
     // Holder for criteria/referential setup shared across the evaluation
     private record CriteriaSetup(List<CriterionRest> activeCriteria, List<String> criteriaCodes,
-                                  Map<String, String> criteriaUnitMap, RefShortcutBO refShortcutBO,
-                                  List<HypothesisRest> hypothesisRestList, Map<String, Double> refSip) {
+                                 Map<String, String> criteriaUnitMap, RefShortcutBO refShortcutBO,
+                                 List<HypothesisRest> hypothesisRestList, Map<String, Double> refSip) {
     }
 
     // Holder for pre-computed totals and file types used for progress reporting and CSV export
     private record TotalsInfo(long totalPhysicalEquipments, long totalCloudVirtualEquipments, long totalAiServices,
-                               long totalEquipments, FileType physicalEquipmentIndicator, FileType virtualEquipmentIndicator) {
+                              long totalEquipments, FileType physicalEquipmentIndicator,
+                              FileType virtualEquipmentIndicator) {
     }
 
     // Holder for the resolved datacenter and its derived attributes for a physical equipment
@@ -654,19 +652,19 @@ public class EvaluateService {
 
     // Bundles the CSV printers opened for the duration of the evaluation
     private record CsvPrinters(CSVPrinter physicalEquipment, CSVPrinter virtualEquipment, CSVPrinter aiService,
-                                CSVPrinter application, CSVPrinter inDatacenter, CSVPrinter inPhysicalEquipment,
-                                CSVPrinter inVirtualEquipment, CSVPrinter inAiService, CSVPrinter inApplication) {
+                               CSVPrinter application, CSVPrinter inDatacenter, CSVPrinter inPhysicalEquipment,
+                               CSVPrinter inVirtualEquipment, CSVPrinter inAiService, CSVPrinter inApplication) {
     }
 
     // Bundles the parameters shared across the physical-equipment and AI-service paged processing steps
     private record EvaluationRunContext(Context context, Long taskId, String organization,
-                                         EvaluateReportBO evaluateReportBO,
-                                         Map<String, InDatacenter> datacenterByNameMap,
-                                         Map<String, List<InVirtualEquipment>> vmsByPhysical,
-                                         CsvPrinters printers, CriteriaSetup criteriaSetup,
-                                         List<String> lifecycleSteps, Map<String, String> codeToCountryMap,
-                                         String inventoryName, TotalsInfo totalsInfo,
-                                         long countItemImpactWorkspace, double processFactor) {
+                                        EvaluateReportBO evaluateReportBO,
+                                        Map<String, InDatacenter> datacenterByNameMap,
+                                        Map<String, List<InVirtualEquipment>> vmsByPhysical,
+                                        CsvPrinters printers, CriteriaSetup criteriaSetup,
+                                        List<String> lifecycleSteps, Map<String, String> codeToCountryMap,
+                                        String inventoryName, TotalsInfo totalsInfo,
+                                        long countItemImpactWorkspace, double processFactor) {
     }
 
     // Mutable accumulator of aggregation maps and counters shared across the paged processing steps
@@ -681,7 +679,7 @@ public class EvaluateService {
         private int outAiServiceSize;
 
         private EvaluationState(Map<List<String>, AggValuesBO> aggregationVirtualEquipments,
-                                 Map<List<String>, AggValuesBO> aggregationApplications) {
+                                Map<List<String>, AggValuesBO> aggregationApplications) {
             this.aggregationPhysicalEquipments = HashMap.newHashMap(INITIAL_MAP_CAPACITY);
             this.aggregationVirtualEquipments = aggregationVirtualEquipments;
             this.aggregationApplications = aggregationApplications;
@@ -733,7 +731,7 @@ public class EvaluateService {
     }
 
     private void processVirtualEquipmentsPage(VirtualEquipmentEvalContext ctx, List<InVirtualEquipment> virtualEquipments,
-                                               VirtualEvalState state) throws IOException {
+                                              VirtualEvalState state) throws IOException {
         Double totalVcpuCoreNumber = evaluateNumEcoEvalService.getTotalVcpuCoreNumber(virtualEquipments);
         Double totalStorage = evaluateNumEcoEvalService.getTotalDiskSize(virtualEquipments);
         int virtualSize = virtualEquipments.size();
@@ -744,10 +742,11 @@ public class EvaluateService {
     }
 
     private void processOneVirtualEquipment(VirtualEquipmentEvalContext ctx, InVirtualEquipment virtualEquipment,
-                                             int virtualSize, Double totalVcpuCoreNumber, Double totalStorage,
-                                             VirtualEvalState state) throws IOException {
+                                            int virtualSize, Double totalVcpuCoreNumber, Double totalStorage,
+                                            VirtualEvalState state) throws IOException {
         boolean isCloudService = CLOUD_SERVICES.name().equals(virtualEquipment.getInfrastructureType());
-        VirtualImpactResult impactResult = computeVirtualEquipmentImpacts(ctx, virtualEquipment, isCloudService,
+        boolean isAiService = AI_SERVICES.name().equals(virtualEquipment.getInfrastructureType());
+        VirtualImpactResult impactResult = computeVirtualEquipmentImpacts(ctx, virtualEquipment, isCloudService, isAiService,
                 virtualSize, totalVcpuCoreNumber, totalStorage);
 
         String location = isCloudService ? ctx.codeToCountryMap().get(virtualEquipment.getLocation()) : virtualEquipment.getLocation();
@@ -769,8 +768,8 @@ public class EvaluateService {
     }
 
     private VirtualImpactResult computeVirtualEquipmentImpacts(VirtualEquipmentEvalContext ctx, InVirtualEquipment virtualEquipment,
-                                                                 boolean isCloudService, int virtualSize,
-                                                                 Double totalVcpuCoreNumber, Double totalStorage) {
+                                                               boolean isCloudService, boolean isAiService, int virtualSize,
+                                                               Double totalVcpuCoreNumber, Double totalStorage) {
         if (isCloudService) {
             List<ImpactBO> impactBOList = evaluateBoaviztapiService.evaluate(virtualEquipment, ctx.criteria(), ctx.lifecycleSteps());
             List<ImpactEquipementVirtuel> impactEquipementVirtuelList = internalToNumEcoEvalImpact.map(impactBOList);
@@ -778,6 +777,23 @@ public class EvaluateService {
             Double avgPowerW = boaviztapiService.extractAvgPowerW(response).orElse(null);
             Double cloudElectricityKwh = boaviztapiService.computeAnnualElectricityKwhRaw(avgPowerW, virtualEquipment.getDurationHour());
             return new VirtualImpactResult(impactEquipementVirtuelList, cloudElectricityKwh);
+        } else if (isAiService) {
+            // Convert the virtual equipment data to AI service so that it can then be processed by Ecologits
+            InAiService aiService = InAiService.builder()
+                    .serviceName(virtualEquipment.getName())
+                    .provider(virtualEquipment.getProvider())
+                    .model(virtualEquipment.getInstanceType())
+                    .outputTokens(virtualEquipment.getQuantity().longValue())
+                    .location(virtualEquipment.getLocation())
+                    .commonFilters(virtualEquipment.getCommonFilters())
+                    .build();
+
+            // Evaluate the impacts of AI using Ecologits API
+            List<ImpactBO> impacts = evaluateEcologitsService.evaluate(aiService, ctx.criteria(), ctx.lifecycleSteps(), countryNameToCodeMapCache);
+
+            // Convert back the data to virtual equipment
+            List<ImpactEquipementVirtuel> impactEquipementVirtuelList = internalToNumEcoEvalImpact.map(impacts);
+            return new VirtualImpactResult(impactEquipementVirtuelList, null);
         }
 
         List<ImpactEquipementVirtuel> impactEquipementVirtuelList = evaluateNumEcoEvalService.calculateVirtualEquipment(
@@ -789,7 +805,7 @@ public class EvaluateService {
 
     // Aggregate virtual equipment indicators in memory
     private void aggregateVirtualEquipmentImpacts(VirtualEquipmentEvalContext ctx, InVirtualEquipment virtualEquipment,
-                                                   boolean isCloudService, VirtualImpactResult impactResult) throws IOException {
+                                                  boolean isCloudService, VirtualImpactResult impactResult) throws IOException {
         EvaluateReportBO evaluateReportBO = ctx.evaluateReportBO();
         for (ImpactEquipementVirtuel impact : impactResult.impactList()) {
             Double sipValue = ctx.refSip().get(impact.getCritere());
@@ -843,16 +859,16 @@ public class EvaluateService {
 
     // Holder for the invariant parameters shared across the virtual equipment evaluation steps
     private record VirtualEquipmentEvalContext(Context context, EvaluateReportBO evaluateReportBO,
-                                                InPhysicalEquipment physicalEquipment,
-                                                List<ImpactEquipementPhysique> impactEquipementPhysiqueList,
-                                                Map<List<String>, AggValuesBO> aggregationVirtualEquipments,
-                                                Map<List<String>, AggValuesBO> aggregationApplications,
-                                                CSVPrinter csvInVirtualEquipment, CSVPrinter csvVirtualEquipment,
-                                                CSVPrinter csvInApplication, CSVPrinter csvApplication,
-                                                Map<String, Double> refSip, RefShortcutBO refShortcutBO,
-                                                List<String> criteria, List<String> lifecycleSteps,
-                                                Map<String, String> codeToCountryMap, Double equipmentPue,
-                                                String equipmentLocation) {
+                                               InPhysicalEquipment physicalEquipment,
+                                               List<ImpactEquipementPhysique> impactEquipementPhysiqueList,
+                                               Map<List<String>, AggValuesBO> aggregationVirtualEquipments,
+                                               Map<List<String>, AggValuesBO> aggregationApplications,
+                                               CSVPrinter csvInVirtualEquipment, CSVPrinter csvVirtualEquipment,
+                                               CSVPrinter csvInApplication, CSVPrinter csvApplication,
+                                               Map<String, Double> refSip, RefShortcutBO refShortcutBO,
+                                               List<String> criteria, List<String> lifecycleSteps,
+                                               Map<String, String> codeToCountryMap, Double equipmentPue,
+                                               String equipmentLocation) {
     }
 
     // Holder for the impact computation result of a single virtual equipment
@@ -915,7 +931,7 @@ public class EvaluateService {
 
     // Aggregate application indicators in memory
     private void aggregateApplicationImpacts(ApplicationEvalContext ctx, InApplication application,
-                                              List<ImpactApplication> impactApplicationList) throws IOException {
+                                             List<ImpactApplication> impactApplicationList) throws IOException {
         EvaluateReportBO evaluateReportBO = ctx.evaluateReportBO();
 
         for (ImpactApplication impact : impactApplicationList) {
@@ -949,12 +965,12 @@ public class EvaluateService {
 
     // Holder for the invariant parameters shared across the application evaluation steps
     private record ApplicationEvalContext(Context context, EvaluateReportBO evaluateReportBO,
-                                           InPhysicalEquipment physicalEquipment, InVirtualEquipment virtualEquipment,
-                                           List<ImpactEquipementVirtuel> impactEquipementVirtuelList,
-                                           Map<List<String>, AggValuesBO> aggregationApplications,
-                                           CSVPrinter csvInApplication, CSVPrinter csvApplication,
-                                           Map<String, Double> refSip, RefShortcutBO refShortcutBO,
-                                           Double cloudElectricityKwh) {
+                                          InPhysicalEquipment physicalEquipment, InVirtualEquipment virtualEquipment,
+                                          List<ImpactEquipementVirtuel> impactEquipementVirtuelList,
+                                          Map<List<String>, AggValuesBO> aggregationApplications,
+                                          CSVPrinter csvInApplication, CSVPrinter csvApplication,
+                                          Map<String, Double> refSip, RefShortcutBO refShortcutBO,
+                                          Double cloudElectricityKwh) {
     }
 
     /**
@@ -994,8 +1010,8 @@ public class EvaluateService {
 
     // Holder for the parameters used to compute a single AggValuesBO
     private record AggValuesInput(String indicatorStatus, String trace, Double quantity, Double elecConsumption,
-                                   Double unitImpact, Double sipValue, Double lifespan, Double usageDuration,
-                                   Double workload, boolean isCloudService, String source) {
+                                  Double unitImpact, Double sipValue, Double lifespan, Double usageDuration,
+                                  Double workload, boolean isCloudService, String source) {
     }
 
     private void updateProgress(final Long taskId,

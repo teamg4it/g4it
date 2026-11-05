@@ -117,6 +117,16 @@ export class DigitalServicesDataService {
         );
     }
 
+    getEcologitsApiAIProviders(): Observable<string[]> {
+        return this.http.get<string[]>(`referential/ecologits/ai/providers`);
+    }
+    getEcologitsApiAIModel(providerName: string): Observable<string[]> {
+        return this.http.get<string[]>(
+            `referential/ecologits/ai/models`,
+            { params: new HttpParams().set("provider", providerName) },
+        );
+    }
+
     getModels(model: string): Observable<AiModelConfig[]> {
         return this.http.get<AiModelConfig[]>(`${ecomindaiModelConfig}/${model}`);
     }

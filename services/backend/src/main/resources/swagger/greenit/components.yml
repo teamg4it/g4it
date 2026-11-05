@@ -143,6 +143,13 @@ components:
         type: string
       required: true
       description: The cloud provider name.
+    aiProviderQueryParam:
+      in: query
+      name: provider
+      schema:
+        type: string
+      required: true
+      description: The ai provider name.
     idPathParam:
       in: path
       name: id

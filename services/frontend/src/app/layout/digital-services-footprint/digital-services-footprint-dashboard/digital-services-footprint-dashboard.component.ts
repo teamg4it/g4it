@@ -58,6 +58,7 @@ import {
     transformOutPhysicalEquipmentstoServerData,
     transformOutPhysicalEquipmentsToTerminalData,
     transformOutVirtualEquipmentsToCloudData,
+    transformOutVirtualEquipmentsToAiData
 } from "src/app/core/service/mapper/digital-service";
 import { DigitalServiceStoreService } from "src/app/core/store/digital-service.store";
 import { GlobalStoreService } from "src/app/core/store/global.store";
@@ -157,6 +158,14 @@ export class DigitalServicesFootprintDashboardComponent
     cloudData = computed(() => {
         if (this.outVirtualEquipments === undefined) return [];
         return transformOutVirtualEquipmentsToCloudData(
+            this.outVirtualEquipments,
+            this.digitalServiceStore.countryMap(),
+        );
+    });
+
+    aiData = computed(() => {
+        if (this.outVirtualEquipments === undefined) return [];
+        return transformOutVirtualEquipmentsToAiData(
             this.outVirtualEquipments,
             this.digitalServiceStore.countryMap(),
         );
@@ -475,26 +484,29 @@ export class DigitalServicesFootprintDashboardComponent
     }
 
     getBarTranslateKey(): string {
-        const isServer = this.selectedParam === "Server";
-        const isCloudService = this.selectedParam === Constants.CLOUD_SERVICE;
-        const isTerminal = this.selectedParam === Constants.TERMINAL;
         const isBarChartChild = this.barChartChild === true;
+        const dsPrefix = "ds-graph-description";
+        const dsType = this.selectedParam.toLowerCase().replaceAll(/\s+/g, "-");
+        const dsLifecycle = `${dsType}-lifecycle`;
 
-        let translationKey = "";
-        if (!isBarChartChild && isServer) {
-            translationKey = `ds-graph-description.server.`;
-        } else if (isBarChartChild && isServer) {
-            translationKey = `ds-graph-description.${this.selectedParam.toLowerCase().replaceAll(/\s+/g, "-")}-${this.barChartComponents?.first?.serversRadioButtonSelected}.`;
-        } else if (!isBarChartChild && isCloudService) {
-            translationKey = `ds-graph-description.${this.selectedParam.toLowerCase().replaceAll(/\s+/g, "-")}-${this.barChartComponents?.first?.cloudRadioButtonSelected}.`;
-        } else if (isBarChartChild && isCloudService) {
-            translationKey = "ds-graph-description.cloud-lifecycle.";
-        } else if (!isBarChartChild && isTerminal) {
-            translationKey = `ds-graph-description.${this.selectedParam.toLowerCase().replaceAll(/\s+/g, "-")}-${this.barChartComponents?.first?.terminalsRadioButtonSelected}.`;
-        } else if (isBarChartChild && isTerminal) {
-            translationKey = "ds-graph-description.terminal-lifecycle.";
-        } else {
-            translationKey = `ds-graph-description.${this.selectedParam.toLowerCase().replaceAll(/\s+/g, "-")}.`;
+        let translationKey = `${dsPrefix}.${dsType}`;
+
+        switch (this.selectedParam) {
+            case Constants.SERVER:
+                translationKey = isBarChartChild ? `${translationKey}-${this.barChartComponents?.first?.serversRadioButtonSelected}.` : `${translationKey}.`;
+                break;
+            case Constants.CLOUD_SERVICE:
+                translationKey = isBarChartChild ? `${dsPrefix}.${dsLifecycle}.` : `${translationKey}-${this.barChartComponents?.first?.cloudRadioButtonSelected}.`;
+                break;
+            case Constants.AI_SERVICE:
+                translationKey = isBarChartChild ? `${dsPrefix}.${dsLifecycle}.` : `${translationKey}-${this.barChartComponents?.first?.aiRadioButtonSelected}.`;
+                break;
+            case Constants.TERMINAL:
+                translationKey = isBarChartChild ? `${dsPrefix}.${dsLifecycle}.` : `${translationKey}-${this.barChartComponents?.first?.terminalsRadioButtonSelected}.`;
+                break;
+            default:
+                translationKey = `${translationKey}.`;
+                break;
         }
         return translationKey;
     }
@@ -562,7 +574,7 @@ export class DigitalServicesFootprintDashboardComponent
                 textDescription += this.translate.instant(
                     `${translationKey}text-description`,
                     {
-                        cloudInstanceName: this.selectedDetailName,
+                        resourceName: this.selectedDetailName,
                     },
                 );
             }
@@ -588,7 +600,7 @@ export class DigitalServicesFootprintDashboardComponent
                     textResourceDescription += this.translate.instant(
                         `${translationKey}resource-text-description`,
                         {
-                            cloudInstanceName: this.selectedDetailName,
+                            resourceName: this.selectedDetailName,
                         },
                     );
                 }
