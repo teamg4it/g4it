@@ -76,7 +76,7 @@ export class BarChartComponent extends AbstractDashboard implements OnChanges {
 
     criteriaMap: StatusCountMap = {};
     xAxisInput: string[] = [];
-
+    
     terminalsOptions = [
         {
             key: "type",
@@ -132,26 +132,31 @@ export class BarChartComponent extends AbstractDashboard implements OnChanges {
 
     ngOnChanges(changes: SimpleChanges): void {
         if (changes) {
-            if (this.selectedParam === "Network") {
-                this.options = this.loadStackBarOptionNetwork(this.networkData);
-            } else if (this.selectedParam === "Terminal") {
-                this.options = this.loadStackBarOptionTerminal(this.terminalData);
-            } else if (this.selectedParam === Constants.CLOUD_SERVICE) {
-                this.options = this.loadStackBarOptionCloud(this.cloudData);
-            } else if (this.selectedParam === Constants.AI_SERVICE) {
-                this.options = this.loadStackBarOptionAi(this.aiData);
-            } else if (this.selectedParam === "Server" && !this.barChartChild) {
-                this.options = this.loadStackBarOptionServer(this.serverData);
-            } else if (this.selectedParam === "Server" && this.barChartChild) {
-                this.options = this.loadStackBarOptionServerChild(this.serverData);
+
+            switch (this.selectedParam) {
+                case Constants.NETWORK:
+                    this.options = this.loadStackBarOptionNetwork(this.networkData);
+                    break;
+                case Constants.TERMINAL:
+                    this.options = this.loadStackBarOptionTerminal(this.terminalData);
+                    break;
+                case Constants.CLOUD_SERVICE:
+                    this.options = this.loadStackBarOptionCloud(this.cloudData);
+                    break;
+                case Constants.AI_SERVICE:
+                    this.options = this.loadStackBarOptionAi(this.aiData);
+                    break;
+                case Constants.SERVER:
+                    this.options = this.barChartChild ? this.loadStackBarOptionServerChild(this.serverData) : this.loadStackBarOptionServer(this.serverData);
+                    break;
             }
         }
     }
 
     onChartClick(params: any) {
         if (
-            (this.selectedParam == "Terminal" ||
-                this.selectedParam == "Server" ||
+            (this.selectedParam == Constants.TERMINAL ||
+                this.selectedParam == Constants.SERVER ||
                 this.selectedParam === Constants.CLOUD_SERVICE ||
                 this.selectedParam === Constants.AI_SERVICE) &&
             !this.barChartChild

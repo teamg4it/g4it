@@ -227,9 +227,9 @@ public class DigitalServiceReferentialService {
     }
 
     /**
-     * Get BoaviztAPI instances for one specific cloud provider.
+     * Get Ecologits AI models for one specific AI provider.
      *
-     * @return instances name list (string).
+     * @return models name list (string).
      */
     public List<String> getAIModels(String aiProviderName) {
         return ecologitsService.getAIModelList(aiProviderName);
