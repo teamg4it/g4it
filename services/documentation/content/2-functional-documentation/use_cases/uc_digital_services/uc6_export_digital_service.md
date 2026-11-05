@@ -15,7 +15,7 @@ mermaid: true
 
 ## Description
 
-This use case allows a project team to generate and download the created terminals, networks, cloud services and non-cloud servers files, as well as their evaluated impacts, in .csv format.
+This use case allows a project team to generate and download the created terminals, networks, cloud services and non-cloud servers files, as well as their evaluated impacts, in .csv format. The exported files will be available till 180 days after the last calculation of the digital service version. After this period, the files will be deleted from the Azure storage.
 
 **Navigation Path**
 
