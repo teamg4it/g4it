@@ -101,4 +101,9 @@ public class AdministratorRoleService {
         }
     }
 
+    public void hasSuperAdminRights(UserBO user) {
+        if (!Constants.SUPER_ADMIN_EMAIL.equals(user.getEmail())) {
+            throw new AuthorizationException(HttpServletResponse.SC_FORBIDDEN, String.format("User with id '%d' is not a super admin", user.getId()));
+        }
+    }
 }

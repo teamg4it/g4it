@@ -41,6 +41,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
             "\\/users\\/me",
             "\\/version",
             "\\/administrator\\/.*",
+            "\\/release-notes(?:\\/seen)?",
             "\\/business-hours",
             "\\/workspace\\/.*",
             "\\/workspaces\\/.*",

@@ -19,6 +19,7 @@ import {
 import { Role } from "../../interfaces/roles.interfaces";
 import { AdministrationDataService } from "../data/administration-data-service";
 import { UserService } from "./user.service";
+import { ReleaseNotesPublishRest } from "../../interfaces/release-notes.interfaces";
 
 @Injectable({
     providedIn: "root",
@@ -26,7 +27,7 @@ import { UserService } from "./user.service";
 export class AdministrationService {
     private readonly userService = inject(UserService);
 
-    constructor(private readonly administrationDataService: AdministrationDataService) {}
+    constructor(private readonly administrationDataService: AdministrationDataService) { }
 
     getUsersTriggered = signal<boolean>(false);
 
@@ -135,5 +136,13 @@ export class AdministrationService {
         setTimeout(() => {
             this.getUsersTriggered.set(false);
         });
+    }
+
+    getLatestReleaseNotes() {
+        return this.administrationDataService.getLatestReleaseNotes();
+    }
+
+    saveReleaseNotes(body: ReleaseNotesPublishRest) {
+        return this.administrationDataService.postNewReleaseNotes(body);
     }
 }

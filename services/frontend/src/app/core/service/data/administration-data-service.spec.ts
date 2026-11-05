@@ -128,4 +128,26 @@ describe("AdministrationDataService", () => {
 
         httpMock.verify();
     });
+
+    it("should get the latest release notes for administrators", () => {
+        service.getLatestReleaseNotes().subscribe();
+
+        const req = httpMock.expectOne(Constants.ENDPOINTS.adminReleaseNotes);
+        expect(req.request.method).toEqual("GET");
+        req.flush({ content: "Published notes" });
+
+        httpMock.verify();
+    });
+
+    it("should publish release notes for administrators", () => {
+        const body = { content: "Updated notes" };
+        service.postNewReleaseNotes(body).subscribe();
+
+        const req = httpMock.expectOne(Constants.ENDPOINTS.adminReleaseNotes);
+        expect(req.request.method).toEqual("POST");
+        expect(req.request.body).toEqual(body);
+        req.flush({});
+
+        httpMock.verify();
+    });
 });
