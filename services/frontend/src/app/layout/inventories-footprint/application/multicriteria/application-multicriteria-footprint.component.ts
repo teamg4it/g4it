@@ -447,6 +447,19 @@ export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboar
 
         const criteriaCountMap = criteriaCalculated.criteriasCount || {};
 
+        // Legend entries are criteria when inverted, dimension values otherwise
+        const label = (data: string) =>
+            InventoryMultiCriteriaViewMapper.getCriteriaDimensionTranslation(
+                isInverted,
+                data,
+                selectedView,
+                this.translate,
+            ) ?? data;
+        const legendComparator = (a: string, b: string) =>
+            isInverted
+                ? this.criteriakeys.indexOf(a) - this.criteriakeys.indexOf(b)
+                : label(a).localeCompare(label(b));
+
         if (showStackBar) {
             return createStackBarChartConfig({
                 footprints: footprintCalculated,
@@ -457,8 +470,10 @@ export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboar
                 isAxisInverted: isInverted,
                 translate: this.translate,
                 integerPipe: this.integerPipe,
+                seriesComparator: legendComparator,
             });
         }
+        footprintCalculated.sort((a, b) => legendComparator(a.data, b.data));
         return InventoryMultiCriteriaViewMapper.createRadialChartConfig({
             footprintCalculated,
             criteriaCountMap,

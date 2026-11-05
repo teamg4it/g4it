@@ -29,6 +29,7 @@ export interface StackBarChartConfig {
     isAxisInverted: boolean;
     translate: TranslateService;
     integerPipe: IntegerPipe;
+    seriesComparator?: (a: string, b: string) => number;
 }
 
 /**
@@ -72,6 +73,7 @@ export const createStackBarChartConfig = (config: StackBarChartConfig): EChartsO
         isAxisInverted,
         translate,
         integerPipe,
+        seriesComparator,
     } = config;
 
     // Sort footprints in descending order based on total.sip
@@ -99,6 +101,7 @@ export const createStackBarChartConfig = (config: StackBarChartConfig): EChartsO
 
     // Build series array - one series per criterion
     const criteriaNamesArray = Array.from(allCriteria);
+    if (seriesComparator) criteriaNamesArray.sort(seriesComparator);
     const series: any[] = criteriaNamesArray.map((criteriaName, criteriaIndex) => {
         // For each criterion, collect its value across all footprints/dimensions
         const data = sortedFootprints.map((footprint) => {
