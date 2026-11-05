@@ -1,5 +1,19 @@
 # G4IT
 
+## 3.15.1
+
+### Major Changes
+
+- 56 | Add new AI servers references to G4IT
+
+### Minor Changes
+
+- 128 | Recursion error on workspaces management
+- 123 | Deletion remains stuck and does not complete
+- 20 | Incorrect calculation of "Quantity of virtual equipment" key indicator
+- 19 | Virtual equipment quantity not taken into account in total power consumption calculation
+- 22 | Increase export file retention period
+
 ## 3.15.0
 
 ### Major Changes
