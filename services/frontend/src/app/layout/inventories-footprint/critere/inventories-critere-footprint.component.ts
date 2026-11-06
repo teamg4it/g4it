@@ -20,7 +20,7 @@ import { NgClass } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { TranslatePipe } from "@ngx-translate/core";
-import { EChartsOption } from "echarts";
+import { EChartsOption, SunburstSeriesOption } from "echarts";
 import { NgxEchartsDirective } from "ngx-echarts";
 import { PrimeTemplate } from "primeng/api";
 import { Button } from "primeng/button";
@@ -35,6 +35,7 @@ import {
     Criterias,
     Datacenter,
     EchartPieDataItem,
+    Impact,
     PhysicalEquipmentAvgAge,
     PhysicalEquipmentLowImpact,
     PhysicalEquipmentsElecConsumption,
@@ -49,6 +50,9 @@ import { StackBarChartComponent } from "../../common/stack-bar-chart/stack-bar-c
 import { GraphDescriptionComponent } from "../../digital-services-footprint/digital-services-footprint-dashboard/graph-description/graph-description.component";
 import { AbstractDashboard } from "../abstract-dashboard";
 import { InventoriesFootprintComponent } from "../inventories-footprint.component";
+import { createSunburstChartConfig } from "src/app/core/service/mapper/sunburst-chart.mapper";
+
+type SunburstNode = { name: string; value?: number; children?: SunburstNode[] };
 
 @Component({
     selector: "app-inventories-critere-footprint",
@@ -68,8 +72,7 @@ import { InventoriesFootprintComponent } from "../inventories-footprint.componen
 })
 export class InventoriesCritereFootprintComponent
     extends AbstractDashboard
-    implements OnChanges
-{
+    implements OnChanges {
     protected footprintStore = inject(FootprintStoreService);
     private readonly footprintService = inject(FootprintService);
     protected readonly inventoryComponent = inject(InventoriesFootprintComponent);
@@ -209,6 +212,73 @@ export class InventoriesCritereFootprintComponent
             return {};
         }
 
+        const knownItemCategories = {
+            DEVICES: "devices" as const,
+            INFRASTRUCTURE: "infrastructure" as const,
+            EXTERNAL: "externalServices" as const,
+        };
+
+        if (selectedView === "equipment") {
+            const filters = this.footprintStore.filters();
+            const hasAllFilters = this.filterFields.every((field) =>
+                filters[field]?.includes(Constants.ALL),
+            );
+            const filteredImpacts = hasAllFilters
+                ? this.criteriaFootprint.impacts
+                : this.criteriaFootprint.impacts.filter((impact) =>
+                    this.filterFields.every((field) => {
+                        const value =
+                            this.footprintService.valueImpact(impact, field) ||
+                            Constants.EMPTY;
+                        return filters[field]?.includes(value) ?? false;
+                    }),
+                );
+            const allImpactsGroupedByCategory = Object.groupBy(
+                filteredImpacts,
+                (i: Impact) =>
+                    i.sunburstServiceType ? "EXTERNAL" : i.itemCategory,
+            );
+
+            // Convert the grouped impacts into a tree structure suitable for the sunburst chart
+            const data: NonNullable<SunburstSeriesOption["data"]> = Object.keys(allImpactsGroupedByCategory).map(category => {
+                const items = Object.groupBy(allImpactsGroupedByCategory[category]!, (i: Impact) => i.sunburstServiceType || i.equipment!);
+
+                return {
+                    // Use the translated label if the category is known, otherwise use the raw category name
+                    name: Object.keys(knownItemCategories).includes(category)
+                        ? this.translate.instant(`inventories-footprint.sunburst-category.${knownItemCategories[category as keyof typeof knownItemCategories]}`)
+                        : category,
+
+                    // Calculate the total value for the category by summing the values of all items in that category
+                    children: Object.keys(items).map((item) => {
+                        // If the item has a sunburstServiceType, group by sunburstProvider and create children for each provider
+                        if (items[item]![0].sunburstServiceType) {
+                            const g = Object.groupBy(items[item]!, (i: Impact) =>
+                                (i.sunburstProvider ?? "").trim().toUpperCase(),
+                            );
+                            return {
+                                name: this.translate.instant(`inventories-footprint.sunburst-category.${items[item]![0].sunburstServiceType}`),
+                                children: Object.values(g).map((impact) => ({
+                                    name: impact![0].sunburstProvider?.trim() || impact![0].equipment!,
+                                    value: impact!.reduce((sum, current) => sum + (unit === Constants.PEOPLEEQ ? current.sip : current.impact), 0),
+                                } satisfies SunburstNode)),
+                            } satisfies SunburstNode
+                        }
+
+                        // If the item does not have a sunburstServiceType, return a single node with the total value for that item
+                        return {
+                            name: item,
+                            value: items[item]!.reduce((sum, current) => sum + (unit === Constants.PEOPLEEQ ? current.sip : current.impact), 0),
+                        } satisfies SunburstNode
+                    }),
+                } satisfies SunburstNode
+            })
+
+            return createSunburstChartConfig({
+                data
+            });
+        }
+
         const lifecycleMap = getLifeCycleMap();
         const echartsData: EchartPieDataItem[] = [];
         const otherData: any = [];
@@ -281,6 +351,7 @@ export class InventoriesCritereFootprintComponent
             this.checkDataStatus(data);
         }
         this.allErrorData = echartsData?.every((f) => !f.status.ok);
+
         return {
             height: 700,
             tooltip: {
@@ -348,8 +419,8 @@ export class InventoriesCritereFootprintComponent
         const translatedUnit =
             unit === Constants.PEOPLEEQ
                 ? this.translate.instant(
-                      `common.${Constants.PEOPLEEQ.toLocaleLowerCase()}`,
-                  )
+                    `common.${Constants.PEOPLEEQ.toLocaleLowerCase()}`,
+                )
                 : unit;
 
         const pipe = unit === Constants.PEOPLEEQ ? this.integerPipe : this.decimalsPipe;
@@ -377,8 +448,8 @@ export class InventoriesCritereFootprintComponent
         const titleDiv =
             tooltipLines.length > 1
                 ? `${this.getCircleColorHtml(color)} ${this.translate.instant(
-                      "common.otherLegend",
-                  )}`
+                    "common.otherLegend",
+                )}`
                 : "";
 
         return `

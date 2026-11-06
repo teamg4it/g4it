@@ -9,6 +9,7 @@
 package com.soprasteria.g4it.backend.apireferential.business;
 
 import com.soprasteria.g4it.backend.apireferential.mapper.ReferentialMapper;
+import com.soprasteria.g4it.backend.apireferential.modeldb.ItemType;
 import com.soprasteria.g4it.backend.apireferential.persistence.ReferentialPersistenceService;
 import com.soprasteria.g4it.backend.common.utils.*;
 import com.soprasteria.g4it.backend.exception.BadRequestException;
@@ -250,10 +251,17 @@ public class ReferentialImportService {
         if (bytes == null) return importReportRest;
 
         try (BufferedReader reader = CsvEncodingUtils.getReader(bytes)) {
-            for (CSVRecord csvRecord : createCsvParser().parse(reader)) {
+            var parser = createCsvParser().parse(reader);
+            if (!parser.getHeaderNames().contains("item_category")) {
+                importReportRest.getErrors().add("CSV column item_category is required");
+                return importReportRest;
+            }
+            for (CSVRecord csvRecord : parser) {
                 ItemTypeRest itemTypeRest = referentialMapper.csvItemTypeToRest(csvRecord);
                 Optional<String> violations = ValidationUtils.getViolations(validator.validate(itemTypeRest));
-                if (violations.isEmpty()) {
+                if (!ItemType.isValidItemCategory(itemTypeRest.getItemCategory())) {
+                    importReportRest.getErrors().add(printLine(line, "Invalid or missing item_category"));
+                } else if (violations.isEmpty()) {
                     objects.add(itemTypeRest);
                 } else {
                     importReportRest.getErrors().add(printLine(line, violations.get()));
@@ -263,6 +271,10 @@ public class ReferentialImportService {
         } catch (IOException e) {
             log.error(CANNOT_READ_FILE, e);
             importReportRest.getErrors().add(CANNOT_READ_FILE + e.getMessage());
+            return importReportRest;
+        }
+
+        if (!importReportRest.getErrors().isEmpty()) {
             return importReportRest;
         }
 
@@ -479,7 +491,7 @@ public class ReferentialImportService {
 
             validateHeaders(
                     parser.getHeaderNames(),
-                    List.of("type", "category", "comment", "default_lifespan", "is_server", "source", "ref_default_item", "version"),
+                    List.of("type", "category", "item_category", "comment", "default_lifespan", "is_server", "source", "ref_default_item", "version"),
                     "ItemType"
             );
 
@@ -490,7 +502,9 @@ public class ReferentialImportService {
                 Optional<String> violations =
                         ValidationUtils.getViolations(validator.validate(item));
 
-                if (violations.isEmpty()) {
+                if (!ItemType.isValidItemCategory(item.getItemCategory())) {
+                    report.getErrors().add(printLine(line, "Invalid or missing item_category"));
+                } else if (violations.isEmpty()) {
                     item.setOrganization(null); // ignore subscriber
                     objects.add(item);
                 } else {
