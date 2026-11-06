@@ -308,7 +308,7 @@ public class OutApplicationCustomRepositoryImpl implements OutApplicationCustomR
                     COUNT(*)                                                AS total_count,
                     COUNT(*) FILTER (WHERE COALESCE(cli.low_impact, false)) AS low_impact_count
                 FROM distinct_applications da
-                LEFT JOIN iso_map im ON im.iso = da.location
+                LEFT JOIN iso_map im ON im.country = da.location
                 LEFT JOIN country_low_impact cli ON cli.country = im.country
                 """);
 
