@@ -73,6 +73,7 @@ public interface ReferentialMapper {
         return ItemTypeRest.builder()
                 .type(read(csvRecord, "type"))
                 .category(read(csvRecord, "category"))
+                .itemCategory(read(csvRecord, "item_category"))
                 .comment(read(csvRecord, "comment"))
                 .defaultLifespan(readDouble(csvRecord, "default_lifespan"))
                 .isServer(readBoolean(csvRecord, "is_server"))
