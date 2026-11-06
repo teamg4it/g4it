@@ -9,6 +9,8 @@
 package com.soprasteria.g4it.backend.apiinout.repository;
 
 import com.soprasteria.g4it.backend.apiinout.modeldb.OutApplication;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -21,13 +23,15 @@ import java.util.List;
  * Out Application JPA repository.
  */
 @Repository
-public interface OutApplicationRepository extends JpaRepository<OutApplication, Long> {
-
-    //List<OutApplication> findByTaskId(Long taskId);
-    Slice<OutApplication> findByTaskId(Long taskId, Pageable pageable);
-
+public interface OutApplicationRepository extends JpaRepository<OutApplication, Long>, OutApplicationCustomRepository {
     List<OutApplication> findByTaskIdOrderByIdAsc(
             Long taskId,
             Pageable pageable);
+
+    /**
+     * §4.4 - DB-side paginated listing (LIMIT/OFFSET) for the table view, avoiding
+     * a full in-memory load/slice of the inventory's application indicators.
+     */
+    Page<OutApplication> findByTaskId(Long taskId, Pageable pageable);
 
 }

@@ -218,3 +218,55 @@ databaseChangeLog:
             referencedTableName: digital_service
             referencedColumnNames: uid
             onDelete: CASCADE
+
+  - changeSet:
+      id: in-out-add-index-out-application-app-page
+      author: G4IT Dev Team
+      comment: >
+        §4.4 application table view performance index (task_id + subDomain +
+        equipmentType + lifeCycle + environment + domain + id). Built
+        CONCURRENTLY so it does not lock out_application for reads/writes
+        while it's being built - essential since this table can hold 10M+
+        rows.
+      # PostgreSQL-only: CREATE INDEX CONCURRENTLY and array subscript
+      # expressions ((filters[1])/(filters[2])) are not supported by H2,
+      # which the functional test suite's test-master.yml runs against
+      # (see application-test.yml) via this same in-out/ includeAll.
+      dbms: postgresql
+      # Postgres rejects "CREATE INDEX CONCURRENTLY" inside a transaction
+      # block. Without runInTransaction: false, Liquibase's default
+      # per-changeset transaction wrapping would make this changeset fail
+      # outright and abort the whole migration/app bootstrap.
+      runInTransaction: false
+      preConditions:
+        # Skip (without erroring) on environments where this index was
+        # already created manually/out-of-band, instead of trying - and
+        # failing - to build it a second time. Uses a raw pg_indexes check
+        # instead of Liquibase's indexExists precondition because
+        # indexExists does not reliably detect expression/functional
+        # indexes such as (filters[1])/(filters[2]).
+        - onFail: MARK_RAN
+        - sqlCheck:
+            expectedResult: 0
+            sql: >
+              SELECT COUNT(*) FROM pg_indexes
+              WHERE schemaname = current_schema()
+                AND indexname = 'idx_out_application_app_page'
+      changes:
+        - sql:
+            splitStatements: false
+            sql: >
+              CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_out_application_app_page
+              ON out_application (
+                  task_id,
+                  (filters[2]),
+                  equipment_type,
+                  lifecycle_step,
+                  environment,
+                  (filters[1]),
+                  id
+              )
+      rollback:
+        - sql:
+            splitStatements: false
+            sql: DROP INDEX CONCURRENTLY IF EXISTS idx_out_application_app_page
