@@ -364,7 +364,7 @@ components:
       description: Ecological impact criterion reference
     ItemTypeRest:
       type: object
-      required: [ type ]
+      required: [ type, itemCategory ]
       properties:
         id:
           type: number
@@ -376,6 +376,9 @@ components:
         category:
           type: string
           description: Item category
+        itemCategory:
+          type: string
+          description: Macro category used in item impact visualizations
         isServer:
           type: boolean
           description: Flag indicating if the item is a server
