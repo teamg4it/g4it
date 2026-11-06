@@ -12,6 +12,8 @@ import com.soprasteria.g4it.backend.apiindicator.model.*;
 import com.soprasteria.g4it.backend.apiinventory.business.InventoryService;
 import com.soprasteria.g4it.backend.apiinventory.model.InventoryBO;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
+import com.soprasteria.g4it.backend.apireferential.modeldb.ItemType;
+import com.soprasteria.g4it.backend.apireferential.repository.ItemTypeRepository;
 import com.soprasteria.g4it.backend.common.task.business.TaskService;
 import com.soprasteria.g4it.backend.common.task.modeldb.Task;
 import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
@@ -47,7 +49,8 @@ class InventoryIndicatorServiceTest {
     private TaskRepository taskRepository;
     @Mock
     private TaskService taskService;
-
+    @Mock
+    private ItemTypeRepository itemTypeRepository;
     @InjectMocks
     private InventoryIndicatorService inventoryIndicatorService;
 
@@ -195,7 +198,8 @@ class InventoryIndicatorServiceTest {
         InventoryBO inventory = new InventoryBO();
         inventory.setId(inventoryId);
 
-        Map<String, EquipmentIndicatorBO> expected = Map.of("climate-change", EquipmentIndicatorBO.builder().build());
+        Map<String, EquipmentIndicatorBO> expected = Map.of(
+                "climate-change", EquipmentIndicatorBO.builder().impacts(List.of()).build());
 
         when(inventoryService.getInventory(organization, workspaceId, inventoryId)).thenReturn(inventory);
         when(taskRepository.findByInventoryAndLastCreationDate(Mockito.any(Inventory.class)))
@@ -438,5 +442,47 @@ class InventoryIndicatorServiceTest {
 
         assertEquals(expected, result);
         verify(indicatorService).getVirtualEquipmentElecConsumptionSum(taskId, filters);
+    }
+
+    @Test
+    void getEquipmentIndicatorsPrefersWorkspaceThenOrganizationItemCategory() {
+        String organization = "org";
+        Long workspaceId = 7L;
+        Long inventoryId = 11L;
+        Long taskId = 13L;
+        EquipmentImpactBO printer = EquipmentImpactBO.builder().equipment("printer").build();
+        EquipmentImpactBO laptop = EquipmentImpactBO.builder().equipment("laptop").build();
+        Map<String, EquipmentIndicatorBO> indicators = Map.of(
+                "criterion",
+                EquipmentIndicatorBO.builder().impacts(List.of(printer, laptop)).build()
+        );
+
+        when(inventoryService.getInventory(organization, workspaceId, inventoryId))
+                .thenReturn(InventoryBO.builder().id(inventoryId).build());
+        when(taskRepository.findByInventoryAndLastCreationDate(any(Inventory.class)))
+                .thenReturn(Optional.of(Task.builder().id(taskId).build()));
+        when(indicatorService.getEquipmentIndicators(taskId)).thenReturn(indicators);
+        when(itemTypeRepository.findByWorkspaceIdOrWorkspaceIdIsNull(workspaceId)).thenReturn(List.of(
+                itemType("printer", "INFRASTRUCTURE", null, null),
+                itemType("printer", "ORGANIZATION", organization, null),
+                itemType("printer", "Custom print category", null, workspaceId),
+                itemType("laptop", "INFRASTRUCTURE", null, null),
+                itemType("laptop", "ORGANIZATION", organization, null),
+                itemType("laptop", "INFRASTRUCTURE", null, null)
+        ));
+
+        inventoryIndicatorService.getEquipmentIndicators(organization, workspaceId, inventoryId);
+
+        assertEquals("Custom print category", printer.getItemCategory());
+        assertEquals("ORGANIZATION", laptop.getItemCategory());
+    }
+
+    private ItemType itemType(String type, String itemCategory, String organization, Long workspaceId) {
+        return ItemType.builder()
+                .type(type)
+                .itemCategory(itemCategory)
+                .organization(organization)
+                .workspaceId(workspaceId)
+                .build();
     }
 }

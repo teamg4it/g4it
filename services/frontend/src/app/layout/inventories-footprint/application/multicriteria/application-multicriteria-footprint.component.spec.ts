@@ -103,6 +103,7 @@ describe("ApplicationMulticriteriaFootprintComponent", () => {
                     impacts: [
                         {
                             criteria: "climate-change",
+                            itemCategory: "INFRASTRUCTURE",
                             sumImpact: 300,
                             sumSip: 150,
                             acvStep: "use",
