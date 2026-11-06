@@ -27,8 +27,8 @@ function colorSunburstNodes(
         const amount = Math.min(
             0.7,
             0.28 +
-                Math.max(depth - 1, 0) * 0.2 +
-                (index / Math.max(nodes.length - 1, 1)) * 0.08,
+            Math.max(depth - 1, 0) * 0.2 +
+            (index / Math.max(nodes.length - 1, 1)) * 0.08,
         );
         const color = depth === 0 ? baseColor : echartsColor.lift(baseColor, amount);
 
@@ -54,13 +54,14 @@ export function createSunburstChartConfig({ data, seriesOptions, chartOptions }:
         series: [
             {
                 type: "sunburst",
-                radius: ['10%', '100%'],
+                radius: ['10%', '85%'],
+                label: { minAngle: 5 },
                 levels: [
                     {},
-                    { radius: ['10%', '53%'] },
-                    { radius: ['53%', '97%'] },
+                    { radius: ['10%', '46%'] },
+                    { radius: ['46%', '82%'] },
                     {
-                        radius: ['97%', '100%'],
+                        radius: ['82%', '85%'],
                         label: {
                             position: 'outside',
                         },

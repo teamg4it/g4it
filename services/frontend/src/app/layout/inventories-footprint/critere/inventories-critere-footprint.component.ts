@@ -20,7 +20,7 @@ import { NgClass } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { TranslatePipe } from "@ngx-translate/core";
-import { EChartsOption } from "echarts";
+import { EChartsOption, SunburstSeriesOption } from "echarts";
 import { NgxEchartsDirective } from "ngx-echarts";
 import { PrimeTemplate } from "primeng/api";
 import { Button } from "primeng/button";
@@ -35,6 +35,7 @@ import {
     Criterias,
     Datacenter,
     EchartPieDataItem,
+    Impact,
     PhysicalEquipmentAvgAge,
     PhysicalEquipmentLowImpact,
     PhysicalEquipmentsElecConsumption,
@@ -50,6 +51,8 @@ import { GraphDescriptionComponent } from "../../digital-services-footprint/digi
 import { AbstractDashboard } from "../abstract-dashboard";
 import { InventoriesFootprintComponent } from "../inventories-footprint.component";
 import { createSunburstChartConfig } from "src/app/core/service/mapper/sunburst-chart.mapper";
+
+type SunburstNode = { name: string; value?: number; children?: SunburstNode[] };
 
 @Component({
     selector: "app-inventories-critere-footprint",
@@ -209,6 +212,73 @@ export class InventoriesCritereFootprintComponent
             return {};
         }
 
+        const knownItemCategories = {
+            DEVICES: "devices" as const,
+            INFRASTRUCTURE: "infrastructure" as const,
+            EXTERNAL: "externalServices" as const,
+        };
+
+        if (selectedView === "equipment") {
+            const filters = this.footprintStore.filters();
+            const hasAllFilters = this.filterFields.every((field) =>
+                filters[field]?.includes(Constants.ALL),
+            );
+            const filteredImpacts = hasAllFilters
+                ? this.criteriaFootprint.impacts
+                : this.criteriaFootprint.impacts.filter((impact) =>
+                    this.filterFields.every((field) => {
+                        const value =
+                            this.footprintService.valueImpact(impact, field) ||
+                            Constants.EMPTY;
+                        return filters[field]?.includes(value) ?? false;
+                    }),
+                );
+            const allImpactsGroupedByCategory = Object.groupBy(
+                filteredImpacts,
+                (i: Impact) =>
+                    i.sunburstServiceType ? "EXTERNAL" : i.itemCategory,
+            );
+
+            // Convert the grouped impacts into a tree structure suitable for the sunburst chart
+            const data: NonNullable<SunburstSeriesOption["data"]> = Object.keys(allImpactsGroupedByCategory).map(category => {
+                const items = Object.groupBy(allImpactsGroupedByCategory[category]!, (i: Impact) => i.sunburstServiceType || i.equipment!);
+
+                return {
+                    // Use the translated label if the category is known, otherwise use the raw category name
+                    name: Object.keys(knownItemCategories).includes(category)
+                        ? this.translate.instant(`inventories-footprint.sunburst-category.${knownItemCategories[category as keyof typeof knownItemCategories]}`)
+                        : category,
+
+                    // Calculate the total value for the category by summing the values of all items in that category
+                    children: Object.keys(items).map((item) => {
+                        // If the item has a sunburstServiceType, group by sunburstProvider and create children for each provider
+                        if (items[item]![0].sunburstServiceType) {
+                            const g = Object.groupBy(items[item]!, (i: Impact) =>
+                                (i.sunburstProvider ?? "").trim().toUpperCase(),
+                            );
+                            return {
+                                name: this.translate.instant(`inventories-footprint.sunburst-category.${items[item]![0].sunburstServiceType}`),
+                                children: Object.values(g).map((impact) => ({
+                                    name: impact![0].sunburstProvider?.trim() || impact![0].equipment!,
+                                    value: impact!.reduce((sum, current) => sum + (unit === Constants.PEOPLEEQ ? current.sip : current.impact), 0),
+                                } satisfies SunburstNode)),
+                            } satisfies SunburstNode
+                        }
+
+                        // If the item does not have a sunburstServiceType, return a single node with the total value for that item
+                        return {
+                            name: item,
+                            value: items[item]!.reduce((sum, current) => sum + (unit === Constants.PEOPLEEQ ? current.sip : current.impact), 0),
+                        } satisfies SunburstNode
+                    }),
+                } satisfies SunburstNode
+            })
+
+            return createSunburstChartConfig({
+                data
+            });
+        }
+
         const lifecycleMap = getLifeCycleMap();
         const echartsData: EchartPieDataItem[] = [];
         const otherData: any = [];
@@ -281,107 +351,6 @@ export class InventoriesCritereFootprintComponent
             this.checkDataStatus(data);
         }
         this.allErrorData = echartsData?.every((f) => !f.status.ok);
-
-        if (selectedView == "equipment") {
-            return createSunburstChartConfig({
-                data: [
-                    {
-                        name: 'Devices',
-                        children: [
-                            {
-                                name: 'Other',
-                                value: 1,
-                            },
-                            {
-                                name: 'Desktop',
-                                value: 2,
-                            },
-                            {
-                                name: 'Mobile Phone',
-                                value: 3,
-                            },
-                            {
-                                name: 'Monitor',
-                                value: 6,
-                            },
-                            {
-                                name: 'Laptop',
-                                value: 43,
-                            },
-                        ],
-                    },
-                    {
-                        name: 'Infrastructure',
-                        children: [
-                            {
-                                name: 'Switch',
-                                value: 4,
-                            },
-                            {
-                                name: 'AI Server',
-                                value: 6,
-                            },
-                            {
-                                name: 'Storage Server',
-                                value: 5,
-                            },
-                            {
-                                name: 'Compute Server',
-                                value: 10,
-                            },
-                        ],
-                    },
-                    {
-                        name: 'Ext. Services',
-                        children: [
-                            {
-                                name: 'AI',
-                                children: [
-                                    {
-                                        name: 'Mistral',
-                                        value: 5,
-                                    },
-                                    {
-                                        name: 'Claude',
-                                        value: 1,
-                                    },
-                                ],
-                            },
-                            {
-                                name: 'Cloud',
-                                children: [
-                                    {
-                                        name: 'AWS',
-                                        value: 3,
-                                    },
-                                    {
-                                        name: 'Azure',
-                                        value: 1,
-                                    },
-                                ],
-                            },
-                        ],
-                    },
-                    {
-                        name: 'Non-IT',
-                        children: [
-                            {
-                                name: 'Furnitures',
-                                value: 1,
-                            },
-                            {
-                                name: 'Travel',
-                                value: 4,
-                            },
-                            {
-                                name: 'Building',
-                                value: 5,
-                            },
-                        ],
-                    },
-                ],
-            })
-        }
 
         return {
             height: 700,
