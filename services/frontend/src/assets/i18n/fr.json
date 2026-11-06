@@ -828,6 +828,14 @@
         "data-consistency": "Cohérence des données",
         "ai-services-category": "Services IA {{provider}}",
         "not-specified-status": "Non spécifié",
+        "sunburst-category": {
+            "devices": "Terminaux",
+            "infrastructure": "Infrastructure",
+            "externalServices": "Services ext.",
+            "cloud": "Services cloud",
+            "ai": "Services IA",
+            "unclassified": "Non classé"
+        },
         "round-button": {
             "acvStep": "Cycle de vie",
             "country": "Pays",
