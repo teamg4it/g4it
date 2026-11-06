@@ -831,6 +831,14 @@
         "data-consistency": "Data consistency",
         "ai-services-category": "{{provider}} AI services",
         "not-specified-status": "Not specified",
+        "sunburst-category": {
+            "devices": "Devices",
+            "infrastructure": "Infrastructure",
+            "externalServices": "Ext. services",
+            "cloud": "Cloud services",
+            "ai": "AI services",
+            "unclassified": "Unclassified"
+        },
         "round-button": {
             "acvStep": "Lifecycle",
             "country": "Country",

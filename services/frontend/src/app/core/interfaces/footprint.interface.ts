@@ -197,6 +197,7 @@ export interface Impact {
     country: string;
     entity: string | null;
     equipment: string | null;
+    itemCategory: string;
     status: string | null;
     impact: number;
     sip: number;
@@ -206,6 +207,8 @@ export interface Impact {
     unit?: string;
     level?: string;
     impactUnit?: string;
+    sunburstServiceType?: "cloud" | "ai";
+    sunburstProvider?: string;
 }
 
 export interface ImpactEntity extends Impact {
