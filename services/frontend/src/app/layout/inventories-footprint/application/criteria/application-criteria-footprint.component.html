@@ -126,7 +126,9 @@
     }
 }
 <app-application-criteria-pie-chart
-    [footprint]="[footprint]"
+    [inventoryId]="inventory()?.id || selectedInventoryId"
+    [graphRequest]="graphRequest()?.request ?? null"
+    [barResponse]="graphResponse()"
 ></app-application-criteria-pie-chart>
 <app-graph-description
     [contentText]="getContentText()"
