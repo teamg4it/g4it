@@ -69,7 +69,6 @@ class AuthenticationFilterTest {
     @Test
     void doFilterInternal_authorizationException_sendsGenericMessage_notRawExceptionDetail() throws Exception {
         String sensitiveDetail = "Internal DB connection string: jdbc://secret-host/db?pwd=12345";
-        when(request.getRequestURI()).thenReturn("/api/organizations/ORG/workspaces/1/inventories");
         when(authService.verifyUserAuthentication())
                 .thenThrow(new AuthorizationException(HttpServletResponse.SC_UNAUTHORIZED, sensitiveDetail));
 
@@ -84,7 +83,6 @@ class AuthenticationFilterTest {
     @Test
     void doFilterInternal_unexpectedException_sendsGenericMessage_notRawExceptionDetail() throws Exception {
         String sensitiveDetail = "NullPointerException at com.soprasteria.internal.SecretClass.line42";
-        when(request.getRequestURI()).thenReturn("/api/organizations/ORG/workspaces/1/inventories");
         when(authService.verifyUserAuthentication()).thenThrow(new RuntimeException(sensitiveDetail));
 
         authenticationFilter.doFilterInternal(request, response, filterChain);
