@@ -48,25 +48,25 @@ public class AsyncEvaluatingService implements ITaskExecute {
     public void execute(final Context context, Task task) {
 
         final Long taskId = task.getId();
-        task = taskRepository.findById(taskId).orElseThrow();
-
-
-        log.info("Start evaluating for {}/{}", context.log(), taskId);
-
-        long start = System.currentTimeMillis();
-
-        final List<String> details = new ArrayList<>();
-        details.add(LogUtils.info("Start task"));
-        taskRepository.updateTaskState(
-                taskId,
-                TaskStatus.IN_PROGRESS.toString(),
-                java.time.LocalDateTime.now(),
-                "0%"
-        );
         String finalStatus = TaskStatus.COMPLETED.toString();
         String finalProgress = "100%";
+        final List<String> details = new ArrayList<>();
 
         try {
+            task = taskRepository.findById(taskId).orElseThrow();
+
+            log.info("Start evaluating for {}/{}", context.log(), taskId);
+
+            long start = System.currentTimeMillis();
+
+            details.add(LogUtils.info("Start task"));
+            taskRepository.updateTaskState(
+                    taskId,
+                    TaskStatus.IN_PROGRESS.toString(),
+                    java.time.LocalDateTime.now(),
+                    "0%"
+            );
+
             Path exportDirectory = exportService.createExportDirectory(taskId);
 
             if (context.isAi()) {
@@ -77,13 +77,16 @@ public class AsyncEvaluatingService implements ITaskExecute {
             exportService.uploadExportZip(taskId, context.getOrganization(), context.getWorkspaceId().toString());
             exportService.clean(taskId);
 
+            long end = System.currentTimeMillis();
+            log.info("End evaluating for {}/{}. Time taken: {}s {}ms", context.log(), taskId, (end - start) / 1000, (end - start) % 1000);
+
         } catch (AsyncTaskException e) {
             log.error("Async task with id '{}' failed for '{}' with error: ", taskId, context.log(), e);
             finalStatus = TaskStatus.FAILED.toString();
             finalProgress = "0%";
             details.add(LogUtils.error(e.getMessage()));
         } catch (RuntimeException e) {
-            log.error("Task with id '{}' failed for '{}' with error: ", task.getId(), context.log(), e);
+            log.error("Task with id '{}' failed for '{}' with error: ", taskId, context.log(), e);
             finalStatus = TaskStatus.FAILED.toString();
             finalProgress = "0%";
             details.add(LogUtils.error(e.getMessage()));
@@ -96,15 +99,16 @@ public class AsyncEvaluatingService implements ITaskExecute {
             task.setDetails(details);
         }
 
-        taskRepository.updateTaskFinalState(
-                taskId,
-                finalStatus,
-                finalProgress,
-                details
-        );
-
-        long end = System.currentTimeMillis();
-        log.info("End evaluating for {}/{}. Time taken: {}s {}ms", context.log(), taskId, (end - start) / 1000, (end - start) % 1000);
+        try {
+            taskRepository.updateTaskFinalState(
+                    taskId,
+                    finalStatus,
+                    finalProgress,
+                    details
+            );
+        } catch (RuntimeException e) {
+            log.error("Failed to persist final state for task with id '{}' for '{}' with error: ", taskId, context.log(), e);
+        }
     }
 
 }

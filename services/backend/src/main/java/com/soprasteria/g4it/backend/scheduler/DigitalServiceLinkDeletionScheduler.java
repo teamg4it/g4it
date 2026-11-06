@@ -31,7 +31,11 @@ public class DigitalServiceLinkDeletionScheduler {
     @PostConstruct
     public void init() {
         if (onInit) {
-            digitalServiceLinkRepository.deleteExpiredLinks();
+            try {
+                digitalServiceLinkRepository.deleteExpiredLinks();
+            } catch (RuntimeException e) {
+                log.error("Failed to delete expired digital service links on startup", e);
+            }
         }
     }
     /**

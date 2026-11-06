@@ -94,8 +94,19 @@ public class FileLoadingUtils {
      */
     private void cleanFromLocalAndFileStorage(String inputPath, FileStorage fileStorage, List<String> filenames) {
         try {
+            final Path baseDir = Path.of(localWorkingFolder).resolve(inputPath).normalize();
             for (String filename : filenames) {
-                Files.delete(Path.of(localWorkingFolder).resolve(inputPath).resolve(filename));
+                // Discard any directory component from the user-supplied filename (e.g. "../../etc/passwd"
+                // becomes "passwd") before resolving, so traversal sequences cannot reach the file system call.
+                final Path fileNameOnly = Path.of(filename).getFileName();
+                if (fileNameOnly == null) {
+                    throw new SecurityException("Invalid file path (path traversal attempt) for file: " + filename);
+                }
+                final Path resolved = baseDir.resolve(fileNameOnly.toString()).normalize();
+                if (!resolved.startsWith(baseDir)) {
+                    throw new SecurityException("Invalid file path (path traversal attempt) for file: " + filename);
+                }
+                Files.delete(resolved);
             }
 
             for (String filename : filenames) {

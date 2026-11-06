@@ -295,18 +295,21 @@ class AsyncEvaluatingServiceTest {
     }
 
     @Test
-    void execute_shouldThrow_whenUpdateTaskStateThrows() {
+    void execute_shouldMarkFailed_whenUpdateTaskStateThrows() {
         doThrow(new RuntimeException("state-fail"))
                 .when(taskRepository)
                 .updateTaskState(eq(101L), eq(TaskStatus.IN_PROGRESS.toString()), any(), eq("0%"));
 
-        RuntimeException ex = assertThrows(RuntimeException.class,
-                () -> asyncEvaluatingService.execute(context, task));
-
-        assertEquals("state-fail", ex.getMessage());
+        asyncEvaluatingService.execute(context, task);
 
         verify(exportService, never()).createExportDirectory(anyLong());
-        verify(taskRepository, never()).updateTaskFinalState(anyLong(), anyString(), anyString(), anyList());
+        verify(taskRepository).updateTaskFinalState(
+                eq(101L),
+                eq(TaskStatus.FAILED.toString()),
+                eq("0%"),
+                anyList()
+        );
+        verify(task).setDetails(anyList());
     }
 
     @Test
