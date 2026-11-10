@@ -30,6 +30,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -219,13 +220,15 @@ public class AdministratorWorkspaceService {
                 .orElseThrow(() -> new G4itRestException("404", String.format("WorkspaceId %s is not found", workspaceId)));
 
         if (checkAdminRole) {
-            // Check if any EcoMind AI roles are being assigned
-            boolean hasEcoMindAIRoles = linkUserRoleRest.getUsers().stream()
-                    .anyMatch(userRoleRest -> userRoleRest.getRoles() != null &&
-                            (userRoleRest.getRoles().contains(Constants.ROLE_ECO_MIND_AI_WRITE)));
+            // Check if the request adds, removes or otherwise changes any EcoMind AI role
+            // (not just grants of ROLE_ECO_MIND_AI_WRITE) compared to the target user's
+            // current roles, so a non-EcoMind admin cannot silently strip EcoMind roles
+            // by omitting them from the submitted role list.
+            boolean touchesEcoMindAIRoles = linkUserRoleRest.getUsers().stream()
+                    .anyMatch(userRoleRest -> changesEcoMindAIRoles(workspaceId, userRoleRest));
 
-            if (hasEcoMindAIRoles) {
-                // If assigning EcoMind AI roles, require workspace admin AND EcoMind AI Write role
+            if (touchesEcoMindAIRoles) {
+                // If EcoMind AI roles are affected, require workspace admin AND EcoMind AI Write role
                 administratorRoleService.hasWorkspaceAdminAndEcoMindAIWriteRole(user, workspaceId);
             } else {
                 // For other roles, just require workspace or organization admin role
@@ -317,6 +320,35 @@ public class AdministratorWorkspaceService {
 
             userService.clearUserCache(userRestMapper.toBusinessObject(userOrgEntity.getUser()), organization.getName(), workspaceId);
         }
+    }
+
+    /**
+     * Determine whether applying the requested roles to a user would add, remove or
+     * otherwise change their EcoMind AI roles (ROLE_ECO_MIND_AI_READ / ROLE_ECO_MIND_AI_WRITE)
+     * compared to the roles they currently hold on the workspace.
+     * This prevents an admin without EcoMind AI rights from silently stripping or altering
+     * EcoMind AI roles by omitting them from the submitted role list.
+     *
+     * @param workspaceId  the workspace id
+     * @param userRoleRest the requested user/roles
+     * @return true if the EcoMind AI roles would change
+     */
+    private boolean changesEcoMindAIRoles(final Long workspaceId, final UserRoleRest userRoleRest) {
+        Set<String> ecoMindAIRoles = Set.of(Constants.ROLE_ECO_MIND_AI_READ, Constants.ROLE_ECO_MIND_AI_WRITE);
+
+        Set<String> requestedRoles = userRoleRest.getRoles() == null ? Set.of() : new HashSet<>(userRoleRest.getRoles());
+        Set<String> requestedEcoMindRoles = requestedRoles.stream()
+                .filter(ecoMindAIRoles::contains)
+                .collect(Collectors.toSet());
+
+        Set<String> currentEcoMindRoles = userWorkspaceRepository.findByWorkspaceIdAndUserId(workspaceId, userRoleRest.getUserId())
+                .map(userWorkspace -> userRoleWorkspaceRepository.findByUserWorkspaces(userWorkspace).stream()
+                        .map(userRoleWorkspace -> userRoleWorkspace.getRoles().getName())
+                        .filter(ecoMindAIRoles::contains)
+                        .collect(Collectors.toSet()))
+                .orElse(Set.of());
+
+        return !requestedEcoMindRoles.equals(currentEcoMindRoles);
     }
 
 }
