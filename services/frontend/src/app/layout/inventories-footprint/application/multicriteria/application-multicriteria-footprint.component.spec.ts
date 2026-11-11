@@ -498,8 +498,8 @@ describe("ApplicationMulticriteriaFootprintComponent", () => {
         const legend = chart.legend as any;
 
         expect(calculated.footprints.map(({ data }) => data)).toEqual([
-            "End of Life",
             "CUSTOM_STEP",
+            "End of Life",
         ]);
         expect(calculated.criteriasCount?.["climate-change"].status).toEqual({
             ok: 1,
