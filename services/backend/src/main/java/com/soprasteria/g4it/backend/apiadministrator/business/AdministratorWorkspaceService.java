@@ -220,10 +220,6 @@ public class AdministratorWorkspaceService {
                 .orElseThrow(() -> new G4itRestException("404", String.format("WorkspaceId %s is not found", workspaceId)));
 
         if (checkAdminRole) {
-            // Check if the request adds, removes or otherwise changes any EcoMind AI role
-            // (not just grants of ROLE_ECO_MIND_AI_WRITE) compared to the target user's
-            // current roles, so a non-EcoMind admin cannot silently strip EcoMind roles
-            // by omitting them from the submitted role list.
             boolean touchesEcoMindAIRoles = linkUserRoleRest.getUsers().stream()
                     .anyMatch(userRoleRest -> changesEcoMindAIRoles(workspaceId, userRoleRest));
 
@@ -326,9 +322,6 @@ public class AdministratorWorkspaceService {
      * Determine whether applying the requested roles to a user would add, remove or
      * otherwise change their EcoMind AI roles (ROLE_ECO_MIND_AI_READ / ROLE_ECO_MIND_AI_WRITE)
      * compared to the roles they currently hold on the workspace.
-     * This prevents an admin without EcoMind AI rights from silently stripping or altering
-     * EcoMind AI roles by omitting them from the submitted role list.
-     *
      * @param workspaceId  the workspace id
      * @param userRoleRest the requested user/roles
      * @return true if the EcoMind AI roles would change
