@@ -53,7 +53,7 @@ class CsvEncodingUtilsTest {
 
     @Test
     void getReader_withBom_shouldStripBom() throws IOException {
-        byte[] bomUtf8 = new byte[] {(byte)0xEF, (byte)0xBB, (byte)0xBF};
+        byte[] bomUtf8 = {(byte)0xEF, (byte)0xBB, (byte)0xBF};
         byte[] content = "hello".getBytes(StandardCharsets.UTF_8);
 
         byte[] bytes = new byte[bomUtf8.length + content.length];
@@ -67,7 +67,7 @@ class CsvEncodingUtilsTest {
 
     @Test
     void detectCharset_invalidEncoding_fallbackToUtf8() {
-        byte[] bytes = new byte[]{0x00, 0x01, 0x02};
+        byte[] bytes = {0x00, 0x01, 0x02};
 
         // indirect call (method is private)
         BufferedReader reader = assertDoesNotThrow(() -> CsvEncodingUtils.getReader(bytes));
