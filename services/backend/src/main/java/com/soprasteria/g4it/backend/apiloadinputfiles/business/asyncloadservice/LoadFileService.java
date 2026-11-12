@@ -410,6 +410,7 @@ public class LoadFileService {
         inventory.setDataCenterCount(loadDatacenterService.getDatacenterCount(inventoryId));
         inventory.setPhysicalEquipmentCount(loadPhysicalEquipmentService.getPhysicalEquipmentCount(inventoryId));
         inventory.setVirtualEquipmentCount(loadVirtualEquipmentService.getVirtualEquipmentCount(inventoryId));
+        inventory.setCloudServiceCount(loadVirtualEquipmentService.getCloudServiceCount(inventoryId));
         inventory.setApplicationCount(loadApplicationService.getApplicationCount(inventoryId));
         inventory.setAiServiceCount(loadAiServiceService.getAiServiceCount(inventoryId));
 

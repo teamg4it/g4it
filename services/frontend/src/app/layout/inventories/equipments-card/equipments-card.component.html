@@ -1,7 +1,11 @@
-<div class="flex" style="min-width: 168px">
-    <img [src]="imgSrc" alt="" />
-    <div>
-        <div>{{ translateText | translate }}</div>
-        <div class="font-bold text-2xl my-1">{{ count | decimals }}</div>
-    </div>
+<div
+    class="equipment-card"
+    role="group"
+    [attr.aria-label]="
+        category + ' — ' + (translateText | translate) + ': ' + (count | decimals)
+    "
+>
+    <ng-icon [name]="icon" size="24px" aria-hidden="true" />
+    <span class="count">{{ count | decimals }}</span>
+    <span>{{ translateText | translate }}</span>
 </div>

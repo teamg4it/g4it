@@ -18,6 +18,7 @@ import { APP_BASE_HREF, DatePipe } from "@angular/common";
 import { provideRouter, withRouterConfig } from "@angular/router";
 import { TranslateLoader, TranslateModule, TranslateService } from "@ngx-translate/core";
 import { TranslateHttpLoader } from "@ngx-translate/http-loader";
+import { provideIcons } from "@ng-icons/core";
 import { MessageService } from "primeng/api";
 import { ProgressBarModule } from "primeng/progressbar";
 import { TableModule } from "primeng/table";
@@ -35,6 +36,7 @@ import { Constants } from "src/constants";
 import { appRoutes } from "./app-routing.module";
 import { DecimalsPipe } from "./core/pipes/decimal.pipe";
 import { IntegerPipe } from "./core/pipes/integer.pipe";
+import * as heroIcons from "./core/icons";
 
 /* ---------------- TRANSLATION LOADER ---------------- */
 
@@ -72,6 +74,7 @@ export function initializeLanguage(translate: TranslateService) {
 
 export const appConfig: ApplicationConfig = {
     providers: [
+        provideIcons(heroIcons),
         providePrimeNG({
             theme: {
                 preset: Aura,
