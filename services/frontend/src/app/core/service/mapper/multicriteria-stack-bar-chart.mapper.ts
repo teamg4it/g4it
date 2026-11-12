@@ -77,11 +77,11 @@ export const createStackBarChartConfig = (config: StackBarChartConfig): EChartsO
     } = config;
 
     // Sort footprints in descending order based on total.sip
-    const sortedFootprints = [...footprints]
-        .sort((a, b) => b.total.sip - a.total.sip)
+    const sortedFootprints = footprints
+        .toSorted((a, b) => b.total.sip - a.total.sip)
         .map((footprint) => ({
             ...footprint,
-            impacts: [...footprint.impacts].sort((a, b) =>
+            impacts: footprint.impacts.toSorted((a, b) =>
                 a.criteria.localeCompare(b.criteria),
             ),
         }));

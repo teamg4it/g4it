@@ -145,9 +145,9 @@ export class DigitalServicesFootprintComponent
                 ...serverHostRefStorage.filter((item) =>
                     item.value.startsWith("Server "),
                 ),
-            ].sort(sortByProperty("value", "desc"));
+            ].toSorted(sortByProperty("value", "desc"));
 
-            const sortedServerHostRefAi = [...serverHostRefAi].sort(
+            const sortedServerHostRefAi = serverHostRefAi.toSorted(
                 sortByProperty("value", "asc"),
             );
 
@@ -155,10 +155,10 @@ export class DigitalServicesFootprintComponent
                 ...shortCuts,
                 ...serverHostRefCompute
                     .filter((item) => !item.value.startsWith("Server "))
-                    .sort(sortByProperty("value", "asc")),
+                    .toSorted(sortByProperty("value", "asc")),
                 ...serverHostRefStorage
                     .filter((item) => !item.value.startsWith("Server "))
-                    .sort(sortByProperty("value", "asc")),
+                    .toSorted(sortByProperty("value", "asc")),
                 ...sortedServerHostRefAi,
             ]);
         }

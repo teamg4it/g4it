@@ -165,7 +165,7 @@ export class AddWorkspaceComponent implements OnInit, OnChanges {
     }
 
     private mapCodeValueRole(userRoles: Role[], rolesList: Role[]): RoleValue {
-        for (const role of [...rolesList].reverse()) {
+        for (const role of rolesList.toReversed()) {
             if (userRoles.includes(role)) {
                 return this.getRoleValue(role);
             }

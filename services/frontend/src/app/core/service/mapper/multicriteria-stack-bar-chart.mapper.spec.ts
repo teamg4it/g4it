@@ -106,7 +106,7 @@ describe("multicriteria-stack-bar-chart.mapper", () => {
 
             // The series should have criteria in alphabetical order
             const seriesNames = (result.series as any[]).map((s) => s.name);
-            const sortedNames = [...seriesNames].sort();
+            const sortedNames = seriesNames.toSorted();
             expect(seriesNames).toEqual(sortedNames);
         });
 

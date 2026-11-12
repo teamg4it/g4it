@@ -308,7 +308,7 @@ export const getCriteriaDimensionTranslation = (
  * Sorts data source alphabetically
  */
 export const sortAlphabetically = (dataSource: string[]): string[] => {
-    return [...dataSource].sort((a, b) => a.localeCompare(b));
+    return dataSource.toSorted((a, b) => a.localeCompare(b));
 };
 
 /**
@@ -318,8 +318,8 @@ export const sortByLifecycleOrder = (
     dataSource: string[],
     translate: TranslateService,
 ): string[] => {
-    return [...dataSource]
-        .sort(
+    return dataSource
+        .toSorted(
             (a, b) =>
                 LifeCycleUtils.getLifeCycleList().indexOf(a) -
                 LifeCycleUtils.getLifeCycleList().indexOf(b),

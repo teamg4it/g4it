@@ -64,8 +64,7 @@ export class DigitalServicesAiInfrastructureComponent implements OnInit, OnDestr
             });
         }
 
-        countries.sort((a, b) => a.label.localeCompare(b.label));
-        return countries;
+        return countries.toSorted((a, b) => a.label.localeCompare(b.label));
     });
     digitalService: DigitalService = {} as DigitalService;
     public userService = inject(UserService);
@@ -227,7 +226,7 @@ export class DigitalServicesAiInfrastructureComponent implements OnInit, OnDestr
             this.digitalServicesAiData.getEcomindReferential(),
         );
 
-        this.typesOptions = [...referentials].sort((a, b) =>
+        this.typesOptions = referentials.toSorted((a, b) =>
             a.value.localeCompare(b.value),
         );
     }

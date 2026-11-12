@@ -204,7 +204,7 @@ export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboar
             const isInverted = this.isAxisInverted();
             const orderedResponse = isInverted
                 ? response
-                : [...response].sort(
+                : response.toSorted(
                       (a, b) =>
                           this.criteriakeys.indexOf(a.criteria) -
                           this.criteriakeys.indexOf(b.criteria),
@@ -436,8 +436,8 @@ export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboar
                 graphResponse !== null
                     ? graphResponse.map((item) => item.criteria)
                     : this.footprint().map((item) => item.criteria);
-            this.xAxisInput = [...criteria]
-                .sort(
+            this.xAxisInput = criteria
+                .toSorted(
                     (a, b) => this.criteriakeys.indexOf(a) - this.criteriakeys.indexOf(b),
                 )
                 .map((criteria) => {

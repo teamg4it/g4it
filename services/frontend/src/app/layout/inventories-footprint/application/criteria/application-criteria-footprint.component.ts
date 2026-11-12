@@ -382,12 +382,12 @@ export class ApplicationCriteriaFootprintComponent
         selectedCriteria: string,
     ) {
         const apiCriteria = selectedCriteria.replaceAll("-", "_").toUpperCase();
-        const nodes = [
-            ...(response.find(
+        const nodes = (
+            response.find(
                 (item) =>
                     item.criteria.replaceAll("-", "_").toUpperCase() === apiCriteria,
-            )?.nodes ?? []),
-        ].sort((first, second) => second.sip - first.sip);
+            )?.nodes ?? []
+        ).toSorted((first, second) => second.sip - first.sip);
         const result = {
             xAxis: [] as string[],
             yAxis: [] as any[],
@@ -1040,10 +1040,10 @@ export class ApplicationCriteriaFootprintComponent
                     ]),
                 ),
             }));
-        const filterImpacts = [
-            ...(graphResponse === null ? this.impactOrder : (apiImpacts ?? [])),
-        ]
-            .sort((a, b) => b.sipImpact - a.sipImpact)
+        const filterImpacts = (
+            graphResponse === null ? this.impactOrder : (apiImpacts ?? [])
+        )
+            .toSorted((a, b) => b.sipImpact - a.sipImpact)
             .slice(0, 3);
         for (const [index, impact] of filterImpacts.entries()) {
             if (index === 0) {
