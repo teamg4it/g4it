@@ -207,7 +207,13 @@
         "environment.all": "Tous les environnements",
         "equipmentType.all": "Tous les types d'équipements",
         "lifeCycle.all": "Tous les cycles de vie",
-        "domain.all": "Tous les domaines et sous-domaines"
+        "domain.all": "Tous les domaines et sous-domaines",
+        "release-notes": {
+            "title": "Notes de Version",
+            "hide": "Ne plus afficher ces notes de version",
+            "give-feedback": "Donner mon avis",
+            "close": "Fermer"
+        }
     },
     "useful-information": {
         "computing-engines": "Moteurs de calcul",
@@ -1391,6 +1397,16 @@
         "workspace-reference": {
             "data-model-text": "Si nécessaire, ce fichier peut vous aider à renseigner vos données de référence.",
             "loading-result": "Chargement résultat"
+        },
+        "release-notes-referential": "Notes de version",
+        "release-notes-paragraph": "Saisissez le contenu des notes de version qui seront affichées aux utilisateurs après leur connexion afin de mettre en évidence les nouvelles fonctionnalités, les améliorations, les corrections de bugs et autres mises à jour importantes.",
+        "release-notes": {
+            "undo": "Annuler les modifications",
+            "publish": "Publier les notes de version",
+            "save-success": "Notes de version publiées avec succès",
+            "save-error": "Une erreur est survenue lors de la publication des notes de version.",
+            "save-invalid": "Saisissez les notes de version avant de les publier.",
+            "save-unchanged": "Aucune modification à publier."
         }
     },
     "error-graph": {
