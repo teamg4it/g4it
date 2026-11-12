@@ -56,7 +56,7 @@ export function mapFilterActiveStatus(filters: Filter<any>): Record<string, bool
  * @param maxHeight Maximum viewport height in pixels
  * @returns Calculated height as a CSS string (e.g., "200px")
  */
-export function calculateViewportHeight(
+function calculateViewportHeight(
     items: any[] | undefined,
     itemHeight: number,
     minHeight: number,

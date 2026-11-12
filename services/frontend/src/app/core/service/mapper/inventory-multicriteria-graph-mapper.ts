@@ -330,7 +330,7 @@ export const sortByLifecycleOrder = (
 /**
  * Creates angle axis configuration for radial charts
  */
-export const createAngleAxisConfig = (
+const createAngleAxisConfig = (
     footprintCalculated: FootprintCalculated[],
     criteriaCountMap: StatusCountMap,
     isInverted: boolean,
@@ -371,7 +371,7 @@ export const createAngleAxisConfig = (
 /**
  * Creates radius axis configuration for radial charts
  */
-export const createRadiusAxisConfig = (translate: TranslateService) => {
+const createRadiusAxisConfig = (translate: TranslateService) => {
     return {
         name: translate.instant("common.peopleeq"),
         nameLocation: "end" as const,
@@ -385,7 +385,7 @@ export const createRadiusAxisConfig = (translate: TranslateService) => {
 /**
  * Creates legend configuration for radial charts
  */
-export const createLegendConfig = (
+const createLegendConfig = (
     footprintCalculated: FootprintCalculated[],
     isInverted: boolean,
     selectedView: string,
@@ -409,7 +409,7 @@ export const createLegendConfig = (
 /**
  * Creates tooltip configuration for radial multicriteria charts
  */
-export const createTooltipConfig = (
+const createTooltipConfig = (
     footprintCalculated: FootprintCalculated[],
     isInverted: boolean,
     selectedView: string,
@@ -432,18 +432,17 @@ export const createTooltipConfig = (
             );
             return `
                 <div style="display: flex; align-items: center; height: 30px;">
-                    <span style="display: inline-block; width: 10px; height: 10px; background-color: ${
-                        params.color
-                    }; border-radius: 50%; margin-right: 5px;"></span>
+                    <span style="display: inline-block; width: 10px; height: 10px; background-color: ${params.color
+                }; border-radius: 50%; margin-right: 5px;"></span>
                     <span style="font-weight: bold; margin-right: 15px;">${name}</span>
                     <div>${getCriteriaDimensionTranslation(
-                        !isInverted,
-                        impact.criteria,
-                        selectedView,
-                        translate,
-                    )} : ${integerPipe.transform(
-                        impact.sumSip,
-                    )} ${translate.instant("common.peopleeq-min")} </div>
+                    !isInverted,
+                    impact.criteria,
+                    selectedView,
+                    translate,
+                )} : ${integerPipe.transform(
+                    impact.sumSip,
+                )} ${translate.instant("common.peopleeq-min")} </div>
                 </div>
             `;
         },
@@ -453,7 +452,7 @@ export const createTooltipConfig = (
 /**
  * Creates series configuration for radial multicriteria charts
  */
-export const createSeriesConfig = (
+const createSeriesConfig = (
     footprintCalculated: FootprintCalculated[],
     translate: TranslateService,
     useCustomColors: boolean = false,

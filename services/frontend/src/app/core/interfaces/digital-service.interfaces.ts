@@ -33,7 +33,7 @@ export interface DigitalService {
     expiryDate?: string;
 }
 
-export interface DigitalServiceUserInfo {
+interface DigitalServiceUserInfo {
     id: number;
     firstName: string;
     lastName: string;
@@ -228,7 +228,7 @@ export interface CloudImpactGroup {
     };
 }
 
-export interface CloudNameImpact {
+interface CloudNameImpact {
     lifecycleStep: string;
     peopleEqImpact: number;
     unitImpact: number;
@@ -253,7 +253,7 @@ export interface DigitalServiceNetworksImpact {
     impacts: ImpactNetworkNames[];
 }
 
-export interface ImpactNetworkNames {
+interface ImpactNetworkNames {
     status: StatusCount;
     networkType: string;
     items: ImpactNetworkSipValue[];
@@ -288,7 +288,7 @@ export interface ImpactACVStep {
     countValue: number;
 }
 
-export interface ImpactTerminalsACVStep {
+interface ImpactTerminalsACVStep {
     acvStep: string;
     sipValue: number;
     rawValue: number;
@@ -301,7 +301,7 @@ export interface ImpactTerminalsACVStep {
     };
 }
 
-export interface ImpactCloudsACVStep {
+interface ImpactCloudsACVStep {
     acvStep: string;
     sipValue: number;
     rawValue: number;
@@ -314,7 +314,7 @@ export interface ImpactCloudsACVStep {
     };
 }
 
-export interface ImpactNetworkSipValue {
+interface ImpactNetworkSipValue {
     unit?: string;
     networkType: string;
     sipValue: number;
@@ -361,7 +361,7 @@ export interface Host {
     characteristic: HostCharacteristics[];
 }
 
-export interface HostCharacteristics {
+interface HostCharacteristics {
     code: string;
     value: number;
 }

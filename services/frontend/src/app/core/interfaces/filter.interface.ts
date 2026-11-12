@@ -14,7 +14,7 @@ export interface ApplicationFiltersRest {
     domains: ApplicationDomainHierarchyRest[];
 }
 
-export interface ApplicationDomainHierarchyRest {
+interface ApplicationDomainHierarchyRest {
     domain: string;
     subDomains: string[];
 }
@@ -27,7 +27,8 @@ export interface FilterTreeNodeRest {
 export interface ConstantApplicationFilter extends ApplicationFilterItem {
     children?: ApplicationFilterItem[];
 }
-export interface ApplicationFilterItem {
+
+interface ApplicationFilterItem {
     field: string;
     translated: boolean;
 }

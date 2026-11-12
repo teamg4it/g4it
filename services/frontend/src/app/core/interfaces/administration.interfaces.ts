@@ -57,7 +57,7 @@ export interface WorkspaceCriteriaRest {
     criteriaDs: string[];
 }
 
-export interface WorkspaceOrganization {
+interface WorkspaceOrganization {
     id: number;
     name: string;
     status: string;
