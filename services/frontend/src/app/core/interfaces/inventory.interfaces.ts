@@ -52,20 +52,6 @@ export interface TaskRest {
     criteria?: string[];
 }
 
-export interface IntegrationBatchLaunchDetail {
-    inventoryId: number;
-    time: Date;
-}
-
-export interface ExportReport {
-    batchStatusCode: string;
-    createTime: Date;
-    endTime: Date;
-    batchName: string;
-    resultFileUrl: string;
-    resultFileSize: number;
-}
-
 export interface InventoryFilterSet {
     [key: string]: Set<string>;
 }

@@ -27,13 +27,6 @@ export function getActiveFilterNames(filters: Filter<any>): string[] {
 }
 
 /**
- * Deep clone filters
- */
-export function cloneFilters<T>(filters: T): T {
-    return structuredClone(filters);
-}
-
-/**
  * Map filters to their active status
  */
 export function mapFilterActiveStatus(filters: Filter<any>): Record<string, boolean> {

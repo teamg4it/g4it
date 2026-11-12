@@ -2,11 +2,6 @@ export interface Filter<T = string | TransformedDomain> {
     [key: string]: T[];
 }
 
-export interface FilterRest {
-    field: string;
-    filters: FilterTreeNodeRest[];
-}
-
 export interface ApplicationFiltersRest {
     environment: string[];
     equipmentType: string[];
@@ -17,11 +12,6 @@ export interface ApplicationFiltersRest {
 interface ApplicationDomainHierarchyRest {
     domain: string;
     subDomains: string[];
-}
-
-export interface FilterTreeNodeRest {
-    filter: string;
-    filters: FilterTreeNodeRest[];
 }
 
 export interface ConstantApplicationFilter extends ApplicationFilterItem {

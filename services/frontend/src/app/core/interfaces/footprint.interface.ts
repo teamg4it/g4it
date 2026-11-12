@@ -211,10 +211,6 @@ export interface Impact {
     sunburstProvider?: string;
 }
 
-export interface ImpactEntity extends Impact {
-    id: number;
-}
-
 export interface Datacenter {
     dataCenterName: string;
     physicalEquipmentCount: number;
@@ -271,12 +267,6 @@ export interface PhysicalEquipmentsElecConsumption {
     nomEntite: string;
     statut: string;
     elecConsumption: number;
-}
-
-export interface PhysicalEquipmentStats {
-    averageAge: PhysicalEquipmentAvgAge[];
-    lowImpact: PhysicalEquipmentLowImpact[];
-    elecConsumption: PhysicalEquipmentsElecConsumption[];
 }
 
 export interface ApplicationFootprint {
@@ -346,13 +336,6 @@ interface ApplicationCriteriaImpact {
     sip: number;
     virtualEquipmentName: string;
     cluster: string;
-}
-
-export interface ApplicationGraphPosition {
-    domain: string;
-    subdomain: string;
-    app: string;
-    graph: string;
 }
 
 export interface VirtualEquipmentLowImpactCount {
