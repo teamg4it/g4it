@@ -51,7 +51,7 @@ export class InventoryUtilService {
 
         const sizeBySteps = footprint[maxCriteria]?.impacts.reduce((p: any, c) => {
             const name = c.acvStep;
-            if (!p.hasOwnProperty(name)) {
+            if (!Object.hasOwn(p, name)) {
                 p[name] = 0;
             }
             p[name]++;
