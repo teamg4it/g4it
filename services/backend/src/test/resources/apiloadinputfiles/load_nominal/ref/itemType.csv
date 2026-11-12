@@ -1,2 +1,2 @@
-type;category;comment;defaultLifespan;isServer;source;refDefaultItem;subscriber;version
-Server;EquipementPhysique;Lifetime par defaut;7.0;true;;blade-server-1;;
+type;category;item_category;comment;defaultLifespan;isServer;source;refDefaultItem;subscriber;version
+Server;EquipementPhysique;Hardware;Lifetime par defaut;7.0;true;;blade-server-1;;
