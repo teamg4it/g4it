@@ -702,6 +702,195 @@ GET /organizations/{organization}/workspaces/{workspace}/inventories/{inventoryI
   task, unfiltered by other selections — it feeds the filter selectors themselves,
   so it cannot depend on a filter selection.
 
+### 4.7 New endpoint — Virtual equipment low-impact aggregated counts
+
+The virtual-equipment widget on the application view previously fetched the **full**
+per-row `virtualEquipmentsLowImpact` list and computed, client-side, a simple
+percentage: `(lowImpactVirtualEquipmentCount / virtualEquipmentTotalCount) * 100`. As
+with §4.4's table view, this meant downloading every row just to derive two numbers.
+A new aggregated endpoint returns only those two counts, computed **entirely in the
+database** — no in-memory reduce.
+
+```
+POST /organizations/{organization}/workspaces/{workspace}/inventories/{inventoryId}/indicators/virtualEquipmentsLowImpact/count
+Body: ApplicationCriteriaFilterRest   (same shared filter dimensions as §4.1-§4.4: environment[], equipmentType[], lifeCycle[], domain[], subDomain[], applicationName[] — all optional)
+→ 200: VirtualEquipmentLowImpactCountRest { virtualEquipmentTotalCount: number, lowImpactVirtualEquipmentCount: number }
+```
+
+- **`POST` + JSON body**, consistent with every other filterable aggregation endpoint
+  in this document (§4.1/§4.2/§4.4) — the same filter-list-size rationale applies.
+- Replaces the client-side reduce previously performed on the full
+  `GET .../virtualEquipmentsLowImpact` array (which remains available, unchanged, for
+  call sites still needing the per-row detail).
+
+**Backend — low-impact determination replicated 100% in SQL.** Low-impact status is
+not a stored column; it is computed by `LowImpactService.isLowImpact`, based on each
+virtual equipment's **country** (resolved from datacenter/VM `location`, which is an
+**ISO code**, via the Boavizta `electricity-mix` API country mapping) and that
+country's **summed per-criterion quartile score** relative to the first quartile of
+all countries' scores:
+
+```sql
+WITH iso_map AS (
+    -- external (Boavizta) ISO -> country-name mapping is not itself stored in the
+    -- database, so it is bound as two parallel arrays and unnested into a lookup table
+    SELECT iso, country FROM unnest(:isoCodes, :countryNames) AS t(iso, country)
+),
+criterion_percentiles AS (
+    -- PostgreSQL does not support PERCENTILE_CONT(...) OVER (PARTITION BY ...)
+    -- (ordered-set aggregates cannot be used as window functions - SQLState 0A000),
+    -- so percentiles per criterion are pre-computed with a plain GROUP BY here and
+    -- joined back onto each row in criterion_quartile below
+    SELECT
+        criterion,
+        PERCENTILE_CONT(0.25) WITHIN GROUP (ORDER BY value) AS p25,
+        PERCENTILE_CONT(0.50) WITHIN GROUP (ORDER BY value) AS p50,
+        PERCENTILE_CONT(0.75) WITHIN GROUP (ORDER BY value) AS p75
+    FROM ref_item_impact
+    WHERE category = 'electricity-mix'
+      AND criterion = ANY(:criteria)
+      AND (workspace_id = :workspaceId OR workspace_id IS NULL)
+    GROUP BY criterion
+),
+criterion_quartile AS (
+    SELECT
+        ri.location AS country,
+        CASE
+            WHEN ri.value <= cp.p25 THEN 1
+            WHEN ri.value <= cp.p50 THEN 2
+            WHEN ri.value <= cp.p75 THEN 3
+            ELSE 4
+        END AS quartile
+    FROM ref_item_impact ri
+    JOIN criterion_percentiles cp ON cp.criterion = ri.criterion
+    WHERE ri.category = 'electricity-mix'
+      AND ri.criterion = ANY(:criteria)
+      AND (ri.workspace_id = :workspaceId OR ri.workspace_id IS NULL)
+),
+country_score AS (
+    SELECT country, SUM(quartile) AS total_score FROM criterion_quartile GROUP BY country
+),
+threshold AS (
+    SELECT PERCENTILE_CONT(0.25) WITHIN GROUP (ORDER BY total_score) AS q1 FROM country_score
+),
+country_low_impact AS (
+    SELECT cs.country, (cs.total_score < t.q1) AS low_impact
+    FROM country_score cs CROSS JOIN threshold t
+),
+distinct_applications AS (
+    -- replicates the exact collapsing GROUP BY used by the legacy, per-row
+    -- InVirtualEquipmentLowImpactView native query (virtual_equipment_name, name,
+    -- location, lifecycle_step, domain, subDomain, environment, equipment_type) -
+    -- out_application has one row per evaluated criterion for the same application,
+    -- so this step is required to avoid counting the same application multiple
+    -- times, and keeps this endpoint's quantity/lowImpact semantics consistent with
+    -- the legacy per-row endpoint (quantity is always 1 per group, since `name` is
+    -- itself part of the GROUP BY)
+    SELECT
+        oa.name AS application_name,
+        COALESCE(dc.location, ive.location, 'Unknown') AS location
+    FROM out_application oa
+    JOIN in_virtual_equipment ive
+          ON ive.name = oa.virtual_equipment_name AND ive.inventory_id = :inventoryId
+    LEFT JOIN in_datacenter dc
+          ON dc.inventory_id = ive.inventory_id AND dc.name = ive.datacenter_name
+    WHERE oa.task_id = :taskId AND oa.status_indicator = 'OK'
+      AND (:environments   IS NULL OR oa.environment    = ANY(:environments))
+      AND (:equipmentTypes IS NULL OR oa.equipment_type = ANY(:equipmentTypes))
+      AND (:lifecycleSteps IS NULL OR oa.lifecycle_step = ANY(:lifecycleSteps))
+      AND (:domains        IS NULL OR oa.filters[1]     = ANY(:domains))
+      AND (:subDomains     IS NULL OR oa.filters[2]     = ANY(:subDomains))
+      AND (:applicationNames IS NULL OR oa.name         = ANY(:applicationNames))
+    GROUP BY
+        oa.virtual_equipment_name, oa.name,
+        COALESCE(dc.location, ive.location, 'Unknown'),
+        oa.lifecycle_step, oa.filters[1], oa.filters[2], oa.environment, oa.equipment_type
+)
+SELECT
+    COUNT(*)                                                AS total_count,
+    COUNT(*) FILTER (WHERE COALESCE(cli.low_impact, false)) AS low_impact_count
+FROM distinct_applications da
+LEFT JOIN iso_map im ON im.iso = da.location
+LEFT JOIN country_low_impact cli ON cli.country = im.country
+```
+
+- Repository method: `OutApplicationCustomRepository.countVirtualEquipmentLowImpact(taskId, inventoryId, workspaceId, criteria[], isoCodes[], countryNames[], ApplicationCriteriaFilterBO filters)`,
+  returning a lightweight projection
+  `VirtualEquipmentLowImpactCountProjection { Long getTotalCount(); Long getLowImpactCount(); }`
+  — no raw rows are loaded; the database returns a single, already-aggregated row.
+- `criteria`/`isoCodes`/`countryNames` are resolved by `IndicatorService` from the
+  configured `g4it.criteria` set and `BoaviztapiService.getCountryMap()` (the only
+  piece of this computation that cannot be pushed to SQL, since the ISO→country
+  mapping originates from the external Boavizta API, not from any G4IT table) before
+  being bound as native query parameters.
+- Service: `IndicatorService.getVirtualEquipmentLowImpactCount(taskId, filters)`,
+  `@Cacheable("virtualEquipmentLowImpactCount")` keyed on `(taskId, filters)`,
+  performs a **pure 1:1 mapping** from the projection to
+  `VirtualEquipmentLowImpactCountBO` — no in-memory counting/filtering.
+- `InventoryIndicatorService.getVirtualEquipmentLowImpactCount(organization, workspaceId, inventoryId, filters)`
+  resolves the task via `getLastTaskId(inventory)` (same resolution pattern as every
+  other endpoint in this document) before delegating.
+- Controller: `InventoryIndicatorController.getVirtualEquipmentsLowImpactCount` binds
+  the optional JSON body into `ApplicationCriteriaFilterBO` via
+  `ApplicationIndicatorMapper.toFilterBO`, delegates to `InventoryIndicatorService`,
+  and maps the result to `VirtualEquipmentLowImpactCountRest` via
+  `IndicatorRestMapper.toVirtualEquipmentLowImpactCountDto`.
+- Cached and evicted exactly like the other reference/indicator caches
+  (`DatabaseCacheConfiguration` short-TTL eviction list, plus explicit eviction from
+  `InventoryIndicatorService.deleteIndicators`).
+
+#### 4.7.1 Companion endpoint — Virtual equipment electric consumption aggregated sums
+
+The same pattern is applied to the virtual-equipment electric-consumption widget,
+which previously summed `elecConsumption` and `quantity` client-side over the full
+`virtualEquipmentsElecConsumption` list:
+
+```
+POST /organizations/{organization}/workspaces/{workspace}/inventories/{inventoryId}/indicators/virtualEquipmentsElecConsumption/sum
+Body: ApplicationCriteriaFilterRest   (same shared filter dimensions)
+→ 200: VirtualEquipmentElecConsumptionSumRest { elecConsumptionSum: number, noOfVirtualEquipmentsSum: number, applicationCount: number }
+```
+
+- Replicates the exact **two-level `GROUP BY`** used by the legacy, per-row
+  `InVirtualEquipmentElecConsumptionView` native query, restricted to the `USING`
+  lifecycle step (the only step for which electricity consumption is computed):
+  1. `filtered` — a `MATERIALIZED` CTE selecting the raw joined rows
+     (`out_application` ⋈ `in_virtual_equipment` ⋈ `in_datacenter`), with **all shared
+     filter predicates applied here**, directly on the raw columns, so Postgres
+     filters before any aggregation work — this ordering was a deliberate performance
+     fix (24s → 3s on production data) over an earlier version that filtered only
+     after the final aggregation;
+  2. `distinct_applications` — groups the materialized rows by
+     `(virtual_equipment_name, location, domain, subDomain, environment,
+     equipmentType, applicationName, infrastructureType, quantity)`, matching the
+     legacy view's inner "sub" subquery, and computes
+     `MAX(electricity_consumption) * quantity` per group;
+  3. `application_elec_consumption` — re-aggregates per application
+     (`virtual_equipment_name, location, domain, subDomain, environment,
+     equipmentType, applicationName`), summing non-`CLOUD_SERVICES` virtual
+     equipment consumption and adding (at most once) any `CLOUD_SERVICES` entry,
+     matching the legacy view's outer aggregation exactly;
+  4. the final `SELECT` sums `elecConsumption`/`quantity` and counts
+     `DISTINCT application_name` over that deduplicated, filtered set.
+- Repository method: `OutApplicationCustomRepository.sumVirtualEquipmentElecConsumption(taskId, ApplicationCriteriaFilterBO filters)`,
+  returning
+  `VirtualEquipmentElecConsumptionSumProjection { Double getElecConsumptionSum(); Long getQuantitySum(); Long getApplicationCount(); }`.
+- Service/controller wiring mirrors §4.7 exactly: `IndicatorService.getVirtualEquipmentElecConsumptionSum(taskId, filters)`
+  (`@Cacheable("virtualEquipmentElecConsumptionSum")`) →
+  `InventoryIndicatorService.getVirtualEquipmentElecConsumptionSum(organization, workspaceId, inventoryId, filters)`
+  (via `getLastTaskId(inventory)`) →
+  `InventoryIndicatorController.getVirtualEquipmentElecConsumptionSum` (binds
+  `ApplicationCriteriaFilterRest` body, maps result to `VirtualEquipmentElecConsumptionSumRest`).
+
+**Performance note — `MATERIALIZED` CTEs.** Both §4.7 and §4.7.1 rely on PostgreSQL's
+`WITH ... AS MATERIALIZED` hint (same technique already used by §4.4's `findByTaskId`)
+to force the filtered/joined row set to be computed once and reused by the
+downstream `GROUP BY` stages, rather than risking the planner re-evaluating/inlining
+the CTE's join per reference. For `sumVirtualEquipmentElecConsumption`, pushing all
+filter predicates into this materialized CTE (instead of applying them after
+aggregation) was confirmed, with the relevant supporting index in place, to reduce
+execution time from ~24s to ~3s on a representative production-sized dataset.
+
 ## 5. Impacted Files (backend)
 
 | Layer | File | Change |
@@ -716,6 +905,15 @@ GET /organizations/{organization}/workspaces/{workspace}/inventories/{inventoryI
 | Controller | `InventoryIndicatorController` | Implement `getApplicationMultiCriteriaImpacts` (now a `POST` delegate method binding the JSON request body into `ApplicationCriteriaFilterBO`) and `getApplicationMultiCriteriaIndicators` (binds request body incl. `graphLevel`, `repartition` and nested filters into `ApplicationCriteriaFilterBO`) delegate methods; update `getApplicationIndicators` to accept `page`/`size` and return the paged DTO; add optional `getApplicationHierarchyCounts` delegate method (§4.3); **add `getApplicationFilters` delegate method (§4.6, no request body)** |
 | Config | `application.yml` / server config | Set/verify request body size limits (e.g. `spring.codec.max-in-memory-size` for WebFlux or servlet container max request size) so that filter payloads with several thousand `domain`/`subDomain` values are accepted; add server-side max-array-size validation on `ApplicationCriteriaFilterBO` |
 | Config | `DatabaseCacheConfiguration` | Register new cache names (`applicationMultiCriteriaImpacts`, `applicationMultiCriteria`, `applicationHierarchyCounts`, **`applicationFilters`**) for scheduled eviction |
+| OpenAPI spec | `swagger/greenit/inventory-indicator.yml` | Add `POST .../virtualEquipmentsLowImpact/count` (§4.7) and `POST .../virtualEquipmentsElecConsumption/sum` (§4.7.1) paths, both accepting an optional `ApplicationCriteriaFilterRest` body |
+| OpenAPI spec | `swagger/greenit/components.yml` | Add `VirtualEquipmentLowImpactCountRest` (§4.7: `virtualEquipmentTotalCount`, `lowImpactVirtualEquipmentCount`) and `VirtualEquipmentElecConsumptionSumRest` (§4.7.1: `elecConsumptionSum`, `noOfVirtualEquipmentsSum`, `applicationCount`) schemas |
+| Repository | `OutApplicationCustomRepository(Impl)` | Add `countVirtualEquipmentLowImpact(taskId, inventoryId, workspaceId, criteria[], isoCodes[], countryNames[], filters)` (§4.7 — ISO/country-mapping CTE + per-criterion quartile scoring + `distinct_applications` dedup GROUP BY, replicating `LowImpactService.isLowImpact`) and `sumVirtualEquipmentElecConsumption(taskId, filters)` (§4.7.1 — `MATERIALIZED` filtered CTE + two-level GROUP BY replicating `InVirtualEquipmentElecConsumptionView`), both 100% native SQL, returning aggregated projections |
+| Projection | `apiinout.repository.projection` | Add `VirtualEquipmentLowImpactCountProjection` (`getTotalCount()`, `getLowImpactCount()`) and `VirtualEquipmentElecConsumptionSumProjection` (`getElecConsumptionSum()`, `getQuantitySum()`, `getApplicationCount()`) |
+| Model (BO) | `apiindicator.model` | Add `VirtualEquipmentLowImpactCountBO` and `VirtualEquipmentElecConsumptionSumBO`, pure 1:1 mirrors of their respective projections |
+| Mapper | `ApplicationIndicatorMapper`, `IndicatorRestMapper` | Add `toVirtualEquipmentLowImpactCountBO`/`toVirtualEquipmentElecConsumptionSumBO` and `toVirtualEquipmentLowImpactCountDto`/`toVirtualEquipmentElecConsumptionSumDto`, each a pure 1:1 copy |
+| Business | `IndicatorService`, `InventoryIndicatorService` | Add `getVirtualEquipmentLowImpactCount(taskId, filters)` and `getVirtualEquipmentElecConsumptionSum(taskId, filters)` (§4.7/§4.7.1, both `@Cacheable`), plus their `InventoryIndicatorService` wrappers resolving `getLastTaskId(inventory)` |
+| Controller | `InventoryIndicatorController` | Add `getVirtualEquipmentsLowImpactCount` and `getVirtualEquipmentElecConsumptionSum` delegate methods, each binding an optional `ApplicationCriteriaFilterRest` body |
+| Config | `DatabaseCacheConfiguration` | Register `virtualEquipmentLowImpactCount` and `virtualEquipmentElecConsumptionSum` cache names for scheduled eviction |
 
 ## 6. Non-Functional Notes
 - **All aggregation (SUM/COUNT/GROUP BY) and all filtering for the multi-criteria-impacts
@@ -782,4 +980,16 @@ b- **§4.6's distinct filter values, including the domain→subDomain tree, are 
 - No database schema changes are required — all new/extended endpoints reuse the
   existing `out_application` table with different query shapes (DB-side aggregate /
   DB-side paged listing / DB-side distinct counts), all pushed down to SQL.
+- **§4.7/§4.7.1's virtual-equipment low-impact count and electric-consumption sum
+  endpoints are computed 100% DB-side**, including the low-impact determination
+  itself (per-criterion electricity-mix quartile scoring, summed per country,
+  compared against the first quartile of all countries — mirroring
+  `LowImpactService.isLowImpact` exactly, but as native SQL). The only piece that
+  cannot be pushed into SQL is the external Boavizta ISO→country-name mapping, which
+  is resolved once in `IndicatorService` and bound as plain array parameters
+  (`iso_map` CTE) rather than being looked up row-by-row in Java. Both endpoints
+  replicate the exact `GROUP BY` column set used by their legacy, per-row
+  counterparts (`InVirtualEquipmentLowImpactView` / `InVirtualEquipmentElecConsumptionView`)
+  before the final aggregation, to guarantee identical semantics/consistency with
+  those existing endpoints.
 
