@@ -13,6 +13,13 @@ import {
 } from "echarts";
 import { Constants } from "src/constants";
 
+/**
+ * Color the sunburst nodes based on their depth and sibling index.
+ * @param nodes the list of nodes to color
+ * @param parentColor the color of the parent node, if any
+ * @param depth the depth of the current node, starting at 0
+ * @returns the list of nodes with colors applied
+ */
 function colorSunburstNodes(
     nodes: SunburstSeriesOption["data"],
     parentColor?: string,
@@ -42,6 +49,14 @@ function colorSunburstNodes(
     });
 }
 
+/**
+ * Create a sunburst chart configuration for ECharts.
+ * @param param the parameters for the chart configuration
+ * @param param.data the data for the sunburst chart
+ * @param param.seriesOptions optional series options to override defaults
+ * @param param.chartOptions optional chart options to override defaults
+ * @returns the ECharts option object for the sunburst chart
+ */
 export function createSunburstChartConfig({ data, seriesOptions, chartOptions }: {
     data: SunburstSeriesOption["data"]
     seriesOptions?: Omit<SunburstSeriesOption, "type" | "data">
