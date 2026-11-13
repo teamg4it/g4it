@@ -1,0 +1,27 @@
+{
+  "schema_version": 2,
+  "managed_files": {
+    "cli.py": "b8fd6e1e9c5a921d30c8d612775c908910e1937d6900a82ec569209131694f6a",
+    "config.py": "3d76cf43642cfe3d078c447321860581fd6dd9f9a1a7d5f1cd4ec469634df59e",
+    "contracts.py": "9ffbc7e4c7793bde5d5e692fbc78b787825e1bc5c802b2388c507c25524f2fdc",
+    "discovery.py": "46eaf85112a33d3c8e334e18c842e28f20008d7c730bc117e6df158ec4dc3b31",
+    "documentation.py": "12540f874d52e30cfb7af5a579a986d418483ce4eacf760ea30b3c03aaf330cb",
+    "engine.py": "3c04ec791799ebf49225056fb115d59308ee6cd367179a87d64e9a4a93a51b3c",
+    "evaluation-benchmarks.json": "006c05c9a9a11c73243b5826b431c6b7b70dc0d08760965a13f1b5253daf4c53",
+    "evaluation-oracles.json": "3b809b6dbbacd3734ce1ba2b35b950d4d5f1fa060ea25293d5d0ef5cf32d782a",
+    "evaluation-telemetry.schema.json": "112e94db03a0d7975fc2a55e281f301c0f52002126202208577091b4cb1c9446",
+    "evaluation.py": "b0588358ef34960dc33ba58b87aefcd244a43923011a2c1e927794b581bd6e8a",
+    "identity.py": "69455bcb9260182ece5c91365c30a865e089e33b10030649027c41d73826ee7a",
+    "models.py": "71379830ccfc238feccb70a4a6fdd16884b78443b210b002e0d1ca878e5c20ba",
+    "ops.py": "141a5633815e2c9da4a0285ea379b151a816949445805a62ff03a4a3e1be05d0",
+    "parsers.py": "c3c70763b1f128ad57b21853e141cd87e1da6dbb46fa8e6bab1954bf29f414b3",
+    "query_ops.py": "da0d5433300c2f226f32545777c43ab8d8691e0adb212ef50613f2085b970331",
+    "store.py": "f7a822f9078ae95e3f7ca42a3db822b7db1a71c86ce9dd31488e762c2863c382",
+    "templates/.graph/config.schema.json": "daa9add40e5d47f2ffbd1e001fe1f4f3a527c772ef1c585f13e30b583571ee73",
+    "templates/.graph/config.yaml": "6a1709fbe2feb3ec4d75230e634c2db8f46610e36daeaa764fb3ad91dc2575e3",
+    "templates/.graph/migrations/001_initial.sql": "f96ae09bc11f7867fbd0ca22d40a333105443b46b46f8231757e8f1763a79190",
+    "templates/.graph/rules.yaml": "e7a84f84e525d855f83f5356590c3a7f0d5c8bbc0449d91848aec9646be92a97",
+    "templates/.graph/schema.yaml": "78a79dae634e18aa979bddbdce0ff564e226068d7c08f3c12ac568a321a5b78d",
+    "util.py": "08199e2cd00985b9042041d6a047255b84f1ba8537d01f257a99b88a7937eb63"
+  }
+}

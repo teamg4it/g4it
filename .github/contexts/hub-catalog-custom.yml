@@ -1,0 +1,13 @@
+# AI_DISCLAIMER v1.0
+# This file has been created (totally or partially) with the assistance of
+# artificial intelligence tools. All content has been generated under the
+# direct supervision of a named individual, and under the AI.Backbone
+# Orchestrator Compliance framework.
+
+# Consumer-owned Hub Catalog extension.
+# This file is created once during setup and is never replaced by updates.
+schema_version: '1.0.0'
+metadata:
+  owner: consumer
+  description: Add custom workflow discovery entries here.
+workflows: []

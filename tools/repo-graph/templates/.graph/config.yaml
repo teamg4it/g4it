@@ -1,0 +1,109 @@
+# This file has been created (totally or partially) with the assistance of artificial intelligence tools.
+# All content has been generated under the direct supervision of a named individual,
+# and under the AI.Backbone Orchestrator Compliance framework
+version: 1
+provider: sqlite
+graphDir: .mygraph
+schemaVersion: "1"
+include:
+  - .apm/**
+  - .github/**
+  - .claude/**
+  - .opencode/**
+  - architecture/**
+  - docs/**
+  - src/**
+  - app/**
+  - lib/**
+  - packages/**
+  - tests/**
+  - tools/**
+  - scripts/**
+  - source-code/**/*.md
+  - README.md
+  - CHANGELOG.md
+exclude:
+  - .git/**
+  - .mygraph/**
+  - .venv/**
+  - node_modules/**
+  - dist/**
+  - build/**
+  - target/**
+  - __pycache__/**
+  - .pytest_cache/**
+  - .coverage
+  - .apm/skills/test-validation/scenarios/**
+  - .github/skills/test-validation/scenarios/**
+  - .claude/skills/test-validation/scenarios/**
+  - .opencode/skills/test-validation/scenarios/**
+  - "*.pyc"
+  - "*.sqlite"
+respectGitIgnore: true
+workflowDocuments:
+  roots:
+    - outputs/docs
+    - outputs/specs
+    - outputs/plans
+    - outputs/brownfield
+    - outputs/ingestion/repository
+memory:
+  paths:
+    - architecture/**
+    - specs/**
+  allowDirectGraphWrites: false
+agent:
+  requireFreshGraph: true
+  allowDirectGraphWrites: false
+integrity:
+  allowedDanglingTargetPrefixes: []
+  allowedDanglingReferenceClassifications:
+    - intentional_external
+  relationshipConformance:
+    - id: workflow-skill
+      sourceType: WorkflowStation
+      edgeType: USES_SKILL
+      targetType: Skill
+      sourceGlobs:
+        - .apm/workflows/**
+        - .github/workflows/**
+        - .claude/workflows/**
+        - .opencode/workflows/**
+      minimum: 1
+    - id: workflow-agent
+      sourceType: WorkflowStation
+      edgeType: USES_AGENT
+      targetType: Agent
+      sourceGlobs:
+        - .apm/workflows/**
+        - .github/workflows/**
+        - .claude/workflows/**
+        - .opencode/workflows/**
+      minimum: 1
+    - id: pack-skill
+      sourceType: Pack
+      edgeType: REFERENCES
+      targetType: Skill
+      sourceGlobs:
+        - packs/**
+      minimum: 1
+queries:
+  maxResults: 50
+  maxBytes: 65536
+  maxDepth: 6
+security:
+  mcpReadOnly: true
+  denyGlobs:
+    - .env
+    - .env.*
+    - "*.pem"
+    - "*.key"
+    - "*.p12"
+    - "*.pfx"
+    - .aws/**
+    - .ssh/**
+    - "**/secrets/**"
+    - "**/credentials/**"
+    - "*.suo"
+parser:
+  maxFileBytes: 5242880

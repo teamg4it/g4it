@@ -1,0 +1,20 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Repository graph configuration",
+  "type": "object",
+  "required": ["version", "provider", "include", "exclude", "security"],
+  "properties": {
+    "version": {"type": "integer", "minimum": 1},
+    "identity": {"type": "object", "properties": {"repository": {"type": "string", "minLength": 1}}},
+    "provider": {"type": "string", "enum": ["sqlite"]},
+    "graphDir": {"type": "string", "default": ".mygraph"},
+    "schemaVersion": {"type": "string"},
+    "include": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+    "exclude": {"type": "array", "items": {"type": "string"}},
+    "respectGitIgnore": {"type": "boolean"},
+    "memory": {"type": "object", "properties": {"paths": {"type": "array", "items": {"type": "string"}}, "allowDirectGraphWrites": {"type": "boolean", "const": false}}},
+    "agent": {"type": "object", "properties": {"requireFreshGraph": {"type": "boolean"}, "allowDirectGraphWrites": {"type": "boolean", "const": false}}},
+    "security": {"type": "object", "required": ["mcpReadOnly", "denyGlobs"], "properties": {"mcpReadOnly": {"type": "boolean", "const": true}, "denyGlobs": {"type": "array", "minItems": 1, "items": {"type": "string"}}}},
+    "parser": {"type": "object", "properties": {"maxFileBytes": {"type": "integer", "minimum": 1024}}}
+  }
+}

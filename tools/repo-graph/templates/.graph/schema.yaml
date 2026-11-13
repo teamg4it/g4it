@@ -1,0 +1,34 @@
+# This file has been created (totally or partially) with the assistance of artificial intelligence tools.
+# All content has been generated under the direct supervision of a named individual,
+# and under the AI.Backbone Orchestrator Compliance framework
+---
+version: "1"
+description: >
+  Property-graph schema for a local repository knowledge graph. The repository
+  filesystem remains authoritative; this schema describes the disposable query
+  projection stored under .mygraph/.
+identity:
+  pattern: "repo://{origin}/{posix_path}#{type}:{qualified_name}"
+  rules:
+    - Must not include local absolute paths
+    - Must not include provider-generated IDs
+    - Path separators are always POSIX (/)
+lifecycle:
+  values: [Draft, Reviewed, Approved, Superseded, Rejected, Obsolete]
+  default: Draft
+provenance:
+  required: [source_path, parser, content_hash]
+  optional: [revision, extracted_at, inferred]
+node_types:
+  backbone: [Backbone, Capability, Agent, Skill, Workflow, WorkflowStation, Hook, Pack, Tool, Policy, ModelPolicy, Schema, Prompt, Template, ValidationGate, Configuration, MCPServer, MCPTool, ReferenceSentinel]
+  general: [Repository, Directory, File, Module, Namespace, Class, Interface, Method, Function, Package, Document, DocumentSection, Test, TestSuite, Pipeline, Job, Release]
+  memory: [Assessment, Study, Specification, ADR, Decision, Alternative, Constraint, TradeOff, ImpactReport, Finding, Risk, Assumption, Approval, LessonLearned, GeneratedArtefact, WorkflowRun]
+  governance: [ArchitectureRule, RuleViolation]
+edge_types:
+  structural: [CONTAINS, LOCATED_IN, DEFINES, DECLARED_IN, HAS_STATION]
+  reference: [REFERENCES, SUGGESTS_SKILL, USES_SKILL, USES_TOOL, USES_AGENT, DEPENDS_ON, GOVERNED_BY]
+  delivery: [IMPLEMENTS, SPECIFIES, VALIDATES, PRODUCES, GENERATED_FROM]
+  memory: [SUPERSEDES, EVIDENCES, HAS_ALTERNATIVE, CONSTRAINED_BY, HAS_FINDING, APPROVES, VIOLATES]
+  inferred: [INFERRED_RELATED_TO]
+inferred_edge_types: [INFERRED_RELATED_TO]
+states: [Missing, Building, Fresh, Updating, Stale, Partial, Invalid]

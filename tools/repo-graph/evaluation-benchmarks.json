@@ -1,0 +1,125 @@
+{
+  "schema_version": "1.0",
+  "protocol_version": "rkg-005.1",
+  "starting_snapshot": {
+    "revision": "855df6e0751d38f9cea8abbe435823b71f69b9d7",
+    "require_clean_checkout": true
+  },
+  "pairs": [
+    {
+      "pair_id": "provider-impact-01",
+      "stratum": "capability-provider",
+      "estimated_complexity": "medium",
+      "rationale": "Adds one bounded CLI option across the repo-graph implementation, test, and contributor command surfaces.",
+      "task": {
+        "change_request": "Add an optional --output repository-relative path to the quality-baseline command. The command must continue writing the default baseline when the option is absent, write the requested path when present, and preserve the existing JSON evidence envelope and nonzero exit behavior when the graph is not trial-eligible.",
+        "expected_behavior": "The parser accepts --output only for quality-baseline; the writer receives the selected destination; default behavior is unchanged; a focused test covers both destinations and the not-eligible exit path.",
+        "fixtures": ["tests/repo_graph/test_query_and_rules.py", "tools/repo-graph/cli.py"],
+        "verification_commands": [".\\.venv\\Scripts\\python.exe -m pytest tests/repo_graph/test_query_and_rules.py -q", ".\\.venv\\Scripts\\python.exe tools/repo-graph/cli.py quality-baseline"],
+        "constraints": ["Keep output paths repository-relative", "Do not weaken readiness gates", "Preserve provider-neutral CLI behavior"]
+      },
+      "control": {
+        "task_id": "provider-impact-01-A",
+        "variant": "A",
+        "intervention": "No repository graph access; use ordinary repository search and file reads."
+      },
+      "treatment": {
+        "task_id": "provider-impact-01-B",
+        "variant": "B",
+        "intervention": "Allow bounded repo-graph status, impact, and memory queries in addition to the common repository tools."
+      }
+    },
+    {
+      "pair_id": "workflow-hook-01",
+      "stratum": "workflow-hook",
+      "estimated_complexity": "medium",
+      "rationale": "Closes a path-traversal gap in required_reads validation and protects it with the existing hook validator tests.",
+      "task": {
+        "change_request": "Make WH-04 reject a required_reads path containing ../ that resolves outside .apm/skills/, even when the escaped file exists. Add a regression test using a temporary workflow definition and retain the existing missing-path and valid-path behavior.",
+        "expected_behavior": "An escaped path produces one bounded WH-04 error and no file outside .apm/skills/ is accepted as a required read.",
+        "fixtures": ["scripts/validate_workflow_hooks.py", "scripts/tests/test_validate_workflow_hooks.py"],
+        "verification_commands": [".\\.venv\\Scripts\\python.exe -m unittest scripts.tests.test_validate_workflow_hooks", ".\\.venv\\Scripts\\python.exe scripts/validate_workflow_hooks.py"],
+        "constraints": ["Do not change provider hook paths", "Keep diagnostics free of absolute user paths", "Do not weaken existing WH-04 checks"]
+      },
+      "control": {
+        "task_id": "workflow-hook-01-A",
+        "variant": "A",
+        "intervention": "No repository graph access; use ordinary repository search and file reads."
+      },
+      "treatment": {
+        "task_id": "workflow-hook-01-B",
+        "variant": "B",
+        "intervention": "Allow bounded repo-graph status, impact, and memory queries in addition to the common repository tools."
+      }
+    },
+    {
+      "pair_id": "architecture-policy-01",
+      "stratum": "architecture-policy",
+      "estimated_complexity": "high",
+      "rationale": "Makes capability validation require the validation artifact already declared by the architecture template and documentation.",
+      "task": {
+        "change_request": "Extend scripts/validate_architecture.py so every non-template capability must contain validation.md. Add the missing validation artifact for knowledge-management with checks for knowledge-area population, source-of-truth rules, and validation_core_assets.py, then preserve the existing architecture boundary checks.",
+        "expected_behavior": "A capability without validation.md fails architecture validation; knowledge-management has a repository-relative validation artifact and the clean repository passes.",
+        "fixtures": ["scripts/validate_architecture.py", "architecture/capabilities/_template/validation.md", "architecture/capabilities/knowledge-management/status.md"],
+        "verification_commands": [".\\.venv\\Scripts\\python.exe scripts/validate_architecture.py", ".\\.venv\\Scripts\\python.exe -m pytest tests/repo_graph/test_query_and_rules.py -q"],
+        "constraints": ["Keep architecture/ free of executable code", "Do not rewrite existing capability status history", "Preserve warning-versus-error semantics unrelated to validation.md"]
+      },
+      "control": {
+        "task_id": "architecture-policy-01-A",
+        "variant": "A",
+        "intervention": "No repository graph access; use ordinary repository search and file reads."
+      },
+      "treatment": {
+        "task_id": "architecture-policy-01-B",
+        "variant": "B",
+        "intervention": "Allow bounded repo-graph status, impact, and memory queries in addition to the common repository tools."
+      }
+    },
+    {
+      "pair_id": "documentation-01",
+      "stratum": "documentation",
+      "estimated_complexity": "low",
+      "rationale": "Documents the implemented evaluation-report command and its explicit not-run semantics without claiming effectiveness.",
+      "task": {
+        "change_request": "Update docs/6-contributing/11-repo-graph.md to document evaluation-validate, evaluation-score, and evaluation-report, including repository-relative records, nonzero status for not-run or blocked reports, and the rule that reports do not establish agent effectiveness. Keep the existing graph CLI examples accurate.",
+        "expected_behavior": "Each documented evaluation command exists in tools/repo-graph/cli.py and the guide does not describe an empty or synthetic report as a real pilot.",
+        "fixtures": ["docs/6-contributing/11-repo-graph.md", "tools/repo-graph/cli.py", "tools/repo-graph/evaluation.py"],
+        "verification_commands": [".\\.venv\\Scripts\\python.exe tools/repo-graph/cli.py --help", ".\\.venv\\Scripts\\python.exe -m pytest tests/repo_graph/test_evaluation.py -q"],
+        "constraints": ["Use exact command names", "Keep examples repository-relative", "Do not claim measured effectiveness"]
+      },
+      "control": {
+        "task_id": "documentation-01-A",
+        "variant": "A",
+        "intervention": "No repository graph access; use ordinary repository search and file reads."
+      },
+      "treatment": {
+        "task_id": "documentation-01-B",
+        "variant": "B",
+        "intervention": "Allow bounded repo-graph status, impact, and memory queries in addition to the common repository tools."
+      }
+    },
+    {
+      "pair_id": "project-memory-01",
+      "stratum": "project-memory",
+      "estimated_complexity": "medium",
+      "rationale": "Records a durable knowledge-management decision that preserves filesystem authority and disposable graph projection semantics.",
+      "task": {
+        "change_request": "Create the missing architecture/capabilities/knowledge-management/decisions.md and record a decision that .apm/knowledge and committed architecture files remain authoritative, .mygraph is disposable, and graph-derived memory must disclose freshness and provenance. Update status.md to link the decision and remove the corresponding known-gap entry without rewriting prior audit history.",
+        "expected_behavior": "The decision is reviewable, linked from the capability status, contains no credentials or personal data, and preserves the existing knowledge-management requirements.",
+        "fixtures": ["architecture/capabilities/knowledge-management/spec.md", "architecture/capabilities/knowledge-management/status.md", ".apm/knowledge/playbooks/workflow-playbook.md"],
+        "verification_commands": [".\\.venv\\Scripts\\python.exe scripts/validate_architecture.py", ".\\.venv\\Scripts\\python.exe scripts/validate_core_assets.py"],
+        "constraints": ["Filesystem and committed documents remain authoritative", "Do not commit .mygraph data", "Use synthetic examples only"]
+      },
+      "control": {
+        "task_id": "project-memory-01-A",
+        "variant": "A",
+        "intervention": "No repository graph access; use ordinary repository search and file reads."
+      },
+      "treatment": {
+        "task_id": "project-memory-01-B",
+        "variant": "B",
+        "intervention": "Allow bounded repo-graph status, impact, and memory queries in addition to the common repository tools."
+      }
+    }
+  ]
+}

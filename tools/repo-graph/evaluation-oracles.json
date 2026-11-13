@@ -1,0 +1,46 @@
+{
+  "schema_version": "1.0",
+  "protocol_version": "rkg-005.1",
+  "oracles": [
+    {
+      "pair_id": "provider-impact-01",
+      "task_ids": ["provider-impact-01-A", "provider-impact-01-B"],
+      "required_impacts": ["tools/repo-graph/cli.py", "tools/repo-graph/query_ops.py", "tests/repo_graph/test_query_and_rules.py", "docs/6-contributing/11-repo-graph.md"],
+      "constraints": ["output paths remain repository-relative", "readiness gates remain enforced", "provider-neutral CLI behavior is preserved"],
+      "acceptance_checks": ["quality-baseline accepts an optional output path", "default quality-baseline output remains unchanged", "not-eligible baseline returns nonzero"],
+      "validation_commands": [".\\.venv\\Scripts\\python.exe -m pytest tests/repo_graph/test_query_and_rules.py -q", ".\\.venv\\Scripts\\python.exe tools/repo-graph/cli.py quality-baseline"]
+    },
+    {
+      "pair_id": "workflow-hook-01",
+      "task_ids": ["workflow-hook-01-A", "workflow-hook-01-B"],
+      "required_impacts": ["scripts/validate_workflow_hooks.py", "scripts/tests/test_validate_workflow_hooks.py"],
+      "constraints": ["WH-04 remains enforced", "escaped paths are rejected", "diagnostics contain no absolute user path"],
+      "acceptance_checks": ["an escaped required_reads path fails", "valid in-tree required_reads still passes", "existing hook validator tests pass"],
+      "validation_commands": [".\\.venv\\Scripts\\python.exe -m unittest scripts.tests.test_validate_workflow_hooks", ".\\.venv\\Scripts\\python.exe scripts/validate_workflow_hooks.py"]
+    },
+    {
+      "pair_id": "architecture-policy-01",
+      "task_ids": ["architecture-policy-01-A", "architecture-policy-01-B"],
+      "required_impacts": ["scripts/validate_architecture.py", "architecture/capabilities/_template/validation.md", "architecture/capabilities/knowledge-management/validation.md"],
+      "constraints": ["architecture remains documentation-only", "existing warning/error semantics remain stable", "capability validation is deterministic"],
+      "acceptance_checks": ["missing validation.md is an architecture error", "knowledge-management validation exists", "clean architecture validation passes"],
+      "validation_commands": [".\\.venv\\Scripts\\python.exe scripts/validate_architecture.py"]
+    },
+    {
+      "pair_id": "documentation-01",
+      "task_ids": ["documentation-01-A", "documentation-01-B"],
+      "required_impacts": ["docs/6-contributing/11-repo-graph.md", "tools/repo-graph/cli.py", "tools/repo-graph/evaluation.py"],
+      "constraints": ["exact command names", "repository-relative examples", "no unmeasured effectiveness claim"],
+      "acceptance_checks": ["all evaluation commands are documented", "not-run and blocked statuses are documented", "the guide states that graph quality is not effectiveness evidence"],
+      "validation_commands": [".\\.venv\\Scripts\\python.exe tools/repo-graph/cli.py --help", ".\\.venv\\Scripts\\python.exe -m pytest tests/repo_graph/test_evaluation.py -q"]
+    },
+    {
+      "pair_id": "project-memory-01",
+      "task_ids": ["project-memory-01-A", "project-memory-01-B"],
+      "required_impacts": ["architecture/capabilities/knowledge-management/spec.md", "architecture/capabilities/knowledge-management/status.md", "architecture/capabilities/knowledge-management/decisions.md", ".apm/knowledge/playbooks/workflow-playbook.md"],
+      "constraints": ["filesystem remains authoritative", "graph projection remains disposable", "no personal data"],
+      "acceptance_checks": ["decision records source authority and projection disposal", "status links the decision", "knowledge validation passes"],
+      "validation_commands": [".\\.venv\\Scripts\\python.exe scripts/validate_architecture.py", ".\\.venv\\Scripts\\python.exe scripts/validate_core_assets.py"]
+    }
+  ]
+}
