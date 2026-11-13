@@ -23,6 +23,8 @@ public interface EquipmentIndicatorMapper {
     @Mapping(target = "acvStep", source = "lifecycleStep")
     @Mapping(target = "country", source = "location")
     @Mapping(target = "equipment", source = "equipmentType")
+    @Mapping(target = "itemModel", source = "name")
+    @Mapping(target = "reference", source = "reference")
     @Mapping(target = "entity", expression = "java(source.getCommonFilters().get(0))")
     @Mapping(target = "status", expression = "java(source.getFilters().get(0))")
     @Mapping(target = "impact", source = "unitImpact")

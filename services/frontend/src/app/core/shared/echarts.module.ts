@@ -5,7 +5,7 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { BarChart, PieChart } from "echarts/charts";
+import { BarChart, PieChart, SunburstChart } from "echarts/charts";
 import {
     DataZoomComponent,
     GridComponent,
@@ -25,6 +25,7 @@ echarts.use([
     LegendComponent,
     CanvasRenderer,
     DataZoomComponent,
+    SunburstChart,
 ]);
 
 export default echarts;

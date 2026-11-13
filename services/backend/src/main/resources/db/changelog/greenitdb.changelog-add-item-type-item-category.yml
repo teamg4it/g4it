@@ -1,0 +1,45 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-item-type-item-category
+      author: G4IT Dev Team
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - columnExists:
+                tableName: ref_item_type
+                columnName: item_category
+      changes:
+        - addColumn:
+            tableName: ref_item_type
+            columns:
+              - column:
+                  name: item_category
+                  type: varchar(255)
+
+  - changeSet:
+      id: backfill-item-type-item-category
+      author: G4IT Dev Team
+      changes:
+        - sql:
+            sql: >
+              UPDATE ref_item_type
+              SET item_category = CASE
+                WHEN LOWER(TRIM(type)) IN ('terminal', 'smartphone', 'mobile phone', 'laptop', 'desktop', 'monitor')
+                  THEN 'DEVICES'
+                WHEN LOWER(TRIM(type)) IN (
+                  'cloud', 'cloud service', 'cloud services', 'cloud_services',
+                  'ai', 'ai service', 'ai services', 'ai_service', 'ai_services'
+                )
+                  THEN 'EXTERNAL'
+                ELSE 'INFRASTRUCTURE'
+              END
+              WHERE item_category IS NULL
+
+  - changeSet:
+      id: require-item-type-item-category
+      author: G4IT Dev Team
+      changes:
+        - addNotNullConstraint:
+            tableName: ref_item_type
+            columnName: item_category
+            columnDataType: varchar(255)

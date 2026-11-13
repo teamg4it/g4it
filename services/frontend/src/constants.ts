@@ -88,10 +88,10 @@ export abstract class Constants {
         dsv: "dsv",
         referentialWorkspace: "referential-workspace",
         isWorkspaceSpecific: "is-workspace-specific",
-    };
+    } as const;
 
-    static readonly ERRORS: any = {
-        404: "not-found",
+    static readonly ERRORS = {
+        "404": "not-found",
     };
 
     static readonly FILE_TYPES = [
@@ -146,7 +146,7 @@ export abstract class Constants {
 
     static readonly CONSTANT_VALUE = {
         NONE: "none",
-    };
+    } as const;
 
     static readonly RECIPIENT_MAIL = "support.g4it@soprasteria.com";
     static readonly SUBJECT_MAIL = "Support Request";
@@ -157,9 +157,9 @@ export abstract class Constants {
     static readonly ACV_STEP = "acvStep";
     static readonly EQUIPMENT_DIMENSIONS = [
         "acvStep",
+        "equipment",
         "country",
         "entity",
-        "equipment",
         "status",
     ];
     static readonly APPLICATION_DIMENSIONS = [
@@ -168,7 +168,7 @@ export abstract class Constants {
         "equipmentType",
     ];
     static readonly EQUIPMENT_FILTERS = ["country", "entity", "equipment", "status"];
-    static readonly EQUIPMENT_FILTERS_MAP: any = {
+    static readonly EQUIPMENT_FILTERS_MAP = {
         country: "countries",
         entity: "entities",
         equipment: "equipments",
@@ -192,19 +192,19 @@ export abstract class Constants {
             ],
         },
     ];
-    static readonly APPLICATION_FILTERS_MAP: { [key: string]: string } = {
+    static readonly APPLICATION_FILTERS_MAP = {
         environment: "environments",
         equipmentType: "types",
         lifeCycle: "lifeCycles",
         domain: "domains",
-    };
-    static readonly VIEWPORT_SCROLL_THRESHOLD: number = 20;
-    static readonly ALL: string = "All";
-    static readonly EMPTY: string = "!Empty"; // ! character is used for sorting Empty on top
+    } as const;
+    static readonly VIEWPORT_SCROLL_THRESHOLD = 20;
+    static readonly ALL = "All";
+    static readonly EMPTY = "!Empty"; // ! character is used for sorting Empty on top
 
-    static readonly MUTLI_CRITERIA: string = "multi-criteria";
+    static readonly MUTLI_CRITERIA = "multi-criteria";
 
-    static readonly CLOUD_SERVICES: string = "Cloud Services";
+    static readonly CLOUD_SERVICES = "Cloud Services";
 
     static readonly CHART_RICH = {
         redBold: {
@@ -223,7 +223,7 @@ export abstract class Constants {
             fontSize: 15,
             lineHeight: 18,
         },
-    };
+    } as const;
 
     static readonly CHART_RICH_SMALL = {
         redBold: {
@@ -242,7 +242,7 @@ export abstract class Constants {
             fontSize: 12,
             lineHeight: 15,
         },
-    };
+    } as const;
 
     static readonly DATA_QUALITY_STATUS = {
         ok: "OK",

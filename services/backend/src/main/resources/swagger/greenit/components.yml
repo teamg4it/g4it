@@ -488,6 +488,15 @@ components:
           type: string
         equipment:
           type: string
+        itemType:
+          type: string
+          description: Item type resolved from the equipment reference
+        itemModel:
+          type: string
+          description: Physical equipment model, when available
+        itemCategory:
+          type: string
+          description: Macro category of this equipment type
         status:
           type: string
         impact:
@@ -1397,15 +1406,15 @@ components:
         end_time:
           type: string
 
-#    SubscribertRest:
-#      type: object
-#      properties:
-#        name:
-#          type: string
-#        impactStep:
-#          type: array
-#          items:
-#            $ref: "#/components/schemas/OrganizationRest"
+    #    SubscribertRest:
+    #      type: object
+    #      properties:
+    #        name:
+    #          type: string
+    #        impactStep:
+    #          type: array
+    #          items:
+    #            $ref: "#/components/schemas/OrganizationRest"
 
     WorkspaceUpsertRest:
       description: Workspace update
@@ -1690,7 +1699,6 @@ components:
         isPromoted:
           type: boolean
 
-
     ValidateDuplicatesRest:
       type: object
       description: Response used to validate duplicate digital service and version names within a workspace
@@ -1718,11 +1726,11 @@ components:
           type: string
           description: Uid of the service to renew, it can be digital service uid or inventory uid
         expiryDate:
-            type: string
-            description: Expiry date of the service to renew
+          type: string
+          description: Expiry date of the service to renew
         retentionDays:
-            type: Integer
-            description: Retention days of the service renewal
+          type: Integer
+          description: Retention days of the service renewal
 
     # This schema represents the request body for updating renewal details for digital service or inventory
     RenewUpdateRest:
@@ -1762,7 +1770,6 @@ components:
           type: string
           minLength: 8
           description: Content of the release notes
-
 
     ReleaseNoteRest:
       type: object
