@@ -1,0 +1,12 @@
+<div class="w-full" [id]="category">
+    <p-button
+        [styleClass]="
+            isSelected
+                ? 'resource-button resource-button-selected w-full'
+                : 'resource-button w-full'
+        "
+        [label]="translationKey | translate"
+        [attr.aria-pressed]="isSelected"
+        (onClick)="selectCategory()"
+    ></p-button>
+</div>

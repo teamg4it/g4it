@@ -48,6 +48,24 @@
         }
     </div>
 }
+@if (selectedParam == "AIService" && !barChartChild) {
+    <div class="flex justify-content-center">
+        @for (option of aiOptions; track option) {
+            <div>
+                <p-radiobutton
+                    [inputId]="option.key"
+                    name="option"
+                    [value]="option.value"
+                    [(ngModel)]="aiRadioButtonSelected"
+                    (onClick)="changeAiRadioButtonSelected()"
+                ></p-radiobutton>
+                <label [for]="option.key" class="ml-2 mr-4 cursor-pointer">{{
+                    option.name
+                }}</label>
+            </div>
+        }
+    </div>
+}
 @if (
     selectedParam == "Server" &&
     barChartChild &&

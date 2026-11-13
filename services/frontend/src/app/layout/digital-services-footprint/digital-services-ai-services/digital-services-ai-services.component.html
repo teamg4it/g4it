@@ -1,0 +1,36 @@
+<div class="table-container mb-5">
+    <app-digital-service-table
+        titleText="ai-services"
+        accessibilityText="accessibility.ai-service"
+        translationPrefix="digital-services-ai-services"
+        [headerFields]="headerFields"
+        [data]="aiServices()"
+        (sidebar)="changeSidebar($event)"
+        (resetItem)="resetAIServices()"
+        (setItem)="setItem($event)"
+        (deleteItem)="deleteItem($event)"
+        addButtonId="add-ai"
+    ></app-digital-service-table>
+</div>
+
+@if (sidebarVisible) {
+    <p-drawer
+        [(visible)]="sidebarVisible"
+        position="right"
+        styleClass="drawer-md"
+        appendTo="body"
+        (onHide)="focusAIButton(); childSidePanel.close()"
+        ariaCloseLabel="Close"
+    >
+        <app-digital-services-ai-services-side-panel
+            #childSidePanel
+            [ai]="ai"
+            [sidebarVisible]="sidebarVisible"
+            [aiServices]="aiServices()"
+            (sidebarVisibleChange)="focusAIButton(); sidebarVisible = $event"
+            (updateAIServices)="updateAIServices($event)"
+            (deleteAIServices)="deleteAIServices($event)"
+        >
+        </app-digital-services-ai-services-side-panel>
+    </p-drawer>
+}

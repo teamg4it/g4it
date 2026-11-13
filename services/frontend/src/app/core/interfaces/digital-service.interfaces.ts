@@ -101,6 +101,19 @@ export interface DigitalServiceCloudServiceConfig {
     idFront?: number;
 }
 
+export interface DigitalServiceAIServiceConfig {
+    id: number;
+    digitalServiceUid: string;
+    creationDate?: number;
+    name: string;
+    aiProvider: string;
+    aiModel: string;
+    tokenQuantity: number;
+    location: DropdownValue;
+    locationValue: string;
+    idFront?: number;
+}
+
 export interface DigitalServicesAiInfrastructure {
     infrastructureType: "SERVER_DC" | "LAPTOP" | "DESKTOP";
     nbCpuCores: number;
@@ -189,6 +202,12 @@ export interface DigitalServiceCloudImpact {
     impactInstance: CloudImpactTypeLocation[];
 }
 
+export interface DigitalServiceAiImpact {
+    criteria: string;
+    impactLocation: AiImpactTypeLocation[];
+    impactModel: AiImpactTypeLocation[];
+}
+
 export interface TerminalsImpact {
     rawValue?: any;
     unit?: any;
@@ -233,8 +252,6 @@ export interface CloudNameImpact {
     peopleEqImpact: number;
     unitImpact: number;
     quantity: number;
-    usageDuration: number;
-    workload: number;
     unit: string;
     statusIndicator: string;
     countValue: number;
@@ -245,6 +262,39 @@ export interface CloudNameImpact {
 export interface CloudImpactTypeLocation {
     name: string;
     clouds: CloudsImpact[];
+    status: StatusCount;
+}
+
+export interface AiImpact {
+    rawValue?: any;
+    unit?: any;
+    name: string;
+    totalSipValue: number;
+    totalQuantity: number;
+    impact: ImpactAiACVStep[];
+}
+
+
+export interface AiImpactGroup {
+    [location: string]: {
+        [aiName: string]: AiNameImpact[];
+    };
+}
+
+export interface AiNameImpact {
+    lifecycleStep: string;
+    peopleEqImpact: number;
+    unitImpact: number;
+    quantity: number;
+    unit: string;
+    statusIndicator: string;
+    countValue: number;
+    provider: string;
+}
+
+export interface AiImpactTypeLocation {
+    name: string;
+    ai: AiImpact[];
     status: StatusCount;
 }
 
@@ -302,6 +352,19 @@ export interface ImpactTerminalsACVStep {
 }
 
 export interface ImpactCloudsACVStep {
+    acvStep: string;
+    sipValue: number;
+    rawValue: number;
+    unit: string;
+    status?: string;
+    statusCount?: {
+        ok: number;
+        error: number;
+        total: number;
+    };
+}
+
+export interface ImpactAiACVStep {
     acvStep: string;
     sipValue: number;
     rawValue: number;
