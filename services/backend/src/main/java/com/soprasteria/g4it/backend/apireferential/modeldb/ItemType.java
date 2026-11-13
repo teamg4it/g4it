@@ -108,7 +108,7 @@ public class ItemType implements Serializable {
     }
 
     public static boolean isValidItemCategory(String itemCategory) {
-        return itemCategory != null;
+        return itemCategory != null && !itemCategory.isBlank();
     }
 
 }

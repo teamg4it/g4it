@@ -335,6 +335,27 @@ t;c;Hardware;com;1;true;s;ref;1
     }
 
     @Test
+    void testParseItemTypeCsv_BlankItemCategoryIsRejected() throws IOException {
+        String csv = """
+            type;category;item_category;comment;default_lifespan;is_server;source;ref_default_item;version
+t;c;   ;com;1;true;s;ref;1
+""";
+        when(file.getBytes()).thenReturn(csv.getBytes());
+        when(file.getOriginalFilename()).thenReturn("test.csv");
+
+        ItemTypeRest rest = new ItemTypeRest();
+        rest.setItemCategory("   ");
+        when(referentialMapper.csvItemTypeToRest(any())).thenReturn(rest);
+        when(validator.validate(any())).thenReturn(Collections.emptySet());
+
+        ItemTypeParseResult result = referentialImportService.parseItemTypeCsv(file);
+
+        assertTrue(result.getData().isEmpty());
+        assertEquals(1, result.getReport().getErrors().size());
+        assertTrue(result.getReport().getErrors().getFirst().contains("item_category"));
+    }
+
+    @Test
     void testParseItemTypeCsv_InvalidHeaders_ThrowsException() throws IOException {
         String csv = "wrong,header\nval1,val2\n";
 
