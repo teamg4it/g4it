@@ -14,7 +14,7 @@ It's possible that some tools are already installed on your workstation, in whic
 
 You can find this IDE on **[official JetBrain website](https://www.jetbrains.com/idea/download/?section=windows)**
 
--   Download the latest **Comunity Edition** installer version (currently 2023.3.2)
+-   Download the latest **Comunity Edition** installer version (currently 2025.2.6.3)
 -   Click on the installer
 
 ### SDK
@@ -82,19 +82,6 @@ choco install -y hugo-extended
 hugo version
 ```
 
-## Dbeaver
-
-### Installation
-
-```shell
-choco install -y dbeaver
-
-# the postgresql connection will be :
-# localhost:5432/postgres
-# user: postgres
-# password: postgres
-```
-
 ## PodMan
 
 ### Installation
@@ -103,9 +90,18 @@ choco install -y dbeaver
 
 You can find this tool on **[Python website](https://www.python.org/downloads/)**
 
--   Download
--   Launch the installer, check **Add python.exe to PATH** and click on **Install Now**
--   Click on **Disable path length limit**
+-   Download the installer and launch it
+-   If the installer executes in windows :
+    -   Check **Add python.exe to PATH** and click on **Install Now**.
+    -   Click on **Disable path length limit**
+-   If the installer executes in a terminal :
+    -   Install the latest Python version by entering "Y" in the terminal when asked to
+    -   Once installation is done, add python.exe to the PATH environment variable
+    -   Disable path lenght limit :
+        -   In Windows search bar, type "regedit" and open the Microsoft Registry Editor
+        -   Go to HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\FileSystem
+        -   Look for the "LongPAthsEnabled" property and make sure its value is set to "1"
+
 
 #### Podman Desktop
 
