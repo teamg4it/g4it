@@ -11,7 +11,7 @@ export interface ApplicationIndicatorsPageRequest extends ApplicationMultiCriter
     criterion?: string[];
 }
 
-export interface ApplicationIndicatorRow {
+interface ApplicationIndicatorRow {
     applicationName: string;
     criteria: string;
     sip: number;
@@ -53,7 +53,7 @@ export interface ApplicationMultiCriteriaRequest {
     };
 }
 
-export interface ApplicationMultiCriteriaRepartition {
+interface ApplicationMultiCriteriaRepartition {
     label: string;
     impact: number;
     sip: number;
@@ -62,7 +62,7 @@ export interface ApplicationMultiCriteriaRepartition {
     inconsistentCount: number;
 }
 
-export interface ApplicationMultiCriteriaNode {
+interface ApplicationMultiCriteriaNode {
     label?: string | null;
     impact: number;
     sip: number;
@@ -100,7 +100,7 @@ export interface CriteriaCalculated {
     impactsWithMaxDimensions?: RepartitionImpact[];
 }
 
-export interface RepartitionMaxCriteria {
+interface RepartitionMaxCriteria {
     name: string;
     peopleeq: number;
     raw: number;
@@ -158,7 +158,7 @@ interface OkErrorStatus {
     total: number;
 }
 
-export interface OtherDataValue {
+interface OtherDataValue {
     name: string;
     value: number;
     percent: number;
@@ -186,7 +186,7 @@ export interface ComputedSelection {
     status: DataComputed[];
 }
 
-export interface DataComputed {
+interface DataComputed {
     name: string;
     impact: number;
     sip: number;
@@ -211,10 +211,6 @@ export interface Impact {
     impactUnit?: string;
     sunburstServiceType?: "cloud" | "ai";
     sunburstProvider?: string;
-}
-
-export interface ImpactEntity extends Impact {
-    id: number;
 }
 
 export interface Datacenter {
@@ -273,12 +269,6 @@ export interface PhysicalEquipmentsElecConsumption {
     nomEntite: string;
     statut: string;
     elecConsumption: number;
-}
-
-export interface PhysicalEquipmentStats {
-    averageAge: PhysicalEquipmentAvgAge[];
-    lowImpact: PhysicalEquipmentLowImpact[];
-    elecConsumption: PhysicalEquipmentsElecConsumption[];
 }
 
 export interface ApplicationFootprint {
@@ -340,7 +330,7 @@ export interface ApplicationCriteriaFootprint {
     impacts: ApplicationCriteriaImpact[];
 }
 
-export interface ApplicationCriteriaImpact {
+interface ApplicationCriteriaImpact {
     environment: string;
     equipmentType: string;
     lifeCycle: string;
@@ -348,13 +338,6 @@ export interface ApplicationCriteriaImpact {
     sip: number;
     virtualEquipmentName: string;
     cluster: string;
-}
-
-export interface ApplicationGraphPosition {
-    domain: string;
-    subdomain: string;
-    app: string;
-    graph: string;
 }
 
 export interface VirtualEquipmentLowImpactCount {

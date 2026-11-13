@@ -27,13 +27,6 @@ export function getActiveFilterNames(filters: Filter<any>): string[] {
 }
 
 /**
- * Deep clone filters
- */
-export function cloneFilters<T>(filters: T): T {
-    return structuredClone(filters);
-}
-
-/**
  * Map filters to their active status
  */
 export function mapFilterActiveStatus(filters: Filter<any>): Record<string, boolean> {
@@ -56,7 +49,7 @@ export function mapFilterActiveStatus(filters: Filter<any>): Record<string, bool
  * @param maxHeight Maximum viewport height in pixels
  * @returns Calculated height as a CSS string (e.g., "200px")
  */
-export function calculateViewportHeight(
+function calculateViewportHeight(
     items: any[] | undefined,
     itemHeight: number,
     minHeight: number,

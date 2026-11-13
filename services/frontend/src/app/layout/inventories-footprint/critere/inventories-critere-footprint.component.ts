@@ -335,7 +335,7 @@ export class InventoriesCritereFootprintComponent
                     error: otherError,
                     total: otherTotal,
                 },
-                otherData: otherData.sort((a: any, b: any) => a.value < b.value),
+                otherData: otherData.toSorted((a: any, b: any) => a.value < b.value),
             });
         }
         if (selectedView == Constants.ACV_STEP) {
@@ -561,8 +561,8 @@ export class InventoriesCritereFootprintComponent
 
             allImpacts.push(v);
         }
-        const filterImpacts = [...allImpacts]
-            .sort((a, b) => b.percentage - a.percentage)
+        const filterImpacts = allImpacts
+            .toSorted((a, b) => b.percentage - a.percentage)
             .slice(0, 3);
         let textDescription = "";
         let textImpacts = [];
