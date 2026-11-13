@@ -488,6 +488,12 @@ components:
           type: string
         equipment:
           type: string
+        itemType:
+          type: string
+          description: Item type resolved from the equipment reference
+        itemModel:
+          type: string
+          description: Physical equipment model, when available
         itemCategory:
           type: string
           description: Macro category of this equipment type

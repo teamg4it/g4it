@@ -26,6 +26,12 @@ public class EquipmentImpactBO {
 
     private String equipment;
 
+    private String itemType;
+
+    private String itemModel;
+
+    private String reference;
+
     private String itemCategory;
 
     private String status;

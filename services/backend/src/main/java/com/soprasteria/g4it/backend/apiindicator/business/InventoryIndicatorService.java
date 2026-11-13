@@ -91,7 +91,7 @@ public class InventoryIndicatorService {
         Map<String, EquipmentIndicatorBO> indicators =
                 indicatorService.getEquipmentIndicators(getLastTaskId(inventory));
         // Keep applicable definitions ordered so workspace and organization overrides win.
-        Map<String, String> equipmentCategories = itemTypeRepository
+        List<ItemType> itemTypes = itemTypeRepository
                 .findByWorkspaceIdOrWorkspaceIdIsNull(workspaceId).stream()
                 .filter(itemType -> itemType.getOrganization() == null
                         || Objects.equals(itemType.getOrganization(), organization))
@@ -99,16 +99,30 @@ public class InventoryIndicatorService {
                 .sorted(Comparator
                         .comparing((ItemType itemType) -> !Objects.equals(itemType.getWorkspaceId(), workspaceId))
                         .thenComparing(itemType -> !Objects.equals(itemType.getOrganization(), organization)))
+                .toList();
+        Map<String, ItemType> itemTypesByType = itemTypes.stream()
                 .collect(Collectors.toMap(
                         ItemType::getType,
-                        ItemType::getItemCategory,
+                        itemType -> itemType,
                         (preferred, ignored) -> preferred
                 ));
-        // Items without a matching definition default to infrastructure, but they all should have a definition.
+        Map<String, ItemType> itemTypesByReference = itemTypes.stream()
+                .filter(itemType -> itemType.getRefDefaultItem() != null)
+                .collect(Collectors.toMap(
+                        ItemType::getRefDefaultItem,
+                        itemType -> itemType,
+                        (preferred, ignored) -> preferred
+                ));
         indicators.values().stream()
                 .flatMap(indicator -> indicator.getImpacts().stream())
-                .forEach(impact -> impact.setItemCategory(
-                        equipmentCategories.getOrDefault(impact.getEquipment(), "INFRASTRUCTURE")));
+                .forEach(impact -> {
+                    ItemType itemType = itemTypesByReference.get(impact.getReference());
+                    if (itemType == null) {
+                        itemType = itemTypesByType.get(impact.getEquipment());
+                    }
+                    impact.setItemType(itemType == null ? impact.getEquipment() : itemType.getType());
+                    impact.setItemCategory(itemType == null ? "INFRASTRUCTURE" : itemType.getItemCategory());
+                });
         return indicators;
     }
 

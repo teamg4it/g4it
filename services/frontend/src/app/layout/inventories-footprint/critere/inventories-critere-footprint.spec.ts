@@ -167,6 +167,8 @@ describe("InventoriesCritereFootprintComponent", () => {
                 {
                     itemCategory: "DEVICES",
                     equipment: "Laptop",
+                    itemType: "Laptop",
+                    itemModel: "ThinkPad",
                     country: "France",
                     impact: 2,
                     sip: 3,
@@ -205,7 +207,10 @@ describe("InventoriesCritereFootprintComponent", () => {
             "inventories-footprint.sunburst-category.devices",
         );
         expect(series.data[0].children).toEqual([
-            jasmine.objectContaining({ name: "Laptop", value: 2 }),
+            jasmine.objectContaining({
+                name: "Laptop",
+                children: [jasmine.objectContaining({ name: "ThinkPad", value: 2 })],
+            }),
         ]);
         expect(series.data[1].children[0].children).toEqual([
             jasmine.objectContaining({ name: "AWS", value: 5 }),

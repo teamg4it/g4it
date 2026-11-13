@@ -197,6 +197,8 @@ export interface Impact {
     country: string;
     entity: string | null;
     equipment: string | null;
+    itemType?: string;
+    itemModel?: string;
     itemCategory: string;
     status: string | null;
     impact: number;

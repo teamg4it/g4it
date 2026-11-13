@@ -241,7 +241,7 @@ export class InventoriesCritereFootprintComponent
 
             // Convert the grouped impacts into a tree structure suitable for the sunburst chart
             const data: NonNullable<SunburstSeriesOption["data"]> = Object.keys(allImpactsGroupedByCategory).map(category => {
-                const items = Object.groupBy(allImpactsGroupedByCategory[category]!, (i: Impact) => i.sunburstServiceType || i.equipment!);
+                const items = Object.groupBy(allImpactsGroupedByCategory[category]!, (i: Impact) => i.sunburstServiceType || i.itemType || i.equipment!);
 
                 return {
                     // Use the translated label if the category is known, otherwise use the raw category name
@@ -266,9 +266,23 @@ export class InventoriesCritereFootprintComponent
                         }
 
                         // If the item does not have a sunburstServiceType, return a single node with the total value for that item
+                        const itemImpacts = items[item]!;
+                        if (itemImpacts.some((impact) => impact.itemModel?.trim())) {
+                            const models = Object.groupBy(itemImpacts, (impact: Impact) =>
+                                impact.itemModel?.trim() || this.translate.instant("inventories-footprint.sunburst-category.unclassified"),
+                            );
+                            return {
+                                name: item,
+                                children: Object.entries(models).map(([model, impacts]) => ({
+                                    name: model,
+                                    value: impacts!.reduce((sum, current) => sum + (unit === Constants.PEOPLEEQ ? current.sip : current.impact), 0),
+                                } satisfies SunburstNode)),
+                            } satisfies SunburstNode;
+                        }
+
                         return {
                             name: item,
-                            value: items[item]!.reduce((sum, current) => sum + (unit === Constants.PEOPLEEQ ? current.sip : current.impact), 0),
+                            value: itemImpacts.reduce((sum, current) => sum + (unit === Constants.PEOPLEEQ ? current.sip : current.impact), 0),
                         } satisfies SunburstNode
                     }),
                 } satisfies SunburstNode

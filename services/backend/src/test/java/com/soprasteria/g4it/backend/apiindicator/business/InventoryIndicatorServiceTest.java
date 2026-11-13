@@ -450,7 +450,10 @@ class InventoryIndicatorServiceTest {
         Long workspaceId = 7L;
         Long inventoryId = 11L;
         Long taskId = 13L;
-        EquipmentImpactBO printer = EquipmentImpactBO.builder().equipment("printer").build();
+        EquipmentImpactBO printer = EquipmentImpactBO.builder()
+                .equipment("printer")
+                .reference("matched-model")
+                .build();
         EquipmentImpactBO laptop = EquipmentImpactBO.builder().equipment("laptop").build();
         Map<String, EquipmentIndicatorBO> indicators = Map.of(
                 "criterion",
@@ -466,6 +469,12 @@ class InventoryIndicatorServiceTest {
                 itemType("printer", "INFRASTRUCTURE", null, null),
                 itemType("printer", "ORGANIZATION", organization, null),
                 itemType("printer", "Custom print category", null, workspaceId),
+                ItemType.builder()
+                        .type("mapped printer")
+                        .itemCategory("DEVICES")
+                        .refDefaultItem("matched-model")
+                        .workspaceId(workspaceId)
+                        .build(),
                 itemType("laptop", "INFRASTRUCTURE", null, null),
                 itemType("laptop", "ORGANIZATION", organization, null),
                 itemType("laptop", "INFRASTRUCTURE", null, null)
@@ -473,7 +482,9 @@ class InventoryIndicatorServiceTest {
 
         inventoryIndicatorService.getEquipmentIndicators(organization, workspaceId, inventoryId);
 
-        assertEquals("Custom print category", printer.getItemCategory());
+        assertEquals("mapped printer", printer.getItemType());
+        assertEquals("DEVICES", printer.getItemCategory());
+        assertEquals("laptop", laptop.getItemType());
         assertEquals("ORGANIZATION", laptop.getItemCategory());
     }
 
