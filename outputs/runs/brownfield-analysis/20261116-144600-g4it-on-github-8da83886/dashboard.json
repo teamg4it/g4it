@@ -1,0 +1,844 @@
+{
+  "run": {
+    "workflow": "brownfield-analysis",
+    "runDir": "outputs/runs/brownfield-analysis/20261116-144600-g4it-on-github-8da83886/",
+    "stateFile": "outputs/runs/brownfield-analysis/20261116-144600-g4it-on-github-8da83886/workflow-state.md",
+    "generatedAt": "2026-11-16T15:53:25Z",
+    "maxPoolDepth": 2,
+    "percent": 100,
+    "percentSource": "files"
+  },
+  "stations": [
+    {
+      "id": "discover-repositories",
+      "label": "Discover Repositories",
+      "kind": "station",
+      "status": "passed",
+      "percent": 100,
+      "percentSource": "files",
+      "depth": 0,
+      "collapsedByDefault": true,
+      "gate": "pass",
+      "outputs": [
+        {
+          "declared": "repository-inventory.md",
+          "type": "file",
+          "percent": 100,
+          "files": [
+            {
+              "kind": "frontmatter",
+              "status": "validated",
+              "percent": 100,
+              "path": "outputs/brownfield/g4it-on-github/repository-inventory.md"
+            }
+          ]
+        },
+        {
+          "declared": "repository-classification.md",
+          "type": "file",
+          "percent": 100,
+          "files": [
+            {
+              "kind": "frontmatter",
+              "status": "validated",
+              "percent": 100,
+              "path": "outputs/brownfield/g4it-on-github/repository-classification.md"
+            }
+          ]
+        },
+        {
+          "declared": "source-staging.md",
+          "type": "file",
+          "percent": 0,
+          "files": [
+            {
+              "kind": "frontmatter",
+              "status": "missing",
+              "percent": 0,
+              "path": "outputs/brownfield/g4it-on-github/source-staging.md"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mainframe-inventory",
+      "label": "Mainframe Inventory and Code Graph Evidence",
+      "kind": "station",
+      "status": "skipped",
+      "percent": 100,
+      "percentSource": "files",
+      "depth": 0,
+      "collapsedByDefault": true,
+      "outputs": [
+        {
+          "declared": "mainframe-inventory-report.md",
+          "type": "file",
+          "percent": 0,
+          "files": [
+            {
+              "kind": "frontmatter",
+              "status": "missing",
+              "percent": 0,
+              "path": "outputs/brownfield/g4it-on-github/mainframe-inventory-report.md"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "build-codegraph",
+      "label": "Build Code Graph",
+      "kind": "station",
+      "status": "passed",
+      "percent": 100,
+      "percentSource": "files",
+      "depth": 0,
+      "collapsedByDefault": true,
+      "gate": "pass",
+      "outputs": [
+        {
+          "declared": "codegraph-summary.md",
+          "type": "file",
+          "percent": 100,
+          "files": [
+            {
+              "kind": "frontmatter",
+              "status": "validated",
+              "percent": 100,
+              "path": "outputs/brownfield/g4it-on-github/codegraph-summary.md"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ingest-documents",
+      "label": "Ingest and Convert Documents",
+      "kind": "station",
+      "status": "passed",
+      "percent": 100,
+      "percentSource": "files",
+      "depth": 0,
+      "collapsedByDefault": true,
+      "gate": "pass",
+      "children": [
+        {
+          "id": "ingest-documents/scope-documents",
+          "label": "Confirm Document Scope",
+          "kind": "station",
+          "status": "passed",
+          "percent": 100,
+          "percentSource": "files",
+          "depth": 1,
+          "collapsedByDefault": true,
+          "gate": "pass",
+          "outputs": [
+            {
+              "declared": "ingestion-scope.md",
+              "type": "file",
+              "percent": 100,
+              "files": [
+                {
+                  "kind": "frontmatter",
+                  "status": "validated",
+                  "percent": 100,
+                  "path": "outputs/ingestion/g4it-on-github/ingestion-scope.md"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "ingest-documents/triage",
+          "label": "Discover and Triage Documents",
+          "kind": "station",
+          "status": "passed",
+          "percent": 100,
+          "percentSource": "files",
+          "depth": 1,
+          "collapsedByDefault": true,
+          "gate": "pass",
+          "outputs": [
+            {
+              "declared": "triage-summary.md",
+              "type": "file",
+              "percent": 0,
+              "files": [
+                {
+                  "kind": "frontmatter",
+                  "status": "missing",
+                  "percent": 0,
+                  "path": "outputs/ingestion/g4it-on-github/triage-summary.md"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "ingest-documents/convert",
+          "label": "Convert Documents",
+          "kind": "station",
+          "status": "passed",
+          "percent": 100,
+          "percentSource": "files",
+          "depth": 1,
+          "collapsedByDefault": true,
+          "gate": "pass",
+          "outputs": [
+            {
+              "declared": "conversion-log.md",
+              "type": "file",
+              "percent": 0,
+              "files": [
+                {
+                  "kind": "frontmatter",
+                  "status": "missing",
+                  "percent": 0,
+                  "path": "outputs/ingestion/g4it-on-github/conversion-log.md"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "ingest-documents/plan-batches",
+          "label": "Plan Extraction Batches",
+          "kind": "station",
+          "status": "passed",
+          "percent": 100,
+          "percentSource": "files",
+          "depth": 1,
+          "collapsedByDefault": true,
+          "gate": "pass",
+          "outputs": [
+            {
+              "declared": "batch-plan.md",
+              "type": "file",
+              "percent": 0,
+              "files": [
+                {
+                  "kind": "frontmatter",
+                  "status": "missing",
+                  "percent": 0,
+                  "path": "outputs/ingestion/g4it-on-github/batch-plan.md"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "ingest-documents/extract-and-verify",
+          "label": "Extract and Verify Batches",
+          "kind": "station",
+          "status": "passed",
+          "percent": 100,
+          "percentSource": "files",
+          "depth": 1,
+          "collapsedByDefault": true,
+          "gate": "pass",
+          "outputs": [
+            {
+              "declared": "extraction-verification.md",
+              "type": "file",
+              "percent": 0,
+              "files": [
+                {
+                  "kind": "frontmatter",
+                  "status": "missing",
+                  "percent": 0,
+                  "path": "outputs/ingestion/g4it-on-github/extraction-verification.md"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "ingest-documents/interpret-images",
+          "label": "Interpret Scoped Document Images",
+          "kind": "station",
+          "status": "passed",
+          "percent": 100,
+          "percentSource": "files",
+          "depth": 1,
+          "collapsedByDefault": true,
+          "gate": "pass",
+          "outputs": [
+            {
+              "declared": "image-interpretation.md",
+              "type": "file",
+              "percent": 0,
+              "files": [
+                {
+                  "kind": "frontmatter",
+                  "status": "missing",
+                  "percent": 0,
+                  "path": "outputs/ingestion/g4it-on-github/image-interpretation.md"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "ingest-documents/aggregate-catalogue",
+          "label": "Aggregate Document Catalogue",
+          "kind": "station",
+          "status": "passed",
+          "percent": 100,
+          "percentSource": "files",
+          "depth": 1,
+          "collapsedByDefault": true,
+          "gate": "pass",
+          "outputs": [
+            {
+              "declared": "document-catalogue.md",
+              "type": "file",
+              "percent": 0,
+              "files": [
+                {
+                  "kind": "frontmatter",
+                  "status": "missing",
+                  "percent": 0,
+                  "path": "outputs/ingestion/g4it-on-github/document-catalogue.md"
+                }
+              ]
+            },
+            {
+              "declared": "consolidated-supporting-context.md",
+              "type": "file",
+              "percent": 0,
+              "files": [
+                {
+                  "kind": "frontmatter",
+                  "status": "missing",
+                  "percent": 0,
+                  "path": "outputs/ingestion/g4it-on-github/consolidated-supporting-context.md"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "outputs": [
+        {
+          "declared": "document-catalogue.md",
+          "type": "file",
+          "percent": 50,
+          "files": [
+            {
+              "kind": "frontmatter",
+              "status": "non-compliant",
+              "percent": 50,
+              "badge": "non-compliant",
+              "path": "outputs/brownfield/g4it-on-github/document-catalogue.md"
+            }
+          ]
+        },
+        {
+          "declared": "consolidated-supporting-context.md",
+          "type": "file",
+          "percent": 0,
+          "files": [
+            {
+              "kind": "frontmatter",
+              "status": "missing",
+              "percent": 0,
+              "path": "outputs/brownfield/g4it-on-github/consolidated-supporting-context.md"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "build-document-graph",
+      "label": "Build Document Graph",
+      "kind": "station",
+      "status": "passed",
+      "percent": 100,
+      "percentSource": "files",
+      "depth": 0,
+      "collapsedByDefault": true,
+      "gate": "pass",
+      "outputs": [
+        {
+          "declared": "document-graph-readiness.md",
+          "type": "file",
+          "percent": 50,
+          "files": [
+            {
+              "kind": "frontmatter",
+              "status": "non-compliant",
+              "percent": 50,
+              "badge": "non-compliant",
+              "path": "outputs/brownfield/g4it-on-github/document-graph-readiness.md"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "batch-flow",
+      "label": "Mainframe Batch Flow",
+      "kind": "station",
+      "status": "skipped",
+      "percent": 100,
+      "percentSource": "files",
+      "depth": 0,
+      "collapsedByDefault": true,
+      "outputs": [
+        {
+          "declared": "batch-flows.md",
+          "type": "file",
+          "percent": 100,
+          "files": [
+            {
+              "kind": "frontmatter",
+              "status": "validated",
+              "percent": 100,
+              "path": "outputs/brownfield/g4it-on-github/batch-flows.md"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "online-flow",
+      "label": "Mainframe Online Flow and Screens",
+      "kind": "station",
+      "status": "skipped",
+      "percent": 100,
+      "percentSource": "files",
+      "depth": 0,
+      "collapsedByDefault": true,
+      "outputs": [
+        {
+          "declared": "online-transactions.md",
+          "type": "file",
+          "percent": 100,
+          "files": [
+            {
+              "kind": "frontmatter",
+              "status": "validated",
+              "percent": 100,
+              "path": "outputs/brownfield/g4it-on-github/online-transactions.md"
+            }
+          ]
+        },
+        {
+          "declared": "screens.md",
+          "type": "file",
+          "percent": 0,
+          "files": [
+            {
+              "kind": "frontmatter",
+              "status": "missing",
+              "percent": 0,
+              "path": "outputs/brownfield/g4it-on-github/screens.md"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "data-model-lineage",
+      "label": "Mainframe Data Model and Lineage",
+      "kind": "station",
+      "status": "skipped",
+      "percent": 100,
+      "percentSource": "files",
+      "depth": 0,
+      "collapsedByDefault": true,
+      "outputs": [
+        {
+          "declared": "data-dictionary.md",
+          "type": "file",
+          "percent": 0,
+          "files": [
+            {
+              "kind": "frontmatter",
+              "status": "missing",
+              "percent": 0,
+              "path": "outputs/brownfield/g4it-on-github/data-dictionary.md"
+            }
+          ]
+        },
+        {
+          "declared": "crud-matrix.md",
+          "type": "file",
+          "percent": 0,
+          "files": [
+            {
+              "kind": "frontmatter",
+              "status": "missing",
+              "percent": 0,
+              "path": "outputs/brownfield/g4it-on-github/crud-matrix.md"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "business-rules",
+      "label": "Mainframe Business Rules",
+      "kind": "station",
+      "status": "skipped",
+      "percent": 100,
+      "percentSource": "files",
+      "depth": 0,
+      "collapsedByDefault": true,
+      "outputs": [
+        {
+          "declared": "business-rules.md",
+          "type": "file",
+          "percent": 0,
+          "files": [
+            {
+              "kind": "frontmatter",
+              "status": "missing",
+              "percent": 0,
+              "path": "outputs/brownfield/g4it-on-github/business-rules.md"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "reverse-backlog",
+      "label": "Reverse-Engineer Backlog",
+      "kind": "station",
+      "status": "passed",
+      "percent": 100,
+      "percentSource": "files",
+      "depth": 0,
+      "collapsedByDefault": true,
+      "gate": "pass",
+      "outputs": [
+        {
+          "declared": "backlog.md",
+          "type": "file",
+          "percent": 0,
+          "files": [
+            {
+              "kind": "frontmatter",
+              "status": "missing",
+              "percent": 0,
+              "path": "outputs/brownfield/g4it-on-github/backlog.md"
+            }
+          ]
+        },
+        {
+          "declared": "features-capabilities-map.md",
+          "type": "file",
+          "percent": 0,
+          "files": [
+            {
+              "kind": "frontmatter",
+              "status": "missing",
+              "percent": 0,
+              "path": "outputs/brownfield/g4it-on-github/features-capabilities-map.md"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "actor-catalogue",
+      "label": "Application Map and Actor Catalogue",
+      "kind": "station",
+      "status": "passed",
+      "percent": 100,
+      "percentSource": "files",
+      "depth": 0,
+      "collapsedByDefault": true,
+      "gate": "pass",
+      "outputs": [
+        {
+          "declared": "application-map.md",
+          "type": "file",
+          "percent": 0,
+          "files": [
+            {
+              "kind": "frontmatter",
+              "status": "missing",
+              "percent": 0,
+              "path": "outputs/brownfield/g4it-on-github/application-map.md"
+            }
+          ]
+        },
+        {
+          "declared": "actors-and-roles.md",
+          "type": "file",
+          "percent": 0,
+          "files": [
+            {
+              "kind": "frontmatter",
+              "status": "missing",
+              "percent": 0,
+              "path": "outputs/brownfield/g4it-on-github/actors-and-roles.md"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "reverse-stories",
+      "label": "Detail User Stories",
+      "kind": "station",
+      "status": "passed",
+      "percent": 100,
+      "percentSource": "files",
+      "depth": 0,
+      "collapsedByDefault": true,
+      "gate": "pass",
+      "outputs": [
+        {
+          "declared": "reverse-user-stories.md",
+          "type": "file",
+          "percent": 0,
+          "files": [
+            {
+              "kind": "frontmatter",
+              "status": "missing",
+              "percent": 0,
+              "path": "outputs/brownfield/g4it-on-github/reverse-user-stories.md"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "user-journeys",
+      "label": "As-Is User Journeys",
+      "kind": "station",
+      "status": "passed",
+      "percent": 100,
+      "percentSource": "files",
+      "depth": 0,
+      "collapsedByDefault": true,
+      "gate": "pass",
+      "outputs": [
+        {
+          "declared": "user-journeys-by-application.md",
+          "type": "file",
+          "percent": 0,
+          "files": [
+            {
+              "kind": "frontmatter",
+              "status": "missing",
+              "percent": 0,
+              "path": "outputs/brownfield/g4it-on-github/user-journeys-by-application.md"
+            }
+          ]
+        },
+        {
+          "declared": "global-user-journeys.md",
+          "type": "file",
+          "percent": 0,
+          "files": [
+            {
+              "kind": "frontmatter",
+              "status": "missing",
+              "percent": 0,
+              "path": "outputs/brownfield/g4it-on-github/global-user-journeys.md"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "as-is-hld",
+      "label": "As-Is High-Level Design",
+      "kind": "station",
+      "status": "passed",
+      "percent": 100,
+      "percentSource": "files",
+      "depth": 0,
+      "collapsedByDefault": true,
+      "gate": "pass",
+      "outputs": [
+        {
+          "declared": "as-is-hld.md",
+          "type": "file",
+          "percent": 100,
+          "files": [
+            {
+              "kind": "frontmatter",
+              "status": "validated",
+              "percent": 100,
+              "path": "outputs/brownfield/g4it-on-github/as-is-hld.md"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "c4-architecture",
+      "label": "C4 Architecture Documentation",
+      "kind": "station",
+      "status": "passed",
+      "percent": 100,
+      "percentSource": "files",
+      "depth": 0,
+      "collapsedByDefault": true,
+      "gate": "pass",
+      "outputs": [
+        {
+          "declared": "c4-system-context.md",
+          "type": "file",
+          "percent": 0,
+          "files": [
+            {
+              "kind": "frontmatter",
+              "status": "missing",
+              "percent": 0,
+              "path": "outputs/brownfield/g4it-on-github/c4-system-context.md"
+            }
+          ]
+        },
+        {
+          "declared": "c4-container-view.md",
+          "type": "file",
+          "percent": 0,
+          "files": [
+            {
+              "kind": "frontmatter",
+              "status": "missing",
+              "percent": 0,
+              "path": "outputs/brownfield/g4it-on-github/c4-container-view.md"
+            }
+          ]
+        },
+        {
+          "declared": "c4-component-views.md",
+          "type": "file",
+          "percent": 0,
+          "files": [
+            {
+              "kind": "frontmatter",
+              "status": "missing",
+              "percent": 0,
+              "path": "outputs/brownfield/g4it-on-github/c4-component-views.md"
+            }
+          ]
+        },
+        {
+          "declared": "c4-additional-views.md",
+          "type": "file",
+          "percent": 0,
+          "files": [
+            {
+              "kind": "frontmatter",
+              "status": "missing",
+              "percent": 0,
+              "path": "outputs/brownfield/g4it-on-github/c4-additional-views.md"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "traceability-and-gaps",
+      "label": "Traceability and Gap Analysis",
+      "kind": "station",
+      "status": "passed",
+      "percent": 100,
+      "percentSource": "files",
+      "depth": 0,
+      "collapsedByDefault": true,
+      "gate": "pass",
+      "outputs": [
+        {
+          "declared": "traceability-matrix.md",
+          "type": "file",
+          "percent": 0,
+          "files": [
+            {
+              "kind": "frontmatter",
+              "status": "missing",
+              "percent": 0,
+              "path": "outputs/brownfield/g4it-on-github/traceability-matrix.md"
+            }
+          ]
+        },
+        {
+          "declared": "gaps-and-assumptions.md",
+          "type": "file",
+          "percent": 0,
+          "files": [
+            {
+              "kind": "frontmatter",
+              "status": "missing",
+              "percent": 0,
+              "path": "outputs/brownfield/g4it-on-github/gaps-and-assumptions.md"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "reader-pack",
+      "label": "Prepare Reading Guide and Glossary",
+      "kind": "station",
+      "status": "passed",
+      "percent": 100,
+      "percentSource": "files",
+      "depth": 0,
+      "collapsedByDefault": true,
+      "gate": "pass",
+      "outputs": [
+        {
+          "declared": "00-reading-guide.md",
+          "type": "file",
+          "percent": 0,
+          "files": [
+            {
+              "kind": "frontmatter",
+              "status": "missing",
+              "percent": 0,
+              "path": "outputs/brownfield/g4it-on-github/00-reading-guide.md"
+            }
+          ]
+        },
+        {
+          "declared": "glossary.md",
+          "type": "file",
+          "percent": 0,
+          "files": [
+            {
+              "kind": "frontmatter",
+              "status": "missing",
+              "percent": 0,
+              "path": "outputs/brownfield/g4it-on-github/glossary.md"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "quality-gate",
+      "label": "Quality Gate",
+      "kind": "station",
+      "status": "passed",
+      "percent": 100,
+      "percentSource": "files",
+      "depth": 0,
+      "collapsedByDefault": true,
+      "gate": "pass",
+      "outputs": [
+        {
+          "declared": "brownfield-analysis-report.md",
+          "type": "file",
+          "percent": 0,
+          "files": [
+            {
+              "kind": "frontmatter",
+              "status": "missing",
+              "percent": 0,
+              "path": "outputs/brownfield/g4it-on-github/brownfield-analysis-report.md"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

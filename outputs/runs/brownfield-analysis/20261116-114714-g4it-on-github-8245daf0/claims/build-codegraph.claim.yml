@@ -1,0 +1,11 @@
+station: "build-codegraph"
+actor: "gwenael.Templier@soprasteria.com"
+claimed_at: "2026-11-16T13:51:06Z"
+scope: station
+origin: auto
+covers:
+  - "build-codegraph"
+context:
+  workflow: "brownfield-analysis"
+  run_dir: "C:\Users\gtemplier\Documents\Git_Repo\ssg-g4it\g4it-on-github\outputs\runs\brownfield-analysis\20261116-114714-g4it-on-github-8245daf0"
+  trace_id: "8245daf0-c908-463d-8835-75cf5cb5f160"

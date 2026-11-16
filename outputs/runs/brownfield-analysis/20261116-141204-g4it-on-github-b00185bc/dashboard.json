@@ -1,0 +1,65 @@
+{
+  "run": {
+    "workflow": "brownfield-analysis",
+    "runDir": "outputs/runs/brownfield-analysis/20261116-141204-g4it-on-github-b00185bc/",
+    "stateFile": "outputs/runs/brownfield-analysis/20261116-141204-g4it-on-github-b00185bc/workflow-state.md",
+    "generatedAt": "2026-11-16T14:40:20Z",
+    "maxPoolDepth": 2,
+    "percent": 100,
+    "percentSource": "files"
+  },
+  "stations": [
+    {
+      "id": "discover-repositories",
+      "label": "Discover Repositories",
+      "kind": "station",
+      "status": "passed",
+      "percent": 100,
+      "percentSource": "files",
+      "depth": 0,
+      "collapsedByDefault": true,
+      "gate": "pass",
+      "outputs": [
+        {
+          "declared": "repository-inventory.md",
+          "type": "file",
+          "percent": 100,
+          "files": [
+            {
+              "kind": "frontmatter",
+              "status": "validated",
+              "percent": 100,
+              "path": "outputs/brownfield/g4it-on-github/repository-inventory.md"
+            }
+          ]
+        },
+        {
+          "declared": "repository-classification.md",
+          "type": "file",
+          "percent": 100,
+          "files": [
+            {
+              "kind": "frontmatter",
+              "status": "validated",
+              "percent": 100,
+              "path": "outputs/brownfield/g4it-on-github/repository-classification.md"
+            }
+          ]
+        },
+        {
+          "declared": "source-staging.md",
+          "type": "file",
+          "percent": 0,
+          "files": [
+            {
+              "kind": "frontmatter",
+              "status": "missing",
+              "percent": 0,
+              "path": "outputs/brownfield/g4it-on-github/source-staging.md"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

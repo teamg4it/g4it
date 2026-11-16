@@ -1,0 +1,12 @@
+workflow: brownfield-analysis
+feature: g4it-on-github
+started: "2026-11-16T14:12:04Z"
+status: passed
+trace_id: b00185bc-fbd9-4285-a4b6-e0acc4ee9f8f
+current_station: ""
+stations:
+  - id: discover-repositories
+    status: passed
+    started: "2026-11-16T14:12:16Z"
+    completed: "2026-11-16T14:14:10Z"
+    gate: pass

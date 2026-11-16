@@ -8,3 +8,7 @@
 # Repo-graph local index
 /.mygraph/
 outputs/brownfield/*/knowledge-plane/
+
+# Backup and caches
+.state-backups/*
+.github/hooks/.cache/*
