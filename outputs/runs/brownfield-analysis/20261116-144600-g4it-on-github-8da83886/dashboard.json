@@ -3,7 +3,7 @@
     "workflow": "brownfield-analysis",
     "runDir": "outputs/runs/brownfield-analysis/20261116-144600-g4it-on-github-8da83886/",
     "stateFile": "outputs/runs/brownfield-analysis/20261116-144600-g4it-on-github-8da83886/workflow-state.md",
-    "generatedAt": "2026-11-16T15:53:25Z",
+    "generatedAt": "2026-11-16T15:58:27Z",
     "maxPoolDepth": 2,
     "percent": 100,
     "percentSource": "files"
