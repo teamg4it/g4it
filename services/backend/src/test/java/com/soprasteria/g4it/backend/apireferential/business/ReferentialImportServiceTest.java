@@ -182,11 +182,12 @@ class ReferentialImportServiceTest {
 
     @Test
     void testProcessItemTypeCsv_OrganizationMismatch_ThrowsBadRequest() throws IOException {
-        String csv = "header1\nval1\n";
+        String csv = "type;item_category\nLaptop;Hardware\n";
          when(file.getBytes()).thenReturn(csv.getBytes());
         when(file.getOriginalFilename()).thenReturn("test.csv");
         ItemTypeRest rest = mock(ItemTypeRest.class);
         when(rest.getOrganization()).thenReturn("otherOrg");
+        when(rest.getItemCategory()).thenReturn("Hardware");
         when(referentialMapper.csvItemTypeToRest(any())).thenReturn(rest);
         when(validator.validate(any())).thenReturn(Collections.emptySet());
         assertThrows(BadRequestException.class, () ->
@@ -233,12 +234,13 @@ class ReferentialImportServiceTest {
 
     @Test
     void testProcessItemTypeCsv_Valid() throws IOException {
-        String csv = "header1\nval1\n";
+        String csv = "type;item_category\nLaptop;Hardware\n";
          when(file.getBytes()).thenReturn(csv.getBytes());
         when(file.getOriginalFilename()).thenReturn("test.csv");
 
         ItemTypeRest rest = mock(ItemTypeRest.class);
         when(rest.getOrganization()).thenReturn("org");
+        when(rest.getItemCategory()).thenReturn("Hardware");
 
         when(referentialMapper.csvItemTypeToRest(any())).thenReturn(rest);
         when(validator.validate(any())).thenReturn(Collections.emptySet());
@@ -313,13 +315,14 @@ class ReferentialImportServiceTest {
     @Test
     void testParseItemTypeCsv_Valid() throws IOException {
         String csv = """
-            type;category;comment;default_lifespan;is_server;source;ref_default_item;version
-t;c;com;1;true;s;ref;1
+            type;category;item_category;comment;default_lifespan;is_server;source;ref_default_item;version
+t;c;Hardware;com;1;true;s;ref;1
 """;
          when(file.getBytes()).thenReturn(csv.getBytes());
         when(file.getOriginalFilename()).thenReturn("test.csv");
 
         ItemTypeRest rest = new ItemTypeRest();
+        rest.setItemCategory("Hardware");
 
         when(referentialMapper.csvItemTypeToRest(any())).thenReturn(rest);
         when(validator.validate(any())).thenReturn(Collections.emptySet());
@@ -329,6 +332,27 @@ t;c;com;1;true;s;ref;1
         assertNotNull(result.getData());
         assertEquals(1, result.getData().size());
         assertTrue(result.getReport().getErrors().isEmpty());
+    }
+
+    @Test
+    void testParseItemTypeCsv_BlankItemCategoryIsRejected() throws IOException {
+        String csv = """
+            type;category;item_category;comment;default_lifespan;is_server;source;ref_default_item;version
+t;c;   ;com;1;true;s;ref;1
+""";
+        when(file.getBytes()).thenReturn(csv.getBytes());
+        when(file.getOriginalFilename()).thenReturn("test.csv");
+
+        ItemTypeRest rest = new ItemTypeRest();
+        rest.setItemCategory("   ");
+        when(referentialMapper.csvItemTypeToRest(any())).thenReturn(rest);
+        when(validator.validate(any())).thenReturn(Collections.emptySet());
+
+        ItemTypeParseResult result = referentialImportService.parseItemTypeCsv(file);
+
+        assertTrue(result.getData().isEmpty());
+        assertEquals(1, result.getReport().getErrors().size());
+        assertTrue(result.getReport().getErrors().getFirst().contains("item_category"));
     }
 
     @Test
@@ -434,14 +458,15 @@ t;c;com;1;true;s;ref;1
     void testParseItemTypeCsv_WithValidationErrors() throws IOException {
 
         String csv = """
-    type;category;comment;default_lifespan;is_server;source;ref_default_item;version
-    t;c;com;1;true;s;ref;1
+    type;category;item_category;comment;default_lifespan;is_server;source;ref_default_item;version
+    t;c;Hardware;com;1;true;s;ref;1
     """;
 
         when(file.getBytes()).thenReturn(csv.getBytes());
         when(file.getOriginalFilename()).thenReturn("test.csv");
 
         ItemTypeRest rest = new ItemTypeRest();
+        rest.setItemCategory("Hardware");
         when(referentialMapper.csvItemTypeToRest(any())).thenReturn(rest);
 
         ConstraintViolation<ItemTypeRest> violation = mock(ConstraintViolation.class);
@@ -997,12 +1022,13 @@ t;c;com;1;true;s;ref;1
     void shouldProcessItemTypeCsvSuccessfully() throws IOException {
 
         String csv = """
-            type
-            Laptop
+            type;item_category
+            Laptop;Hardware
             """;
 
         ItemTypeRest itemType = new ItemTypeRest();
         itemType.setOrganization("org");
+        itemType.setItemCategory("Hardware");
 
         when(file.getBytes()).thenReturn(csv.getBytes());
         when(file.getOriginalFilename()).thenReturn("item-type.csv");
@@ -1040,12 +1066,13 @@ t;c;com;1;true;s;ref;1
     void shouldAddValidationErrorWhenItemTypeIsInvalid() throws IOException {
 
         String csv = """
-            type
-            Laptop
+            type;item_category
+            Laptop;Hardware
             """;
 
         ItemTypeRest itemType = new ItemTypeRest();
         itemType.setOrganization("org");
+        itemType.setItemCategory("Hardware");
 
         @SuppressWarnings("unchecked")
         ConstraintViolation<ItemTypeRest> violation =
@@ -1069,37 +1096,25 @@ t;c;com;1;true;s;ref;1
         when(validator.validate(itemType))
                 .thenReturn(violations);
 
-        when(referentialMapper.toItemTypeEntity(anyList()))
-                .thenReturn(Collections.emptyList());
-
-        when(persistenceService.saveItemTypes(anyList(), eq("org")))
-                .thenReturn(0);
-
-        when(cacheManager.getCache("ref_getItemTypes"))
-                .thenReturn(cache);
-
         ImportReportRest report =
                 referentialImportService.processItemTypeCsv(file, "org");
 
         assertEquals(1, report.getErrors().size());
-        assertEquals(0L, report.getImportedLineNumber());
-
-        verify(persistenceService)
-                .saveItemTypes(anyList(), eq("org"));
-
-        verify(cache).clear();
+        assertNull(report.getImportedLineNumber());
+        verifyNoInteractions(persistenceService, cacheManager, cache);
     }
 
     @Test
     void shouldThrowBadRequestWhenItemTypeOrganizationDoesNotMatch() throws IOException {
 
         String csv = """
-            type
-            Laptop
+            type;item_category
+            Laptop;Hardware
             """;
 
         ItemTypeRest itemType = new ItemTypeRest();
         itemType.setOrganization("another-org");
+        itemType.setItemCategory("Hardware");
 
         when(file.getBytes()).thenReturn(csv.getBytes());
         when(file.getOriginalFilename()).thenReturn("item-type.csv");
@@ -1669,12 +1684,13 @@ t;c;com;1;true;s;ref;1
     void shouldParseItemTypeCsvSuccessfully() throws IOException {
 
         String csv = """
-            type;category;comment;default_lifespan;is_server;source;ref_default_item;version
-            Laptop;Device;comment;5;false;ADEME;Default;1
+            type;category;item_category;comment;default_lifespan;is_server;source;ref_default_item;version
+            Laptop;Device;Hardware;comment;5;false;ADEME;Default;1
             """;
 
         ItemTypeRest item = new ItemTypeRest();
         item.setOrganization("org");
+        item.setItemCategory("Hardware");
 
         when(file.getBytes()).thenReturn(csv.getBytes(StandardCharsets.UTF_8));
         when(file.getOriginalFilename()).thenReturn("item-type.csv");
@@ -1704,11 +1720,12 @@ t;c;com;1;true;s;ref;1
     void shouldReturnValidationErrorWhenItemTypeIsInvalid() throws IOException {
 
         String csv = """
-            type;category;comment;default_lifespan;is_server;source;ref_default_item;version
-            Laptop;Device;comment;5;false;ADEME;Default;1
+            type;category;item_category;comment;default_lifespan;is_server;source;ref_default_item;version
+            Laptop;Device;Hardware;comment;5;false;ADEME;Default;1
             """;
 
         ItemTypeRest item = new ItemTypeRest();
+        item.setItemCategory("Hardware");
 
         @SuppressWarnings("unchecked")
         ConstraintViolation<ItemTypeRest> violation =
