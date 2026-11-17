@@ -56,20 +56,44 @@ The workspace comes with :
 __NumEcoEval__ needs kafka and postgresql to work.  
 __G4IT__ needs postgresql, keycloak, and NumEcoEval to work.
 
-Start prerequisites :
-- Open IntelliJ workspace
-- Select the configuration to run `podman-compose up -d` or `python -m podman_compose up -d` and run it
-  - it will start all containers
+Start prerequisites:
+- Open the IntelliJ workspace, or open a terminal at the repository root.
+- From the repository root, run:
+  ```shell
+  cd workspace/docker
+  podman-compose up -d
+  ```
+  This starts the supporting containers defined in `workspace/docker/docker-compose.yml`.
 
-Verifications :
-- Open dbeaver
-  - Connect to the local database : localhost:5432/postgres (postgres:postgres) 
-  - You should have two tables:
-    - postgres : with tables en_*, ind_*, ref_*
-    - keycloak : with internal keycloak tables
+Verification:
+
+You can inspect PostgreSQL from inside its container :
+
+```shell
+podman exec -it postgresdb psql -U postgres -d postgres
+```
+
+The local defaults are username `postgres` and password `postgres`, as configured in
+`workspace/docker/.env`. The `postgres` database contains G4IT and NumEcoEval data,
+including tables with `en_*`, `ind_*`, and `ref_*` prefixes. At the `psql` prompt, list
+tables in the `public` schema:
+
+```sql
+SELECT tablename FROM pg_catalog.pg_tables WHERE schemaname = 'public';
+```
+
+Keycloak stores its own tables in a separate database named `keycloak`. To inspect it,
+connect with:
+
+```shell
+podman exec -it postgresdb psql -U postgres -d keycloak
+```
+
+Enter `\q` to exit `psql`.
  
-Possible errors :
-- toomanyrequests when we use `podman-compose up -d` :
+Possible errors:
+
+- `toomanyrequests` when running `podman-compose up -d`:
 
 In podman desktop, there is a Settings button with Proxy/Registries menu :
 
@@ -77,7 +101,10 @@ Proxy : if you have a company proxy, set it here
 
 Registries -> Docker hub : Login with your user account if you reach toomanyrequests limits
 
-- api containers crash : can be the consequence of postgres port already used (5432).
+- Maven may report HTTP `429 Too Many Requests` while downloading dependencies. This can
+  be a temporary Maven Central rate limit; wait and retry later or try from another network.
+- API containers crash: this can be caused by PostgreSQL's port already being in use
+  (`5432`).
 
 ### Start G4IT :rocket:
 
@@ -94,10 +121,14 @@ Verifications :
   - password: `password`
 - You should be able to navigate in G4IT
 
+The `admin@g4it.com` account is the G4IT application super-admin. It is distinct from the
+Keycloak realm administrator account `admin`; G4IT application roles are managed by the
+backend, not by granting Keycloak roles.
+
 ##### Debug with keycloak in local (optional):
  - Make sure the keycloak podman container is started in local
  - In services/backend/src/main/resources/application.yml, remove __nosecurity__ in spring.profiles.active (restart backend)
- - In services/frontend/environments/environment.ts, update keycloak.enabled to __"true"__
+ - In services/frontend/src/environments/environment.ts, update keycloak.enabled to __"true"__
  -  :warning: Do not commit the changes :warning:
 
 ### Test G4IT features
@@ -138,19 +169,18 @@ Sometimes, the backend may not start because of a missing dependency.
 - Click on compile (Lifecycle > compile) to build the project
 - Then, try to run the backend again
 
-![missing_dependency.png](../missing_dependency.png)
+![missing_dependency.png](../../missing_dependency.png)
 
 #### Keycloak container not starting
 If the Keycloak container fails to start, it may be due to image pull issues. Check the following:
 - Ensure you have a stable internet connection.
 - If you are behind a proxy, configure your proxy settings in Podman Desktop.
-- Go to C:\G4IT\_repo\g4it\workspace\docker path.
+- Go to the repository's `workspace/docker` directory.
 - Try pulling the images manually using the command:
 ```bash
-python -m podman_compose up -d
+podman-compose up -d
 ```
 - If the issue persists, check the logs for more details:
 ```bash
-python -m podman_compose logs keycloak
+podman-compose logs keycloak
 ```
-

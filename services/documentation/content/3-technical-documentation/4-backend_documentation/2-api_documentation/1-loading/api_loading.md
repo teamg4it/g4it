@@ -7,8 +7,8 @@ mermaid: true
 
 ## API PATH
 
-| API                                                                                                    | Swagger                                                                                                       | Use Cases                                                                                                  |
-|:-------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------|:-----------------------------------------------------------------------------------------------------------|
+| API                                                                                                  | Swagger                                                                                             | Use Cases                                                                                                  |
+| :--------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------- |
 | POST /organizations/{organization}/workspaces/{workspace}/inventories/{inventoryId}/load-input-files | [Input/Output](https://saas-g4it.com/api/swagger-ui/index.html#/loading-files/launchloadInputFiles) | [Load inventory files]({{% ref "/2-functional-documentation/use_cases/uc_inventory/uc3_load_files.md" %}}) |
 
 ## Description
@@ -30,10 +30,10 @@ C --> D(Launch asynchroneous loading process)
 D --> E(Return the task id)
 {{</ mermaid >}}
 
-Note that, the loading process is done asynchronous. The user can track the loading process by calling the
-API [`GET /organizations/{organization}/workspaces/{workspace}/task/{taskId}`](https://saas-g4it.com/api/swagger-ui/index.html#/task/getTask).
+Note that the loading process is done asynchronously. The user can track the loading process by calling the
+API on [`GET /organizations/{organization}/workspaces/{workspace}/task/{taskId}`](https://saas-g4it.com/api/swagger-ui/index.html#/task/getTask).
 
-Attention, to consume small resource the loading process is done by one thread. So if there are two loads
+Caution! To minimise resource consumption, the loading process is done by one thread. So if there are two loads
 in the instance, one will wait for the other to finish.
 
 The API call is handled
@@ -64,11 +64,10 @@ the [AsyncLoadFilesService class](https://github.com/G4ITTeam/g4it/blob/main/ser
 ### Checking process
 
 Before any checking process starts, a check for missing mandatory headers is done. In case there is any mandatory field
-mising for any of the uploaded files, the task fails with status 'FAILED' and no further processing is done.
+missing for any of the uploaded files, the task fails with status 'FAILED' and no further processing is done.
 
-The main purpose of the checking process is to check the global coherence of the files to be loaded between each other
-and
-between already loaded files of the same inventory.
+The main purpose of the checking process is to check the global coherence of the files to be loaded
+and between already loaded files of the same inventory.
 
 To do this efficiently, we load each file in parallel using a newly created thread pool. Each file is loaded into the
 appropriate check metadata table depending on its type.
@@ -76,17 +75,17 @@ appropriate check metadata table depending on its type.
 Loading of metadata is a dump load with no business logic. We just bulk read each file depending
 on its type, and we insert the bulk of data into the corresponding check table.
 
-The process waits until all files are loaded continuing.
+The process waits until all files are loaded before continuing.
 
-This is done in the [AsyncLoadMetadataService class](). The process of loading the metadata is done in
-the [LoadMetadataService class]() using loaders depending on the file type.
+This is done in the [AsyncLoadMetadataService class](<>). The process of loading the metadata is done in
+the [LoadMetadataService class](<>) using loaders depending on the file type.
 
 ##### File to load Metadata
 
 Bellow you will find the entities used to load the metadata of the files to load.
 
 | Package                                                | Entity                 | table                                                                                                                                    |
-|--------------------------------------------------------|------------------------|------------------------------------------------------------------------------------------------------------------------------------------|
+| ------------------------------------------------------ | ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
 | com.soprasteria.g4it.backend.apiloadinputfiles.modeldb | CheckApplication       | [check_inv_load_application](../../db_documentation/information_system_and_digital_service_input_data/digital_service_input_data)        |
 | com.soprasteria.g4it.backend.apiloadinputfiles.modeldb | CheckDatacenter        | [check_inv_load_datacenter](../../db_documentation/information_system_and_digital_service_input_data/digital_service_input_data)         |
 | com.soprasteria.g4it.backend.apiloadinputfiles.modeldb | CheckPhysicalEquipment | [check_inv_load_physical_equipment](../../db_documentation/information_system_and_digital_service_input_data/digital_service_input_data) |
@@ -140,13 +139,12 @@ as 100). This is present in the package apiinout.modeldb as a class public class
 Bellow you will find the entities used to load the metadata of the files to load.
 
 | Package                                       | Entity              | table                                                                                                                        |
-|-----------------------------------------------|---------------------|------------------------------------------------------------------------------------------------------------------------------|
+| --------------------------------------------- | ------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
 | com.soprasteria.g4it.backend.apiinout.modeldb | InApplication       | [in_application](../../db_documentation/information_system_and_digital_service_input_data/digital_service_input_data)        |
 | com.soprasteria.g4it.backend.apiinout.modeldb | InDatacenter        | [in_datacenter](../../db_documentation/information_system_and_digital_service_input_data/digital_service_input_data)         |
 | com.soprasteria.g4it.backend.apiinout.modeldb | InPhysicalEquipment | [in_physical_equipment](../../db_documentation/information_system_and_digital_service_input_data/digital_service_input_data) |
 | com.soprasteria.g4it.backend.apiinout.modeldb | InVirtualEquipment  | [in_virtual_equipment](../../db_documentation/information_system_and_digital_service_input_data/digital_service_input_data)  |
-| com.soprasteria.g4it.backend.apiinout.modeldb | InAiService         | [in_aiservices](../../db_documentation/information_system_and_digital_service_input_data/digital_service_input_data)          |
-
+| com.soprasteria.g4it.backend.apiinout.modeldb | InAiService         | [in_aiservices](../../db_documentation/information_system_and_digital_service_input_data/digital_service_input_data)         |
 
 ### Handling rejected files
 
