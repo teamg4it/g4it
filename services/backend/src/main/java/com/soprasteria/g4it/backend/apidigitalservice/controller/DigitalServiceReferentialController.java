@@ -105,5 +105,20 @@ public class DigitalServiceReferentialController implements DigitalServiceRefere
         return ResponseEntity.ok(digitalServiceReferentialService.getCloudInstances(cloudProvider));
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ResponseEntity<List<String>> getAllAIProviders() {
+        return ResponseEntity.ok(digitalServiceReferentialService.getAIProviders());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ResponseEntity<List<String>> getAllAIModels(final String aiProvider) {
+        return ResponseEntity.ok(digitalServiceReferentialService.getAIModels(aiProvider));
+    }
 
 }

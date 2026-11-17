@@ -9,6 +9,7 @@
 package com.soprasteria.g4it.backend.apidigitalservice.business;
 
 import com.soprasteria.g4it.backend.external.boavizta.business.BoaviztapiService;
+import com.soprasteria.g4it.backend.external.ecologits.business.EcologitsService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -26,6 +27,9 @@ class DigitalServiceReferentialCloudTest {
 
     @Mock
     private BoaviztapiService boaviztapiService;
+
+    @Mock
+    private EcologitsService ecologitsService;
 
     @InjectMocks
     private DigitalServiceReferentialService digitalServiceReferentialService;
@@ -74,5 +78,27 @@ class DigitalServiceReferentialCloudTest {
         assertThat(result).isEmpty();
         verify(boaviztapiService, times(1)).getInstanceList(providerName);
     }
-}
 
+    @Test
+    void shouldGetAIProviders() {
+        List<String> expectedProviders = List.of("openai", "mistral");
+        when(ecologitsService.getAIProviderList()).thenReturn(expectedProviders);
+
+        List<String> result = digitalServiceReferentialService.getAIProviders();
+
+        assertThat(result).isEqualTo(expectedProviders);
+        verify(ecologitsService, times(1)).getAIProviderList();
+    }
+
+    @Test
+    void shouldGetAIModels_forProvider() {
+        String providerName = "openai";
+        List<String> expectedModels = List.of("gpt-4o-mini", "gpt-4o");
+        when(ecologitsService.getAIModelList(providerName)).thenReturn(expectedModels);
+
+        List<String> result = digitalServiceReferentialService.getAIModels(providerName);
+
+        assertThat(result).isEqualTo(expectedModels);
+        verify(ecologitsService, times(1)).getAIModelList(providerName);
+    }
+}

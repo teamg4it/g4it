@@ -196,3 +196,45 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
         '500':
           $ref: "#/components/responses/InternalServerError"
+
+  /referential/ecologits/ai/providers:
+    get:
+      tags:
+        - digital-service referential
+      summary: Get list of available AI providers in Ecologits
+      operationId: getAllAIProviders
+      responses:
+        '200':
+          description: The AI provider name list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: "#/components/responses/InternalServerError"
+
+  /referential/ecologits/ai/models:
+    parameters:
+      - $ref: '#/components/parameters/aiProviderQueryParam'
+    get:
+      tags:
+        - digital-service referential
+      summary: Get list of available AI models for an Ecologits provider
+      operationId: getAllAIModels
+      responses:
+        '200':
+          description: The AI model name list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: "#/components/responses/InternalServerError"

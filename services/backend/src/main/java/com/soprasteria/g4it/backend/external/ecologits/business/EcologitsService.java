@@ -14,7 +14,10 @@ import com.soprasteria.g4it.backend.external.ecologits.model.request.EcoEstimati
 import com.soprasteria.g4it.backend.external.ecologits.model.response.EcoEstimationResponseRest;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * Service in charge of calling the EcoLogits calculation engine to estimate the environmental
@@ -28,6 +31,26 @@ public class EcologitsService {
     public static final String ECOLOGITS_ENGINE = "EcoLogits";
 
     private final EcologitsClient ecologitsClient;
+
+    /**
+     * GET Ecologits AI providers.
+     *
+     * @return providers name list (string)
+     */
+    @Cacheable("ecologitsGetProviderList")
+    public List<String> getAIProviderList() {
+        return ecologitsClient.getAllAIProviders();
+    }
+
+    /**
+     * GET Ecologits AI models.
+     *
+     * @return models name list (string)
+     */
+    @Cacheable("ecologitsGetModelList")
+    public List<String> getAIModelList(String aiProvider) {
+        return ecologitsClient.getAllAIModels(aiProvider);
+    }
 
     /**
      * Estimate the environmental impacts of an LLM inference call using EcoLogits.
