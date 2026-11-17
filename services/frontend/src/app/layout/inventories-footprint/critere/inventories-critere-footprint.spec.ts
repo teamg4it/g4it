@@ -1,12 +1,12 @@
 import { TestBed } from "@angular/core/testing";
 import { ActivatedRoute, Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
-import { Constants } from "src/constants";
 import { DecimalsPipe } from "src/app/core/pipes/decimal.pipe";
 import { IntegerPipe } from "src/app/core/pipes/integer.pipe";
 import { FootprintService } from "src/app/core/service/business/footprint.service";
 import { FootprintStoreService } from "src/app/core/store/footprint.store";
 import { GlobalStoreService } from "src/app/core/store/global.store";
+import { Constants } from "src/constants";
 import { InventoriesFootprintComponent } from "../inventories-footprint.component";
 import { InventoriesCritereFootprintComponent } from "./inventories-critere-footprint.component";
 
@@ -167,6 +167,8 @@ describe("InventoriesCritereFootprintComponent", () => {
                 {
                     itemCategory: "DEVICES",
                     equipment: "Laptop",
+                    itemType: "Laptop",
+                    itemModel: "ThinkPad",
                     country: "France",
                     impact: 2,
                     sip: 3,
@@ -205,7 +207,10 @@ describe("InventoriesCritereFootprintComponent", () => {
             "inventories-footprint.sunburst-category.devices",
         );
         expect(series.data[0].children).toEqual([
-            jasmine.objectContaining({ name: "Laptop", value: 2 }),
+            jasmine.objectContaining({
+                name: "Laptop",
+                children: [jasmine.objectContaining({ name: "ThinkPad", value: 2 })],
+            }),
         ]);
         expect(series.data[1].children[0].children).toEqual([
             jasmine.objectContaining({ name: "AWS", value: 5 }),

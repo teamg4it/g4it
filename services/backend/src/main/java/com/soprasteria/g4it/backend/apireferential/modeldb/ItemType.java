@@ -8,14 +8,13 @@
 
 package com.soprasteria.g4it.backend.apireferential.modeldb;
 
+import java.io.Serializable;
+
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-
-import java.io.Serializable;
-import java.util.Set;
 
 /**
  * Referential ItemType
@@ -108,7 +107,7 @@ public class ItemType implements Serializable {
     }
 
     public static boolean isValidItemCategory(String itemCategory) {
-        return itemCategory != null;
+        return itemCategory != null && !itemCategory.isBlank();
     }
 
 }

@@ -8,7 +8,34 @@
 
 package com.soprasteria.g4it.backend.apiindicator.business;
 
-import com.soprasteria.g4it.backend.apiindicator.model.*;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+
+import com.soprasteria.g4it.backend.apiindicator.model.ApplicationCriteriaFilterBO;
+import com.soprasteria.g4it.backend.apiindicator.model.ApplicationFiltersBO;
+import com.soprasteria.g4it.backend.apiindicator.model.ApplicationIndicatorsPageBO;
+import com.soprasteria.g4it.backend.apiindicator.model.ApplicationMultiCriteriaBO;
+import com.soprasteria.g4it.backend.apiindicator.model.ApplicationMultiCriteriaImpactBO;
+import com.soprasteria.g4it.backend.apiindicator.model.EquipmentImpactBO;
+import com.soprasteria.g4it.backend.apiindicator.model.GraphLevel;
+import com.soprasteria.g4it.backend.apiindicator.model.RepartitionType;
+import com.soprasteria.g4it.backend.apiindicator.model.VirtualEquipmentLowImpactCountBO;
 import com.soprasteria.g4it.backend.apiinventory.business.InventoryService;
 import com.soprasteria.g4it.backend.apiinventory.model.InventoryBO;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
@@ -18,25 +45,6 @@ import com.soprasteria.g4it.backend.common.task.business.TaskService;
 import com.soprasteria.g4it.backend.common.task.modeldb.Task;
 import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
-
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.PageRequest;
-
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class InventoryIndicatorServiceTest {
@@ -450,7 +458,10 @@ class InventoryIndicatorServiceTest {
         Long workspaceId = 7L;
         Long inventoryId = 11L;
         Long taskId = 13L;
-        EquipmentImpactBO printer = EquipmentImpactBO.builder().equipment("printer").build();
+        EquipmentImpactBO printer = EquipmentImpactBO.builder()
+                .equipment("printer")
+                .reference("matched-model")
+                .build();
         EquipmentImpactBO laptop = EquipmentImpactBO.builder().equipment("laptop").build();
         Map<String, EquipmentIndicatorBO> indicators = Map.of(
                 "criterion",
@@ -466,14 +477,19 @@ class InventoryIndicatorServiceTest {
                 itemType("printer", "INFRASTRUCTURE", null, null),
                 itemType("printer", "ORGANIZATION", organization, null),
                 itemType("printer", "Custom print category", null, workspaceId),
+                ItemType.builder()
+                        .type("mapped printer")
+                        .workspaceId(workspaceId)
+                        .build(),
                 itemType("laptop", "INFRASTRUCTURE", null, null),
                 itemType("laptop", "ORGANIZATION", organization, null),
                 itemType("laptop", "INFRASTRUCTURE", null, null)
-        ));
 
         inventoryIndicatorService.getEquipmentIndicators(organization, workspaceId, inventoryId);
 
-        assertEquals("Custom print category", printer.getItemCategory());
+        assertEquals("mapped printer", printer.getItemType());
+        assertEquals("DEVICES", printer.getItemCategory());
+        assertEquals("laptop", laptop.getItemType());
         assertEquals("ORGANIZATION", laptop.getItemCategory());
     }
 
