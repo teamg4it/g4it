@@ -34,7 +34,6 @@ import { DigitalServiceBusinessService } from "src/app/core/service/business/dig
 import { UserService } from "src/app/core/service/business/user.service";
 import { InDatacentersService } from "src/app/core/service/data/in-out/in-datacenters.service";
 import { DigitalServiceStoreService } from "src/app/core/store/digital-service.store";
-import * as uuid from "uuid";
 import { AutofocusDirective } from "../../../../../core/directives/auto-focus.directive";
 import { PanelDatacenterComponent } from "../add-datacenter/datacenter.component";
 
@@ -210,7 +209,7 @@ export class PanelServerParametersComponent {
         private readonly router: Router,
         private readonly route: ActivatedRoute,
         public userService: UserService,
-    ) {}
+    ) { }
 
     setDefaultForm(type: string) {
         if (!this.current?.host?.code) return;
@@ -312,7 +311,7 @@ export class PanelServerParametersComponent {
 
     async addDatacenter(event: ServerDC) {
         const digitalServiceUid = this.digitalServiceStore.digitalService().uid;
-        const datacenterName = `${event.name}|${uuid.v4()}`;
+        const datacenterName = `${event.name}|${crypto.randomUUID()}`;
         await firstValueFrom(
             this.inDatacentersService.create({
                 location: event.location,

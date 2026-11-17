@@ -32,7 +32,6 @@ import { InputTextModule } from "primeng/inputtext";
 import { ToastModule } from "primeng/toast";
 import { TooltipModule } from "primeng/tooltip";
 import { finalize, lastValueFrom } from "rxjs";
-import { DigitalServiceVersionType } from "src/app/core/interfaces/digital-service-version.interface";
 import { DigitalService } from "src/app/core/interfaces/digital-service.interfaces";
 import { Organization, Workspace } from "src/app/core/interfaces/user.interfaces";
 import { UserService } from "src/app/core/service/business/user.service";
@@ -101,7 +100,6 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
     displayLinkCreatePopup = false;
     shareLink = "";
     expiryDate: Date | null = null;
-    digitalServiceVersionType = DigitalServiceVersionType;
     digitalServiceVersionUid =
         this.route.snapshot.paramMap.get("digitalServiceVersionId") ?? "";
     isPromoteVersionDialogVisible = false;
@@ -123,7 +121,7 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
         public readonly userService: UserService,
         private readonly messageService: MessageService,
         private readonly aiFormsStore: AIFormsStore,
-    ) {}
+    ) { }
 
     ngOnInit() {
         this.route.paramMap

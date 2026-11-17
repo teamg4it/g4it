@@ -121,8 +121,8 @@ export class PieChartComponent extends AbstractDashboard implements OnChanges {
         });
         this.xAxisInput = seriesData.map((item) => item.name);
         this.criteriaMap = dsTierOkmap;
-        const topThreeImpacts = [...seriesData]
-            .sort((a, b) => b.value - a.value)
+        const topThreeImpacts = seriesData
+            .toSorted((a, b) => b.value - a.value)
             .map((series) => ({
                 ...series,
                 percentage: (

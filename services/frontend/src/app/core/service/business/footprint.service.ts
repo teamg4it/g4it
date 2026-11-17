@@ -439,8 +439,8 @@ export class FootprintService {
             // Sort by alphabetical order
             footprintCalculated.sort((a: any, b: any) => a.data.localeCompare(b.data));
         }
-        const filterAllImpactsWithMax = [...impactsWithMaxDimensions]
-            .sort((a, b) => b.peopleeq - a.peopleeq)
+        const filterAllImpactsWithMax = impactsWithMaxDimensions
+            .toSorted((a, b) => b.peopleeq - a.peopleeq)
             .slice(0, 3);
         return {
             footprintCalculated,

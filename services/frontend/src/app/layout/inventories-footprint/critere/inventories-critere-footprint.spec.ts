@@ -1,12 +1,12 @@
 import { TestBed } from "@angular/core/testing";
 import { ActivatedRoute, Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
-import { Constants } from "src/constants";
 import { DecimalsPipe } from "src/app/core/pipes/decimal.pipe";
 import { IntegerPipe } from "src/app/core/pipes/integer.pipe";
 import { FootprintService } from "src/app/core/service/business/footprint.service";
 import { FootprintStoreService } from "src/app/core/store/footprint.store";
 import { GlobalStoreService } from "src/app/core/store/global.store";
+import { Constants } from "src/constants";
 import { InventoriesFootprintComponent } from "../inventories-footprint.component";
 import { InventoriesCritereFootprintComponent } from "./inventories-critere-footprint.component";
 

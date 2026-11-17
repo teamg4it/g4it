@@ -7,8 +7,24 @@
  */
 package com.soprasteria.g4it.backend.apiindicator.business;
 
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.soprasteria.g4it.backend.apievaluating.business.asyncevaluatingservice.ExportService;
-import com.soprasteria.g4it.backend.apiindicator.model.*;
+import com.soprasteria.g4it.backend.apiindicator.model.ApplicationCriteriaFilterBO;
+import com.soprasteria.g4it.backend.apiindicator.model.ApplicationFiltersBO;
+import com.soprasteria.g4it.backend.apiindicator.model.ApplicationIndicatorsPageBO;
+import com.soprasteria.g4it.backend.apiindicator.model.ApplicationMultiCriteriaBO;
+import com.soprasteria.g4it.backend.apiindicator.model.ApplicationMultiCriteriaImpactBO;
+import com.soprasteria.g4it.backend.apiindicator.model.GraphLevel;
+import com.soprasteria.g4it.backend.apiindicator.model.RepartitionType;
+import com.soprasteria.g4it.backend.apiindicator.model.VirtualEquipmentLowImpactCountBO;
 import com.soprasteria.g4it.backend.apiinout.repository.InApplicationRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.InDatacenterRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.InPhysicalEquipmentRepository;
@@ -23,15 +39,8 @@ import com.soprasteria.g4it.backend.common.task.business.TaskService;
 import com.soprasteria.g4it.backend.common.task.modeldb.Task;
 import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
-import lombok.NoArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
+import lombok.NoArgsConstructor;
 
 /**
  * Inventory Service.

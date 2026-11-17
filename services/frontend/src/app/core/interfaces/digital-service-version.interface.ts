@@ -21,11 +21,11 @@ export interface DigitalServicePromoteResponse {
     isPromoted: boolean;
 }
 
-export enum DigitalServiceVersionType {
-    ACTIVE = "active",
-    DRAFT = "draft",
-    ARCHIVED = "archived",
-}
+export const DigitalServiceVersionType = {
+    ACTIVE: "active",
+    DRAFT: "draft",
+    ARCHIVED: "archived",
+} as const
 
 export interface CompareVersion {
     versionId: string;

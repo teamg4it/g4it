@@ -36,7 +36,7 @@ export class BusinessHoursRendererPipe implements PipeTransform {
                 }
                 let min = time.at(1);
                 if (hour && min) {
-                    return hour.concat("h").concat(min);
+                    return `${hour}h${min}`;
                 }
             }
         }

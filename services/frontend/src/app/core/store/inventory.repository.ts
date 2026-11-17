@@ -4,13 +4,13 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 import { Injectable } from "@angular/core";
 import { createStore, select, setProp, withProps } from "@ngneat/elf";
 import { selectAllEntities, setEntities, withEntities } from "@ngneat/elf-entities";
 import { Inventory } from "src/app/core/interfaces/inventory.interfaces";
 
-export interface InventoryProps {
+interface InventoryProps {
     selected?: string;
 }
 

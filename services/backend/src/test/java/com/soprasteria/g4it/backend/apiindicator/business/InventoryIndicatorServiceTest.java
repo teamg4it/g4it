@@ -8,7 +8,34 @@
 
 package com.soprasteria.g4it.backend.apiindicator.business;
 
-import com.soprasteria.g4it.backend.apiindicator.model.*;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+
+import com.soprasteria.g4it.backend.apiindicator.model.ApplicationCriteriaFilterBO;
+import com.soprasteria.g4it.backend.apiindicator.model.ApplicationFiltersBO;
+import com.soprasteria.g4it.backend.apiindicator.model.ApplicationIndicatorsPageBO;
+import com.soprasteria.g4it.backend.apiindicator.model.ApplicationMultiCriteriaBO;
+import com.soprasteria.g4it.backend.apiindicator.model.ApplicationMultiCriteriaImpactBO;
+import com.soprasteria.g4it.backend.apiindicator.model.EquipmentImpactBO;
+import com.soprasteria.g4it.backend.apiindicator.model.GraphLevel;
+import com.soprasteria.g4it.backend.apiindicator.model.RepartitionType;
+import com.soprasteria.g4it.backend.apiindicator.model.VirtualEquipmentLowImpactCountBO;
 import com.soprasteria.g4it.backend.apiinventory.business.InventoryService;
 import com.soprasteria.g4it.backend.apiinventory.model.InventoryBO;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
@@ -18,25 +45,6 @@ import com.soprasteria.g4it.backend.common.task.business.TaskService;
 import com.soprasteria.g4it.backend.common.task.modeldb.Task;
 import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
-
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.PageRequest;
-
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class InventoryIndicatorServiceTest {
@@ -471,14 +479,11 @@ class InventoryIndicatorServiceTest {
                 itemType("printer", "Custom print category", null, workspaceId),
                 ItemType.builder()
                         .type("mapped printer")
-                        .itemCategory("DEVICES")
-                        .refDefaultItem("matched-model")
                         .workspaceId(workspaceId)
                         .build(),
                 itemType("laptop", "INFRASTRUCTURE", null, null),
                 itemType("laptop", "ORGANIZATION", organization, null),
                 itemType("laptop", "INFRASTRUCTURE", null, null)
-        ));
 
         inventoryIndicatorService.getEquipmentIndicators(organization, workspaceId, inventoryId);
 
