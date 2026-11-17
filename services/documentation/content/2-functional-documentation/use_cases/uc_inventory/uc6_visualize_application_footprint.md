@@ -338,14 +338,29 @@ RND ->> front: Click on "Application" button or one of the tab in the view or on
 front ->> back: GET /api/{organization}/{workspace}/inventories?inventoryId={inventory_id}
 Database--> back: Get inventory information
 back -->> front: Send the details of selected inventory Id on my view related to my view
-front ->> back: GET /api/organizations/{organization}/workspaces/{workspace}/inventories/{inventoryId}/indicators/applications
-Database--> back: Get the indicators from out_application table
-front ->> back: GET /api/organizations/{organization}/workspaces/{workspace}/inventories/{inventoryId}/indicators/virtualEquipmentsLowImpact
-Database--> back: Get the virtual equipments which are in low impact
-front ->> back: GET /api/organizations/{organization}/workspaces/{workspace}/inventories/{inventoryId}/indicators/virtualEquipmentElecConsumption
-Database--> back: Get power of consumption of the virtual equipments
-back -->> front: Indicators aggregated to be displayed
+front ->> back: GET /api/organizations/{organization}/workspaces/{workspace}/inventories/{inventoryId}/indicators/applications/filters
+Database--> back: Get the distinct environments, equipment types, lifecycles and the domain/subdomain tree from out_application table
+back -->> front: Send the values to populate the filter sidebar
+front ->> back: POST /api/organizations/{organization}/workspaces/{workspace}/inventories/{inventoryId}/indicators/applications/multi-criteria-impacts (body: filters)
+Database--> back: Sum impact and people equivalent per criterion for the filters (aggregated by the database)
+back -->> front: Send one total per criterion for the criteria selection
+front ->> back: POST /api/organizations/{organization}/workspaces/{workspace}/inventories/{inventoryId}/indicators/applications/multi-criteria (body: criteria, graphLevel, repartition, filters)
+Database--> back: Aggregate impacts per graph level (global, domain, subdomain, application, virtual equipment) and per repartition, with data consistency counts
+back -->> front: Send the nodes of the graph, each broken down by repartition
+front ->> back: POST /api/organizations/{organization}/workspaces/{workspace}/inventories/{inventoryId}/indicators/applications?page={page}&size={size}&sort={field,direction} (body: filters)
+Database--> back: Group and sum impacts per application, criterion and unit, sort (applicationName, criteria, sip, impact) and return only the requested page
+back -->> front: Send the requested page of the table (content, totalElements, totalPages)
+front ->> back: POST /api/organizations/{organization}/workspaces/{workspace}/inventories/{inventoryId}/indicators/virtualEquipmentsLowImpact/count (body: filters)
+Database--> back: Count the virtual equipments and those which are in low impact for the filters
+back -->> front: Send the total and the low impact counts
+front ->> back: POST /api/organizations/{organization}/workspaces/{workspace}/inventories/{inventoryId}/indicators/virtualEquipmentsElecConsumption/sum (body: filters)
+Database--> back: Sum the power consumption and the quantity of virtual equipments for the filters
+back -->> front: Send the total power consumption and the number of virtual equipments
 front --> RND: Display the list of filters related to my view
 front ->> RND: Display filtered graphs related to my view
+RND ->> front: Click on a bar of the graph (drill down), change the repartition, sort or change page of the table
+front ->> back: POST .../indicators/applications/multi-criteria or POST .../indicators/applications (new graphLevel / repartition / filters / page / sort)
+back -->> front: Send only the data of the new graph level or page
+front ->> RND: Display the updated graph or table
 
 {{< /mermaid >}}

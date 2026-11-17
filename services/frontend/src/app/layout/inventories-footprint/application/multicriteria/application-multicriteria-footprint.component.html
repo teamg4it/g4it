@@ -39,7 +39,7 @@
     }
 </div>
 @if (showInconsitencyGraph) {
-    @if (options().series && applicationStats()[0].value) {
+    @if (options().series && criteriaCalculated().footprints.length) {
         <app-stack-bar-chart
             [xAxisInput]="xAxisInput"
             [statusCountMap]="criteriaCalculated().criteriasCount!"
@@ -51,7 +51,7 @@
         </div>
     }
 } @else {
-    @if (applicationStats()[0].value) {
+    @if (criteriaCalculated().footprints.length) {
         <div
             attr.aria-label="{{
                 'inventories-footprint.round-button.' + selectedDimension() | translate

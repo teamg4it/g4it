@@ -60,11 +60,12 @@ class ReleaseNotesControllerSecurityTest {
         doThrow(new AuthorizationException(403, "Not a super admin"))
                 .when(administratorRoleService).hasSuperAdminRights(admin);
 
+        ReleaseNotesPublishRest publishRequest = ReleaseNotesPublishRest.builder().content("Release notes").build();
+
         assertEquals(403, assertThrows(AuthorizationException.class,
                 () -> administratorController.getLatestReleaseNote()).getStatusCode());
         assertEquals(403, assertThrows(AuthorizationException.class,
-                () -> administratorController.saveReleaseNotes(
-                        ReleaseNotesPublishRest.builder().content("Release notes").build())).getStatusCode());
+                () -> administratorController.saveReleaseNotes(publishRequest)).getStatusCode());
     }
 
     @Test
