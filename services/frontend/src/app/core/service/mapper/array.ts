@@ -13,6 +13,10 @@ export const transformCriterion = (criterion: string) => {
     return criterion.toLocaleLowerCase().replaceAll("_", "-");
 };
 
+export const toApiCriterion = (criterion: string) => {
+    return criterion.replaceAll("-", "_").toUpperCase();
+};
+
 //Below method is to remove the current workspace name from the equipment type
 export const transformEquipmentType = (eqType: string, currentWorkspaceName: string) => {
     const lowerEqType = eqType?.toLowerCase()?.trim();

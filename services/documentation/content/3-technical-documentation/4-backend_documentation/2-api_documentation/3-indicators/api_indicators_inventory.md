@@ -25,8 +25,14 @@ mermaid: true
 | API                                                                                                                            | Swagger                                                                                                                 | Use Cases                                                                                                                         |
 |:-------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------|:----------------------------------------------------------------------------------------------------------------------------------|
 | GET /organizations/{organization}/workspaces/{workspace}/inventories/{inventoryId}/indicators/applications                     | [Application indicators](https://saas-g4it.com/api/swagger-ui/index.html#/inventory-indicator/getApplicationIndicators) | [Visualize applications]({{% ref "/2-functional-documentation/use_cases/uc_inventory/uc6_visualize_application_footprint.md" %}}) |
+| POST /organizations/{organization}/workspaces/{workspace}/inventories/{inventoryId}/indicators/applications | [Application indicators (paginated)](https://saas-g4it.com/api/swagger-ui/index.html#/inventory-indicator/getApplicationIndicators) | [Visualize applications]({{% ref "/2-functional-documentation/use_cases/uc_inventory/uc6_visualize_application_footprint.md" %}}) |
+| POST /organizations/{organization}/workspaces/{workspace}/inventories/{inventoryId}/indicators/applications/multi-criteria-impacts | [Application multi-criteria impacts](https://saas-g4it.com/api/swagger-ui/index.html#/inventory-indicator/getApplicationMultiCriteriaImpacts) | [Visualize applications]({{% ref "/2-functional-documentation/use_cases/uc_inventory/uc6_visualize_application_footprint.md" %}}) |
+| POST /organizations/{organization}/workspaces/{workspace}/inventories/{inventoryId}/indicators/applications/multi-criteria | [Application multi-criteria (graph drill-down)](https://saas-g4it.com/api/swagger-ui/index.html#/inventory-indicator/getApplicationMultiCriteriaIndicators) | [Visualize applications]({{% ref "/2-functional-documentation/use_cases/uc_inventory/uc6_visualize_application_footprint.md" %}}) |
+| GET /organizations/{organization}/workspaces/{workspace}/inventories/{inventoryId}/indicators/applications/filters | [Application distinct filter values](https://saas-g4it.com/api/swagger-ui/index.html#/inventory-indicator/getApplicationFilters) | [Visualize applications]({{% ref "/2-functional-documentation/use_cases/uc_inventory/uc6_visualize_application_footprint.md" %}}) |
 | GET /organizations/{organization}/workspaces/{workspace}/inventories/{inventoryId}/indicators/virtualEquipmentsElecConsumption | [Low Equipment](https://saas-g4it.com/api/swagger-ui/index.html#/inventory-indicator/getVirtualEquipmentElecConsumption) | [Visualize applications]({{% ref "/2-functional-documentation/use_cases/uc_inventory/uc6_visualize_application_footprint.md" %}}) |
 | GET /organizations/{organization}/workspaces/{workspace}/inventories/{inventoryId}/indicators/virtualEquipmentsLowEquipment                     | [Electricity consumption](https://saas-g4it.com/api/swagger-ui/index.html#/inventory-indicator/getVirtualEquipmentsLowImpact) | [Visualize applications]({{% ref "/2-functional-documentation/use_cases/uc_inventory/uc6_visualize_application_footprint.md" %}}) |
+| POST /organizations/{organization}/workspaces/{workspace}/inventories/{inventoryId}/indicators/virtualEquipmentsLowImpact/count | [Virtual equipment low impact count](https://saas-g4it.com/api/swagger-ui/index.html#/inventory-indicator/getVirtualEquipmentsLowImpactCount) | [Visualize applications]({{% ref "/2-functional-documentation/use_cases/uc_inventory/uc6_visualize_application_footprint.md" %}}) |
+| POST /organizations/{organization}/workspaces/{workspace}/inventories/{inventoryId}/indicators/virtualEquipmentsElecConsumption/sum | [Virtual equipment electricity consumption sum](https://saas-g4it.com/api/swagger-ui/index.html#/inventory-indicator/getVirtualEquipmentElecConsumptionSum) | [Visualize applications]({{% ref "/2-functional-documentation/use_cases/uc_inventory/uc6_visualize_application_footprint.md" %}}) |
 
 ## Description
 
@@ -174,6 +180,107 @@ which returns the application indicators saved in the
 table [out_application](../../db_documentation/information_system_and_digital_service_output_data/information_sytem_output_data)
 via [OutApplicationRepository](https://github.com/G4ITTeam/g4it/blob/main/services/backend/src/main/java/com/soprasteria/g4it/backend/apiinout/business/OutApplicationRepository.java).
 
+#### Application Indicators — Paginated table view
+
+To avoid loading every impact row of a large inventory in a single response, the
+`applications` endpoint accepts a JSON filter body (`environment`, `equipmentType`,
+`lifeCycle`, `domain`, `subDomain`, `applicationName`, `criterion`) plus `page`/`size`
+query parameters. The call is handled by
+[InventoryIndicatorController](https://github.com/G4ITTeam/g4it/blob/main/services/backend/src/main/java/com/soprasteria/g4it/backend/apiindicator/controller/InventoryIndicatorController.java)
+and delegated to
+[InventoryIndicatorService](https://github.com/G4ITTeam/g4it/blob/main/services/backend/src/main/java/com/soprasteria/g4it/backend/apiindicator/business/InventoryIndicatorService.java)
+and [IndicatorService](https://github.com/G4ITTeam/g4it/blob/main/services/backend/src/main/java/com/soprasteria/g4it/backend/apiindicator/business/IndicatorService.java).
+
+The data is retrieved by
+[OutApplicationCustomRepositoryImpl](https://github.com/G4ITTeam/g4it/blob/main/services/backend/src/main/java/com/soprasteria/g4it/backend/apiinout/repository/OutApplicationCustomRepositoryImpl.java)
+(`findByTaskId(taskId, filters, pageable)`), which builds a single native SQL statement
+doing `WHERE` filtering, then `GROUP BY (application_name, criterion, unit)` with
+`SUM(unit_impact)`/`SUM(people_eq_impact)` **before** applying `LIMIT`/`OFFSET` — this
+grouping is required because `out_application` stores one row per
+application × criterion × lifecycle-step (and further dimensions), so an un-grouped
+page could split or duplicate a single application/criterion's data across pages. A
+paired `COUNT(*)` query (same predicates, no `LIMIT`) supplies the page's
+`totalElements`/`totalPages`.
+
+The result is returned as a `Page<ApplicationIndicatorRowProjection>` (`applicationName`,
+`criterion`, `unit`, `impact`, `sip`), mapped 1:1 to
+`ApplicationIndicatorRowBO`/`ApplicationIndicatorRowRest` by
+[ApplicationIndicatorMapper](https://github.com/G4ITTeam/g4it/blob/main/services/backend/src/main/java/com/soprasteria/g4it/backend/apiindicator/mapper/ApplicationIndicatorMapper.java) — no entity loading, no in-memory grouping.
+
+#### Application Multi-Criteria Impacts (aggregated, filtered)
+
+Rather than returning the full impact row set per criterion, this endpoint returns, for
+each criterion, the **aggregated impact totals** (`impact`, `sip`, `countValue`)
+computed only on the rows matching the supplied filters (`environment`, `equipmentType`,
+`lifeCycle`, `domain`, `subDomain`). This feeds the criteria selector/summary panel with
+live, filter-aware totals without downloading any underlying row.
+
+The call is handled by
+[InventoryIndicatorController](https://github.com/G4ITTeam/g4it/blob/main/services/backend/src/main/java/com/soprasteria/g4it/backend/apiindicator/controller/InventoryIndicatorController.java)
+and the business logic by
+[IndicatorService](https://github.com/G4ITTeam/g4it/blob/main/services/backend/src/main/java/com/soprasteria/g4it/backend/apiindicator/business/IndicatorService.java)
+(`getApplicationMultiCriteriaImpacts`), which performs a pure 1:1 mapping of the
+projection rows returned by
+[OutApplicationRepository](https://github.com/G4ITTeam/g4it/blob/main/services/backend/src/main/java/com/soprasteria/g4it/backend/apiinout/repository/OutApplicationRepository.java)
+(`aggregateMultiCriteriaImpactsByTaskIdAndFilters`) — a single native SQL query doing
+`WHERE` + `GROUP BY (criterion, unit)` + `SUM`/`COUNT` entirely in the database
+(`domain`/`subDomain` are read via 1-based indexing of the native Postgres `filters`
+array column: `filters[1]`, `filters[2]`).
+
+Cached via `@Cacheable("applicationMultiCriteriaImpacts")` keyed on `(taskId, filters)`.
+
+#### Application Multi-Criteria (graph drill-down, dual-axis)
+
+This endpoint powers the graph view's drill-down navigation
+(Global → Domain → SubDomain → Application → VM, `graphLevel`), each node further broken
+down by a fixed secondary axis (`repartition`: `lifeCycle` / `environment` /
+`equipmentType`). Both `graphLevel` and `repartition` are required on every call and are
+combined in a single 2-column `GROUP BY` executed by the database in one round trip.
+
+- At `graphLevel=global` (initial page load, before the first click), no node/hierarchy
+  grouping is performed — the response contains a single node broken down only by
+  `repartition`.
+- Clicking through the hierarchy advances `graphLevel` to `domain`, `subDomain`,
+  `application`, then `virtualEquipment`, each time adding the clicked value
+  (`domain`, `subDomain`, `applicationName`) to the request's `filters`. `repartition`
+  stays independent of the drill depth and can be changed by the user at any point.
+- Each node carries `consistentCount`/`inconsistentCount` (derived from
+  `OutApplication.statusIndicator`) at every level, plus level-specific fields:
+  `subDomainCount` + `applicationCount` at `domain`, `applicationCount` at `subDomain`,
+  and `cluster`/`equipmentType`/`environment` at `virtualEquipment`.
+
+The call is handled by
+[InventoryIndicatorController](https://github.com/G4ITTeam/g4it/blob/main/services/backend/src/main/java/com/soprasteria/g4it/backend/apiindicator/controller/InventoryIndicatorController.java)
+and the business logic by
+[IndicatorService](https://github.com/G4ITTeam/g4it/blob/main/services/backend/src/main/java/com/soprasteria/g4it/backend/apiindicator/business/IndicatorService.java)
+(`getApplicationMultiCriteriaIndicators`), which dispatches to the matching native query
+on [OutApplicationRepository](https://github.com/G4ITTeam/g4it/blob/main/services/backend/src/main/java/com/soprasteria/g4it/backend/apiinout/repository/OutApplicationRepository.java)
+based on the `(graphLevel, repartition)` pair (one native query per valid combination —
+5 graph levels × 3 repartitions), each returning a
+`MultiCriteriaAggregateProjection` that the service re-nests into
+`repartitions[]` per node — a cheap re-shaping of already DB-aggregated numbers, never a
+re-computation of sums.
+
+Cached per `(taskId, criteria, graphLevel, repartition, filters)` key.
+
+#### Application Distinct Filter Values
+
+Populates the application view's filter selectors (Environment, Equipment type,
+Lifecycle, Domain, SubDomain) with the distinct values actually present in the
+inventory's latest task, instead of a hardcoded list — so the UI never offers a filter
+value that would return zero rows. Domain/subDomain are returned as a linked tree
+(`{ domain, subDomains[] }`), computed via `GROUP BY filters[1]` +
+`array_agg(DISTINCT filters[2])` so each subDomain stays linked to its parent domain.
+
+The call is handled by
+[InventoryIndicatorController](https://github.com/G4ITTeam/g4it/blob/main/services/backend/src/main/java/com/soprasteria/g4it/backend/apiindicator/controller/InventoryIndicatorController.java)
+and the business logic by
+[IndicatorService](https://github.com/G4ITTeam/g4it/blob/main/services/backend/src/main/java/com/soprasteria/g4it/backend/apiindicator/business/IndicatorService.java)
+(`getApplicationFilters`), backed by two native SQL queries on
+[OutApplicationRepository](https://github.com/G4ITTeam/g4it/blob/main/services/backend/src/main/java/com/soprasteria/g4it/backend/apiinout/repository/OutApplicationRepository.java) —
+one computing the scalar distinct lists (`array_agg(DISTINCT ...) FILTER (WHERE ... IS NOT NULL)`),
+one building the domain→subDomains tree — both fully DB-side, no in-memory grouping.
+
 #### Virtual Equipment Electricity Consumption
 
 The API call is handled by [InventoryIndicatorController](https://github.com/G4ITTeam/g4it/blob/main/services/backend/src/main/java/com/soprasteria/g4it/backend/apiindicator/controller/InventoryIndicatorController.java)
@@ -194,4 +301,68 @@ Evaluates the environmental performance of each country based on its electricity
 Sums quartile rankings across configured environmental criteria.
 Classifies a country as Low Impact if it belongs to the best 25% of countries (first quartile).
 If the country hosting the virtual equipment is considered environmentally favorable, the lowImpact flag is set to true.
+
+#### Virtual Equipment Low Impact Count (aggregated)
+
+The API call is handled by [InventoryIndicatorController](https://github.com/G4ITTeam/g4it/blob/main/services/backend/src/main/java/com/soprasteria/g4it/backend/apiindicator/controller/InventoryIndicatorController.java),
+and the business logic is implemented in [InventoryIndicatorService](https://github.com/G4ITTeam/g4it/blob/main/services/backend/src/main/java/com/soprasteria/g4it/backend/apiindicator/business/InventoryIndicatorService.java)
+and [IndicatorService](https://github.com/G4ITTeam/g4it/blob/main/services/backend/src/main/java/com/soprasteria/g4it/backend/apiindicator/business/IndicatorService.java).
+
+Unlike the **Virtual Equipment Low Impact** endpoint above, which returns the full per-row
+list and lets the frontend reduce it into a total/low-impact count client-side, this
+endpoint returns only the two aggregated counts (`virtualEquipmentTotalCount`,
+`lowImpactVirtualEquipmentCount`) needed to compute the low-impact percentage, computed
+**entirely in the database** via a single native SQL query executed by
+[OutApplicationCustomRepositoryImpl](https://github.com/G4ITTeam/g4it/blob/main/services/backend/src/main/java/com/soprasteria/g4it/backend/apiinout/repository/OutApplicationCustomRepositoryImpl.java)
+(`countVirtualEquipmentLowImpact`), avoiding the need to download and reduce every row.
+
+The query:
+- replicates the same `distinct_applications` deduplication `GROUP BY`
+  (`virtual_equipment_name`, `name`, `location`, `lifecycle_step`, `domain`, `subDomain`,
+  `environment`, `equipment_type`) used by the legacy
+  [InVirtualEquipmentLowImpactView](https://github.com/G4ITTeam/g4it/blob/main/services/backend/src/main/java/com/soprasteria/g4it/backend/apiindicator/modeldb/InVirtualEquipmentLowImpactView.java)
+  native query, to stay consistent with it;
+- replicates the low-impact determination performed by
+  [LowImpactService](https://github.com/teamg4it/g4it/blob/main/services/backend/src/main/java/com/soprasteria/g4it/backend/apiindicator/business/LowImpactService.java)
+  (per-criterion electricity-mix quartile score, summed per country, compared to the
+  first quartile of all countries) directly as SQL, via dedicated `criterion_percentiles`,
+  `criterion_quartile`, `country_score`, `threshold` and `country_low_impact` CTEs;
+- binds the external Boavizta ISO → country-name mapping (resolved via
+  [BoaviztapiService](https://github.com/G4ITTeam/g4it/blob/main/services/backend/src/main/java/com/soprasteria/g4it/backend/external/boavizta/business/BoaviztapiService.java))
+  as plain array parameters into an `iso_map` CTE, since this mapping is not itself
+  stored in the database.
+
+The result is returned as a `VirtualEquipmentLowImpactCountProjection` (`totalCount`,
+`lowImpactCount`), mapped 1:1 to `VirtualEquipmentLowImpactCountBO`/`VirtualEquipmentLowImpactCountRest`,
+and cached (`@Cacheable("virtualEquipmentLowImpactCount")`).
+
+#### Virtual Equipment Electricity Consumption Sum (aggregated)
+
+The API call is handled by [InventoryIndicatorController](https://github.com/G4ITTeam/g4it/blob/main/services/backend/src/main/java/com/soprasteria/g4it/backend/apiindicator/controller/InventoryIndicatorController.java),
+and the business logic is implemented in [InventoryIndicatorService](https://github.com/G4ITTeam/g4it/blob/main/services/backend/src/main/java/com/soprasteria/g4it/backend/apiindicator/business/InventoryIndicatorService.java)
+and [IndicatorService](https://github.com/G4ITTeam/g4it/blob/main/services/backend/src/main/java/com/soprasteria/g4it/backend/apiindicator/business/IndicatorService.java).
+
+Unlike the **Virtual Equipment Electricity Consumption** endpoint above, which returns
+the full per-row list and lets the frontend sum `elecConsumption`/`quantity` client-side,
+this endpoint returns only the aggregated `elecConsumptionSum`, `noOfVirtualEquipmentsSum`
+and `applicationCount`, computed **entirely in the database** via a single native SQL
+query executed by
+[OutApplicationCustomRepositoryImpl](https://github.com/G4ITTeam/g4it/blob/main/services/backend/src/main/java/com/soprasteria/g4it/backend/apiinout/repository/OutApplicationCustomRepositoryImpl.java)
+(`sumVirtualEquipmentElecConsumption`).
+
+The query replicates the exact two-level `GROUP BY` performed by the legacy
+[InVirtualEquipmentElecConsumptionView](https://github.com/G4ITTeam/g4it/blob/main/services/backend/src/main/java/com/soprasteria/g4it/backend/apiindicator/modeldb/InVirtualEquipmentElecConsumptionView.java)
+native query — first deduplicating by virtual equipment/location/domain/subDomain/
+environment/equipment type/application/infrastructure type/quantity, then
+re-aggregating per application (summing non-cloud-service consumption and adding, at
+most once, any cloud-service consumption) — before summing over the deduplicated,
+filtered set. All shared filter predicates (environment, equipment type, lifecycle,
+domain, subDomain, application name) are applied inside a `MATERIALIZED` CTE, before any
+aggregation work, which reduced the measured execution time on production-sized data
+from ~24s to ~3s.
+
+The result is returned as a `VirtualEquipmentElecConsumptionSumProjection`
+(`elecConsumptionSum`, `quantitySum`, `applicationCount`), mapped 1:1 to
+`VirtualEquipmentElecConsumptionSumBO`/`VirtualEquipmentElecConsumptionSumRest`, and
+cached (`@Cacheable("virtualEquipmentElecConsumptionSum")`).
 

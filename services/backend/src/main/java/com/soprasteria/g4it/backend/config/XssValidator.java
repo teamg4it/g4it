@@ -2,7 +2,6 @@ package com.soprasteria.g4it.backend.config;
 
 import com.soprasteria.g4it.backend.exception.G4itRestException;
 import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 import org.jsoup.safety.Safelist;
 
 public final class XssValidator {
@@ -85,15 +84,13 @@ public final class XssValidator {
             return value;
         }
 
-        String sanitized = Jsoup.clean(value, SAFE_HTML_SAFELIST);
+        // Jsoup.isValid recursively checks the ENTIRE node tree (tags, attributes,
+        // protocols) against the safelist - including nested elements such as
+        // <p><script>...</script></p> - unlike a simple child-count comparison
+        // which only inspects the direct children of <body>.
+        boolean isValid = Jsoup.isValid(value, SAFE_HTML_SAFELIST);
 
-        Document inputDoc = Jsoup.parseBodyFragment(value);
-        Document cleanedDoc = Jsoup.parseBodyFragment(sanitized);
-
-        // If Jsoup removed nodes, unsafe content was present
-        if (cleanedDoc.body().childNodeSize()
-                < inputDoc.body().childNodeSize()) {
-
+        if (!isValid) {
             throw new G4itRestException(
                     "400",
                     "Invalid input detected. Unsafe HTML or script content is not allowed"
