@@ -125,4 +125,19 @@ public class Inventory extends AbstractBaseEntity implements Serializable {
      */
     private boolean enableDataInconsistency;
 
+    /**
+     * Whether this inventory has any virtual-equipment-like data to evaluate, i.e. either
+     * regular virtual equipments or cloud services (both are stored in the same import file
+     * and counted separately, but both are processed by the virtual equipment evaluation path).
+     * <p>
+     * Centralizes the null-safety handling for {@code cloudServiceCount}, which may be
+     * {@code null} on inventories created before that counter existed and not yet recomputed.
+     *
+     * @return true if the inventory has at least one virtual equipment or cloud service
+     */
+    public boolean hasVirtualEquipmentData() {
+        return (virtualEquipmentCount != null && virtualEquipmentCount > 0)
+                || (cloudServiceCount != null && cloudServiceCount > 0);
+    }
+
 }
