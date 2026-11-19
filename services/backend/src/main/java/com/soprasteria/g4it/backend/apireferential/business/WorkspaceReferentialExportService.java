@@ -13,8 +13,12 @@ import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.attribute.PosixFilePermission;
+import java.nio.file.attribute.PosixFilePermissions;
+import java.util.EnumSet;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -43,7 +47,23 @@ public class WorkspaceReferentialExportService {
 
     @PostConstruct
     public void initFolder() throws IOException {
-        Files.createDirectories(Path.of(localWorkingFolder, REFERENTIAL));
+        createSecureDirectories(Path.of(localWorkingFolder, REFERENTIAL));
+    }
+
+    /**
+     * Create a directory (and its parents) restricted to the owner only, when the
+     * underlying file system supports POSIX permissions, to avoid creating
+     * world-readable/writable directories with the default umask.
+     */
+    private static void createSecureDirectories(Path directory) throws IOException {
+        if (FileSystems.getDefault().supportedFileAttributeViews().contains("posix")) {
+            Files.createDirectories(directory, PosixFilePermissions.asFileAttribute(
+                    EnumSet.of(PosixFilePermission.OWNER_READ, PosixFilePermission.OWNER_WRITE, PosixFilePermission.OWNER_EXECUTE)));
+            Files.setPosixFilePermissions(directory,
+                    EnumSet.of(PosixFilePermission.OWNER_READ, PosixFilePermission.OWNER_WRITE, PosixFilePermission.OWNER_EXECUTE));
+        } else {
+            Files.createDirectories(directory);
+        }
     }
 
 
@@ -63,7 +83,7 @@ public class WorkspaceReferentialExportService {
         log.info("Exporting ZIP for workspace {}", workspaceId);
 
         Path referentialDirectory = Path.of(localWorkingFolder, REFERENTIAL);
-        Files.createDirectories(referentialDirectory);
+        createSecureDirectories(referentialDirectory);
 
         Path zipPath = Files.createTempFile(
                 referentialDirectory,

@@ -60,44 +60,48 @@ public class WorkspaceDeletionService {
             final String organization = workspaceEntity.getOrganization().getName();
             final Long workspaceId = workspaceEntity.getId();
 
-            if (workspaceEntity.getDeletionDate() == null) {
-                log.error("Workspace {} has {} status and deletion date NULL", workspaceId, WorkspaceStatus.TO_BE_DELETED);
-                continue;
-            }
-
-            final int dataRetentionDay = now.isAfter(workspaceEntity.getDeletionDate()) ? 0 : -1;
-            if (dataRetentionDay == 0) {
-                log.info("Deleting data of {}/{}", organization, workspaceEntity.getName());
-                // Delete Inventories
-                nbInventoriesDeleted += inventoryRepository.findByWorkspace(workspaceEntity).stream()
-                        .mapToInt(inventory -> {
-                            inventoryDeleteService.deleteInventory(organization, workspaceId, inventory.getId());
-                            return 1;
-                        })
-                        .sum();
-
-                // Delete Digital services
-                nbDigitalServicesDeleted += digitalServiceRepository.findByWorkspace(workspaceEntity).stream()
-                        .mapToInt(digitalServiceBO -> {
-                            digitalServiceService.deleteDigitalService(digitalServiceBO.getUid());
-                            return 1;
-                        })
-                        .sum();
-
-                // Delete Export Files from storage
-                List<String> deletedExportFilePaths = fileDeletionService.deleteFiles(organization, workspaceId.toString(), FileFolder.EXPORT, dataRetentionDay);
-
-                deletedFilePaths.addAll(deletedExportFilePaths);
-
-                // Delete Output Files from storage
-                List<String> deletedOutputFilePaths = fileDeletionService.deleteFiles(organization, workspaceId.toString(), FileFolder.OUTPUT, dataRetentionDay);
-                deletedFilePaths.addAll(deletedOutputFilePaths);
-
-                // update workspace status to "INACTIVE" if status is "TO_BE_DELETED"
-                if (workspaceEntity.getStatus().equals(WorkspaceStatus.TO_BE_DELETED.name())) {
-                    workspaceRepository.setStatusForWorkspace(workspaceEntity.getId(), WorkspaceStatus.INACTIVE.name());
-                    log.info("Update status of {}/{} to {} ", organization, workspaceEntity.getName(), WorkspaceStatus.INACTIVE.name());
+            try {
+                if (workspaceEntity.getDeletionDate() == null) {
+                    log.error("Workspace {} has {} status and deletion date NULL", workspaceId, WorkspaceStatus.TO_BE_DELETED);
+                    continue;
                 }
+
+                final int dataRetentionDay = now.isAfter(workspaceEntity.getDeletionDate()) ? 0 : -1;
+                if (dataRetentionDay == 0) {
+                    log.info("Deleting data of {}/{}", organization, workspaceEntity.getName());
+                    // Delete Inventories
+                    nbInventoriesDeleted += inventoryRepository.findByWorkspace(workspaceEntity).stream()
+                            .mapToInt(inventory -> {
+                                inventoryDeleteService.deleteInventory(organization, workspaceId, inventory.getId());
+                                return 1;
+                            })
+                            .sum();
+
+                    // Delete Digital services
+                    nbDigitalServicesDeleted += digitalServiceRepository.findByWorkspace(workspaceEntity).stream()
+                            .mapToInt(digitalServiceBO -> {
+                                digitalServiceService.deleteDigitalService(digitalServiceBO.getUid());
+                                return 1;
+                            })
+                            .sum();
+
+                    // Delete Export Files from storage
+                    List<String> deletedExportFilePaths = fileDeletionService.deleteFiles(organization, workspaceId.toString(), FileFolder.EXPORT, dataRetentionDay);
+
+                    deletedFilePaths.addAll(deletedExportFilePaths);
+
+                    // Delete Output Files from storage
+                    List<String> deletedOutputFilePaths = fileDeletionService.deleteFiles(organization, workspaceId.toString(), FileFolder.OUTPUT, dataRetentionDay);
+                    deletedFilePaths.addAll(deletedOutputFilePaths);
+
+                    // update workspace status to "INACTIVE" if status is "TO_BE_DELETED"
+                    if (workspaceEntity.getStatus().equals(WorkspaceStatus.TO_BE_DELETED.name())) {
+                        workspaceRepository.setStatusForWorkspace(workspaceEntity.getId(), WorkspaceStatus.INACTIVE.name());
+                        log.info("Update status of {}/{} to {} ", organization, workspaceEntity.getName(), WorkspaceStatus.INACTIVE.name());
+                    }
+                }
+            } catch (Exception e) {
+                log.error("Failed to process deletion for workspace {}/{}", organization, workspaceEntity.getName(), e);
             }
         }
         log.info("Deletion of {} inventories , {} digital-services  and {} files - {} , execution time={} ms for workspace marked as {}",
