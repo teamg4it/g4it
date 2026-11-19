@@ -78,6 +78,7 @@ public interface InventoryMapper {
     @Mapping(target = "dataCenterCount", ignore = true)
     @Mapping(target = "physicalEquipmentCount", ignore = true)
     @Mapping(target = "virtualEquipmentCount", ignore = true)
+    @Mapping(target = "cloudServiceCount", ignore = true)
     @Mapping(target = "applicationCount", ignore = true)
     @Mapping(target = "aiServiceCount", ignore = true)
     InventoryBO toCreateBusinessObject(final Inventory source);

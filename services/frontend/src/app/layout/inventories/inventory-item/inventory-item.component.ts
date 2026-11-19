@@ -52,6 +52,7 @@ import { EquipmentsCardComponent } from "../equipments-card/equipments-card.comp
 @Component({
     selector: "app-inventory-item",
     templateUrl: "./inventory-item.component.html",
+    styleUrl: "./inventory-item.component.scss",
     providers: [ConfirmationService, MessageService],
     standalone: true,
     imports: [
@@ -92,7 +93,7 @@ export class InventoryItemComponent implements OnInit {
     equipmentLimitExceed = computed(
         () =>
             (this.inventory().outVirtualCount ?? 0) >
-                Number(environment.equipmentMaxLimit) ||
+            Number(environment.equipmentMaxLimit) ||
             (this.inventory().outAiCount ?? 0) > Number(environment.equipmentMaxLimit),
     );
     applicationLimitExceed = computed(
@@ -132,7 +133,7 @@ export class InventoryItemComponent implements OnInit {
         private readonly translate: TranslateService,
         private readonly route: ActivatedRoute,
         public userService: UserService,
-    ) {}
+    ) { }
 
     ngOnInit() {
         this.userService.currentOrganization$.subscribe((organization) => {
@@ -162,6 +163,7 @@ export class InventoryItemComponent implements OnInit {
             this.inventory().lastTaskEvaluating &&
             (this.inventory().physicalEquipmentCount > 0 ||
                 this.inventory().virtualEquipmentCount > 0 ||
+                (this.inventory().cloudServiceCount ?? 0) > 0 ||
                 (this.inventory().aiServiceCount ?? 0) > 0)
         );
     };
@@ -177,9 +179,8 @@ export class InventoryItemComponent implements OnInit {
             target: event.target as EventTarget,
             acceptLabel: this.translate.instant("common.yes"),
             rejectLabel: this.translate.instant("common.no"),
-            message: `${this.translate.instant("inventories.popup.delete-question")} ${
-                this.inventory().name
-            } ?
+            message: `${this.translate.instant("inventories.popup.delete-question")} ${this.inventory().name
+                } ?
             ${this.translate.instant("inventories.popup.delete-text")}`,
             icon: "pi pi-exclamation-triangle",
             accept: async () => {
@@ -211,6 +212,7 @@ export class InventoryItemComponent implements OnInit {
                 if (
                     this.inventory().physicalEquipmentCount > 0 ||
                     this.inventory().virtualEquipmentCount > 0 ||
+                    (this.inventory().cloudServiceCount ?? 0) > 0 ||
                     (this.inventory().aiServiceCount ?? 0) > 0
                 ) {
                     uri = criteriaUri;
@@ -253,6 +255,7 @@ export class InventoryItemComponent implements OnInit {
         if (
             this.inventory().physicalEquipmentCount <= 0 &&
             this.inventory().virtualEquipmentCount <= 0 &&
+            (this.inventory().cloudServiceCount ?? 0) <= 0 &&
             (this.inventory().aiServiceCount ?? 0) <= 0
         )
             return true;

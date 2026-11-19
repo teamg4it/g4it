@@ -1,0 +1,62 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-inventory-cloudservice-count
+      author: G4IT Dev Team
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - columnExists:
+                tableName: inventory
+                columnName: cloud_service_count
+
+      # NOTE on rollback asymmetry: this changeSet both adds the new cloud_service_count
+      # column AND permanently recalculates the pre-existing virtual_equipment_count
+      # column (to exclude cloud services, which used to be counted as virtual equipment).
+      # The rollback below only drops cloud_service_count; it does NOT restore the
+      # original (pre-correction) virtual_equipment_count values, since those original
+      # values are not preserved anywhere. After a rollback, virtual_equipment_count
+      # stays "corrected" (cloud services excluded) even though the column that explains
+      # the exclusion has been removed. This is intentional: the corrected count is the
+      # functionally accurate one, but operators should be aware a rollback is not a full
+      # revert of this changeSet's effects.
+      changes:
+        - addColumn:
+            tableName: inventory
+            columns:
+              - column:
+                  name: cloud_service_count
+                  type: bigint
+                  defaultValueNumeric: 0
+                  constraints:
+                    nullable: false
+
+        - sql:
+            comment: Backfill cloud and non-cloud virtual equipment counts for existing inventories
+            sql: >
+              UPDATE inventory i
+              SET cloud_service_count = COALESCE((
+                    SELECT SUM(ve.quantity)
+                    FROM (
+                      SELECT inventory_id, name, quantity
+                      FROM in_virtual_equipment
+                      WHERE infrastructure_type = 'CLOUD_SERVICES'
+                      GROUP BY inventory_id, name, quantity
+                    ) ve
+                    WHERE ve.inventory_id = i.id
+                  ), 0),
+                  virtual_equipment_count = COALESCE((
+                    SELECT SUM(ve.quantity)
+                    FROM (
+                      SELECT inventory_id, name, quantity
+                      FROM in_virtual_equipment
+                      WHERE infrastructure_type IS NULL
+                         OR infrastructure_type <> 'CLOUD_SERVICES'
+                      GROUP BY inventory_id, name, quantity
+                    ) ve
+                    WHERE ve.inventory_id = i.id
+                  ), 0)
+
+      rollback:
+        - dropColumn:
+            tableName: inventory
+            columnName: cloud_service_count

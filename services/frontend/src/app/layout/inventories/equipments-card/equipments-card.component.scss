@@ -1,0 +1,23 @@
+.equipment-card {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: start;
+    gap: 0.5rem;
+    padding: 1rem;
+    border-radius: 6px;
+    background-color: white;
+    box-shadow: 0px 2px 4px 0px rgba(28, 33, 29, 0.1);
+    font-size: 1rem;
+    line-height: 1;
+
+    span {
+        transform: translateY(0.1em);
+
+        &.count {
+            margin-inline-start: 0.5rem;
+            font-weight: bold;
+            font-size: 1.1245rem;
+        }
+    }
+}

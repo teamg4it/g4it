@@ -18,6 +18,7 @@ export interface Inventory {
     dataCenterCount: number;
     physicalEquipmentCount: number;
     virtualEquipmentCount: number;
+    cloudServiceCount?: number;
     applicationCount: number;
     aiServiceCount?: number;
     enableDataInconsistency: boolean;

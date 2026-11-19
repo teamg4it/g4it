@@ -5,61 +5,68 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { ComponentFixture, TestBed } from "@angular/core/testing";
-
-import { TranslateModule, TranslatePipe, TranslateService } from "@ngx-translate/core";
-import { DecimalsPipe } from "src/app/core/pipes/decimal.pipe";
-import { MonthYearPipe } from "src/app/core/pipes/monthyear.pipe";
+import { TestBed } from "@angular/core/testing";
+import { By } from "@angular/platform-browser";
+import { TranslateModule, TranslateService } from "@ngx-translate/core";
+import { provideIcons } from "@ng-icons/core";
+import { firstValueFrom } from "rxjs";
+import * as heroIcons from "src/app/core/icons";
+import en from "src/assets/i18n/en.json";
 import { EquipmentsCardComponent } from "./equipments-card.component";
 
 describe("EquipmentsCardComponent", () => {
-    let component: EquipmentsCardComponent;
-    let fixture: ComponentFixture<EquipmentsCardComponent>;
-
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-    imports: [TranslateModule.forRoot(), DecimalsPipe, EquipmentsCardComponent, MonthYearPipe],
-    providers: [TranslatePipe, TranslateService],
-}).compileComponents();
+            imports: [TranslateModule.forRoot(), EquipmentsCardComponent],
+            providers: [provideIcons(heroIcons)],
+        }).compileComponents();
 
-        fixture = TestBed.createComponent(EquipmentsCardComponent);
-        component = fixture.componentInstance;
-        fixture.detectChanges();
-        await fixture.whenStable();
-        fixture.detectChanges();
+        const translate = TestBed.inject(TranslateService);
+        translate.setTranslation("en", en);
+        await firstValueFrom(translate.use("en"));
     });
 
     it("should create", () => {
-        expect(component).toBeTruthy();
+        expect(
+            TestBed.createComponent(EquipmentsCardComponent).componentInstance,
+        ).toBeTruthy();
     });
 
-    it("should choose the good translate texte and image source if type is 'datacenter'", () => {
-        component.type = "datacenter";
-        component.ngOnInit();
-        expect(component.imgSrc).toBe("assets/images/icons/icon-datacenter.svg");
-        expect(component.translateText).toBe("inventories.dc");
+    for (const [type, icon, key] of [
+        ["datacenter", "heroBuildingOffice2", "inventories.dc"],
+        ["physical", "heroServerStack", "inventories.eq-phys"],
+        ["virtual", "heroCircleStack", "inventories.eq-virt"],
+        ["app", "heroSquares2x2", "inventories.app"],
+        ["cloud", "heroCloud", "inventories.cloud"],
+        ["ai", "heroCpuChip", "inventories.ai"],
+    ] as const) {
+        it(`maps '${type}' to its icon and translation`, () => {
+            const component = TestBed.createComponent(
+                EquipmentsCardComponent
+            ).componentInstance;
+            component.type = type;
+            component.ngOnInit();
+            expect(component.icon).toBe(icon);
+            expect(component.translateText).toBe(key);
+        });
+    }
+
+    it("uses the active language in the accessible label", () => {
+        const fixture = TestBed.createComponent(EquipmentsCardComponent);
+        fixture.componentRef.setInput("type", "datacenter");
+        fixture.componentRef.setInput("category", "Test category");
+        fixture.detectChanges();
+
+        const card = fixture.debugElement.query(By.css(".equipment-card"));
+        expect(card.attributes["aria-label"]).toBe("Test category — Datacenters: 0");
     });
-    it("should choose the good translate texte and image source if type is 'physical'", () => {
-        component.type = "physical";
+
+    it("uses empty mapping values for an unknown type", () => {
+        const component = TestBed.createComponent(
+            EquipmentsCardComponent,
+        ).componentInstance;
         component.ngOnInit();
-        expect(component.imgSrc).toBe("assets/images/icons/icon-computer-desktop.svg");
-        expect(component.translateText).toBe("inventories.eq-phys");
-    });
-    it("should choose the good translate texte and image source if type is 'virtual'", () => {
-        component.type = "virtual";
-        component.ngOnInit();
-        expect(component.imgSrc).toBe("assets/images/icons/icon-computer-desktop.svg");
-        expect(component.translateText).toBe("inventories.eq-virt");
-    });
-    it("should choose the good translate texte and image source if type is 'app'", () => {
-        component.type = "app";
-        component.ngOnInit();
-        expect(component.imgSrc).toBe("assets/images/icons/icon-application.svg");
-        expect(component.translateText).toBe("inventories.app");
-    });
-    it("should choose the good translate texte and image source if type is Unknown", () => {
-        component.ngOnInit();
-        expect(component.imgSrc).toBe("");
+        expect(component.icon).toBe("");
         expect(component.translateText).toBe("");
     });
 });

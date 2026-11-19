@@ -136,12 +136,36 @@ public interface InVirtualEquipmentRepository extends JpaRepository<InVirtualEqu
                 from
                     InVirtualEquipment ive
                 where ive.inventoryId = :inventoryId
+                  and (ive.infrastructureType is null or ive.infrastructureType <> 'CLOUD_SERVICES')
                 group by
                     ive.name,
                     ive.quantity
             ) as subquery
             """)
     Long countQuantityByDistinctNameByInventoryId(Long inventoryId);
+
+    /**
+     * Count distinct cloud services linked to an inventory.
+     *
+     * @param inventoryId the unique inventory identifier.
+     * @return the sum of quantity of distinct cloud services.
+     */
+    @Query("""
+            select coalesce(sum(quantity), 0)
+            from (
+                select
+                    ive.name as name,
+                    ive.quantity as quantity
+                from
+                    InVirtualEquipment ive
+                where ive.inventoryId = :inventoryId
+                  and ive.infrastructureType = 'CLOUD_SERVICES'
+                group by
+                    ive.name,
+                    ive.quantity
+            ) as subquery
+            """)
+    Long countCloudServiceQuantityByDistinctNameByInventoryId(Long inventoryId);
 
 
     /**

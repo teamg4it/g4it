@@ -18,6 +18,7 @@ import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
 import com.soprasteria.g4it.backend.apiuser.repository.UserRepository;
 import com.soprasteria.g4it.backend.common.criteria.CriteriaByType;
 import com.soprasteria.g4it.backend.common.criteria.CriteriaService;
+import com.soprasteria.g4it.backend.common.model.Context;
 import com.soprasteria.g4it.backend.common.task.model.BackgroundTask;
 import com.soprasteria.g4it.backend.common.task.model.TaskStatus;
 import com.soprasteria.g4it.backend.common.task.model.TaskType;
@@ -108,6 +109,7 @@ class EvaluatingServiceTest {
         when(work.getName()).thenReturn(WORKSPACE);
 
         when(inventory.getVirtualEquipmentCount()).thenReturn(0L);
+        when(inventory.getCloudServiceCount()).thenReturn(1L);
         when(inventory.getApplicationCount()).thenReturn(0L);
         when(inventory.getCriteria()).thenReturn(null);
 
@@ -131,7 +133,10 @@ class EvaluatingServiceTest {
         ArgumentCaptor<Runnable> runnableCaptor = ArgumentCaptor.forClass(Runnable.class);
         verify(taskExecutor).execute(runnableCaptor.capture());
         runnableCaptor.getValue().run();
-        verify(asyncEvaluatingService).execute(any(), any());
+
+        ArgumentCaptor<Context> contextCaptor = ArgumentCaptor.forClass(Context.class);
+        verify(asyncEvaluatingService).execute(contextCaptor.capture(), any());
+        assertTrue(contextCaptor.getValue().isHasVirtualEquipments());
     }
 
     @Test
@@ -325,7 +330,8 @@ class EvaluatingServiceTest {
         UserBO userBO = mock(UserBO.class);
 
         when(inventoryRepository.findById(10L)).thenReturn(Optional.of(inventory));
-        when(inventory.getVirtualEquipmentCount()).thenReturn(1L);
+        when(inventory.getVirtualEquipmentCount()).thenReturn(0L);
+        when(inventory.getCloudServiceCount()).thenReturn(0L);
         when(inventory.getApplicationCount()).thenReturn(1L);
 
         // No task already running
@@ -383,7 +389,8 @@ class EvaluatingServiceTest {
         UserBO userBO = mock(UserBO.class);
 
         when(inventoryRepository.findById(10L)).thenReturn(Optional.of(inventory));
-        when(inventory.getVirtualEquipmentCount()).thenReturn(1L);
+        when(inventory.getVirtualEquipmentCount()).thenReturn(0L);
+        when(inventory.getCloudServiceCount()).thenReturn(null);
         when(inventory.getApplicationCount()).thenReturn(1L);
 
         when(taskRepository.findByInventoryAndStatusAndType(any(), anyString(), anyString()))
@@ -421,7 +428,9 @@ class EvaluatingServiceTest {
         ArgumentCaptor<Runnable> runnableCaptor = ArgumentCaptor.forClass(Runnable.class);
         verify(taskExecutor).execute(runnableCaptor.capture());
         runnableCaptor.getValue().run();
-        verify(asyncEvaluatingService).execute(any(), any());
+        ArgumentCaptor<Context> contextCaptor = ArgumentCaptor.forClass(Context.class);
+        verify(asyncEvaluatingService).execute(contextCaptor.capture(), any());
+        assertFalse(contextCaptor.getValue().isHasVirtualEquipments());
     }
 
     @Test
@@ -449,7 +458,8 @@ class EvaluatingServiceTest {
         when(workspace.getName()).thenReturn(WORKSPACE);
 
         when(inventory.getId()).thenReturn(INVENTORY_ID);
-        when(inventory.getVirtualEquipmentCount()).thenReturn(1L);
+        when(inventory.getVirtualEquipmentCount()).thenReturn(0L);
+        when(inventory.getCloudServiceCount()).thenReturn(1L);
         when(inventory.getApplicationCount()).thenReturn(0L);
 
         when(taskRepository.findByInventoryAndStatusAndType(
@@ -483,7 +493,87 @@ class EvaluatingServiceTest {
                 eq("0%")
         );
 
-        verify(taskExecutor).execute(any(BackgroundTask.class));
+        ArgumentCaptor<BackgroundTask> taskCaptor = ArgumentCaptor.forClass(BackgroundTask.class);
+        verify(taskExecutor).execute(taskCaptor.capture());
+        assertTrue(taskCaptor.getValue().getContext().isHasVirtualEquipments());
+    }
+
+    @Test
+    void restartEvaluating_cloudServiceCountIsNull_setsNoVirtualEquipmentFlag() {
+        Task task = mock(Task.class);
+        Inventory inventory = mock(Inventory.class);
+        Workspace workspace = mock(Workspace.class);
+        Organization org = mock(Organization.class);
+
+        when(taskRepository.findByStatusAndType(
+                TaskStatus.IN_PROGRESS.toString(),
+                TaskType.EVALUATING.toString()
+        )).thenReturn(List.of(task));
+
+        when(task.getId()).thenReturn(101L);
+        when(task.getInventory()).thenReturn(inventory);
+        when(task.getLastUpdateDate()).thenReturn(referenceTime.minusMinutes(20));
+        when(inventory.getWorkspace()).thenReturn(workspace);
+        when(workspace.getOrganization()).thenReturn(org);
+        when(org.getName()).thenReturn(ORGANIZATION);
+        when(workspace.getId()).thenReturn(WORKSPACE_ID);
+        when(workspace.getName()).thenReturn(WORKSPACE);
+        when(inventory.getId()).thenReturn(INVENTORY_ID);
+        when(inventory.getVirtualEquipmentCount()).thenReturn(0L);
+        when(inventory.getCloudServiceCount()).thenReturn(null);
+        when(inventory.getApplicationCount()).thenReturn(0L);
+        when(taskRepository.findByInventoryAndStatusAndType(
+                inventory,
+                TaskStatus.IN_PROGRESS.toString(),
+                TaskType.EVALUATING.toString()
+        )).thenReturn(Collections.emptyList());
+        when(taskRepository.findByInventoryAndType(inventory, TaskType.EVALUATING.toString()))
+                .thenReturn(Collections.emptyList());
+
+        evaluatingService.restartEvaluating();
+
+        ArgumentCaptor<BackgroundTask> taskCaptor = ArgumentCaptor.forClass(BackgroundTask.class);
+        verify(taskExecutor).execute(taskCaptor.capture());
+        assertFalse(taskCaptor.getValue().getContext().isHasVirtualEquipments());
+    }
+
+    @Test
+    void restartEvaluating_zeroEquipmentCounts_setsNoVirtualEquipmentFlag() {
+        Task task = mock(Task.class);
+        Inventory inventory = mock(Inventory.class);
+        Workspace workspace = mock(Workspace.class);
+        Organization org = mock(Organization.class);
+
+        when(taskRepository.findByStatusAndType(
+                TaskStatus.IN_PROGRESS.toString(),
+                TaskType.EVALUATING.toString()
+        )).thenReturn(List.of(task));
+
+        when(task.getId()).thenReturn(101L);
+        when(task.getInventory()).thenReturn(inventory);
+        when(task.getLastUpdateDate()).thenReturn(referenceTime.minusMinutes(20));
+        when(inventory.getWorkspace()).thenReturn(workspace);
+        when(workspace.getOrganization()).thenReturn(org);
+        when(org.getName()).thenReturn(ORGANIZATION);
+        when(workspace.getId()).thenReturn(WORKSPACE_ID);
+        when(workspace.getName()).thenReturn(WORKSPACE);
+        when(inventory.getId()).thenReturn(INVENTORY_ID);
+        when(inventory.getVirtualEquipmentCount()).thenReturn(0L);
+        when(inventory.getCloudServiceCount()).thenReturn(0L);
+        when(inventory.getApplicationCount()).thenReturn(0L);
+        when(taskRepository.findByInventoryAndStatusAndType(
+                inventory,
+                TaskStatus.IN_PROGRESS.toString(),
+                TaskType.EVALUATING.toString()
+        )).thenReturn(Collections.emptyList());
+        when(taskRepository.findByInventoryAndType(inventory, TaskType.EVALUATING.toString()))
+                .thenReturn(Collections.emptyList());
+
+        evaluatingService.restartEvaluating();
+
+        ArgumentCaptor<BackgroundTask> taskCaptor = ArgumentCaptor.forClass(BackgroundTask.class);
+        verify(taskExecutor).execute(taskCaptor.capture());
+        assertFalse(taskCaptor.getValue().getContext().isHasVirtualEquipments());
     }
 
 

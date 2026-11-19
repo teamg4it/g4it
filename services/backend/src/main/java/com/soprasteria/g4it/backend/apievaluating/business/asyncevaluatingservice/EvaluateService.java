@@ -580,18 +580,25 @@ public class EvaluateService {
     }
 
     private void saveOutputCounts(Inventory inventory, EvaluationState state) {
-        if (inventory == null) {
-            return;
+        long startTime = System.nanoTime();
+        try {
+            if (inventory == null) {
+                return;
+            }
+            inventoryRepository.updateOutputCounts(
+                    inventory.getId(),
+                    (long) state.outPhysicalEquipmentSize,
+                    (long) state.outVirtualEquipmentSize,
+                    (long) state.outApplicationSize,
+                    (long) state.outAiServiceSize
+            );
+            log.info("Saved output counts to inventory: physical={}, virtual={}, application={}, aiService={}",
+                    state.outPhysicalEquipmentSize, state.outVirtualEquipmentSize,
+                    state.outApplicationSize, state.outAiServiceSize);
+        } finally {
+            long executionTimeMs = (System.nanoTime() - startTime) / 1_000_000;
+            log.info("Execution time for saveOutputCounts: {} ms", executionTimeMs);
         }
-        inventoryRepository.updateOutputCounts(
-                inventory.getId(),
-                (long) state.outPhysicalEquipmentSize,
-                (long) state.outVirtualEquipmentSize,
-                (long) state.outApplicationSize,
-                (long) state.outAiServiceSize
-        );
-        log.info("Saved output counts to inventory: physical={}, virtual={}, application={}, aiService={}",
-                state.outPhysicalEquipmentSize, state.outVirtualEquipmentSize, state.outApplicationSize, state.outAiServiceSize);
     }
 
     // clean files if empty

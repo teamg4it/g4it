@@ -120,7 +120,7 @@ public class EvaluatingService {
                 .inventoryId(inventoryId)
                 .locale(LocaleContextHolder.getLocale())
                 .datetime(LocalDateTime.now())
-                .hasVirtualEquipments(inventory.getVirtualEquipmentCount() > 0)
+                .hasVirtualEquipments(inventory.hasVirtualEquipmentData())
                 .hasApplications(inventory.getApplicationCount() > 0)
                 .build();
 
@@ -296,7 +296,7 @@ public class EvaluatingService {
                             .inventoryId(task.getInventory().getId())
                             .locale(LocaleContextHolder.getLocale())
                             .datetime(now)
-                            .hasVirtualEquipments(inventory.getVirtualEquipmentCount() > 0)
+                            .hasVirtualEquipments(inventory.hasVirtualEquipmentData())
                             .hasApplications(inventory.getApplicationCount() > 0)
                             .build();
 

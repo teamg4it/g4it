@@ -1,0 +1,7 @@
+.inventory-card {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    row-gap: 1rem;
+    column-gap: 3.25rem;
+    margin-bottom: 1rem;
+}

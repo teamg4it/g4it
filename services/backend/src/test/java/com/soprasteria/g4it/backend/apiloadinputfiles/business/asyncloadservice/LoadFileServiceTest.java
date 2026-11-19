@@ -818,6 +818,9 @@ class LoadFileServiceTest {
         when(loadVirtualEquipmentService.getVirtualEquipmentCount(inventoryId))
                 .thenReturn(30L);
 
+        when(loadVirtualEquipmentService.getCloudServiceCount(inventoryId))
+                .thenReturn(15L);
+
         when(loadApplicationService.getApplicationCount(inventoryId))
                 .thenReturn(40L);
 
@@ -826,6 +829,7 @@ class LoadFileServiceTest {
         assertEquals(10L, inventory.getDataCenterCount());
         assertEquals(20L, inventory.getPhysicalEquipmentCount());
         assertEquals(30L, inventory.getVirtualEquipmentCount());
+        assertEquals(15L, inventory.getCloudServiceCount());
         assertEquals(40L, inventory.getApplicationCount());
 
         verify(inventoryRepository).save(inventory);

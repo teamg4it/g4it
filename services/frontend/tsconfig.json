@@ -2,7 +2,11 @@
 {
     "compileOnSave": false,
     "compilerOptions": {
-        "baseUrl": "./",
+        "rootDir": "./src",
+        "paths": {
+            "src/*": ["./src/*"],
+            "test/*": ["./test/*"]
+        },
         "outDir": "./dist/out-tsc",
         "forceConsistentCasingInFileNames": true,
         "esModuleInterop": true,
@@ -18,10 +22,12 @@
         "importHelpers": true,
         "target": "ES2022",
         "module": "es2020",
-        "types": ["cypress", "cypress-axe", "node"],
+        "types": ["jasmine", "node"],
         "skipLibCheck": true,
         "useDefineForClassFields": false
     },
+    "include": ["src/**/*.ts"],
+    "exclude": ["cypress"],
     "angularCompilerOptions": {
         "enableI18nLegacyMessageIdFormat": false,
         "strictInjectionParameters": true,
