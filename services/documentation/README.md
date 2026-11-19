@@ -12,13 +12,12 @@ A web application based on Hugo and theme [hugo-theme-relearn](https://mcshelby.
 
 Check [deployed documentation](https://saas-g4it.com/documentation/1-getting-started/2-getting-started-as-a-developper/1-how-to-setup-my-local-dev-env/index.html)
 
-### Import needed themes:
+### Import needed themes
 
-cd service/documentation
+cd services/documentation
 
 git clone -b main --single-branch https://github.com/McShelby/hugo-theme-relearn.git themes/hugo-theme-relearn
 git clone -b main --single-branch https://github.com/martignoni/hugo-video.git themes/hugo-video
-
 
 ### How to run locally
 
@@ -26,6 +25,6 @@ git clone -b main --single-branch https://github.com/martignoni/hugo-video.git t
 
 Use IntelliJ Run Configuration named `OpenSource Documentation`.
 
-Or run `hugo server -D -p1233 --navigateToChanged` for a dev server.   
-This will open your browser on `http://localhost:1233/`.   
+Or run `hugo server -D -p1233 --navigateToChanged` for a dev server.
+This will open your browser on `http://localhost:1233/`.
 The app will automatically reload if you change any of the source files.

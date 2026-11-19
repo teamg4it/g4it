@@ -1,12 +1,12 @@
 # Use an official Maven image as the base image
-FROM maven:3.9.9-eclipse-temurin-21-alpine AS build
+FROM docker.io/library/maven:3.9.9-eclipse-temurin-21-alpine AS build
 WORKDIR /app
 COPY pom.xml .
 COPY src ./src
 
 RUN mvn --no-transfer-progress -P SKIP-ALL-TEST clean package
 
-FROM eclipse-temurin:21-jre
+FROM docker.io/library/eclipse-temurin:21-jre
 ARG JAR_FILE=/app/target/*.jar
 WORKDIR /app
 COPY --from=build $JAR_FILE application.jar
