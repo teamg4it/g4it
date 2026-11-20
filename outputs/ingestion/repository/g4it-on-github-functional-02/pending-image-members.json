@@ -1,0 +1,122 @@
+{
+  "analysis_id": "g4it-on-github-functional-02",
+  "request_sha256": "6c6bdaff6fae98166f610b8352fdbf1cd0e77cf4f356a9034f0b8e1a650b219c",
+  "count": 23,
+  "members": [
+    {
+      "source": "services/documentation/content/2-functional-documentation/use_cases/uc_navigation_menu/images/accessibility_1.png",
+      "source_sha256": "5290fbf536e838bcc08ab38d04ce0cf57fab8b9b1ef881b7c16280a9256b29ea",
+      "locator": "image:whole-file"
+    },
+    {
+      "source": "services/documentation/content/2-functional-documentation/use_cases/uc_navigation_menu/images/accessibility_2.png",
+      "source_sha256": "897068245367cd3eb974d8e01644059fcb29c170f40078da635537ab7af2e307",
+      "locator": "image:whole-file"
+    },
+    {
+      "source": "services/documentation/content/2-functional-documentation/use_cases/uc_navigation_menu/images/accessibility_3.png",
+      "source_sha256": "7f1b0e6ec0ce187356d02a42efd1662aeb5a0f24866ece0e60dc1cd11382d262",
+      "locator": "image:whole-file"
+    },
+    {
+      "source": "services/documentation/content/2-functional-documentation/use_cases/uc_navigation_menu/images/ecodesign_1.png",
+      "source_sha256": "0f1b5f20ecbcccc1899b7a74561fe7af576d1c99f564675d8c1540e8e7c9907b",
+      "locator": "image:whole-file"
+    },
+    {
+      "source": "services/documentation/content/2-functional-documentation/use_cases/uc_navigation_menu/images/ecodesign_2.png",
+      "source_sha256": "3affc5d1a1c5e33b73533b9a41c38c4e7af1960a143fc8d80bf64c55387fced1",
+      "locator": "image:whole-file"
+    },
+    {
+      "source": "services/documentation/content/2-functional-documentation/use_cases/uc_navigation_menu/images/left_panel.png",
+      "source_sha256": "b5337882652fd89f82003a7fbec58ecff92e24fb9ae4064b0d8b6a2f56091298",
+      "locator": "image:whole-file"
+    },
+    {
+      "source": "services/documentation/content/2-functional-documentation/use_cases/uc_navigation_menu/images/welcome_page.png",
+      "source_sha256": "c9daadab13c4f4a3b48048fc49c694af29557f97678211ef134ebd96ff47cc4e",
+      "locator": "image:whole-file"
+    },
+    {
+      "source": "services/documentation/content/2-functional-documentation/use_cases/uc_navigation_menu/images/welcome_page_disabled_digital_services.png",
+      "source_sha256": "ebb08acd9e798003b90b4cc8a9a2bd203167258d47e63587366fa2ab04d89b8f",
+      "locator": "image:whole-file"
+    },
+    {
+      "source": "services/documentation/content/2-functional-documentation/use_cases/uc_navigation_menu/images/welcome_page_disabled_inventories.png",
+      "source_sha256": "bfea943443df78b09fb0ee22d3bfcee1d6b6c33cd36015bbb2bccc6a2cbafcf7",
+      "locator": "image:whole-file"
+    },
+    {
+      "source": "services/documentation/content/2-functional-documentation/use_cases/uc_navigation_menu/images/welcome_page_disabled_inventory.png",
+      "source_sha256": "9fae864684c139fedd39a57a0458decca3e8d6936d9272ec7f8e77839da5cabd",
+      "locator": "image:whole-file"
+    },
+    {
+      "source": "services/documentation/content/2-functional-documentation/use_cases/uc_navigation_menu/uc2_header/images/about_g4it.png",
+      "source_sha256": "5dd8b3c303636bbfdc19d6b0cd19409f79b641b9a7d0d9d823d0b8cf71cbda77",
+      "locator": "image:whole-file"
+    },
+    {
+      "source": "services/documentation/content/2-functional-documentation/use_cases/uc_navigation_menu/uc2_header/images/account_settings.png",
+      "source_sha256": "7bf4d17171c47eba20efc8e98829c42e592b4cf2b563ee76e9b037b945467108",
+      "locator": "image:whole-file"
+    },
+    {
+      "source": "services/documentation/content/2-functional-documentation/use_cases/uc_navigation_menu/uc2_header/images/business_hours.PNG",
+      "source_sha256": "802a88478d92b64b7ee9c5a7fb6f63bd792618ab2d3ad628248fc9cfe27f1dd4",
+      "locator": "image:whole-file"
+    },
+    {
+      "source": "services/documentation/content/2-functional-documentation/use_cases/uc_navigation_menu/uc2_header/images/create_organization_button.png",
+      "source_sha256": "c88121234f28bda3f22d4592439cbd9926da846d7d9dde0e230fcad6495fcf9d",
+      "locator": "image:whole-file"
+    },
+    {
+      "source": "services/documentation/content/2-functional-documentation/use_cases/uc_navigation_menu/uc2_header/images/create_organization_form_id.png",
+      "source_sha256": "25c96f2d32557d016949d3037dd590b79bc562fa08263c626a2bdcc80bb9280f",
+      "locator": "image:whole-file"
+    },
+    {
+      "source": "services/documentation/content/2-functional-documentation/use_cases/uc_navigation_menu/uc2_header/images/create_organization_menu1_selected.png",
+      "source_sha256": "0286a7998b088b1e6252fbf06d59a59d57b7dde2c4e073227b3504004a49b919",
+      "locator": "image:whole-file"
+    },
+    {
+      "source": "services/documentation/content/2-functional-documentation/use_cases/uc_navigation_menu/uc2_header/images/create_organization_menu2_selected.png",
+      "source_sha256": "ba59814eb4a24cb05454536ec9bae0445811f5c7ac513b8092dbb6086731c972",
+      "locator": "image:whole-file"
+    },
+    {
+      "source": "services/documentation/content/2-functional-documentation/use_cases/uc_navigation_menu/uc2_header/images/create_organization_name_duplicate.png",
+      "source_sha256": "d156a415e8bee1caad6cadcdcd8c67f85d8c0ec5f72e146c826fb016bf679e6a",
+      "locator": "image:whole-file"
+    },
+    {
+      "source": "services/documentation/content/2-functional-documentation/use_cases/uc_navigation_menu/uc2_header/images/create_organization_name_space.png",
+      "source_sha256": "be8568952a7e87777265c47454e71ee58cec68576f64a6bbe7b045f55b67e9c7",
+      "locator": "image:whole-file"
+    },
+    {
+      "source": "services/documentation/content/2-functional-documentation/use_cases/uc_navigation_menu/uc2_header/images/organization_creation_state_diagram.png",
+      "source_sha256": "9e056a24896edc422c3d4e114af26e1ca6576a8a3f2f73a7a3ba3f554dd3ca76",
+      "locator": "image:whole-file"
+    },
+    {
+      "source": "services/documentation/content/2-functional-documentation/use_cases/uc_navigation_menu/uc2_header/images/send_mail_button.PNG",
+      "source_sha256": "802a88478d92b64b7ee9c5a7fb6f63bd792618ab2d3ad628248fc9cfe27f1dd4",
+      "locator": "image:whole-file"
+    },
+    {
+      "source": "services/documentation/content/2-functional-documentation/use_cases/uc_navigation_menu/uc2_header/images/support_mail.PNG",
+      "source_sha256": "6a67b68304ab86085624848861530e165d3ed6daa7695430a0547335663280f7",
+      "locator": "image:whole-file"
+    },
+    {
+      "source": "services/documentation/content/2-functional-documentation/use_cases/uc_navigation_menu/uc2_header/images/workspace_selection.png",
+      "source_sha256": "7fc03840769f04344ce4ae57139eb4f5e231949fe470a0b7f2a6c86ea861b2a2",
+      "locator": "image:whole-file"
+    }
+  ]
+}

@@ -23,5 +23,13 @@
     "run_dir": "outputs/runs/brownfield-analysis/20261116-144600-g4it-on-github-8da83886",
     "started": "2026-11-16T14:46:00Z",
     "status": "in-progress"
+  },
+  {
+    "trace_id": "4d1e4282-cc4b-4ea6-83da-14dd38c0b892",
+    "workflow": "brownfield-analysis",
+    "feature": "g4it-on-github",
+    "run_dir": "outputs/runs/brownfield-analysis/20261119-162225-g4it-on-github-4d1e4282",
+    "started": "2026-11-19T16:22:25Z",
+    "status": "in-progress"
   }
 ]

@@ -1,0 +1,127 @@
+{
+  "analysis_id": "g4it-on-github-getstarted-02",
+  "request_sha256": "968fd115fc84c599da0f5908d0f8baadd21639f8d992556b88e30e64bea0a6a4",
+  "count": 24,
+  "members": [
+    {
+      "source": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/images/02_create_an_inventory_1.png",
+      "source_sha256": "bbeaa090969dbf0658edad7322ef37c2168f3fd7104cbab6fc3def630aa3585e",
+      "locator": "image:whole-file"
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/images/02_create_an_inventory_2.png",
+      "source_sha256": "3cc6bafdb5866e484c9fa41f0c923a76d2d29370ff80215d59c9da38a65343f4",
+      "locator": "image:whole-file"
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/images/1-PowerBiFolder.png",
+      "source_sha256": "de755c51836be7dfad0796b5aa6ad0c226f1e76e6e536396f6bca96afe17b260",
+      "locator": "image:whole-file"
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/images/2-PowerBiFolder_InventoriesFiles.png",
+      "source_sha256": "7ae2b021f02be73e78712fcccf032e49f27b79232c9aea081eeaebc62ebc7b12",
+      "locator": "image:whole-file"
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/images/3-PowerBiEditParameters.png",
+      "source_sha256": "787884cffaaadaceb98f3250713b781d7936815c9e3e84d7fcf6225aca3bdac3",
+      "locator": "image:whole-file"
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/images/4-PowerBiExportInventoryonG4IT.png",
+      "source_sha256": "de69318fcdfbb90f8f81d276101bfa06152446c1a3d5598b99a7093f67dd2cd4",
+      "locator": "image:whole-file"
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/images/5-PowerBiUpdate.png",
+      "source_sha256": "ed467bd435041238e4522a70792590e3412e13356061198ea992a4d77d366d2c",
+      "locator": "image:whole-file"
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/images/Application_View_Specificities.png",
+      "source_sha256": "5c65d2dfd0a0666cc1d997ddea52860d75185dedbb53e7355f8d0d979a5b281b",
+      "locator": "image:whole-file"
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/images/Choose_criteria.png",
+      "source_sha256": "ca09d769112a6f80abfdb20e6094bad398a66ab34607ac4bb010d0d24b8e8c11",
+      "locator": "image:whole-file"
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/images/Common_components.png",
+      "source_sha256": "b856d2f37ae3da0c0655cac89d0131189b951ca2b379a8f5150bbefb06597c66",
+      "locator": "image:whole-file"
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/images/Datamodel_download.png",
+      "source_sha256": "d4646af9a8aaf5582014fc32513e8f1479413dd5ad9a44f0b7ee520b0d93e42e",
+      "locator": "image:whole-file"
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/images/Equipment_View_Specificities.png",
+      "source_sha256": "2049aba8805c416d6e6e365d7bc8ff5891bf1c3c2f0efa6e1d888adf0e97ebd6",
+      "locator": "image:whole-file"
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/images/Equipment_and_Application_button.png",
+      "source_sha256": "cf0ee0550f13e7fae9746f14bc53fa150ee1fbab4e7fbbf0edbf81ea6a185eb0",
+      "locator": "image:whole-file"
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/images/Evaluate_the_impact.png",
+      "source_sha256": "14229fd21c4f1854715832958d51fcc56c4cf5605b5cedeb07611f9308f5e019",
+      "locator": "image:whole-file"
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/images/Navigating_in_Application_View.png",
+      "source_sha256": "13067c6a55d8b44a207fe71c1daf6df5f908bff7cd547d703335f258041e52f0",
+      "locator": "image:whole-file"
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/images/control_number_of_item.png",
+      "source_sha256": "b3f21337a4ddbd9aa5ba15a43d75f35e1c44f7ba2d3331e992bda01b24a5db1a",
+      "locator": "image:whole-file"
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/images/data_collected.png",
+      "source_sha256": "73d5fc503cf016ca387e27fb37056e829fbf38ce5569cd330add81fdb3be3da9",
+      "locator": "image:whole-file"
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/images/loadInError.png",
+      "source_sha256": "0a50f3d0cc356c15bb316c5c4e6d9f98f35366805f35a4a8a7a38cae622e3b97",
+      "locator": "image:whole-file"
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/images/loadKOpng.png",
+      "source_sha256": "81cc6e06820f056cf3f2561c3fcc7128a228de19bcb62d6ed8bbb7a61c222a24",
+      "locator": "image:whole-file"
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/images/loadOK.png",
+      "source_sha256": "9d011e97035edfb122b4209c15c7baf6b2d0dfc77e6e29c6df2247cb54e34074",
+      "locator": "image:whole-file"
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/images/update_estimation.png",
+      "source_sha256": "12ee27bbc8a86e12886efb9af444bad4567e5c67f18753c35b5112ba14506edd",
+      "locator": "image:whole-file"
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/2-getting-started-as-a-developper/2-test_strategy/img.png",
+      "source_sha256": "fa41a74f21087b44fedec075a769693250f0a226255c76cb021758de36ac15e6",
+      "locator": "image:whole-file"
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/2-getting-started-as-a-developper/3-document-g4IT/2-how_to_document_with_hugo_docs/logo-overgreen.png",
+      "source_sha256": "8e6450cc4238581e10df281f5e0c2ed8f5ac26f668f053f8e1386fcf8e6656ac",
+      "locator": "image:whole-file"
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/2-getting-started-as-a-developper/missing_dependency.png",
+      "source_sha256": "86645bee9488ba19d857d8c1fb506e86ada2d67d1117b1468c38b8d411139317",
+      "locator": "image:whole-file"
+    }
+  ]
+}

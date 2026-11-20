@@ -1,0 +1,13 @@
+{
+  "state": "complete",
+  "total": 10,
+  "done": 10,
+  "counts": {
+    "not_required": 10
+  },
+  "last_source": null,
+  "started_at": "2026-11-20T08:40:28.227097+00:00",
+  "updated_at": "2026-11-20T08:40:28.623864+00:00",
+  "elapsed_seconds": 0,
+  "eta_seconds": null
+}

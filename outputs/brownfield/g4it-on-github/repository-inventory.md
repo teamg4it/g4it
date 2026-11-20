@@ -2,35 +2,35 @@
 title: Repository inventory
 workflow: brownfield-analysis
 trigger: user
-date: '2026-11-16'
+date: '2026-11-19'
 analysis_id: g4it-on-github
 station: discover-repositories
 agent: repository-analyzer
-skill: [knowledge-plane, repo-analysis, cobol-inventory]
-source_root: services/
+skill: [knowledge-plane, repo-analysis]
+source_root: .
 inputDocuments:
-  - services/documentation/content/3-technical-documentation/2-software_architecture/_index.md
+  - .github/skills/knowledge-plane/SKILL.md
+  - .github/skills/repo-analysis/SKILL.md
   - services/backend/pom.xml
   - services/frontend/package.json
-  - services/frontend/src/constants.ts
-  - services/documentation/schemacrawler/README.md
-  - services/documentation/schemacrawler/markdown.py
-  - services/documentation/README.md
+  - services/backend/README.md
+  - services/frontend/README.md
   - services/keycloak/README.md
+  - services/documentation/README.md
+  - services/documentation/schemacrawler/README.md
+  - README.md
+  - workspace/docker/docker-compose-all.yml
 version: "1.0"
-status: validated
+status: complete
 changeHistory:
-  - date: '2026-11-16'
-    description: "Initial station report; compliance metadata and disclaimer normalized from existing findings."
+  - date: '2026-11-19'
+    description: "Discover-repositories re-run for root-project analysis in place."
     changes:
-      - "Normalized compliance metadata and disclaimer from existing findings."
-  - date: '2026-11-16'
-    description: "User-requested inventory validation; no quality review performed."
-    changes:
-      - "Set status to validated and updated trace_id for this authorized station run."
+      - "Replaced the services/-rooted inventory; source root is the workspace root (.)."
+      - "Recorded discovery results from kp_bootstrap.py repositories for source roots '.' and 'services/'."
 holisticQualityRating: not-rated
 overallStatus: not-reviewed
-trace_id: b00185bc-fbd9-4285-a4b6-e0acc4ee9f8f
+trace_id: 4d1e4282-cc4b-4ea6-83da-14dd38c0b892
 trace_scope: station-local-report
 ---
 <!-- AI_DISCLAIMER v1.0 -->
@@ -45,54 +45,97 @@ Relationships below are static findings from bounded, read-only inspection, not 
 
 ## Scope and discovery gate
 
-- Selected source: `services/`, used unchanged, in place, relative to `C:\Users\gtemplier\Documents\Git_Repo\ssg-g4it\g4it-on-github`.
-- Source preparation was supplied as **ready**. No staging, copying, source edits, indexing, ingestion, graph builds, or workflow-state changes were performed.
-- Read-only discovery command: `python .github/skills/knowledge-plane/tools/kp_bootstrap.py repositories --source-root services/`.
-- Command completed with **exit code 0**, permission result **allowed**, and discovery status **ready**.
-- Exactly **3 expected repository roots**, matching the supplied expectation; **0 problems**.
-- Complete eligible-source estimate: **10,500,908 bytes / 1,453 files**. This is the discovery tool's filtered estimate, not the mainframe scanner's all-file count.
+- Source root: `.` (workspace root), analysed **in place** under the user's "analyse root project in place" choice (2026-11-19). No copy, staging, source edit, indexing or graph build was performed. See `source-staging.md`.
+- Read-only discovery, each run from the workspace root with exit code 0:
+  - `repositories` (default root `source-code/`): status `needs-staging`; `source-code/` is absent.
+  - `repositories --source-root .`: allowed; **0 expected repositories**, 0 problems; status `needs-staging`. The tool notes the workspace root holds no build manifest. No size estimate was produced because nothing was expected.
+  - `repositories --source-root services/` (comparison only): **8 expected roots**, 0 problems (listed below).
+- The tool checks build manifests only at the root for `.`, so the two manifests under `services/` (`backend/pom.xml`, `frontend/package.json`) are not reported as expected repositories. The units below come from a manual, bounded inventory.
+- Complete eligible-source estimate for `.`: **not established**.
 
 ## Detected repository units
 
-These are source/indexing units within the selected monorepo subtree, not a claim that each has an independent Git history.
+Manual inventory of the root project. These are indexing and product units inside one Git repository (`teamg4it/g4it`), not independent repositories with their own history.
 
-| Root | Classification and responsibility | Stack/build signals | Evidence |
+| Unit | Classification and responsibility | Stack/build signals | Evidence |
 |---|---|---|---|
-| `services/backend` | Business backend: load IT inventories and digital services, calculate environmental impacts, and expose results through REST APIs. | Maven; Java 21; Spring Boot 4.0.7; JPA/PostgreSQL; NumEcoEval calculation library; OpenAPI-based API generation. | [E1], [E2], [E3] |
-| `services/frontend` | Browser application for inventories, digital services, and impact-result visualization. | npm/Angular CLI; Angular 21; TypeScript 5.9; PrimeNG, ECharts, Elf state management. | [E1], [E4], [E5] |
-| `services/documentation/schemacrawler` | Supporting utility that generates grouped database-table documentation and relationship diagrams; not a business API service. | PowerShell entry script; Python report formatter; SchemaCrawler container prerequisite. | [E6], [E7] |
+| `services/backend` | **Business service (primary).** REST backend for IT inventories, digital services, impact evaluation, indicators, referential data, workspaces and users. | Maven; Java 21; Spring Boot 4.0.7 parent; PostgreSQL and Liquibase; Keycloak JWT resource server; 38 controller classes. | `services/backend/pom.xml` (parent, properties, dependencies); `services/backend/README.md`; controller paths under `src/main/java` |
+| `services/frontend` | **Business client (primary).** Angular single-page application for inventories, digital services, footprint dashboards, version comparison, administration and sharing. | npm; Angular 21; TypeScript 5.9; PrimeNG; ECharts; keycloak-angular; about 89 component files under `src/app/layout/`. | `services/frontend/package.json`; `services/frontend/README.md`; `src/app/layout/` listing |
+| `services/documentation/schemacrawler` | **Supporting tool.** Generates per-table-group Markdown documentation from a database schema crawl. Not a business service. | PowerShell entry script; Python formatter; SchemaCrawler Docker image prerequisite. | `services/documentation/schemacrawler/README.md` |
+| `services/documentation` | **Supporting content.** Hugo documentation website (functional, technical, getting-started and release material). | Hugo (`hugo.toml`); 216 Markdown files under `content/`; theme clones from external Git sources. | `services/documentation/README.md`; content listing |
+| `services/keycloak` | **Supporting identity component.** Keycloak image and realm export for user authentication. No build manifest. | Dockerfile; GitLab CI; README. Realm export not read. | `services/keycloak/README.md`; file listing |
+| `workspace/docker` | **Deployment composition, not a repository.** Compose definitions for the local stack. | Docker Compose v3. | `workspace/docker/docker-compose-all.yml` (read); `shared-docker-compose.yml` (listed, not read) |
+| `workspace/ecomind-api` | **Sample payloads.** Two JSON output samples, not code. | JSON | File listing only; not opened |
+| `tools/repo-graph` | **Harness tooling** (APM-managed knowledge-plane graph tools). Outside product scope. | Templates and manifests; `.apm-managed.json` present. | File listing only |
 
-## Supporting areas, not additional expected repositories
+Root-level files (`README.md`, `DOCKER-DEPLOYMENT.md`, `CHANGELOG.md`, `CONTRIBUTING.md`, `LICENSE.txt`, `NOTICE.txt`, `allow-ci-failure.yml`, `hook-config.json`, `dev-realm-export.json`) are project documentation and configuration. `dev-realm-export.json` was not opened.
 
-| Area | Role | Discovery treatment / evidence |
-|---|---|---|
-| `services/documentation` | Hugo documentation website with functional and technical material. | Parent content/template areas were noted as not requiring a code repository; the nested SchemaCrawler utility is separately expected. `services/documentation/README.md:1-3`; discovery stdout notes. |
-| `services/keycloak` | Supporting product customization for the login experience; not a separate business capability. | Discovery noted this area as not requiring a code repository. Role described at `services/keycloak/README.md:1-3` and [E1], lines 59-62. No access-management deep dive performed. |
+### Backend business capability areas (from controller packages)
+
+| Package (under `services/backend/src/main/java/com/soprasteria/g4it/backend/`) | Capability |
+|---|---|
+| `apiinout` | Input and output data for applications, datacenters, physical and virtual equipment, and AI services (9 controllers). |
+| `apiinventory`, `apiloadinputfiles` | Inventory management and CSV file loading with validation. |
+| `apidigitalservice`, `apirenewservice`, `apisharedlink`, `apibusinesshours` | Digital services and versions, renewal, sharing links, business-hours reference. |
+| `apievaluating`, `apiindicator` | Impact evaluation runs and indicator results. |
+| `apireferential` | Referential import and export, workspace-specific referential data. |
+| `apiworkspace`, `apiuser`, `apiadministrator`, `apiadministratoractions` | Workspaces, users and roles, organizations, release notes, administrator actions. |
+| `apiaiservice`, `apiaiinfra`, `apiparameterai`, `apirecomandation` | AI-service estimation, AI infrastructure, AI parameters and recommendations. |
+| `apifiles` | File system and template-file access. |
+
+Excluded from the business view as technical: `apiversion` (version info) and `common/task` (task-status controller).
+
+### Frontend business areas (from `src/app/layout/`)
+
+Inventories and their footprint views; digital services, footprint (cloud, networks, servers, terminals, ecomind parameters), version management and comparison; administration panel (users, organizations, referential updates, release notes); shared digital-service landing page; welcome, landing and declarations pages.
+
+## Repositories by comparison scan (`services/` root, comparison only)
+
+| Expected root | Classification |
+|---|---|
+| `services/backend` | Business service |
+| `services/frontend` | Business client |
+| `services/documentation/schemacrawler` | Supporting tool |
+| `services/documentation/public/js/d3`, `js-yaml`, `mermaid` | Third-party JavaScript libraries inside the documentation site output (name-based; not opened) |
+| `services/documentation/themes/hugo-theme-relearn`, `hugo-video` | Third-party Hugo themes (the documentation README says they are cloned from external Git sources) |
+
+Not reported as expected: `services/keycloak` and `services/documentation` (no build manifest).
 
 ## Detectable relationships
 
+Static findings from manifests, environment settings in `workspace/docker/docker-compose-all.yml`, and file names. None is verified at runtime.
+
 | From → to | Relationship | Evidence strength |
 |---|---|---|
-| Frontend → backend | SPA consumes the product's REST interface for inventory and digital-service workflows. | Architecture documentation [E1], lines 13-22; consumer-side business API path constants [E5]. |
-| Backend → PostgreSQL / inventory files | Persists product data and uses file storage for inventory inputs and exports. | Documented architecture [E1], lines 27-28; PostgreSQL runtime dependency [E3]. |
-| Backend → NumEcoEval | Environmental-impact calculations use an embedded calculation library; do not model this library as a separate repository. | Manifest declaration [E2]; architecture [E1], line 29. |
-| Backend → Boavizta APIs | Cloud-service environmental-impact evaluation. | Documented relationship [E1], line 30; implementation not traversed in this discovery station. |
-| SchemaCrawler utility → database metadata → documentation | Produces grouped table descriptions and entity-relationship diagrams. | Usage/prerequisites [E6]; formatter functions `printDiagram`, `printColumnList`, and `printTableList` [E7]. |
+| Frontend → backend | Container sets the inventory API base URL to the backend on port 8080. | Compose `g4it-frontend` environment (`URL_INVENTORY`). |
+| Frontend → Keycloak | Frontend has a Keycloak switch and URL; `keycloak-angular` and `keycloak-js` are dependencies. | Compose environment (`KEYCLOAK_ENABLED`, `KEYCLOAK_URL`); `package.json`. |
+| Backend → PostgreSQL | JDBC datasource to the `postgresdb` service; PostgreSQL driver and Liquibase in the build. | Compose (`SPRING_DATASOURCE_URL`); `pom.xml` properties. |
+| Backend → Keycloak | JWT issuer URI for resource-server validation; Keycloak adapter BOM and starter declared. | Compose (`SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI`); `pom.xml` properties. |
+| Backend → NumEcoEval APIs | Base URLs for the NumEcoEval referential and data-entry APIs; NumEcoEval version declared in the build. | Compose (`NUMECOEVAL_BASEURL`, `NUMECOEVALREFERENTIAL_BASEURL`); `pom.xml` (`numecoeval.version`). |
+| Backend → Boavizta and EcoLogits APIs | Base URLs for cloud and AI impact calculations. | Compose (`BOAVIZTAPI_BASEURL`, `ECOLOGITS_BASEURL`). |
+| Backend → EcoMind AI | AI model configuration class exists; endpoint not traversed. | `external/ecomindai/ConfigAiModel.java` (file name only). |
+| Backend → file storage | Named volume mounted at `/app/storage`; local storage path configured. | Compose (`g4it_storage_data`, `FILESYSTEM_LOCAL_PATH`). |
+| Backend → email | Azure Communication Email version declared; email service class exists. | `pom.xml` property; `common/utils/AzureEmailService.java` (file name only). |
+| Schemacrawler tool → database | Reads the database schema using `db.properties.json` and produces Markdown. | `services/documentation/schemacrawler/README.md`. |
+
+## Stack routing (mainframe check, bounded)
+
+- This station did not run the mainframe scanner. The bounded check in this run globbed `*.cbl`, `*.cob`, `*.cpy` and `*.jcl` (any case) under `services/`, `workspace/`, `tools/` and the root. It found **no matches**. Root-level manifests were searched too; none are COBOL or mainframe build files.
+- The cobol-inventory tool was not run. A negative result from this bounded search does not prove the absence of mainframe code anywhere in the tree.
+- **Detected stack family: mixed** (Java/Spring Boot backend, Angular frontend, Hugo/Python/PowerShell tooling, Docker Compose). Not mainframe.
 
 ## Mainframe evidence and inspection limits
 
-The already supplied scan summary was reused; **no scan was rerun**. The temporary scan JSON has been removed; the figures below are retained from that supplied summary.
-
-The scan records **4,655 files**: archive 4, config 413, diagram 385, doc 456, empty 15, excluded-sensitive 1, script 8, unknown 3,373. Classified ratio: **0.2754**; COBOL code lines: **0**. No typed mainframe classifications are reported. This does not meet the mainframe routing rule; unknown files are not proof of a mainframe estate or proof of its absence.
-
-Manual inspection remained below 50 files per batch and within five directory levels relative to `services/`. Findings cover manifests, selected documentation, frontend route/constants files, and the schema formatter—not a complete implementation or endpoint inventory. Sensitive files were excluded. No code or document graph was built.
+Bounded inspection only: under 50 files per batch and no deeper than five directory levels. Findings cover manifests, selected READMEs, controller and package listings, and the compose file. They are not a complete endpoint inventory or implementation review. No index, graph or workflow state was changed.
 
 ## Source evidence
 
-- **[E1]** `services/documentation/content/3-technical-documentation/2-software_architecture/_index.md:13-45` — product purpose, frontend/backend split, data stores, calculation dependencies, single-backend architecture.
-- **[E2]** `services/backend/pom.xml:5-16,30-32,129-155` — backend identity, framework/language versions, calculations and web/data dependencies.
-- **[E3]** `services/backend/pom.xml:217-229,454-515` — database/migration dependencies and API contract merge/generation.
-- **[E4]** `services/frontend/package.json:4-15,19-51,54-70` — build scripts, UI framework/libraries, TypeScript.
-- **[E5]** `services/frontend/src/constants.ts:68-92` — consumer-side inventory, digital-service, reference-data, workspace, and sharing API path fragments.
-- **[E6]** `services/documentation/schemacrawler/README.md:1-16,52-64` — database-documentation utility, prerequisites, invocation and output.
-- **[E7]** `services/documentation/schemacrawler/markdown.py:12-35,46-106` — schema-to-Markdown and Mermaid transformation.
+- **[E1]** `services/backend/pom.xml` — parent `spring-boot-starter-parent` 4.0.7, group/artifact `com.soprasteria.g4it:backend`, description, and properties (Java 21, PostgreSQL, Liquibase, Keycloak, NumEcoEval, Azure email).
+- **[E2]** `services/frontend/package.json` — name `frontend`, version 2.1.1, npm scripts, Angular 21 and TypeScript 5.9 dependencies, keycloak-angular and keycloak-js.
+- **[E3]** `services/backend/README.md` — Spring Boot start, Java 21, Maven, PostgreSQL requirement.
+- **[E4]** `services/frontend/README.md` — Angular start, mocked-backend option, PrimeNG and ECharts usage.
+- **[E5]** `services/keycloak/README.md` — Keycloak role for authentication; realm export and image upgrade process.
+- **[E6]** `services/documentation/README.md` — Hugo site and external theme clones.
+- **[E7]** `services/documentation/schemacrawler/README.md` — database-documentation utility, prerequisites and output.
+- **[E8]** `workspace/docker/docker-compose-all.yml` — service topology and environment-based integration URLs.
+- **[E9]** `README.md` — product purpose and feature summary.

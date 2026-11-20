@@ -1,0 +1,23 @@
+{
+  "workflow": "document-ingestion",
+  "station": "ingest-documents/plan-batches",
+  "trigger": "batch-plan",
+  "date": "2026-11-20T08:11:18.903674+00:00",
+  "status": "draft",
+  "inputDocuments": [
+    "outputs/ingestion/g4it-on-github/triage-report.json",
+    "outputs/ingestion/g4it-on-github/triage-decisions.json"
+  ],
+  "changeHistory": [],
+  "holisticQualityRating": "unassessed",
+  "overallStatus": "pending",
+  "sensitivity": "confidential",
+  "trace_id": "4d1e4282-cc4b-4ea6-83da-14dd38c0b892",
+  "analysis_id": "g4it-on-github",
+  "batch": "schemacrawler-01",
+  "files": [
+    "services/documentation/schemacrawler/README.md"
+  ],
+  "exclusions": [],
+  "source_root": "."
+}

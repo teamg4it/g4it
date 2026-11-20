@@ -1,0 +1,99 @@
+{
+  "version": 3,
+  "workflow": "brownfield-analysis",
+  "trigger": "repository-ingestion",
+  "date": "2026-11-20T08:38:52.381782+00:00",
+  "status": "draft",
+  "inputDocuments": [
+    "outputs/ingestion/requests/g4it-on-github/frontend-02.json"
+  ],
+  "changeHistory": [],
+  "holisticQualityRating": "not-rated",
+  "overallStatus": "not-reviewed",
+  "sensitivity": "confidential",
+  "trace_id": "g4it-on-github-frontend-02",
+  "station": "ingest-documents/extract-and-verify",
+  "request": "outputs/ingestion/requests/g4it-on-github/frontend-02.json",
+  "request_sha256": "3911588adb23486144eb1511381e106b9dc6a13f7b10bbaabb63658198be26b3",
+  "exclusions": [],
+  "dependencies": {
+    "pypdf": "missing",
+    "openpyxl": "missing",
+    "defusedxml": "missing"
+  },
+  "workers": 4,
+  "sources": [
+    {
+      "source": "services/frontend/cypress/dataset/input/information-system/virtual_equipment.csv",
+      "format": ".csv",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/frontend/cypress/dataset/input/information-system/virtual_equipment.csv",
+      "source_sha256": "f177499c4d18467847067d094b576259258d9fab3121a6ccb21891d0a30fe461",
+      "read_sha256": "f177499c4d18467847067d094b576259258d9fab3121a6ccb21891d0a30fe461",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-13",
+          "sha256": "f177499c4d18467847067d094b576259258d9fab3121a6ccb21891d0a30fe461"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/frontend/spec/applicationViewOptimizationFeature/solution-frontend.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/frontend/spec/applicationViewOptimizationFeature/solution-frontend.md",
+      "source_sha256": "bc581aa8b2d2461e8275e3061422fd65be46532e17ef2abb2777be1f33a53f52",
+      "read_sha256": "bc581aa8b2d2461e8275e3061422fd65be46532e17ef2abb2777be1f33a53f52",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-100",
+          "sha256": "994a2f1b3dfdba056fcab3b7a73e71b051877157c06b0760d3825d257b27bd51"
+        },
+        {
+          "id": "lines:101-200",
+          "sha256": "78c890ba8e66055ce03923942c2482d07f7c986e4e01077a84b5303acc13576e"
+        },
+        {
+          "id": "lines:201-300",
+          "sha256": "65a1a150b77ffc8ade433518bff761924101c9af3d4e9ba5880752ea09bd0ea8"
+        },
+        {
+          "id": "lines:301-340",
+          "sha256": "a4aff54675f99754b06aeb008c61de9ededceb2fc1b29e7f8331bfa00c83ce00"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/frontend/spec/applicationViewOptimizationFeature/specification-frontend.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/frontend/spec/applicationViewOptimizationFeature/specification-frontend.md",
+      "source_sha256": "c0bb7991edb35216184a18bc4d910a5ff03ad084f6f687e62c5caa80397f29ef",
+      "read_sha256": "c0bb7991edb35216184a18bc4d910a5ff03ad084f6f687e62c5caa80397f29ef",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-22",
+          "sha256": "c0bb7991edb35216184a18bc4d910a5ff03ad084f6f687e62c5caa80397f29ef"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    }
+  ]
+}

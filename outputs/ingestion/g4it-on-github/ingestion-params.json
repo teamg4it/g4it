@@ -1,0 +1,31 @@
+{
+  "source_root": ".",
+  "output_root": ".",
+  "include": [
+    "services/documentation/content",
+    "services/backend",
+    "services/frontend",
+    "services/keycloak",
+    "services/documentation/schemacrawler"
+  ],
+  "batch_size": 100,
+  "grouping": {
+    "mode": "area-map",
+    "areas": [
+      {"prefix": "services/documentation/content/1-getting-started", "batch": "getstarted"},
+      {"prefix": "services/documentation/content/2-functional-documentation", "batch": "functional"},
+      {"prefix": "services/documentation/content/3-technical-documentation", "batch": "technical"},
+      {"prefix": "services/documentation/content/4-help", "batch": "help"},
+      {"prefix": "services/documentation/content/5-releases", "batch": "releases"},
+      {"prefix": "services/documentation/content", "batch": "docs"},
+      {"prefix": "services/backend", "batch": "backend"},
+      {"prefix": "services/frontend", "batch": "frontend"},
+      {"prefix": "services/keycloak", "batch": "keycloak"},
+      {"prefix": "services/documentation/schemacrawler", "batch": "schemacrawler"}
+    ]
+  },
+  "legacy_codepage": null,
+  "analysis_id": "g4it-on-github",
+  "mode": "nested",
+  "status": "approved"
+}

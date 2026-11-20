@@ -1,0 +1,172 @@
+{
+  "analysis_id": "g4it-on-github-getstarted-01",
+  "request_sha256": "55ecf2bdd4c4d819afbefc453368b9581e4acca0871603eb8d139889587f7535",
+  "count": 33,
+  "members": [
+    {
+      "source": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/01_ds_module_access.png",
+      "source_sha256": "39e4a92f8ff79ebdaca5389c20e918da984f944a3c6ef3506a24a03af5f2a48c",
+      "locator": "image:whole-file"
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/02_create_a_ds.png",
+      "source_sha256": "17f13718dddc2374bb96e25c2c9c1831e266996ac008b4e104769303fa73e328",
+      "locator": "image:whole-file"
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/03_edit_name_create_device.png",
+      "source_sha256": "d35ebc7d75761e0a0e2de75ad66fb28ada3d15f2381ce2e61c19fe3ab1e2a12a",
+      "locator": "image:whole-file"
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/04_add_device.png",
+      "source_sha256": "0dbc4c4db3b5b7af411c75b411d253dee0a7bf42f412e286536cf01a0dd18b09",
+      "locator": "image:whole-file"
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/05_edit_device.png",
+      "source_sha256": "a8a997d2ee3dc5b69cc7371adfb7a2c2af3514046d2c188888f561a834c0a85d",
+      "locator": "image:whole-file"
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/06_add_network.png",
+      "source_sha256": "84b11eafa5bf49f504af4ad8efa4d3d836772e0621367ecd96677583ae0495e1",
+      "locator": "image:whole-file"
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/07_add_network.png",
+      "source_sha256": "87e44c857f143a17dc3b11be9e82b0a8b42c442a6673b4390b8fa8b7f606cf59",
+      "locator": "image:whole-file"
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/08_create_server.png",
+      "source_sha256": "94caf1f43017155f7120f41970743d08cf7c42d9ca2dedbf99beaa0fcfda508c",
+      "locator": "image:whole-file"
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/09_add_server_step_1.png",
+      "source_sha256": "d61d7947af80a54c3666bb33397757850fbb44a2906a531c05a9097480c9b0ae",
+      "locator": "image:whole-file"
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/10_add_server_step_2.png",
+      "source_sha256": "0c35a135f41775d04377a5021c67e5bb8c47a0e21ccd66dae9f931eaa10bbe0d",
+      "locator": "image:whole-file"
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/11_add_server_add_datacenter.png",
+      "source_sha256": "14e7220c567063af22f51db66581334ec98fc00cb277735fb016fb995d0f4a99",
+      "locator": "image:whole-file"
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/12_add_server_step_3.png",
+      "source_sha256": "1410ae4a28ef6badfaa937f1271d816ee3ec3565e31bc3b3f8277b5890f463ee",
+      "locator": "image:whole-file"
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/13_B_import_cloud_instance.png",
+      "source_sha256": "3754ec47e4d1f3f82ab7312efefae98fab349bcfc6fdaf7160d22ee712e2726d",
+      "locator": "image:whole-file"
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/13_add_cloud_instance.png",
+      "source_sha256": "d9b64fee1428e8a9feb4c279b23a9d741486a64284570476a17a25a9aadfff10",
+      "locator": "image:whole-file"
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/14_create_cloud_instance.png",
+      "source_sha256": "ffd62b9dcf28643283fe1c2f9d4834f9bd69932145b064ee6eadb58abec121cf",
+      "locator": "image:whole-file"
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/15_evaluate_the_impact.png",
+      "source_sha256": "3d8a7135b1fa00d0e3ead9f4cac0acff51fc93b7f4ad3fcce52cf132d8cd18eb",
+      "locator": "image:whole-file"
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/16_choose_criteria.png",
+      "source_sha256": "0aa8b28081c1957837ae910f6b045d40a19a72f9f9961a3e91fa12c85e7c28a1",
+      "locator": "image:whole-file"
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/17_visualize_impact.png",
+      "source_sha256": "4a1f42920e9a9859ac7e49da29414879218577af445ecc7f3af1f55650a66d0d",
+      "locator": "image:whole-file"
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/18_visualize_impact_criteria.png",
+      "source_sha256": "3ff8471c23f4c3a30b521c1f248d67271014a7795ebe8790f636bff30bc07571",
+      "locator": "image:whole-file"
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/19_visualize_impact_terminal.png",
+      "source_sha256": "fd026a4875d6b08c1f6fa2d99fa1a3a5df187d4063b385f84e113edb23079bf9",
+      "locator": "image:whole-file"
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/20_visualize_impact_terminal_lifecycle.png",
+      "source_sha256": "2248747848f35b574fcce8819ef70b482577c36c7986fcadb1109e6eba73e91c",
+      "locator": "image:whole-file"
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/21_visualize_impact_network.png",
+      "source_sha256": "51313d388db331054bb02a69c9dee30d8fe7657c4f16fadd79405f70daaee3cc",
+      "locator": "image:whole-file"
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/22_visualize_impact_server.png",
+      "source_sha256": "6b714de98345a513af34c51234390a7b5e89d07c9972ae38b38f47558364f1e7",
+      "locator": "image:whole-file"
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/23_visualize_impact_server_vm.png",
+      "source_sha256": "71d6634ca2ae77f6821eefb81a23733b25ded2fa3c81e8af1fc7e1b936ecc964",
+      "locator": "image:whole-file"
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/24_visualize_impact_cloud.png",
+      "source_sha256": "c63027e66b0cf8fe5da70afd835f5e5a18d2c12edb6457118afb1cae659b6a2a",
+      "locator": "image:whole-file"
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/25_visualize_impact_cloud_lifecycle.png",
+      "source_sha256": "7ca88ed7af9de7cdf0b7deaab4fbb60785e0648b7a6d706d1a54772c32858723",
+      "locator": "image:whole-file"
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/3_import-button.png",
+      "source_sha256": "42a1fed41525aec06146d7086cd5447607c222584662b29a11920008a273ad92",
+      "locator": "image:whole-file"
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/3_import-devices_physical_equipments.png",
+      "source_sha256": "4a403058f1f618b19b22a800e27a571f64fddda284c7ca055789101f9d729628",
+      "locator": "image:whole-file"
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/6_import-networks_physical_equipments.png",
+      "source_sha256": "70eb25db2197c8ca211f6e38f35c987239da8723f9f397ee4f7ea34bd8235200",
+      "locator": "image:whole-file"
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/8_import-button.png",
+      "source_sha256": "f4f13283e4107f3839095f60f1805014ac127c10863f827355c6915da752fc86",
+      "locator": "image:whole-file"
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/8_import-non-cloud-server.png",
+      "source_sha256": "58160f3660328e763d7fa46fe5500955569352a8198e7df2da3325940bd64938",
+      "locator": "image:whole-file"
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/data_collected.png",
+      "source_sha256": "73d5fc503cf016ca387e27fb37056e829fbf38ce5569cd330add81fdb3be3da9",
+      "locator": "image:whole-file"
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/images/01_IS_Module_access.png",
+      "source_sha256": "eaff583639cc316f689dbf57c12e7cc3e0fc9fc117a81203ab66aeb47db5fd5b",
+      "locator": "image:whole-file"
+    }
+  ]
+}

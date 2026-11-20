@@ -1,0 +1,78 @@
+{
+  "workflow": "brownfield-analysis",
+  "station": "ingest-documents/extract-and-verify",
+  "trigger": "batch-plan",
+  "date": "2026-11-20T08:54:55.226814+00:00",
+  "status": "draft",
+  "inputDocuments": [
+    "outputs/ingestion/g4it-on-github/triage-report.json",
+    "outputs/ingestion/g4it-on-github/triage-decisions.json"
+  ],
+  "changeHistory": [],
+  "holisticQualityRating": "unassessed",
+  "overallStatus": "pending",
+  "sensitivity": "confidential",
+  "trace_id": "4d1e4282-cc4b-4ea6-83da-14dd38c0b892",
+  "analysis_id": "g4it-on-github",
+  "batch": "backend-02",
+  "files": [
+    "services/backend/src/main/resources/db/changelog/referential-data/ref_network_type.csv",
+    "services/backend/src/main/resources/db/changelog/referential-data/ref_server_host.csv",
+    "services/backend/src/main/resources/db/changelog/referential-data/ref_sustainable_individual_package.csv",
+    "services/backend/src/test/resources/external/numecoeval/file/application.csv",
+    "services/backend/src/test/resources/external/numecoeval/file/datacenter.csv",
+    "services/backend/src/test/resources/external/numecoeval/file/physical_equipment.csv",
+    "services/backend/src/test/resources/external/numecoeval/file/virtual_equipment.csv",
+    "services/backend/storage/--INTERNAL-G4IT--/0/templates/G4IT_Datamodel_and_reference_data_v3.2.0.xlsx",
+    "services/backend/storage/--INTERNAL-G4IT--/0/templates/G4IT_Datamodel_workspace_reference_data_v1.0.0.xlsx",
+    "services/backend/storage/--INTERNAL-G4IT--/0/templates/ds_datacenter.csv",
+    "services/backend/storage/--INTERNAL-G4IT--/0/templates/ds_physical_equipment_network.csv",
+    "services/backend/storage/--INTERNAL-G4IT--/0/templates/ds_physical_equipment_non_cloud.csv",
+    "services/backend/storage/--INTERNAL-G4IT--/0/templates/ds_physical_equipment_terminal.csv",
+    "services/backend/storage/--INTERNAL-G4IT--/0/templates/ds_virtual_equipment_cloud.csv",
+    "services/backend/storage/--INTERNAL-G4IT--/0/templates/ds_virtual_equipment_non_cloud.csv",
+    "services/backend/storage/--INTERNAL-G4IT--/0/templates/inv_AIservices.csv",
+    "services/backend/storage/--INTERNAL-G4IT--/0/templates/inv_application.csv",
+    "services/backend/storage/--INTERNAL-G4IT--/0/templates/inv_datacenter.csv",
+    "services/backend/storage/--INTERNAL-G4IT--/0/templates/inv_physicalEquipment.csv",
+    "services/backend/storage/--INTERNAL-G4IT--/0/templates/inv_virtualEquipment.csv",
+    "services/backend/volume_generation/input_template/1-datacenter.csv",
+    "services/backend/volume_generation/input_template/2-physical-equipment.csv",
+    "services/backend/volume_generation/input_template/3-virtual-equipment.csv",
+    "services/backend/volume_generation/input_template/4-application.csv",
+    "services/backend/volume_generation/input_template/5-cloud-virtual-equipment.csv"
+  ],
+  "exclusions": [
+    {
+      "path": "services/backend/src/test/resources/external/numecoeval/file/application.csv",
+      "source_sha256": "d28594b066366b301d4d4dfd562e558f8093564336c98d495f1e4c31890e94dd",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/backend/src/test/resources/external/numecoeval/file/datacenter.csv",
+      "source_sha256": "c8c64f3a12652cace1c1b46946d98a2164d79a115549f556d74add61057008d5",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/backend/src/test/resources/external/numecoeval/file/physical_equipment.csv",
+      "source_sha256": "9e2597de666617d3bdcb07a91c347c0f25af4d73ebf4070f63452a89b4d2dac3",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/backend/src/test/resources/external/numecoeval/file/virtual_equipment.csv",
+      "source_sha256": "ec75ffa8d4f8c442c1a9101682a6a169d03735b90a2f511f43c06df876e95be6",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/backend/storage/--INTERNAL-G4IT--/0/templates/G4IT_Datamodel_and_reference_data_v3.2.0.xlsx",
+      "source_sha256": "471b2339a8e4707c4c24ef5d1a9349dd200bb839a3dc568a94e91e01eedfaed0",
+      "reason": "Excluded by user decision 2026-11-20: office-common parser dependencies unavailable; non-essential XLSX templates / PPTX screenshot decks"
+    },
+    {
+      "path": "services/backend/storage/--INTERNAL-G4IT--/0/templates/G4IT_Datamodel_workspace_reference_data_v1.0.0.xlsx",
+      "source_sha256": "5ed4ab80f9c0e92c46d0ab0cf46eb1507be7df190a442b8fd9ec8d406e516c6b",
+      "reason": "Excluded by user decision 2026-11-20: office-common parser dependencies unavailable; non-essential XLSX templates / PPTX screenshot decks"
+    }
+  ],
+  "source_root": "."
+}

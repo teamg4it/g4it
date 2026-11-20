@@ -1,0 +1,253 @@
+{
+  "version": 1,
+  "workflow": "brownfield-analysis",
+  "station": "ingest-documents/extract-and-verify",
+  "trigger": "batch-plan",
+  "date": "2026-11-20T08:54:55.994914+00:00",
+  "status": "draft",
+  "inputDocuments": [
+    "outputs/ingestion/g4it-on-github/triage-report.json",
+    "outputs/ingestion/g4it-on-github/triage-decisions.json"
+  ],
+  "changeHistory": [],
+  "holisticQualityRating": "unassessed",
+  "overallStatus": "pending",
+  "sensitivity": "confidential",
+  "trace_id": "4d1e4282-cc4b-4ea6-83da-14dd38c0b892",
+  "analysis_id": "g4it-on-github",
+  "inventory_digest": "7901b2c0e6e293bc4af7e4318df9121996a702574da670d468026a45dbc22ca3",
+  "decisions_sha256": "b6651f8be33ecce88bb4a90455865e29ed41f457b8db21e04f385c4816c19fc1",
+  "params": "outputs/ingestion/g4it-on-github/ingestion-params.json",
+  "batch_size": 100,
+  "grouping": {
+    "mode": "area-map",
+    "areas": [
+      {
+        "prefix": "services/documentation/content/1-getting-started",
+        "batch": "getstarted"
+      },
+      {
+        "prefix": "services/documentation/content/2-functional-documentation",
+        "batch": "functional"
+      },
+      {
+        "prefix": "services/documentation/content/3-technical-documentation",
+        "batch": "technical"
+      },
+      {
+        "prefix": "services/documentation/content/4-help",
+        "batch": "help"
+      },
+      {
+        "prefix": "services/documentation/content/5-releases",
+        "batch": "releases"
+      },
+      {
+        "prefix": "services/documentation/content",
+        "batch": "docs"
+      },
+      {
+        "prefix": "services/backend",
+        "batch": "backend"
+      },
+      {
+        "prefix": "services/frontend",
+        "batch": "frontend"
+      },
+      {
+        "prefix": "services/keycloak",
+        "batch": "keycloak"
+      },
+      {
+        "prefix": "services/documentation/schemacrawler",
+        "batch": "schemacrawler"
+      }
+    ]
+  },
+  "source_root": ".",
+  "extraction_options": {
+    "source_root": null
+  },
+  "batches": [
+    {
+      "batch": "backend-01",
+      "group": "backend",
+      "request": "outputs/ingestion/requests/g4it-on-github/backend-01.json",
+      "office_analysis_id": "g4it-on-github-backend-01",
+      "sources": 100,
+      "files": 100,
+      "exclusions": 79,
+      "derived": 0,
+      "action": "rewritten",
+      "state": "planned"
+    },
+    {
+      "batch": "backend-02",
+      "group": "backend",
+      "request": "outputs/ingestion/requests/g4it-on-github/backend-02.json",
+      "office_analysis_id": "g4it-on-github-backend-02",
+      "sources": 25,
+      "files": 25,
+      "exclusions": 4,
+      "derived": 0,
+      "action": "rewritten",
+      "state": "planned"
+    },
+    {
+      "batch": "docs-01",
+      "group": "docs",
+      "request": "outputs/ingestion/requests/g4it-on-github/docs-01.json",
+      "office_analysis_id": "g4it-on-github-docs-01",
+      "sources": 1,
+      "files": 1,
+      "exclusions": 0,
+      "derived": 0,
+      "action": "done",
+      "state": "passed"
+    },
+    {
+      "batch": "frontend-01",
+      "group": "frontend",
+      "request": "outputs/ingestion/requests/g4it-on-github/frontend-01.json",
+      "office_analysis_id": "g4it-on-github-frontend-01",
+      "sources": 98,
+      "files": 98,
+      "exclusions": 94,
+      "derived": 0,
+      "action": "done",
+      "state": "passed"
+    },
+    {
+      "batch": "frontend-02",
+      "group": "frontend",
+      "request": "outputs/ingestion/requests/g4it-on-github/frontend-02.json",
+      "office_analysis_id": "g4it-on-github-frontend-02",
+      "sources": 3,
+      "files": 3,
+      "exclusions": 0,
+      "derived": 0,
+      "action": "done",
+      "state": "passed"
+    },
+    {
+      "batch": "functional-01",
+      "group": "functional",
+      "request": "outputs/ingestion/requests/g4it-on-github/functional-01.json",
+      "office_analysis_id": "g4it-on-github-functional-01",
+      "sources": 54,
+      "files": 54,
+      "exclusions": 0,
+      "derived": 0,
+      "action": "rewritten",
+      "state": "planned"
+    },
+    {
+      "batch": "functional-02",
+      "group": "functional",
+      "request": "outputs/ingestion/requests/g4it-on-github/functional-02.json",
+      "office_analysis_id": "g4it-on-github-functional-02",
+      "sources": 53,
+      "files": 53,
+      "exclusions": 0,
+      "derived": 0,
+      "action": "unchanged",
+      "state": "blocked"
+    },
+    {
+      "batch": "getstarted-01",
+      "group": "getstarted",
+      "request": "outputs/ingestion/requests/g4it-on-github/getstarted-01.json",
+      "office_analysis_id": "g4it-on-github-getstarted-01",
+      "sources": 58,
+      "files": 58,
+      "exclusions": 1,
+      "derived": 0,
+      "action": "rewritten",
+      "state": "planned"
+    },
+    {
+      "batch": "getstarted-02",
+      "group": "getstarted",
+      "request": "outputs/ingestion/requests/g4it-on-github/getstarted-02.json",
+      "office_analysis_id": "g4it-on-github-getstarted-02",
+      "sources": 57,
+      "files": 57,
+      "exclusions": 0,
+      "derived": 0,
+      "action": "unchanged",
+      "state": "blocked"
+    },
+    {
+      "batch": "help-01",
+      "group": "help",
+      "request": "outputs/ingestion/requests/g4it-on-github/help-01.json",
+      "office_analysis_id": "g4it-on-github-help-01",
+      "sources": 10,
+      "files": 10,
+      "exclusions": 0,
+      "derived": 0,
+      "action": "done",
+      "state": "passed"
+    },
+    {
+      "batch": "keycloak-01",
+      "group": "keycloak",
+      "request": "outputs/ingestion/requests/g4it-on-github/keycloak-01.json",
+      "office_analysis_id": "g4it-on-github-keycloak-01",
+      "sources": 1,
+      "files": 1,
+      "exclusions": 0,
+      "derived": 0,
+      "action": "done",
+      "state": "passed"
+    },
+    {
+      "batch": "releases-01",
+      "group": "releases",
+      "request": "outputs/ingestion/requests/g4it-on-github/releases-01.json",
+      "office_analysis_id": "g4it-on-github-releases-01",
+      "sources": 28,
+      "files": 28,
+      "exclusions": 0,
+      "derived": 0,
+      "action": "done",
+      "state": "passed"
+    },
+    {
+      "batch": "schemacrawler-01",
+      "group": "schemacrawler",
+      "request": "outputs/ingestion/requests/g4it-on-github/schemacrawler-01.json",
+      "office_analysis_id": "g4it-on-github-schemacrawler-01",
+      "sources": 1,
+      "files": 1,
+      "exclusions": 0,
+      "derived": 0,
+      "action": "done",
+      "state": "passed"
+    },
+    {
+      "batch": "technical-01",
+      "group": "technical",
+      "request": "outputs/ingestion/requests/g4it-on-github/technical-01.json",
+      "office_analysis_id": "g4it-on-github-technical-01",
+      "sources": 52,
+      "files": 52,
+      "exclusions": 0,
+      "derived": 0,
+      "action": "done",
+      "state": "passed"
+    }
+  ],
+  "stale_requests": [],
+  "unbatched_exclusions": [],
+  "outside_requests": [
+    {
+      "path": "services/backend/volume_generation/.env",
+      "category": "sensitive",
+      "reason": "sensitive path or key material; never read",
+      "source_sha256": null
+    }
+  ],
+  "obsolete_requests": [],
+  "warnings": {}
+}

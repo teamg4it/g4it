@@ -1,0 +1,86 @@
+{
+  "allowed": true,
+  "errors": [],
+  "manifest": "outputs/ingestion/repository/g4it-on-github-keycloak-01/source-coverage.json",
+  "pending_images": [],
+  "pending_bulk_decisions": [],
+  "bulk_decision_template": {
+    "path": "outputs/ingestion/repository/g4it-on-github-keycloak-01/bulk-image-decisions.json",
+    "template": {
+      "version": 1,
+      "workflow": "brownfield-analysis",
+      "trigger": "repository-ingestion",
+      "date": "2026-11-20T09:25:15.291215+00:00",
+      "status": "draft",
+      "inputDocuments": [
+        "outputs/ingestion/requests/g4it-on-github/keycloak-01.json"
+      ],
+      "changeHistory": [],
+      "holisticQualityRating": "unassessed",
+      "overallStatus": "pending",
+      "sensitivity": "confidential",
+      "trace_id": "g4it-on-github-keycloak-01",
+      "station": "ingest-documents/extract-and-verify",
+      "analysis_id": "g4it-on-github-keycloak-01",
+      "request_sha256": "751bca8697094b4d12d31c1bdd369d4baa09d3d28f8fd1a6a2d4e0b8ecc99e71",
+      "batches": []
+    },
+    "batch_template": {
+      "members": [],
+      "decision": "omit",
+      "explanation": "",
+      "omission_reason": "",
+      "shared_explanation_confirmed": false,
+      "confirmed": false,
+      "confirmation_digest": ""
+    },
+    "members_path": null,
+    "member_count": 0
+  },
+  "image_decisions": [],
+  "clarifications": [],
+  "sources": [
+    {
+      "source": "services/keycloak/README.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/keycloak/README.md",
+      "source_sha256": "c44bd5e3a8ed0c8d4759132535360602bed6640c4d507537b374e06086cd684a",
+      "read_sha256": "c44bd5e3a8ed0c8d4759132535360602bed6640c4d507537b374e06086cd684a",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-26",
+          "sha256": "c44bd5e3a8ed0c8d4759132535360602bed6640c4d507537b374e06086cd684a"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": [],
+      "image_decisions": [],
+      "clarifications": []
+    }
+  ],
+  "total": 1,
+  "completed": 1,
+  "counts": {
+    "not_required": 1
+  },
+  "unresolved_total": 0,
+  "unresolved": [],
+  "exclusions": [],
+  "images": {
+    "sources": 0,
+    "gaps": 0,
+    "interpreted": 0,
+    "omitted": 0,
+    "explained": 0,
+    "pending": 0,
+    "by_source": [],
+    "omitted_sources": 0
+  },
+  "action": "",
+  "evidence_kind": "extraction only; downstream reading and human review remain required"
+}

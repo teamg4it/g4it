@@ -3,7 +3,7 @@
     "workflow": "brownfield-analysis",
     "runDir": "outputs/runs/brownfield-analysis/20261116-144600-g4it-on-github-8da83886/",
     "stateFile": "outputs/runs/brownfield-analysis/20261116-144600-g4it-on-github-8da83886/workflow-state.md",
-    "generatedAt": "2026-11-16T15:58:27Z",
+    "generatedAt": "2026-11-20T09:32:19Z",
     "maxPoolDepth": 2,
     "percent": 100,
     "percentSource": "files"
@@ -23,12 +23,13 @@
         {
           "declared": "repository-inventory.md",
           "type": "file",
-          "percent": 100,
+          "percent": 50,
           "files": [
             {
               "kind": "frontmatter",
-              "status": "validated",
-              "percent": 100,
+              "status": "non-compliant",
+              "percent": 50,
+              "badge": "non-compliant",
               "path": "outputs/brownfield/g4it-on-github/repository-inventory.md"
             }
           ]
@@ -36,12 +37,13 @@
         {
           "declared": "repository-classification.md",
           "type": "file",
-          "percent": 100,
+          "percent": 50,
           "files": [
             {
               "kind": "frontmatter",
-              "status": "validated",
-              "percent": 100,
+              "status": "non-compliant",
+              "percent": 50,
+              "badge": "non-compliant",
               "path": "outputs/brownfield/g4it-on-github/repository-classification.md"
             }
           ]
@@ -49,12 +51,13 @@
         {
           "declared": "source-staging.md",
           "type": "file",
-          "percent": 0,
+          "percent": 50,
           "files": [
             {
               "kind": "frontmatter",
-              "status": "missing",
-              "percent": 0,
+              "status": "non-compliant",
+              "percent": 50,
+              "badge": "non-compliant",
               "path": "outputs/brownfield/g4it-on-github/source-staging.md"
             }
           ]
@@ -100,12 +103,13 @@
         {
           "declared": "codegraph-summary.md",
           "type": "file",
-          "percent": 100,
+          "percent": 50,
           "files": [
             {
               "kind": "frontmatter",
-              "status": "validated",
-              "percent": 100,
+              "status": "non-compliant",
+              "percent": 50,
+              "badge": "non-compliant",
               "path": "outputs/brownfield/g4it-on-github/codegraph-summary.md"
             }
           ]
@@ -137,12 +141,12 @@
             {
               "declared": "ingestion-scope.md",
               "type": "file",
-              "percent": 100,
+              "percent": 0,
               "files": [
                 {
                   "kind": "frontmatter",
-                  "status": "validated",
-                  "percent": 100,
+                  "status": "missing",
+                  "percent": 0,
                   "path": "outputs/ingestion/g4it-on-github/ingestion-scope.md"
                 }
               ]
@@ -337,12 +341,13 @@
         {
           "declared": "consolidated-supporting-context.md",
           "type": "file",
-          "percent": 0,
+          "percent": 50,
           "files": [
             {
               "kind": "frontmatter",
-              "status": "missing",
-              "percent": 0,
+              "status": "non-compliant",
+              "percent": 50,
+              "badge": "non-compliant",
               "path": "outputs/brownfield/g4it-on-github/consolidated-supporting-context.md"
             }
           ]

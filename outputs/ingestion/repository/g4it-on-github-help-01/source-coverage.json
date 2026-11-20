@@ -1,0 +1,239 @@
+{
+  "version": 3,
+  "workflow": "brownfield-analysis",
+  "trigger": "repository-ingestion",
+  "date": "2026-11-20T08:40:28.637467+00:00",
+  "status": "draft",
+  "inputDocuments": [
+    "outputs/ingestion/requests/g4it-on-github/help-01.json"
+  ],
+  "changeHistory": [],
+  "holisticQualityRating": "not-rated",
+  "overallStatus": "not-reviewed",
+  "sensitivity": "confidential",
+  "trace_id": "g4it-on-github-help-01",
+  "station": "ingest-documents/extract-and-verify",
+  "request": "outputs/ingestion/requests/g4it-on-github/help-01.json",
+  "request_sha256": "f28934d509779123d6be09403eafd5d365646e3d790d66885611c17bd6c1eb15",
+  "exclusions": [],
+  "dependencies": {
+    "pypdf": "missing",
+    "openpyxl": "missing",
+    "defusedxml": "missing"
+  },
+  "workers": 4,
+  "sources": [
+    {
+      "source": "services/documentation/content/4-help/1-glossary.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/4-help/1-glossary.md",
+      "source_sha256": "56c5224d21ef5ddb5caee0d8c5126b93db251edaba69916ff0afd22920630348",
+      "read_sha256": "56c5224d21ef5ddb5caee0d8c5126b93db251edaba69916ff0afd22920630348",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-40",
+          "sha256": "56c5224d21ef5ddb5caee0d8c5126b93db251edaba69916ff0afd22920630348"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/4-help/2-FAQ_Usage_Access.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/4-help/2-FAQ_Usage_Access.md",
+      "source_sha256": "2027d361283df68d2b3e1257dd9b0a45df9e25f0ed1e911644cf2bc0b22458cb",
+      "read_sha256": "2027d361283df68d2b3e1257dd9b0a45df9e25f0ed1e911644cf2bc0b22458cb",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-38",
+          "sha256": "2027d361283df68d2b3e1257dd9b0a45df9e25f0ed1e911644cf2bc0b22458cb"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/4-help/3-FAQ_Methodology/1-User_Characteristics_with_Matomo.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/4-help/3-FAQ_Methodology/1-User_Characteristics_with_Matomo.md",
+      "source_sha256": "52788a9fa7dd560a76bb5aef37769e8a93dc820a9f89ff38fb425cb2a96f7239",
+      "read_sha256": "52788a9fa7dd560a76bb5aef37769e8a93dc820a9f89ff38fb425cb2a96f7239",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-61",
+          "sha256": "52788a9fa7dd560a76bb5aef37769e8a93dc820a9f89ff38fb425cb2a96f7239"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/4-help/3-FAQ_Methodology/2-User_Characteristics_with_KeyCloak.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/4-help/3-FAQ_Methodology/2-User_Characteristics_with_KeyCloak.md",
+      "source_sha256": "d64b0bd5f7ab20c96660f2abad4b2035794ff85238418ace85569ae919fdbe14",
+      "read_sha256": "d64b0bd5f7ab20c96660f2abad4b2035794ff85238418ace85569ae919fdbe14",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-58",
+          "sha256": "d64b0bd5f7ab20c96660f2abad4b2035794ff85238418ace85569ae919fdbe14"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/4-help/3-FAQ_Methodology/3-User_Characteristics_with_myELK_myAPIManager.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/4-help/3-FAQ_Methodology/3-User_Characteristics_with_myELK_myAPIManager.md",
+      "source_sha256": "6740910d78234eca75c72f9c07b74a4872ce32c3b5ba7d1c036b29abc5d11ae1",
+      "read_sha256": "6740910d78234eca75c72f9c07b74a4872ce32c3b5ba7d1c036b29abc5d11ae1",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-58",
+          "sha256": "6740910d78234eca75c72f9c07b74a4872ce32c3b5ba7d1c036b29abc5d11ae1"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/4-help/3-FAQ_Methodology/4-Data_Exchanged_with_AWS_CloudWatch_Matomo.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/4-help/3-FAQ_Methodology/4-Data_Exchanged_with_AWS_CloudWatch_Matomo.md",
+      "source_sha256": "dd06fa72b660713e67c5e5c501f601cd549295a236f09b62dbfdf78a75276238",
+      "read_sha256": "dd06fa72b660713e67c5e5c501f601cd549295a236f09b62dbfdf78a75276238",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-76",
+          "sha256": "dd06fa72b660713e67c5e5c501f601cd549295a236f09b62dbfdf78a75276238"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/4-help/3-FAQ_Methodology/5-Servers_AzureCloudInstances.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/4-help/3-FAQ_Methodology/5-Servers_AzureCloudInstances.md",
+      "source_sha256": "bcab6bb7934ec705de3a79df1c27b6f8f93b27bcd62ec91ff1c10a2102ce0a2c",
+      "read_sha256": "bcab6bb7934ec705de3a79df1c27b6f8f93b27bcd62ec91ff1c10a2102ce0a2c",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-76",
+          "sha256": "bcab6bb7934ec705de3a79df1c27b6f8f93b27bcd62ec91ff1c10a2102ce0a2c"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/4-help/3-FAQ_Methodology/6-Servers_VmCharacteristicsWithvmWare.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/4-help/3-FAQ_Methodology/6-Servers_VmCharacteristicsWithvmWare.md",
+      "source_sha256": "da6e20a318c4c65507332e736d03e207c355a33195d9180e2ccdc94c22fdd65d",
+      "read_sha256": "da6e20a318c4c65507332e736d03e207c355a33195d9180e2ccdc94c22fdd65d",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-63",
+          "sha256": "da6e20a318c4c65507332e736d03e207c355a33195d9180e2ccdc94c22fdd65d"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/4-help/3-FAQ_Methodology/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/4-help/3-FAQ_Methodology/_index.md",
+      "source_sha256": "9e9129158f127fa20af6006305ffd0a948c68a0501ef84048e3f24e9324c18d6",
+      "read_sha256": "9e9129158f127fa20af6006305ffd0a948c68a0501ef84048e3f24e9324c18d6",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-100",
+          "sha256": "567e1de1def4175350c71db321f3f6fb6bbffefa51eed0a63f941af275d1c3c3"
+        },
+        {
+          "id": "lines:101-200",
+          "sha256": "cfcc2de93aeb0f4932e507982e09c7b7d6035b98f5d799fe381c93975439e02d"
+        },
+        {
+          "id": "lines:201-300",
+          "sha256": "f8cc8751f53243d14d3b795ae924e674788386657459434176567407f3c54ec1"
+        },
+        {
+          "id": "lines:301-307",
+          "sha256": "56e349aef8cefbc45f2dcd0ac9b28e205b483eb40d6db90ca1f3a9f4e324046f"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/4-help/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/4-help/_index.md",
+      "source_sha256": "d28fa42fc015f03729be57193f34a9d876cb04751ccd6971bddba7d3bf7faba1",
+      "read_sha256": "d28fa42fc015f03729be57193f34a9d876cb04751ccd6971bddba7d3bf7faba1",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-8",
+          "sha256": "d28fa42fc015f03729be57193f34a9d876cb04751ccd6971bddba7d3bf7faba1"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    }
+  ]
+}

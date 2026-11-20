@@ -1,0 +1,1159 @@
+{
+  "version": 3,
+  "workflow": "brownfield-analysis",
+  "trigger": "repository-ingestion",
+  "date": "2026-11-20T08:56:35.210424+00:00",
+  "status": "draft",
+  "inputDocuments": [
+    "outputs/ingestion/requests/g4it-on-github/functional-01.json"
+  ],
+  "changeHistory": [],
+  "holisticQualityRating": "not-rated",
+  "overallStatus": "not-reviewed",
+  "sensitivity": "confidential",
+  "trace_id": "g4it-on-github-functional-01",
+  "station": "ingest-documents/extract-and-verify",
+  "request": "outputs/ingestion/requests/g4it-on-github/functional-01.json",
+  "request_sha256": "caaeab8ee687df5bae66bbd1691e13bc9f725c0b1a1be369ca4ec6b73b39f245",
+  "exclusions": [],
+  "dependencies": {
+    "pypdf": "missing",
+    "openpyxl": "missing",
+    "defusedxml": "missing"
+  },
+  "workers": 4,
+  "sources": [
+    {
+      "source": "services/documentation/content/2-functional-documentation/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/2-functional-documentation/_index.md",
+      "source_sha256": "2f482927603cbe4230f6acfafce1ef7cca96178b55900accba097759af8894e5",
+      "read_sha256": "2f482927603cbe4230f6acfafce1ef7cca96178b55900accba097759af8894e5",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-8",
+          "sha256": "2f482927603cbe4230f6acfafce1ef7cca96178b55900accba097759af8894e5"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/2-functional-documentation/global_concepts/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/2-functional-documentation/global_concepts/_index.md",
+      "source_sha256": "a14f1a8ff527e88e5775cd914dc771cd85b97d1d9b5b3e7822bdb43daf5d3da2",
+      "read_sha256": "a14f1a8ff527e88e5775cd914dc771cd85b97d1d9b5b3e7822bdb43daf5d3da2",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-9",
+          "sha256": "a14f1a8ff527e88e5775cd914dc771cd85b97d1d9b5b3e7822bdb43daf5d3da2"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/2-functional-documentation/global_concepts/environmental_footprint_assessment_methodology/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/2-functional-documentation/global_concepts/environmental_footprint_assessment_methodology/_index.md",
+      "source_sha256": "80daae747a9e4b955a51e80190e0be7812cdf440608ee7644f5f8a328d1ceec5",
+      "read_sha256": "80daae747a9e4b955a51e80190e0be7812cdf440608ee7644f5f8a328d1ceec5",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-31",
+          "sha256": "80daae747a9e4b955a51e80190e0be7812cdf440608ee7644f5f8a328d1ceec5"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/2-functional-documentation/global_concepts/environmental_footprint_assessment_methodology/uc1_physical_equipment.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/2-functional-documentation/global_concepts/environmental_footprint_assessment_methodology/uc1_physical_equipment.md",
+      "source_sha256": "1168c2f9a5cbe1c24856d011b9016f34bc140a0e30c871bac16737bb77fc81ae",
+      "read_sha256": "1168c2f9a5cbe1c24856d011b9016f34bc140a0e30c871bac16737bb77fc81ae",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-94",
+          "sha256": "1168c2f9a5cbe1c24856d011b9016f34bc140a0e30c871bac16737bb77fc81ae"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/2-functional-documentation/global_concepts/environmental_footprint_assessment_methodology/uc2_virtual_equipment.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/2-functional-documentation/global_concepts/environmental_footprint_assessment_methodology/uc2_virtual_equipment.md",
+      "source_sha256": "94ff4244ffcfdb3a755f163ac02391925aedc75d13e2fa9291ed72b05e85ded4",
+      "read_sha256": "94ff4244ffcfdb3a755f163ac02391925aedc75d13e2fa9291ed72b05e85ded4",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-87",
+          "sha256": "94ff4244ffcfdb3a755f163ac02391925aedc75d13e2fa9291ed72b05e85ded4"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/2-functional-documentation/global_concepts/environmental_footprint_assessment_methodology/uc3_application.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/2-functional-documentation/global_concepts/environmental_footprint_assessment_methodology/uc3_application.md",
+      "source_sha256": "2baca7617acc7be99de0a931054349a5e48b91275d118f21e84d64cd12db1002",
+      "read_sha256": "2baca7617acc7be99de0a931054349a5e48b91275d118f21e84d64cd12db1002",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-24",
+          "sha256": "2baca7617acc7be99de0a931054349a5e48b91275d118f21e84d64cd12db1002"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/2-functional-documentation/global_concepts/environmental_footprint_assessment_methodology/uc4_network.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/2-functional-documentation/global_concepts/environmental_footprint_assessment_methodology/uc4_network.md",
+      "source_sha256": "187a83da2786123475b0ce8caeab23f986c1aad888d89f6df27b65f8c87b0ad1",
+      "read_sha256": "187a83da2786123475b0ce8caeab23f986c1aad888d89f6df27b65f8c87b0ad1",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-73",
+          "sha256": "187a83da2786123475b0ce8caeab23f986c1aad888d89f6df27b65f8c87b0ad1"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/2-functional-documentation/global_concepts/environmental_footprint_assessment_methodology/uc5_cloud.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/2-functional-documentation/global_concepts/environmental_footprint_assessment_methodology/uc5_cloud.md",
+      "source_sha256": "c9576ef2ae0898069d72bbf7bbfa28d4b0c25ee31ef8bef24510529615ae5011",
+      "read_sha256": "c9576ef2ae0898069d72bbf7bbfa28d4b0c25ee31ef8bef24510529615ae5011",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-19",
+          "sha256": "c9576ef2ae0898069d72bbf7bbfa28d4b0c25ee31ef8bef24510529615ae5011"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/2-functional-documentation/global_concepts/environmental_footprint_assessment_methodology/uc6_ai_service.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/2-functional-documentation/global_concepts/environmental_footprint_assessment_methodology/uc6_ai_service.md",
+      "source_sha256": "d76dfdc2cc63c3635c8c81323b27244dab23e6717ab7172a31f3a80a1ec0702c",
+      "read_sha256": "d76dfdc2cc63c3635c8c81323b27244dab23e6717ab7172a31f3a80a1ec0702c",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-100",
+          "sha256": "3985c9690b14309af532db10ba4b9356df96013866e8fedd7ff82e9c57d1e710"
+        },
+        {
+          "id": "lines:101-187",
+          "sha256": "9bd54400a81a7fb1bf65f4ec65d65b50fbe36a198db7cf396ae217a7640b92c0"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/2-functional-documentation/global_concepts/uc1_dataconsistency.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/2-functional-documentation/global_concepts/uc1_dataconsistency.md",
+      "source_sha256": "76c4cf4e08ebd691164316793cfd831cba1c56145880af525b397962a0963914",
+      "read_sha256": "76c4cf4e08ebd691164316793cfd831cba1c56145880af525b397962a0963914",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-100",
+          "sha256": "a8d6def0385f108d2cf57493418593b349b6e80935d757133479419fee127ab1"
+        },
+        {
+          "id": "lines:101-101",
+          "sha256": "230903f78ba1f04967320c910cfcf16268cc46b5a09ab69b32ec6b9ac35bcf67"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/2-functional-documentation/global_concepts/uc2_people_equivalent.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/2-functional-documentation/global_concepts/uc2_people_equivalent.md",
+      "source_sha256": "f28e5f2a6cfec49868e34b161fcaf4f52f68abe694363f237979070dbe6bf2a2",
+      "read_sha256": "f28e5f2a6cfec49868e34b161fcaf4f52f68abe694363f237979070dbe6bf2a2",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-24",
+          "sha256": "f28e5f2a6cfec49868e34b161fcaf4f52f68abe694363f237979070dbe6bf2a2"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/2-functional-documentation/global_concepts/uc3_low_impact.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/2-functional-documentation/global_concepts/uc3_low_impact.md",
+      "source_sha256": "7a9d29cee5d9c9e0636645bb69a6c284f50a30ce589f0780d5c54b4ec562285f",
+      "read_sha256": "7a9d29cee5d9c9e0636645bb69a6c284f50a30ce589f0780d5c54b4ec562285f",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-47",
+          "sha256": "7a9d29cee5d9c9e0636645bb69a6c284f50a30ce589f0780d5c54b4ec562285f"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/2-functional-documentation/global_concepts/uc4_hide_reference_value.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/2-functional-documentation/global_concepts/uc4_hide_reference_value.md",
+      "source_sha256": "5efe307ad85490e49fd15d496e19efce445b43a9fee1277db25664b64aee8974",
+      "read_sha256": "5efe307ad85490e49fd15d496e19efce445b43a9fee1277db25664b64aee8974",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-100",
+          "sha256": "4e751f5946c8c72e4258bc62b42565ecd47253daf0ae12bd4110dbc5ef650d38"
+        },
+        {
+          "id": "lines:101-121",
+          "sha256": "75adfd28de513f6a88a35f0b0025f92ae9c99eaa9e93cd56ff788996969e3bcf"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/2-functional-documentation/global_concepts/uc5_extend_the_time.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/2-functional-documentation/global_concepts/uc5_extend_the_time.md",
+      "source_sha256": "fbf768f768ec7a9d6d75693b2c18435584f820c86c6e505e0e891aa081bf71cb",
+      "read_sha256": "fbf768f768ec7a9d6d75693b2c18435584f820c86c6e505e0e891aa081bf71cb",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-55",
+          "sha256": "fbf768f768ec7a9d6d75693b2c18435584f820c86c6e505e0e891aa081bf71cb"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/2-functional-documentation/open_api/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/2-functional-documentation/open_api/_index.md",
+      "source_sha256": "864fe3d53e50606df7611fc6d239f7dfffdce920ce6eff39c5cf96764709cc9b",
+      "read_sha256": "864fe3d53e50606df7611fc6d239f7dfffdce920ce6eff39c5cf96764709cc9b",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-40",
+          "sha256": "864fe3d53e50606df7611fc6d239f7dfffdce920ce6eff39c5cf96764709cc9b"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/2-functional-documentation/use_cases/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/2-functional-documentation/use_cases/_index.md",
+      "source_sha256": "41d6e1218b1396b780df1bd92639d07899b59a0c2f53fdf580d78369caabe037",
+      "read_sha256": "41d6e1218b1396b780df1bd92639d07899b59a0c2f53fdf580d78369caabe037",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-11",
+          "sha256": "41d6e1218b1396b780df1bd92639d07899b59a0c2f53fdf580d78369caabe037"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/2-functional-documentation/use_cases/uc_administration/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/2-functional-documentation/use_cases/uc_administration/_index.md",
+      "source_sha256": "1bbc528fe4030732ad090fb565cadee9fe60a948dedc840cb1bacf4355dec328",
+      "read_sha256": "1bbc528fe4030732ad090fb565cadee9fe60a948dedc840cb1bacf4355dec328",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-42",
+          "sha256": "1bbc528fe4030732ad090fb565cadee9fe60a948dedc840cb1bacf4355dec328"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/2-functional-documentation/use_cases/uc_administration/uc_administration_manage_users/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/2-functional-documentation/use_cases/uc_administration/uc_administration_manage_users/_index.md",
+      "source_sha256": "6f8c88ce1a15a7b87b670969e09d9a360ac4136ad4333472f3728cb192b1d899",
+      "read_sha256": "6f8c88ce1a15a7b87b670969e09d9a360ac4136ad4333472f3728cb192b1d899",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-9",
+          "sha256": "6f8c88ce1a15a7b87b670969e09d9a360ac4136ad4333472f3728cb192b1d899"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/2-functional-documentation/use_cases/uc_administration/uc_administration_manage_users/uc1_visualize_roles.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/2-functional-documentation/use_cases/uc_administration/uc_administration_manage_users/uc1_visualize_roles.md",
+      "source_sha256": "2f75ef7f2231169bb15ea1ea886ba0aef01bff5b1444dd8dd5546bccf1dad822",
+      "read_sha256": "2f75ef7f2231169bb15ea1ea886ba0aef01bff5b1444dd8dd5546bccf1dad822",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-98",
+          "sha256": "2f75ef7f2231169bb15ea1ea886ba0aef01bff5b1444dd8dd5546bccf1dad822"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/2-functional-documentation/use_cases/uc_administration/uc_administration_manage_users/uc2_add_roles.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/2-functional-documentation/use_cases/uc_administration/uc_administration_manage_users/uc2_add_roles.md",
+      "source_sha256": "5bf54cf813ec0dffe0c759ff877943e4e78b80d16478595ecf6acb4e20f74fcc",
+      "read_sha256": "5bf54cf813ec0dffe0c759ff877943e4e78b80d16478595ecf6acb4e20f74fcc",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-80",
+          "sha256": "5bf54cf813ec0dffe0c759ff877943e4e78b80d16478595ecf6acb4e20f74fcc"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/2-functional-documentation/use_cases/uc_administration/uc_administration_manage_users/uc3_delete_roles.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/2-functional-documentation/use_cases/uc_administration/uc_administration_manage_users/uc3_delete_roles.md",
+      "source_sha256": "f33f809dfb0b1ee6cfa46b3e9b5f351ffc29216b1d9a4eb5d051ba83f2229f16",
+      "read_sha256": "f33f809dfb0b1ee6cfa46b3e9b5f351ffc29216b1d9a4eb5d051ba83f2229f16",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-71",
+          "sha256": "f33f809dfb0b1ee6cfa46b3e9b5f351ffc29216b1d9a4eb5d051ba83f2229f16"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/2-functional-documentation/use_cases/uc_administration/uc_administration_manage_workspaces/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/2-functional-documentation/use_cases/uc_administration/uc_administration_manage_workspaces/_index.md",
+      "source_sha256": "ec20078e141977f8742592f4c4667c0f23ab3cc2d7f40008b4bf286fc6cb4619",
+      "read_sha256": "ec20078e141977f8742592f4c4667c0f23ab3cc2d7f40008b4bf286fc6cb4619",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-9",
+          "sha256": "ec20078e141977f8742592f4c4667c0f23ab3cc2d7f40008b4bf286fc6cb4619"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/2-functional-documentation/use_cases/uc_administration/uc_administration_manage_workspaces/uc1_visualize_workspaces.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/2-functional-documentation/use_cases/uc_administration/uc_administration_manage_workspaces/uc1_visualize_workspaces.md",
+      "source_sha256": "23d99e7a5fc5d49f782e3c00265d690fdd5b9fd43627aa2a31053177621d8f23",
+      "read_sha256": "23d99e7a5fc5d49f782e3c00265d690fdd5b9fd43627aa2a31053177621d8f23",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-72",
+          "sha256": "23d99e7a5fc5d49f782e3c00265d690fdd5b9fd43627aa2a31053177621d8f23"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/2-functional-documentation/use_cases/uc_administration/uc_administration_manage_workspaces/uc2_edit_workspaces.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/2-functional-documentation/use_cases/uc_administration/uc_administration_manage_workspaces/uc2_edit_workspaces.md",
+      "source_sha256": "5268fb23469b3a2c524269bdcecf7da50e15ddaf150d187acebcdb33921fe579",
+      "read_sha256": "5268fb23469b3a2c524269bdcecf7da50e15ddaf150d187acebcdb33921fe579",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-81",
+          "sha256": "5268fb23469b3a2c524269bdcecf7da50e15ddaf150d187acebcdb33921fe579"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/2-functional-documentation/use_cases/uc_administration/uc_administration_manage_workspaces/uc3_create_workspaces.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/2-functional-documentation/use_cases/uc_administration/uc_administration_manage_workspaces/uc3_create_workspaces.md",
+      "source_sha256": "ad196bc479e17256449a4f68bd53d682c7628b2c696ac7fea11e3220b0e39695",
+      "read_sha256": "ad196bc479e17256449a4f68bd53d682c7628b2c696ac7fea11e3220b0e39695",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-72",
+          "sha256": "ad196bc479e17256449a4f68bd53d682c7628b2c696ac7fea11e3220b0e39695"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/2-functional-documentation/use_cases/uc_administration/uc_administration_manage_workspaces/uc4_delete_workspaces.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/2-functional-documentation/use_cases/uc_administration/uc_administration_manage_workspaces/uc4_delete_workspaces.md",
+      "source_sha256": "47970deed84c90f4a55adf288e6d6ba452178067a8c8b5147c6c808cc6a2addb",
+      "read_sha256": "47970deed84c90f4a55adf288e6d6ba452178067a8c8b5147c6c808cc6a2addb",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-90",
+          "sha256": "47970deed84c90f4a55adf288e6d6ba452178067a8c8b5147c6c808cc6a2addb"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/2-functional-documentation/use_cases/uc_administration/uc_administration_manage_workspaces/uc5_choose_criteria.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/2-functional-documentation/use_cases/uc_administration/uc_administration_manage_workspaces/uc5_choose_criteria.md",
+      "source_sha256": "870616c576678ab48d6df0582db73cd9c7f345dbe3c28f67c866537f5bec2ab9",
+      "read_sha256": "870616c576678ab48d6df0582db73cd9c7f345dbe3c28f67c866537f5bec2ab9",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-100",
+          "sha256": "eda54f3997a1818d24fb542e154d9ec2eb6a1748c040424e4c3ff449e791a149"
+        },
+        {
+          "id": "lines:101-102",
+          "sha256": "bc782f9ae73d8bb66f280b1014020e3453e4b6268f8b915959ef3c943d3e2d9e"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/2-functional-documentation/use_cases/uc_administration/uc_administration_update_referential/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/2-functional-documentation/use_cases/uc_administration/uc_administration_update_referential/_index.md",
+      "source_sha256": "6e17c06cb595a80174f44b9ff63a314d52a884314d20160437b42662bcdff55a",
+      "read_sha256": "6e17c06cb595a80174f44b9ff63a314d52a884314d20160437b42662bcdff55a",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-15",
+          "sha256": "6e17c06cb595a80174f44b9ff63a314d52a884314d20160437b42662bcdff55a"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/2-functional-documentation/use_cases/uc_administration/uc_administration_update_referential/csv_formats.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/2-functional-documentation/use_cases/uc_administration/uc_administration_update_referential/csv_formats.md",
+      "source_sha256": "779701a55c0853994629acc73bf8102b843d82f72f7589d152a46ca37021c0a2",
+      "read_sha256": "779701a55c0853994629acc73bf8102b843d82f72f7589d152a46ca37021c0a2",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-87",
+          "sha256": "779701a55c0853994629acc73bf8102b843d82f72f7589d152a46ca37021c0a2"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/2-functional-documentation/use_cases/uc_administration/uc_administration_update_referential/uc1_import_referential.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/2-functional-documentation/use_cases/uc_administration/uc_administration_update_referential/uc1_import_referential.md",
+      "source_sha256": "d5e213af9024231066a3064aad43b36ee9abdc6fda2207d94d08a4ec55398539",
+      "read_sha256": "d5e213af9024231066a3064aad43b36ee9abdc6fda2207d94d08a4ec55398539",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-100",
+          "sha256": "f9fc607a75fb53f9dd1831a9145f085adb8900796b8c6d57c20578727defe4a5"
+        },
+        {
+          "id": "lines:101-120",
+          "sha256": "8b59a1f0a0aef39271bd36c5bfa97c6df6037ed05d2ad0d56b7eacd5480b1354"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/2-functional-documentation/use_cases/uc_administration/uc_administration_update_workspace_referential/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/2-functional-documentation/use_cases/uc_administration/uc_administration_update_workspace_referential/_index.md",
+      "source_sha256": "f1d3be375c73d778ab83af7430a2c6cd915fcf9a09d811e52a1672679818821e",
+      "read_sha256": "f1d3be375c73d778ab83af7430a2c6cd915fcf9a09d811e52a1672679818821e",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-15",
+          "sha256": "f1d3be375c73d778ab83af7430a2c6cd915fcf9a09d811e52a1672679818821e"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/2-functional-documentation/use_cases/uc_administration/uc_administration_update_workspace_referential/csv_formats.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/2-functional-documentation/use_cases/uc_administration/uc_administration_update_workspace_referential/csv_formats.md",
+      "source_sha256": "5f8dff23e0490eb9c3b2b65e129ebb7c89b225d8ec8078d7b356417a1f72b249",
+      "read_sha256": "5f8dff23e0490eb9c3b2b65e129ebb7c89b225d8ec8078d7b356417a1f72b249",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-66",
+          "sha256": "5f8dff23e0490eb9c3b2b65e129ebb7c89b225d8ec8078d7b356417a1f72b249"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/2-functional-documentation/use_cases/uc_administration/uc_administration_update_workspace_referential/uc1_import_workspace_referential.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/2-functional-documentation/use_cases/uc_administration/uc_administration_update_workspace_referential/uc1_import_workspace_referential.md",
+      "source_sha256": "83662fca4aaccd682b2b2e1facd4193216bb0fc090458e159542f964b59b92c6",
+      "read_sha256": "83662fca4aaccd682b2b2e1facd4193216bb0fc090458e159542f964b59b92c6",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-100",
+          "sha256": "eeba9964dd6b76285523580585cba5c4608c1f7c2e23aeda8ae97e55c2a837d8"
+        },
+        {
+          "id": "lines:101-105",
+          "sha256": "a88587068ea47b6442ba367233e780b493d9b625eb1fd03192aa87a81c5d04e7"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/2-functional-documentation/use_cases/uc_authentification/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/2-functional-documentation/use_cases/uc_authentification/_index.md",
+      "source_sha256": "ef7a01a4067d2661ceefe0a54fff9f2f638ce2629c519726020d75ff74219f48",
+      "read_sha256": "ef7a01a4067d2661ceefe0a54fff9f2f638ce2629c519726020d75ff74219f48",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-21",
+          "sha256": "ef7a01a4067d2661ceefe0a54fff9f2f638ce2629c519726020d75ff74219f48"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/_index.md",
+      "source_sha256": "4433cac571a1680345f5265630afc3b30d1a0cbe0a0007380080619d29894c86",
+      "read_sha256": "4433cac571a1680345f5265630afc3b30d1a0cbe0a0007380080619d29894c86",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-33",
+          "sha256": "4433cac571a1680345f5265630afc3b30d1a0cbe0a0007380080619d29894c86"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc10_manage_digital-service_version.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc10_manage_digital-service_version.md",
+      "source_sha256": "b4c21be2a98565d675a326e7db35a2dd1963a2c124ece60303d35b061056e9eb",
+      "read_sha256": "b4c21be2a98565d675a326e7db35a2dd1963a2c124ece60303d35b061056e9eb",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-100",
+          "sha256": "478957728f5c904b9b4f36cb3751e57e68c358d57b88de301f5756f33f73a179"
+        },
+        {
+          "id": "lines:101-103",
+          "sha256": "6a3cf5192354f71615ac51034b3e97c20eda99643fcaf5bbe6d41ad59bd12167"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc11_compare_two_versions.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc11_compare_two_versions.md",
+      "source_sha256": "ec91bbb4123eea23c37778c45f64c678f40656278fac6f3e5bcc16ae65528553",
+      "read_sha256": "ec91bbb4123eea23c37778c45f64c678f40656278fac6f3e5bcc16ae65528553",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-75",
+          "sha256": "ec91bbb4123eea23c37778c45f64c678f40656278fac6f3e5bcc16ae65528553"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc12_promote-digital-service-version.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc12_promote-digital-service-version.md",
+      "source_sha256": "9390eefbdc12dbb33c164278366610b30fca9ffeb65fca2d2b9246e47a7aee79",
+      "read_sha256": "9390eefbdc12dbb33c164278366610b30fca9ffeb65fca2d2b9246e47a7aee79",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-87",
+          "sha256": "9390eefbdc12dbb33c164278366610b30fca9ffeb65fca2d2b9246e47a7aee79"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc13_context_assumptions.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc13_context_assumptions.md",
+      "source_sha256": "df1856ad4d839faa00ddc1bf31e467a7eb7b5ffbf1a7dbfa368749864b8e51e2",
+      "read_sha256": "df1856ad4d839faa00ddc1bf31e467a7eb7b5ffbf1a7dbfa368749864b8e51e2",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-96",
+          "sha256": "df1856ad4d839faa00ddc1bf31e467a7eb7b5ffbf1a7dbfa368749864b8e51e2"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc1_visualize_digital_services.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc1_visualize_digital_services.md",
+      "source_sha256": "17c7ffe9fabde721b8cb3c6415a8aca180f4882602d193ae463e4ca0fef5f30d",
+      "read_sha256": "17c7ffe9fabde721b8cb3c6415a8aca180f4882602d193ae463e4ca0fef5f30d",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-100",
+          "sha256": "0375b432f024f5e44bf1d496e639ad65ddbc1c3ffae17158ddcf59ae6cf0a375"
+        },
+        {
+          "id": "lines:101-107",
+          "sha256": "3eb035e862b2bcdf6dd7b4b4d8189aa4c254e738bfe99e6266818e81b2915b88"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc2_create_visualize_digital_service.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc2_create_visualize_digital_service.md",
+      "source_sha256": "1a166d9e2959027ab5713bc6e1852b3da403ccaad33d130af4f41e4ef429d891",
+      "read_sha256": "1a166d9e2959027ab5713bc6e1852b3da403ccaad33d130af4f41e4ef429d891",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-100",
+          "sha256": "1433ef8b466907612cbca3ed9694dfc0140ff03e3b7cce676db36ea6ef48976a"
+        },
+        {
+          "id": "lines:101-125",
+          "sha256": "a6b9af937228fb8c450926c7e10921a44c45849c58e31e438988b16c8576a5b2"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc3_add_visualize_equipments/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc3_add_visualize_equipments/_index.md",
+      "source_sha256": "a610b3ed1e2b081cc142424db1d461710b6cf88896cc2d48f8ca7bf17b400aff",
+      "read_sha256": "a610b3ed1e2b081cc142424db1d461710b6cf88896cc2d48f8ca7bf17b400aff",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-89",
+          "sha256": "a610b3ed1e2b081cc142424db1d461710b6cf88896cc2d48f8ca7bf17b400aff"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc3_add_visualize_equipments/uc3_add_visualize_cloud_services/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc3_add_visualize_equipments/uc3_add_visualize_cloud_services/_index.md",
+      "source_sha256": "60481815255338b3480b18ec22110de35a5fe4dea22fc5dd3a51d7299d5ce402",
+      "read_sha256": "60481815255338b3480b18ec22110de35a5fe4dea22fc5dd3a51d7299d5ce402",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-80",
+          "sha256": "60481815255338b3480b18ec22110de35a5fe4dea22fc5dd3a51d7299d5ce402"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc3_add_visualize_equipments/uc3_add_visualize_cloud_services/add_visualize_cloud_services_via_forms.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc3_add_visualize_equipments/uc3_add_visualize_cloud_services/add_visualize_cloud_services_via_forms.md",
+      "source_sha256": "074d699fa5e25760afae950c07eb2f85dbcf6a07ecf1a1908955a679ca4474ec",
+      "read_sha256": "074d699fa5e25760afae950c07eb2f85dbcf6a07ecf1a1908955a679ca4474ec",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-63",
+          "sha256": "074d699fa5e25760afae950c07eb2f85dbcf6a07ecf1a1908955a679ca4474ec"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc3_add_visualize_equipments/uc3_add_visualize_cloud_services/import_cloud_services_via_button.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc3_add_visualize_equipments/uc3_add_visualize_cloud_services/import_cloud_services_via_button.md",
+      "source_sha256": "0b3158d01daf0ef361dd2a5dce8b093b1b667d1f1e305f8dbe9b3b28e41bf1e9",
+      "read_sha256": "0b3158d01daf0ef361dd2a5dce8b093b1b667d1f1e305f8dbe9b3b28e41bf1e9",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-93",
+          "sha256": "0b3158d01daf0ef361dd2a5dce8b093b1b667d1f1e305f8dbe9b3b28e41bf1e9"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc3_add_visualize_equipments/uc3_add_visualize_network/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc3_add_visualize_equipments/uc3_add_visualize_network/_index.md",
+      "source_sha256": "134d8ab89510a50a9cc7669670c426b5f4eadc95fcc05f9bdbf4ab2564dd4c5d",
+      "read_sha256": "134d8ab89510a50a9cc7669670c426b5f4eadc95fcc05f9bdbf4ab2564dd4c5d",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-71",
+          "sha256": "134d8ab89510a50a9cc7669670c426b5f4eadc95fcc05f9bdbf4ab2564dd4c5d"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc3_add_visualize_equipments/uc3_add_visualize_network/add_visualize_networks_via_forms.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc3_add_visualize_equipments/uc3_add_visualize_network/add_visualize_networks_via_forms.md",
+      "source_sha256": "8ca532c51db28b952aabd88f175552232a67ad3664769e4e1b7d4b917f9f5ddf",
+      "read_sha256": "8ca532c51db28b952aabd88f175552232a67ad3664769e4e1b7d4b917f9f5ddf",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-63",
+          "sha256": "8ca532c51db28b952aabd88f175552232a67ad3664769e4e1b7d4b917f9f5ddf"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc3_add_visualize_equipments/uc3_add_visualize_network/import_network_via_button.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc3_add_visualize_equipments/uc3_add_visualize_network/import_network_via_button.md",
+      "source_sha256": "67e0a7fbdf19ac9cf13f84ce3c20387acde4078e1ddf2283ea218bd9056fb887",
+      "read_sha256": "67e0a7fbdf19ac9cf13f84ce3c20387acde4078e1ddf2283ea218bd9056fb887",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-100",
+          "sha256": "e822b436fbe6a484a12c957825d55bc1673d804a37435ccce7002efa0ec71c58"
+        },
+        {
+          "id": "lines:101-101",
+          "sha256": "111129c13878770185a546a21175b78780a9e0c78495bcf34eb843b3a1db9d0d"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc3_add_visualize_equipments/uc3_add_visualize_noncloud-servers/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc3_add_visualize_equipments/uc3_add_visualize_noncloud-servers/_index.md",
+      "source_sha256": "0637b3c1c140f2bf6c47adfd06f735ac417e9c7c35efaff3d8b341040c3cb725",
+      "read_sha256": "0637b3c1c140f2bf6c47adfd06f735ac417e9c7c35efaff3d8b341040c3cb725",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-73",
+          "sha256": "0637b3c1c140f2bf6c47adfd06f735ac417e9c7c35efaff3d8b341040c3cb725"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc3_add_visualize_equipments/uc3_add_visualize_noncloud-servers/add_visualize_nonCloud_servers_via_forms.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc3_add_visualize_equipments/uc3_add_visualize_noncloud-servers/add_visualize_nonCloud_servers_via_forms.md",
+      "source_sha256": "7cdae571f288f806fb56c2e9d50ba9b3799694e02caa6d82bb5e2d735b9c3e4b",
+      "read_sha256": "7cdae571f288f806fb56c2e9d50ba9b3799694e02caa6d82bb5e2d735b9c3e4b",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-100",
+          "sha256": "b6c548d8d822bf6641cb5be96e1c4e05e285727da67a2eae5d97afee38b868d0"
+        },
+        {
+          "id": "lines:101-189",
+          "sha256": "a6b2bb6d5e39076a48cef8ffd984ea75cd2272e76036d0536e8d8419fface77e"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc3_add_visualize_equipments/uc3_add_visualize_noncloud-servers/import_nonCloud_servers_via_button.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc3_add_visualize_equipments/uc3_add_visualize_noncloud-servers/import_nonCloud_servers_via_button.md",
+      "source_sha256": "c947a7d2bb493547578789dc065b2b11f39900e8e75e2db826423342c63a0802",
+      "read_sha256": "c947a7d2bb493547578789dc065b2b11f39900e8e75e2db826423342c63a0802",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-100",
+          "sha256": "eb8a8347d1c20211e085f44b834ab15af954538145e27f5dc38b30a685a1aab2"
+        },
+        {
+          "id": "lines:101-137",
+          "sha256": "824c26614cc75c027a9b6d924d87525df3ce152d03d35f7220f78fa22f248824"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc3_add_visualize_equipments/uc3_add_visualize_terminals/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc3_add_visualize_equipments/uc3_add_visualize_terminals/_index.md",
+      "source_sha256": "e65d13666ac1aebffd93cefe6a14dbde59ef323d3a655071038f60d4b73ec3c1",
+      "read_sha256": "e65d13666ac1aebffd93cefe6a14dbde59ef323d3a655071038f60d4b73ec3c1",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-76",
+          "sha256": "e65d13666ac1aebffd93cefe6a14dbde59ef323d3a655071038f60d4b73ec3c1"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc3_add_visualize_equipments/uc3_add_visualize_terminals/add_visualize_terminals_via_forms.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc3_add_visualize_equipments/uc3_add_visualize_terminals/add_visualize_terminals_via_forms.md",
+      "source_sha256": "a1e2241f53ee5121f56ea5932092159799738d29ffb880832d8531331edfd6c4",
+      "read_sha256": "a1e2241f53ee5121f56ea5932092159799738d29ffb880832d8531331edfd6c4",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-66",
+          "sha256": "a1e2241f53ee5121f56ea5932092159799738d29ffb880832d8531331edfd6c4"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc3_add_visualize_equipments/uc3_add_visualize_terminals/import_terminal_via_button.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc3_add_visualize_equipments/uc3_add_visualize_terminals/import_terminal_via_button.md",
+      "source_sha256": "335b961408ce1378af1a0d94a8a909c6a975828354eab07f122ca0f44966048e",
+      "read_sha256": "335b961408ce1378af1a0d94a8a909c6a975828354eab07f122ca0f44966048e",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-100",
+          "sha256": "a25181bd5ff65b53dec36d8f916686e4ecd6d9d1c84a85069d9e60661b671822"
+        },
+        {
+          "id": "lines:101-103",
+          "sha256": "a78e92eb227d033c612e629f29124eff5f7558a42d24f56761e4e287215bd1c6"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    }
+  ]
+}

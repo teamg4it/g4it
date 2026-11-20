@@ -2,60 +2,89 @@
 title: Repository classification
 analysis_id: g4it-on-github
 station: discover-repositories
-source_root: services/
+source_root: .
 stack_family: mixed
-generated_on: 2026-11-16
+generated_on: 2026-11-19
 generated_by: repository-analyzer
+workflow: brownfield-analysis
+trigger: user
+date: '2026-11-19'
+skill: [knowledge-plane, repo-analysis]
+inputDocuments:
+  - .github/skills/knowledge-plane/SKILL.md
+  - .github/skills/repo-analysis/SKILL.md
+  - services/backend/pom.xml
+  - services/frontend/package.json
+  - services/backend/README.md
+  - services/frontend/README.md
+  - services/keycloak/README.md
+  - services/documentation/README.md
+  - services/documentation/schemacrawler/README.md
+  - README.md
+  - workspace/docker/docker-compose-all.yml
 version: "1.0"
-status: validated
-trace_id: discover-repositories-g4it-on-github-20261116
+status: complete
+changeHistory:
+  - date: '2026-11-19'
+    description: "Discover-repositories re-run for root-project analysis in place."
+    changes:
+      - "Replaced the services/-rooted classification with a root-project classification from this run's evidence."
+      - "Removed claims from the earlier run that relied on a supplied scan not re-verified here."
+holisticQualityRating: not-rated
+overallStatus: not-reviewed
+trace_id: 4d1e4282-cc4b-4ea6-83da-14dd38c0b892
 trace_scope: station-local-report
 ---
 
+<!-- AI_DISCLAIMER v1.0 -->
+
 # Repository classification
 
-> AI-generated classification from static evidence; subject to human review. Declared dependencies and documented integrations are not proof of runtime usage.
+> This file has been created (totally or partially) with the assistance of artificial intelligence tools.
+> All content has been generated under the direct supervision of a named individual,
+> and under the AI.Backbone Orchestrator Compliance framework
+
+Classification from static evidence; subject to human review. Declared dependencies and documented integrations are not proof of runtime usage.
 
 ## Overall classification
 
-**Mixed-stack web-product monorepo subtree:** a Java business backend, a TypeScript browser application, and a Python/PowerShell documentation utility. Green for IT supports environmental-impact evaluation of information-system inventories and digital services, with result visualization.
+**Mixed-stack product monorepo (root project, analysed in place):** a Java/Spring Boot business backend, an Angular business client, and supporting tooling (Hugo documentation, a schema-documentation utility, a Keycloak identity image and Docker Compose). Stack family: **mixed**, not mainframe.
 
-The architecture describes one backend rather than a microservice decomposition: `services/documentation/content/3-technical-documentation/2-software_architecture/_index.md:13-45,70-71`.
+| Detected unit | Class | Stack family | Decisive signals |
+|---|---|---|---|
+| `services/backend` | Business REST service | `java` | `pom.xml`: Java 21, Spring Boot 4.0.7 parent, PostgreSQL, Keycloak adapter; 38 controller classes. |
+| `services/frontend` | Business SPA client | `node` | `package.json`: Angular 21, TypeScript 5.9, PrimeNG, ECharts, keycloak-angular. Runs in the browser. |
+| `services/documentation/schemacrawler` | Supporting documentation utility | `python` with PowerShell | README: PowerShell entry script, Python formatter, SchemaCrawler Docker prerequisite. Not a product service. |
+| `services/documentation` | Supporting content (Hugo site) | `hugo` / Markdown | `hugo.toml`; 216 Markdown files under `content/`. Not an expected repository. |
+| `services/keycloak` | Supporting identity component | `container` | Dockerfile, GitLab CI, realm export (not read). No build manifest. Not an expected repository. |
+| `workspace/docker` | Deployment composition | `docker-compose` | `docker-compose-all.yml` (read). Not a repository. |
 
-| Detected root                          | Repository class                                | Stack family             | Decisive signals                                                                                                                                                                                                                |
-| -------------------------------------- | ----------------------------------------------- | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `services/backend`                     | Business REST application / calculation backend | `java`                   | Java 21 and Spring Boot 4.0.7 in `services/backend/pom.xml:5-16,30-32`; web/data dependencies at lines 129-155; contract-driven Spring API generation at lines 454-515.                                                         |
-| `services/frontend`                    | Business SPA / presentation client              | `node`                   | Angular 21 packages, npm build scripts and TypeScript 5.9 in `services/frontend/package.json:4-15,19-51,54-70`. Node/npm is the build ecosystem; the application runs in the browser.                                           |
-| `services/documentation/schemacrawler` | Database-documentation generation utility       | `python` with PowerShell | Utility purpose and PowerShell invocation at `services/documentation/schemacrawler/README.md:1-16`; Python formatter identified at lines 62-64 and implemented in `markdown.py:12-35,46-106`. Not a standalone product service. |
-
-`mixed` reflects distinct product/runtime and supporting-tool stacks; it is not based on a source-line majority calculation. Supporting Hugo documentation and Keycloak customization do not add expected repository roots: `services/documentation/README.md:1-3`, `services/keycloak/README.md:1-3`, and repository-discovery stdout notes.
+`mixed` reflects several distinct runtime and tooling stacks. It is not a source-line majority calculation. Discovery for root `.` returned no expected repositories, so these classes come from manual inspection.
 
 ## Business and relationship signals
 
-* **Inventory and digital-service assessment:** product architecture at `services/documentation/content/3-technical-documentation/2-software_architecture/_index.md:13-17,39-45`. Frontend consumer path fragments include inventories, digital services, reference data, workspaces, and sharing at `services/frontend/src/constants.ts:68-92`; these are not verified provider endpoints or HTTP-method contracts.
-* **Frontend → backend:** documented SPA/REST split in the architecture file, lines 18-22.
-* **Backend → calculation/data dependencies:** NumEcoEval calculations are a library dependency (`services/backend/pom.xml:129-134`), while PostgreSQL is a runtime dependency (lines 217-221). Inventory-file storage and exports are documented in the architecture file, lines 27-29.
-* **Backend → external cloud-impact evaluation:** Boavizta integration is documented in the architecture file, line 30; no claim of implementation verification.
-* **Additional generated-client signals:** Maven declares NumEcoEval input/reference API contracts and an EcoMind AI contract (`services/backend/pom.xml:541-545,584-588,628-632`). These establish build-time integration signals, not separate repositories or confirmed live service calls.
-* **Schema utility → database/documentation:** documented database prerequisite and generated table-group reports (`services/documentation/schemacrawler/README.md:1-16,52-64`), corroborated by Mermaid/table formatting functions (`markdown.py:12-35,46-106`).
+* **Business purpose:** the root README describes G4IT as a platform for assessing, defining and managing plans to reduce digital-technology impact at organisational scale, including IS component views, impact assessments and plan management (`README.md`).
+* **Backend capability packages:** inventory input/output, digital services, referential data, indicators and evaluation, workspaces/users/administration, AI services, and files. Detail is in `repository-inventory.md`.
+* **Frontend → backend:** the compose file sets the frontend's inventory API URL to the backend (`workspace/docker/docker-compose-all.yml`, `g4it-frontend`).
+* **Backend runtime dependencies (compose):** PostgreSQL datasource; Keycloak JWT issuer; NumEcoEval, Boavizta and EcoLogits base URLs; file-storage volume (same compose file).
+* **Build-time signals:** NumEcoEval and Azure Communication Email version properties in `services/backend/pom.xml`. These are declarations, not verified live calls.
 
-## Mainframe routing decision
+## Stack routing (mainframe check)
 
-The required scan was already performed by the caller and was **not rerun**. Evidence: `C:\Users\gtemplier\.copilot\session-state\d242aa08-0bae-4ab7-9e7c-f85f2cb00044\files\services-mf-inventory.json:1-17`.
+This station did not run the mainframe scanner (it belongs to the separate `mainframe-inventory` station), and no figures from any earlier scan are used here.
 
-| Routing evidence        | Finding                                                                                                   |
-| ----------------------- | --------------------------------------------------------------------------------------------------------- |
-| Scan scope / files      | Supplied `services/` scan; 4,655 files.                                                                   |
-| Classified results      | archive 4; config 413; diagram 385; doc 456; empty 15; excluded-sensitive 1; script 8; unknown 3,373.     |
-| Typed mainframe signals | No reported COBOL programs, JCL, copybooks, or other typed mainframe classifications; COBOL code lines 0. |
-| Skill threshold         | Requires at least one COBOL program, or both at least one JCL file and one copybook. **Not met.**         |
-| Routing result          | `stack_family: mixed`; mainframe-specific stations are not indicated by this evidence.                    |
+| Routing evidence | Finding |
+|---|---|
+| Scope of this run | Bounded globs for `*.cbl`, `*.cob`, `*.cpy` and `*.jcl` (any case) under `services/`, `workspace/`, `tools/` and the root: **no matches**. Root-level manifests contain no COBOL or mainframe build files. |
+| Skill threshold | Requires at least one COBOL program, or both a JCL file and a copybook. **Not met** by the bounded check. |
+| Routing result | `stack_family: mixed`. This evidence does not indicate mainframe-specific stations. |
 
-The scan's classified ratio is 0.2754. Its unknown count limits completeness claims; do not interpret this specialized scanner's unknown files as unsupported application code.
+A negative bounded search does not prove the absence of mainframe code anywhere in the tree.
 
 ## Evidence quality and gate
 
-* **Discovery gate satisfied:** `python .github/skills/knowledge-plane/tools/kp_bootstrap.py repositories --source-root services/` exited 0, returned allowed/ready, found exactly the three supplied roots, and reported no problems.
-* **Source preparation consistent:** complete filtered estimate of 10,500,908 bytes / 1,453 files matches the supplied preparation result. Different scan populations explain why this is not the mainframe inventory's file count.
-* **Version discrepancy:** the architecture page describes Spring Boot 3 and Angular 12 (lines 39 and 57); current manifests declare Spring Boot 4.0.7 and Angular 21. Classification uses manifests for versions.
-* **Scope boundary:** bounded manual discovery only, below 50 files per batch and no deeper than five directory levels. No index/graph verification, exhaustive endpoint assessment, runtime testing, or workflow-state update was attempted or implied.
+- **Discovery:** `kp_bootstrap.py repositories --source-root .` returned allowed, 0 expected repositories and 0 problems (status `needs-staging`). The comparison run with `--source-root services/` returned 8 expected roots, including third-party JavaScript and Hugo theme folders. The root-project classification is therefore manual.
+- **Source staging:** none. In-place analysis under user consent of 2026-11-19 (`source-staging.md`).
+- **Exclusions applied:** `outputs/`, `node_modules`, `.venv`, `target`, `build`, `dist`, `.github` and `.git`. Sensitive and credential-like files were not opened, including `services/backend/settings.xml` and the Keycloak realm exports.
+- **Scope boundary:** bounded manual inspection (under 50 files per batch, no deeper than five directory levels). No index, graph, endpoint or runtime verification, and no workflow-state update.
+- **Open point:** root-level discovery returns 0 repositories. `build-codegraph` needs an explicit decision on whether to index `.` as one project or per service root (`services/backend`, `services/frontend`).

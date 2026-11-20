@@ -1,0 +1,1082 @@
+{
+  "version": 3,
+  "workflow": "brownfield-analysis",
+  "trigger": "repository-ingestion",
+  "date": "2026-11-20T08:57:26.040027+00:00",
+  "status": "draft",
+  "inputDocuments": [
+    "outputs/ingestion/requests/g4it-on-github/getstarted-02.json"
+  ],
+  "changeHistory": [],
+  "holisticQualityRating": "not-rated",
+  "overallStatus": "not-reviewed",
+  "sensitivity": "confidential",
+  "trace_id": "g4it-on-github-getstarted-02",
+  "station": "ingest-documents/extract-and-verify",
+  "request": "outputs/ingestion/requests/g4it-on-github/getstarted-02.json",
+  "request_sha256": "968fd115fc84c599da0f5908d0f8baadd21639f8d992556b88e30e64bea0a6a4",
+  "exclusions": [
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/images/ScreenShot_ISModule.pptx",
+      "source_sha256": "3b55e90a3c8af024c9b66fd4b4ea0c178c0ed07144d930f927c21ba0145d1b45",
+      "reason": "Excluded by user decision 2026-11-20: office-common parser dependencies unavailable; non-essential XLSX templates / PPTX screenshot decks"
+    }
+  ],
+  "dependencies": {
+    "pypdf": "missing",
+    "openpyxl": "missing",
+    "defusedxml": "missing"
+  },
+  "workers": 4,
+  "sources": [
+    {
+      "source": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/images/02_create_an_inventory_1.png",
+      "format": ".png",
+      "status": "partial",
+      "reason": "Image content has not been interpreted",
+      "read_path": null,
+      "source_sha256": "bbeaa090969dbf0658edad7322ef37c2168f3fd7104cbab6fc3def630aa3585e",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [
+        "image:whole-file"
+      ],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/images/02_create_an_inventory_2.png",
+      "format": ".png",
+      "status": "partial",
+      "reason": "Image content has not been interpreted",
+      "read_path": null,
+      "source_sha256": "3cc6bafdb5866e484c9fa41f0c923a76d2d29370ff80215d59c9da38a65343f4",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [
+        "image:whole-file"
+      ],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/images/1-PowerBiFolder.png",
+      "format": ".png",
+      "status": "partial",
+      "reason": "Image content has not been interpreted",
+      "read_path": null,
+      "source_sha256": "de755c51836be7dfad0796b5aa6ad0c226f1e76e6e536396f6bca96afe17b260",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [
+        "image:whole-file"
+      ],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/images/2-PowerBiFolder_InventoriesFiles.png",
+      "format": ".png",
+      "status": "partial",
+      "reason": "Image content has not been interpreted",
+      "read_path": null,
+      "source_sha256": "7ae2b021f02be73e78712fcccf032e49f27b79232c9aea081eeaebc62ebc7b12",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [
+        "image:whole-file"
+      ],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/images/3-PowerBiEditParameters.png",
+      "format": ".png",
+      "status": "partial",
+      "reason": "Image content has not been interpreted",
+      "read_path": null,
+      "source_sha256": "787884cffaaadaceb98f3250713b781d7936815c9e3e84d7fcf6225aca3bdac3",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [
+        "image:whole-file"
+      ],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/images/4-PowerBiExportInventoryonG4IT.png",
+      "format": ".png",
+      "status": "partial",
+      "reason": "Image content has not been interpreted",
+      "read_path": null,
+      "source_sha256": "de69318fcdfbb90f8f81d276101bfa06152446c1a3d5598b99a7093f67dd2cd4",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [
+        "image:whole-file"
+      ],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/images/5-PowerBiUpdate.png",
+      "format": ".png",
+      "status": "partial",
+      "reason": "Image content has not been interpreted",
+      "read_path": null,
+      "source_sha256": "ed467bd435041238e4522a70792590e3412e13356061198ea992a4d77d366d2c",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [
+        "image:whole-file"
+      ],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/images/Application_View_Specificities.png",
+      "format": ".png",
+      "status": "partial",
+      "reason": "Image content has not been interpreted",
+      "read_path": null,
+      "source_sha256": "5c65d2dfd0a0666cc1d997ddea52860d75185dedbb53e7355f8d0d979a5b281b",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [
+        "image:whole-file"
+      ],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/images/Choose_criteria.png",
+      "format": ".png",
+      "status": "partial",
+      "reason": "Image content has not been interpreted",
+      "read_path": null,
+      "source_sha256": "ca09d769112a6f80abfdb20e6094bad398a66ab34607ac4bb010d0d24b8e8c11",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [
+        "image:whole-file"
+      ],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/images/Common_components.png",
+      "format": ".png",
+      "status": "partial",
+      "reason": "Image content has not been interpreted",
+      "read_path": null,
+      "source_sha256": "b856d2f37ae3da0c0655cac89d0131189b951ca2b379a8f5150bbefb06597c66",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [
+        "image:whole-file"
+      ],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/images/Datamodel_download.png",
+      "format": ".png",
+      "status": "partial",
+      "reason": "Image content has not been interpreted",
+      "read_path": null,
+      "source_sha256": "d4646af9a8aaf5582014fc32513e8f1479413dd5ad9a44f0b7ee520b0d93e42e",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [
+        "image:whole-file"
+      ],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/images/Equipment_View_Specificities.png",
+      "format": ".png",
+      "status": "partial",
+      "reason": "Image content has not been interpreted",
+      "read_path": null,
+      "source_sha256": "2049aba8805c416d6e6e365d7bc8ff5891bf1c3c2f0efa6e1d888adf0e97ebd6",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [
+        "image:whole-file"
+      ],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/images/Equipment_and_Application_button.png",
+      "format": ".png",
+      "status": "partial",
+      "reason": "Image content has not been interpreted",
+      "read_path": null,
+      "source_sha256": "cf0ee0550f13e7fae9746f14bc53fa150ee1fbab4e7fbbf0edbf81ea6a185eb0",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [
+        "image:whole-file"
+      ],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/images/Evaluate_the_impact.png",
+      "format": ".png",
+      "status": "partial",
+      "reason": "Image content has not been interpreted",
+      "read_path": null,
+      "source_sha256": "14229fd21c4f1854715832958d51fcc56c4cf5605b5cedeb07611f9308f5e019",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [
+        "image:whole-file"
+      ],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/images/Navigating_in_Application_View.png",
+      "format": ".png",
+      "status": "partial",
+      "reason": "Image content has not been interpreted",
+      "read_path": null,
+      "source_sha256": "13067c6a55d8b44a207fe71c1daf6df5f908bff7cd547d703335f258041e52f0",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [
+        "image:whole-file"
+      ],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/images/ScreenShot_ISModule.pptx",
+      "format": ".pptx",
+      "status": "excluded",
+      "reason": "Excluded by user decision 2026-11-20: office-common parser dependencies unavailable; non-essential XLSX templates / PPTX screenshot decks",
+      "read_path": null,
+      "source_sha256": "3b55e90a3c8af024c9b66fd4b4ea0c178c0ed07144d930f927c21ba0145d1b45",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/images/control_number_of_item.png",
+      "format": ".png",
+      "status": "partial",
+      "reason": "Image content has not been interpreted",
+      "read_path": null,
+      "source_sha256": "b3f21337a4ddbd9aa5ba15a43d75f35e1c44f7ba2d3331e992bda01b24a5db1a",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [
+        "image:whole-file"
+      ],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/images/data_collected.png",
+      "format": ".png",
+      "status": "partial",
+      "reason": "Image content has not been interpreted",
+      "read_path": null,
+      "source_sha256": "73d5fc503cf016ca387e27fb37056e829fbf38ce5569cd330add81fdb3be3da9",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [
+        "image:whole-file"
+      ],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/images/loadInError.png",
+      "format": ".png",
+      "status": "partial",
+      "reason": "Image content has not been interpreted",
+      "read_path": null,
+      "source_sha256": "0a50f3d0cc356c15bb316c5c4e6d9f98f35366805f35a4a8a7a38cae622e3b97",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [
+        "image:whole-file"
+      ],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/images/loadKOpng.png",
+      "format": ".png",
+      "status": "partial",
+      "reason": "Image content has not been interpreted",
+      "read_path": null,
+      "source_sha256": "81cc6e06820f056cf3f2561c3fcc7128a228de19bcb62d6ed8bbb7a61c222a24",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [
+        "image:whole-file"
+      ],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/images/loadOK.png",
+      "format": ".png",
+      "status": "partial",
+      "reason": "Image content has not been interpreted",
+      "read_path": null,
+      "source_sha256": "9d011e97035edfb122b4209c15c7baf6b2d0dfc77e6e29c6df2247cb54e34074",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [
+        "image:whole-file"
+      ],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/images/update_estimation.png",
+      "format": ".png",
+      "status": "partial",
+      "reason": "Image content has not been interpreted",
+      "read_path": null,
+      "source_sha256": "12ee27bbc8a86e12886efb9af444bad4567e5c67f18753c35b5112ba14506edd",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [
+        "image:whole-file"
+      ],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/3-module-administration/01_Manage-users-in-my-space-workspace.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/3-module-administration/01_Manage-users-in-my-space-workspace.md",
+      "source_sha256": "03c687d760259520c89c6ab4f97eb5bf2d632fe86d21eb4d11e4eb3e7fe4e066",
+      "read_sha256": "03c687d760259520c89c6ab4f97eb5bf2d632fe86d21eb4d11e4eb3e7fe4e066",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-62",
+          "sha256": "03c687d760259520c89c6ab4f97eb5bf2d632fe86d21eb4d11e4eb3e7fe4e066"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/3-module-administration/02_Manage-workspace.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/3-module-administration/02_Manage-workspace.md",
+      "source_sha256": "45e3595c9177c41f7fc4433ee4994bcd7782120c3a98af0e4ae13834b384281e",
+      "read_sha256": "45e3595c9177c41f7fc4433ee4994bcd7782120c3a98af0e4ae13834b384281e",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-77",
+          "sha256": "45e3595c9177c41f7fc4433ee4994bcd7782120c3a98af0e4ae13834b384281e"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/3-module-administration/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/3-module-administration/_index.md",
+      "source_sha256": "ea3bf5bff574cb32b31ff0cd38f07caa813cd0589bfd0a5ca2ddd32503189c90",
+      "read_sha256": "ea3bf5bff574cb32b31ff0cd38f07caa813cd0589bfd0a5ca2ddd32503189c90",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-36",
+          "sha256": "ea3bf5bff574cb32b31ff0cd38f07caa813cd0589bfd0a5ca2ddd32503189c90"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/_index.md",
+      "source_sha256": "d3dd32c295349320599294107ed312a5e48cb365d3c748eb9f5525adc112df46",
+      "read_sha256": "d3dd32c295349320599294107ed312a5e48cb365d3c748eb9f5525adc112df46",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-38",
+          "sha256": "d3dd32c295349320599294107ed312a5e48cb365d3c748eb9f5525adc112df46"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/2-getting-started-as-a-developper/1-How to setup my local dev env/1-tools.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/1-getting-started/2-getting-started-as-a-developper/1-How to setup my local dev env/1-tools.md",
+      "source_sha256": "d418945d6b6469707700e42b974b28082ba047e2645707f55675bca94fdaf38e",
+      "read_sha256": "d418945d6b6469707700e42b974b28082ba047e2645707f55675bca94fdaf38e",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-100",
+          "sha256": "29f2ebdb9c6de8a24fae798c364581422572b377888324860119fbf2d432b6a0"
+        },
+        {
+          "id": "lines:101-144",
+          "sha256": "744f6182363971559fd2822c5ed51eca4baec09534999eb316044618e0915855"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/2-getting-started-as-a-developper/1-How to setup my local dev env/2-g4it-installation.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/1-getting-started/2-getting-started-as-a-developper/1-How to setup my local dev env/2-g4it-installation.md",
+      "source_sha256": "73b929a19695364a6c6a6c125cbde741c9d535dbc946c3d3117582b3cbadefa2",
+      "read_sha256": "73b929a19695364a6c6a6c125cbde741c9d535dbc946c3d3117582b3cbadefa2",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-100",
+          "sha256": "f95a0725a643ec63df5be3ea191e3d91908c7d70dcddeea0a2a26120d785dff1"
+        },
+        {
+          "id": "lines:101-168",
+          "sha256": "54dbb3d575b404f7ec70c9128089f831d3bff4384b5434af8a1c49319cda73bf"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/2-getting-started-as-a-developper/1-How to setup my local dev env/3-configure-my-local-Identity-Provider-Keycloack.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/1-getting-started/2-getting-started-as-a-developper/1-How to setup my local dev env/3-configure-my-local-Identity-Provider-Keycloack.md",
+      "source_sha256": "f33146f36c7c1e35e66f457c9724eb089647dfa4864341fc12fd3a06a1ea13bc",
+      "read_sha256": "f33146f36c7c1e35e66f457c9724eb089647dfa4864341fc12fd3a06a1ea13bc",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-93",
+          "sha256": "f33146f36c7c1e35e66f457c9724eb089647dfa4864341fc12fd3a06a1ea13bc"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/2-getting-started-as-a-developper/1-How to setup my local dev env/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/1-getting-started/2-getting-started-as-a-developper/1-How to setup my local dev env/_index.md",
+      "source_sha256": "e4dde91def0a6799775742395970ae2a2afeb7a52ee73d42c77285bd3dc98c5f",
+      "read_sha256": "e4dde91def0a6799775742395970ae2a2afeb7a52ee73d42c77285bd3dc98c5f",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-15",
+          "sha256": "e4dde91def0a6799775742395970ae2a2afeb7a52ee73d42c77285bd3dc98c5f"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/2-getting-started-as-a-developper/2-test_strategy/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/1-getting-started/2-getting-started-as-a-developper/2-test_strategy/_index.md",
+      "source_sha256": "7a9568d871ff98970eb5fc34a6e6c7635f186b5cf15f1640ffe7612c16d8dae1",
+      "read_sha256": "7a9568d871ff98970eb5fc34a6e6c7635f186b5cf15f1640ffe7612c16d8dae1",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-14",
+          "sha256": "7a9568d871ff98970eb5fc34a6e6c7635f186b5cf15f1640ffe7612c16d8dae1"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/2-getting-started-as-a-developper/2-test_strategy/img.png",
+      "format": ".png",
+      "status": "partial",
+      "reason": "Image content has not been interpreted",
+      "read_path": null,
+      "source_sha256": "fa41a74f21087b44fedec075a769693250f0a226255c76cb021758de36ac15e6",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [
+        "image:whole-file"
+      ],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/2-getting-started-as-a-developper/3-document-g4IT/1-generate_database_documentation/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/1-getting-started/2-getting-started-as-a-developper/3-document-g4IT/1-generate_database_documentation/_index.md",
+      "source_sha256": "d8666bbc9510027169c3b91aa1e7742df44148e5c18e80d52de3b56018343131",
+      "read_sha256": "d8666bbc9510027169c3b91aa1e7742df44148e5c18e80d52de3b56018343131",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-46",
+          "sha256": "d8666bbc9510027169c3b91aa1e7742df44148e5c18e80d52de3b56018343131"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/2-getting-started-as-a-developper/3-document-g4IT/2-how_to_document_with_hugo_docs/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/1-getting-started/2-getting-started-as-a-developper/3-document-g4IT/2-how_to_document_with_hugo_docs/_index.md",
+      "source_sha256": "663432eddbb2ee1d1cd76a4331dd9f836cc6b3801a3da592125b058c7883f861",
+      "read_sha256": "663432eddbb2ee1d1cd76a4331dd9f836cc6b3801a3da592125b058c7883f861",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-71",
+          "sha256": "663432eddbb2ee1d1cd76a4331dd9f836cc6b3801a3da592125b058c7883f861"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/2-getting-started-as-a-developper/3-document-g4IT/2-how_to_document_with_hugo_docs/logo-overgreen.png",
+      "format": ".png",
+      "status": "partial",
+      "reason": "Image content has not been interpreted",
+      "read_path": null,
+      "source_sha256": "8e6450cc4238581e10df281f5e0c2ed8f5ac26f668f053f8e1386fcf8e6656ac",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [
+        "image:whole-file"
+      ],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/2-getting-started-as-a-developper/3-document-g4IT/2-how_to_document_with_hugo_docs/mermaid_sample.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/1-getting-started/2-getting-started-as-a-developper/3-document-g4IT/2-how_to_document_with_hugo_docs/mermaid_sample.md",
+      "source_sha256": "b31f50d2fa6d25ffcc2bda8129246d7440ff6fc2c78aa751cc7e872d5b314374",
+      "read_sha256": "b31f50d2fa6d25ffcc2bda8129246d7440ff6fc2c78aa751cc7e872d5b314374",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-100",
+          "sha256": "92258a5526bb2ff1e2ce366c8d6e1c0b40af188ac609ad42e68fdb2ed2368b26"
+        },
+        {
+          "id": "lines:101-200",
+          "sha256": "f97ab58aba142191f6e9c2e4501d7bebf5f11670ea8aa460795500b3268f4405"
+        },
+        {
+          "id": "lines:201-222",
+          "sha256": "6956dafb2e740976e8c747b7cb5896dae66dcf8e6c0d1b8211129c069809db0e"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/2-getting-started-as-a-developper/3-document-g4IT/3-Modify_architecture_schemas/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/1-getting-started/2-getting-started-as-a-developper/3-document-g4IT/3-Modify_architecture_schemas/_index.md",
+      "source_sha256": "80c2188392fe6aa9cb1d1910b6d0f10d9ad8c7bd0f779d59edc2b30579050991",
+      "read_sha256": "80c2188392fe6aa9cb1d1910b6d0f10d9ad8c7bd0f779d59edc2b30579050991",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-17",
+          "sha256": "80c2188392fe6aa9cb1d1910b6d0f10d9ad8c7bd0f779d59edc2b30579050991"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/2-getting-started-as-a-developper/3-document-g4IT/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/1-getting-started/2-getting-started-as-a-developper/3-document-g4IT/_index.md",
+      "source_sha256": "d9fc971b6246d239da69eb024922675b3f215ecf258fcab9363aa5bd448ae664",
+      "read_sha256": "d9fc971b6246d239da69eb024922675b3f215ecf258fcab9363aa5bd448ae664",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-13",
+          "sha256": "d9fc971b6246d239da69eb024922675b3f215ecf258fcab9363aa5bd448ae664"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/2-getting-started-as-a-developper/4-contribute/1-github-flow.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/1-getting-started/2-getting-started-as-a-developper/4-contribute/1-github-flow.md",
+      "source_sha256": "98bc12194fd9260f64133ab181eb1ee8a33973e460dc1957dd246560bbc99b7c",
+      "read_sha256": "98bc12194fd9260f64133ab181eb1ee8a33973e460dc1957dd246560bbc99b7c",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-100",
+          "sha256": "98bc12194fd9260f64133ab181eb1ee8a33973e460dc1957dd246560bbc99b7c"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/2-getting-started-as-a-developper/4-contribute/2-git-commands.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/1-getting-started/2-getting-started-as-a-developper/4-contribute/2-git-commands.md",
+      "source_sha256": "3632f2aac5a026ec5785a12ac30662f67b9256acc25c6a54eeea66014e8e3aef",
+      "read_sha256": "3632f2aac5a026ec5785a12ac30662f67b9256acc25c6a54eeea66014e8e3aef",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-100",
+          "sha256": "510a458adf5b9d8b5691e9a4169dc911497f178e89ff1a430ce5bc8de926d008"
+        },
+        {
+          "id": "lines:101-106",
+          "sha256": "e263ef5f00528789454d22d0f2f691e627e193c6a3492935331f40345df5c3fe"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/2-getting-started-as-a-developper/4-contribute/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/1-getting-started/2-getting-started-as-a-developper/4-contribute/_index.md",
+      "source_sha256": "0a4025a2b37c55f2fd1dad775bc9805a081471cae7c259b19dc094bdb1bddcef",
+      "read_sha256": "0a4025a2b37c55f2fd1dad775bc9805a081471cae7c259b19dc094bdb1bddcef",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-37",
+          "sha256": "0a4025a2b37c55f2fd1dad775bc9805a081471cae7c259b19dc094bdb1bddcef"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/2-getting-started-as-a-developper/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/1-getting-started/2-getting-started-as-a-developper/_index.md",
+      "source_sha256": "3ff91d8d2f4910a0b376f2763172f47967bfc34805f68b5151a2f2828031b0fe",
+      "read_sha256": "3ff91d8d2f4910a0b376f2763172f47967bfc34805f68b5151a2f2828031b0fe",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-13",
+          "sha256": "3ff91d8d2f4910a0b376f2763172f47967bfc34805f68b5151a2f2828031b0fe"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/2-getting-started-as-a-developper/missing_dependency.png",
+      "format": ".png",
+      "status": "partial",
+      "reason": "Image content has not been interpreted",
+      "read_path": null,
+      "source_sha256": "86645bee9488ba19d857d8c1fb506e86ada2d67d1117b1468c38b8d411139317",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [
+        "image:whole-file"
+      ],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/3-getting-started-as-a-maintainer/1-how-to/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/1-getting-started/3-getting-started-as-a-maintainer/1-how-to/_index.md",
+      "source_sha256": "647b17f2555870250a8f2055dd36bc5e644ebb9eb3ff9b31f551850ce6ad7c9e",
+      "read_sha256": "647b17f2555870250a8f2055dd36bc5e644ebb9eb3ff9b31f551850ce6ad7c9e",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-11",
+          "sha256": "647b17f2555870250a8f2055dd36bc5e644ebb9eb3ff9b31f551850ce6ad7c9e"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/3-getting-started-as-a-maintainer/1-how-to/add_storage_or_data_retention_config/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/1-getting-started/3-getting-started-as-a-maintainer/1-how-to/add_storage_or_data_retention_config/_index.md",
+      "source_sha256": "79535b642971e8e61447ea87593cda05bdd61fc6fabbfa669a404025e5df11ac",
+      "read_sha256": "79535b642971e8e61447ea87593cda05bdd61fc6fabbfa669a404025e5df11ac",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-94",
+          "sha256": "79535b642971e8e61447ea87593cda05bdd61fc6fabbfa669a404025e5df11ac"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/3-getting-started-as-a-maintainer/1-how-to/deploy-in-environment/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/1-getting-started/3-getting-started-as-a-maintainer/1-how-to/deploy-in-environment/_index.md",
+      "source_sha256": "d933bdffc24254f5e24723d79fde0d81f8b45cc20238cf73eab35e068631b71a",
+      "read_sha256": "d933bdffc24254f5e24723d79fde0d81f8b45cc20238cf73eab35e068631b71a",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-69",
+          "sha256": "d933bdffc24254f5e24723d79fde0d81f8b45cc20238cf73eab35e068631b71a"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/3-getting-started-as-a-maintainer/1-how-to/ecomind/1-enable_ecomind_module/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/1-getting-started/3-getting-started-as-a-maintainer/1-how-to/ecomind/1-enable_ecomind_module/_index.md",
+      "source_sha256": "f553472518769439a9060c687c8ad01aab4744a8540377516045fede77d4cde2",
+      "read_sha256": "f553472518769439a9060c687c8ad01aab4744a8540377516045fede77d4cde2",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-23",
+          "sha256": "f553472518769439a9060c687c8ad01aab4744a8540377516045fede77d4cde2"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/3-getting-started-as-a-maintainer/1-how-to/ecomind/2-enable_ecomind_for_an_organization/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/1-getting-started/3-getting-started-as-a-maintainer/1-how-to/ecomind/2-enable_ecomind_for_an_organization/_index.md",
+      "source_sha256": "c01ae8758f6d3f7c95fdcb166acb834e07b3bc1ed3ca05f8b3008e1da28554e9",
+      "read_sha256": "c01ae8758f6d3f7c95fdcb166acb834e07b3bc1ed3ca05f8b3008e1da28554e9",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-29",
+          "sha256": "c01ae8758f6d3f7c95fdcb166acb834e07b3bc1ed3ca05f8b3008e1da28554e9"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/3-getting-started-as-a-maintainer/1-how-to/ecomind/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/1-getting-started/3-getting-started-as-a-maintainer/1-how-to/ecomind/_index.md",
+      "source_sha256": "4de01bf8d00694d2680adc07ca1df898bf03c106ef04a8f7c760976fa4e8cf15",
+      "read_sha256": "4de01bf8d00694d2680adc07ca1df898bf03c106ef04a8f7c760976fa4e8cf15",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-7",
+          "sha256": "4de01bf8d00694d2680adc07ca1df898bf03c106ef04a8f7c760976fa4e8cf15"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/3-getting-started-as-a-maintainer/1-how-to/scripts/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/1-getting-started/3-getting-started-as-a-maintainer/1-how-to/scripts/_index.md",
+      "source_sha256": "67e6a9bb322dcc30c206097532806848456fd34ad5364871ab683e2f818608c8",
+      "read_sha256": "67e6a9bb322dcc30c206097532806848456fd34ad5364871ab683e2f818608c8",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-7",
+          "sha256": "67e6a9bb322dcc30c206097532806848456fd34ad5364871ab683e2f818608c8"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/3-getting-started-as-a-maintainer/1-how-to/scripts/add_user_rigths/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/1-getting-started/3-getting-started-as-a-maintainer/1-how-to/scripts/add_user_rigths/_index.md",
+      "source_sha256": "2f16e814253d35155d26ba7f11a1624fb85f10394c779001bc03c7f830b3122e",
+      "read_sha256": "2f16e814253d35155d26ba7f11a1624fb85f10394c779001bc03c7f830b3122e",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-100",
+          "sha256": "4a7b159eac7dc5a88edb301b2be8117ca1430433a0296dd7301f348292d04983"
+        },
+        {
+          "id": "lines:101-186",
+          "sha256": "54780d0c86412d72130d2d2c15dfe55f97ae246d37a3a32381257a04a06c45d8"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/3-getting-started-as-a-maintainer/1-how-to/scripts/delete_user_from_platform/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/1-getting-started/3-getting-started-as-a-maintainer/1-how-to/scripts/delete_user_from_platform/_index.md",
+      "source_sha256": "331f8ac534cbc03c1796ed04f4f4123a4ff3b75eceddf671544b1279e983b282",
+      "read_sha256": "331f8ac534cbc03c1796ed04f4f4123a4ff3b75eceddf671544b1279e983b282",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-100",
+          "sha256": "c4fd7d71c5ed04285f9457baac620f7478d1d1b6b85c2ab704012e2845b96ee4"
+        },
+        {
+          "id": "lines:101-145",
+          "sha256": "cea45d3d30a3bc97deed718ec31be1983bc5c7a110144b5acbec2bd302c58bd2"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/3-getting-started-as-a-maintainer/1-how-to/scripts/migrate_ds_to_chosen_workspace/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/1-getting-started/3-getting-started-as-a-maintainer/1-how-to/scripts/migrate_ds_to_chosen_workspace/_index.md",
+      "source_sha256": "eb19fdc3c3cd55c9e558bb9487599fbb5ddb8b7baca7741f4464bd67770d1444",
+      "read_sha256": "eb19fdc3c3cd55c9e558bb9487599fbb5ddb8b7baca7741f4464bd67770d1444",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-100",
+          "sha256": "4e0d74ed38ef469448446cff0afc98bb040c480c1c9a518b0637df3dce794aad"
+        },
+        {
+          "id": "lines:101-176",
+          "sha256": "9ee17e8dd9642a505879c74d1c89c0793053d6fa972078bbce30523bf6075566"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/3-getting-started-as-a-maintainer/1-how-to/scripts/remove_write_access_in_demo_org/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/1-getting-started/3-getting-started-as-a-maintainer/1-how-to/scripts/remove_write_access_in_demo_org/_index.md",
+      "source_sha256": "eb8d57ec91227dccf9a73dd20b35aa777b644ffeaad5234fafd855bae65e67c0",
+      "read_sha256": "eb8d57ec91227dccf9a73dd20b35aa777b644ffeaad5234fafd855bae65e67c0",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-100",
+          "sha256": "bb1832f265b1308027f4c0e3ff3c3920483e75cb4e53b717de3440b807ef0bb5"
+        },
+        {
+          "id": "lines:101-167",
+          "sha256": "cb36b441126f44c09196db850303556e4d945312e2f7ab76c9146ce0d9321f65"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/3-getting-started-as-a-maintainer/1-how-to/scripts/rollback_migration/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/1-getting-started/3-getting-started-as-a-maintainer/1-how-to/scripts/rollback_migration/_index.md",
+      "source_sha256": "e7f83a85c6a95a73683eed118bca441d4ade266d4846fe12c7acff15abce16e2",
+      "read_sha256": "e7f83a85c6a95a73683eed118bca441d4ade266d4846fe12c7acff15abce16e2",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-40",
+          "sha256": "e7f83a85c6a95a73683eed118bca441d4ade266d4846fe12c7acff15abce16e2"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/3-getting-started-as-a-maintainer/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/1-getting-started/3-getting-started-as-a-maintainer/_index.md",
+      "source_sha256": "e75702fc466ee18d9ce8663fe904681be1fbac7cdbe4a0753800c673a3cc1b8f",
+      "read_sha256": "e75702fc466ee18d9ce8663fe904681be1fbac7cdbe4a0753800c673a3cc1b8f",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-13",
+          "sha256": "e75702fc466ee18d9ce8663fe904681be1fbac7cdbe4a0753800c673a3cc1b8f"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/1-getting-started/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/1-getting-started/_index.md",
+      "source_sha256": "4e28465c4e0d1747f0c7ba7974b1f4532fa0b91b4dc329f1d801cc5c3ffa2be7",
+      "read_sha256": "4e28465c4e0d1747f0c7ba7974b1f4532fa0b91b4dc329f1d801cc5c3ffa2be7",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-14",
+          "sha256": "4e28465c4e0d1747f0c7ba7974b1f4532fa0b91b4dc329f1d801cc5c3ffa2be7"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    }
+  ]
+}

@@ -1,0 +1,86 @@
+{
+  "allowed": true,
+  "errors": [],
+  "manifest": "outputs/ingestion/repository/g4it-on-github-schemacrawler-01/source-coverage.json",
+  "pending_images": [],
+  "pending_bulk_decisions": [],
+  "bulk_decision_template": {
+    "path": "outputs/ingestion/repository/g4it-on-github-schemacrawler-01/bulk-image-decisions.json",
+    "template": {
+      "version": 1,
+      "workflow": "brownfield-analysis",
+      "trigger": "repository-ingestion",
+      "date": "2026-11-20T09:25:15.140511+00:00",
+      "status": "draft",
+      "inputDocuments": [
+        "outputs/ingestion/requests/g4it-on-github/schemacrawler-01.json"
+      ],
+      "changeHistory": [],
+      "holisticQualityRating": "unassessed",
+      "overallStatus": "pending",
+      "sensitivity": "confidential",
+      "trace_id": "g4it-on-github-schemacrawler-01",
+      "station": "ingest-documents/extract-and-verify",
+      "analysis_id": "g4it-on-github-schemacrawler-01",
+      "request_sha256": "05207a030599b00438197986718a202700468951cc40dc3cd8232763740c1708",
+      "batches": []
+    },
+    "batch_template": {
+      "members": [],
+      "decision": "omit",
+      "explanation": "",
+      "omission_reason": "",
+      "shared_explanation_confirmed": false,
+      "confirmed": false,
+      "confirmation_digest": ""
+    },
+    "members_path": null,
+    "member_count": 0
+  },
+  "image_decisions": [],
+  "clarifications": [],
+  "sources": [
+    {
+      "source": "services/documentation/schemacrawler/README.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/schemacrawler/README.md",
+      "source_sha256": "d4175046a2f54cf0a0cb90e5af405aeafcf20233763f82ad8a9f4f97593444a0",
+      "read_sha256": "d4175046a2f54cf0a0cb90e5af405aeafcf20233763f82ad8a9f4f97593444a0",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-64",
+          "sha256": "d4175046a2f54cf0a0cb90e5af405aeafcf20233763f82ad8a9f4f97593444a0"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": [],
+      "image_decisions": [],
+      "clarifications": []
+    }
+  ],
+  "total": 1,
+  "completed": 1,
+  "counts": {
+    "not_required": 1
+  },
+  "unresolved_total": 0,
+  "unresolved": [],
+  "exclusions": [],
+  "images": {
+    "sources": 0,
+    "gaps": 0,
+    "interpreted": 0,
+    "omitted": 0,
+    "explained": 0,
+    "pending": 0,
+    "by_source": [],
+    "omitted_sources": 0
+  },
+  "action": "",
+  "evidence_kind": "extraction only; downstream reading and human review remain required"
+}
