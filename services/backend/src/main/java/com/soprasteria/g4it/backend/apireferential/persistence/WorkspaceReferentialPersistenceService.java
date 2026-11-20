@@ -44,6 +44,7 @@ public class WorkspaceReferentialPersistenceService {
 
     private void updateItemType(ItemType target, ItemType source) {
         target.setCategory(source.getCategory());
+        target.setItemCategory(source.getItemCategory());
         target.setComment(source.getComment());
         target.setDefaultLifespan(source.getDefaultLifespan());
         target.setIsServer(source.getIsServer());

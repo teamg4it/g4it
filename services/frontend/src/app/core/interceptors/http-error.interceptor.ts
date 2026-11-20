@@ -64,7 +64,7 @@ function getErrorMessage(
                 severity: "error",
                 summary: error.url.includes("/digital-service-version")
                     ? translate.instant(`digital-services.version-not-found`)
-                    : translate.instant(`digital-services.${Constants.ERRORS[key]}`),
+                    : translate.instant(`digital-services.${Constants.ERRORS[key as keyof typeof Constants.ERRORS]}`),
             });
         }
     }

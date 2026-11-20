@@ -533,6 +533,9 @@ export class InventoriesFootprintComponent implements OnInit, OnDestroy {
                         ),
                         country: this.digitalServiceStore.countryMap()[item.location],
                         equipment: `Cloud ${item.provider.toUpperCase()}`,
+                        itemCategory: "EXTERNAL",
+                        sunburstServiceType: "cloud",
+                        sunburstProvider: item.provider,
                         status: this.translate.instant(
                             "inventories-footprint.not-specified-status",
                         ),
@@ -562,6 +565,8 @@ export class InventoriesFootprintComponent implements OnInit, OnDestroy {
                             provider: (item.provider ?? "").toUpperCase(),
                         },
                     ),
+                    sunburstServiceType: "ai",
+                    sunburstProvider: item.provider,
                     status: this.translate.instant(
                         "inventories-footprint.not-specified-status",
                     ),

@@ -48,7 +48,7 @@ public interface AggregationToOutput {
         }
         String numberOfUsers = Objects.toString(physicalEquipment.getNumberOfUsers(), "0.0");
         return Arrays.asList(
-                isDigitalService ? physicalEquipment.getName() : "",
+                isDigitalService ? physicalEquipment.getName() : Objects.toString(physicalEquipment.getModel(), ""),
                 physicalEquipment.getType(),
                 refShortcutBO.criterionMap().get(impact.getCritere()),
                 refShortcutBO.lifecycleStepMap().get(LifecycleStepUtils.get(impact.getEtapeACV())),
