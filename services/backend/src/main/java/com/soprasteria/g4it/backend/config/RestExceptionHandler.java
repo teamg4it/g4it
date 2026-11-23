@@ -118,13 +118,23 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     @ResponseStatus(value = HttpStatus.FORBIDDEN)
     public ResponseEntity<Void> accessDeniedException(final AccessDeniedException ex, WebRequest request) {
         ServletWebRequest req = (ServletWebRequest) request;
+        String userName = sanitizeForLog(SecurityContextHolder.getContext().getAuthentication().getName());
+        String requestUri = sanitizeForLog(req.getRequest().getRequestURI());
         log.error("UserId={} is not allowed to access: {} {} with roles: {}",
-                SecurityContextHolder.getContext().getAuthentication().getName(),
+                userName,
                 req.getHttpMethod().name(),
-                req.getRequest().getRequestURI(),
+                requestUri,
                 SecurityContextHolder.getContext().getAuthentication().getAuthorities()
         );
         return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+    }
+
+    /**
+     * Strip CR/LF/tab characters from a value before it is written to the logs, to prevent
+     * log forging/injection via attacker-controlled request data (e.g. request URI, auth principal name).
+     */
+    private static String sanitizeForLog(final String value) {
+        return value == null ? null : value.replaceAll("[\r\n\t]", "_");
     }
 
     @ExceptionHandler(value = AuthorizationException.class)
