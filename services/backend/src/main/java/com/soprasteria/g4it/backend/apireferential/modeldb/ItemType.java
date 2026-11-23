@@ -8,6 +8,7 @@
 
 package com.soprasteria.g4it.backend.apireferential.modeldb;
 
+import com.soprasteria.g4it.backend.common.utils.Constants;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -108,7 +109,7 @@ public class ItemType implements Serializable {
     }
 
     public static boolean isValidItemCategory(String itemCategory) {
-        return itemCategory != null && !itemCategory.isBlank();
+        return (itemCategory != null && !itemCategory.isBlank() && Constants.ALLOWED_ITEM_CATEGORIES.contains(itemCategory));
     }
 
 }

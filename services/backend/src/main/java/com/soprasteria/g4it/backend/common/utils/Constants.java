@@ -133,4 +133,11 @@ public final class Constants {
         throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
     }
 
+    public static final List<String> ALLOWED_ITEM_CATEGORIES = List.of(
+            "Devices",
+            "External Services",
+            "Infrastructure",
+            "Non_IT"
+    );
+
 }
