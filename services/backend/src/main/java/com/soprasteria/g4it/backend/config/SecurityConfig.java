@@ -53,6 +53,13 @@ public class SecurityConfig {
             "/shared/**"
     };
 
+    /**
+     * Content-Security-Policy applied to every response, restricting content loading to the
+     * application's own origin (Swagger UI assets are served from this origin under
+     * {@code /swagger-ui/**}) and disallowing the app from being embedded in frames.
+     */
+    private static final String CONTENT_SECURITY_POLICY = "default-src 'self'; frame-ancestors 'none'";
+
     @Bean
     UrlBasedCorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
@@ -72,6 +79,7 @@ public class SecurityConfig {
                     .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
                     .csrf(AbstractHttpConfigurer::disable)
                     .cors(Customizer.withDefaults())
+                    .headers(headers -> headers.contentSecurityPolicy(csp -> csp.policyDirectives(CONTENT_SECURITY_POLICY)))
                     .build();
         } else {
             return http
@@ -79,6 +87,7 @@ public class SecurityConfig {
                     .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
                     .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
                     .cors(Customizer.withDefaults())
+                    .headers(headers -> headers.contentSecurityPolicy(csp -> csp.policyDirectives(CONTENT_SECURITY_POLICY)))
                     .build();
         }
 
