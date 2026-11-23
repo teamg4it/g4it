@@ -61,7 +61,7 @@ class WorkspaceReferentialImportServiceTest {
         ItemTypeRest rest = new ItemTypeRest();
         rest.setType("A");
         rest.setCategory("Laptop");
-        rest.setItemCategory("Hardware");
+        rest.setItemCategory("Devices");
         rest.setDefaultLifespan(5.0);
         rest.setIsServer(false);
         rest.setRefDefaultItem("Laptop");
@@ -505,7 +505,7 @@ class WorkspaceReferentialImportServiceTest {
         ItemTypeRest item = new ItemTypeRest();
         item.setType("Laptop");
         item.setCategory("Hardware");
-        item.setItemCategory("Hardware");
+        item.setItemCategory("Devices");
         item.setDefaultLifespan(0.0);
         item.setIsServer(false);
         item.setRefDefaultItem("Laptop");

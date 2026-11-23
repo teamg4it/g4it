@@ -182,12 +182,12 @@ class ReferentialImportServiceTest {
 
     @Test
     void testProcessItemTypeCsv_OrganizationMismatch_ThrowsBadRequest() throws IOException {
-        String csv = "type;item_category\nLaptop;Hardware\n";
+        String csv = "type;item_category\nLaptop;Devices\n";
          when(file.getBytes()).thenReturn(csv.getBytes());
         when(file.getOriginalFilename()).thenReturn("test.csv");
         ItemTypeRest rest = mock(ItemTypeRest.class);
         when(rest.getOrganization()).thenReturn("otherOrg");
-        when(rest.getItemCategory()).thenReturn("Hardware");
+        when(rest.getItemCategory()).thenReturn("Devices");
         when(referentialMapper.csvItemTypeToRest(any())).thenReturn(rest);
         when(validator.validate(any())).thenReturn(Collections.emptySet());
         assertThrows(BadRequestException.class, () ->
@@ -234,13 +234,13 @@ class ReferentialImportServiceTest {
 
     @Test
     void testProcessItemTypeCsv_Valid() throws IOException {
-        String csv = "type;item_category\nLaptop;Hardware\n";
+        String csv = "type;item_category\nLaptop;Devices\n";
          when(file.getBytes()).thenReturn(csv.getBytes());
         when(file.getOriginalFilename()).thenReturn("test.csv");
 
         ItemTypeRest rest = mock(ItemTypeRest.class);
         when(rest.getOrganization()).thenReturn("org");
-        when(rest.getItemCategory()).thenReturn("Hardware");
+        when(rest.getItemCategory()).thenReturn("Devices");
 
         when(referentialMapper.csvItemTypeToRest(any())).thenReturn(rest);
         when(validator.validate(any())).thenReturn(Collections.emptySet());
@@ -316,13 +316,13 @@ class ReferentialImportServiceTest {
     void testParseItemTypeCsv_Valid() throws IOException {
         String csv = """
             type;category;item_category;comment;default_lifespan;is_server;source;ref_default_item;version
-t;c;Hardware;com;1;true;s;ref;1
+t;c;Devices;com;1;true;s;ref;1
 """;
          when(file.getBytes()).thenReturn(csv.getBytes());
         when(file.getOriginalFilename()).thenReturn("test.csv");
 
         ItemTypeRest rest = new ItemTypeRest();
-        rest.setItemCategory("Hardware");
+        rest.setItemCategory("Devices");
 
         when(referentialMapper.csvItemTypeToRest(any())).thenReturn(rest);
         when(validator.validate(any())).thenReturn(Collections.emptySet());
@@ -1023,12 +1023,12 @@ t;c;   ;com;1;true;s;ref;1
 
         String csv = """
             type;item_category
-            Laptop;Hardware
+            Laptop;Devices
             """;
 
         ItemTypeRest itemType = new ItemTypeRest();
         itemType.setOrganization("org");
-        itemType.setItemCategory("Hardware");
+        itemType.setItemCategory("Devices");
 
         when(file.getBytes()).thenReturn(csv.getBytes());
         when(file.getOriginalFilename()).thenReturn("item-type.csv");
@@ -1109,12 +1109,12 @@ t;c;   ;com;1;true;s;ref;1
 
         String csv = """
             type;item_category
-            Laptop;Hardware
+            Laptop;Devices
             """;
 
         ItemTypeRest itemType = new ItemTypeRest();
         itemType.setOrganization("another-org");
-        itemType.setItemCategory("Hardware");
+        itemType.setItemCategory("Devices");
 
         when(file.getBytes()).thenReturn(csv.getBytes());
         when(file.getOriginalFilename()).thenReturn("item-type.csv");
@@ -1685,12 +1685,12 @@ t;c;   ;com;1;true;s;ref;1
 
         String csv = """
             type;category;item_category;comment;default_lifespan;is_server;source;ref_default_item;version
-            Laptop;Device;Hardware;comment;5;false;ADEME;Default;1
+            Laptop;Device;Devices;comment;5;false;ADEME;Default;1
             """;
 
         ItemTypeRest item = new ItemTypeRest();
         item.setOrganization("org");
-        item.setItemCategory("Hardware");
+        item.setItemCategory("Devices");
 
         when(file.getBytes()).thenReturn(csv.getBytes(StandardCharsets.UTF_8));
         when(file.getOriginalFilename()).thenReturn("item-type.csv");
