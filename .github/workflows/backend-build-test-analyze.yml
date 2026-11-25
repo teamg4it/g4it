@@ -1,8 +1,13 @@
+# This file has been created (totally or partially) with the assistance of artificial intelligence tools.
+# All content has been generated under the direct supervision of a named individual,
+# and under the AI.Backbone Orchestrator Compliance framework
+
 name: Backend - Build - Test - Analyze
 on:
   pull_request:
     paths:
       - "services/backend/**"
+      - ".github/workflows/backend-build-test-analyze.yml"
     types: [ opened, synchronize, reopened ]
 
 jobs:
@@ -28,6 +33,66 @@ jobs:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
+      - name: Diagnose public Maven registry responses (temporary)
+        continue-on-error: true
+        timeout-minutes: 3
+        shell: python
+        run: |
+          import re
+          import uuid
+          from urllib.error import HTTPError, URLError
+          from urllib.request import HTTPRedirectHandler, Request, build_opener
+
+          class NoRedirect(HTTPRedirectHandler):
+              def redirect_request(self, req, fp, code, msg, headers, newurl):
+                  return None
+
+          def redact(text):
+              text = re.sub(r"[\x00-\x08\x0b-\x1f\x7f]", "", text)
+              text = re.sub(r"[\w.+-]+@[\w.-]+\.[A-Za-z]{2,}", "[REDACTED:email]", text)
+              text = re.sub(r"\b(?:\d{1,3}\.){3}\d{1,3}\b", "[REDACTED:ipv4]", text)
+              text = re.sub(r"\b(?:[0-9A-Fa-f]{0,4}:){2,}[0-9A-Fa-f:.]*", "[REDACTED:ipv6]", text)
+              return text
+
+          base = "https://gitlab-forge.din.developpement-durable.gouv.fr/api/v4/projects/22954/packages/maven"
+          artifacts = (
+              "org/mte/numecoeval/calculs/2.2.1/calculs-2.2.1.pom",
+              "org/springframework/boot/spring-boot-starter-parent/4.0.7/spring-boot-starter-parent-4.0.7.pom",
+          )
+          opener = build_opener(NoRedirect())
+          marker = uuid.uuid4().hex
+          print(f"::stop-commands::{marker}", flush=True)
+          try:
+              for artifact in artifacts:
+                  for suffix in ("", ".sha1", ".md5"):
+                      print(f"\nGET {artifact}{suffix}", flush=True)
+                      request = Request(
+                          f"{base}/{artifact}{suffix}",
+                          headers={"User-Agent": "Apache-Maven/3.9.9"},
+                      )
+                      try:
+                          try:
+                              response = opener.open(request, timeout=15)
+                          except HTTPError as error:
+                              response = error
+                          with response:
+                              print(f"HTTP {response.status}")
+                              for header in (
+                                  "Date", "Server", "Content-Type", "Content-Length",
+                                  "Retry-After", "X-Request-ID", "X-Gitlab-Meta",
+                              ):
+                                  value = response.headers.get(header)
+                                  if value:
+                                      print(f"{header}: {redact(value)}")
+                              body = response.read(8193)
+                              print("Body (first 8192 bytes; cookies and redirects are not forwarded):")
+                              print(redact(body[:8192].decode("utf-8", errors="replace")))
+                              if len(body) > 8192:
+                                  print("[TRUNCATED]")
+                      except (URLError, TimeoutError, OSError) as error:
+                          print(f"Diagnostic request failed: {redact(str(error))}", flush=True)
+          finally:
+              print(f"::{marker}::", flush=True)
       - name: Build - Test - Analyze
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed to get PR information, if any
