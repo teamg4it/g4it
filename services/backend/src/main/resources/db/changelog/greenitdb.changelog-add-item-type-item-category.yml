@@ -211,7 +211,7 @@ databaseChangeLog:
 
                   ELSE item_category
               END
-              WHERE item_category IS NULL
+              WHERE item_category IS NULL 
 
   - changeSet:
       id: require-item-type-item-category
