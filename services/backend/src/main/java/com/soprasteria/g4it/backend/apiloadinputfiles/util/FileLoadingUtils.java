@@ -154,7 +154,10 @@ public class FileLoadingUtils {
      * @return the original filename
      */
     public String getOriginalFilename(final FileType fileType, final String filename) {
-        String patternString = "^" + fileType.toString() + "_([^_]*)";
+        // Stored filenames are prefixed with the enum's name() (see LoadInputFilesService#newFilenames
+        // and FileToLoad#computeFileType), not fileType.getFileName() which uses a different naming
+        // convention (e.g. AI_SERVICE -> "AIservices"). Use name() to keep the prefixes consistent.
+        String patternString = "^" + Pattern.quote(fileType.name()) + "_(.+)$";
         Pattern pattern = Pattern.compile(patternString, Pattern.CASE_INSENSITIVE);
         Matcher matcher = pattern.matcher(filename);
         if (matcher.find()) {

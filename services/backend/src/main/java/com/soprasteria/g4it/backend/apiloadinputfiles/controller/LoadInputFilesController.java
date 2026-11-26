@@ -44,12 +44,13 @@ public class LoadInputFilesController implements LoadingFilesApiDelegate {
                                                            final List<MultipartFile> physicalEquipments,
                                                            final List<MultipartFile> virtualEquipments,
                                                            final List<MultipartFile> applications,
-                                                           final List<MultipartFile> aiServices
+                                                           final List<MultipartFile> aiServices,
+                                                           final List<MultipartFile> nonItActivities
     ) {
         return ResponseEntity.ok(taskMapper.mapTaskId(
                 loadInputFilesService.loadFiles(
                         organization, workspace, inventoryId,
-                        datacenters, physicalEquipments, virtualEquipments, applications, aiServices
+                        datacenters, physicalEquipments, virtualEquipments, applications, aiServices, nonItActivities
                 )
         ));
     }
