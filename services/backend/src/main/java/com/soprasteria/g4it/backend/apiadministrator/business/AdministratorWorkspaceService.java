@@ -237,6 +237,12 @@ public class AdministratorWorkspaceService {
         List<Role> allRoles = roleService.getAllRoles();
 
         for (UserRoleRest userRoleRest : linkUserRoleRest.getUsers()) {
+            // Prevent escalation: only workspace-scoped roles can be granted through this endpoint.
+            // ROLE_ORGANIZATION_ADMINISTRATOR must never be assignable here.
+            if (userRoleRest.getRoles() != null && !Constants.WORKSPACE_ROLES.containsAll(userRoleRest.getRoles())) {
+                throw new G4itRestException("400", "Only workspace-scoped roles can be assigned.");
+            }
+
             User userEntity = userRepository.findById(userRoleRest.getUserId()).orElseThrow();
 
             Optional<UserWorkspace> userWorkOptional = userWorkspaceRepository.findByWorkspaceIdAndUserId(workspaceId, userRoleRest.getUserId());

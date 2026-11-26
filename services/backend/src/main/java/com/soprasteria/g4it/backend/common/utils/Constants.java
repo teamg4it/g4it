@@ -93,6 +93,15 @@ public final class Constants {
                     Stream.of(ROLE_ORGANIZATION_ADMINISTRATOR, ROLE_WORKSPACE_ADMINISTRATOR),
                     ALL_BASIC_ROLES.stream())
             .toList();
+    /**
+     * Roles that can be assigned to a user at workspace scope.
+     * ROLE_ORGANIZATION_ADMINISTRATOR is intentionally excluded: it must never be
+     * grantable through workspace-level user/role endpoints.
+     */
+    public static final List<String> WORKSPACE_ROLES = Stream.concat(
+                    Stream.of(ROLE_WORKSPACE_ADMINISTRATOR),
+                    ALL_BASIC_ROLES.stream())
+            .toList();
     public static final String DEMO = "DEMO";
     public static final Long INTERNAL_WORKSPACE = 0L;
     public static final String INTERNAL_ORGANIZATION = "--INTERNAL-G4IT--";
