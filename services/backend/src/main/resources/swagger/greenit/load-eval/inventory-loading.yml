@@ -61,6 +61,12 @@ paths:
                   items:
                     type: string
                     format: binary
+                NON_IT_ACTIVITIES:
+                  description: List of file of non-IT activities
+                  type: array
+                  items:
+                    type: string
+                    format: binary
       responses:
         '200':
           description: The task id

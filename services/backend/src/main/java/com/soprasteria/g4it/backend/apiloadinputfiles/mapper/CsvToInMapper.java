@@ -14,6 +14,7 @@ import com.soprasteria.g4it.backend.exception.AsyncTaskException;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InAiServiceRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InApplicationRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InDatacenterRest;
+import com.soprasteria.g4it.backend.server.gen.api.dto.InNonItActivityRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InPhysicalEquipmentRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InVirtualEquipmentRest;
 import org.apache.commons.csv.CSVRecord;
@@ -155,6 +156,29 @@ public interface CsvToInMapper {
                 .outputTokens(outputTokens)
                 .location(read(csvRecord, "location"))
                 .commonFilters(List.of(read(csvRecord, "nomEntite", "")))
+                .source(read(csvRecord, "nomSourceDonnee"))
+                .creationDate(LocalDateTime.now())
+                .lastUpdateDate(LocalDateTime.now())
+                .build();
+    }
+
+    default InNonItActivityRest csvInNonItActivityToRest(CSVRecord csvRecord, final Long inventoryId) {
+        final String quantityValue = read(csvRecord, "quantite");
+        Long quantity = null;
+        if (quantityValue != null) {
+            try {
+                quantity = Long.valueOf(quantityValue.trim());
+            } catch (NumberFormatException e) {
+                throw new AsyncTaskException(ErrorConstants.NON_IT_ACTIVITY_INVALID_QUANTITY);
+            }
+        }
+
+        return InNonItActivityRest.builder()
+                .activityName(read(csvRecord, "nomActivite"))
+                .inventoryId(inventoryId)
+                .reference(read(csvRecord, "refActivite"))
+                .quantity(quantity)
+                .entity(read(csvRecord, "nomEntite"))
                 .source(read(csvRecord, "nomSourceDonnee"))
                 .creationDate(LocalDateTime.now())
                 .lastUpdateDate(LocalDateTime.now())

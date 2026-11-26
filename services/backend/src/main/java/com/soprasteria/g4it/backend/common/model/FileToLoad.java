@@ -43,6 +43,8 @@ public class FileToLoad {
                 fileType = FileType.APPLICATION;
             } else if (filename.startsWith(FileType.AI_SERVICE.toString())) {
                 fileType = FileType.AI_SERVICE;
+            } else if (filename.startsWith(FileType.NON_IT_ACTIVITIES.toString())) {
+                fileType = FileType.NON_IT_ACTIVITIES;
             } else {
                 fileType = FileType.UNKNOWN;
             }
