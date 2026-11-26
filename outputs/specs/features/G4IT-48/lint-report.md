@@ -12,7 +12,7 @@ sensitivity: internal
 context_retrieval: files
 tool_scope: inherit
 validation_status: skipped
-frontend_validation_status: skipped-full-scope-unverified
+frontend_validation_status: passed-full-configured-scope-with-accepted-baseline
 gate_result: not-established
 inputDocuments:
   - .github/skills/lint-analysis/SKILL.md
@@ -71,9 +71,20 @@ changeHistory:
       - 'Determined ordered applicable hooks and documented command, write-scope and input-contract blockers; none explicitly executed'
       - 'Kept the mandatory gate unestablished and archived both earlier assessments without removing their evidence'
       - 'Updated only the resolved lint report; preserved workflow state and all source/configuration'
+  - date: '2026-11-26'
+    description: 'Recorded a separate full configured frontend lint run'
+    changes:
+      - 'Ran npm run lint --prefix services/frontend successfully with the existing baseline'
+      - 'Kept the station gate unestablished; no workflow hooks or state transition were performed'
+  - date: '2026-11-26'
+    description: 'Recorded the subsequent station retry and its incomplete hook evidence'
+    changes:
+      - 'Recorded the reported successful frontend lint retry and the pre-hook invocation with empty content'
+      - 'Kept the blocker gate unestablished pending valid input coverage and post-hooks'
 holisticQualityRating: not-rated
 overallStatus: not-reviewed
 ---
+<!-- AI_DISCLAIMER v1.0 -->
 
 # Lint Analysis Report
 
@@ -83,7 +94,21 @@ overallStatus: not-reviewed
 
 The preceding text is the repository's canonical disclaimer. This execution does not independently attest a named human supervisor.
 
-## Décision actuelle — nouvelle acceptation, 2026-11-26, G4IT-48
+## Relance de la station — 2026-11-26
+
+- **Tool**: ESLint 10.15.0 ; `npm run lint --prefix services/frontend` a été rapporté avec exit **0**, sans diagnostic actif affiché et avec la baseline acceptée. Une exécution complète indépendante est également consignée ci-dessous.
+- **Station**: `running` dans l'état du workflow ; la gate reste **non établie**.
+- **Hooks**: les pré-hooks ont été invoqués lors de la relance et ont retourné un résultat non bloquant, mais sur un contenu vide, non sur l'entrée déclarée `.`. Ce résultat ne démontre pas l'analyse de l'entrée. Les post-hooks de cette relance restent à exécuter.
+- **Blocage**: un runner habilité doit exécuter les hooks avec un contrat d'entrée valide, produire leurs preuves et évaluer la gate sans modifier les sources ni contourner les contrôles obligatoires.
+
+## Vérification frontend indépendante — 2026-11-26
+
+- Commande : `npm run lint --prefix services/frontend`.
+- Résultat : exit **0**, aucune erreur ni avertissement actif affiché. Le script couvre `src/**/*.{ts,html}` avec la baseline existante ; il ne vérifie pas les fichiers JS ou SCSS.
+- Aucune correction de source nécessaire pour les diagnostics actifs. Les diagnostics masqués par la baseline acceptée ne sont pas déclarés corrigés.
+- Cette vérification autonome ne constitue pas une exécution de la station : ses hooks n'ont pas été exécutés et sa gate reste non établie.
+
+## Décision antérieure de la station — nouvelle acceptation, 2026-11-26, G4IT-48
 
 - **Tool**: ESLint **10.15.0**, version vérifiée hors ligne ; contrôle complet non exécuté.
 - **Status**: **skipped** — vérification frontend complète et hooks non réalisables dans le périmètre autorisé ; ce n'est pas un échec source mesuré.
@@ -91,7 +116,7 @@ The preceding text is the repository's canonical disclaimer. This execution does
 - **Contexte nouveau**: message utilisateur horodaté `2026-11-26T14:26:57.756+01:00`, station `quality-validation/lint-analysis`, workflow `feature-implementation`, trace `e6fa33d4-27cf-4d12-84a2-3c70d47d88da`.
 - **Livrable**: `outputs/specs/features/G4IT-48/lint-report.md`. État lu, toujours `running` dans le document de workflow ; aucune transition effectuée.
 
-Cette section est l'évaluation courante. Les deux exécutions précédentes sont conservées ci-dessous comme historique, non comme nouvelles mesures. Les anciennes questions sur l'acceptation de la baseline et du frontend sont désormais résolues par l'utilisateur ; elles ne sont pas réitérées.
+Cette section est l'évaluation antérieure de la station. Les deux exécutions précédentes sont conservées ci-dessous comme historique, non comme nouvelles mesures. Les anciennes questions sur l'acceptation de la baseline et du frontend sont désormais résolues par l'utilisateur ; elles ne sont pas réitérées.
 
 ### Décision nouvelle et portée de la preuve
 
