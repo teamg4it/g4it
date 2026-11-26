@@ -1,3 +1,7 @@
+// This file has been created (totally or partially) with the assistance of artificial intelligence tools.
+// All content has been generated under the direct supervision of a named individual,
+// and under the AI.Backbone Orchestrator Compliance framework
+
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { TranslateModule, TranslateService } from "@ngx-translate/core";
 import { Criterias } from "src/app/core/interfaces/footprint.interface";
@@ -81,10 +85,10 @@ describe("IndicatorSectionComponent", () => {
         ]) {
             it(`renders associated localized labels and rounded values in ${locale}`, () => {
                 const cards = render(locale, 57.4, 28.6);
-                expect(cards.length).toBe(2);
+                expect(cards).toHaveSize(2);
                 cards.forEach((card, index) => {
                     const value = card.querySelector<HTMLElement>(".stat-value")!;
-                    expect(value.getAttribute("role")).toBe("group");
+                    expect(value).toBeInstanceOf(HTMLFieldSetElement);
                     expect(card.querySelector(".label")!.textContent!.trim()).toBe(
                         labels[index],
                     );
