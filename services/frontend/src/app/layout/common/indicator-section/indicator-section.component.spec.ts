@@ -98,11 +98,10 @@ describe("IndicatorSectionComponent", () => {
                     expect(value.getAttribute("aria-label")).toBe(
                         `${labels[index]}: ${["57", "29"][index]} %`,
                     );
-                    expect(value.tabIndex).toBe(0);
-                    value.focus();
-                    expect(document.activeElement).toBe(value);
+                    expect(value.hasAttribute("tabindex")).toBeFalse();
                     const info = card.querySelector<HTMLButtonElement>(".info-button")!;
                     expect(info.type).toBe("button");
+                    expect(info.tabIndex).toBe(0);
                     expect(info.getAttribute("aria-label")).not.toContain(
                         "inventories-footprint.",
                     );

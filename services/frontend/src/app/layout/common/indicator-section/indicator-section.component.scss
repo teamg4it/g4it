@@ -35,8 +35,7 @@
     border-radius: 50%;
 }
 
-.info-button:focus-visible,
-.stat-value:focus-visible {
+.info-button:focus-visible {
     outline: 2px solid var(--light-green-color);
     outline-offset: 2px;
     border-radius: 50%;
