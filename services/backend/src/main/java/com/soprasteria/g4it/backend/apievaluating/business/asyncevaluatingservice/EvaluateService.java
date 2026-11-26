@@ -1,3 +1,7 @@
+// This file has been created (totally or partially) with the assistance of artificial intelligence tools.
+// All content has been generated under the direct supervision of a named individual,
+// and under the AI.Backbone Orchestrator Compliance framework
+
 /*
  * G4IT
  * Copyright 2023 Sopra Steria
@@ -21,11 +25,13 @@ import com.soprasteria.g4it.backend.apiinout.modeldb.InApplication;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InDatacenter;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InPhysicalEquipment;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InVirtualEquipment;
+import com.soprasteria.g4it.backend.apiinout.modeldb.PhysicalEquipmentEvaluationTrace;
 import com.soprasteria.g4it.backend.apiinout.repository.*;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
 import com.soprasteria.g4it.backend.apireferential.business.ReferentialGetService;
 import com.soprasteria.g4it.backend.apireferential.business.ReferentialService;
+import com.soprasteria.g4it.backend.apireferential.business.ItemCategoryResolver;
 import com.soprasteria.g4it.backend.common.filesystem.business.local.CsvFileService;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileType;
 import com.soprasteria.g4it.backend.common.model.Context;
@@ -81,6 +87,8 @@ public class EvaluateService {
     private final AggregationToOutput aggregationToOutput;
     private final ImpactToCsvRecord impactToCsvRecord;
     private final EvaluateNumEcoEvalService evaluateNumEcoEvalService;
+    private final PhysicalEquipmentAllocationService physicalEquipmentAllocationService;
+    private final PhysicalEquipmentEvaluationTraceRepository physicalEquipmentEvaluationTraceRepository;
     private final ReferentialService referentialService;
     private final SaveService saveService;
     private final CsvFileService csvFileService;
@@ -185,6 +193,8 @@ public class EvaluateService {
         TotalsInfo totalsInfo = computeTotals(context);
 
         EvaluationState state = new EvaluationState(aggregationVirtualEquipments, aggregationApplications);
+        ItemCategoryResolver.Lookup categories = context.getInventoryId() == null ? null
+                : physicalEquipmentAllocationService.begin(taskId, organization, context.getWorkspaceId());
 
         try (CSVPrinter csvPhysicalEquipment = csvFileService.getPrinter(totalsInfo.physicalEquipmentIndicator(), exportDirectory);
              CSVPrinter csvVirtualEquipment = csvFileService.getPrinter(totalsInfo.virtualEquipmentIndicator(), exportDirectory);
@@ -219,7 +229,7 @@ public class EvaluateService {
 
             EvaluationRunContext runContext = new EvaluationRunContext(context, taskId, organization, evaluateReportBO,
                     datacenterByNameMap, vmsByPhysical, printers, criteriaSetup, lifecycleSteps, codeToCountryMap,
-                    inventoryName, totalsInfo, countItemImpactWorkspace, processFactor);
+                    inventoryName, totalsInfo, countItemImpactWorkspace, processFactor, categories);
 
             processPhysicalEquipmentPages(runContext, state);
 
@@ -373,8 +383,26 @@ public class EvaluateService {
                     (int) Math.ceil((double) runCtx.totalsInfo().totalPhysicalEquipments() / Constants.BATCH_SIZE));
 
             int physicalSaveCounter = 0;
+            List<PhysicalEquipmentAllocationService.Allocation> allocations = context.getInventoryId() == null
+                    ? List.of()
+                    : physicalEquipments.stream()
+                    .map(equipment -> physicalEquipmentAllocationService.resolve(equipment, runCtx.taskId(),
+                            runCtx.organization(), context.getWorkspaceId(), runCtx.countItemImpactWorkspace(),
+                            runCtx.categories()))
+                    .toList();
+            if (!allocations.isEmpty()) {
+                physicalEquipmentAllocationService.save(allocations);
+            }
+            Map<Long, PhysicalEquipmentEvaluationTrace> traces = allocations.isEmpty() ? Map.of()
+                    : physicalEquipmentEvaluationTraceRepository.findByTaskIdAndSourceEquipmentIdIn(runCtx.taskId(),
+                            physicalEquipments.stream().map(InPhysicalEquipment::getId).toList()).stream()
+                    .collect(Collectors.toMap(PhysicalEquipmentEvaluationTrace::getSourceEquipmentId, Function.identity()));
+            int allocationIndex = 0;
             for (InPhysicalEquipment physicalEquipment : physicalEquipments) {
-                physicalSaveCounter = processOnePhysicalEquipment(runCtx, state, physicalEquipment, physicalSaveCounter);
+                PhysicalEquipmentAllocationService.Allocation allocation = allocations.isEmpty()
+                        ? null : allocations.get(allocationIndex++);
+                physicalSaveCounter = processOnePhysicalEquipment(runCtx, state, physicalEquipment,
+                        physicalSaveCounter, allocation, traces.get(physicalEquipment.getId()));
             }
 
             printers.physicalEquipment().flush();
@@ -387,11 +415,17 @@ public class EvaluateService {
     }
 
     private int processOnePhysicalEquipment(EvaluationRunContext runCtx, EvaluationState state,
-                                             InPhysicalEquipment physicalEquipment, int physicalSaveCounter) throws IOException {
+                                             InPhysicalEquipment physicalEquipment, int physicalSaveCounter,
+                                             PhysicalEquipmentAllocationService.Allocation allocation,
+                                             PhysicalEquipmentEvaluationTrace trace) throws IOException {
         Context context = runCtx.context();
         EvaluateReportBO evaluateReportBO = runCtx.evaluateReportBO();
         CriteriaSetup criteriaSetup = runCtx.criteriaSetup();
         CsvPrinters printers = runCtx.printers();
+
+        if (context.getInventoryId() != null && trace == null) {
+            throw new AsyncTaskException("Missing persisted physical equipment evaluation trace");
+        }
 
         if (state.aggregationPhysicalEquipments.size() > MAXIMUM_MAP_CAPACITY) {
             log.error("Exceeding aggregation size for physical equipments");
@@ -401,10 +435,15 @@ public class EvaluateService {
         DatacenterInfo datacenterInfo = resolveDatacenterInfo(physicalEquipment, runCtx.datacenterByNameMap());
 
         // Call external tools - lib calculs
-        List<ImpactEquipementPhysique> impactEquipementPhysiqueList = evaluateNumEcoEvalService.calculatePhysicalEquipment(
-                physicalEquipment, datacenterInfo.datacenter(),
-                runCtx.organization(), criteriaSetup.activeCriteria(), runCtx.lifecycleSteps(), criteriaSetup.hypothesisRestList(),
-                context.getWorkspaceId(), runCtx.countItemImpactWorkspace());
+        List<ImpactEquipementPhysique> impactEquipementPhysiqueList = allocation == null
+                ? evaluateNumEcoEvalService.calculatePhysicalEquipment(
+                        physicalEquipment, datacenterInfo.datacenter(), runCtx.organization(),
+                        criteriaSetup.activeCriteria(), runCtx.lifecycleSteps(), criteriaSetup.hypothesisRestList(),
+                        context.getWorkspaceId(), runCtx.countItemImpactWorkspace())
+                : evaluateNumEcoEvalService.calculateAllocatedPhysicalEquipment(
+                        physicalEquipment, datacenterInfo.datacenter(), criteriaSetup.activeCriteria(),
+                        runCtx.lifecycleSteps(), criteriaSetup.hypothesisRestList(), context.getWorkspaceId(),
+                        allocation.reference(), allocation.trace().getEffectiveFraction());
 
         boolean hasNonCloudVM = hasNonCloudVirtualMachines(runCtx.vmsByPhysical(), physicalEquipment);
 
@@ -412,7 +451,9 @@ public class EvaluateService {
             printers.inPhysicalEquipment().printRecord(inputToCsvRecord.toCsv(physicalEquipment, datacenterInfo.datacenter()));
         }
 
-        aggregatePhysicalEquipmentImpacts(runCtx, state, physicalEquipment, datacenterInfo.datacenter(), impactEquipementPhysiqueList);
+        aggregatePhysicalEquipmentImpacts(runCtx, state, physicalEquipment, datacenterInfo.datacenter(),
+                impactEquipementPhysiqueList,
+                allocation != null && allocation.trace().getEffectiveFraction() != 1d, trace);
 
         // set progress percentage
         state.processed++;
@@ -468,7 +509,9 @@ public class EvaluateService {
     // Aggregate physical equipment indicators in memory
     private void aggregatePhysicalEquipmentImpacts(EvaluationRunContext runCtx, EvaluationState state,
                                                     InPhysicalEquipment physicalEquipment, InDatacenter datacenter,
-                                                    List<ImpactEquipementPhysique> impactEquipementPhysiqueList) throws IOException {
+                                                    List<ImpactEquipementPhysique> impactEquipementPhysiqueList,
+                                                    boolean electricityAllocationApplied,
+                                                    PhysicalEquipmentEvaluationTrace trace) throws IOException {
         EvaluateReportBO evaluateReportBO = runCtx.evaluateReportBO();
         CriteriaSetup criteriaSetup = runCtx.criteriaSetup();
         CSVPrinter csvPhysicalEquipment = runCtx.printers().physicalEquipment();
@@ -480,6 +523,7 @@ public class EvaluateService {
                     impact.getImpactUnitaire(),
                     sipValue,
                     impact.getDureeDeVie(), null, null, false, impact.getSource()));
+            values.setElectricityAllocationApplied(electricityAllocationApplied);
 
             state.aggregationPhysicalEquipments
                     .computeIfAbsent(aggregationToOutput.keyPhysicalEquipment(physicalEquipment, datacenter, impact,
@@ -488,9 +532,11 @@ public class EvaluateService {
                     .add(values);
 
             if (evaluateReportBO.isExport()) {
-                csvPhysicalEquipment.printRecord(impactToCsvRecord.toCsv(
-                        runCtx.context(), runCtx.taskId(), runCtx.inventoryName(), physicalEquipment, impact, sipValue, evaluateReportBO.isVerbose())
-                );
+                csvPhysicalEquipment.printRecord(trace == null
+                        ? impactToCsvRecord.toCsv(runCtx.context(), runCtx.taskId(), runCtx.inventoryName(),
+                                physicalEquipment, impact, sipValue, evaluateReportBO.isVerbose())
+                        : impactToCsvRecord.toCsv(runCtx.context(), runCtx.taskId(), runCtx.inventoryName(),
+                                physicalEquipment, impact, sipValue, evaluateReportBO.isVerbose(), trace));
             }
 
             evaluateReportBO.setNbPhysicalEquipmentLines(evaluateReportBO.getNbPhysicalEquipmentLines() + 1);
@@ -666,7 +712,8 @@ public class EvaluateService {
                                          CsvPrinters printers, CriteriaSetup criteriaSetup,
                                          List<String> lifecycleSteps, Map<String, String> codeToCountryMap,
                                          String inventoryName, TotalsInfo totalsInfo,
-                                         long countItemImpactWorkspace, double processFactor) {
+                                         long countItemImpactWorkspace, double processFactor,
+                                         ItemCategoryResolver.Lookup categories) {
     }
 
     // Mutable accumulator of aggregation maps and counters shared across the paged processing steps

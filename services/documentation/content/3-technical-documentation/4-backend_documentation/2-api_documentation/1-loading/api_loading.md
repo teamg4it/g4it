@@ -4,6 +4,41 @@ description: "This use case describes how to load files"
 weight: 30
 mermaid: true
 ---
+<!-- AI_DISCLAIMER v1.0 -->
+> This file has been created (totally or partially) with the assistance of artificial intelligence tools.
+> All content has been generated under the direct supervision of a named individual,
+> and under the AI.Backbone Orchestrator Compliance framework
+
+## Physical-equipment usage input contract
+
+CSV `contexteUsage` and `fractionUsage` are optional raw strings, mapped to
+nullable `usageContext` and `usageFraction` properties in the existing
+`InPhysicalEquipmentRest` contract. Existing inventory collection GET/POST
+and item GET/PUT/DELETE operations carry these optional values; there is no
+new endpoint. Existing authorization and comparable-field REST validation
+conventions are unchanged. The Device-specific CSV rules described here are
+not a promise of an additional inventory REST usage validator.
+
+`CsvUtils.parseWithNormalizedHeaders` trims header names consistently at
+mandatory-header checking, metadata parsing and final loading. Non-empty
+trimmed-name collisions fail the header check. Data cells are not globally
+trimmed. The CSV mapper retains usage strings without eager numeric conversion,
+including on exempt non-Device rows.
+
+`PhysicalEquipmentUsageValidator` uses `PhysicalEquipmentReferenceResolver`
+and `ItemCategoryResolver` before applying inventory Device validation.
+Only exact category `DEVICES` accepts exact BYOD/COPE/empty context and a
+number in inclusive [0,1] or empty fraction. Numeric validation uses decimal
+bounds and permits surrounding numeric whitespace; whitespace-only is invalid.
+Non-Devices and digital-service equipment bypass these usage checks without
+losing raw values. Other existing validation still applies.
+
+The checker accumulates both usage errors with other row errors. The loader
+excludes an invalid row from saves **and replacement deletion**. Rejected
+reports preserve the row with its messages and count distinct rows separately
+from messages. The existing 50,000 coherence-message threshold is unchanged.
+See the exact localized-message behavior and eligibility precedence in
+[Load Files]({{% ref "/2-functional-documentation/use_cases/uc_inventory/uc3_load_files.md" %}}).
 
 ## API PATH
 
@@ -87,10 +122,10 @@ Bellow you will find the entities used to load the metadata of the files to load
 
 | Package                                                | Entity                 | table                                                                                                                                    |
 |--------------------------------------------------------|------------------------|------------------------------------------------------------------------------------------------------------------------------------------|
-| com.soprasteria.g4it.backend.apiloadinputfiles.modeldb | CheckApplication       | [check_inv_load_application](../../db_documentation/information_system_and_digital_service_input_data/digital_service_input_data)        |
-| com.soprasteria.g4it.backend.apiloadinputfiles.modeldb | CheckDatacenter        | [check_inv_load_datacenter](../../db_documentation/information_system_and_digital_service_input_data/digital_service_input_data)         |
-| com.soprasteria.g4it.backend.apiloadinputfiles.modeldb | CheckPhysicalEquipment | [check_inv_load_physical_equipment](../../db_documentation/information_system_and_digital_service_input_data/digital_service_input_data) |
-| com.soprasteria.g4it.backend.apiloadinputfiles.modeldb | CheckVirtualEquipment  | [check_inv_load_virtual_equipment](../../db_documentation/information_system_and_digital_service_input_data/digital_service_input_data)  |
+| com.soprasteria.g4it.backend.apiloadinputfiles.modeldb | CheckApplication       | [check_inv_load_application](../../../db_documentation/information_system_and_digital_service_input_data/digital_service_input_data/input/)        |
+| com.soprasteria.g4it.backend.apiloadinputfiles.modeldb | CheckDatacenter        | [check_inv_load_datacenter](../../../db_documentation/information_system_and_digital_service_input_data/digital_service_input_data/input/)         |
+| com.soprasteria.g4it.backend.apiloadinputfiles.modeldb | CheckPhysicalEquipment | [check_inv_load_physical_equipment](../../../db_documentation/information_system_and_digital_service_input_data/digital_service_input_data/input/) |
+| com.soprasteria.g4it.backend.apiloadinputfiles.modeldb | CheckVirtualEquipment  | [check_inv_load_virtual_equipment](../../../db_documentation/information_system_and_digital_service_input_data/digital_service_input_data/input/)  |
 
 AI Services do not use a dedicated metadata/check table. They follow the common loading process and are loaded directly into the `in_aiservices` table during the file processing phase.
 
@@ -120,7 +155,7 @@ See the CheckMetadataInventoryFileService class for an example of the applicatio
 
 ### Managing file processing
 
-After checking for coherency errors and verifying that the error size is less than a threshold (e.g.: 50000 lines), we
+After checking for coherency errors and verifying the existing coherence-message threshold (not a distinct-row count), we
 proceed to load the file.
 
 This is done by the LoadFileService class by parsing the file using the appropriate parser and then inserting the data
@@ -141,11 +176,11 @@ Bellow you will find the entities used to load the metadata of the files to load
 
 | Package                                       | Entity              | table                                                                                                                        |
 |-----------------------------------------------|---------------------|------------------------------------------------------------------------------------------------------------------------------|
-| com.soprasteria.g4it.backend.apiinout.modeldb | InApplication       | [in_application](../../db_documentation/information_system_and_digital_service_input_data/digital_service_input_data)        |
-| com.soprasteria.g4it.backend.apiinout.modeldb | InDatacenter        | [in_datacenter](../../db_documentation/information_system_and_digital_service_input_data/digital_service_input_data)         |
-| com.soprasteria.g4it.backend.apiinout.modeldb | InPhysicalEquipment | [in_physical_equipment](../../db_documentation/information_system_and_digital_service_input_data/digital_service_input_data) |
-| com.soprasteria.g4it.backend.apiinout.modeldb | InVirtualEquipment  | [in_virtual_equipment](../../db_documentation/information_system_and_digital_service_input_data/digital_service_input_data)  |
-| com.soprasteria.g4it.backend.apiinout.modeldb | InAiService         | [in_aiservices](../../db_documentation/information_system_and_digital_service_input_data/digital_service_input_data)          |
+| com.soprasteria.g4it.backend.apiinout.modeldb | InApplication       | [in_application](../../../db_documentation/information_system_and_digital_service_input_data/digital_service_input_data/input/)        |
+| com.soprasteria.g4it.backend.apiinout.modeldb | InDatacenter        | [in_datacenter](../../../db_documentation/information_system_and_digital_service_input_data/digital_service_input_data/input/)         |
+| com.soprasteria.g4it.backend.apiinout.modeldb | InPhysicalEquipment | [in_physical_equipment](../../../db_documentation/information_system_and_digital_service_input_data/digital_service_input_data/input/) |
+| com.soprasteria.g4it.backend.apiinout.modeldb | InVirtualEquipment  | [in_virtual_equipment](../../../db_documentation/information_system_and_digital_service_input_data/digital_service_input_data/input/)  |
+| com.soprasteria.g4it.backend.apiinout.modeldb | InAiService         | [in_aiservices](../../../db_documentation/information_system_and_digital_service_input_data/digital_service_input_data/input/)          |
 
 
 ### Handling rejected files

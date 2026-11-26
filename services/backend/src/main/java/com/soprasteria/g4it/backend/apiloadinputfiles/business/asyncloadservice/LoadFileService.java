@@ -37,7 +37,6 @@ import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -131,13 +130,7 @@ public class LoadFileService {
         List<LineError> readErrors;
 
         try (BufferedReader reader = new BufferedReader(new FileReader(validateConvertedFile(fileToLoad.getConvertedFile(), context)))) {
-            CSVParser records = CSVFormat.RFC4180.builder()
-                    .setHeader()
-                    .setDelimiter(CsvUtils.DELIMITER)
-                    .setAllowMissingColumnNames(true)
-                    .setSkipHeaderRecord(false)
-                    .build()
-                    .parse(reader);
+            CSVParser records = CsvUtils.parseWithNormalizedHeaders(reader);
 
             Set<String> fileHeader = new HashSet<>(records.getHeaderNames());
             fileHeader.remove("");
@@ -167,6 +160,10 @@ public class LoadFileService {
 
         if (!readErrors.isEmpty()) {
             writeRejected(context, readErrors, fileToLoad.getFileType(), fileToLoad.getConvertedFile(), fileToLoad.getOriginalFileName());
+            long rejectedRows = readErrors.stream().map(LineError::line).distinct().count();
+            errors.add(messageSource.getMessage("import.rows.rejected",
+                    new Object[]{fileToLoad.getOriginalFileName(), rejectedRows, readErrors.size()},
+                    context.getLocale()));
         }
 
         return errors;
@@ -430,13 +427,7 @@ public class LoadFileService {
                 if (fileType.equals(fileToLoad.getFileType())) {
 
                     try (BufferedReader reader = new BufferedReader(new FileReader(validateConvertedFile(fileToLoad.getConvertedFile(), context)))) {
-                        CSVParser records = CSVFormat.RFC4180.builder()
-                                .setHeader()
-                                .setDelimiter(CsvUtils.DELIMITER)
-                                .setAllowMissingColumnNames(true)
-                                .setSkipHeaderRecord(false)
-                                .build()
-                                .parse(reader);
+                        CSVParser records = CsvUtils.parseWithNormalizedHeaders(reader);
 
                         Set<String> mandatoryHeaderFields = csvFileMapperInfo.getHeaderFields(fileToLoad.getFileType(), true);
                         records.getHeaderNames().forEach(mandatoryHeaderFields::remove);
@@ -449,6 +440,10 @@ public class LoadFileService {
                             );
                         }
 
+                    } catch (CsvUtils.DuplicateHeaderException e) {
+                        errors.add(messageSource.getMessage("header.duplicate",
+                                new Object[]{fileToLoad.getOriginalFileName(), String.join(", ", e.getHeaders())},
+                                context.getLocale()));
                     } catch (Exception e) {
                         throw new AsyncTaskException(String.format("%s - Error while managing converted file '%s'", context.log(),
                                 fileToLoad.getConvertedFile().getName()), e);

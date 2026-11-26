@@ -8,12 +8,20 @@
 
 package com.soprasteria.g4it.backend.common.utils;
 
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 
+import java.io.IOException;
+import java.io.PushbackReader;
+import java.io.Reader;
+import java.io.StringReader;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 public class CsvUtils {
 
@@ -22,6 +30,63 @@ public class CsvUtils {
     }
 
     public static final String DELIMITER = ";";
+
+    /**
+     * Normalize only header keys, never cell values. Empty trailing columns remain
+     * compatible, but non-empty names that collide after trimming are rejected.
+     */
+    public static CSVParser parseWithNormalizedHeaders(Reader reader) throws IOException {
+        PushbackReader input = new PushbackReader(reader, 1);
+        String header = readHeader(input);
+        List<String> names;
+        try (CSVParser headerParser = CSVFormat.RFC4180.builder()
+                .setDelimiter(DELIMITER).setHeader().setAllowMissingColumnNames(true)
+                .build().parse(new StringReader(header))) {
+            names = headerParser.getHeaderNames().stream().map(String::trim).toList();
+        }
+        Set<String> seen = new LinkedHashSet<>();
+        Set<String> duplicates = new LinkedHashSet<>();
+        for (String name : names) {
+            if (!name.isEmpty() && !seen.add(name)) duplicates.add(name);
+        }
+        if (!duplicates.isEmpty()) throw new DuplicateHeaderException(List.copyOf(duplicates));
+        return CSVFormat.RFC4180.builder()
+                .setDelimiter(DELIMITER).setHeader(names.toArray(String[]::new))
+                .setAllowMissingColumnNames(true).setSkipHeaderRecord(false)
+                .build().parse(input);
+    }
+
+    private static String readHeader(PushbackReader reader) throws IOException {
+        StringBuilder header = new StringBuilder();
+        boolean quoted = false;
+        int character;
+        while ((character = reader.read()) != -1) {
+            header.append((char) character);
+            if (character == '"') quoted = !quoted;
+            if (!quoted && (character == '\n' || character == '\r')) {
+                if (character == '\r') {
+                    int next = reader.read();
+                    if (next == '\n') header.append('\n');
+                    else if (next != -1) reader.unread(next);
+                }
+                break;
+            }
+        }
+        return header.toString();
+    }
+
+    public static final class DuplicateHeaderException extends IllegalArgumentException {
+        private final List<String> headers;
+
+        private DuplicateHeaderException(List<String> headers) {
+            super("Duplicate normalized CSV headers");
+            this.headers = headers;
+        }
+
+        public List<String> getHeaders() {
+            return headers;
+        }
+    }
 
     public static String read(CSVRecord csvRecord, String field) {
         if (!csvRecord.isMapped(field)) return null;

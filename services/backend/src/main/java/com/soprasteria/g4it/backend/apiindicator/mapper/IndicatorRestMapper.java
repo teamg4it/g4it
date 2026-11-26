@@ -11,6 +11,7 @@ import com.soprasteria.g4it.backend.apiindicator.model.*;
 import com.soprasteria.g4it.backend.server.gen.api.dto.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.openapitools.jackson.nullable.JsonNullable;
 
 import java.util.List;
 
@@ -18,6 +19,10 @@ import java.util.List;
 public interface IndicatorRestMapper {
 
     EquipmentIndicatorRest toDto(final EquipmentIndicatorBO source);
+
+    default JsonNullable<Double> toNullablePercentage(Double value) {
+        return JsonNullable.of(value);
+    }
 
     @Mapping(target = "countValue", source = "quantity")
     EquipmentImpactRest toDto(final EquipmentImpactBO source);

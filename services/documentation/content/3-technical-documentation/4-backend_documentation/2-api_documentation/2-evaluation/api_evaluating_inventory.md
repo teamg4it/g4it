@@ -4,6 +4,40 @@ description: "Evaluate information system"
 weight: 45
 mermaid: true
 ---
+<!-- AI_DISCLAIMER v1.0 -->
+> This file has been created (totally or partially) with the assistance of artificial intelligence tools.
+> All content has been generated under the direct supervision of a named individual,
+> and under the AI.Backbone Orchestrator Compliance framework
+
+## Inventory Device allocation and persisted trace
+
+`PhysicalEquipmentReferenceResolver` selects the calculation reference.
+The shared `ItemCategoryResolver` matches that default-item reference before
+equipment type, with workspace records first and current-organization records
+before global records within a lookup. Unmatched types are `INFRASTRUCTURE`.
+Only exact `DEVICES` enables allocation; custom categories are not revalidated
+or renamed.
+
+`PhysicalEquipmentAllocationService` chooses explicit fraction, otherwise
+BYOD 0.57, COPE 0.85, otherwise 1. It saves one
+`PhysicalEquipmentEvaluationTrace` per task/source-equipment pair containing
+source context/fraction, resolved category/reference, original quantity and
+effective fraction. Traces are saved and reloaded before inventory evaluated
+CSV serialization. Missing or mismatched traces fail that serialization,
+rather than falling back to live usage or today's defaults.
+
+Every lifecycle/criterion request uses a defensive calculation input with
+quantity scaled once and electricity retained per unit. Source fields are
+unchanged. Allocation-affected groups use quantity-weighted electricity;
+grouping keys, counts and other aggregates remain unchanged. Unallocated groups
+and digital-service evaluation retain historical electricity behavior.
+
+Trace ownership follows task deletion, not live-source deletion. Re-evaluation
+creates new task snapshots; same-task retry resets that task's traces before
+replacement. Historical tasks are not backfilled. Digital-service evaluation
+does not create these inventory usage traces.
+See [allocation methodology]({{% ref "/2-functional-documentation/global_concepts/environmental_footprint_assessment_methodology/uc1_physical_equipment.md" %}})
+and [export semantics]({{% ref "/2-functional-documentation/use_cases/uc_inventory/uc7_export_files.md" %}}).
 
 ## API PATH
 

@@ -4,6 +4,12 @@ description: "This use case describes how to add Public Cloud - IaaS equipments 
 weight: 40
 mermaid: true
 ---
+<!-- AI_DISCLAIMER v1.0 -->
+> This file has been created (totally or partially) with the assistance of artificial intelligence tools.
+> All content has been generated under the direct supervision of a named individual,
+> and under the AI.Backbone Orchestrator Compliance framework
+
+## Table of contents
 
 -   [Table of contents](#table-of-contents)
 -   [Description](#description)

@@ -4,6 +4,11 @@ description: "This guide explains how to create, edit, or delete a workspace in 
 weight: 20
 ---
 
+<!-- AI_DISCLAIMER v1.0 -->
+> This file has been created (totally or partially) with the assistance of artificial intelligence tools.
+> All content has been generated under the direct supervision of a named individual,
+> and under the AI.Backbone Orchestrator Compliance framework
+
 This guide explains how to create, edit, or delete a workspace (also referred to as an workspace) in G4IT.
 
 <!-- TOC -->
@@ -23,7 +28,7 @@ To manage data separation:
 - Each license corresponds to an **organization**, managed by its own administrators.
 - Within an organization, administrators can create and manage **workspaces**, which will soon be referred to as **workspaces** to improve clarity.
 
-For more details on the difference between an **organization** and a **workspace**, refer to the [Glossary](../../../../4-help/glossary).
+For more details on the difference between an **organization** and a **workspace**, refer to the [Glossary]({{% ref "/4-help/1-glossary.md" %}}).
 
 ---
 

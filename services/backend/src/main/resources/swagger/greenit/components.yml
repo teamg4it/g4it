@@ -473,6 +473,16 @@ components:
           type: string
         unit:
           type: string
+        byodDevicesPercentage:
+          type: number
+          format: double
+          nullable: true
+          description: Unrounded BYOD share of original evaluated Device quantity. Null when no Device quantity or no evaluation trace is available. Uses existing integer percentage display formatting.
+        copeDevicesPercentage:
+          type: number
+          format: double
+          nullable: true
+          description: Unrounded COPE share of original evaluated Device quantity. Null when no Device quantity or no evaluation trace is available. Uses existing integer percentage display formatting.
         impacts:
           type: array
           items:

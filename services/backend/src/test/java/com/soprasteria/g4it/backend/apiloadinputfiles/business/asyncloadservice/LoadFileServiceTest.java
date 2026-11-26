@@ -109,6 +109,49 @@ class LoadFileServiceTest {
     private static final LocalDateTime referenceTime =
             LocalDateTime.of(2025, Month.JANUARY, 1, 12, 0);
 
+    @Test
+    void mandatoryHeadersTrimWhitespaceAndReportNormalizedCollisions() throws Exception {
+        when(fileToLoad.getConvertedFile()).thenReturn(tempCsv.toFile());
+        when(csvFileMapperInfo.getHeaderFields(FileType.DATACENTER, true))
+                .thenAnswer(call -> new HashSet<>(List.of("nomCourtDatacenter")));
+        Files.writeString(tempCsv, " nomCourtDatacenter ; contexteUsage \nsynthetic;BYOD\n");
+        assertTrue(loadFileService.mandatoryHeadersCheck(context).isEmpty());
+        Files.writeString(tempCsv, "nomCourtDatacenter; contexteUsage ;contexteUsage\nsynthetic;BYOD;COPE\n");
+        when(messageSource.getMessage(eq("header.duplicate"), any(Object[].class), eq(Locale.ENGLISH)))
+                .thenReturn("Duplicate normalized header");
+        assertEquals(List.of("Duplicate normalized header"), loadFileService.mandatoryHeadersCheck(context));
+        verifyNoInteractions(loadDatacenterService);
+    }
+
+    @Test
+    void reportsOneRejectedRowForTwoMessagesAndPreservesTheCompleteRejectedLine() throws Exception {
+        Files.writeString(tempCsv, " nomCourtDatacenter \nsynthetic\n");
+        when(fileToLoad.getConvertedFile()).thenReturn(tempCsv.toFile());
+        when(csvFileMapperInfo.getHeaderFields(FileType.DATACENTER, false))
+                .thenReturn(new HashSet<>(List.of("nomCourtDatacenter")));
+        var object = new InDatacenterRest();
+        when(csvToInMapper.csvInDatacenterToRest(any(), eq(123L), isNull())).thenAnswer(call -> {
+            CSVRecord record = call.getArgument(0);
+            assertEquals("synthetic", record.get("nomCourtDatacenter"));
+            return object;
+        });
+        when(loadDatacenterService.execute(eq(context), eq(fileToLoad), eq(0), anyList()))
+                .thenReturn(List.of(new LineError("original.csv", 2, "context error"),
+                        new LineError("original.csv", 2, "fraction error")));
+        when(messageSource.getMessage(eq("import.rows.rejected"), any(Object[].class), eq(Locale.ENGLISH)))
+                .thenAnswer(call -> {
+                    Object[] values = call.getArgument(1);
+                    assertArrayEquals(new Object[]{"original.csv", 1L, 2}, values);
+                    return "1 rejected row, 2 messages";
+                });
+        assertEquals(List.of("1 rejected row, 2 messages"), loadFileService.manageFile(context, fileToLoad));
+        try (var files = Files.list(tempDir.resolve("rejected/123"))) {
+            var rejected = Files.readAllLines(files.findFirst().orElseThrow());
+            assertEquals(2, rejected.size());
+            assertTrue(rejected.get(1).contains("synthetic;original.csv;2;context error, fraction error"));
+        }
+    }
+
     @BeforeEach
     void setUp() throws Exception {
         tempCsv = Files.createTempFile(tempDir, "converted-", ".csv");

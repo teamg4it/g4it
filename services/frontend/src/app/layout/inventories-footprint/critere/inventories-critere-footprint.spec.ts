@@ -370,6 +370,75 @@ describe("InventoriesCritereFootprintComponent", () => {
         ).toContain("{grey|");
     });
 
+    function equipmentTree(impacts: any[], unit = Constants.PEOPLEEQ) {
+        component.criteriaFootprint = { impacts } as any;
+        const chart: any = component.renderChart(
+            { footprints: [{} as any], hasError: false, total: { impact: 1, sip: 1 } },
+            "equipment",
+            unit,
+            {} as any,
+        );
+        return chart.series[0].data;
+    }
+
+    it("groups mixed models under their type and retains blank/missing models as unclassified", () => {
+        const data = equipmentTree([
+            { itemCategory: "INFRASTRUCTURE", itemType: "Server", itemModel: " Model A ", sip: 2, impact: 20 },
+            { itemCategory: "INFRASTRUCTURE", itemType: "Server", itemModel: "", sip: 3, impact: 30 },
+            { itemCategory: "INFRASTRUCTURE", itemType: "Server", sip: 4, impact: 40 },
+        ]);
+
+        expect(data).toEqual([jasmine.objectContaining({
+            name: "inventories-footprint.sunburst-category.infrastructure",
+            children: [jasmine.objectContaining({
+                name: "Server",
+                children: [
+                    jasmine.objectContaining({ name: "Model A", value: 2 }),
+                    jasmine.objectContaining({ name: "inventories-footprint.sunburst-category.unclassified", value: 7 }),
+                ],
+            })],
+        })]);
+    });
+
+    it("uses service categories ahead of item category and groups absent providers without losing totals", () => {
+        const impacts = [
+            { itemCategory: "DEVICES", sunburstServiceType: "ai", equipment: "AI fallback", sip: 2, impact: 20 },
+            { itemCategory: "CUSTOM", sunburstServiceType: "ai", sunburstProvider: "", equipment: "AI fallback", sip: 3, impact: 30 },
+            { sunburstServiceType: "ai", sunburstProvider: " Azure ", sip: 4, impact: 40 },
+            { sunburstServiceType: "ai", sunburstProvider: "azure", sip: 5, impact: 50 },
+        ];
+        for (const [unit, multiplier] of [[Constants.PEOPLEEQ, 1], ["kg", 10]] as const) {
+            expect(equipmentTree(impacts, unit)).toEqual([jasmine.objectContaining({
+                name: "inventories-footprint.sunburst-category.externalServices",
+                children: [jasmine.objectContaining({
+                    name: "inventories-footprint.sunburst-category.ai",
+                    children: [
+                        jasmine.objectContaining({ name: "AI fallback", value: 5 * multiplier }),
+                        jasmine.objectContaining({ name: "Azure", value: 9 * multiplier }),
+                    ],
+                })],
+            })]);
+        }
+    });
+
+    it("matches empty values explicitly and excludes missing filter selections", () => {
+        component.filterFields = ["country"];
+        footprintStore.filters = () => ({ country: [Constants.EMPTY] });
+        const impacts = [
+            { itemCategory: "CUSTOM", equipment: "Unnamed type", country: "", sip: 2, impact: 20 },
+            { itemCategory: "CUSTOM", equipment: "Unnamed type", sip: 3, impact: 30 },
+            { itemCategory: "DEVICES", equipment: "Excluded", country: "France", sip: 100, impact: 100 },
+        ];
+        expect(equipmentTree(impacts)[0].children).toEqual([
+            jasmine.objectContaining({ name: "Unnamed type", value: 5 }),
+        ]);
+        expect(equipmentTree(impacts, "kg")[0].children).toEqual([
+            jasmine.objectContaining({ name: "Unnamed type", value: 50 }),
+        ]);
+        footprintStore.filters = () => ({});
+        expect(equipmentTree(impacts)).toEqual([]);
+    });
+
     it("builds text and graph descriptions for lifecycle and top-three impacts", () => {
         component.criteriaFootprint = { unit: "kg" } as any;
         const calculated = {

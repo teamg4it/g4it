@@ -1,3 +1,7 @@
+// This file has been created (totally or partially) with the assistance of artificial intelligence tools.
+// All content has been generated under the direct supervision of a named individual,
+// and under the AI.Backbone Orchestrator Compliance framework
+
 /*
  * G4IT
  * Copyright 2023 Sopra Steria
@@ -93,7 +97,7 @@ public class ReferentialService {
 
     /**
      * @param organization (mapped to subscriber column in table)
-     * @return ItemTypeRest
+     * @return the matching type, or null when absent from organization and global referentials
      */
     public ItemTypeRest getItemType(String type, String organization) {
         List<ItemTypeRest> itemTypeRestList = referentialGetService.getItemTypes(type, organization,null);
@@ -101,7 +105,7 @@ public class ReferentialService {
             itemTypeRestList = referentialGetService.getItemTypes(type, null,null);
         }
 
-        return itemTypeRestList.getFirst();
+        return itemTypeRestList.isEmpty() ? null : itemTypeRestList.getFirst();
     }
 
     /**

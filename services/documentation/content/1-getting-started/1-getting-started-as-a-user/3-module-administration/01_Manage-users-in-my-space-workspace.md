@@ -3,6 +3,11 @@ title: "How to Manage users in my workspace"
 description: "This procedure explains how to an administrator how to configure users within their workspace."
 weight: 10
 ---
+<!-- AI_DISCLAIMER v1.0 -->
+> This file has been created (totally or partially) with the assistance of artificial intelligence tools.
+> All content has been generated under the direct supervision of a named individual,
+> and under the AI.Backbone Orchestrator Compliance framework
+
 <!-- TOC -->
   * [Prerequisites](#prerequisites)
   * [Step 1: Access the Administration Area](#step-1-access-the-administration-area)
@@ -19,7 +24,7 @@ rights.
 Before you begin:
 
 - The user you want to add must have logged in to G4IT at least once.  
-  Refer to the [First Login Guide](../../01_First-Login) for details.
+  Refer to the [First Login Guide]({{% ref "/1-getting-started/1-getting-started-as-a-user/01_First-Login.md" %}}) for details.
 - You must have administrator rights within your workspace.
 
 ---

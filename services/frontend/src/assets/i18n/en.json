@@ -872,6 +872,8 @@
             "kwh": "kWh",
             "ave-age": "Avg. lifespan",
             "low-impact": "low impact",
+            "byod-devices": "BYOD Devices (%)",
+            "cope-devices": "COPE Devices (%)",
             "elec-consumption": "Total power consumption",
             "equipment": "EQUIPMENT",
             "equipments": "Equipments",
@@ -881,6 +883,8 @@
             "multi-criteria-view": "Multi-criteria view",
             "tooltip": {
                 "nb-cloud": "Number of cloud instances",
+                "byod-devices": "BYOD share of the original Device quantity in the evaluated inventory, before view filters",
+                "cope-devices": "COPE share of the original Device quantity in the evaluated inventory, before view filters",
                 "nb-dc": "Number of datacenters",
                 "ave-pue": "Average PUE weighted by the number of physical equipments hosted in the datacenters (Cloud excluded)",
                 "nb-eq": "Number of equipments (Cloud instances excluded)",

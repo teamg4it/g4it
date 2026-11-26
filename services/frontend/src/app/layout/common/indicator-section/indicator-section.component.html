@@ -16,11 +16,13 @@
                                 class="stat-card bg-white text-center p-3 border-round-lg"
                             >
                                 <div
-                                    class="mb-1 font-semibold text-xl"
+                                    class="stat-value mb-1 font-semibold text-xl"
+                                    role="group"
                                     [attr.aria-label]="
-                                        item?.value || item?.value === 0
-                                            ? item?.label + ' ' + item?.unit
-                                            : '--'
+                                        item?.title + ': ' +
+                                        (item?.value || item?.value === 0
+                                            ? item?.label + ' ' + (item?.unit ?? '')
+                                            : '--')
                                     "
                                     tabIndex="0"
                                 >

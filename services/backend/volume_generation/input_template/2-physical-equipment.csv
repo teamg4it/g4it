@@ -1,2 +1,2 @@
-nomEquipementPhysique;modele;quantite;nomCourtDatacenter;dateAchat;dateRetrait;type;statut;paysDUtilisation;consoElecAnnuelle;utilisateur;nomSourceDonnee;nomEntite;nbCoeur
-physical-eq-srv-;Modele unknown;1;;2020-07-08;;Server;In use;France;;;;entity-;
+nomEquipementPhysique;modele;quantite;nomCourtDatacenter;dateAchat;dateRetrait;type;statut;paysDUtilisation;consoElecAnnuelle;utilisateur;nomSourceDonnee;nomEntite;nbCoeur;contexteUsage;fractionUsage
+physical-eq-srv-;Modele unknown;1;;2020-07-08;;Server;In use;France;;;;entity-;;;

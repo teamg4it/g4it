@@ -49,6 +49,31 @@ class LoadPhysicalEquipmentServiceTest {
     ReferentialGetService referentialGetService;
 
     @Test
+    void rejectsWholeRowWithTwoErrorsWithoutReplacingItsExistingSource() {
+        Context context = Context.builder().organization("org").workspaceId(2L).inventoryId(1L).build();
+        FileToLoad file = mock(FileToLoad.class);
+        when(file.getFilename()).thenReturn("input.csv");
+        when(file.getCoherenceErrorByLineNumer()).thenReturn(Map.of());
+        var invalid = InPhysicalEquipmentRest.builder().name("invalid").quantity(100d).build();
+        var valid = InPhysicalEquipmentRest.builder().name("valid").quantity(3d).build();
+        var entity = InPhysicalEquipment.builder().name("valid").quantity(3d).build();
+        var errors = List.of(new LineError("input.csv", 2, "context"), new LineError("input.csv", 2, "fraction"));
+        List<InPhysicalEquipment> saved = new java.util.ArrayList<>();
+        doAnswer(call -> {
+            Iterable<InPhysicalEquipment> rows = call.getArgument(0);
+            rows.forEach(saved::add);
+            return saved;
+        }).when(inPhysicalEquipmentRepository).saveAll(any());
+        when(checkPhysicalEquipmentService.checkRules(context, invalid, "input.csv", 2)).thenReturn(errors);
+        when(checkPhysicalEquipmentService.checkRules(context, valid, "input.csv", 3)).thenReturn(List.of());
+        when(inPhysicalEquipmentMapper.toEntity(valid)).thenReturn(entity);
+        assertEquals(errors, service.execute(context, file, 0, List.of(invalid, valid)));
+        verify(inPhysicalEquipmentMapper, never()).toEntity(invalid);
+        verify(inPhysicalEquipmentRepository).deleteByInventoryIdAndNameIn(1L, java.util.Set.of("valid"));
+        assertEquals(List.of(entity), saved);
+    }
+
+    @Test
     void testExecuteEmptyPhysicalEquipments() {
         Context context = mock(Context.class);
         FileToLoad fileToLoad = mock(FileToLoad.class);
@@ -65,7 +90,6 @@ class LoadPhysicalEquipmentServiceTest {
         FileToLoad fileToLoad = mock(FileToLoad.class);
         when(fileToLoad.getCoherenceErrorByLineNumer()).thenReturn(Collections.emptyMap());
         InPhysicalEquipmentRest peRest = mock(InPhysicalEquipmentRest.class);
-        when(peRest.getName()).thenReturn("pe1");
         List<InPhysicalEquipmentRest> physicalEquipments = List.of(peRest);
         when(checkPhysicalEquipmentService.checkRules(any(), any(), any(), anyInt())).thenReturn(Collections.emptyList());
         InPhysicalEquipment peEntity = mock(InPhysicalEquipment.class);
@@ -90,7 +114,6 @@ class LoadPhysicalEquipmentServiceTest {
         coherenceErrors.put(2, List.of(mock(LineError.class)));
         when(fileToLoad.getCoherenceErrorByLineNumer()).thenReturn(coherenceErrors);
         InPhysicalEquipmentRest peRest = mock(InPhysicalEquipmentRest.class);
-        when(peRest.getName()).thenReturn("pe1");
         List<InPhysicalEquipmentRest> physicalEquipments = List.of(peRest);
         List<LineError> checkErrors = List.of(mock(LineError.class));
         when(checkPhysicalEquipmentService.checkRules(any(), any(), any(), anyInt())).thenReturn(checkErrors);
@@ -106,7 +129,6 @@ class LoadPhysicalEquipmentServiceTest {
         FileToLoad fileToLoad = mock(FileToLoad.class);
         when(fileToLoad.getCoherenceErrorByLineNumer()).thenReturn(Collections.emptyMap());
         InPhysicalEquipmentRest peRest = mock(InPhysicalEquipmentRest.class);
-        when(peRest.getName()).thenReturn("pe1");
         List<InPhysicalEquipmentRest> physicalEquipments = List.of(peRest);
         when(checkPhysicalEquipmentService.checkRules(any(), any(), any(), anyInt())).thenReturn(Collections.emptyList());
         InPhysicalEquipment peEntity = mock(InPhysicalEquipment.class);

@@ -21,7 +21,7 @@ Maven or Node.js installation or separate compilation is required.
 ```bash
 (
     . ./workspace/docker/.env &&
-    podman build --format docker -f services/backend/Dockerfile -t "g4it-backend:${G4IT_TAG:?G4IT_TAG must be set in workspace/docker/.env}" services/backend
+    podman build --network=host --format docker -f services/backend/Dockerfile -t "g4it-backend:${G4IT_TAG:?G4IT_TAG must be set in workspace/docker/.env}" services/backend
 )
 ```
 
@@ -32,7 +32,7 @@ It should build a docker image locally named `localhost/g4it-backend:<G4IT_TAG>`
 ```bash
 (
     . ./workspace/docker/.env &&
-    podman build --format docker -f services/frontend/Dockerfile -t "g4it-frontend:${G4IT_TAG:?G4IT_TAG must be set in workspace/docker/.env}" services/frontend
+    podman build --network=host --format docker -f services/frontend/Dockerfile -t "g4it-frontend:${G4IT_TAG:?G4IT_TAG must be set in workspace/docker/.env}" services/frontend
 )
 ```
 

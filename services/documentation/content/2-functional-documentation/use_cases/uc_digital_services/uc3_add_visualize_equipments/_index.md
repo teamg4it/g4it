@@ -4,6 +4,11 @@ description: "This use case describes how to add equipments to a digital service
 weight: 30
 mermaid: true
 ---
+<!-- AI_DISCLAIMER v1.0 -->
+> This file has been created (totally or partially) with the assistance of artificial intelligence tools.
+> All content has been generated under the direct supervision of a named individual,
+> and under the AI.Backbone Orchestrator Compliance framework
+
 ## Table of contents
 - [Table of contents](#table-of-contents)
 - [Description](#description)
@@ -47,7 +52,7 @@ Decision2 -->|Shared|Step9[Add server shared specific view] -->|Fill the informa
 
 [2.3.2 Add or Visualize Network](uc3_add_visualize_network)
 
-[2.3.3 Add or Visualize Private Infrastructures](uc3_add_visualize_noncloud_servers.md)
+[2.3.3 Add or Visualize Private Infrastructures]({{% ref "/2-functional-documentation/use_cases/uc_digital_services/uc3_add_visualize_equipments/uc3_add_visualize_noncloud-servers/_index.md" %}})
 
 [2.3.4 Add or Visualize Public Clouds - IaaS](uc3_add_visualize_cloud_services.md)
 

@@ -1,0 +1,7 @@
+nomEquipementPhysique;modele;quantite;nomCourtDatacenter;dateAchat;dateRetrait;type;statut;paysDUtilisation;consoElecAnnuelle;utilisateur;nomSourceDonnee;nomEntite;contexteUsage;fractionUsage
+g48-phone-byod;;2;;2022-01-01;;Smartphone;In use;France;;;;;BYOD;
+g48-phone-cope;;3;;2022-01-01;;Smartphone;In use;France;;;;;COPE;
+g48-phone-frac;;1;;2022-01-01;;Smartphone;In use;France;;;;;BYOD;0.5
+g48-phone-none;;4;;2022-01-01;;Smartphone;In use;France;;;;;;
+g48-server-ctx;;1;;2022-01-01;;Server;In use;France;;;;;COPE;
+g48-phone-bad;;1;;2022-01-01;;Smartphone;In use;France;;;;;XYZ;1.5

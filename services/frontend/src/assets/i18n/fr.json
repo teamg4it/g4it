@@ -869,6 +869,8 @@
             "kwh": "kWh",
             "ave-age": "Durée de vie moy.",
             "low-impact": "Faible Impact",
+            "byod-devices": "Appareils BYOD (%)",
+            "cope-devices": "Appareils COPE (%)",
             "elec-consumption": "Consommation électrique totale",
             "equipment": "ÉQUIPEMENT",
             "equipments": "Équipements",
@@ -878,6 +880,8 @@
             "multi-criteria-view": "Vue multicritères",
             "tooltip": {
                 "nb-cloud": "Nombre d'instances Cloud",
+                "byod-devices": "Part BYOD de la quantité initiale d'appareils dans l'inventaire évalué, avant les filtres de la vue",
+                "cope-devices": "Part COPE de la quantité initiale d'appareils dans l'inventaire évalué, avant les filtres de la vue",
                 "nb-dc": "Nombre de centre de données",
                 "ave-pue": "PUE moyen pondéré par le nombre d'équipements physiques hébergés dans les centres de données (hors Cloud)",
                 "nb-eq": "Nombre d'équipements physiques (hors instances Cloud)",

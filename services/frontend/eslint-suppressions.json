@@ -1,0 +1,1531 @@
+{
+  "src/app/app.component.spec.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 9
+    }
+  },
+  "src/app/app.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 7
+    }
+  },
+  "src/app/core/directives/auto-focus.directive.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    }
+  },
+  "src/app/core/interceptors/api-request.interceptor.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    }
+  },
+  "src/app/core/interceptors/http-error.interceptor.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 4
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 3
+    },
+    "prefer-const": {
+      "count": 5
+    }
+  },
+  "src/app/core/interfaces/digital-service.interfaces.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 4
+    }
+  },
+  "src/app/core/interfaces/roles.interfaces.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    }
+  },
+  "src/app/core/pipes/business-hours-renderer.pipe.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    },
+    "prefer-const": {
+      "count": 3
+    }
+  },
+  "src/app/core/pipes/monthyear.pipe.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    }
+  },
+  "src/app/core/service/business/administration.service.spec.ts": {
+    "prefer-const": {
+      "count": 3
+    }
+  },
+  "src/app/core/service/business/administration.service.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 10
+    }
+  },
+  "src/app/core/service/business/custom-auth.service.spec.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 4
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    }
+  },
+  "src/app/core/service/business/custom-auth.service.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 2
+    }
+  },
+  "src/app/core/service/business/digital-services.service.spec.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 3
+    },
+    "no-var": {
+      "count": 1
+    }
+  },
+  "src/app/core/service/business/digital-services.service.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 2
+    }
+  },
+  "src/app/core/service/business/file-system.service.spec.ts": {
+    "@typescript-eslint/no-unused-vars": {
+      "count": 4
+    }
+  },
+  "src/app/core/service/business/file-system.service.ts": {
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    }
+  },
+  "src/app/core/service/business/filter.service.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 6
+    },
+    "prefer-const": {
+      "count": 1
+    }
+  },
+  "src/app/core/service/business/footprint.service.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 2
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 21
+    },
+    "prefer-const": {
+      "count": 9
+    }
+  },
+  "src/app/core/service/business/inventory-util.service.spec.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 4
+    }
+  },
+  "src/app/core/service/business/inventory-util.service.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 2
+    },
+    "@typescript-eslint/no-non-null-asserted-optional-chain": {
+      "count": 1
+    },
+    "no-prototype-builtins": {
+      "count": 1
+    },
+    "prefer-const": {
+      "count": 1
+    }
+  },
+  "src/app/core/service/business/inventory.service.spec.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 2
+    },
+    "prefer-const": {
+      "count": 2
+    }
+  },
+  "src/app/core/service/business/inventory.service.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 2
+    },
+    "no-useless-assignment": {
+      "count": 1
+    }
+  },
+  "src/app/core/service/business/matomo-script.service.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 2
+    }
+  },
+  "src/app/core/service/business/parameter.service.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    }
+  },
+  "src/app/core/service/business/release-notes.service.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    }
+  },
+  "src/app/core/service/business/user.service.spec.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 4
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    },
+    "no-var": {
+      "count": 4
+    },
+    "prefer-const": {
+      "count": 1
+    }
+  },
+  "src/app/core/service/business/user.service.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 4
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 6
+    },
+    "prefer-const": {
+      "count": 9
+    }
+  },
+  "src/app/core/service/data/administration-data-service.spec.ts": {
+    "prefer-const": {
+      "count": 3
+    }
+  },
+  "src/app/core/service/data/administration-data-service.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 10
+    }
+  },
+  "src/app/core/service/data/api-route-referential.service.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    }
+  },
+  "src/app/core/service/data/business-hours.service.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    }
+  },
+  "src/app/core/service/data/digital-service-version-data-service.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    }
+  },
+  "src/app/core/service/data/digital-services-ai-data.service.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 8
+    }
+  },
+  "src/app/core/service/data/digital-services-data.service.spec.ts": {
+    "@typescript-eslint/no-unused-vars": {
+      "count": 3
+    }
+  },
+  "src/app/core/service/data/digital-services-data.service.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    }
+  },
+  "src/app/core/service/data/evaluation-data.service.spec.ts": {
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    }
+  },
+  "src/app/core/service/data/evaluation-data.service.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    }
+  },
+  "src/app/core/service/data/file-system-data.service.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    }
+  },
+  "src/app/core/service/data/footprint-data.service.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 2
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    }
+  },
+  "src/app/core/service/data/in-out/in-datacenters.service.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    }
+  },
+  "src/app/core/service/data/in-out/in-physical-equipments.service.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    }
+  },
+  "src/app/core/service/data/in-out/in-virtual-equipments.service.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    }
+  },
+  "src/app/core/service/data/in-out/out-ai-services.service.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    }
+  },
+  "src/app/core/service/data/in-out/out-applications.service.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    }
+  },
+  "src/app/core/service/data/in-out/out-physical-equipments.service.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    }
+  },
+  "src/app/core/service/data/in-out/out-virtual-equipments.service.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    }
+  },
+  "src/app/core/service/data/inventory-data.service.spec.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 2
+    },
+    "prefer-const": {
+      "count": 2
+    }
+  },
+  "src/app/core/service/data/inventory-data.service.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    },
+    "prefer-const": {
+      "count": 1
+    }
+  },
+  "src/app/core/service/data/is-workspace-sepecific.service.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    }
+  },
+  "src/app/core/service/data/loading-data.service.spec.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    },
+    "prefer-const": {
+      "count": 1
+    }
+  },
+  "src/app/core/service/data/loading-data.service.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 2
+    }
+  },
+  "src/app/core/service/data/release-notes-data.service.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    }
+  },
+  "src/app/core/service/data/share-digital-service-data.service.spec.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 5
+    }
+  },
+  "src/app/core/service/data/share-digital-service-data.service.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    }
+  },
+  "src/app/core/service/data/share-useful-information-service.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    }
+  },
+  "src/app/core/service/data/super-admin-data.service.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    }
+  },
+  "src/app/core/service/data/task-data.service.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    }
+  },
+  "src/app/core/service/data/template-file.service.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    },
+    "prefer-const": {
+      "count": 1
+    }
+  },
+  "src/app/core/service/data/user-data.service.spec.ts": {
+    "prefer-const": {
+      "count": 2
+    }
+  },
+  "src/app/core/service/data/user-data.service.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    }
+  },
+  "src/app/core/service/data/version-data.service.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    }
+  },
+  "src/app/core/service/data/workspace-reference-data.service.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    }
+  },
+  "src/app/core/service/mapper/array.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 8
+    }
+  },
+  "src/app/core/service/mapper/digital-service.spec.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    }
+  },
+  "src/app/core/service/mapper/digital-service.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 12
+    },
+    "@typescript-eslint/no-extra-non-null-assertion": {
+      "count": 1
+    },
+    "@typescript-eslint/no-non-null-asserted-optional-chain": {
+      "count": 5
+    },
+    "no-useless-assignment": {
+      "count": 1
+    }
+  },
+  "src/app/core/service/mapper/inventory-multicriteria-graph-mapper.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 7
+    },
+    "prefer-const": {
+      "count": 1
+    }
+  },
+  "src/app/core/service/mapper/multicriteria-stack-bar-chart.mapper.spec.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 46
+    }
+  },
+  "src/app/core/service/mapper/multicriteria-stack-bar-chart.mapper.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 6
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    }
+  },
+  "src/app/core/service/mapper/renew-time.spec.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 3
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    }
+  },
+  "src/app/core/service/mapper/sunburst-chart.mapper.spec.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 5
+    }
+  },
+  "src/app/core/service/mapper/sunburst-chart.mapper.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    }
+  },
+  "src/app/core/shared/echarts.module.spec.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 2
+    }
+  },
+  "src/app/core/store/footprint.store.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    }
+  },
+  "src/app/core/store/inventory.repository.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    }
+  },
+  "src/app/guard/auth.gard.spec.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 10
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    }
+  },
+  "src/app/guard/footprint-redirect.guard.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 2
+    }
+  },
+  "src/app/guard/shared-ds.guard.spec.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    }
+  },
+  "src/app/guard/shared-ds.guard.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 2
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    }
+  },
+  "src/app/layout/about-us/useful-information/useful-information.component.html": {
+    "@angular-eslint/template/eqeqeq": {
+      "count": 1
+    }
+  },
+  "src/app/layout/about-us/useful-information/useful-information.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 3
+    }
+  },
+  "src/app/layout/administration/administration-panel/administration-panel.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 2
+    }
+  },
+  "src/app/layout/administration/administration-panel/organizations/organizations.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 7
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 3
+    },
+    "no-useless-assignment": {
+      "count": 1
+    },
+    "prefer-const": {
+      "count": 1
+    }
+  },
+  "src/app/layout/administration/administration-panel/release-notes/release-notes.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 3
+    }
+  },
+  "src/app/layout/administration/administration-panel/super-admin/super-admin.component.spec.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    }
+  },
+  "src/app/layout/administration/administration-panel/super-admin/super-admin.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    }
+  },
+  "src/app/layout/administration/administration-panel/update-reference/update-reference.component.spec.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 2
+    }
+  },
+  "src/app/layout/administration/administration-panel/update-reference/update-reference.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 2
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 5
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    }
+  },
+  "src/app/layout/administration/administration-panel/update-workspace-reference/update-workspace-reference.component.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 3
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    }
+  },
+  "src/app/layout/administration/administration-panel/users/add-workspace/add-workspace.component.spec.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 20
+    }
+  },
+  "src/app/layout/administration/administration-panel/users/add-workspace/add-workspace.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 5
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 2
+    },
+    "prefer-const": {
+      "count": 1
+    }
+  },
+  "src/app/layout/administration/administration-panel/users/users.component.spec.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 8
+    }
+  },
+  "src/app/layout/administration/administration-panel/users/users.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 8
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 9
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    },
+    "prefer-const": {
+      "count": 2
+    }
+  },
+  "src/app/layout/common/common-editor/common-editor.component.spec.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 4
+    }
+  },
+  "src/app/layout/common/common-editor/common-editor.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 4
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 5
+    },
+    "prefer-const": {
+      "count": 2
+    }
+  },
+  "src/app/layout/common/criteria-popup/criteria-popup.component.spec.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 6
+    }
+  },
+  "src/app/layout/common/criteria-popup/criteria-popup.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 3
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 2
+    },
+    "prefer-const": {
+      "count": 2
+    }
+  },
+  "src/app/layout/common/digital-service-table/digital-service-table.component.spec.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    }
+  },
+  "src/app/layout/common/digital-service-table/digital-service-table.component.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 6
+    }
+  },
+  "src/app/layout/common/error/error.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 2
+    }
+  },
+  "src/app/layout/common/form-nav/form-nav.component.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 2
+    }
+  },
+  "src/app/layout/common/impact-aggregate-infos/impact-aggregate-infos.component.ts": {
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    }
+  },
+  "src/app/layout/common/stack-bar-chart/stack-bar-chart.component.spec.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 47
+    }
+  },
+  "src/app/layout/common/stack-bar-chart/stack-bar-chart.component.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 2
+    }
+  },
+  "src/app/layout/common/title-resolver.service.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    }
+  },
+  "src/app/layout/common/workspace/workspace.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 6
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 3
+    },
+    "no-useless-assignment": {
+      "count": 2
+    }
+  },
+  "src/app/layout/digital-services-compare-versions/digital-services-compare-versions.component.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 7
+    },
+    "prefer-const": {
+      "count": 2
+    }
+  },
+  "src/app/layout/digital-services-footprint/digital-services-cloud-services/digital-services-cloud-services-side-panel/digital-services-cloud-services-side-panel.component.spec.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 6
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    }
+  },
+  "src/app/layout/digital-services-footprint/digital-services-cloud-services/digital-services-cloud-services-side-panel/digital-services-cloud-services-side-panel.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 5
+    }
+  },
+  "src/app/layout/digital-services-footprint/digital-services-cloud-services/digital-services-cloud-services.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 2
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    }
+  },
+  "src/app/layout/digital-services-footprint/digital-services-ecomind-parameters/digital-services-ai-infrastructure/digital-services-ai-infrastructure.component.spec.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 6
+    }
+  },
+  "src/app/layout/digital-services-footprint/digital-services-ecomind-parameters/digital-services-ai-infrastructure/digital-services-ai-infrastructure.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 8
+    }
+  },
+  "src/app/layout/digital-services-footprint/digital-services-ecomind-parameters/digital-services-ai-parameters/digital-services-ai-parameters.component.spec.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 7
+    }
+  },
+  "src/app/layout/digital-services-footprint/digital-services-ecomind-parameters/digital-services-ai-parameters/digital-services-ai-parameters.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 8
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 7
+    }
+  },
+  "src/app/layout/digital-services-footprint/digital-services-footprint-dashboard/bar-chart/bar-chart.component.html": {
+    "@angular-eslint/template/eqeqeq": {
+      "count": 3
+    }
+  },
+  "src/app/layout/digital-services-footprint/digital-services-footprint-dashboard/bar-chart/bar-chart.component.spec.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 11
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 3
+    },
+    "no-var": {
+      "count": 1
+    }
+  },
+  "src/app/layout/digital-services-footprint/digital-services-footprint-dashboard/bar-chart/bar-chart.component.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 65
+    },
+    "prefer-const": {
+      "count": 7
+    }
+  },
+  "src/app/layout/digital-services-footprint/digital-services-footprint-dashboard/digital-services-footprint-dashboard.component.html": {
+    "@angular-eslint/template/eqeqeq": {
+      "count": 3
+    }
+  },
+  "src/app/layout/digital-services-footprint/digital-services-footprint-dashboard/digital-services-footprint-dashboard.component.spec.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 13
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 2
+    }
+  },
+  "src/app/layout/digital-services-footprint/digital-services-footprint-dashboard/digital-services-footprint-dashboard.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 9
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 8
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 2
+    },
+    "no-useless-assignment": {
+      "count": 2
+    },
+    "prefer-const": {
+      "count": 4
+    }
+  },
+  "src/app/layout/digital-services-footprint/digital-services-footprint-dashboard/graph-description/graph-description.component.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 3
+    }
+  },
+  "src/app/layout/digital-services-footprint/digital-services-footprint-dashboard/impact-button/impact-button.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 2
+    }
+  },
+  "src/app/layout/digital-services-footprint/digital-services-footprint-dashboard/pie-chart/pie-chart.component.spec.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 5
+    },
+    "no-var": {
+      "count": 1
+    }
+  },
+  "src/app/layout/digital-services-footprint/digital-services-footprint-dashboard/pie-chart/pie-chart.component.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 12
+    }
+  },
+  "src/app/layout/digital-services-footprint/digital-services-footprint-dashboard/radial-chart/radial-chart.component.spec.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 8
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    },
+    "no-var": {
+      "count": 1
+    }
+  },
+  "src/app/layout/digital-services-footprint/digital-services-footprint-dashboard/radial-chart/radial-chart.component.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 21
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 2
+    }
+  },
+  "src/app/layout/digital-services-footprint/digital-services-footprint-dashboard/set-view-popup/set-view-popup.component.spec.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 3
+    }
+  },
+  "src/app/layout/digital-services-footprint/digital-services-footprint-footer/digital-services-footprint-footer.component.spec.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 6
+    }
+  },
+  "src/app/layout/digital-services-footprint/digital-services-footprint-footer/digital-services-footprint-footer.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    }
+  },
+  "src/app/layout/digital-services-footprint/digital-services-footprint-header/digital-services-footprint-header.component.html": {
+    "@angular-eslint/template/no-negated-async": {
+      "count": 2
+    }
+  },
+  "src/app/layout/digital-services-footprint/digital-services-footprint-header/digital-services-footprint-header.component.spec.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 4
+    }
+  },
+  "src/app/layout/digital-services-footprint/digital-services-footprint-header/digital-services-footprint-header.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 7
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 2
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 11
+    },
+    "prefer-const": {
+      "count": 14
+    }
+  },
+  "src/app/layout/digital-services-footprint/digital-services-footprint.component.spec.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 4
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 4
+    }
+  },
+  "src/app/layout/digital-services-footprint/digital-services-footprint.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 5
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 3
+    }
+  },
+  "src/app/layout/digital-services-footprint/digital-services-import/digital-services-import.component.spec.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 11
+    }
+  },
+  "src/app/layout/digital-services-footprint/digital-services-import/digital-services-import.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 4
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 3
+    },
+    "no-useless-assignment": {
+      "count": 4
+    }
+  },
+  "src/app/layout/digital-services-footprint/digital-services-import/multi-file-import/multi-file-import.component.spec.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 4
+    }
+  },
+  "src/app/layout/digital-services-footprint/digital-services-import/multi-file-import/multi-file-import.component.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 3
+    }
+  },
+  "src/app/layout/digital-services-footprint/digital-services-networks/digital-services-networks-side-panel/digital-services-networks-side-panel.component.spec.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 4
+    }
+  },
+  "src/app/layout/digital-services-footprint/digital-services-networks/digital-services-networks-side-panel/digital-services-networks-side-panel.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 2
+    }
+  },
+  "src/app/layout/digital-services-footprint/digital-services-networks/digital-services-networks.component.spec.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 25
+    }
+  },
+  "src/app/layout/digital-services-footprint/digital-services-networks/digital-services-networks.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 2
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    }
+  },
+  "src/app/layout/digital-services-footprint/digital-services-servers/digital-services-servers.component.spec.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 3
+    }
+  },
+  "src/app/layout/digital-services-footprint/digital-services-servers/digital-services-servers.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 5
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 3
+    },
+    "prefer-const": {
+      "count": 2
+    }
+  },
+  "src/app/layout/digital-services-footprint/digital-services-servers/side-panel/add-datacenter/datacenter.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 2
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    },
+    "prefer-const": {
+      "count": 1
+    }
+  },
+  "src/app/layout/digital-services-footprint/digital-services-servers/side-panel/add-vm/add-vm.component.spec.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 4
+    }
+  },
+  "src/app/layout/digital-services-footprint/digital-services-servers/side-panel/add-vm/add-vm.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 2
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    }
+  },
+  "src/app/layout/digital-services-footprint/digital-services-servers/side-panel/create-server/create-server.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 5
+    }
+  },
+  "src/app/layout/digital-services-footprint/digital-services-servers/side-panel/list-vm/list-vm.component.spec.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 2
+    }
+  },
+  "src/app/layout/digital-services-footprint/digital-services-servers/side-panel/list-vm/list-vm.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 4
+    }
+  },
+  "src/app/layout/digital-services-footprint/digital-services-servers/side-panel/server-parameters/server-parameters.component.html": {
+    "@angular-eslint/template/eqeqeq": {
+      "count": 5
+    }
+  },
+  "src/app/layout/digital-services-footprint/digital-services-servers/side-panel/server-parameters/server-parameters.component.spec.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 32
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    }
+  },
+  "src/app/layout/digital-services-footprint/digital-services-servers/side-panel/server-parameters/server-parameters.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 5
+    },
+    "@typescript-eslint/no-non-null-asserted-optional-chain": {
+      "count": 5
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    }
+  },
+  "src/app/layout/digital-services-footprint/digital-services-terminals/digital-services-terminals-side-panel/digital-services-terminals-side-panel.component.spec.ts": {
+    "no-var": {
+      "count": 1
+    }
+  },
+  "src/app/layout/digital-services-footprint/digital-services-terminals/digital-services-terminals-side-panel/digital-services-terminals-side-panel.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 3
+    }
+  },
+  "src/app/layout/digital-services-footprint/digital-services-terminals/digital-services-terminals.component.spec.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 20
+    }
+  },
+  "src/app/layout/digital-services-footprint/digital-services-terminals/digital-services-terminals.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 2
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    },
+    "prefer-const": {
+      "count": 1
+    }
+  },
+  "src/app/layout/digital-services-manage-versions/digital-service-manage-version/digital-service-manage-version-table/digital-service-manage-version-table.component.spec.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 3
+    }
+  },
+  "src/app/layout/digital-services-manage-versions/digital-service-manage-version/digital-service-manage-version-table/digital-service-manage-version-table.component.ts": {
+    "@typescript-eslint/no-non-null-asserted-optional-chain": {
+      "count": 2
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 5
+    },
+    "prefer-const": {
+      "count": 6
+    }
+  },
+  "src/app/layout/digital-services/create-digital-services-sidebar/create-digital-services-sidebar.component.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 3
+    },
+    "prefer-const": {
+      "count": 1
+    }
+  },
+  "src/app/layout/digital-services/digital-services-item/digital-services-item.component.spec.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 3
+    },
+    "prefer-const": {
+      "count": 3
+    }
+  },
+  "src/app/layout/digital-services/digital-services-item/digital-services-item.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 5
+    }
+  },
+  "src/app/layout/digital-services/digital-services.component.spec.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 6
+    }
+  },
+  "src/app/layout/digital-services/digital-services.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 7
+    }
+  },
+  "src/app/layout/header/header-siderbar/left-sidebar/left-sidebar.component.spec.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 4
+    }
+  },
+  "src/app/layout/header/header-siderbar/left-sidebar/left-sidebar.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 3
+    }
+  },
+  "src/app/layout/header/header-siderbar/top-header/top-header.component.spec.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 15
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    }
+  },
+  "src/app/layout/header/header-siderbar/top-header/top-header.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    },
+    "@typescript-eslint/no-unused-expressions": {
+      "count": 4
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    },
+    "prefer-const": {
+      "count": 5
+    }
+  },
+  "src/app/layout/inventories-footprint/abstract-dashboard.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 4
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 3
+    }
+  },
+  "src/app/layout/inventories-footprint/application/application-criteria-pie-chart/application-criteria-pie-chart.component.spec.ts": {
+    "prefer-const": {
+      "count": 1
+    }
+  },
+  "src/app/layout/inventories-footprint/application/application-criteria-pie-chart/application-criteria-pie-chart.component.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    }
+  },
+  "src/app/layout/inventories-footprint/application/application-table-view/application-table-view.component.spec.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 4
+    }
+  },
+  "src/app/layout/inventories-footprint/application/application-table-view/application-table-view.component.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    },
+    "no-useless-assignment": {
+      "count": 2
+    },
+    "prefer-const": {
+      "count": 3
+    }
+  },
+  "src/app/layout/inventories-footprint/application/criteria-stats/criteria-stats.component.html": {
+    "@angular-eslint/template/eqeqeq": {
+      "count": 5
+    }
+  },
+  "src/app/layout/inventories-footprint/application/criteria-stats/criteria-stats.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    },
+    "no-useless-assignment": {
+      "count": 1
+    },
+    "prefer-const": {
+      "count": 5
+    }
+  },
+  "src/app/layout/inventories-footprint/application/criteria/application-criteria-footprint.component.spec.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 27
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    }
+  },
+  "src/app/layout/inventories-footprint/application/criteria/application-criteria-footprint.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 5
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 36
+    },
+    "no-unexpected-multiline": {
+      "count": 1
+    },
+    "no-useless-assignment": {
+      "count": 1
+    },
+    "prefer-const": {
+      "count": 4
+    }
+  },
+  "src/app/layout/inventories-footprint/application/dataviz-filter-application/dataviz-filter-application.component.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    },
+    "no-unexpected-multiline": {
+      "count": 1
+    }
+  },
+  "src/app/layout/inventories-footprint/application/inventories-application-footprint.component.spec.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 3
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    }
+  },
+  "src/app/layout/inventories-footprint/application/inventories-application-footprint.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 3
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 12
+    },
+    "@typescript-eslint/no-non-null-asserted-optional-chain": {
+      "count": 2
+    },
+    "no-unexpected-multiline": {
+      "count": 1
+    },
+    "no-useless-assignment": {
+      "count": 1
+    },
+    "prefer-const": {
+      "count": 4
+    }
+  },
+  "src/app/layout/inventories-footprint/application/multicriteria/application-multicriteria-footprint.component.spec.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 33
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    }
+  },
+  "src/app/layout/inventories-footprint/application/multicriteria/application-multicriteria-footprint.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 7
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 7
+    },
+    "no-useless-assignment": {
+      "count": 1
+    },
+    "prefer-const": {
+      "count": 4
+    }
+  },
+  "src/app/layout/inventories-footprint/base-filter-sidebar/base-filter-sidebar.component.spec.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 8
+    }
+  },
+  "src/app/layout/inventories-footprint/base-filter-sidebar/base-filter-sidebar.component.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 15
+    }
+  },
+  "src/app/layout/inventories-footprint/critere/inventories-critere-footprint.component.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 25
+    },
+    "@typescript-eslint/no-non-null-asserted-optional-chain": {
+      "count": 2
+    },
+    "@typescript-eslint/no-unused-expressions": {
+      "count": 1
+    },
+    "no-useless-assignment": {
+      "count": 1
+    },
+    "prefer-const": {
+      "count": 6
+    }
+  },
+  "src/app/layout/inventories-footprint/critere/inventories-critere-footprint.spec.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 37
+    }
+  },
+  "src/app/layout/inventories-footprint/dataviz-filter/dataviz-filter.component.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 2
+    }
+  },
+  "src/app/layout/inventories-footprint/filter-helpers.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 7
+    }
+  },
+  "src/app/layout/inventories-footprint/header/inventories-header-footprint.component.spec.ts": {
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    }
+  },
+  "src/app/layout/inventories-footprint/header/inventories-header-footprint.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 6
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 2
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 8
+    },
+    "prefer-const": {
+      "count": 5
+    }
+  },
+  "src/app/layout/inventories-footprint/inventories-footprint.component.spec.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 11
+    }
+  },
+  "src/app/layout/inventories-footprint/inventories-footprint.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 5
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 7
+    },
+    "@typescript-eslint/no-non-null-asserted-optional-chain": {
+      "count": 2
+    },
+    "prefer-const": {
+      "count": 1
+    }
+  },
+  "src/app/layout/inventories-footprint/multicriteria/inventories-multicriteria-footprint.component.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 4
+    },
+    "no-useless-assignment": {
+      "count": 1
+    },
+    "prefer-const": {
+      "count": 2
+    }
+  },
+  "src/app/layout/inventories/batch-status/batch-status.component.html": {
+    "@angular-eslint/template/eqeqeq": {
+      "count": 1
+    }
+  },
+  "src/app/layout/inventories/batch-status/batch-status.component.spec.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 3
+    }
+  },
+  "src/app/layout/inventories/batch-status/batch-status.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 2
+    }
+  },
+  "src/app/layout/inventories/file-panel/inv-file-panel.component.spec.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 10
+    }
+  },
+  "src/app/layout/inventories/file-panel/inv-file-panel.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 6
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 4
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    },
+    "no-useless-assignment": {
+      "count": 2
+    },
+    "prefer-const": {
+      "count": 1
+    }
+  },
+  "src/app/layout/inventories/file-panel/inv-multi-file-import/inv-multi-file-import.component.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 3
+    }
+  },
+  "src/app/layout/inventories/inventories.component.spec.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 3
+    }
+  },
+  "src/app/layout/inventories/inventories.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 5
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 10
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 3
+    },
+    "prefer-const": {
+      "count": 5
+    }
+  },
+  "src/app/layout/inventories/inventory-item/inventory-item.component.spec.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 3
+    }
+  },
+  "src/app/layout/inventories/inventory-item/inventory-item.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 8
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 4
+    },
+    "@typescript-eslint/no-non-null-asserted-optional-chain": {
+      "count": 3
+    }
+  },
+  "src/app/layout/landing-page/release-notes/release-notes.component.spec.ts": {
+    "@typescript-eslint/no-this-alias": {
+      "count": 1
+    }
+  },
+  "src/app/layout/landing-page/release-notes/release-notes.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    }
+  },
+  "src/app/layout/share-digital-service/share-digital-service.component.spec.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 4
+    }
+  },
+  "src/app/layout/share-digital-service/share-digital-service.component.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 4
+    }
+  },
+  "src/app/layout/welcome-page/welcome-page.component.html": {
+    "@angular-eslint/template/no-negated-async": {
+      "count": 2
+    }
+  },
+  "src/app/layout/welcome-page/welcome-page.component.spec.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    }
+  },
+  "src/app/layout/welcome-page/welcome-page.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 2
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    }
+  },
+  "src/test.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    }
+  }
+}

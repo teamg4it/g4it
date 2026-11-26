@@ -3,6 +3,28 @@ title: 'Information Sytem input data'
 description: 'These tables present the datacenter informations provided by a user for each Information System (datacenter, physical equipment, virtual equipment or application association) in order to evaluate its environmental footprint.'
 weight: 3
 ---
+<!-- AI_DISCLAIMER v1.0 -->
+> This file has been created (totally or partially) with the assistance of artificial intelligence tools.
+> All content has been generated under the direct supervision of a named individual,
+> and under the AI.Backbone Orchestrator Compliance framework
+
+## Optional physical-equipment source usage
+
+`InPhysicalEquipment` additionally persists nullable text properties
+`usageContext` and `usageFraction`, exposed by the existing REST contract and
+mapped from CSV `contexteUsage` and `fractionUsage`. These are **source** values,
+not the evaluated effective fraction. Text storage preserves values such as
+`0.5000` and exempt non-Device input without eager numeric conversion.
+Legacy rows remain null through the additive nullable migration.
+
+Evaluation does not overwrite these fields, source quantity or annual
+electricity. The raw input CSV export retains their source representation.
+Device-only CSV validation is described in
+[loading]({{% ref "/3-technical-documentation/4-backend_documentation/2-api_documentation/1-loading/api_loading.md" %}}).
+Evaluated usage belongs to the task-owned snapshot described in
+[output data]({{% ref "/3-technical-documentation/4-backend_documentation/db_documentation/information_system_and_digital_service_output_data/information_sytem_output_data/_index.md" %}}),
+separate from the input tables in the diagram below.
+
 ## Entity relationship diagram 
 
 ```mermaid

@@ -1,3 +1,7 @@
+// This file has been created (totally or partially) with the assistance of artificial intelligence tools.
+// All content has been generated under the direct supervision of a named individual,
+// and under the AI.Backbone Orchestrator Compliance framework
+
 /*
  * G4IT
  * Copyright 2023 Sopra Steria
@@ -18,6 +22,7 @@ import com.soprasteria.g4it.backend.apiindicator.utils.LifecycleStepUtils;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InApplication;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InPhysicalEquipment;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InVirtualEquipment;
+import com.soprasteria.g4it.backend.apiinout.modeldb.PhysicalEquipmentEvaluationTrace;
 import com.soprasteria.g4it.backend.apirecomandation.modeldb.OutAiReco;
 import com.soprasteria.g4it.backend.common.model.Context;
 import com.soprasteria.g4it.backend.common.utils.Constants;
@@ -30,14 +35,46 @@ import org.mte.numecoeval.calculs.domain.data.indicateurs.ImpactEquipementPhysiq
 import org.mte.numecoeval.calculs.domain.data.indicateurs.ImpactEquipementVirtuel;
 
 import java.time.LocalDateTime;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import static com.soprasteria.g4it.backend.common.utils.CsvUtils.*;
 
 @Mapper(componentModel = "spring")
 public interface ImpactToCsvRecord {
+
+    /**
+     * Append inventory usage values from the task/source snapshot, never from current defaults.
+     * The original overload remains the unchanged digital-service row contract.
+     */
+    default List<String> toCsv(Context context, Long taskId, String inventoryName, InPhysicalEquipment physicalEquipment,
+                               ImpactEquipementPhysique impact, Double sipValue, boolean verbose,
+                               PhysicalEquipmentEvaluationTrace trace) {
+        if (trace == null || trace.getTaskId() == null || trace.getSourceEquipmentId() == null
+                || !Objects.equals(taskId, trace.getTaskId())
+                || !Objects.equals(physicalEquipment.getId(), trace.getSourceEquipmentId())) {
+            throw new IllegalArgumentException("Evaluation trace does not match export task and source");
+        }
+        List<String> record = new ArrayList<>(toCsv(context, taskId, inventoryName, physicalEquipment,
+                impact, sipValue, verbose));
+        record.add(print(trace.getUsageContext()));
+        record.add(evaluatedUsageFraction(trace));
+        return record;
+    }
+
+    private String evaluatedUsageFraction(PhysicalEquipmentEvaluationTrace trace) {
+        if (!"DEVICES".equals(trace.getItemCategory())) {
+            return print(trace.getUsageFraction());
+        }
+        if ((trace.getUsageContext() == null || trace.getUsageContext().isEmpty())
+                && (trace.getUsageFraction() == null || trace.getUsageFraction().isEmpty())) {
+            return "";
+        }
+        return BigDecimal.valueOf(trace.getEffectiveFraction()).stripTrailingZeros().toPlainString();
+    }
 
     default List<String> toCsv(Context context, Long taskId, String inventoryName, InPhysicalEquipment physicalEquipment,
                                ImpactEquipementPhysique impact, Double sipValue, boolean verbose) {

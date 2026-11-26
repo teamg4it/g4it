@@ -1,3 +1,7 @@
+// This file has been created (totally or partially) with the assistance of artificial intelligence tools.
+// All content has been generated under the direct supervision of a named individual,
+// and under the AI.Backbone Orchestrator Compliance framework
+
 package com.soprasteria.g4it.backend.apievaluating.business.asyncevaluatingservice;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -8,35 +12,85 @@ import com.soprasteria.g4it.backend.apiinout.modeldb.InApplication;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InDatacenter;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InPhysicalEquipment;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InVirtualEquipment;
+import com.soprasteria.g4it.backend.apireferential.business.PhysicalEquipmentReferenceResolver;
 import com.soprasteria.g4it.backend.apireferential.business.ReferentialService;
+import com.soprasteria.g4it.backend.config.NumEcoEvalRemotingServiceConfiguration;
 import com.soprasteria.g4it.backend.server.gen.api.dto.CriterionRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.ItemImpactRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.ItemTypeRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.MatchingItemRest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mapstruct.factory.Mappers;
 import org.mte.numecoeval.calculs.domain.data.entree.EquipementPhysique;
+import org.mte.numecoeval.calculs.domain.data.demande.DemandeCalculImpactEquipementPhysique;
 import org.mte.numecoeval.calculs.domain.data.indicateurs.ImpactApplication;
 import org.mte.numecoeval.calculs.domain.data.indicateurs.ImpactEquipementPhysique;
 import org.mte.numecoeval.calculs.domain.data.indicateurs.ImpactEquipementVirtuel;
 import org.mte.numecoeval.calculs.domain.port.input.service.CalculImpactApplicationService;
 import org.mte.numecoeval.calculs.domain.port.input.service.CalculImpactEquipementPhysiqueService;
 import org.mte.numecoeval.calculs.domain.port.input.service.CalculImpactEquipementVirtuelService;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class EvaluateNumEcoEvalServiceTest {
+
+    @ParameterizedTest
+    @ValueSource(doubles = {0d, 0.5d, 0.57d, 0.85d, 1d})
+    void allocationIsAppliedOnceToEachCriterionAndLifecycleRequest(double fraction) {
+        var mapper = Mappers.getMapper(InternalToNumEcoEvalCalculs.class);
+        ReflectionTestUtils.setField(service, "internalToNumEcoEvalCalculs", mapper);
+        var physical = InPhysicalEquipment.builder().type("laptop").quantity(2.5d)
+                .electricityConsumption(100d).location("FR").build();
+        var climate = new CriterionRest();
+        climate.setCode("CLIMATE_CHANGE");
+        var water = new CriterionRest();
+        water.setCode("WATER_USE");
+        var reference = new PhysicalEquipmentReferenceResolver.Reference(null, new ItemTypeRest(),
+                "synthetic-reference", false);
+        when(calculImpactEquipementPhysiqueService.calculerImpactEquipementPhysique(any()))
+                .thenAnswer(invocation -> ImpactEquipementPhysique.builder().trace("{}").build());
+
+        var results = service.calculateAllocatedPhysicalEquipment(physical, null, List.of(climate, water),
+                List.of("MANUFACTURING", "DISTRIBUTION", "USING", "END_OF_LIFE"), List.of(),
+                1L, reference, fraction);
+
+        var captor = ArgumentCaptor.forClass(DemandeCalculImpactEquipementPhysique.class);
+        verify(calculImpactEquipementPhysiqueService, times(8)).calculerImpactEquipementPhysique(captor.capture());
+        assertEquals(8, results.size());
+        var objectMapper = new ObjectMapper();
+        Map<String, Object> originalCalculationValues = objectMapper.convertValue(mapper.map(physical), Map.class);
+        originalCalculationValues.remove("quantite");
+        var requests = captor.getAllValues();
+        for (int index = 0; index < requests.size(); index++) {
+            var calculationEquipment = requests.get(index).getEquipementPhysique();
+            assertEquals(2.5d * fraction, calculationEquipment.getQuantite(), 1e-12);
+            Map<String, Object> calculationValues = objectMapper.convertValue(calculationEquipment, Map.class);
+            calculationValues.remove("quantite");
+            // All per-unit inputs, including electricity, must stay unchanged to avoid a squared factor.
+            assertEquals(originalCalculationValues, calculationValues);
+            for (int previous = 0; previous < index; previous++) {
+                assertNotSame(requests.get(previous).getEquipementPhysique(), calculationEquipment);
+            }
+        }
+        assertEquals(2.5d, physical.getQuantity());
+        assertEquals(100d, physical.getElectricityConsumption());
+    }
 
     @InjectMocks
     private EvaluateNumEcoEvalService service;
@@ -59,6 +113,8 @@ class EvaluateNumEcoEvalServiceTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
+        ReflectionTestUtils.setField(service, "physicalEquipmentReferenceResolver",
+                new PhysicalEquipmentReferenceResolver(referentialService));
 
         mappedPhysical = new EquipementPhysique();
         mappedDataCenter = mock(org.mte.numecoeval.calculs.domain.data.entree.DataCenter.class);
@@ -342,6 +398,114 @@ class EvaluateNumEcoEvalServiceTest {
                 );
 
         assertEquals(4, result.size());
+    }
+
+    @Test
+    void calculatePhysicalEquipment_scalesEachRequestOnceWithoutMutatingSource() {
+        InPhysicalEquipment physical = InPhysicalEquipment.builder()
+                .type("laptop").quantity(10d).electricityConsumption(100d).build();
+        CriterionRest criterion = new CriterionRest();
+        criterion.setCode("CLIMATE_CHANGE");
+        when(internalToNumEcoEvalCalculs.map(any(InPhysicalEquipment.class))).thenAnswer(invocation -> {
+            EquipementPhysique mapped = new EquipementPhysique();
+            mapped.setQuantite(10d);
+            mapped.setConsoElecAnnuelle(100d);
+            mapped.setDataCenter(mock(org.mte.numecoeval.calculs.domain.data.entree.DataCenter.class));
+            return mapped;
+        });
+        when(calculImpactEquipementPhysiqueService.calculerImpactEquipementPhysique(any()))
+                .thenReturn(ImpactEquipementPhysique.builder().trace("{}").build());
+        var reference = new PhysicalEquipmentReferenceResolver.Reference(null, new ItemTypeRest(), null, false);
+
+        service.calculateAllocatedPhysicalEquipment(physical, null, List.of(criterion),
+                List.of("MANUFACTURING", "USING"), List.of(), 1L, reference, 0.5d);
+
+        ArgumentCaptor<DemandeCalculImpactEquipementPhysique> requests =
+                ArgumentCaptor.forClass(DemandeCalculImpactEquipementPhysique.class);
+        verify(calculImpactEquipementPhysiqueService, times(2))
+                .calculerImpactEquipementPhysique(requests.capture());
+        requests.getAllValues().forEach(request -> {
+            assertEquals(5d, request.getEquipementPhysique().getQuantite());
+            assertEquals(100d, request.getEquipementPhysique().getConsoElecAnnuelle());
+        });
+        assertEquals(10d, physical.getQuantity());
+        assertEquals(100d, physical.getElectricityConsumption());
+    }
+
+    @Test
+    void realCalculationScalesEachLifecycleAndElectricityWithoutChangingInput() {
+        var config = new NumEcoEvalRemotingServiceConfiguration();
+        ReflectionTestUtils.setField(service, "internalToNumEcoEvalCalculs",
+                Mappers.getMapper(InternalToNumEcoEvalCalculs.class));
+        ReflectionTestUtils.setField(service, "calculImpactEquipementPhysiqueService",
+                config.calculImpactEquipementPhysiqueService(config.dureeDeVieEquipementPhysiqueService()));
+
+        var equipment = InPhysicalEquipment.builder().name("synthetic-device").type("laptop")
+                .quantity(10d).electricityConsumption(100d).location("France")
+                .datePurchase(LocalDate.of(2022, 1, 1)).build();
+        var datacenter = InDatacenter.builder().pue(1d).location("France").build();
+        var type = new ItemTypeRest();
+        type.setRefDefaultItem("synthetic-reference");
+        type.setDefaultLifespan(5d);
+        type.setCategory("EquipementPhysique");
+        type.setIsServer(false);
+        var reference = new PhysicalEquipmentReferenceResolver.Reference(null, type, "synthetic-reference", false);
+        var criterion = new CriterionRest();
+        criterion.setCode("CLIMATE_CHANGE");
+        criterion.setUnit("kg");
+        List<String> stages = List.of("MANUFACTURING", "TRANSPORTATION", "USING", "END_OF_LIFE");
+        when(referentialService.getItemImpactsForWorkspace(any(), any(), any(), any(), any()))
+                .thenAnswer(invocation -> {
+                    String stage = invocation.getArgument(1);
+                    var item = new ItemImpactRest();
+                    item.setName("synthetic-reference");
+                    item.setCriterion("CLIMATE_CHANGE");
+                    item.setLifecycleStep(stage);
+                    item.setCategory("IT equipment");
+                    item.setLocation("France");
+                    item.setUnit("Item");
+                    item.setValue(100d);
+                    item.setAvgElectricityConsumption(100d);
+                    item.setIsHidden(false);
+                    var mix = new ItemImpactRest();
+                    mix.setName("Electricity Mix FR");
+                    mix.setCriterion("CLIMATE_CHANGE");
+                    mix.setLifecycleStep(stage);
+                    mix.setCategory("electricity-mix");
+                    mix.setLocation("France");
+                    mix.setValue(0.1d);
+                    mix.setIsHidden(false);
+                    return List.of(item, mix);
+                });
+
+        var baseline = service.calculateAllocatedPhysicalEquipment(equipment, datacenter, List.of(criterion),
+                stages, List.of(), 1L, reference, 1d);
+        assertEquals(4, baseline.size());
+        for (var impact : baseline) {
+            assertEquals("OK", impact.getStatutIndicateur());
+            assertNotNull(impact.getImpactUnitaire());
+            assertTrue(impact.getImpactUnitaire() > 0d);
+        }
+        var baselineUsing = baseline.get(2);
+        assertNotNull(baselineUsing.getConsoElecMoyenne());
+        assertEquals(1000d, baselineUsing.getConsoElecMoyenne() * baselineUsing.getQuantite(), 1e-8);
+        for (double fraction : List.of(0d, 0.5d, 0.57d, 0.85d)) {
+            var allocated = service.calculateAllocatedPhysicalEquipment(equipment, datacenter, List.of(criterion),
+                    stages, List.of(), 1L, reference, fraction);
+            assertEquals(baseline.size(), allocated.size());
+            for (int i = 0; i < baseline.size(); i++) {
+                assertEquals("OK", allocated.get(i).getStatutIndicateur());
+                assertEquals(baseline.get(i).getImpactUnitaire() * fraction,
+                        allocated.get(i).getImpactUnitaire(), 1e-8);
+                if (i == 2) {
+                    assertNotNull(allocated.get(i).getConsoElecMoyenne());
+                    assertEquals(baseline.get(i).getConsoElecMoyenne() * baseline.get(i).getQuantite() * fraction,
+                            allocated.get(i).getConsoElecMoyenne() * allocated.get(i).getQuantite(), 1e-8);
+                }
+            }
+        }
+        assertEquals(10d, equipment.getQuantity());
+        assertEquals(100d, equipment.getElectricityConsumption());
     }
 
     // ------------------------------------------------------------------

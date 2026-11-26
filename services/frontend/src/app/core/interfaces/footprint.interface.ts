@@ -172,6 +172,8 @@ export interface Criteria {
     label: string;
     unit: string;
     impacts: Impact[];
+    byodDevicesPercentage?: number | null;
+    copeDevicesPercentage?: number | null;
 }
 
 export interface ChartData<ComputedSelection> {

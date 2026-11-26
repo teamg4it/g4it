@@ -96,7 +96,7 @@ public interface AggregationToOutput {
                 .countValue(agg.getCountValue())
                 .quantity(agg.getQuantity())
                 .lifespan(agg.getLifespan())
-                .electricityConsumption(agg.getElectricityConsumption())
+                .electricityConsumption(agg.getPhysicalElectricityConsumption())
                 .unitImpact(agg.getUnitImpact())
                 .peopleEqImpact(agg.getPeopleEqImpact())
                 .unit(refShortcutBO.unitMap().get(criterion))

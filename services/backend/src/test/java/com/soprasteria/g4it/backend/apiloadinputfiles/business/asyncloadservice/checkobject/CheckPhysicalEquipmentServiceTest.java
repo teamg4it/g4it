@@ -1,3 +1,7 @@
+// This file has been created (totally or partially) with the assistance of artificial intelligence tools.
+// All content has been generated under the direct supervision of a named individual,
+// and under the AI.Backbone Orchestrator Compliance framework
+
 /*
  * G4IT
  * Copyright 2023 Sopra Steria
@@ -10,6 +14,11 @@ package com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice
 
 import com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.rules.GenericRuleService;
 import com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.rules.RuleDateService;
+import com.soprasteria.g4it.backend.apireferential.business.ItemCategoryResolver;
+import com.soprasteria.g4it.backend.apireferential.business.PhysicalEquipmentReferenceResolver;
+import com.soprasteria.g4it.backend.apireferential.business.ReferentialGetService;
+import com.soprasteria.g4it.backend.apireferential.business.ReferentialService;
+import com.soprasteria.g4it.backend.apireferential.repository.ItemTypeRepository;
 import com.soprasteria.g4it.backend.common.model.Context;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InPhysicalEquipmentRest;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,7 +26,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.openapitools.jackson.nullable.JsonNullable;
 import org.springframework.context.MessageSource;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import com.soprasteria.g4it.backend.common.model.LineError;
 import org.junit.jupiter.api.Test;
@@ -44,11 +55,64 @@ class CheckPhysicalEquipmentServiceTest {
     @Mock
     private DigitalServiceRuleFactory digitalServiceRuleFactory;
 
+    @Mock
+    private PhysicalEquipmentUsageValidator usageValidator;
+
     @InjectMocks
     private CheckPhysicalEquipmentService service;
 
     private Context context;
     private InPhysicalEquipmentRest equipment;
+
+    @Test
+    void shouldAccumulateUsageAndOtherFieldErrors() {
+        Context inventory = Context.builder().inventoryId(1L).build();
+        LineError dateError = new LineError("input.csv", 2, "date");
+        var usageErrors = List.of(new LineError("input.csv", 2, "context"),
+                new LineError("input.csv", 2, "fraction"));
+        when(ruleDateService.checkDatesPurchaseRetrieval(any(), anyString(), anyInt(), any(), any(), anyBoolean()))
+                .thenReturn(Optional.of(dateError));
+        when(usageValidator.check(inventory, equipment, "input.csv", 2)).thenReturn(usageErrors);
+        var errors = service.checkRules(inventory, equipment, "input.csv", 2);
+        assertEquals(3, errors.size());
+        assertTrue(errors.containsAll(usageErrors));
+        assertTrue(errors.contains(dateError));
+    }
+
+    @Test
+    void shouldNotApplyInventoryUsageRulesToDigitalServiceWithInventoryIdentity() {
+        var digitalService = Context.builder()
+                .inventoryId(1L)
+                .digitalServiceVersionUid("version")
+                .build();
+        equipment.setUsageContext(JsonNullable.of("BYOD"));
+        equipment.setUsageFraction(JsonNullable.of("invalid"));
+
+        assertTrue(service.checkRules(digitalService, equipment, "input.csv", 2).isEmpty());
+
+        verifyNoInteractions(usageValidator, digitalServiceRuleFactory);
+    }
+
+    @Test
+    void shouldReportUnknownTypeAsARowErrorEvenWithUsageContext() {
+        var referentialGetService = mock(ReferentialGetService.class);
+        var referentialService = new ReferentialService();
+        ReflectionTestUtils.setField(referentialService, "referentialGetService", referentialGetService);
+        var validator = new PhysicalEquipmentUsageValidator(
+                new ItemCategoryResolver(mock(ItemTypeRepository.class)),
+                new PhysicalEquipmentReferenceResolver(referentialService), messageSource);
+        ReflectionTestUtils.setField(service, "usageValidator", validator);
+        var inventory = Context.builder().inventoryId(1L).organization("synthetic-org").workspaceId(2L).build();
+        equipment.setType("unknown-type");
+        equipment.setUsageContext(JsonNullable.of("BYOD"));
+        var typeError = new LineError("input.csv", 2, "Type does not exist in referential");
+        when(genericRuleService.checkType(any(), any(), anyString(), anyInt(), any(), anyBoolean(), any()))
+                .thenReturn(Optional.of(typeError));
+
+        assertEquals(List.of(typeError), service.checkRules(inventory, equipment, "input.csv", 2));
+        verify(referentialGetService).getItemTypes("unknown-type", "synthetic-org", null);
+        verify(referentialGetService).getItemTypes("unknown-type", null, null);
+    }
 
     @BeforeEach
     void setUp() {

@@ -4,6 +4,41 @@ description: "Visualize indicators for digital service or information system"
 weight: 60
 mermaid: true
 ---
+<!-- AI_DISCLAIMER v1.0 -->
+> This file has been created (totally or partially) with the assistance of artificial intelligence tools.
+> All content has been generated under the direct supervision of a named individual,
+> and under the AI.Backbone Orchestrator Compliance framework
+
+## Persisted Device usage shares and evaluated download
+
+The existing equipment response adds optional nullable
+`byodDevicesPercentage` and `copeDevicesPercentage`. The service pages through
+the selected task's source-equipment traces, uses the shared resolver's exact
+Device predicate on the stored category, and sums original quantities once
+per source. Each numerator selects its exact stored BYOD/COPE context; both
+use the same all-Device denominator. Null quantity uses the existing fallback
+1, zero stays zero, and fractional quantities are not integer-cast.
+
+Shares are unrounded numeric percentages, repeated across criteria rather than
+summed across them. Allocation factors do not weight adoption quantities.
+The frontend takes one criterion's shares and applies existing integer
+percentage display. These shares are inventory-wide, independent of view
+filters. Missing historical traces, no Devices or zero total Device quantity
+yield null/no-data, displayed as `--`. No live source lookup or reclassification
+with current referential data fabricates historical usage.
+
+The existing
+`GET /organizations/{organization}/workspaces/{workspace}/inventories/{inventoryId}/indicators/export/download`
+selects the latest evaluation task by creation date and streams its stored
+task-id ZIP. Within it, `ind_physical_equipment.csv` serializes per-source,
+criterion/lifecycle rows using persisted task/source traces, not grouped output
+rows. It appends source context and the stored effective Device fraction as a
+plain decimal when usage was supplied. Both inputs empty leave both cells
+empty; non-Devices retain raw provided values without defaults.
+`physical_equipment.csv` remains source-faithful, including raw fraction
+formatting. No new download route, grouping key or historical ZIP rewrite
+is introduced. See [the export value table]({{% ref "/2-functional-documentation/use_cases/uc_inventory/uc7_export_files.md" %}})
+and [the Equipment indicators]({{% ref "/2-functional-documentation/use_cases/uc_inventory/uc5_visualize_equipment_footprint.md" %}}).
 
 ## API PATH
 
@@ -84,7 +119,7 @@ by [InventoryIndicatorController](https://github.com/G4ITTeam/g4it/blob/main/ser
 while the business logic is executed by
 the [InventoryIndicatorService](https://github.com/G4ITTeam/g4it/blob/main/services/backend/src/main/java/com/soprasteria/g4it/backend/apiindicator/business/InventoryIndicatorService.java).
 This service retrieves aggregated data about datacenters and their associated physical equipment by querying
-the [in_datacenter](information_system_and_digital_service_input_data/information_sytem_input_data/)
+the [in_datacenter]({{% ref "/3-technical-documentation/4-backend_documentation/db_documentation/information_system_and_digital_service_input_data/information_sytem_input_data/_index.md" %}})
 and [in_physical_equipment](../../db_documentation/information_system_and_digital_service_input_data/information_sytem_input_data/)
 tables within
 the [InDatacenterIndicatorView](https://github.com/G4ITTeam/g4it/blob/main/services/backend/src/main/java/com/soprasteria/g4it/backend/apiindicator/modeldb/InDatacenterIndicatorView.java),
@@ -131,7 +166,7 @@ by [InVirtualEquipmentInventoryController](https://github.com/G4ITTeam/g4it/blob
 and the business logic is handled
 by [InVirtualEquipmentService](https://github.com/G4ITTeam/g4it/blob/main/services/backend/src/main/java/com/soprasteria/g4it/backend/apiinout/business/InVirtualEquipmentService.java)
 which returns input data of virtual equipments stored in the
-table [in_virtual_equipment](../../db_documentation/information_system_and_digital_service_output_data/information_sytem_input_data)
+table [in_virtual_equipment]({{% ref "/3-technical-documentation/4-backend_documentation/db_documentation/information_system_and_digital_service_input_data/information_sytem_input_data/_index.md" %}})
 via [InVirtualEquipmentRepository](https://github.com/G4ITTeam/g4it/blob/main/services/backend/src/main/java/com/soprasteria/g4it/backend/apiinout/repository/InVirtualEquipmentRepository.java).
 
 #### Output virtual equipments
@@ -288,7 +323,7 @@ and the business logic is implemented in [InventoryIndicatorService](https://git
 The service retrieves aggregated electricity consumption of virtual equipment
 from the [out_application](../../db_documentation/information_system_and_digital_service_output_data/information_sytem_output_data) table, using the native query defined in
 [InVirtualEquipmentElecConsumptionView](https://github.com/teamg4it/g4it/blob/main/services/backend/src/main/java/com/soprasteria/g4it/backend/apiindicator/modeldb/InVirtualEquipmentElecConsumptionView.java) and executed via 
-[InVirtualEquipmentElecConsumptionViewRepository](services/backend/src/main/java/com/soprasteria/g4it/backend/apiindicator/repository/InVirtualEquipmentElecConsumptionViewRepository.java). Electricity is aggregated per virtual equipment by location, domain, sub-domain, environment, and equipment type, with specific handling to correctly sum non-cloud services and preserve cloud service values.
+[InVirtualEquipmentElecConsumptionViewRepository](https://github.com/teamg4it/g4it/blob/main/services/backend/src/main/java/com/soprasteria/g4it/backend/apiindicator/repository/InVirtualEquipmentElecConsumptionViewRepository.java). Electricity is aggregated per virtual equipment by location, domain, sub-domain, environment, and equipment type, with specific handling to correctly sum non-cloud services and preserve cloud service values.
 
 #### Virtual Equipment Low Impact
 

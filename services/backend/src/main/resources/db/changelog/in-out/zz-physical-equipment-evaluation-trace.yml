@@ -1,0 +1,61 @@
+# This file has been created (totally or partially) with the assistance of artificial intelligence tools.
+# All content has been generated under the direct supervision of a named individual,
+# and under the AI.Backbone Orchestrator Compliance framework
+
+databaseChangeLog:
+  - changeSet:
+      id: g4it-48-physical-equipment-evaluation-trace
+      author: G4IT Dev Team
+      changes:
+        - createTable:
+            tableName: physical_equipment_evaluation_trace
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: task_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: physical_eqp_trace_task_fk
+                    references: task(id)
+                    deleteCascade: true
+              - column:
+                  name: source_equipment_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: item_type
+                  type: text
+              - column:
+                  name: item_category
+                  type: text
+                  constraints:
+                    nullable: false
+              - column:
+                  name: reference
+                  type: text
+              - column:
+                  name: usage_context
+                  type: text
+              - column:
+                  name: usage_fraction
+                  type: text
+              - column:
+                  name: effective_fraction
+                  type: double precision
+                  constraints:
+                    nullable: false
+              - column:
+                  name: original_quantity
+                  type: double precision
+        - addUniqueConstraint:
+            tableName: physical_equipment_evaluation_trace
+            columnNames: task_id, source_equipment_id
+            constraintName: physical_eqp_trace_task_source_uk

@@ -142,6 +142,31 @@ class WorkspaceReferentialImportServiceTest {
     // MATCHING ITEM
     // =========================
 
+    @ParameterizedTest
+    @MethodSource("missingItemCategories")
+    void shouldRejectMissingWorkspaceCategoryBeforeSynchronization(String category) {
+        ItemTypeRest rest = new ItemTypeRest();
+        rest.setType("Laptop");
+        rest.setCategory("Laptop");
+        rest.setItemCategory(category);
+        rest.setDefaultLifespan(5.0);
+        rest.setIsServer(false);
+        rest.setRefDefaultItem("Laptop");
+        when(file.isEmpty()).thenReturn(false);
+        when(referentialImportService.parseItemTypeCsv(file)).thenReturn(ItemTypeParseResult.builder()
+                .data(List.of(rest)).report(emptyReport()).build());
+
+        BadRequestException error = assertThrows(BadRequestException.class,
+                () -> service.importReferentialCSV(ORG, 1L, "itemType", file));
+
+        assertEquals("itemtype.required.fields.missing", error.getError());
+        verifyNoInteractions(workspacePersistenceService, referentialMapper);
+    }
+
+    private static Stream<Arguments> missingItemCategories() {
+        return Stream.of(Arguments.of((String) null), Arguments.of(""), Arguments.of(" "));
+    }
+
     @Test
     void importReferentialCSV_matchingItem_success() {
         MatchingItemRest rest = new MatchingItemRest();

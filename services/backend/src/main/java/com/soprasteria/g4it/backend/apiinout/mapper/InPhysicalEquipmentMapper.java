@@ -1,3 +1,7 @@
+// This file has been created (totally or partially) with the assistance of artificial intelligence tools.
+// All content has been generated under the direct supervision of a named individual,
+// and under the AI.Backbone Orchestrator Compliance framework
+
 /*
  * G4IT
  * Copyright 2023 Sopra Steria
@@ -13,6 +17,7 @@ import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import org.openapitools.jackson.nullable.JsonNullable;
 
 import java.util.List;
 import java.util.Objects;
@@ -34,6 +39,14 @@ public interface InPhysicalEquipmentMapper {
     @Mapping(target = "creationDate", ignore = true)
     @Mapping(target = "lastUpdateDate", expression = "java(java.time.LocalDateTime.now())")
     void merge(@MappingTarget final InPhysicalEquipment target, final InPhysicalEquipment source);
+
+    default String unwrap(JsonNullable<String> value) {
+        return value == null ? null : value.orElse(null);
+    }
+
+    default JsonNullable<String> wrap(String value) {
+        return JsonNullable.of(value);
+    }
 
     @AfterMapping
     default void normalizeFilters(@MappingTarget final InPhysicalEquipment target) {

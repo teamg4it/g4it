@@ -1,3 +1,7 @@
+// This file has been created (totally or partially) with the assistance of artificial intelligence tools.
+// All content has been generated under the direct supervision of a named individual,
+// and under the AI.Backbone Orchestrator Compliance framework
+
 /*
  * G4IT
  * Copyright 2023 Sopra Steria
@@ -9,29 +13,31 @@ package com.soprasteria.g4it.backend.apiindicator.business;
 
 import com.soprasteria.g4it.backend.apievaluating.business.asyncevaluatingservice.ExportService;
 import com.soprasteria.g4it.backend.apiindicator.model.*;
+import com.soprasteria.g4it.backend.apiinout.modeldb.PhysicalEquipmentEvaluationTrace;
 import com.soprasteria.g4it.backend.apiinout.repository.InApplicationRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.InDatacenterRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.InPhysicalEquipmentRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.InVirtualEquipmentRepository;
+import com.soprasteria.g4it.backend.apiinout.repository.PhysicalEquipmentEvaluationTraceRepository;
 import com.soprasteria.g4it.backend.apiinventory.business.InventoryService;
 import com.soprasteria.g4it.backend.apiinventory.model.InventoryBO;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
-import com.soprasteria.g4it.backend.apireferential.modeldb.ItemType;
-import com.soprasteria.g4it.backend.apireferential.repository.ItemTypeRepository;
+import com.soprasteria.g4it.backend.apireferential.business.ItemCategoryResolver;
 import com.soprasteria.g4it.backend.apiuser.business.WorkspaceService;
 import com.soprasteria.g4it.backend.common.task.business.TaskService;
 import com.soprasteria.g4it.backend.common.task.modeldb.Task;
 import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
+import com.soprasteria.g4it.backend.common.utils.Constants;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 /**
  * Inventory Service.
@@ -61,7 +67,9 @@ public class InventoryIndicatorService {
     @Autowired
     private TaskService taskService;
     @Autowired
-    private ItemTypeRepository itemTypeRepository;
+    private ItemCategoryResolver itemCategoryResolver;
+    @Autowired
+    private PhysicalEquipmentEvaluationTraceRepository physicalEquipmentEvaluationTraceRepository;
 
     /**
      * Get last batch name in the inventory business object.
@@ -88,42 +96,65 @@ public class InventoryIndicatorService {
      */
     public Map<String, EquipmentIndicatorBO> getEquipmentIndicators(final String organization, final Long workspaceId, final Long inventoryId) {
         final InventoryBO inventory = inventoryService.getInventory(organization, workspaceId, inventoryId);
+        final Long taskId = getLastTaskId(inventory);
         Map<String, EquipmentIndicatorBO> indicators =
-                indicatorService.getEquipmentIndicators(getLastTaskId(inventory));
-        // Keep applicable definitions ordered so workspace and organization overrides win.
-        List<ItemType> itemTypes = itemTypeRepository
-                .findByWorkspaceIdOrWorkspaceIdIsNull(workspaceId).stream()
-                .filter(itemType -> itemType.getOrganization() == null
-                        || Objects.equals(itemType.getOrganization(), organization))
-                .filter(itemType -> itemType.getItemCategory() != null)
-                .sorted(Comparator
-                        .comparing((ItemType itemType) -> !Objects.equals(itemType.getWorkspaceId(), workspaceId))
-                        .thenComparing(itemType -> !Objects.equals(itemType.getOrganization(), organization)))
-                .toList();
-        Map<String, ItemType> itemTypesByType = itemTypes.stream()
-                .collect(Collectors.toMap(
-                        ItemType::getType,
-                        itemType -> itemType,
-                        (preferred, ignored) -> preferred
-                ));
-        Map<String, ItemType> itemTypesByReference = itemTypes.stream()
-                .filter(itemType -> itemType.getRefDefaultItem() != null)
-                .collect(Collectors.toMap(
-                        ItemType::getRefDefaultItem,
-                        itemType -> itemType,
-                        (preferred, ignored) -> preferred
-                ));
+                indicatorService.getEquipmentIndicators(taskId);
+        ItemCategoryResolver.Lookup categories = itemCategoryResolver.prepare(organization, workspaceId);
         indicators.values().stream()
                 .flatMap(indicator -> indicator.getImpacts().stream())
                 .forEach(impact -> {
-                    ItemType itemType = itemTypesByReference.get(impact.getReference());
-                    if (itemType == null) {
-                        itemType = itemTypesByType.get(impact.getEquipment());
-                    }
-                    impact.setItemType(itemType == null ? impact.getEquipment() : itemType.getType());
-                    impact.setItemCategory(itemType == null ? "INFRASTRUCTURE" : itemType.getItemCategory());
+                    ItemCategoryResolver.Category category = categories.resolve(impact.getReference(), impact.getEquipment());
+                    impact.setItemType(category.itemType());
+                    impact.setItemCategory(category.itemCategory());
                 });
+        if (!indicators.isEmpty()) {
+            UsageShares shares = getUsageShares(taskId);
+            indicators.values().forEach(indicator -> {
+                indicator.setByodDevicesPercentage(shares.byod());
+                indicator.setCopeDevicesPercentage(shares.cope());
+            });
+        }
         return indicators;
+    }
+
+    /**
+     * Count each task/source snapshot once, independently of grouped lifecycle/criterion results.
+     * Use the shared resolver's exact Device rule on its persisted evaluation-time category,
+     * never today's referential or raw usage values. Null quantities follow evaluation aggregation's
+     * default of one. Allocation factors must not weight adoption quantities.
+     *
+     * Numeric percentages remain unrounded, like the existing low-impact percentage value.
+     * Its integer display formatter (including positive values below one) remains a presentation concern.
+     */
+    private UsageShares getUsageShares(Long taskId) {
+        double devices = 0d;
+        double byod = 0d;
+        double cope = 0d;
+        int pageNumber = 0;
+        Page<PhysicalEquipmentEvaluationTrace> page;
+        do {
+            page = physicalEquipmentEvaluationTraceRepository.findByTaskId(taskId,
+                    PageRequest.of(pageNumber++, Constants.BATCH_SIZE_10000, Sort.by("id")));
+            for (PhysicalEquipmentEvaluationTrace trace : page.getContent()) {
+                ItemCategoryResolver.Category category =
+                        new ItemCategoryResolver.Category(trace.getItemType(), trace.getItemCategory());
+                if (!category.isDevice()) {
+                    continue;
+                }
+                double quantity = trace.getOriginalQuantity() == null ? 1d : trace.getOriginalQuantity();
+                devices += quantity;
+                if ("BYOD".equals(trace.getUsageContext())) {
+                    byod += quantity;
+                } else if ("COPE".equals(trace.getUsageContext())) {
+                    cope += quantity;
+                }
+            }
+        } while (page.hasNext());
+        return devices == 0d ? new UsageShares(null, null)
+                : new UsageShares(byod / devices * 100d, cope / devices * 100d);
+    }
+
+    private record UsageShares(Double byod, Double cope) {
     }
 
     /**

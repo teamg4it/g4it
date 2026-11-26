@@ -4,6 +4,35 @@ description: "This use case describes how to visualize the equipment's impact of
 weight: 50
 mermaid: true
 ---
+<!-- AI_DISCLAIMER v1.0 -->
+> This file has been created (totally or partially) with the assistance of artificial intelligence tools.
+> All content has been generated under the direct supervision of a named individual,
+> and under the AI.Backbone Orchestrator Compliance framework
+
+## BYOD and COPE Device indicators
+
+The Equipment key indicators include **BYOD Devices (%)** and **COPE Devices (%)**.
+Each is the sum of original, unallocated quantities for evaluated Devices with
+that exact source context, divided by the original quantity of all evaluated
+Devices, multiplied by 100. Only exact evaluation-time category `DEVICES`
+qualifies; infrastructure and other custom categories are excluded.
+
+Each task/source-equipment snapshot contributes once, not once per criterion
+or lifecycle stage. Fractional quantities are retained; the existing null
+quantity fallback is 1 and zero remains zero. Explicit usage-fraction overrides,
+even 0, do not reduce these adoption quantities or change the recorded context.
+Devices without BYOD/COPE context contribute only to the denominator, so the
+two shares need not total 100%.
+
+These are inventory-wide shares from persisted evaluation data, **before view
+filters**, not shares recomputed from filtered impacts. They use the existing
+percentage display: rounding to whole percentages, `0 %` for zero and `< 1 %`
+for a positive value below one. Missing historical snapshots, no Devices, or
+zero total Device quantity show the textual no-data state `--`, not a fabricated
+zero. The label and textual value are associated; meaning is not color-only.
+
+See [evaluation and defaults]({{% ref "/2-functional-documentation/use_cases/uc_inventory/uc4_launch_estimation.md" %}})
+and [evaluated exports]({{% ref "/2-functional-documentation/use_cases/uc_inventory/uc7_export_files.md" %}}).
 
 ## Table of contents
 

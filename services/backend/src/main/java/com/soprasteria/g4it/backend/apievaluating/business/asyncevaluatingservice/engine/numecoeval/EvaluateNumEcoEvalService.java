@@ -1,3 +1,7 @@
+// This file has been created (totally or partially) with the assistance of artificial intelligence tools.
+// All content has been generated under the direct supervision of a named individual,
+// and under the AI.Backbone Orchestrator Compliance framework
+
 /*
  * G4IT
  * Copyright 2023 Sopra Steria
@@ -17,6 +21,7 @@ import com.soprasteria.g4it.backend.apiinout.modeldb.InApplication;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InDatacenter;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InPhysicalEquipment;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InVirtualEquipment;
+import com.soprasteria.g4it.backend.apireferential.business.PhysicalEquipmentReferenceResolver;
 import com.soprasteria.g4it.backend.apireferential.business.ReferentialService;
 import com.soprasteria.g4it.backend.server.gen.api.dto.*;
 import lombok.extern.slf4j.Slf4j;
@@ -54,6 +59,9 @@ public class EvaluateNumEcoEvalService {
     ReferentialService referentialService;
 
     @Autowired
+    PhysicalEquipmentReferenceResolver physicalEquipmentReferenceResolver;
+
+    @Autowired
     CalculImpactEquipementPhysiqueService calculImpactEquipementPhysiqueService;
 
     @Autowired
@@ -83,29 +91,22 @@ public class EvaluateNumEcoEvalService {
                                                                      List<String> lifecycleSteps,
                                                                      List<HypothesisRest> hypotheses,Long workspaceId, long workspaceCount) {
 
-        MatchingItemRest matchingItem = null;
-        boolean isModelMatched = true;
-        ItemTypeRest itemTypeRest;
+        PhysicalEquipmentReferenceResolver.Reference reference = physicalEquipmentReferenceResolver.resolve(
+                physicalEquipment.getModel(), physicalEquipment.getType(), organization, workspaceId, workspaceCount);
+        return calculateAllocatedPhysicalEquipment(physicalEquipment, datacenter, criteria, lifecycleSteps, hypotheses,
+                workspaceId, reference, 1d);
+    }
 
-        if (physicalEquipment.getModel() != null) {
-            if(workspaceCount>0) {
-                matchingItem = referentialService.getMatchingItemForWorkspace(physicalEquipment.getModel(),workspaceId);
-                if(matchingItem == null){
-                    matchingItem = referentialService.getMatchingItem(physicalEquipment.getModel(), organization);
-                }
-            }else {
-                matchingItem = referentialService.getMatchingItem(physicalEquipment.getModel(), organization);
-            }
-        }
-
-        if(workspaceCount>0) {
-            itemTypeRest = referentialService.getItemTypeForWorkspace(physicalEquipment.getType(), workspaceId);
-            if(itemTypeRest == null){
-                itemTypeRest = referentialService.getItemType(physicalEquipment.getType(), organization);
-            }
-        }else{
-            itemTypeRest = referentialService.getItemType(physicalEquipment.getType(), organization);
-        }
+    public List<ImpactEquipementPhysique> calculateAllocatedPhysicalEquipment(final InPhysicalEquipment physicalEquipment,
+                                                                     final InDatacenter datacenter,
+                                                                     List<CriterionRest> criteria,
+                                                                     List<String> lifecycleSteps,
+                                                                     List<HypothesisRest> hypotheses,
+                                                                     Long workspaceId,
+                                                                     PhysicalEquipmentReferenceResolver.Reference reference,
+                                                                     double fraction) {
+        MatchingItemRest matchingItem = reference.matchingItem();
+        ItemTypeRest itemTypeRest = reference.itemType();
 
         List<ImpactEquipementPhysique> result = new ArrayList<>(criteria.size() * lifecycleSteps.size());
         LocalDateTime now = LocalDateTime.now();
@@ -113,19 +114,8 @@ public class EvaluateNumEcoEvalService {
         for (final String lifecycleStep : lifecycleSteps) {
             for (final CriterionRest criterion : criteria) {
 
-                String itemImpactName = null;
-
-                if (matchingItem == null) {
-                    if (itemTypeRest.getRefDefaultItem() != null) {
-                        itemImpactName = itemTypeRest.getRefDefaultItem();
-                        isModelMatched = false;
-                    }
-                } else {
-                    itemImpactName = matchingItem.getRefItemTarget();
-                }
-
                 List<ItemImpactRest> itemImpacts = referentialService.getItemImpactsForWorkspace(
-                            criterion.getCode(), lifecycleStep, itemImpactName,
+                            criterion.getCode(), lifecycleStep, reference.reference(),
                             physicalEquipment.getLocation(), workspaceId);
 
                 ItemImpactRest firstImpact = itemImpacts.stream().findFirst().orElse(null);
@@ -136,6 +126,10 @@ public class EvaluateNumEcoEvalService {
                 }
 
                 EquipementPhysique equipementPhysique = internalToNumEcoEvalCalculs.map(physicalEquipment);
+                if (equipementPhysique.getQuantite() != null) {
+                    // Electricity is per equipment; scaling it as well would apply the fraction twice.
+                    equipementPhysique.setQuantite(equipementPhysique.getQuantite() * fraction);
+                }
                 if (datacenter != null) {
                     equipementPhysique.setDataCenter(internalToNumEcoEvalCalculs.map(datacenter));
                 }
@@ -163,7 +157,7 @@ public class EvaluateNumEcoEvalService {
                 ImpactEquipementPhysique impactEquipementPhysique =
                         calculImpactEquipementPhysiqueService.calculerImpactEquipementPhysique(demandeCalculImpactEquipementPhysique);
                 String refName = firstImpact != null ? firstImpact.getName() : null;
-                updateTraceForImpact(impactEquipementPhysique, lifecycleStep, isModelMatched,refName,hideValue, objectMapper);
+                updateTraceForImpact(impactEquipementPhysique, lifecycleStep, reference.modelMatched(),refName,hideValue, objectMapper);
                 result.add(impactEquipementPhysique);
             }
         }

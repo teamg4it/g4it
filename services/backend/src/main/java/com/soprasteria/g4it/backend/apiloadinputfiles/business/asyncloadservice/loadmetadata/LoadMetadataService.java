@@ -18,7 +18,6 @@ import com.soprasteria.g4it.backend.common.utils.CsvUtils;
 import com.soprasteria.g4it.backend.exception.AsyncTaskException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,13 +59,7 @@ public class LoadMetadataService {
         IMetadataLoaderService retrieveMetadataLoaderService = retrieveMetadataLoaderService(fileToLoad.getFileType());
 
         try (BufferedReader reader = new BufferedReader(new FileReader(fileToLoad.getConvertedFile()))) {
-            CSVParser records = CSVFormat.RFC4180.builder()
-                    .setHeader()
-                    .setDelimiter(CsvUtils.DELIMITER)
-                    .setAllowMissingColumnNames(true)
-                    .setSkipHeaderRecord(false)
-                    .build()
-                    .parse(reader);
+            CSVParser records = CsvUtils.parseWithNormalizedHeaders(reader);
 
             int row = 1;
             int pageNumber = 0;

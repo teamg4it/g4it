@@ -1,4 +1,9 @@
+<!-- AI_DISCLAIMER v1.0 -->
 # Things to know to happily work on this project 🌈
+
+> This file has been created (totally or partially) with the assistance of artificial intelligence tools.
+> All content has been generated under the direct supervision of a named individual,
+> and under the AI.Backbone Orchestrator Compliance framework
 
 ## Getting started
 
@@ -31,6 +36,20 @@ the command: `ng test --code-coverage`.
 
 Feel free to refer to this README file whenever you need guidance while working on the
 Angular inventory frontend.
+
+#### Lint
+
+Run `npm run lint` from `services/frontend` to check TypeScript and Angular
+templates, including inline templates. GitHub Actions runs the same check as
+a blocking job on frontend pull requests and pushes to `main`.
+
+The versioned `eslint-suppressions.json` records existing violations by file,
+rule, and count. New violations exceeding a recorded count fail the check.
+When fixing existing violations, run `npm run lint -- --prune-suppressions`
+and commit the reduced baseline. Until it is pruned, a new violation can
+replace a fixed violation of the same rule in the same file without exceeding
+the recorded count. Avoid regenerating the entire baseline to hide new
+violations.
 
 #### Full Mocked or with backend
 
@@ -95,7 +114,7 @@ icons and designs.
 
 List of tools to be installed:
 
-- Node.js 20
+- Node.js 20.19+, 22.13+ or 24+ (CI lint uses Node.js 22)
 
 #### Cypress tests
 

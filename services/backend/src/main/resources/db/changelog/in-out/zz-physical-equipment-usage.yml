@@ -1,0 +1,18 @@
+# This file has been created (totally or partially) with the assistance of artificial intelligence tools.
+# All content has been generated under the direct supervision of a named individual,
+# and under the AI.Backbone Orchestrator Compliance framework
+
+databaseChangeLog:
+  - changeSet:
+      id: g4it-48-physical-equipment-source-usage
+      author: G4IT Dev Team
+      changes:
+        - addColumn:
+            tableName: in_physical_equipment
+            columns:
+              - column:
+                  name: usage_context
+                  type: text
+              - column:
+                  name: usage_fraction
+                  type: text

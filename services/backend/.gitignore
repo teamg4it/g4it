@@ -1,4 +1,10 @@
+# This file has been created (totally or partially) with the assistance of artificial intelligence tools.
+# All content has been generated under the direct supervision of a named individual,
+# and under the AI.Backbone Orchestrator Compliance framework
+
 ### G4IT ###
+/.\\storage/
+/.\\storagetmp/
 storage
 !storage
 storage/*

@@ -255,6 +255,40 @@ class ReferentialImportServiceTest {
     }
 
     @Test
+    void shouldRejectMissingCategoryColumnWithoutPersistingOrClearingCache() throws IOException {
+        when(file.getBytes()).thenReturn("type\nLaptop\n".getBytes(StandardCharsets.UTF_8));
+        when(file.getOriginalFilename()).thenReturn("item-types.csv");
+
+        ImportReportRest report = referentialImportService.processItemTypeCsv(file, "org");
+
+        assertEquals(List.of("CSV column item_category is required"), report.getErrors());
+        verifyNoInteractions(referentialMapper, validator, persistenceService, cacheManager);
+    }
+
+    @ParameterizedTest
+    @MethodSource("missingItemCategories")
+    void shouldRejectInvalidCategoryWithoutPartiallySaving(String category) throws IOException {
+        when(file.getBytes()).thenReturn("type;item_category\nLaptop;DEVICES\n"
+                .getBytes(StandardCharsets.UTF_8));
+        when(file.getOriginalFilename()).thenReturn("item-types.csv");
+        ItemTypeRest rest = new ItemTypeRest();
+        rest.setItemCategory(category);
+        when(referentialMapper.csvItemTypeToRest(any())).thenReturn(rest);
+        when(validator.validate(rest)).thenReturn(Collections.emptySet());
+
+        ImportReportRest report = referentialImportService.processItemTypeCsv(file, "org");
+
+        assertEquals(1, report.getErrors().size());
+        assertTrue(report.getErrors().getFirst().contains("Invalid or missing item_category"));
+        verify(referentialMapper, never()).toItemTypeEntity(any());
+        verifyNoInteractions(persistenceService, cacheManager);
+    }
+
+    private static Stream<Arguments> missingItemCategories() {
+        return Stream.of(Arguments.of((String) null), Arguments.of(""), Arguments.of(" "));
+    }
+
+    @Test
     void testProcessMatchingItemCsv_Valid() throws IOException {
         String csv = "header1\nval1\n";
          when(file.getBytes()).thenReturn(csv.getBytes());
