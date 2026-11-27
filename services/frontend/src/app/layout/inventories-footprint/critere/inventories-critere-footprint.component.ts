@@ -27,6 +27,7 @@ import { Button } from "primeng/button";
 import { SelectModule } from "primeng/select";
 import {
     GraphDescriptionContent,
+    StatusCount,
     StatusCountMap,
 } from "src/app/core/interfaces/digital-service.interfaces";
 import {
@@ -43,6 +44,7 @@ import {
 import { InVirtualEquipmentRest } from "src/app/core/interfaces/input.interface";
 import { Inventory } from "src/app/core/interfaces/inventory.interfaces";
 import { FootprintService } from "src/app/core/service/business/footprint.service";
+import { createSunburstChartConfig } from "src/app/core/service/mapper/sunburst-chart.mapper";
 import { FootprintStoreService } from "src/app/core/store/footprint.store";
 import { getLifeCycleList, getLifeCycleMap } from "src/app/core/utils/lifecycle";
 import { Constants } from "src/constants";
@@ -50,9 +52,21 @@ import { StackBarChartComponent } from "../../common/stack-bar-chart/stack-bar-c
 import { GraphDescriptionComponent } from "../../digital-services-footprint/digital-services-footprint-dashboard/graph-description/graph-description.component";
 import { AbstractDashboard } from "../abstract-dashboard";
 import { InventoriesFootprintComponent } from "../inventories-footprint.component";
-import { createSunburstChartConfig } from "src/app/core/service/mapper/sunburst-chart.mapper";
 
 type SunburstNode = { name: string; value?: number; children?: SunburstNode[] };
+
+// Item categories come from the reference data ("Devices", "External Services", "Non_IT"...)
+// or from the backend fallback ("INFRASTRUCTURE"), so they are matched ignoring case and separators.
+const SUNBURST_CATEGORY_BY_NORMALIZED_NAME: Record<string, string> = {
+    devices: "devices",
+    infrastructure: "infrastructure",
+    externalservices: "externalServices",
+    nonit: "nonIT",
+};
+const SUNBURST_CATEGORY_KEYS = [
+    ...new Set(Object.values(SUNBURST_CATEGORY_BY_NORMALIZED_NAME)),
+    "unclassified",
+];
 
 @Component({
     selector: "app-inventories-critere-footprint",
@@ -72,7 +86,8 @@ type SunburstNode = { name: string; value?: number; children?: SunburstNode[] };
 })
 export class InventoriesCritereFootprintComponent
     extends AbstractDashboard
-    implements OnChanges {
+    implements OnChanges
+{
     protected footprintStore = inject(FootprintStoreService);
     private readonly footprintService = inject(FootprintService);
     protected readonly inventoryComponent = inject(InventoriesFootprintComponent);
@@ -145,6 +160,12 @@ export class InventoriesCritereFootprintComponent
         };
     });
 
+    showDataConsistency = computed(
+        () =>
+            !!this.criteriaCalculated().hasError &&
+            !!this.inventory()?.enableDataInconsistency,
+    );
+
     options: Signal<EChartsOption> = computed(() => {
         return this.renderChart(
             this.criteriaCalculated(),
@@ -212,12 +233,6 @@ export class InventoriesCritereFootprintComponent
             return {};
         }
 
-        const knownItemCategories = {
-            DEVICES: "devices" as const,
-            INFRASTRUCTURE: "infrastructure" as const,
-            EXTERNAL: "externalServices" as const,
-        };
-
         if (selectedView === "equipment") {
             const filters = this.footprintStore.filters();
             const hasAllFilters = this.filterFields.every((field) =>
@@ -226,27 +241,33 @@ export class InventoriesCritereFootprintComponent
             const filteredImpacts = hasAllFilters
                 ? this.criteriaFootprint.impacts
                 : this.criteriaFootprint.impacts.filter((impact) =>
-                    this.filterFields.every((field) => {
-                        const value =
-                            this.footprintService.valueImpact(impact, field) ||
-                            Constants.EMPTY;
-                        return filters[field]?.includes(value) ?? false;
-                    }),
-                );
+                      this.filterFields.every((field) => {
+                          const value =
+                              this.footprintService.valueImpact(impact, field) ||
+                              Constants.EMPTY;
+                          return filters[field]?.includes(value) ?? false;
+                      }),
+                  );
             const allImpactsGroupedByCategory = Object.groupBy(
                 filteredImpacts,
-                (i: Impact) =>
-                    i.sunburstServiceType ? "EXTERNAL" : i.itemCategory,
+                (i: Impact) => this.getSunburstCategoryKey(i),
             );
 
             // Convert the grouped impacts into a tree structure suitable for the sunburst chart
-            const data: NonNullable<SunburstSeriesOption["data"]> = Object.keys(allImpactsGroupedByCategory).map(category => {
-                const items = Object.groupBy(allImpactsGroupedByCategory[category]!, (i: Impact) => i.sunburstServiceType || i.itemType || i.equipment!);
+            const data: NonNullable<SunburstSeriesOption["data"]> = Object.keys(
+                allImpactsGroupedByCategory,
+            ).map((category) => {
+                const items = Object.groupBy(
+                    allImpactsGroupedByCategory[category]!,
+                    (i: Impact) => i.sunburstServiceType || i.itemType || i.equipment!,
+                );
 
                 return {
                     // Use the translated label if the category is known, otherwise use the raw category name
-                    name: Object.keys(knownItemCategories).includes(category)
-                        ? this.translate.instant(`inventories-footprint.sunburst-category.${knownItemCategories[category as keyof typeof knownItemCategories]}`)
+                    name: SUNBURST_CATEGORY_KEYS.includes(category)
+                        ? this.translate.instant(
+                              `inventories-footprint.sunburst-category.${category}`,
+                          )
                         : category,
 
                     // Calculate the total value for the category by summing the values of all items in that category
@@ -257,39 +278,82 @@ export class InventoriesCritereFootprintComponent
                                 (i.sunburstProvider ?? "").trim().toUpperCase(),
                             );
                             return {
-                                name: this.translate.instant(`inventories-footprint.sunburst-category.${items[item]![0].sunburstServiceType}`),
-                                children: Object.values(g).map((impact) => ({
-                                    name: impact![0].sunburstProvider?.trim() || impact![0].equipment!,
-                                    value: impact!.reduce((sum, current) => sum + (unit === Constants.PEOPLEEQ ? current.sip : current.impact), 0),
-                                } satisfies SunburstNode)),
-                            } satisfies SunburstNode
+                                name: this.translate.instant(
+                                    `inventories-footprint.sunburst-category.${items[item]![0].sunburstServiceType}`,
+                                ),
+                                children: Object.entries(g).map(
+                                    ([provider, impact]) =>
+                                        ({
+                                            name: provider || impact![0].equipment!,
+                                            value: impact!.reduce(
+                                                (sum, current) =>
+                                                    sum +
+                                                    (unit === Constants.PEOPLEEQ
+                                                        ? current.sip
+                                                        : current.impact),
+                                                0,
+                                            ),
+                                        }) satisfies SunburstNode,
+                                ),
+                            } satisfies SunburstNode;
                         }
 
                         // If the item does not have a sunburstServiceType, return a single node with the total value for that item
                         const itemImpacts = items[item]!;
                         if (itemImpacts.some((impact) => impact.itemModel?.trim())) {
-                            const models = Object.groupBy(itemImpacts, (impact: Impact) =>
-                                impact.itemModel?.trim() || this.translate.instant("inventories-footprint.sunburst-category.unclassified"),
+                            const models = Object.groupBy(
+                                itemImpacts,
+                                (impact: Impact) =>
+                                    impact.itemModel?.trim() ||
+                                    this.translate.instant(
+                                        "inventories-footprint.sunburst-category.unclassified",
+                                    ),
                             );
                             return {
                                 name: item,
-                                children: Object.entries(models).map(([model, impacts]) => ({
-                                    name: model,
-                                    value: impacts!.reduce((sum, current) => sum + (unit === Constants.PEOPLEEQ ? current.sip : current.impact), 0),
-                                } satisfies SunburstNode)),
+                                children: Object.entries(models).map(
+                                    ([model, impacts]) =>
+                                        ({
+                                            name: model,
+                                            value: impacts!.reduce(
+                                                (sum, current) =>
+                                                    sum +
+                                                    (unit === Constants.PEOPLEEQ
+                                                        ? current.sip
+                                                        : current.impact),
+                                                0,
+                                            ),
+                                        }) satisfies SunburstNode,
+                                ),
                             } satisfies SunburstNode;
                         }
 
                         return {
                             name: item,
-                            value: itemImpacts.reduce((sum, current) => sum + (unit === Constants.PEOPLEEQ ? current.sip : current.impact), 0),
-                        } satisfies SunburstNode
+                            value: itemImpacts.reduce(
+                                (sum, current) =>
+                                    sum +
+                                    (unit === Constants.PEOPLEEQ
+                                        ? current.sip
+                                        : current.impact),
+                                0,
+                            ),
+                        } satisfies SunburstNode;
                     }),
-                } satisfies SunburstNode
-            })
+                } satisfies SunburstNode;
+            });
+
+            this.setSunburstItemStatus(filteredImpacts);
 
             return createSunburstChartConfig({
-                data
+                data,
+                chartOptions: {
+                    tooltip: {
+                        trigger: "item",
+                        formatter: (params: any) =>
+                            this.getSunburstTooltipHtml(params, unit),
+                    },
+                },
             });
         }
 
@@ -433,8 +497,8 @@ export class InventoriesCritereFootprintComponent
         const translatedUnit =
             unit === Constants.PEOPLEEQ
                 ? this.translate.instant(
-                    `common.${Constants.PEOPLEEQ.toLocaleLowerCase()}`,
-                )
+                      `common.${Constants.PEOPLEEQ.toLocaleLowerCase()}`,
+                  )
                 : unit;
 
         const pipe = unit === Constants.PEOPLEEQ ? this.integerPipe : this.decimalsPipe;
@@ -462,8 +526,8 @@ export class InventoriesCritereFootprintComponent
         const titleDiv =
             tooltipLines.length > 1
                 ? `${this.getCircleColorHtml(color)} ${this.translate.instant(
-                    "common.otherLegend",
-                )}`
+                      "common.otherLegend",
+                  )}`
                 : "";
 
         return `
@@ -472,6 +536,69 @@ export class InventoriesCritereFootprintComponent
                 ${tooltipLines.join("")}
             </div>
         `;
+    }
+
+    /**
+     * Key of the first sunburst ring for an impact. Cloud and AI services always
+     * belong to external services; known categories are normalized to a translation key,
+     * unknown custom categories keep their raw name.
+     */
+    getSunburstCategoryKey(impact: Impact): string {
+        if (impact.sunburstServiceType) return "externalServices";
+        const raw = impact.itemCategory?.trim();
+        if (!raw) return "unclassified";
+        return (
+            SUNBURST_CATEGORY_BY_NORMALIZED_NAME[
+                raw.toLowerCase().replaceAll(/[^a-z]/g, "")
+            ] ?? raw
+        );
+    }
+
+    /**
+     * Feeds the data consistency stack-bar chart in the Item view: one entry per
+     * sunburst item (second ring), keeping only items with errors, worst first.
+     */
+    setSunburstItemStatus(impacts: Impact[]) {
+        const statusByItem = new Map<string, StatusCount>();
+        for (const impact of impacts) {
+            const name = impact.sunburstServiceType
+                ? this.translate.instant(
+                      `inventories-footprint.sunburst-category.${impact.sunburstServiceType}`,
+                  )
+                : impact.itemType || impact.equipment || Constants.EMPTY;
+            const status = statusByItem.get(name) ?? { ok: 0, error: 0, total: 0 };
+            if (impact.statusIndicator === Constants.DATA_QUALITY_STATUS.ok) {
+                status.ok++;
+            } else {
+                status.error++;
+            }
+            status.total++;
+            statusByItem.set(name, status);
+        }
+
+        this.allErrorData = [...statusByItem.values()].every((s) => !s.ok);
+
+        const itemsWithError = [...statusByItem.entries()]
+            .filter(([, status]) => status.error > 0)
+            .sort(([, a], [, b]) => b.error / b.total - a.error / a.total);
+        this.xAxisInput = itemsWithError.map(([name]) => name);
+        for (const [name, status] of itemsWithError) {
+            this.criteriaMap[name] = { status };
+        }
+    }
+
+    getSunburstTooltipHtml(params: any, unit: string) {
+        const isPeopleEq = unit === Constants.PEOPLEEQ;
+        const translatedUnit = isPeopleEq
+            ? this.translate.instant(`common.${Constants.PEOPLEEQ.toLocaleLowerCase()}`)
+            : this.unitOfCriteria();
+        const pipe = isPeopleEq ? this.integerPipe : this.decimalsPipe;
+
+        return this.getTooltipItemHtml(
+            params.name,
+            `${pipe.transform(params.value)} ${translatedUnit}`,
+            params.color,
+        );
     }
 
     getCircleColorHtml(color: string | undefined = undefined) {

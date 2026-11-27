@@ -217,6 +217,125 @@ describe("InventoriesCritereFootprintComponent", () => {
         ]);
     });
 
+    it("formats sunburst tooltips with the number format and unit of the selected view", () => {
+        const kgTooltip = component.getSunburstTooltipHtml(
+            { name: "Laptop", value: 1234.5678, color: "#123456" },
+            "kg",
+        );
+        expect(kgTooltip).toContain("Laptop:");
+        expect(kgTooltip).toContain("#123456");
+        expect(kgTooltip).toContain("criteria.Climate change.unite");
+        expect(kgTooltip).not.toContain("1234.5678");
+
+        const peopleeqTooltip = component.getSunburstTooltipHtml(
+            { name: "Laptop", value: 1234.5678, color: "#123456" },
+            Constants.PEOPLEEQ,
+        );
+        expect(peopleeqTooltip).toContain("common.peopleeq");
+        expect(peopleeqTooltip).not.toContain("1234.5678");
+    });
+
+    it("builds data consistency status per item in the Item view, worst first", () => {
+        footprintStore.filters = () => ({ country: [Constants.ALL] });
+        component.filterFields = ["country"];
+        component.criteriaFootprint = {
+            impacts: [
+                { itemCategory: "DEVICES", itemType: "Laptop", statusIndicator: "OK" },
+                { itemCategory: "DEVICES", itemType: "Laptop", statusIndicator: "ERROR" },
+                { itemCategory: "DEVICES", itemType: "Phone", statusIndicator: "ERREUR" },
+                { itemCategory: "DEVICES", itemType: "Screen", statusIndicator: "OK" },
+                {
+                    itemCategory: "EXTERNAL",
+                    equipment: "Cloud",
+                    sunburstServiceType: "cloud",
+                    sunburstProvider: "aws",
+                    statusIndicator: "ERROR",
+                },
+            ],
+        } as any;
+
+        component.renderChart(
+            { footprints: [{} as any], hasError: true, total: { impact: 0, sip: 0 } },
+            "equipment",
+            "kg",
+            {} as any,
+        );
+
+        expect(component.xAxisInput).toEqual([
+            "Phone",
+            "inventories-footprint.sunburst-category.cloud",
+            "Laptop",
+        ]);
+        expect(component.criteriaMap["Laptop"].status).toEqual({
+            ok: 1,
+            error: 1,
+            total: 2,
+        });
+        expect(component.criteriaMap["Screen"]).toBeUndefined();
+        expect(component.allErrorData).toBeFalse();
+    });
+
+    it("normalizes backend item categories and merges them with cloud/AI external services", () => {
+        footprintStore.filters = () => ({ country: [Constants.ALL] });
+        component.filterFields = ["country"];
+        const impact = (itemCategory: string | undefined, itemType: string, extra = {}) => ({
+            itemCategory,
+            itemType,
+            equipment: itemType,
+            impact: 1,
+            sip: 1,
+            ...extra,
+        });
+        component.criteriaFootprint = {
+            impacts: [
+                impact("Devices", "Laptop"),
+                impact("Infrastructure", "Server"),
+                impact("INFRASTRUCTURE", "Storage"),
+                impact("External Services", "SaaS"),
+                impact("Non_IT", "Vehicle"),
+                impact(undefined, "Mystery"),
+                impact("EXTERNAL", "Cloud", {
+                    sunburstServiceType: "cloud",
+                    sunburstProvider: "aws",
+                }),
+                impact("EXTERNAL", "Cloud", {
+                    sunburstServiceType: "cloud",
+                    sunburstProvider: " AWS ",
+                }),
+            ],
+        } as any;
+
+        const chart: any = component.renderChart(
+            { footprints: [{} as any], hasError: false, total: { impact: 0, sip: 0 } },
+            "equipment",
+            "kg",
+            {} as any,
+        );
+        const roots = chart.series[0].data;
+        const byName = (name: string) => roots.find((n: any) => n.name === name);
+
+        expect(roots.map((n: any) => n.name)).toEqual([
+            "inventories-footprint.sunburst-category.devices",
+            "inventories-footprint.sunburst-category.infrastructure",
+            "inventories-footprint.sunburst-category.externalServices",
+            "inventories-footprint.sunburst-category.nonIT",
+            "inventories-footprint.sunburst-category.unclassified",
+        ]);
+        expect(
+            byName("inventories-footprint.sunburst-category.infrastructure").children.map(
+                (c: any) => c.name,
+            ),
+        ).toEqual(["Server", "Storage"]);
+
+        const external = byName("inventories-footprint.sunburst-category.externalServices");
+        expect(external.children.map((c: any) => c.name)).toEqual([
+            "SaaS",
+            "inventories-footprint.sunburst-category.cloud",
+        ]);
+        const providers = external.children[1].children;
+        expect(providers).toEqual([jasmine.objectContaining({ name: "AWS", value: 2 })]);
+    });
+
     it("combines sub-one-percent impacts and exposes inconsistent categories", () => {
         const status = (ok: number, error: number) => ({
             ok,

@@ -834,6 +834,7 @@
             "externalServices": "Services ext.",
             "cloud": "Services cloud",
             "ai": "Services IA",
+            "nonIT": "Hors IT",
             "unclassified": "Non classé"
         },
         "round-button": {

@@ -1,7 +1,7 @@
 <div
     class="ml-auto block align-items-end lg:flex flex-row p-3"
     [ngClass]="
-        criteriaCalculated().hasError && inventory()?.enableDataInconsistency
+        showDataConsistency()
             ? 'justify-content-end'
             : 'justify-content-between'
     "
@@ -22,7 +22,7 @@
             </a>
         }
     </div>
-    @if (criteriaCalculated().hasError && inventory()?.enableDataInconsistency) {
+    @if (showDataConsistency()) {
         <p-button
             (onClick)="showInconsitencyGraph = !showInconsitencyGraph"
             [rounded]="true"
@@ -56,7 +56,7 @@
         </ng-template>
     </p-select>
 </div>
-@if (showInconsitencyGraph) {
+@if (showInconsitencyGraph && showDataConsistency()) {
     @if (options().series && xAxisInput.length) {
         <app-stack-bar-chart [xAxisInput]="xAxisInput" [statusCountMap]="criteriaMap" />
     } @else {
