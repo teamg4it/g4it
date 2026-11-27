@@ -44,6 +44,7 @@ import {
 import { InVirtualEquipmentRest } from "src/app/core/interfaces/input.interface";
 import { Inventory } from "src/app/core/interfaces/inventory.interfaces";
 import { FootprintService } from "src/app/core/service/business/footprint.service";
+import { getLabelFormatter } from "src/app/core/service/mapper/graphs-mapper";
 import { createSunburstChartConfig } from "src/app/core/service/mapper/sunburst-chart.mapper";
 import { FootprintStoreService } from "src/app/core/store/footprint.store";
 import { getLifeCycleList, getLifeCycleMap } from "src/app/core/utils/lifecycle";
@@ -53,7 +54,23 @@ import { GraphDescriptionComponent } from "../../digital-services-footprint/digi
 import { AbstractDashboard } from "../abstract-dashboard";
 import { InventoriesFootprintComponent } from "../inventories-footprint.component";
 
-type SunburstNode = { name: string; value?: number; children?: SunburstNode[] };
+type SunburstNode = {
+    name: string;
+    value?: number;
+    hasError?: boolean;
+    children?: SunburstNode[];
+};
+
+const hasImpactError = (impacts: Impact[]): boolean =>
+    impacts.some((impact) => impact.statusIndicator !== Constants.DATA_QUALITY_STATUS.ok);
+
+// Parent nodes are in error as soon as one of their children is.
+const propagateSunburstErrors = (node: SunburstNode): boolean => {
+    if (node.children) {
+        node.hasError = node.children.map(propagateSunburstErrors).some(Boolean);
+    }
+    return !!node.hasError;
+};
 
 // Item categories come from the reference data ("Devices", "External Services", "Non_IT"...)
 // or from the backend fallback ("INFRASTRUCTURE"), so they are matched ignoring case and separators.
@@ -285,6 +302,7 @@ export class InventoriesCritereFootprintComponent
                                     ([provider, impact]) =>
                                         ({
                                             name: provider || impact![0].equipment!,
+                                            hasError: hasImpactError(impact!),
                                             value: impact!.reduce(
                                                 (sum, current) =>
                                                     sum +
@@ -315,6 +333,7 @@ export class InventoriesCritereFootprintComponent
                                     ([model, impacts]) =>
                                         ({
                                             name: model,
+                                            hasError: hasImpactError(impacts!),
                                             value: impacts!.reduce(
                                                 (sum, current) =>
                                                     sum +
@@ -330,6 +349,7 @@ export class InventoriesCritereFootprintComponent
 
                         return {
                             name: item,
+                            hasError: hasImpactError(itemImpacts),
                             value: itemImpacts.reduce(
                                 (sum, current) =>
                                     sum +
@@ -344,9 +364,20 @@ export class InventoriesCritereFootprintComponent
             });
 
             this.setSunburstItemStatus(filteredImpacts);
+            data.forEach((node) => propagateSunburstErrors(node as SunburstNode));
 
             return createSunburstChartConfig({
                 data,
+                seriesOptions: {
+                    label: {
+                        minAngle: 5,
+                        formatter: (params: any) =>
+                            inventory.enableDataInconsistency && params.data?.hasError
+                                ? getLabelFormatter(true, true, params.name)
+                                : params.name,
+                        rich: Constants.CHART_RICH_SMALL as any,
+                    },
+                },
                 chartOptions: {
                     tooltip: {
                         trigger: "item",
