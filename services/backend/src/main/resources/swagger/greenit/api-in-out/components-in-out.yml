@@ -4,6 +4,10 @@ info:
   description: This is a GreenIT Server based on the OpenAPI 3.0 specification.
   version: "1.0.0"
 
+# This file has been created (totally or partially) with the assistance of artificial intelligence tools.
+# All content has been generated under the direct supervision of a named individual,
+# and under the AI.Backbone Orchestrator Compliance framework
+
 components:
   schemas:
     InAiServiceRest:
@@ -134,6 +138,14 @@ components:
         manufacturer:
           type: string
           maxLength: 255
+        usageContext:
+          type: string
+          nullable: true
+          description: Original contexteUsage value. Inventory DEVICES accept BYOD, COPE or empty. Other equipment retains the provided value without applying allocation.
+        usageFraction:
+          type: string
+          nullable: true
+          description: Original fractionUsage text, preserved without numeric conversion for exempt equipment. Inventory DEVICES accept empty or a finite decimal from 0 to 1 inclusive.
         datePurchase:
           type: string
           format: date

@@ -1,3 +1,7 @@
+// This file has been created (totally or partially) with the assistance of artificial intelligence tools.
+// All content has been generated under the direct supervision of a named individual,
+// and under the AI.Backbone Orchestrator Compliance framework
+
 package com.soprasteria.g4it.backend.apiinout.modeldb;/*
  * G4IT
  * Copyright 2023 Sopra Steria
@@ -65,6 +69,12 @@ public class InPhysicalEquipment {
     private String type;
     private String model;
     private String manufacturer;
+
+    @Column(columnDefinition = "text")
+    private String usageContext;
+
+    @Column(columnDefinition = "text")
+    private String usageFraction;
 
     private LocalDate datePurchase;
     private LocalDate dateWithdrawal;

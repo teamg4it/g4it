@@ -1,0 +1,149 @@
+{
+  "station": "pr-validation/a2-security-static",
+  "station_id": "A2",
+  "station_name": "A2 — Security Static",
+  "workflow": "feature-implementation",
+  "feature": "G4IT-48",
+  "trace_id": "e6fa33d4-27cf-4d12-84a2-3c70d47d88da",
+  "pr": {"repo": "teamg4it/g4it", "number": 959, "base_ref": "origin/feat/g4it-ia-backbone", "head_branch": "feat/g4it-48"},
+  "generated_at": "2026-11-27T16:06:17+01:00",
+  "skill": "secret-scan (S-01..S-04)",
+  "files_in_scope": 189,
+  "files_scanned": 187,
+  "files_scan_method": "regex sweep via grep over in-scope trees; direct view of e2e/g4it48-live-e2e.sh (lines 1-70), AzureGreenItFileSystemApplicationTests.java (70-85), frontend-deps-update.yml (20-26); documentation/ and outputs/ sampled with grep for secret patterns only",
+  "secret_scan_ran": true,
+  "dependency_scan_ran": false,
+  "dependency_scan_note": "pom.xml and frontend package-lock.json are in scope but no CVE scanner (Trivy/pip-audit/npm audit) was executed; no shell permitted for this station. S-02 not evaluated.",
+  "secret_patterns_checked": ["ghp_", "sk-", "AKIA", "-----BEGIN PRIVATE KEY", "xox[baprs]-", "AIza", "password/secret/token/api_key/client_secret assignments with literal values"],
+  "findings": [
+    {
+      "check": "S-04 / gate: sensitive path reference",
+      "path": "services/backend/e2e/g4it48-live-e2e.sh",
+      "line": 10,
+      "type": "sensitive_path_reference",
+      "severity": "high",
+      "rationale": "Default ENV_FILE points to workspace/docker/.env, a sensitive file flagged in work_order. The script reads it at runtime for G4IT_E2E_USER and G4IT_E2E_PASSWORD (lines 10-50) and never sources it. Values are not printed. The owner attestation covers the file's content, not this reference, so the gate criterion 'no sensitive file paths referenced' is not met as written. Owner decision needed (see open_questions)."
+    },
+    {
+      "check": "S-01 (credential exposure in logs)",
+      "path": "services/backend/src/test/java/com/soprasteria/g4it/backend/common/filesystem/integration/AzureGreenItFileSystemApplicationTests.java",
+      "line": 78,
+      "type": "secret_prefix_logged",
+      "severity": "medium",
+      "rationale": "Static initializer logs the first 5 characters of AZURE_CLIENT_SECRET when Azure integration tests are enabled. This discloses part of a credential to CI logs. Not a full secret leak, but should be removed."
+    },
+    {
+      "check": "S-03 / workflow integrity",
+      "path": ".github/workflows/frontend-deps-update.yml",
+      "line": 23,
+      "type": "malformed_secret_reference",
+      "severity": "medium",
+      "rationale": "repo-token is set to a bare '$' rather than a ${{ secrets.* }} expression, so the action receives an invalid token. This is a functional defect, not a leaked value. No secret is exposed."
+    },
+    {
+      "check": "S-01 (default credential, local)",
+      "path": "services/backend/src/main/resources/application.yml",
+      "line": 92,
+      "type": "default_db_password",
+      "severity": "low",
+      "rationale": "Production resource ships a default datasource password 'postgres' (synthetic local default). Should be overridable via env only in deployed profiles. Value not reproduced."
+    },
+    {
+      "check": "S-01 (test fixture credential)",
+      "path": "services/backend/src/test/resources/application-integration-test.yml",
+      "line": 92,
+      "type": "test_fixture_credential",
+      "severity": "low",
+      "rationale": "Test fixture datasource password, obviously synthetic local value. Acceptable for local integration tests; no real credential."
+    },
+    {
+      "check": "S-01 (test fixture credential)",
+      "path": "services/backend/src/test/resources/application-test.yml",
+      "line": 11,
+      "type": "test_fixture_credential",
+      "severity": "low",
+      "rationale": "Test fixture datasource password, obviously synthetic local value. Acceptable for tests."
+    },
+    {
+      "check": "S-01 (documented default credential)",
+      "path": "DOCKER-DEPLOYMENT.md",
+      "line": 58,
+      "type": "documented_default_credential",
+      "severity": "low",
+      "rationale": "Local deployment doc lists a default 'password' value. Documentation of a local default, not a real secret. Same pattern at line 65."
+    },
+    {
+      "check": "S-01 (documented default credential)",
+      "path": "services/documentation/content/1-getting-started/2-getting-started-as-a-developper/1-How to setup my local dev env/2-g4it-installation.md",
+      "line": 103,
+      "type": "documented_default_credential",
+      "severity": "low",
+      "rationale": "Developer setup doc lists a local default password. Found by sampled grep only. Same class as DOCKER-DEPLOYMENT.md."
+    },
+    {
+      "check": "S-01 (synthetic test value)",
+      "path": "services/backend/src/test/java/com/soprasteria/g4it/backend/apiindicator/controller/InventoryIndicatorExportSecurityTest.java",
+      "line": 98,
+      "type": "synthetic_test_token",
+      "severity": "info",
+      "rationale": "Constant VALID_TOKEN = 'synthetic-valid-token' used only in a mocked JWT decoder. Test fixture, intentional."
+    },
+    {
+      "check": "S-01 (synthetic test value)",
+      "path": "services/backend/e2e/test_g4it48_config.py",
+      "line": 82,
+      "type": "synthetic_test_value",
+      "severity": "info",
+      "rationale": "Unit test uses placeholder values ('supplied-value', 'literal#value', 'must-stay-literal') to test the env-file parser. Test fixture, intentional."
+    }
+  ],
+  "false_positives_reviewed": [
+    {"path": "services/backend/src/main/java/com/soprasteria/g4it/backend/apiuser/business/UserService.java", "line": 54, "note": "constant named TOKEN holds the method name 'getJwtToken', not a credential"},
+    {"path": "services/backend/src/main/java/com/soprasteria/g4it/backend/common/filesystem/..../FileLoadingUtils.java", "line": 180, "note": "'../../etc/passwd' appears in a code comment as a path-traversal example; no file access"},
+    {"path": ".github/workflows/*.yml", "note": "all SONAR_TOKEN, DOCKER_USERNAME, DOCKER_PASSWORD, GITHUB_TOKEN occurrences are ${{ secrets.X }} references, not values"},
+    {"path": "services/backend/e2e/g4it48-live-e2e.sh", "note": "password appears only as a variable name and in a redacted run example in implementation-log.md; no literal value found"},
+    {"path": "outputs/specs/features/G4IT-48/implementation-log.md", "line": 2427, "note": "placeholders <test-db-user>/<test-db-password> only"},
+    {"path": "services/frontend/src/**", "note": "'token' hits are Keycloak/share-token variable names and mock values such as 'mock-token', 'tok-abc'; not credentials"}
+  ],
+  "dangerous_patterns": {
+    "S-03-A_curl_pipe_shell": {"result": "none", "scope": "in-scope tracked files"},
+    "S-03-B_wget_pipe_shell": {"result": "none"},
+    "S-03-C_eval": {"result": "none", "note": "no eval( in production or e2e scripts"},
+    "S-03-D_subprocess_shell_true": {"result": "none"},
+    "S-03-E_os_system": {"result": "none"},
+    "S-03-F_wildcard_allowedFilePaths": {"result": "not_applicable", "note": "no agent/skill manifests in scope (A0 agent_skill_prompt_files_in_scope = 0)"},
+    "S-03-G_rm_rf_root": {"result": "none"},
+    "S-03-H_chmod_777": {"result": "none"}
+  },
+  "sensitive_paths": [
+    {
+      "path": "workspace/docker/.env",
+      "referenced_by": "services/backend/e2e/g4it48-live-e2e.sh:10",
+      "content_read": false,
+      "owner_attestation": "contains only local-execution settings with no associated risk",
+      "result": "reference flagged as high (see findings)"
+    }
+  ],
+  "not_scanned": [
+    {"path": "workspace/docker/.env", "reason": "sensitive-file exclusion; owner-attested no risk. Recorded as not_scanned, not a pass by scanning, not a finding on contents."},
+    {"path": "services/backend/storage/--INTERNAL-G4IT--/0/templates/G4IT_Datamodel_workspace_reference_data_v1.1.0.xlsx", "reason": "binary .xlsx; cannot be scanned as text"},
+    {"path": "services/backend/src/test/resources/apibatchloading/**/*.csv", "reason": "matched only by keyword search (e.g. 'TOKEN' in product name); CSV data not fully swept"},
+    {"path": "services/documentation/content/**", "reason": "sampled with grep for secret patterns only, per scope"},
+    {"path": "outputs/**, inputs/**", "reason": "sampled with grep for secret patterns only, per scope"},
+    {"path": "services/backend/pom.xml, services/frontend/package-lock.json", "reason": "S-02 dependency CVE scan not executed (no permitted scanner); dependency_scan_ran=false"}
+  ],
+  "summary": "0 critical, 1 high, 2 medium, 4 low, 2 info",
+  "decision": {
+    "status": "fail",
+    "gate": "blocker",
+    "reason": "Gate criterion 'no sensitive file paths referenced' is not met: services/backend/e2e/g4it48-live-e2e.sh:10 defaults to workspace/docker/.env. No secret values, dangerous execution patterns, or confirmed credentials were found.",
+    "blocking_findings": ["services/backend/e2e/g4it48-live-e2e.sh:10"],
+    "remediation_options": ["Owner waiver recorded for the reference, or", "Require G4IT_E2E_ENV_FILE / G4IT_E2E_USER / G4IT_E2E_PASSWORD to be set in the environment so the default path is not needed"]
+  },
+  "open_questions": [
+    "Does the owner accept the e2e script's default reference to workspace/docker/.env as a waiver for the sensitive-path gate, given that the attestation covers file contents only?",
+    "Should the Azure test log of AZURE_CLIENT_SECRET prefix (line 78) be removed in this PR or tracked as follow-up?",
+    "Is the bare '$' in frontend-deps-update.yml:23 a truncated ${{ secrets.GITHUB_TOKEN }} that needs fixing in this PR?",
+    "Run a dependency scan (S-02) in CI, since this station could not execute one."
+  ]
+}

@@ -3,32 +3,23 @@ title: '5.2.4 Header-Create or search a Workspace'
 description: 'Create or search a workspace description'
 weight: 5024
 ---
+<!-- AI_DISCLAIMER v1.0 -->
+> This file has been created (totally or partially) with the assistance of artificial intelligence tools.
+> All content has been generated under the direct supervision of a named individual,
+> and under the AI.Backbone Orchestrator Compliance framework
 
 ## Table of Contents
 
 <!-- TOC -->
-<<<<<<< HEAD
   * [Table of Contents](#table-of-contents)
   * [Description](#description)
   * [State Diagram](#state-diagram)
-  * [Create New Workspace or search a workspace Button](#create-new-workspace-or-search-a-workspace-button)
+  * [Create New Workspace or Search a Workspace](#create-new-workspace-or-search-a-workspace)
   * [Create a New Workspace (Right Panel)](#create-a-new-workspace-right-panel)
   * [Mockup](#mockup)
     * [Workspace Name Duplicate Error](#workspace-name-duplicate-error)
     * [Workspace Name Space Error](#workspace-name-space-error)
   * [Accessibility in Create New Workspace (Right Panel)](#accessibility-in-create-new-workspace-right-panel)
-=======
-
--   [Table of Contents](#table-of-contents)
--   [Description](#description)
--   [State Diagram](#state-diagram)
--   [Create New Workspace Button](#create-new-Workspace-button)
--   [Create a New Workspace (Right Panel)](#create-a-new-Workspace-right-panel)
--   [Mockup](#mockup)
-    -   [Workspace Name Duplicate Error](#Workspace-name-duplicate-error)
-    -   [Workspace Name Space Error](#Workspace-name-space-error)
--   [Accessibility in Create New Workspace (Right Panel)](#accessibility-in-create-new-Workspace-right-panel)
->>>>>>> ad630564 (feat(1442): update documentation for renamed subscriber and org)
 <!-- TOC -->
 
 ## Description

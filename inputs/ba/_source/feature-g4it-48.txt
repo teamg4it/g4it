@@ -1,0 +1,199 @@
+Description
+
+As an inventory manager,
+I want to specify whether end-user devices are used in a BYOD or COPE context and optionally override the default professional usage fraction,
+so that environmental impacts are allocated according to the RCP SI methodology while retaining flexibility for organization-specific assumptions.
+ 
+Description
+
+The RCP SI methodology specifies that certain end-user devices may be shared between professional and personal contexts. In such cases, only the fraction of impacts attributable to professional use shall be considered in the assessment.
+
+Three usage contexts are defined:
+
+Usage Context
+	
+
+Description
+	
+
+Professional Usage Fraction
+
+Professional
+	
+
+Equipment used exclusively for professional purposes
+	
+
+100%
+
+COPE (Corporate Owned, Personally Enabled)
+	
+
+Professional equipment that may also be used for personal purposes
+	
+
+85%
+
+BYOD (Bring Your Own Device)
+	
+
+Personal equipment also used for professional purposes
+	
+
+57%
+
+These usage fractions shall be applied to all lifecycle stages of the equipment, including manufacturing, distribution, use, and end-of-life impacts.
+
+To support this methodology, G4IT shall introduce two new optional fields in the Physical Equipment import model:
+
+    contexteUsage
+
+    fractionUsage
+
+The usageContext field allows users to apply the default fractions defined by the RCP SI methodology.
+
+The usageFraction field allows users to explicitly specify a professional usage fraction between 0 and 1. When provided, this value shall take precedence over the fraction associated with the selected usage context.
+
+This functionality shall only apply to end-user devices (e.g. laptops, monitors, smartphones, tablets, printers, internet boxes, etc.) and shall not apply to infrastructure equipment, cloud services, or AI services.
+
+When neither field is provided, the equipment shall be considered a standard professional device and 100% of its impacts shall be allocated to the professional scope.
+
+This approach ensures compliance with the RCP SI methodology while maintaining full backward compatibility with existing inventories and import files.
+
+To improve transparency, dedicated indicators shall also be introduced to provide visibility into BYOD and COPE adoption within inventories.
+
+ 
+Acceptance criterias
+AC1
+
+Given a user imports a physical equipment file
+
+When the file contains the contexteUsage and/or fractionUsage columns
+
+Then both columns shall be considered optional.
+
+And accepted values for contexteUsage shall be:
+
+    BYOD
+
+    COPE
+
+    empty value.
+
+And accepted values for fractionUsage shall be numeric values between 0 and 1 inclusive.
+
+And any other value shall generate a validation error in the rejected file report.
+
+Error label for usageContext
+
+Invalid value for column "contexteUsage". Allowed values are: BYOD, COPE, or empty.
+
+Error label for usageFraction
+
+Invalid value for column "fractionUsage". The value must be a number between 0 and 1.
+AC2
+
+Given a physical equipment record has an empty contexteUsage field and an empty fractionUsage field
+
+When environmental impacts are calculated
+
+Then the equipment shall be considered a standard professional device.
+
+And a professional usage fraction of 100% shall be applied.
+AC3
+
+Given a physical equipment record has a contexteUsage value of BYOD
+
+And the fractionUsage field is empty
+
+When environmental impacts are calculated
+
+Then 57% of the equipment impacts shall be allocated to the professional scope.
+
+And the 57% allocation shall be applied to all lifecycle stages during calculation.
+AC4
+
+Given a physical equipment record has a contexteUsage value of COPE
+
+And the fractionUsage field is empty
+
+When environmental impacts are calculated
+
+Then 85% of the equipment impacts shall be allocated to the professional scope.
+
+And the 85% allocation shall be applied to all lifecycle stages during calculation.
+AC5
+
+Given a physical equipment record contains a value in the fractionUsage field
+
+When environmental impacts are calculated
+
+Then the provided fractionUsage value shall take precedence over the default fraction associated with contexteUsage.
+
+And the specified fraction shall be applied to all lifecycle stages during calculation.
+AC6
+
+Given a physical equipment record belongs to a category other than Devices
+
+When a contexteUsage or fractionUsage value is provided
+
+Then the values shall be ignored or rejected according to the validation rules defined for the import process.
+
+And the BYOD/COPE methodology shall only apply to end-user devices.
+AC7
+
+Given a physical equipment record has been processed by the calculation engine
+
+When the export file is generated for the physical equipment
+
+Then the new columns shall be exported
+
+And the fractionUsage column shall contain the effective fraction used during the calculation.
+
+And default BYOD and COPE fractions shall be exported even when the value was not explicitly provided in the input file.
+AC8
+
+Given a user configures Key Indicators (Configure the view panel in the Equipment view)
+
+When the list of available indicators is displayed
+
+Then the following indicators shall be available:
+
+ 
+
+Label EN
+	
+
+Label FR
+
+BYOD Devices (%)
+	
+
+Appareils BYOD (%)
+
+COPE Devices (%)
+	
+
+Appareils COPE (%)
+
+And each indicator shall reflect the share of devices (related to the quantity of equipments in the category Devices only) associated with the corresponding usage context.
+AC9
+
+Given an existing inventory or import file does not contain the contexteUsage and fractionUsage columns
+
+When impacts are calculated
+
+Then the calculation shall continue to operate without modification.
+
+And all equipment shall be treated as professional equipment with a 100% usage fraction.
+
+--> Example of file for testing :
+nomEquipementPhysique;modele;quantite;nomCourtDatacenter;type;statut; contexteUsage;fractionUsage;paysDUtilisation;consoElecAnnuelle;utilisateur;nomSourceDonnee;nomEntite
+CompanyLaptop;laptop-2;10;;Laptop;In use;;;France;;;;
+SharedLaptop;laptop-3;5;;Laptop;In use;COPE;;France;;;;
+PersonalSmartphone;smartphone-2;15;;Mobile phone;In use;BYOD;;France;;;;
+SharedTablet;tablet-3;10;;Tablet;In use;COPE;0.5;France;;;;
+SharedComputeServer;rack-server--45;1;;Compute Server;In use;COPE;;France;;;;
+SharedStorageServer;storage-bay--16;2;;Storage Server;In use;;0.75;France;;;;
+ErrorContextUsage;television-2;5;;TV;In use;Unkown;;France;;;;
+ErrorFractionUsage;desktop-4;5;;Desktop;In use;;2.0;France;;;;

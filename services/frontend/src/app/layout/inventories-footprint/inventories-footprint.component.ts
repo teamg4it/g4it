@@ -18,7 +18,7 @@ import {
     inject,
     signal,
 } from "@angular/core";
-import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { takeUntilDestroyed, toSignal } from "@angular/core/rxjs-interop";
 import { ActivatedRoute, Router } from "@angular/router";
 import { TranslatePipe, TranslateService } from "@ngx-translate/core";
 import { MenuItem } from "primeng/api";
@@ -144,8 +144,10 @@ export class InventoriesFootprintComponent implements OnInit, OnDestroy {
     equipmentStats = signal<Stat[]>([]);
     cloudStats = signal<Stat[]>([]);
     datacenterStats = signal<Stat[]>([]);
+    private readonly indicatorLanguage = toSignal(this.translate.onLangChange);
 
     statGroups: Signal<StatGroup[]> = computed(() => {
+        this.indicatorLanguage();
         const eqStats = this.equipmentStats();
         const clStats = this.cloudStats();
         const dcStats = this.datacenterStats();
@@ -153,7 +155,14 @@ export class InventoriesFootprintComponent implements OnInit, OnDestroy {
         return [
             {
                 subtitle: this.translate.instant("common.infrastructure"),
-                items: [eqStats[0], eqStats[1], clStats[0]],
+                items: [
+                    eqStats[0],
+                    eqStats[1],
+                    clStats[0],
+                    ...this.inventoryUtilService.getDeviceUsageStats(
+                        this.allUnmodifiedFootprint(),
+                    ),
+                ],
             },
             {
                 subtitle: this.translate.instant("common.energy"),
@@ -533,6 +542,9 @@ export class InventoriesFootprintComponent implements OnInit, OnDestroy {
                         ),
                         country: this.digitalServiceStore.countryMap()[item.location],
                         equipment: `Cloud ${item.provider.toUpperCase()}`,
+                        itemCategory: "EXTERNAL",
+                        sunburstServiceType: "cloud",
+                        sunburstProvider: item.provider,
                         status: this.translate.instant(
                             "inventories-footprint.not-specified-status",
                         ),
@@ -562,6 +574,8 @@ export class InventoriesFootprintComponent implements OnInit, OnDestroy {
                             provider: (item.provider ?? "").toUpperCase(),
                         },
                     ),
+                    sunburstServiceType: "ai",
+                    sunburstProvider: item.provider,
                     status: this.translate.instant(
                         "inventories-footprint.not-specified-status",
                     ),

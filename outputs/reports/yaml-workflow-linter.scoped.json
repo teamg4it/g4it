@@ -1,0 +1,30 @@
+{
+  "status": "pass",
+  "summary": [
+    "Workflow files scanned: 10",
+    "Blocking issues: 0",
+    "Warnings: 0"
+  ],
+  "blocking_issues": [],
+  "warnings": [],
+  "fix_suggestions": [],
+  "metadata": {
+    "workflow_count": 10,
+    "root": "/root/projects/ssg-g4it/g4it-on-github",
+    "fix_suggestions_count": 0,
+    "scope": "git-tracked GitHub Actions workflows only; untracked AI-backbone station definitions excluded at user request",
+    "source_report": "outputs/reports/yaml-workflow-linter.json"
+  },
+  "checked_files": [
+    ".github/workflows/backend-analyze-main.yml",
+    ".github/workflows/backend-build-test-analyze.yml",
+    ".github/workflows/backend-dep-check.yml",
+    ".github/workflows/backend-docker-image.yml",
+    ".github/workflows/documentation-docker-image.yml",
+    ".github/workflows/frontend-analyze-main.yml",
+    ".github/workflows/frontend-build-test-analyze.yml",
+    ".github/workflows/frontend-deps-update.yml",
+    ".github/workflows/frontend-docker-image.yml",
+    ".github/workflows/keycloak-docker-image.yml"
+  ]
+}

@@ -4,6 +4,36 @@ description: "This use case describes how to launch an estimate"
 weight: 40
 mermaid: true
 ---
+<!-- AI_DISCLAIMER v1.0 -->
+> This file has been created (totally or partially) with the assistance of artificial intelligence tools.
+> All content has been generated under the direct supervision of a named individual,
+> and under the AI.Backbone Orchestrator Compliance framework
+
+## Inventory Device professional-use allocation
+
+For equipment whose resolved category is exactly `DEVICES`, evaluation selects
+the professional-use fraction in this order:
+
+1. A provided `fractionUsage`, including 0 or 1, overrides the context default.
+2. Otherwise, exact `contexteUsage = BYOD` uses 0.57 (57%) and `COPE` uses 0.85 (85%).
+3. Otherwise, the fraction is 1 (100%).
+
+For example, COPE with `fractionUsage = 0.5` uses 50%, not 85%. Context is still
+COPE for the adoption indicator. A fraction without a context does not imply
+BYOD or COPE membership.
+
+The fraction applies once to every lifecycle-stage impact and total electricity.
+Evaluation does not overwrite source quantity, annual electricity consumption
+or usage values. It records the resolved category, source usage, original
+quantity and effective fraction in a task/source-equipment snapshot.
+Exports and usage indicators reuse that evaluation snapshot, not today's
+source or defaults. Re-evaluate to produce a new snapshot after input changes.
+Historical results are not backfilled with invented usage data.
+
+Non-Devices, infrastructure, unmatched types and custom non-`DEVICES` categories
+use factor 1 regardless of supplied usage. Digital-service evaluation is
+excluded. See [category precedence and validation]({{% ref "/2-functional-documentation/use_cases/uc_inventory/uc3_load_files.md" %}})
+and [physical-equipment methodology]({{% ref "/2-functional-documentation/global_concepts/environmental_footprint_assessment_methodology/uc1_physical_equipment.md" %}}).
 
 ## Table of contents
 

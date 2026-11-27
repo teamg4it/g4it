@@ -21,6 +21,8 @@ public class AggValuesBO {
     private Double unitImpact;
     private Double peopleEqImpact;
     private Double electricityConsumption;
+    private double quantityWeightedElectricityConsumption;
+    private boolean electricityAllocationApplied;
     private Double quantity;
     private Double lifespan;
     private Double usageDuration;
@@ -46,6 +48,8 @@ public class AggValuesBO {
         this.unitImpact += v.getUnitImpact();
         this.peopleEqImpact += v.getPeopleEqImpact();
         this.electricityConsumption += v.getElectricityConsumption();
+        this.quantityWeightedElectricityConsumption += v.getElectricityConsumption() * v.getQuantity();
+        this.electricityAllocationApplied |= v.isElectricityAllocationApplied();
         this.quantity += v.getQuantity();
         this.lifespan += v.getLifespan();
         this.usageDuration += v.getUsageDuration() * v.getQuantity();
@@ -56,6 +60,19 @@ public class AggValuesBO {
         if (this.source == null) {
             this.source = v.getSource();
         }
+    }
+
+    /**
+     * Preserve the existing indicator contract (consumption * quantity / count).
+     * For an allocation-affected physical group, normalize the sum of each source's
+     * per-unit consumption times its already allocated quantity to that contract.
+     * Unallocated groups retain their historical, unweighted consumption sum.
+     */
+    public Double getPhysicalElectricityConsumption() {
+        if (!electricityAllocationApplied) {
+            return electricityConsumption;
+        }
+        return quantity == 0d ? 0d : quantityWeightedElectricityConsumption * countValue / quantity;
     }
 
 }

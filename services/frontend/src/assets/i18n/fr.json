@@ -823,16 +823,29 @@
         "header": {
             "manage": "Manage inventories",
             "export": "Exporter",
+            "export-xlsx": "Exporter pour tableur (XLSX)",
+            "export-csv": "CSV brut (ZIP)",
+            "raw-warning": "Les fichiers CSV bruts conservent le texte importé et peuvent contenir des formules de tableur. Utilisez l'export XLSX pour les consulter. Continuez uniquement pour un échange automatisé ; n'ouvrez pas directement les CSV bruts dans un tableur.",
+            "raw-confirm": "Télécharger les CSV bruts",
+            "export-error": "Impossible de créer l'export tableur. L'archive est peut-être indisponible, non prise en charge ou dépasse les limites du tableur.",
             "download": "Télécharger"
         },
         "data-consistency": "Cohérence des données",
         "ai-services-category": "Services IA {{provider}}",
         "not-specified-status": "Non spécifié",
+        "sunburst-category": {
+            "devices": "Terminaux",
+            "infrastructure": "Infrastructure",
+            "externalServices": "Services ext.",
+            "cloud": "Services cloud",
+            "ai": "Services IA",
+            "unclassified": "Non classé"
+        },
         "round-button": {
             "acvStep": "Cycle de vie",
             "country": "Pays",
             "entity": "Entités",
-            "equipment": "Équipements",
+            "equipment": "Élément",
             "status": "Statuts"
         },
         "application-round-button": {
@@ -861,6 +874,8 @@
             "kwh": "kWh",
             "ave-age": "Durée de vie moy.",
             "low-impact": "Faible Impact",
+            "byod-devices": "Appareils BYOD (%)",
+            "cope-devices": "Appareils COPE (%)",
             "elec-consumption": "Consommation électrique totale",
             "equipment": "ÉQUIPEMENT",
             "equipments": "Équipements",
@@ -870,6 +885,8 @@
             "multi-criteria-view": "Vue multicritères",
             "tooltip": {
                 "nb-cloud": "Nombre d'instances Cloud",
+                "byod-devices": "Part BYOD de la quantité initiale d'appareils dans l'inventaire évalué, avant les filtres de la vue",
+                "cope-devices": "Part COPE de la quantité initiale d'appareils dans l'inventaire évalué, avant les filtres de la vue",
                 "nb-dc": "Nombre de centre de données",
                 "ave-pue": "PUE moyen pondéré par le nombre d'équipements physiques hébergés dans les centres de données (hors Cloud)",
                 "nb-eq": "Nombre d'équipements physiques (hors instances Cloud)",

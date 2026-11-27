@@ -3,6 +3,11 @@ title: "How to Load the Collected Data into G4IT?"
 description: "This section is a user guide explaining where and how to load collected data in the application."
 weight: 20
 ---
+<!-- AI_DISCLAIMER v1.0 -->
+> This file has been created (totally or partially) with the assistance of artificial intelligence tools.
+> All content has been generated under the direct supervision of a named individual,
+> and under the AI.Backbone Orchestrator Compliance framework
+
 <!-- TOC -->
   * [**Step 1**: Prepare Your Collected Data](#step-1-prepare-your-collected-data)
     * [File Preparation Methods](#file-preparation-methods)
@@ -74,8 +79,22 @@ This is the most important file in G4IT, typically exported from a CMDB (Configu
 
 | File Type  | Templates                                                                |
 |------------|--------------------------------------------------------------------------|
-| Pre-filled | [Download pre-filled file](../documents/physicalEquipment_toFillIn.xlsx) |
-| Example    | [Download example file](../documents/physicalEquipment_Sample.csv)       |
+| CSV to fill in | [Download CSV template](../documents/physicalEquipment_toFillIn.csv) |
+| Example    | [Download example CSV](../documents/physicalEquipment_example.csv)       |
+
+The physical-equipment CSVs include two optional columns, blank in the samples:
+`contexteUsage` (exact `BYOD`, `COPE`, or empty) and `fractionUsage` (a number
+between 0 and 1 inclusive, or empty). Old files without these columns still work.
+For eligible inventory Devices, an explicit fraction overrides the context
+default: BYOD uses 0.57 (57%), COPE uses 0.85 (85%), and neither uses 1 (100%).
+Do not reduce `quantite` as well just to express this professional-use fraction.
+
+Eligibility comes from the resolved category, not the equipment name or context.
+See the exact [loading and rejection rules]({{% ref "/2-functional-documentation/use_cases/uc_inventory/uc3_load_files.md" %}}).
+Surrounding header whitespace is removed, but context cells are not trimmed.
+An invalid applicable value rejects the entire row; the error download combines
+its messages. Correct and reload rejected rows. Source usage values are retained
+separately from the fraction recorded by an evaluation.
 
 > Note: For shared equipment, you can use fractional quantities.  
 > Example: A TV shared half-time between two teams can be entered with a quantity of `0.5`.

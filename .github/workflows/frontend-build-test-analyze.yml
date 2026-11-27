@@ -1,11 +1,39 @@
+# This file has been created (totally or partially) with the assistance of artificial intelligence tools.
+# All content has been generated under the direct supervision of a named individual,
+# and under the AI.Backbone Orchestrator Compliance framework
 name: Frontend - Build - Test - Analyze
 on:
   pull_request:
     paths:
       - "services/frontend/**"
+      - ".github/workflows/frontend-build-test-analyze.yml"
+      - ".github/workflows/frontend-analyze-main.yml"
     types: [opened, synchronize, reopened]
 
+# Least privilege: the token is only used to read sources and PR metadata for Sonar.
+permissions:
+  contents: read
+  pull-requests: read
+
 jobs:
+  lint:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: services/frontend
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: "npm"
+          cache-dependency-path: services/frontend/package-lock.json
+      - name: Install dependencies
+        run: npm ci
+      - name: Run ESLint
+        run: npm run lint
+
   build:
     runs-on: ubuntu-latest
     continue-on-error: true

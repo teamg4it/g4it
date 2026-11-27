@@ -1,0 +1,25 @@
+{
+  "trace_id": "e6fa33d4-27cf-4d12-84a2-3c70d47d88da",
+  "station": "pr-validation/a7-update",
+  "platform": "github",
+  "target": "teamg4it/g4it#959",
+  "published": true,
+  "comment_url": "https://github.com/teamg4it/g4it/pull/959",
+  "published_location": "pull request description (not a separate comment); presence verified with gh on 2026-11-27",
+  "published_by": "repository owner (manual)",
+  "reason": "No GitHub tool available in this session; draft prepared for manual publication by the repository owner.",
+  "publication_mode": "manual",
+  "comment_markdown": "## AI PR validation — G4IT-48\n\nBase: `feat/g4it-ia-backbone` · 189 changed files (Angular frontend and Java backend reviewed separately)\n\n### Quality validation\n\n| Check | Result | Notes |\n|---|---|---|\n| Lint (ESLint) | passed / warning | Accepted frontend baseline; Java lint (PMD) deferred |\n| Static analysis (Sonar) | passed / warning | Frontend gate passed; backend Sonar result pending from CI |\n| SAST | passed / warning | 0 critical/high; one medium residual (raw CSV export is not meant for direct spreadsheet opening) |\n| Dependency audit | passed / warning | 0 critical/high; medium items tracked (ECharts, log4j-api, jOpenDocument, Keycloak adapter) |\n| Coverage | pass | New code 100% lines and branches (backend 350 lines / 236 branches, frontend 63 / 49) |\n| DAST | skipped | Not requested |\n\n### PR validation\n\n| Station | Result | Notes |\n|---|---|---|\n| PR auto validator | passed / warning | 0 blocking; link warnings were Hugo `ref` false positives, one real broken link fixed |\n| YAML workflow linter | pass | All GitHub Actions workflows declare explicit least-privilege `permissions:` |\n| Test gap detector | pass | |\n| A0 Intake | pass | |\n| A1 Policy validation | pass | Not applicable (no agent/skill files) |\n| A2 Security static | passed / warning | No secrets or dangerous patterns; accepted risk below |\n| A3 Prompt injection | pass | 0 confirmed findings |\n| A4 Red team | passed / warning | 0 critical bypass vectors |\n| A5 Sandbox simulation | pass | 0 escapes, tool scoping validated |\n| A6 Policy gate | CONDITIONAL_PASS | Skill decision REVIEW; risk accepted by the repository owner as approver |\n\n### Accepted risk\n\n- `services/backend/e2e/g4it48-live-e2e.sh` reads a local developer `.env` by default (local-only settings, confirmed no risk by the repository owner).\n\n### Changes made during validation\n\n- Explicit least-privilege `permissions:` added to all GitHub Actions workflows.\n- `.github/workflows/frontend-deps-update.yml` removed (disabled, broken token, superseded by Dependabot).\n\n### Follow-ups (outside this PR)\n\n- Secret-prefix log in `AzureGreenItFileSystemApplicationTests.java:78` (pre-existing).\n- Path-traversal guard for archive extraction in the e2e script.\n- Optional: require `G4IT_E2E_*` variables instead of defaulting to the local `.env`.\n- Backend Sonar result and manual accessibility review (keyboard, screen reader, contrast, 200% zoom).\n\n_Generated with AI assistance under human supervision._\n",
+  "gate_decision_source": "outputs/station_out/gate_decision.json",
+  "skill_decision": "REVIEW",
+  "effective_decision": "CONDITIONAL_PASS (owner approver confirmation recorded in workflow state, station a6-policy-gate)",
+  "effective_decision_note": "Skill decision remains REVIEW; the policy-gate skill defines no CONDITIONAL_PASS. Owner acceptance of A2-H1 and A4-01 is recorded in workflow state; this station did not independently verify the approver confirmation.",
+  "follow_ups": [
+    "FU-1 AzureGreenItFileSystemApplicationTests.java:78 credential-prefix log (out of PR)",
+    "FU-2 services/backend/e2e/g4it48-live-e2e.sh archive path-traversal guard (A5-F1)",
+    "FU-3 services/backend/e2e/g4it48-live-e2e.sh explicit env-file path (A4-01)",
+    "FU-4 CI dependency CVE scan S-02 (pom.xml, package-lock.json)",
+    "FU-5 RT-05 resource-exhaustion scope confirmation",
+    "Reconcile security_report.json file-level decision with passed_with_warning engine result"
+  ]
+}

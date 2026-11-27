@@ -25,4 +25,10 @@ public class EquipmentIndicatorBO {
     private String unit;
 
     private List<EquipmentImpactBO> impacts;
+
+    /** Unrounded quantity share among evaluated Devices, or null when unavailable. */
+    private Double byodDevicesPercentage;
+
+    /** Unrounded quantity share among evaluated Devices, or null when unavailable. */
+    private Double copeDevicesPercentage;
 }

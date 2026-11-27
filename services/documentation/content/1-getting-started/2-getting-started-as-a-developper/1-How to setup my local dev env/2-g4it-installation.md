@@ -3,6 +3,10 @@ title: "Start G4IT Locally"
 description: "GreenIT"
 weight: 6
 ---
+<!-- AI_DISCLAIMER v1.0 -->
+> This file has been created (totally or partially) with the assistance of artificial intelligence tools.
+> All content has been generated under the direct supervision of a named individual,
+> and under the AI.Backbone Orchestrator Compliance framework
 
 ## Overview
 
@@ -146,7 +150,7 @@ Sometimes, the backend may not start because of a missing dependency.
 - Click on compile (Lifecycle > compile) to build the project
 - Then, try to run the backend again
 
-![missing_dependency.png](../missing_dependency.png)
+![missing_dependency.png](../../missing_dependency.png)
 
 #### Keycloak container not starting
 

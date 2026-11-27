@@ -4,6 +4,10 @@ description: "This use case describes how to load files"
 weight: 40
 mermaid: true
 ---
+<!-- AI_DISCLAIMER v1.0 -->
+> This file has been created (totally or partially) with the assistance of artificial intelligence tools.
+> All content has been generated under the direct supervision of a named individual,
+> and under the AI.Backbone Orchestrator Compliance framework
 
 ## API PATH
 
@@ -86,9 +90,9 @@ Bellow you will find the entities used to load the metadata of the files to load
 
 | Package                                                | Entity                 | table                                                                                                                                    |
 |--------------------------------------------------------|------------------------|------------------------------------------------------------------------------------------------------------------------------------------|
-| com.soprasteria.g4it.backend.apiloadinputfiles.modeldb | CheckDatacenter        | [check_inv_load_datacenter](../../db_documentation/information_system_and_digital_service_input_data/digital_service_input_data)         |
-| com.soprasteria.g4it.backend.apiloadinputfiles.modeldb | CheckPhysicalEquipment | [check_inv_load_physical_equipment](../../db_documentation/information_system_and_digital_service_input_data/digital_service_input_data) |
-| com.soprasteria.g4it.backend.apiloadinputfiles.modeldb | CheckVirtualEquipment  | [check_inv_load_virtual_equipment](../../db_documentation/information_system_and_digital_service_input_data/digital_service_input_data)  |
+| com.soprasteria.g4it.backend.apiloadinputfiles.modeldb | CheckDatacenter        | [check_inv_load_datacenter](../../../db_documentation/information_system_and_digital_service_input_data/digital_service_input_data/input/)         |
+| com.soprasteria.g4it.backend.apiloadinputfiles.modeldb | CheckPhysicalEquipment | [check_inv_load_physical_equipment](../../../db_documentation/information_system_and_digital_service_input_data/digital_service_input_data/input/) |
+| com.soprasteria.g4it.backend.apiloadinputfiles.modeldb | CheckVirtualEquipment  | [check_inv_load_virtual_equipment](../../../db_documentation/information_system_and_digital_service_input_data/digital_service_input_data/input/)  |
 
 These entities are loaded by the loader in the package apiloadinputfiles.business.asyncloadservice.loadmetadata.loaders
 using repository in the package apiloadinputfiles.repository
@@ -137,9 +141,9 @@ Bellow you will find the entities used to load the metadata of the files to load
 
 | Package                                       | Entity              | table                                                                                                                        |
 |-----------------------------------------------|---------------------|------------------------------------------------------------------------------------------------------------------------------|
-| com.soprasteria.g4it.backend.apiinout.modeldb | InDatacenter        | [in_datacenter](../../db_documentation/information_system_and_digital_service_input_data/digital_service_input_data)         |
-| com.soprasteria.g4it.backend.apiinout.modeldb | InPhysicalEquipment | [in_physical_equipment](../../db_documentation/information_system_and_digital_service_input_data/digital_service_input_data) |
-| com.soprasteria.g4it.backend.apiinout.modeldb | InVirtualEquipment  | [in_virtual_equipment](../../db_documentation/information_system_and_digital_service_input_data/digital_service_input_data)  |
+| com.soprasteria.g4it.backend.apiinout.modeldb | InDatacenter        | [in_datacenter](../../../db_documentation/information_system_and_digital_service_input_data/digital_service_input_data/input/)         |
+| com.soprasteria.g4it.backend.apiinout.modeldb | InPhysicalEquipment | [in_physical_equipment](../../../db_documentation/information_system_and_digital_service_input_data/digital_service_input_data/input/) |
+| com.soprasteria.g4it.backend.apiinout.modeldb | InVirtualEquipment  | [in_virtual_equipment](../../../db_documentation/information_system_and_digital_service_input_data/digital_service_input_data/input/)  |
 
 ### Handling rejected files
 

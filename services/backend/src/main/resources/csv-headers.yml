@@ -1,3 +1,7 @@
+# This file has been created (totally or partially) with the assistance of artificial intelligence tools.
+# All content has been generated under the direct supervision of a named individual,
+# and under the AI.Backbone Orchestrator Compliance framework
+
 filesystem.config.headers:
   application:
     - name: "nomApplication"
@@ -73,6 +77,10 @@ filesystem.config.headers:
     - name: "dureeUtilisation"
       optional: true
     - name: "nombreUtilisateur"
+      optional: true
+    - name: "contexteUsage"
+      optional: true
+    - name: "fractionUsage"
       optional: true
   equipementVirtuel:
     - name: "nomEquipementVirtuel"
@@ -220,6 +228,10 @@ filesystem.config.headers:
     - name: "sipImpact"
       optional: false
     - name: "dureeUtilisation"
+      optional: true
+    - name: "contexteUsage"
+      optional: true
+    - name: "fractionUsage"
       optional: true
   virtualEquipmentIndicator:
     - name: "inventoryName"

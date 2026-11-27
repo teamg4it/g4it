@@ -1,3 +1,7 @@
+// This file has been created (totally or partially) with the assistance of artificial intelligence tools.
+// All content has been generated under the direct supervision of a named individual,
+// and under the AI.Backbone Orchestrator Compliance framework
+
 /*
  * G4IT
  * Copyright 2023 Sopra Steria
@@ -87,6 +91,16 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
                             .status(HttpStatus.BAD_REQUEST.value())
                             .build(),
                     HttpStatus.BAD_REQUEST);
+        }
+
+        if ("422".equals(ex.getCode())) {
+            log.warn("Unprocessable request: {}", ex.getMessage());
+            return ResponseEntity.status(422).body(RestError.builder()
+                    .code("422")
+                    .message(ex.getMessage())
+                    .timestamp(LocalDateTime.now())
+                    .status(422)
+                    .build());
         }
 
         log.error("Exception de validation survenue lors de la requête {}", request.getContextPath(), ex);

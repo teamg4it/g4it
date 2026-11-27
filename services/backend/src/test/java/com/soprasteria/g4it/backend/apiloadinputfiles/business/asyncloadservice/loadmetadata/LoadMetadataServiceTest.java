@@ -52,6 +52,29 @@ class LoadMetadataServiceTest {
     private LoadApplicationMetadataService loadApplicationMetadataService;
 
     @Test
+    void metadataUsesNormalizedHeadersWithoutConvertingRawUsageValues(@TempDir java.nio.file.Path tempDir) throws Exception {
+        File file = tempDir.resolve("synthetic.csv").toFile();
+        java.nio.file.Files.writeString(file.toPath(),
+                " type ; contexteUsage ; fractionUsage \nServer; custom ;not-a-number\n");
+        FileToLoad fileToLoad = mock(FileToLoad.class);
+        when(fileToLoad.getFilename()).thenReturn("synthetic.csv");
+        when(fileToLoad.getFileType()).thenReturn(FileType.EQUIPEMENT_PHYSIQUE);
+        when(fileToLoad.getConvertedFile()).thenReturn(file);
+        Context context = Context.builder().organization("org").workspaceId(2L).inventoryId(1L).build();
+        var mapped = new InPhysicalEquipmentRest();
+        when(csvToInMapper.csvInPhysicalEquipmentToRest(any(), eq(1L), isNull())).thenAnswer(call -> {
+            CSVRecord record = call.getArgument(0);
+            assertEquals("Server", record.get("type"));
+            assertEquals(" custom ", record.get("contexteUsage"));
+            assertEquals("not-a-number", record.get("fractionUsage"));
+            return mapped;
+        });
+        loadMetadataService.loadMetadataFile(fileToLoad, context);
+        verify(loadPhysicalEquipmentMetadataService).execute(eq(context), eq(fileToLoad), eq(0),
+                argThat(objects -> objects.size() == 1 && objects.getFirst() == mapped));
+    }
+
+    @Test
     void testLoadMetadataFile_Datacenter(@TempDir java.nio.file.Path tempDir) throws Exception {
         // Arrange
         File tempFile = tempDir.resolve("test.csv").toFile();

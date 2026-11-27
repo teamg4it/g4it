@@ -3,6 +3,11 @@ title: "Release v3.3"
 weight: 40
 ---
 
+<!-- AI_DISCLAIMER v1.0 -->
+> This file has been created (totally or partially) with the assistance of artificial intelligence tools.
+> All content has been generated under the direct supervision of a named individual,
+> and under the AI.Backbone Orchestrator Compliance framework
+
 ## Prerequisites
 
 1. [ ] Migration must be performed starting from version **3.2.0**.
@@ -22,7 +27,7 @@ These documents are now available and reflect our commitment to sustainable and 
 
 ![Presentation of the page associated to the declarations](../images/release_v3_3_Declarations.png "Presentation of the page associated to the declarations")
 
-A description of this page is available in the functional documentation: [Functional Documentation/Declarations page](../2-functional-documentation/use_cases/uc_navigation_menu/uc4_declarations_page.md)
+A description of this page is available in the functional documentation: [Functional Documentation/Declarations page]({{% ref "/2-functional-documentation/use_cases/uc_navigation_menu/uc4_declarations_page.md" %}})
 
 ### Enhanced DEMO Workspace for Feature Exploration
 

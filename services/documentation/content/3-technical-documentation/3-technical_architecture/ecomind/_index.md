@@ -2,6 +2,11 @@
 title: 'Ecomind architecture'
 weight: 10
 ---
+<!-- AI_DISCLAIMER v1.0 -->
+> This file has been created (totally or partially) with the assistance of artificial intelligence tools.
+> All content has been generated under the direct supervision of a named individual,
+> and under the AI.Backbone Orchestrator Compliance framework
+
 ### Overview
 This section illustrates the communication architecture between the frontend and backend components with the use of Ecomind.
 
@@ -60,7 +65,7 @@ flowchart LR
     A3 --> B11
 ```
 
-The calculation involves multiple steps, which you can find on [Evaluating digital Service](../backend/api/evaluating/_index.md)
+The calculation involves multiple steps, which you can find on [Evaluating digital Service]({{% ref "/3-technical-documentation/4-backend_documentation/2-api_documentation/2-evaluation/digital_service/_index.md" %}})
 
 ### Result
 ```mermaid

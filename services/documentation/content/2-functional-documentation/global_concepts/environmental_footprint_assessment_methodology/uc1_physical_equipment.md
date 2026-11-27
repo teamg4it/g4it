@@ -4,6 +4,34 @@ description: "This use case gives an overview how we assess footprint of an equi
 weight: 10
 mermaid: true
 ---
+<!-- AI_DISCLAIMER v1.0 -->
+> This file has been created (totally or partially) with the assistance of artificial intelligence tools.
+> All content has been generated under the direct supervision of a named individual,
+> and under the AI.Backbone Orchestrator Compliance framework
+
+## Professional-use allocation for inventory Devices
+
+For inventory physical equipment with exact resolved `item_category = DEVICES`,
+apply a professional-use factor once to each lifecycle impact and total
+electricity. An explicit `fractionUsage` in [0,1] takes precedence; otherwise
+BYOD uses 0.57 (57%), COPE 0.85 (85%), and an empty context 1 (100%).
+See [validation and category precedence]({{% ref "/2-functional-documentation/use_cases/uc_inventory/uc3_load_files.md" %}}).
+
+In the inventory formulas below, calculation quantity is source quantity times
+this factor. Electricity consumption stays per unit: do not multiply both
+quantity and per-unit electricity by the factor, which would square it.
+Source quantity and electricity remain unchanged. For groups containing
+allocation below 1, total electricity sums each source quantity times its
+per-unit consumption times its factor. Grouping keys and other aggregates
+are unchanged; groups without allocation retain historical electricity
+semantics.
+
+The effective fraction is persisted at evaluation time independently of raw
+usage fields. Original quantities, not allocated quantities, drive the
+[BYOD/COPE adoption indicators]({{% ref "/2-functional-documentation/use_cases/uc_inventory/uc5_visualize_equipment_footprint.md" %}}).
+Infrastructure, unmatched types and custom non-`DEVICES` categories use factor `1`.
+**Digital-service terminal methodology below is unchanged and excluded
+from this inventory allocation.**
 
 ## Table of contents
 

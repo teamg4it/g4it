@@ -1,3 +1,9 @@
+<!--
+This file has been created (totally or partially) with the assistance of artificial intelligence tools.
+All content has been generated under the direct supervision of a named individual,
+and under the AI.Backbone Orchestrator Compliance framework
+-->
+
 <p-toast #toast position="bottom-center"></p-toast>
 <div class="flex justify-content-between align-items-center flex-wrap">
     <div class="flex align-items-center">
@@ -51,13 +57,21 @@
 
         @if (userService.isAllowedInventoryRead$ | async) {
             <p-button
-                [ariaLabel]="'common.accessibility.download' | translate"
+                styleClass="header-button"
+                [text]="true"
+                (onClick)="confirmRawDownload($event)"
+                [disabled]="downloadInProgress"
+                id="export-inventory-csv-button"
+                icon="pi pi-file"
+                [label]="'inventories-footprint.header.export-csv' | translate"
+            />
+            <p-button
                 styleClass="bg-black text-white header-button"
                 (onClick)="download($event)"
                 [disabled]="downloadInProgress"
                 id="export-inventory-button"
                 icon="pi pi-download"
-                [label]="'inventories-footprint.header.export' | translate"
+                [label]="'inventories-footprint.header.export-xlsx' | translate"
             />
         }
     </div>

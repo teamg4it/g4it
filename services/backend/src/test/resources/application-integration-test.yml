@@ -1,0 +1,158 @@
+version: "1.0.0"
+server:
+  port: 8080
+  shutdown: graceful
+  compression:
+    enabled: true
+    min-response-size: 2048
+    mime-types: application/json
+
+cors.allowed.origins: "http://localhost:4200"
+
+# NumEcoEval configs
+num-eco-eval:
+  base-url: http://localhost:18081
+  import-max-memory: 128
+num-eco-eval-referential:
+  base-url: http://localhost:18080
+
+#Boaviztapi configs
+boaviztapi:
+  version: 2.4.1
+  base-url: http://localhost:5000
+
+#Ecologits configs
+ecologits:
+  version: 0.0.2
+  base-url: http://localhost:8010
+
+#AI Model configs
+aimodelconfigapi:
+  version: 1.0
+  base-url: http://localhost:8000
+
+#AI Model Estimation configs
+aimodelestimationapi:
+  version: 1.0
+  base-url: http://localhost:8000
+
+
+g4it:
+  criteria: "Climate change, Particulate matter and respiratory inorganics, Ionising radiation, Acidification, Resource use (minerals and metals)"
+  data:
+    retention:
+      cron: "0 0 0 * * *"
+      oninit: "false"
+      day: "730"
+  storage:
+    retention:
+      cron: "0 0 0 * * *"
+      oninit: "false"
+      day:
+        export: "20"
+        output: "20"
+  cache:
+    database:
+      ttl: PT20M
+    short:
+      ttl: PT2M
+  workspace:
+    deletion:
+      oninit: "false"
+      cron: "0 0 0 * * *"
+      day: "7"
+  digitalServiceLink:
+    deletion:
+      oninit: "false"
+      cron: "0 0 0 * * *"
+  local:
+    retention:
+      ttl: PT10M
+  task:
+    stuck:
+      timeout:
+        hours: 0.167                  # Tasks stuck for this long will be marked as FAILED (0.167 hours = 10 minutes)
+      check:
+        enabled: true
+
+filesystem.local.path: ".\\storage"
+
+local.working.folder: ".\\storagetmp"
+
+spring:
+  profiles:
+    active: dev, local
+  main:
+    allow-bean-definition-overriding: true
+  datasource:
+    generate-unique-name: true
+    url: "jdbc:postgresql://localhost:5432/postgres?reWriteBatchedInserts=true"
+    username: postgres
+    # kics-scan ignore-line
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+    tomcat:
+      test-on-borrow: false
+      jmx-enabled: false
+      max-active: 100
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: false
+    properties:
+      hibernate:
+        order_inserts: true
+        jdbc:
+          batch_size: 100
+          time_zone: UTC
+  liquibase:
+    change-log: classpath:/db/changelog/greenitdb.changelog-master.yml
+    contexts: local
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8180/auth/realms/g4it
+  codec:
+    max-in-memory-size: 100MB
+  config:
+    import:
+      - csv-headers.yml
+  servlet:
+    multipart:
+      resolve-lazily: true
+      max-request-size: 100MB
+      max-file-size: 100MB
+  threads:
+    virtual:
+      enabled: true
+  jackson:
+    default-property-inclusion: NON_NULL
+
+springdoc:
+  swagger-ui:
+    tagsSorter: alpha
+
+logging:
+  level:
+    org.springframework: info
+    org.springframework.batch.core:
+      job: error
+      step: info
+      step.ThreadStepInterruptionPolicy: error
+      repository.support: error
+    org.hibernate: warn
+    liquibase: warn
+    com.zaxxer: warn
+
+ecomindaimodule:
+  enabled: true
+  version: 1.1.0
+
+numecoevalmodule:
+  enabled: true
+  version: 2.2.1
+
+azure:
+  communication:
+    connection-string: endpoint=https://test.azure.com/;accesskey=xyz
+    sender-email: test@test.com

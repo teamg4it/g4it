@@ -262,6 +262,24 @@ export class InventoryUtilService {
         ];
     }
 
+    getDeviceUsageStats(footprint: Criterias): Stat[] {
+        // Shares are inventory-wide evaluation snapshots, identical for every criterion.
+        // Do not recalculate them from filtered or allocation-scaled impact quantities.
+        const indicator = Object.values(footprint)[0];
+        return [
+            { key: "byod-devices", value: indicator?.byodDevicesPercentage },
+            { key: "cope-devices", value: indicator?.copeDevicesPercentage },
+        ].map(({ key, value }) => ({
+            title: this.translate.instant(`inventories-footprint.global.${key}`),
+            description: this.translate.instant(
+                `inventories-footprint.global.tooltip.${key}`,
+            ),
+            label: value == null ? "" : this.integerPipe.transform(value),
+            value: value ?? undefined,
+            unit: "%",
+        }));
+    }
+
     async computeDataCenterStats(
         filters: Filter<string>,
         filterFields: string[],

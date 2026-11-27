@@ -11,20 +11,21 @@
         "prettier": "prettier --write \"./src/**/*.{ts,js,html,scss}\"",
         "test": "ng test --code-coverage --configuration=local --include='**/*.spec.ts'",
         "test:ci": "ng test --configuration=ci",
+        "lint": "eslint \"src/**/*.{ts,html}\" --pass-on-unpruned-suppressions",
         "generate": "ng generate",
         "cypress:open": "cypress open",
         "cypress:run": "cypress run -e mode=one-report"
     },
     "private": true,
     "dependencies": {
-        "@angular/animations": "^21.2.12",
-        "@angular/common": "^21.2.12",
-        "@angular/compiler": "^21.2.12",
-        "@angular/core": "^21.2.12",
-        "@angular/forms": "^21.2.12",
-        "@angular/platform-browser": "^21.2.12",
-        "@angular/platform-browser-dynamic": "^21.2.12",
-        "@angular/router": "^21.2.12",
+        "@angular/animations": "^21.2.25",
+        "@angular/common": "^21.2.25",
+        "@angular/compiler": "^21.2.25",
+        "@angular/core": "^21.2.25",
+        "@angular/forms": "^21.2.25",
+        "@angular/platform-browser": "^21.2.25",
+        "@angular/platform-browser-dynamic": "^21.2.25",
+        "@angular/router": "^21.2.25",
         "@ngneat/elf": "^2.5.1",
         "@ngneat/elf-devtools": "^1.3.0",
         "@ngneat/elf-entities": "^5.0.2",
@@ -54,7 +55,8 @@
     "devDependencies": {
         "@angular/build": "^21.2.10",
         "@angular/cli": "^21.2.10",
-        "@angular/compiler-cli": "^21.2.12",
+        "@angular/compiler-cli": "^21.2.25",
+        "@eslint/js": "^10.0.0",
         "@types/jasmine": "^5.1.5",
         "@types/node": "^22.10.1",
         "axe-core": "^4.10.2",
@@ -67,6 +69,13 @@
         "karma-jasmine-html-reporter": "^2.1.0",
         "karma-junit-reporter": "^2.0.1",
         "prettier": "^3.4.2",
-        "typescript": "5.9"
+        "typescript": "5.9",
+        "esbuild": "^0.27.3",
+        "eslint": "^10.0.0",
+        "typescript-eslint": "^8.46.0",
+        "angular-eslint": "^21.0.0"
+    },
+    "allowScripts": {
+        "esbuild@0.27.3": true
     }
 }

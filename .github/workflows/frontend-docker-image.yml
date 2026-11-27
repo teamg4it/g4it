@@ -1,3 +1,6 @@
+# This file has been created (totally or partially) with the assistance of artificial intelligence tools.
+# All content has been generated under the direct supervision of a named individual,
+# and under the AI.Backbone Orchestrator Compliance framework
 name: Frontend Docker Image Scan and Publish
 
 on:
@@ -10,6 +13,10 @@ on:
     paths:
       - "services/frontend/**"
     types: [ opened, synchronize, reopened ]
+
+# Least privilege: publication uses Docker Hub secrets, not GITHUB_TOKEN.
+permissions:
+  contents: read
 
 jobs:
   build:

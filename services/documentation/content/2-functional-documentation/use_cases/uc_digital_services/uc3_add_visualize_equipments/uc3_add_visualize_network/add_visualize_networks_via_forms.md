@@ -4,12 +4,16 @@ description: "This use case describes how to add network equipments to a digital
 weight: 20
 mermaid: true
 ---
+<!-- AI_DISCLAIMER v1.0 -->
+> This file has been created (totally or partially) with the assistance of artificial intelligence tools.
+> All content has been generated under the direct supervision of a named individual,
+> and under the AI.Backbone Orchestrator Compliance framework
 
 ## Table of contents
 
 -   [Table of contents](#table-of-contents)
 -   [Description](#description)
--   [Network visualization](#network-visualization)
+-   [Networks visualization]({{% ref "/2-functional-documentation/use_cases/uc_digital_services/uc3_add_visualize_equipments/uc3_add_visualize_network/_index.md#networks-visualization" %}})
 -   [Network add / edit](#network-add--edit)
 
 ## Description

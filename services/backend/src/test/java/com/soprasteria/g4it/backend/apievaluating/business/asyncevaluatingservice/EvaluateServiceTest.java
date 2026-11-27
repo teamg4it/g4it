@@ -1,3 +1,7 @@
+// This file has been created (totally or partially) with the assistance of artificial intelligence tools.
+// All content has been generated under the direct supervision of a named individual,
+// and under the AI.Backbone Orchestrator Compliance framework
+
 package com.soprasteria.g4it.backend.apievaluating.business.asyncevaluatingservice;
 
 import com.google.common.collect.BiMap;
@@ -16,14 +20,18 @@ import com.soprasteria.g4it.backend.apiinout.modeldb.InApplication;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InDatacenter;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InPhysicalEquipment;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InVirtualEquipment;
+import com.soprasteria.g4it.backend.apiinout.modeldb.PhysicalEquipmentEvaluationTrace;
 import com.soprasteria.g4it.backend.apiinout.repository.InApplicationRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.InDatacenterRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.InPhysicalEquipmentRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.InVirtualEquipmentRepository;
+import com.soprasteria.g4it.backend.apiinout.repository.PhysicalEquipmentEvaluationTraceRepository;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
 import com.soprasteria.g4it.backend.apireferential.business.ReferentialGetService;
 import com.soprasteria.g4it.backend.apireferential.business.ReferentialService;
+import com.soprasteria.g4it.backend.apireferential.business.ItemCategoryResolver;
+import com.soprasteria.g4it.backend.apireferential.business.PhysicalEquipmentReferenceResolver;
 import com.soprasteria.g4it.backend.apiuser.repository.OrganizationRepository;
 import com.soprasteria.g4it.backend.common.filesystem.business.local.CsvFileService;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileType;
@@ -50,6 +58,7 @@ import org.mockito.quality.Strictness;
 import org.mte.numecoeval.calculs.domain.data.indicateurs.ImpactApplication;
 import org.mte.numecoeval.calculs.domain.data.indicateurs.ImpactEquipementPhysique;
 import org.mte.numecoeval.calculs.domain.data.indicateurs.ImpactEquipementVirtuel;
+import org.mapstruct.factory.Mappers;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.io.IOException;
@@ -89,6 +98,10 @@ class EvaluateServiceTest {
     AggregationToOutput aggregationToOutput;
     @Mock
     EvaluateNumEcoEvalService evaluateNumEcoEvalService;
+    @Mock
+    PhysicalEquipmentAllocationService physicalEquipmentAllocationService;
+    @Mock
+    PhysicalEquipmentEvaluationTraceRepository physicalEquipmentEvaluationTraceRepository;
     @Mock
     ReferentialService referentialService;
     @Mock
@@ -495,6 +508,102 @@ class EvaluateServiceTest {
     }
 
     @Test
+    void doEvaluate_savesInventoryTraceBeforeUsingItsFraction() throws Exception {
+        Context context = mockBaseContext(false, false);
+        Task task = mockTask(99L);
+        mockReferential();
+        CSVPrinter printer = mock(CSVPrinter.class);
+        when(csvFileService.getPrinter(any(), any())).thenReturn(printer);
+
+        InPhysicalEquipment equipment = InPhysicalEquipment.builder()
+                .id(12L).name("synthetic-device").type("laptop").quantity(10d).build();
+        when(inPhysicalEquipmentRepository.countByInventoryId(1L)).thenReturn(1L);
+        when(inPhysicalEquipmentRepository.findByInventoryId(eq(1L), any()))
+                .thenReturn(new ArrayList<>(List.of(equipment)))
+                .thenReturn(new ArrayList<>());
+
+        ItemCategoryResolver.Lookup categories = mock(ItemCategoryResolver.Lookup.class);
+        when(physicalEquipmentAllocationService.begin(eq(99L), eq("ORG"), any())).thenReturn(categories);
+        var reference = new PhysicalEquipmentReferenceResolver.Reference(null, null, "model", false);
+        var trace = PhysicalEquipmentEvaluationTrace.builder()
+                .taskId(99L).sourceEquipmentId(12L).itemCategory("DEVICES")
+                .originalQuantity(10d).effectiveFraction(0.57d).build();
+        var allocation = new PhysicalEquipmentAllocationService.Allocation(reference, trace);
+        when(physicalEquipmentAllocationService.resolve(eq(equipment), eq(99L), eq("ORG"), any(),
+                anyLong(), eq(categories))).thenReturn(allocation);
+        when(evaluateNumEcoEvalService.calculateAllocatedPhysicalEquipment(eq(equipment), any(), anyList(),
+                anyList(), anyList(), any(), eq(reference), eq(0.57d))).thenReturn(List.of());
+        when(physicalEquipmentEvaluationTraceRepository.findByTaskIdAndSourceEquipmentIdIn(99L, List.of(12L)))
+                .thenReturn(List.of(trace));
+
+        evaluateService.doEvaluate(context, task, tempDir);
+
+        var order = inOrder(physicalEquipmentAllocationService, evaluateNumEcoEvalService);
+        order.verify(physicalEquipmentAllocationService).begin(eq(99L), eq("ORG"), any());
+        order.verify(physicalEquipmentAllocationService).save(List.of(allocation));
+        order.verify(evaluateNumEcoEvalService).calculateAllocatedPhysicalEquipment(eq(equipment), any(), anyList(),
+                anyList(), anyList(), any(), eq(reference), eq(0.57d));
+        assertEquals(10d, equipment.getQuantity());
+    }
+
+    @Test
+    void inventoryExportUsesReloadedTraceInsteadOfLiveSourceOrAllocationMetadata() throws Exception {
+        Context context = mockBaseContext(false, false);
+        when(context.getDigitalServiceVersionUid()).thenReturn(null);
+        Task task = mockTask(99L);
+        mockReferential();
+        CSVPrinter printer = mock(CSVPrinter.class);
+        when(csvFileService.getPrinter(any(), any())).thenReturn(printer);
+        var equipment = InPhysicalEquipment.builder().id(12L).name("synthetic-device")
+                .type("laptop").quantity(10d).usageContext("COPE").usageFraction("0.9").build();
+        when(inPhysicalEquipmentRepository.countByInventoryId(1L)).thenReturn(1L);
+        when(inPhysicalEquipmentRepository.findByInventoryId(eq(1L), any()))
+                .thenReturn(new ArrayList<>(List.of(equipment))).thenReturn(new ArrayList<>());
+        var categories = mock(ItemCategoryResolver.Lookup.class);
+        when(physicalEquipmentAllocationService.begin(eq(99L), eq("ORG"), any())).thenReturn(categories);
+        var reference = new PhysicalEquipmentReferenceResolver.Reference(null, null, "model", false);
+        var allocationTrace = PhysicalEquipmentEvaluationTrace.builder().effectiveFraction(0.57d).build();
+        var allocation = new PhysicalEquipmentAllocationService.Allocation(reference, allocationTrace);
+        when(physicalEquipmentAllocationService.resolve(eq(equipment), eq(99L), eq("ORG"), any(),
+                anyLong(), eq(categories))).thenReturn(allocation);
+        var persisted = PhysicalEquipmentEvaluationTrace.builder().taskId(99L).sourceEquipmentId(12L)
+                .itemCategory("DEVICES").usageContext("BYOD").effectiveFraction(0.57d).build();
+        when(physicalEquipmentEvaluationTraceRepository.findByTaskIdAndSourceEquipmentIdIn(99L, List.of(12L)))
+                .thenReturn(List.of(persisted));
+        var impact = ImpactEquipementPhysique.builder().critere("criterion_1").statutIndicateur("OK")
+                .quantite(5.7d).build();
+        when(evaluateNumEcoEvalService.calculateAllocatedPhysicalEquipment(eq(equipment), any(), anyList(),
+                anyList(), anyList(), any(), eq(reference), eq(0.57d))).thenReturn(List.of(impact));
+
+        evaluateService.doEvaluate(context, task, tempDir);
+
+        var order = inOrder(physicalEquipmentAllocationService, physicalEquipmentEvaluationTraceRepository,
+                impactToCsvRecord);
+        order.verify(physicalEquipmentAllocationService).save(List.of(allocation));
+        order.verify(physicalEquipmentEvaluationTraceRepository)
+                .findByTaskIdAndSourceEquipmentIdIn(99L, List.of(12L));
+        order.verify(impactToCsvRecord).toCsv(eq(context), eq(99L), any(), same(equipment),
+                same(impact), eq(1d), anyBoolean(), same(persisted));
+        verify(inputToCsvRecord).toCsv(equipment, null);
+        assertEquals("COPE", equipment.getUsageContext());
+        assertEquals("0.9", equipment.getUsageFraction());
+    }
+
+    @Test
+    void missingPersistedTraceStopsInventoryExportWithoutInventingMetadata() throws Exception {
+        Context context = mockBaseContext(false, false);
+        Task task = mockTask(99L);
+        mockReferential();
+        when(csvFileService.getPrinter(any(), any())).thenReturn(mock(CSVPrinter.class));
+        var equipment = InPhysicalEquipment.builder().id(12L).name("synthetic-device").build();
+        when(inPhysicalEquipmentRepository.findByInventoryId(eq(1L), any()))
+                .thenReturn(new ArrayList<>(List.of(equipment)));
+
+        assertThrows(AsyncTaskException.class, () -> evaluateService.doEvaluate(context, task, tempDir));
+        verifyNoInteractions(impactToCsvRecord, evaluateNumEcoEvalService);
+    }
+
+    @Test
     void doEvaluate_shouldThrowAsyncTaskException_whenProgressUpdateFails() throws Exception {
         Context context = mock(Context.class);
         Task task = mock(Task.class);
@@ -632,6 +741,7 @@ class EvaluateServiceTest {
 
         InPhysicalEquipment pe = mock(InPhysicalEquipment.class);
         when(pe.getName()).thenReturn("PE1");
+        mockPersistedTraces(202L, List.of(pe));
 
         when(inPhysicalEquipmentRepository.findByInventoryId(eq(1L), any()))
                 .thenReturn(new ArrayList<>(List.of(pe)))
@@ -702,6 +812,7 @@ class EvaluateServiceTest {
 
         InPhysicalEquipment pe = mock(InPhysicalEquipment.class);
         when(pe.getName()).thenReturn("PE1");
+        mockPersistedTraces(202L, List.of(pe));
 
         when(inPhysicalEquipmentRepository.findByInventoryId(eq(1L), any()))
                 .thenReturn(new ArrayList<>(List.of(pe)))
@@ -743,6 +854,7 @@ class EvaluateServiceTest {
 
         InPhysicalEquipment pe = mock(InPhysicalEquipment.class);
         when(pe.getName()).thenReturn("PE1");
+        mockPersistedTraces(200L, List.of(pe));
 
         when(inPhysicalEquipmentRepository.countByInventoryId(1L)).thenReturn(1L);
         when(inPhysicalEquipmentRepository.findByInventoryId(eq(1L), any()))
@@ -842,6 +954,7 @@ class EvaluateServiceTest {
 
         InPhysicalEquipment pe = mock(InPhysicalEquipment.class);
         when(pe.getName()).thenReturn("PE1");
+        mockPersistedTraces(300L, List.of(pe));
 
         when(inPhysicalEquipmentRepository.countByInventoryId(1L)).thenReturn(1L);
         when(inPhysicalEquipmentRepository.findByInventoryId(eq(1L), any()))
@@ -921,6 +1034,7 @@ class EvaluateServiceTest {
             when(pe.getDatacenterName()).thenReturn(null);
             physicals.add(pe);
         }
+        mockPersistedTraces(10L, physicals);
 
         when(inPhysicalEquipmentRepository.countByInventoryId(1L))
                 .thenReturn(10L);
@@ -1161,6 +1275,18 @@ class EvaluateServiceTest {
         return context;
     }
 
+    private void mockPersistedTraces(long taskId, List<InPhysicalEquipment> equipments) {
+        List<PhysicalEquipmentEvaluationTrace> traces = new ArrayList<>();
+        for (int index = 0; index < equipments.size(); index++) {
+            long sourceId = index + 1L;
+            when(equipments.get(index).getId()).thenReturn(sourceId);
+            traces.add(PhysicalEquipmentEvaluationTrace.builder().taskId(taskId).sourceEquipmentId(sourceId)
+                    .itemCategory("INFRASTRUCTURE").effectiveFraction(1d).build());
+        }
+        when(physicalEquipmentEvaluationTraceRepository.findByTaskIdAndSourceEquipmentIdIn(taskId,
+                equipments.stream().map(InPhysicalEquipment::getId).toList())).thenReturn(traces);
+    }
+
     private Task mockTask(long taskId) {
         Task task = mock(Task.class);
         when(task.getId()).thenReturn(taskId);
@@ -1191,4 +1317,105 @@ class EvaluateServiceTest {
                 .thenReturn(Map.of("France", "FR"));
     }
 
+    @Test
+    void allocatedGroupSumsSourceElectricityWithoutSplittingGroups() throws Exception {
+        assertGroupedElectricity(1d, 1d, 0.5d, 1d, true, 60d);
+    }
+
+    @Test
+    void allocatedGroupHandlesUnequalFractionalQuantitiesAndSourceOrder() throws Exception {
+        assertGroupedElectricity(2.5d, 0.5d, 0.5d, 0.85d, true, 129.25d);
+        assertGroupedElectricity(2.5d, 0.5d, 1d, 0.5d, true, 252.5d);
+    }
+
+    @Test
+    void allocatedGroupHandlesZeroAndAllZeroFractions() throws Exception {
+        assertGroupedElectricity(1d, 1d, 0d, 1d, true, 10d);
+        assertGroupedElectricity(1d, 1d, 0d, 0d, true, 0d);
+        assertGroupedElectricity(0d, 0d, 0.5d, 1d, true, 0d);
+    }
+
+    @Test
+    void unallocatedAndDigitalServiceGroupsRetainHistoricalElectricitySemantics() throws Exception {
+        // Historical sum(consumption) * sum(quantity) / count, not quantity weighting.
+        assertGroupedElectricity(2.5d, 0.5d, 1d, 1d, true, 165d);
+        assertGroupedElectricity(2.5d, 0.5d, 1d, 1d, false, 165d);
+    }
+
+    private void assertGroupedElectricity(double firstQuantity, double secondQuantity,
+                                         double firstFraction, double secondFraction,
+                                         boolean inventory, double expected) throws Exception {
+        Context context = mockBaseContext(false, false);
+        when(context.getDigitalServiceVersionUid()).thenReturn(inventory ? null : "DSV1");
+        when(context.getInventoryId()).thenReturn(inventory ? 1L : null);
+        Task task = mockTask(99L);
+        mockReferential();
+        CSVPrinter printer = mock(CSVPrinter.class);
+        when(csvFileService.getPrinter(any(), any())).thenReturn(printer);
+        var mapper = Mappers.getMapper(AggregationToOutput.class);
+        ReflectionTestUtils.setField(evaluateService, "aggregationToOutput", mapper);
+        var first = InPhysicalEquipment.builder().id(1L).name("same").model("same").type("laptop")
+                .quantity(firstQuantity).electricityConsumption(100d).build();
+        var second = InPhysicalEquipment.builder().id(2L).name("same").model("same").type("laptop")
+                .quantity(secondQuantity).electricityConsumption(10d).build();
+        var page = new ArrayList<>(List.of(first, second));
+        if (inventory) {
+            when(inPhysicalEquipmentRepository.countByInventoryId(1L)).thenReturn(2L);
+            when(inPhysicalEquipmentRepository.findByInventoryId(eq(1L), any()))
+                    .thenReturn(page).thenReturn(new ArrayList<>());
+        } else {
+            when(inPhysicalEquipmentRepository.countByDigitalServiceVersionUid("DSV1")).thenReturn(2L);
+            when(inPhysicalEquipmentRepository.findByDigitalServiceVersionUid(eq("DSV1"), any()))
+                    .thenReturn(page).thenReturn(new ArrayList<>());
+        }
+        ItemCategoryResolver.Lookup categories = mock(ItemCategoryResolver.Lookup.class);
+        when(physicalEquipmentAllocationService.begin(eq(99L), eq("ORG"), any())).thenReturn(categories);
+        var reference = new PhysicalEquipmentReferenceResolver.Reference(null, null, "model", false);
+        for (var equipment : List.of(first, second)) {
+            double fraction = equipment == first ? firstFraction : secondFraction;
+            var trace = PhysicalEquipmentEvaluationTrace.builder()
+                    .effectiveFraction(fraction).originalQuantity(equipment.getQuantity()).build();
+            when(physicalEquipmentAllocationService.resolve(eq(equipment), eq(99L), eq("ORG"), any(),
+                    anyLong(), eq(categories)))
+                    .thenReturn(new PhysicalEquipmentAllocationService.Allocation(reference, trace));
+            var impact = ImpactEquipementPhysique.builder()
+                    .critere("criterion_1").etapeACV("USING").statutIndicateur("OK")
+                    .quantite(equipment.getQuantity() * fraction)
+                    .consoElecMoyenne(equipment.getElectricityConsumption()).build();
+            when(evaluateNumEcoEvalService.calculateAllocatedPhysicalEquipment(eq(equipment), any(), anyList(),
+                    anyList(), anyList(), any(), eq(reference), eq(fraction))).thenReturn(List.of(impact));
+            when(evaluateNumEcoEvalService.calculatePhysicalEquipment(eq(equipment), any(), any(), anyList(),
+                    anyList(), anyList(), any(), anyLong())).thenReturn(List.of(impact));
+        }
+        when(physicalEquipmentEvaluationTraceRepository.findByTaskIdAndSourceEquipmentIdIn(99L, List.of(1L, 2L)))
+                .thenReturn(List.of(
+                        PhysicalEquipmentEvaluationTrace.builder().taskId(99L).sourceEquipmentId(1L).build(),
+                        PhysicalEquipmentEvaluationTrace.builder().taskId(99L).sourceEquipmentId(2L).build()));
+        // A distinct shortcut for USING is needed by the real grouping-key mapper.
+        when(referentialService.getLifecycleSteps()).thenReturn(List.of("USING"));
+        evaluateService.init();
+        doAnswer(invocation -> {
+            Map<List<String>, AggValuesBO> groups = invocation.getArgument(0);
+            assertEquals(1, groups.size());
+            var entry = groups.entrySet().iterator().next();
+            var output = mapper.mapPhysicalEquipment(entry.getKey(), entry.getValue(), 99L,
+                    invocation.getArgument(2));
+            assertEquals(2L, output.getCountValue());
+            assertEquals(firstQuantity * firstFraction + secondQuantity * secondFraction, output.getQuantity());
+            // Exact formula used by the unchanged electricity indicator native view.
+            double total = output.getElectricityConsumption() * output.getQuantity() / output.getCountValue();
+            assertTrue(Double.isFinite(total));
+            assertEquals(expected, total, 1e-8);
+            return 1;
+        }).when(saveService).saveOutPhysicalEquipments(any(), eq(99L), any());
+
+        evaluateService.doEvaluate(context, task, tempDir);
+
+        verify(saveService, atLeastOnce()).saveOutPhysicalEquipments(any(), eq(99L), any());
+        assertEquals(firstQuantity, first.getQuantity());
+        assertEquals(secondQuantity, second.getQuantity());
+        assertEquals(100d, first.getElectricityConsumption());
+        assertEquals(10d, second.getElectricityConsumption());
+        reset(saveService);
+    }
 }

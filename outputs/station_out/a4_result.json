@@ -1,0 +1,101 @@
+{
+  "source": "red_team",
+  "station": "pr-validation/a4-red-team",
+  "station_id": "A4",
+  "station_name": "A4 — Red Team (optional, advisory)",
+  "workflow": "feature-implementation",
+  "feature": "G4IT-48",
+  "trace_id": "e6fa33d4-27cf-4d12-84a2-3c70d47d88da",
+  "pr": {"repo": "teamg4it/g4it", "number": 959, "head_branch": "feat/g4it-48", "base_ref": "origin/feat/g4it-ia-backbone"},
+  "skill": "red-team-simulation (RT-01..RT-05)",
+  "method": "conceptual analysis against A1, A2 and A3 reports only; no network, no execution, no file changes",
+  "target_agent": null,
+  "target_agent_note": "A1 reports 0 agent/skill manifests in scope (.github/agents and .github/skills out of scope by owner decision); no agent definition available to attack. RT-01, RT-02 (agent tool lists) and RT-04 are not_applicable; findings below are framed against the pipeline scripts and CI config in the PR diff.",
+  "owner_decisions_recorded": [
+    "A1: all rules not_applicable (no agent/skill files tracked)",
+    "A2: passed with warning; sensitive-path reference services/backend/e2e/g4it48-live-e2e.sh:10 to workspace/docker/.env accepted by owner (file attested local-only, not read)",
+    ".github/workflows/frontend-deps-update.yml removed from PR; repo-token defect no longer applies",
+    "AZURE_CLIENT_SECRET prefix log is pre-existing and outside PR diff",
+    "A3: 0 confirmed findings"
+  ],
+  "categories_assessed": {
+    "RT-01": "not_applicable (no agent definition in scope)",
+    "RT-02": "assessed against script path handling only; no agent tool allowlists in scope",
+    "RT-03": "assessed against PR-supplied documentation content; A3 reviewed prose hits as benign",
+    "RT-04": "not_applicable (no agent chain in scope)",
+    "RT-05": "not assessed in depth; no recursion or loop surface identified in the A2/A3 evidence"
+  },
+  "findings": [
+    {
+      "id": "A4-01",
+      "category": "RT-02",
+      "severity": "high",
+      "source_ref": "A2 sensitive_path_reference services/backend/e2e/g4it48-live-e2e.sh:10",
+      "attack_vector": "A test-runner path override supplied through the CI environment could redirect the e2e script to a different local settings file, widening what the script reads at runtime.",
+      "resistant": false,
+      "gap": "Default env-file path is hard-coded to a sensitive local file and the script does not restrict the override path to an allowlisted location.",
+      "owner_accepted": true,
+      "owner_acceptance_basis": "File attested local-only settings; reference accepted by repository owner.",
+      "recommendation": "Require the env-file path to be set explicitly in CI (no sensitive default), or restrict overrides to an allowlisted directory. Optional hardening; not blocking per owner decision."
+    },
+    {
+      "id": "A4-02",
+      "category": "RT-03",
+      "severity": "low",
+      "source_ref": "A3 reviewed_false_positives PI-06 (4 prose locations)",
+      "attack_vector": "Documentation files in the PR contain instruction-like prose that a downstream agent reading them as context could misinterpret.",
+      "resistant": "partial",
+      "gap": "A3 classified all hits as benign prose with 0 confirmed findings; no agent currently ingests these files as trusted instructions.",
+      "owner_accepted": false,
+      "recommendation": "Keep documentation out of agent instruction context, or re-run A3 if a future agent reads these paths."
+    },
+    {
+      "id": "A4-03",
+      "category": "RT-02",
+      "severity": "medium",
+      "source_ref": "A2 S-01 services/backend/src/test/java/.../AzureGreenItFileSystemApplicationTests.java:78",
+      "attack_vector": "Anyone with CI log read access could recover a partial prefix of a cloud client secret from integration test output.",
+      "resistant": false,
+      "gap": "Static initializer logs a credential prefix when Azure integration tests are enabled.",
+      "owner_accepted": false,
+      "scope_note": "Owner states this is pre-existing and outside the PR diff; excluded from this PR's gate, tracked as follow-up.",
+      "recommendation": "Remove the prefix log in a follow-up change; rotate the secret if CI logs are broadly readable."
+    },
+    {
+      "id": "A4-04",
+      "category": "RT-02",
+      "severity": "low",
+      "source_ref": "A2 S-01 default credentials: services/backend/src/main/resources/application.yml:92, DOCKER-DEPLOYMENT.md:58, documentation page 2-g4it-installation.md:103",
+      "attack_vector": "A default datasource password shipped in a main resource could be reused if an environment fails to override it.",
+      "resistant": "partial",
+      "gap": "Default is synthetic and documented; overridability via env in deployed profiles is not confirmed.",
+      "owner_accepted": false,
+      "recommendation": "Ensure deployed profiles require an environment-supplied datasource password."
+    }
+  ],
+  "closed_items": [
+    {
+      "id": "A4-C1",
+      "source_ref": ".github/workflows/frontend-deps-update.yml:23 (bare '$' repo-token)",
+      "status": "closed",
+      "note": "Workflow removed from the PR per owner decision; no residual vector."
+    }
+  ],
+  "overall_risk": "high",
+  "overall_risk_note": "Single high vector is the owner-accepted sensitive-path reference (A4-01). No critical bypass vector identified.",
+  "gate_criteria_per_skill": {
+    "any_critical": false,
+    "any_high": true,
+    "skill_status_if_unwaived": "fail",
+    "effective_status": "warning",
+    "basis": "A4-01 high finding accepted by repository owner; A4 is advisory."
+  },
+  "summary": "0 critical, 1 high (owner-accepted), 1 medium (pre-existing, out of PR scope), 2 low, 0 info",
+  "status": "completed",
+  "gate": "warning",
+  "open_questions": [
+    "Confirm owner acceptance of A4-01 covers the advisory high rating under the skill gate table, or record it explicitly as waived.",
+    "Confirm A4-03 is tracked as a follow-up issue rather than in this PR.",
+    "RT-05 (resource exhaustion) was not assessed in depth; confirm whether it is required for this PR."
+  ]
+}

@@ -42,6 +42,9 @@ public class CheckPhysicalEquipmentService {
     @Autowired
     private DigitalServiceRuleFactory digitalServiceRuleFactory;
 
+    @Autowired
+    private PhysicalEquipmentUsageValidator usageValidator;
+
     /**
      * Check a physical equipment object
      *
@@ -90,6 +93,9 @@ public class CheckPhysicalEquipmentService {
             }
         }
 
+        if (context.getInventoryId() != null && !isDigitalService) {
+            errors.addAll(usageValidator.check(context, physicalEquipment, filename, line));
+        }
         return errors;
     }
 }

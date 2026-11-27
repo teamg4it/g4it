@@ -1,3 +1,7 @@
+// This file has been created (totally or partially) with the assistance of artificial intelligence tools.
+// All content has been generated under the direct supervision of a named individual,
+// and under the AI.Backbone Orchestrator Compliance framework
+
 /*
  * G4IT
  * Copyright 2023 Sopra Steria
@@ -85,7 +89,9 @@ public interface InputToCsvRecord {
                 print(physicalEquipment.getSizeMemoryGb()),
                 print(physicalEquipment.getCpuType()), // processor type
                 print(physicalEquipment.getDurationHour()),
-                print(physicalEquipment.getNumberOfUsers())
+                print(physicalEquipment.getNumberOfUsers()),
+                print(physicalEquipment.getUsageContext()),
+                print(physicalEquipment.getUsageFraction())
         );
     }
 

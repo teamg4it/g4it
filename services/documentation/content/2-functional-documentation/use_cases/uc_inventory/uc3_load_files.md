@@ -4,6 +4,66 @@ description: "This use case describes how to load files"
 weight: 30
 mermaid: true
 ---
+<!-- AI_DISCLAIMER v1.0 -->
+> This file has been created (totally or partially) with the assistance of artificial intelligence tools.
+> All content has been generated under the direct supervision of a named individual,
+> and under the AI.Backbone Orchestrator Compliance framework
+
+## Optional inventory Device usage columns
+
+Physical-equipment CSV files may include either, both, or neither of these
+columns. Existing files without them keep the previous full-allocation behavior.
+
+| Column | Allowed values for an eligible inventory Device |
+|--------|------------------------------------------------|
+| `contexteUsage` | Exact, case-sensitive `BYOD`, `COPE`, or an empty cell. |
+| `fractionUsage` | A number from 0 to 1 inclusive, or an empty cell. Use a decimal point, for example `0.5`, not a percentage such as `50%`. |
+
+Leading/trailing whitespace is trimmed from **header names** in mandatory-header
+checking, metadata parsing and final loading. Thus `contexteUsage` with a
+leading or trailing space maps to `contexteUsage`. Duplicate non-empty names
+after trimming are rejected at the header check, rather than choosing an
+ambiguous column. Empty trailing headers remain supported. Data cells are not
+globally trimmed: `BYOD` with a leading or trailing space and `byod` are invalid
+contexts. Numeric fraction validation permits surrounding whitespace around a
+number, but a whitespace-only fraction is not an empty cell.
+Malformed numbers, non-finite values and values outside the inclusive bounds
+are rejected for eligible Devices.
+
+### Eligibility and precedence
+
+Only the exact resolved `item_category = DEVICES` is eligible, not `Devices` or
+a category inferred from the context. Category lookup checks the selected
+default-item reference **before** the equipment type. Within each lookup,
+workspace records take precedence, then records for the current organization
+over global records. Consequently a reference match takes precedence even over
+a conflicting type match. Unmatched types resolve to `INFRASTRUCTURE`.
+Other custom categories remain valid but ineligible.
+
+Usage-value validation and allocation do not apply to non-Devices, infrastructure
+or digital-service equipment. Non-Device usage values are retained as source
+text, even when they are not valid Device usage values, and do not affect
+calculation. This exemption does not bypass other existing row checks.
+
+### Invalid rows and reporting
+
+The English usage validation messages are:
+
+- Invalid value for column "contexteUsage". Allowed values are: BYOD, COPE, or empty.
+- Invalid value for column "fractionUsage". The value must be a number between 0 and 1.
+
+Messages follow the loading locale, with corresponding French messages in the
+application. All applicable usage errors accumulate with the other row errors.
+Any invalid row is rejected **as a whole**: it is neither saved nor used to
+replace an existing source row. The rejected-file download contains the original
+row with its accumulated messages. Rejected-row reporting counts distinct rows
+per file, not messages or equipment quantity: one row with two errors is one
+rejected row and two messages.
+
+For defaults and explicit overrides, see
+[evaluation]({{% ref "/2-functional-documentation/use_cases/uc_inventory/uc4_launch_estimation.md" %}}).
+For the distinction between source and evaluated usage values, see
+[exports]({{% ref "/2-functional-documentation/use_cases/uc_inventory/uc7_export_files.md" %}}).
 
 ## Table of contents
 
@@ -13,7 +73,7 @@ mermaid: true
   * [State Diagram](#state-diagram)
   * [Mockup](#mockup)
     * [Loading History](#loading-history)
-      * [Loading History](#loading-history-1)
+      * [Loading History](#loading-history-details)
       * [Loading control and process](#loading-control-and-process)
   * [Sequence Diagram](#sequence-diagram)
 <!-- TOC -->
@@ -57,7 +117,7 @@ Decision3 --> |Yes|Step6[Display Task as failed with a download button to displa
 Decision3 --> |No|Decision4{Any validation errors?}
 Decision4 --> |Yes|Step8[Display Warning:<br> 'Completed with errors', with a download button]
 Decision4 --> |No|Step9[Display Validated:<br>'Completed']
-Decision4 --> |More than 50 000 lines with validation errors|Step10[Display Task as failed with a download button to display error details:<br> 'Failed']
+Decision4 --> |Coherence-message threshold exceeded|Step10[Display Task as failed with a download button to display error details:<br> 'Failed']
 {{</ mermaid >}}
 
 ## Mockup
@@ -68,7 +128,7 @@ Decision4 --> |More than 50 000 lines with validation errors|Step10[Display Task
 
 {{% expand title="Show the behavior detail" expanded="false" center="true"%}}
 
-#### Loading History
+#### Loading History {#loading-history-details}
 
 | Reference | Group           | Elements          | Sub-Elements | Type   | Description                                                                                                                                                                                                                                                                                                                                                                                                         |
 |-----------|-----------------|-------------------|--------------|--------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -89,8 +149,9 @@ Decision4 --> |More than 50 000 lines with validation errors|Step10[Display Task
 | 4                | Application consistency check        | **Uniqueness Validation:** <br> All the duplicated records with the combination of 'nomApplication, typeEnvironnement and nomEquipementVirtuel' are rejected. <br><br> **Virtual equipment Reference Check:** If the referenced **nomEquipementVirtuel** does not exist in inventory or in the uploaded virtual_equipment file/s, the line is rejected with message "The Virtual equipment {name} does not exist in the inventory."                                                                                                             |
 
 > [!WARNING]
-> When uploading a file (datacenter, physical equipment, virtual equipment, or application) with more than 50,000 lines
-> in error, the task status is set to "FAILED" and no data is inserted into the database for this file.
+> The existing 50,000 coherence-error-message threshold is separate from the
+> distinct rejected-row count. Exceeding it fails the loading task; it is not
+> a count of equipment quantities or a guarantee of transactional rollback.
 
 {{% /expand %}}
 

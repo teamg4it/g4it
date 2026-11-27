@@ -10,9 +10,19 @@
 outputs/brownfield/*/knowledge-plane/
 
 # Backup and caches
-.state-backups/*
-.github/hooks/.cache/*
+.state-backups/
+.github/hooks/.cache/
 
-# IA Backbone files
+# Other IA Backbone files
 .apm.lock.yaml
 .backbone-settings.json
+outputs/runs/
+
+# Temporary files
+tmp/
+/services/backend/e2e/work/
+services/backend/e2e/__pycache__/
+tools/repo-graph/__pycache__/
+
+# IDE settings
+.vscode/

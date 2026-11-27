@@ -1,3 +1,7 @@
+// This file has been created (totally or partially) with the assistance of artificial intelligence tools.
+// All content has been generated under the direct supervision of a named individual,
+// and under the AI.Backbone Orchestrator Compliance framework
+
 /*
  * G4IT
  * Copyright 2023 Sopra Steria
@@ -18,6 +22,7 @@ import com.soprasteria.g4it.backend.server.gen.api.dto.InPhysicalEquipmentRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InVirtualEquipmentRest;
 import org.apache.commons.csv.CSVRecord;
 import org.mapstruct.Mapper;
+import org.openapitools.jackson.nullable.JsonNullable;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -63,6 +68,8 @@ public interface CsvToInMapper {
                 .quantity(quantityValue!=null?Double.valueOf(quantityValue):null)
                 .type(read(csvRecord, "type"))
                 .model(read(csvRecord, "modele"))
+                .usageContext(JsonNullable.of(read(csvRecord, "contexteUsage")))
+                .usageFraction(JsonNullable.of(read(csvRecord, "fractionUsage")))
                 .durationHour(readDouble(csvRecord, "dureeUtilisation"))
                 .datePurchase(readLocalDate(csvRecord, "dateAchat"))
                 .dateWithdrawal(readLocalDate(csvRecord, "dateRetrait"))

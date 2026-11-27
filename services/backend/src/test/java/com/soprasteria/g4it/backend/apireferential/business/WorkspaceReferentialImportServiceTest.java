@@ -61,6 +61,7 @@ class WorkspaceReferentialImportServiceTest {
         ItemTypeRest rest = new ItemTypeRest();
         rest.setType("A");
         rest.setCategory("Laptop");
+        rest.setItemCategory("Hardware");
         rest.setDefaultLifespan(5.0);
         rest.setIsServer(false);
         rest.setRefDefaultItem("Laptop");
@@ -86,6 +87,7 @@ class WorkspaceReferentialImportServiceTest {
         ItemTypeRest rest1 = new ItemTypeRest();
         rest1.setType("A");
         rest1.setCategory("Laptop");
+        rest1.setItemCategory("Hardware");
         rest1.setDefaultLifespan(5.0);
         rest1.setIsServer(false);
         rest1.setRefDefaultItem("Laptop");
@@ -93,6 +95,7 @@ class WorkspaceReferentialImportServiceTest {
         ItemTypeRest rest2 = new ItemTypeRest();
         rest2.setType("A");
         rest2.setCategory("Laptop");
+        rest2.setItemCategory("Hardware");
         rest2.setDefaultLifespan(5.0);
         rest2.setIsServer(false);
         rest2.setRefDefaultItem("Laptop");
@@ -114,6 +117,7 @@ class WorkspaceReferentialImportServiceTest {
         ItemTypeRest rest = new ItemTypeRest();
         rest.setType(null);
         rest.setCategory("Laptop");
+        rest.setItemCategory("Hardware");
         rest.setDefaultLifespan(5.0);
         rest.setIsServer(false);
         rest.setRefDefaultItem("Laptop");
@@ -137,6 +141,31 @@ class WorkspaceReferentialImportServiceTest {
     // =========================
     // MATCHING ITEM
     // =========================
+
+    @ParameterizedTest
+    @MethodSource("missingItemCategories")
+    void shouldRejectMissingWorkspaceCategoryBeforeSynchronization(String category) {
+        ItemTypeRest rest = new ItemTypeRest();
+        rest.setType("Laptop");
+        rest.setCategory("Laptop");
+        rest.setItemCategory(category);
+        rest.setDefaultLifespan(5.0);
+        rest.setIsServer(false);
+        rest.setRefDefaultItem("Laptop");
+        when(file.isEmpty()).thenReturn(false);
+        when(referentialImportService.parseItemTypeCsv(file)).thenReturn(ItemTypeParseResult.builder()
+                .data(List.of(rest)).report(emptyReport()).build());
+
+        BadRequestException error = assertThrows(BadRequestException.class,
+                () -> service.importReferentialCSV(ORG, 1L, "itemType", file));
+
+        assertEquals("itemtype.required.fields.missing", error.getError());
+        verifyNoInteractions(workspacePersistenceService, referentialMapper);
+    }
+
+    private static Stream<Arguments> missingItemCategories() {
+        return Stream.of(Arguments.of((String) null), Arguments.of(""), Arguments.of(" "));
+    }
 
     @Test
     void importReferentialCSV_matchingItem_success() {
@@ -279,6 +308,7 @@ class WorkspaceReferentialImportServiceTest {
         ItemTypeRest rest = new ItemTypeRest();
         rest.setType("   ");
         rest.setCategory("Laptop");
+        rest.setItemCategory("Hardware");
         rest.setDefaultLifespan(5.0);
         rest.setIsServer(false);
         rest.setRefDefaultItem("Laptop");
@@ -500,6 +530,7 @@ class WorkspaceReferentialImportServiceTest {
         ItemTypeRest item = new ItemTypeRest();
         item.setType("Laptop");
         item.setCategory("Hardware");
+        item.setItemCategory("Hardware");
         item.setDefaultLifespan(0.0);
         item.setIsServer(false);
         item.setRefDefaultItem("Laptop");
@@ -541,6 +572,7 @@ class WorkspaceReferentialImportServiceTest {
         ItemTypeRest item = new ItemTypeRest();
         item.setType(type);
         item.setCategory(category);
+        item.setItemCategory("Hardware");
         item.setDefaultLifespan(lifespan);
         item.setIsServer(server);
         item.setRefDefaultItem(refDefault);

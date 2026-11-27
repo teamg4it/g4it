@@ -1,3 +1,7 @@
+// This file has been created (totally or partially) with the assistance of artificial intelligence tools.
+// All content has been generated under the direct supervision of a named individual,
+// and under the AI.Backbone Orchestrator Compliance framework
+
 /*
  * G4IT
  * Copyright 2023 Sopra Steria
@@ -101,6 +105,23 @@ class ReferentialServiceTest {
         ItemTypeRest orgType = mock(ItemTypeRest.class);
         when(referentialGetService.getItemTypes("type", "org", null)).thenReturn(List.of(orgType));
         assertEquals(orgType, referentialService.getItemType("type", "org"));
+    }
+
+    @Test
+    void testGetItemTypeFallsBackToGlobalReferential() {
+        ItemTypeRest globalType = new ItemTypeRest();
+        when(referentialGetService.getItemTypes("type", "org", null)).thenReturn(List.of());
+        when(referentialGetService.getItemTypes("type", null, null)).thenReturn(List.of(globalType));
+
+        assertSame(globalType, referentialService.getItemType("type", "org"));
+    }
+
+    @Test
+    void testGetItemTypeReturnsNullWhenUnknownInOrganizationAndGlobalReferential() {
+        when(referentialGetService.getItemTypes("unknown-type", "org", null)).thenReturn(List.of());
+        when(referentialGetService.getItemTypes("unknown-type", null, null)).thenReturn(List.of());
+
+        assertNull(referentialService.getItemType("unknown-type", "org"));
     }
 
     @Test

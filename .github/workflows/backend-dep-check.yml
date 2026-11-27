@@ -1,3 +1,6 @@
+# This file has been created (totally or partially) with the assistance of artificial intelligence tools.
+# All content has been generated under the direct supervision of a named individual,
+# and under the AI.Backbone Orchestrator Compliance framework
 name: Dependency Check Backend
 
 on:
@@ -5,6 +8,10 @@ on:
     branches: ["main"]
     paths:
       - services/backend/**
+
+# Least privilege: artifact upload uses the runner token, not GITHUB_TOKEN scopes.
+permissions:
+  contents: read
 
 jobs:
   build:

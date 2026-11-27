@@ -3,6 +3,32 @@ title: 'Information Sytem output data'
 description: 'Theses tables present the datamodel to store the environmental footprint calculated indicators for Information System.'
 weight: 8
 ---
+<!-- AI_DISCLAIMER v1.0 -->
+> This file has been created (totally or partially) with the assistance of artificial intelligence tools.
+> All content has been generated under the direct supervision of a named individual,
+> and under the AI.Backbone Orchestrator Compliance framework
+
+## Task-owned physical-equipment usage snapshot
+
+Alongside the grouped results shown below,
+`PhysicalEquipmentEvaluationTrace` stores one snapshot per evaluation task
+and source-equipment id. It retains source usage context/fraction, resolved
+category/reference, original unallocated quantity and the effective fraction
+(including 1 for non-Devices). This is separate from the grouped
+`OutPhysicalEquipment` model: context and fraction are not new grouping keys.
+
+The task owns the trace and task deletion cascades to it. Source-equipment
+identity is retained as snapshot data, without a cascading dependency on the
+live source row. Replacing source rows therefore does not erase retained
+evaluation usage. Re-evaluation creates a new task snapshot; same-task retry
+resets only that task's traces. Historical tasks are not backfilled.
+
+The evaluated serializer reuses persisted task/source values; Device effective
+fractions use plain decimals, while non-Device usage stays raw and empty usage
+stays empty. Quantity-share indicators use original quantities and stored
+Device membership, not allocation-scaled output quantities or current source.
+See [evaluation lifecycle]({{% ref "/3-technical-documentation/4-backend_documentation/2-api_documentation/2-evaluation/api_evaluating_inventory.md" %}}).
+
 ## Entity relationship diagram 
 
 ```mermaid

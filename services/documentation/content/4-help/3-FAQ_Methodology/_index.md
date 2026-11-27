@@ -3,6 +3,11 @@ title: 'FAQ Methodology'
 weight: 100
 ---
 
+<!-- AI_DISCLAIMER v1.0 -->
+> This file has been created (totally or partially) with the assistance of artificial intelligence tools.
+> All content has been generated under the direct supervision of a named individual,
+> and under the AI.Backbone Orchestrator Compliance framework
+
 ## Table of content
 
 <!-- TOC -->
@@ -210,7 +215,7 @@ The criteria to calculate can be configured from 4 places:
 
 - Information System panel / My IS inventory / My Information System / configure criteria for my information system (gears icon on the bottom right on the panel for the IS you want to calculate)
 
-See more details [3.2.5 Choose criteria](../../2-functional-documentation/use_cases/uc_administration/uc_administration_manage_organizations/uc5_choose_criteria.md)
+See more details [3.2.5 Choose criteria]({{% ref "/2-functional-documentation/use_cases/uc_administration/uc_administration_manage_workspaces/uc5_choose_criteria.md" %}})
 {{% /expand %}}
 
 {{% expand title="What happens if an indicator cannot be calculated" expanded="false" %}}
@@ -269,7 +274,7 @@ All information is available in [Network](../../2-functional-documentation/globa
 {{% /expand %}}
 
 {{% expand title="Which methodology is used to assess the footprint of an AI service" expanded="false" %}}
-All information is available in [EcoLogits Calculation Engine](../../2-functional-documentation/global_concepts/environmental_footprint_assessment_methodology/ecologits_calculation_engine.md)
+All information is available in EcoLogits Calculation Engine
 {{% /expand %}}
 
 ## Analyse

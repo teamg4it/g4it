@@ -5,6 +5,11 @@ weight: 40
 mermaid: true
 ---
 
+<!-- AI_DISCLAIMER v1.0 -->
+> This file has been created (totally or partially) with the assistance of artificial intelligence tools.
+> All content has been generated under the direct supervision of a named individual,
+> and under the AI.Backbone Orchestrator Compliance framework
+
 ## Evaluation Process
 
 The digital service version data is evaluated using active criteria in
@@ -68,8 +73,8 @@ Below you will find the entities used to save the generated indicators in the da
 
 | Package                                       | Entity               | table                                                                                                                           |
 | --------------------------------------------- | -------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| com/soprasteria/g4it/backend/apiinout/modeldb | OutPhysicalEquipment | [out_physical_equipment](../../db_documentation/information_system_and_digital_service_output_data/digital_service_output_data) |
-| com/soprasteria/g4it/backend/apiinout/modeldb | OutVirtualEquipment  | [out_virtual_equipment](../../db_documentation/information_system_and_digital_service_output_data/digital_service_output_data)  |
+| com/soprasteria/g4it/backend/apiinout/modeldb | OutPhysicalEquipment | [out_physical_equipment]({{% ref "/3-technical-documentation/4-backend_documentation/db_documentation/information_system_and_digital_service_output_data/digital_service_output_data/output.md" %}}) |
+| com/soprasteria/g4it/backend/apiinout/modeldb | OutVirtualEquipment  | [out_virtual_equipment]({{% ref "/3-technical-documentation/4-backend_documentation/db_documentation/information_system_and_digital_service_output_data/digital_service_output_data/output.md" %}})  |
 
 These entities are by saved by
 the [SaveService class](https://github.com/G4ITTeam/g4it/blob/main/services/backend/src/main/java/com/soprasteria/g4it/backend/apievaluating/business/asyncevaluatingservice/SaveService.java)
