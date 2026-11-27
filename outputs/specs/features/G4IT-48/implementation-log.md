@@ -3012,10 +3012,11 @@ test runs are separate executions, not a doubled distinct-test count.
 The successful test/report command does not change the earlier failed
 verify result or substitute for integration-test execution.
 
-Current evidence:
-[isolated execution log](../../../../services/backend/target/g4it48-isolated-coverage.log),
-[JaCoCo CSV](../../../../services/backend/target/site/jacoco/jacoco.csv),
-[JaCoCo XML](../../../../services/backend/target/site/jacoco/jacoco.xml).
+Current evidence (local, untracked build outputs under the ignored `target/`
+directory; regenerate them with the command above):
+`services/backend/target/g4it48-isolated-coverage.log`,
+`services/backend/target/site/jacoco/jacoco.csv`,
+`services/backend/target/site/jacoco/jacoco.xml`.
 
 | Scope | Covered lines / total | Line coverage | Covered branches / total | Branch coverage |
 |-------|-----------------------|---------------|--------------------------|-----------------|

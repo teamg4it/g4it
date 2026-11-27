@@ -1,0 +1,1053 @@
+{
+  "status": "warn",
+  "summary": [
+    "Mode: local",
+    "Changed files inspected: 180",
+    "Blocking issues: 0",
+    "Warnings: 142"
+  ],
+  "blocking_issues": [],
+  "warnings": [
+    ".github/workflows/backend-build-test-analyze.yml: missing explicit workflow permissions",
+    ".github/workflows/frontend-analyze-main.yml: missing explicit workflow permissions",
+    ".github/workflows/frontend-build-test-analyze.yml: missing explicit workflow permissions",
+    "outputs/specs/features/G4IT-48/implementation-log.md: broken relative link target '../../../../services/backend/target/g4it48-isolated-coverage.log'",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/1-collect_data/01_Help_yourself_with_pre-filled_templates.md: broken relative link target '../../documents/datacenter_sampleMandatory1.csv'",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/1-collect_data/01_Help_yourself_with_pre-filled_templates.md: broken relative link target '../../documents/physicalEquipment_example.csv'",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/1-collect_data/01_Help_yourself_with_pre-filled_templates.md: broken relative link target '../../documents/User_Devices_01_Laptop_Template.csv'",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/1-collect_data/01_Help_yourself_with_pre-filled_templates.md: broken relative link target '{{% ref \"/2-functional-documentation/use_cases/uc_inventory/uc3_load_files.md\" %}}'",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/1-collect_data/01_Help_yourself_with_pre-filled_templates.md: broken relative link target '../../documents/virtualEquipment_Sample.csv'",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/1-collect_data/01_Help_yourself_with_pre-filled_templates.md: broken relative link target '../../documents/User_Server_01_InstancesCloud_Template.csv'",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/1-collect_data/01_Help_yourself_with_pre-filled_templates.md: broken relative link target '../../documents/application_Sample.csv'",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/2-load_data.md: broken relative link target '../images/Datamodel_download.png \"Interface screenshot for downloading the G4IT data model.\"'",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/2-load_data.md: broken relative link target '../documents/datacenter_toFillIn.xlsx'",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/2-load_data.md: broken relative link target '../documents/datacenter_Sample.csv'",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/2-load_data.md: broken relative link target '../documents/physicalEquipment_toFillIn.csv'",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/2-load_data.md: broken relative link target '../documents/physicalEquipment_example.csv'",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/2-load_data.md: broken relative link target '{{% ref \"/2-functional-documentation/use_cases/uc_inventory/uc3_load_files.md\" %}}'",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/2-load_data.md: broken relative link target '../documents/virtualEquipment_toFillIn.xlsx'",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/2-load_data.md: broken relative link target '../documents/virtualEquipment_Sample.csv'",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/2-load_data.md: broken relative link target '../documents/application_toFillIn.xlsx'",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/2-load_data.md: broken relative link target '../documents/application_Sample.csv'",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/2-load_data.md: broken relative link target '../images/01_IS_Module_access.png \"Access Inventory Module.\"'",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/2-load_data.md: broken relative link target '../images/02_create_an_inventory_1.png \"Create a new inventory.\"'",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/2-load_data.md: broken relative link target '../images/02_create_an_inventory_2.png \"Inventory configuration panel.\"'",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/2-load_data.md: broken relative link target '../images/loadOK.png'",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/2-load_data.md: broken relative link target '../images/loadInError.png'",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/2-load_data.md: broken relative link target '../images/loadKOpng.png'",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/2-load_data.md: broken relative link target '../images/control_number_of_item.png \"Number of items loaded in the inventory.\"'",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/2-load_data.md: broken relative link target '../images/update_estimation.png \"Button to launch or update impact estimation.\"'",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/2-load_data.md: broken relative link target '../../../../2-functional-documentation/use_cases/uc_inventory/_index.md'",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/3-module-administration/01_Manage-users-in-my-space-workspace.md: broken relative link target '{{% ref \"/1-getting-started/1-getting-started-as-a-user/01_First-Login.md\" %}}'",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/3-module-administration/01_Manage-users-in-my-space-workspace.md: broken relative link target '../images/02_Manage-users-Step1.png'",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/3-module-administration/01_Manage-users-in-my-space-workspace.md: broken relative link target '../images/02_Manage-users-Step2.png'",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/3-module-administration/01_Manage-users-in-my-space-workspace.md: broken relative link target '../images/02_Manage-users-Step3.png'",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/3-module-administration/01_Manage-users-in-my-space-workspace.md: broken relative link target '../../../../2-functional-documentation/use_cases/uc_administration/uc_administration_manage_users/_index.md'",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/3-module-administration/02_Manage-workspace.md: broken relative link target '{{% ref \"/4-help/1-glossary.md\" %}}'",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/3-module-administration/02_Manage-workspace.md: broken relative link target './01_First-Login'",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/3-module-administration/02_Manage-workspace.md: broken relative link target '../images/03_Manage-organization-Step1.png'",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/3-module-administration/02_Manage-workspace.md: broken relative link target '../images/03_Manage-organization-Step2.png'",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/3-module-administration/02_Manage-workspace.md: broken relative link target '../../../../2-functional-documentation/use_cases/uc_administration/uc_administration_manage_workspaces/uc2_edit_workspaces/index.html'",
+    "services/documentation/content/1-getting-started/2-getting-started-as-a-developper/1-How to setup my local dev env/2-g4it-installation.md: broken relative link target '../../missing_dependency.png'",
+    "services/documentation/content/2-functional-documentation/global_concepts/environmental_footprint_assessment_methodology/uc1_physical_equipment.md: broken relative link target '{{% ref \"/2-functional-documentation/use_cases/uc_inventory/uc3_load_files.md\" %}}'",
+    "services/documentation/content/2-functional-documentation/global_concepts/environmental_footprint_assessment_methodology/uc1_physical_equipment.md: broken relative link target '{{% ref \"/2-functional-documentation/use_cases/uc_inventory/uc5_visualize_equipment_footprint.md\" %}}'",
+    "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc2_create_visualize_digital_service.md: broken relative link target '../images/uc2_create_visualize_digital_service_visualize.png'",
+    "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc2_create_visualize_digital_service.md: broken relative link target 'uc3_add_visualize_equipments%2Fuc3_add_visualize_noncloud-servers%2Fimport_nonCloud_servers_via_button.md'",
+    "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc2_create_visualize_digital_service.md: broken relative link target 'uc3_add_visualize_equipments%2Fuc3_add_visualize_cloud_services%2Fimport_cloud_services_via_button.md'",
+    "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc2_create_visualize_digital_service.md: broken relative link target 'uc3_add_visualize_equipments/_index'",
+    "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc2_create_visualize_digital_service.md: broken relative link target '{{% ref \"/2-functional-documentation/use_cases/uc_digital_services/uc10_manage_digital-service_version.md\" %}}'",
+    "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc2_create_visualize_digital_service.md: broken relative link target '{{% ref \"/2-functional-documentation/use_cases/uc_digital_services/uc9_duplicate_digital_service_version.md\" %}}'",
+    "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc3_add_visualize_equipments/_index.md: broken relative link target '{{% ref \"/2-functional-documentation/use_cases/uc_digital_services/uc3_add_visualize_equipments/uc3_add_visualize_noncloud-servers/_index.md\" %}}'",
+    "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc3_add_visualize_equipments/_index.md: broken relative link target 'uc3_add_visualize_cloud_services.md'",
+    "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc3_add_visualize_equipments/uc3_add_visualize_network/_index.md: broken relative link target 'import_network_via_button'",
+    "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc3_add_visualize_equipments/uc3_add_visualize_network/add_visualize_networks_via_forms.md: broken relative link target '{{% ref \"/2-functional-documentation/use_cases/uc_digital_services/uc3_add_visualize_equipments/uc3_add_visualize_network/_index.md'",
+    "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc3_add_visualize_equipments/uc3_add_visualize_network/add_visualize_networks_via_forms.md: broken relative link target '../../../images/uc3_add_visualize_equipments_NetworksAdd.png'",
+    "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc3_add_visualize_equipments/uc3_add_visualize_terminals/_index.md: broken relative link target 'import_terminal_via_button'",
+    "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc3_add_visualize_equipments/uc3_add_visualize_terminals/add_visualize_terminals_via_forms.md: broken relative link target '{{% ref \"/2-functional-documentation/use_cases/uc_digital_services/uc3_add_visualize_equipments/uc3_add_visualize_terminals/_index.md'",
+    "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc3_add_visualize_equipments/uc3_add_visualize_terminals/add_visualize_terminals_via_forms.md: broken relative link target '../../../images/uc3_add_visualize_equipments_terminalsAdd.png'",
+    "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc4_launch_estimation.md: broken relative link target '../images/uc4_launch_estimation.png'",
+    "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc4_launch_estimation.md: broken relative link target '../images/uc4_launch_criteria_estimation.png'",
+    "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc5_visualize_footprint/_index.md: broken relative link target './uc6_export_digital_service.md'",
+    "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc5_visualize_footprint/_index.md: broken relative link target '{{% ref \"/2-functional-documentation/use_cases/uc_digital_services/uc9_duplicate_digital_service_version.md\" %}}'",
+    "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc5_visualize_footprint/_index.md: broken relative link target '{{% ref \"/2-functional-documentation/use_cases/uc_digital_services/uc10_manage_digital-service_version.md\" %}}'",
+    "services/documentation/content/2-functional-documentation/use_cases/uc_inventory/uc3_load_files.md: broken relative link target '{{% ref \"/2-functional-documentation/use_cases/uc_inventory/uc4_launch_estimation.md\" %}}'",
+    "services/documentation/content/2-functional-documentation/use_cases/uc_inventory/uc3_load_files.md: broken relative link target '{{% ref \"/2-functional-documentation/use_cases/uc_inventory/uc7_export_files.md\" %}}'",
+    "services/documentation/content/2-functional-documentation/use_cases/uc_inventory/uc3_load_files.md: broken relative link target '../images/uc3_load_files_loading_history.png'",
+    "services/documentation/content/2-functional-documentation/use_cases/uc_inventory/uc4_launch_estimation.md: broken relative link target '{{% ref \"/2-functional-documentation/use_cases/uc_inventory/uc3_load_files.md\" %}}'",
+    "services/documentation/content/2-functional-documentation/use_cases/uc_inventory/uc4_launch_estimation.md: broken relative link target '{{% ref \"/2-functional-documentation/global_concepts/environmental_footprint_assessment_methodology/uc1_physical_equipment.md\" %}}'",
+    "services/documentation/content/2-functional-documentation/use_cases/uc_inventory/uc4_launch_estimation.md: broken relative link target '../images/uc4_launch_estimation_estimate_history.png'",
+    "services/documentation/content/2-functional-documentation/use_cases/uc_inventory/uc5_visualize_equipment_footprint.md: broken relative link target '{{% ref \"/2-functional-documentation/use_cases/uc_inventory/uc4_launch_estimation.md\" %}}'",
+    "services/documentation/content/2-functional-documentation/use_cases/uc_inventory/uc5_visualize_equipment_footprint.md: broken relative link target '{{% ref \"/2-functional-documentation/use_cases/uc_inventory/uc7_export_files.md\" %}}'",
+    "services/documentation/content/2-functional-documentation/use_cases/uc_inventory/uc5_visualize_equipment_footprint.md: broken relative link target '../images/uc5_visualize_equipment_footprint.png'",
+    "services/documentation/content/2-functional-documentation/use_cases/uc_inventory/uc5_visualize_equipment_footprint.md: broken relative link target '../images/uc5_visualize_equipment_footprint_multi.png'",
+    "services/documentation/content/2-functional-documentation/use_cases/uc_inventory/uc5_visualize_equipment_footprint.md: broken relative link target '../images/uc5_visualize_equipment_footprint_multi_reverse1.png'",
+    "services/documentation/content/2-functional-documentation/use_cases/uc_inventory/uc5_visualize_equipment_footprint.md: broken relative link target '../images/uc5_visualize_equipment_footprint_multi_reverse2.png'",
+    "services/documentation/content/2-functional-documentation/use_cases/uc_inventory/uc5_visualize_equipment_footprint.md: broken relative link target '../images/uc5_visualize_equipment_footprint_multi_items1.png'",
+    "services/documentation/content/2-functional-documentation/use_cases/uc_inventory/uc5_visualize_equipment_footprint.md: broken relative link target '../images/uc5_visualize_equipment_footprint_one.png'",
+    "services/documentation/content/2-functional-documentation/use_cases/uc_inventory/uc5_visualize_equipment_footprint.md: broken relative link target '../images/uc5_visualize_equipment_footprint_data_consistency.png'",
+    "services/documentation/content/2-functional-documentation/use_cases/uc_inventory/uc7_export_files.md: broken relative link target '../images/uc6_exportButton.png'",
+    "services/documentation/content/2-functional-documentation/use_cases/uc_navigation_menu/uc2_header/uc24_workspace_creation.md: broken relative link target '../images/organization_creation_state_diagram.png'",
+    "services/documentation/content/2-functional-documentation/use_cases/uc_navigation_menu/uc2_header/uc24_workspace_creation.md: broken relative link target '../images/create_organization_button.png'",
+    "services/documentation/content/2-functional-documentation/use_cases/uc_navigation_menu/uc2_header/uc24_workspace_creation.md: broken relative link target '../images/create_organization_form_id.png'",
+    "services/documentation/content/2-functional-documentation/use_cases/uc_navigation_menu/uc2_header/uc24_workspace_creation.md: broken relative link target '../images/create_organization_name_duplicate.png'",
+    "services/documentation/content/2-functional-documentation/use_cases/uc_navigation_menu/uc2_header/uc24_workspace_creation.md: broken relative link target '../images/create_organization_name_space.png'",
+    "services/documentation/content/3-technical-documentation/3-technical_architecture/ecomind/_index.md: broken relative link target '{{% ref \"/3-technical-documentation/4-backend_documentation/2-api_documentation/2-evaluation/digital_service/_index.md\" %}}'",
+    "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/1-loading/api_digitalService_loading.md: broken relative link target '../../../db_documentation/information_system_and_digital_service_input_data/digital_service_input_data/input/'",
+    "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/1-loading/api_digitalService_loading.md: broken relative link target '../../../db_documentation/information_system_and_digital_service_input_data/digital_service_input_data/input/'",
+    "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/1-loading/api_digitalService_loading.md: broken relative link target '../../../db_documentation/information_system_and_digital_service_input_data/digital_service_input_data/input/'",
+    "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/1-loading/api_digitalService_loading.md: broken relative link target '../../../db_documentation/information_system_and_digital_service_input_data/digital_service_input_data/input/'",
+    "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/1-loading/api_digitalService_loading.md: broken relative link target '../../../db_documentation/information_system_and_digital_service_input_data/digital_service_input_data/input/'",
+    "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/1-loading/api_digitalService_loading.md: broken relative link target '../../../db_documentation/information_system_and_digital_service_input_data/digital_service_input_data/input/'",
+    "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/1-loading/api_loading.md: broken relative link target '{{% ref \"/2-functional-documentation/use_cases/uc_inventory/uc3_load_files.md\" %}}'",
+    "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/1-loading/api_loading.md: broken relative link target '{{% ref \"/2-functional-documentation/use_cases/uc_inventory/uc3_load_files.md\" %}}'",
+    "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/1-loading/api_loading.md: broken relative link target '../../../db_documentation/information_system_and_digital_service_input_data/digital_service_input_data/input/'",
+    "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/1-loading/api_loading.md: broken relative link target '../../../db_documentation/information_system_and_digital_service_input_data/digital_service_input_data/input/'",
+    "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/1-loading/api_loading.md: broken relative link target '../../../db_documentation/information_system_and_digital_service_input_data/digital_service_input_data/input/'",
+    "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/1-loading/api_loading.md: broken relative link target '../../../db_documentation/information_system_and_digital_service_input_data/digital_service_input_data/input/'",
+    "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/1-loading/api_loading.md: broken relative link target '../../../db_documentation/information_system_and_digital_service_input_data/digital_service_input_data/input/'",
+    "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/1-loading/api_loading.md: broken relative link target '../../../db_documentation/information_system_and_digital_service_input_data/digital_service_input_data/input/'",
+    "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/1-loading/api_loading.md: broken relative link target '../../../db_documentation/information_system_and_digital_service_input_data/digital_service_input_data/input/'",
+    "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/1-loading/api_loading.md: broken relative link target '../../../db_documentation/information_system_and_digital_service_input_data/digital_service_input_data/input/'",
+    "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/1-loading/api_loading.md: broken relative link target '../../../db_documentation/information_system_and_digital_service_input_data/digital_service_input_data/input/'",
+    "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/1-loading/api_loading.md: broken relative link target '../../../../2-functional-documentation/use_cases/uc_inventory/uc3_load_files'",
+    "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/2-evaluation/api_evaluating_inventory.md: broken relative link target '{{% ref \"/2-functional-documentation/global_concepts/environmental_footprint_assessment_methodology/uc1_physical_equipment.md\" %}}'",
+    "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/2-evaluation/api_evaluating_inventory.md: broken relative link target '{{% ref \"/2-functional-documentation/use_cases/uc_inventory/uc7_export_files.md\" %}}'",
+    "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/2-evaluation/api_evaluating_inventory.md: broken relative link target '{{% ref \"/2-functional-documentation/use_cases/uc_inventory/uc4_launch_estimation.md\" %}}'",
+    "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/2-evaluation/digital_service/ecomind/_index.md: broken relative link target '{{% ref \"/3-technical-documentation/4-backend_documentation/db_documentation/information_system_and_digital_service_output_data/digital_service_output_data/output.md\" %}}'",
+    "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/2-evaluation/digital_service/ecomind/_index.md: broken relative link target '{{% ref \"/3-technical-documentation/4-backend_documentation/db_documentation/information_system_and_digital_service_output_data/digital_service_output_data/output.md\" %}}'",
+    "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/2-evaluation/digital_service/ecomind/_index.md: broken relative link target '{{% ref \"/3-technical-documentation/4-backend_documentation/db_documentation/information_system_and_digital_service_output_data/digital_service_output_data/output_ecomind.md\" %}}'",
+    "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/2-evaluation/digital_service/without_ecomind/_index.md: broken relative link target '{{% ref \"/3-technical-documentation/4-backend_documentation/db_documentation/information_system_and_digital_service_output_data/digital_service_output_data/output.md\" %}}'",
+    "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/2-evaluation/digital_service/without_ecomind/_index.md: broken relative link target '{{% ref \"/3-technical-documentation/4-backend_documentation/db_documentation/information_system_and_digital_service_output_data/digital_service_output_data/output.md\" %}}'",
+    "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/3-indicators/api_indicators_digital_service.md: broken relative link target '{{% ref \"/2-functional-documentation/use_cases/uc_digital_services/uc5_visualize_footprint.md\" %}}'",
+    "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/3-indicators/api_indicators_digital_service.md: broken relative link target '{{% ref \"/2-functional-documentation/use_cases/uc_digital_services/uc5_visualize_footprint.md\" %}}'",
+    "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/3-indicators/api_indicators_digital_service.md: broken relative link target '{{% ref \"/3-technical-documentation/4-backend_documentation/db_documentation/information_system_and_digital_service_output_data/digital_service_output_data/output.md\" %}}'",
+    "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/3-indicators/api_indicators_digital_service.md: broken relative link target '{{% ref \"/3-technical-documentation/4-backend_documentation/db_documentation/information_system_and_digital_service_output_data/digital_service_output_data/output.md\" %}}'",
+    "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/3-indicators/api_indicators_inventory.md: broken relative link target '{{% ref \"/2-functional-documentation/use_cases/uc_inventory/uc7_export_files.md\" %}}'",
+    "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/3-indicators/api_indicators_inventory.md: broken relative link target '{{% ref \"/2-functional-documentation/use_cases/uc_inventory/uc5_visualize_equipment_footprint.md\" %}}'",
+    "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/3-indicators/api_indicators_inventory.md: broken relative link target '{{% ref \"/2-functional-documentation/use_cases/uc_inventory/uc5_visualize_equipment_footprint.md\" %}}'",
+    "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/3-indicators/api_indicators_inventory.md: broken relative link target '{{% ref \"/2-functional-documentation/use_cases/uc_inventory/uc5_visualize_equipment_footprint.md\" %}}'",
+    "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/3-indicators/api_indicators_inventory.md: broken relative link target '{{% ref \"/2-functional-documentation/use_cases/uc_inventory/uc5_visualize_equipment_footprint.md\" %}}'",
+    "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/3-indicators/api_indicators_inventory.md: broken relative link target '{{% ref \"/2-functional-documentation/use_cases/uc_inventory/uc5_visualize_equipment_footprint.md\" %}}'",
+    "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/3-indicators/api_indicators_inventory.md: broken relative link target '{{% ref \"/2-functional-documentation/use_cases/uc_inventory/uc5_visualize_equipment_footprint.md\" %}}'",
+    "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/3-indicators/api_indicators_inventory.md: broken relative link target '{{% ref \"/2-functional-documentation/use_cases/uc_inventory/uc5_visualize_equipment_footprint.md\" %}}'",
+    "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/3-indicators/api_indicators_inventory.md: broken relative link target '{{% ref \"/2-functional-documentation/use_cases/uc_inventory/uc5_visualize_equipment_footprint.md\" %}}'",
+    "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/3-indicators/api_indicators_inventory.md: broken relative link target '{{% ref \"/2-functional-documentation/use_cases/uc_inventory/uc5_visualize_equipment_footprint.md\" %}}'",
+    "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/3-indicators/api_indicators_inventory.md: broken relative link target '{{% ref \"/2-functional-documentation/use_cases/uc_inventory/uc6_visualize_application_footprint.md\" %}}'",
+    "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/3-indicators/api_indicators_inventory.md: broken relative link target '{{% ref \"/2-functional-documentation/use_cases/uc_inventory/uc6_visualize_application_footprint.md\" %}}'",
+    "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/3-indicators/api_indicators_inventory.md: broken relative link target '{{% ref \"/2-functional-documentation/use_cases/uc_inventory/uc6_visualize_application_footprint.md\" %}}'",
+    "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/3-indicators/api_indicators_inventory.md: broken relative link target '{{% ref \"/2-functional-documentation/use_cases/uc_inventory/uc6_visualize_application_footprint.md\" %}}'",
+    "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/3-indicators/api_indicators_inventory.md: broken relative link target '{{% ref \"/2-functional-documentation/use_cases/uc_inventory/uc6_visualize_application_footprint.md\" %}}'",
+    "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/3-indicators/api_indicators_inventory.md: broken relative link target '{{% ref \"/2-functional-documentation/use_cases/uc_inventory/uc6_visualize_application_footprint.md\" %}}'",
+    "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/3-indicators/api_indicators_inventory.md: broken relative link target '{{% ref \"/2-functional-documentation/use_cases/uc_inventory/uc6_visualize_application_footprint.md\" %}}'",
+    "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/3-indicators/api_indicators_inventory.md: broken relative link target '{{% ref \"/2-functional-documentation/use_cases/uc_inventory/uc6_visualize_application_footprint.md\" %}}'",
+    "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/3-indicators/api_indicators_inventory.md: broken relative link target '{{% ref \"/2-functional-documentation/use_cases/uc_inventory/uc6_visualize_application_footprint.md\" %}}'",
+    "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/3-indicators/api_indicators_inventory.md: broken relative link target '{{% ref \"/3-technical-documentation/4-backend_documentation/db_documentation/information_system_and_digital_service_input_data/information_sytem_input_data/_index.md\" %}}'",
+    "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/3-indicators/api_indicators_inventory.md: broken relative link target '{{% ref \"/3-technical-documentation/4-backend_documentation/db_documentation/information_system_and_digital_service_input_data/information_sytem_input_data/_index.md\" %}}'",
+    "services/documentation/content/3-technical-documentation/4-backend_documentation/db_documentation/information_system_and_digital_service_input_data/information_sytem_input_data/_index.md: broken relative link target '{{% ref \"/3-technical-documentation/4-backend_documentation/2-api_documentation/1-loading/api_loading.md\" %}}'",
+    "services/documentation/content/3-technical-documentation/4-backend_documentation/db_documentation/information_system_and_digital_service_input_data/information_sytem_input_data/_index.md: broken relative link target '{{% ref \"/3-technical-documentation/4-backend_documentation/db_documentation/information_system_and_digital_service_output_data/information_sytem_output_data/_index.md\" %}}'",
+    "services/documentation/content/3-technical-documentation/4-backend_documentation/db_documentation/information_system_and_digital_service_output_data/information_sytem_output_data/_index.md: broken relative link target '{{% ref \"/3-technical-documentation/4-backend_documentation/2-api_documentation/2-evaluation/api_evaluating_inventory.md\" %}}'",
+    "services/documentation/content/4-help/3-FAQ_Methodology/_index.md: broken relative link target '{{% ref \"/2-functional-documentation/use_cases/uc_administration/uc_administration_manage_workspaces/uc5_choose_criteria.md\" %}}'",
+    "services/documentation/content/5-releases/2-release_v3_3/_index.md: broken relative link target '../images/release_v3_3_Access_to_declarations.png \"Menu to access to the Declarations\"'",
+    "services/documentation/content/5-releases/2-release_v3_3/_index.md: broken relative link target '../images/release_v3_3_Declarations.png \"Presentation of the page associated to the declarations\"'",
+    "services/documentation/content/5-releases/2-release_v3_3/_index.md: broken relative link target '{{% ref \"/2-functional-documentation/use_cases/uc_navigation_menu/uc4_declarations_page.md\" %}}'"
+  ],
+  "fix_suggestions": [
+    {
+      "file": ".github/workflows/backend-build-test-analyze.yml",
+      "issue": "workflow_permissions_missing",
+      "proposed_fix": "Add minimal permissions block, e.g. permissions:\\n  contents: read"
+    },
+    {
+      "file": ".github/workflows/frontend-analyze-main.yml",
+      "issue": "workflow_permissions_missing",
+      "proposed_fix": "Add minimal permissions block, e.g. permissions:\\n  contents: read"
+    },
+    {
+      "file": ".github/workflows/frontend-build-test-analyze.yml",
+      "issue": "workflow_permissions_missing",
+      "proposed_fix": "Add minimal permissions block, e.g. permissions:\\n  contents: read"
+    },
+    {
+      "file": "outputs/specs/features/G4IT-48/implementation-log.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: ../../../../services/backend/target/g4it48-isolated-coverage.log"
+    },
+    {
+      "file": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/1-collect_data/01_Help_yourself_with_pre-filled_templates.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: ../../documents/datacenter_sampleMandatory1.csv"
+    },
+    {
+      "file": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/1-collect_data/01_Help_yourself_with_pre-filled_templates.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: ../../documents/physicalEquipment_example.csv"
+    },
+    {
+      "file": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/1-collect_data/01_Help_yourself_with_pre-filled_templates.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: ../../documents/User_Devices_01_Laptop_Template.csv"
+    },
+    {
+      "file": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/1-collect_data/01_Help_yourself_with_pre-filled_templates.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: {{% ref \"/2-functional-documentation/use_cases/uc_inventory/uc3_load_files.md\" %}}"
+    },
+    {
+      "file": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/1-collect_data/01_Help_yourself_with_pre-filled_templates.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: ../../documents/virtualEquipment_Sample.csv"
+    },
+    {
+      "file": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/1-collect_data/01_Help_yourself_with_pre-filled_templates.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: ../../documents/User_Server_01_InstancesCloud_Template.csv"
+    },
+    {
+      "file": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/1-collect_data/01_Help_yourself_with_pre-filled_templates.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: ../../documents/application_Sample.csv"
+    },
+    {
+      "file": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/2-load_data.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: ../images/Datamodel_download.png \"Interface screenshot for downloading the G4IT data model.\""
+    },
+    {
+      "file": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/2-load_data.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: ../documents/datacenter_toFillIn.xlsx"
+    },
+    {
+      "file": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/2-load_data.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: ../documents/datacenter_Sample.csv"
+    },
+    {
+      "file": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/2-load_data.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: ../documents/physicalEquipment_toFillIn.csv"
+    },
+    {
+      "file": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/2-load_data.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: ../documents/physicalEquipment_example.csv"
+    },
+    {
+      "file": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/2-load_data.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: {{% ref \"/2-functional-documentation/use_cases/uc_inventory/uc3_load_files.md\" %}}"
+    },
+    {
+      "file": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/2-load_data.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: ../documents/virtualEquipment_toFillIn.xlsx"
+    },
+    {
+      "file": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/2-load_data.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: ../documents/virtualEquipment_Sample.csv"
+    },
+    {
+      "file": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/2-load_data.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: ../documents/application_toFillIn.xlsx"
+    },
+    {
+      "file": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/2-load_data.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: ../documents/application_Sample.csv"
+    },
+    {
+      "file": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/2-load_data.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: ../images/01_IS_Module_access.png \"Access Inventory Module.\""
+    },
+    {
+      "file": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/2-load_data.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: ../images/02_create_an_inventory_1.png \"Create a new inventory.\""
+    },
+    {
+      "file": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/2-load_data.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: ../images/02_create_an_inventory_2.png \"Inventory configuration panel.\""
+    },
+    {
+      "file": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/2-load_data.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: ../images/loadOK.png"
+    },
+    {
+      "file": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/2-load_data.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: ../images/loadInError.png"
+    },
+    {
+      "file": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/2-load_data.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: ../images/loadKOpng.png"
+    },
+    {
+      "file": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/2-load_data.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: ../images/control_number_of_item.png \"Number of items loaded in the inventory.\""
+    },
+    {
+      "file": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/2-load_data.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: ../images/update_estimation.png \"Button to launch or update impact estimation.\""
+    },
+    {
+      "file": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/2-load_data.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: ../../../../2-functional-documentation/use_cases/uc_inventory/_index.md"
+    },
+    {
+      "file": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/3-module-administration/01_Manage-users-in-my-space-workspace.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: {{% ref \"/1-getting-started/1-getting-started-as-a-user/01_First-Login.md\" %}}"
+    },
+    {
+      "file": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/3-module-administration/01_Manage-users-in-my-space-workspace.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: ../images/02_Manage-users-Step1.png"
+    },
+    {
+      "file": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/3-module-administration/01_Manage-users-in-my-space-workspace.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: ../images/02_Manage-users-Step2.png"
+    },
+    {
+      "file": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/3-module-administration/01_Manage-users-in-my-space-workspace.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: ../images/02_Manage-users-Step3.png"
+    },
+    {
+      "file": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/3-module-administration/01_Manage-users-in-my-space-workspace.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: ../../../../2-functional-documentation/use_cases/uc_administration/uc_administration_manage_users/_index.md"
+    },
+    {
+      "file": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/3-module-administration/02_Manage-workspace.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: {{% ref \"/4-help/1-glossary.md\" %}}"
+    },
+    {
+      "file": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/3-module-administration/02_Manage-workspace.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: ./01_First-Login"
+    },
+    {
+      "file": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/3-module-administration/02_Manage-workspace.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: ../images/03_Manage-organization-Step1.png"
+    },
+    {
+      "file": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/3-module-administration/02_Manage-workspace.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: ../images/03_Manage-organization-Step2.png"
+    },
+    {
+      "file": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/3-module-administration/02_Manage-workspace.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: ../../../../2-functional-documentation/use_cases/uc_administration/uc_administration_manage_workspaces/uc2_edit_workspaces/index.html"
+    },
+    {
+      "file": "services/documentation/content/1-getting-started/2-getting-started-as-a-developper/1-How to setup my local dev env/2-g4it-installation.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: ../../missing_dependency.png"
+    },
+    {
+      "file": "services/documentation/content/2-functional-documentation/global_concepts/environmental_footprint_assessment_methodology/uc1_physical_equipment.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: {{% ref \"/2-functional-documentation/use_cases/uc_inventory/uc3_load_files.md\" %}}"
+    },
+    {
+      "file": "services/documentation/content/2-functional-documentation/global_concepts/environmental_footprint_assessment_methodology/uc1_physical_equipment.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: {{% ref \"/2-functional-documentation/use_cases/uc_inventory/uc5_visualize_equipment_footprint.md\" %}}"
+    },
+    {
+      "file": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc2_create_visualize_digital_service.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: ../images/uc2_create_visualize_digital_service_visualize.png"
+    },
+    {
+      "file": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc2_create_visualize_digital_service.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: uc3_add_visualize_equipments%2Fuc3_add_visualize_noncloud-servers%2Fimport_nonCloud_servers_via_button.md"
+    },
+    {
+      "file": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc2_create_visualize_digital_service.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: uc3_add_visualize_equipments%2Fuc3_add_visualize_cloud_services%2Fimport_cloud_services_via_button.md"
+    },
+    {
+      "file": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc2_create_visualize_digital_service.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: uc3_add_visualize_equipments/_index"
+    },
+    {
+      "file": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc2_create_visualize_digital_service.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: {{% ref \"/2-functional-documentation/use_cases/uc_digital_services/uc10_manage_digital-service_version.md\" %}}"
+    },
+    {
+      "file": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc2_create_visualize_digital_service.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: {{% ref \"/2-functional-documentation/use_cases/uc_digital_services/uc9_duplicate_digital_service_version.md\" %}}"
+    },
+    {
+      "file": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc3_add_visualize_equipments/_index.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: {{% ref \"/2-functional-documentation/use_cases/uc_digital_services/uc3_add_visualize_equipments/uc3_add_visualize_noncloud-servers/_index.md\" %}}"
+    },
+    {
+      "file": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc3_add_visualize_equipments/_index.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: uc3_add_visualize_cloud_services.md"
+    },
+    {
+      "file": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc3_add_visualize_equipments/uc3_add_visualize_network/_index.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: import_network_via_button"
+    },
+    {
+      "file": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc3_add_visualize_equipments/uc3_add_visualize_network/add_visualize_networks_via_forms.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: {{% ref \"/2-functional-documentation/use_cases/uc_digital_services/uc3_add_visualize_equipments/uc3_add_visualize_network/_index.md"
+    },
+    {
+      "file": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc3_add_visualize_equipments/uc3_add_visualize_network/add_visualize_networks_via_forms.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: ../../../images/uc3_add_visualize_equipments_NetworksAdd.png"
+    },
+    {
+      "file": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc3_add_visualize_equipments/uc3_add_visualize_terminals/_index.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: import_terminal_via_button"
+    },
+    {
+      "file": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc3_add_visualize_equipments/uc3_add_visualize_terminals/add_visualize_terminals_via_forms.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: {{% ref \"/2-functional-documentation/use_cases/uc_digital_services/uc3_add_visualize_equipments/uc3_add_visualize_terminals/_index.md"
+    },
+    {
+      "file": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc3_add_visualize_equipments/uc3_add_visualize_terminals/add_visualize_terminals_via_forms.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: ../../../images/uc3_add_visualize_equipments_terminalsAdd.png"
+    },
+    {
+      "file": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc4_launch_estimation.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: ../images/uc4_launch_estimation.png"
+    },
+    {
+      "file": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc4_launch_estimation.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: ../images/uc4_launch_criteria_estimation.png"
+    },
+    {
+      "file": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc5_visualize_footprint/_index.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: ./uc6_export_digital_service.md"
+    },
+    {
+      "file": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc5_visualize_footprint/_index.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: {{% ref \"/2-functional-documentation/use_cases/uc_digital_services/uc9_duplicate_digital_service_version.md\" %}}"
+    },
+    {
+      "file": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc5_visualize_footprint/_index.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: {{% ref \"/2-functional-documentation/use_cases/uc_digital_services/uc10_manage_digital-service_version.md\" %}}"
+    },
+    {
+      "file": "services/documentation/content/2-functional-documentation/use_cases/uc_inventory/uc3_load_files.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: {{% ref \"/2-functional-documentation/use_cases/uc_inventory/uc4_launch_estimation.md\" %}}"
+    },
+    {
+      "file": "services/documentation/content/2-functional-documentation/use_cases/uc_inventory/uc3_load_files.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: {{% ref \"/2-functional-documentation/use_cases/uc_inventory/uc7_export_files.md\" %}}"
+    },
+    {
+      "file": "services/documentation/content/2-functional-documentation/use_cases/uc_inventory/uc3_load_files.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: ../images/uc3_load_files_loading_history.png"
+    },
+    {
+      "file": "services/documentation/content/2-functional-documentation/use_cases/uc_inventory/uc4_launch_estimation.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: {{% ref \"/2-functional-documentation/use_cases/uc_inventory/uc3_load_files.md\" %}}"
+    },
+    {
+      "file": "services/documentation/content/2-functional-documentation/use_cases/uc_inventory/uc4_launch_estimation.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: {{% ref \"/2-functional-documentation/global_concepts/environmental_footprint_assessment_methodology/uc1_physical_equipment.md\" %}}"
+    },
+    {
+      "file": "services/documentation/content/2-functional-documentation/use_cases/uc_inventory/uc4_launch_estimation.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: ../images/uc4_launch_estimation_estimate_history.png"
+    },
+    {
+      "file": "services/documentation/content/2-functional-documentation/use_cases/uc_inventory/uc5_visualize_equipment_footprint.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: {{% ref \"/2-functional-documentation/use_cases/uc_inventory/uc4_launch_estimation.md\" %}}"
+    },
+    {
+      "file": "services/documentation/content/2-functional-documentation/use_cases/uc_inventory/uc5_visualize_equipment_footprint.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: {{% ref \"/2-functional-documentation/use_cases/uc_inventory/uc7_export_files.md\" %}}"
+    },
+    {
+      "file": "services/documentation/content/2-functional-documentation/use_cases/uc_inventory/uc5_visualize_equipment_footprint.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: ../images/uc5_visualize_equipment_footprint.png"
+    },
+    {
+      "file": "services/documentation/content/2-functional-documentation/use_cases/uc_inventory/uc5_visualize_equipment_footprint.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: ../images/uc5_visualize_equipment_footprint_multi.png"
+    },
+    {
+      "file": "services/documentation/content/2-functional-documentation/use_cases/uc_inventory/uc5_visualize_equipment_footprint.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: ../images/uc5_visualize_equipment_footprint_multi_reverse1.png"
+    },
+    {
+      "file": "services/documentation/content/2-functional-documentation/use_cases/uc_inventory/uc5_visualize_equipment_footprint.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: ../images/uc5_visualize_equipment_footprint_multi_reverse2.png"
+    },
+    {
+      "file": "services/documentation/content/2-functional-documentation/use_cases/uc_inventory/uc5_visualize_equipment_footprint.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: ../images/uc5_visualize_equipment_footprint_multi_items1.png"
+    },
+    {
+      "file": "services/documentation/content/2-functional-documentation/use_cases/uc_inventory/uc5_visualize_equipment_footprint.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: ../images/uc5_visualize_equipment_footprint_one.png"
+    },
+    {
+      "file": "services/documentation/content/2-functional-documentation/use_cases/uc_inventory/uc5_visualize_equipment_footprint.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: ../images/uc5_visualize_equipment_footprint_data_consistency.png"
+    },
+    {
+      "file": "services/documentation/content/2-functional-documentation/use_cases/uc_inventory/uc7_export_files.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: ../images/uc6_exportButton.png"
+    },
+    {
+      "file": "services/documentation/content/2-functional-documentation/use_cases/uc_navigation_menu/uc2_header/uc24_workspace_creation.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: ../images/organization_creation_state_diagram.png"
+    },
+    {
+      "file": "services/documentation/content/2-functional-documentation/use_cases/uc_navigation_menu/uc2_header/uc24_workspace_creation.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: ../images/create_organization_button.png"
+    },
+    {
+      "file": "services/documentation/content/2-functional-documentation/use_cases/uc_navigation_menu/uc2_header/uc24_workspace_creation.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: ../images/create_organization_form_id.png"
+    },
+    {
+      "file": "services/documentation/content/2-functional-documentation/use_cases/uc_navigation_menu/uc2_header/uc24_workspace_creation.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: ../images/create_organization_name_duplicate.png"
+    },
+    {
+      "file": "services/documentation/content/2-functional-documentation/use_cases/uc_navigation_menu/uc2_header/uc24_workspace_creation.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: ../images/create_organization_name_space.png"
+    },
+    {
+      "file": "services/documentation/content/3-technical-documentation/3-technical_architecture/ecomind/_index.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: {{% ref \"/3-technical-documentation/4-backend_documentation/2-api_documentation/2-evaluation/digital_service/_index.md\" %}}"
+    },
+    {
+      "file": "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/1-loading/api_digitalService_loading.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: ../../../db_documentation/information_system_and_digital_service_input_data/digital_service_input_data/input/"
+    },
+    {
+      "file": "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/1-loading/api_digitalService_loading.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: ../../../db_documentation/information_system_and_digital_service_input_data/digital_service_input_data/input/"
+    },
+    {
+      "file": "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/1-loading/api_digitalService_loading.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: ../../../db_documentation/information_system_and_digital_service_input_data/digital_service_input_data/input/"
+    },
+    {
+      "file": "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/1-loading/api_digitalService_loading.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: ../../../db_documentation/information_system_and_digital_service_input_data/digital_service_input_data/input/"
+    },
+    {
+      "file": "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/1-loading/api_digitalService_loading.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: ../../../db_documentation/information_system_and_digital_service_input_data/digital_service_input_data/input/"
+    },
+    {
+      "file": "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/1-loading/api_digitalService_loading.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: ../../../db_documentation/information_system_and_digital_service_input_data/digital_service_input_data/input/"
+    },
+    {
+      "file": "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/1-loading/api_loading.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: {{% ref \"/2-functional-documentation/use_cases/uc_inventory/uc3_load_files.md\" %}}"
+    },
+    {
+      "file": "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/1-loading/api_loading.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: {{% ref \"/2-functional-documentation/use_cases/uc_inventory/uc3_load_files.md\" %}}"
+    },
+    {
+      "file": "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/1-loading/api_loading.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: ../../../db_documentation/information_system_and_digital_service_input_data/digital_service_input_data/input/"
+    },
+    {
+      "file": "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/1-loading/api_loading.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: ../../../db_documentation/information_system_and_digital_service_input_data/digital_service_input_data/input/"
+    },
+    {
+      "file": "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/1-loading/api_loading.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: ../../../db_documentation/information_system_and_digital_service_input_data/digital_service_input_data/input/"
+    },
+    {
+      "file": "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/1-loading/api_loading.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: ../../../db_documentation/information_system_and_digital_service_input_data/digital_service_input_data/input/"
+    },
+    {
+      "file": "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/1-loading/api_loading.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: ../../../db_documentation/information_system_and_digital_service_input_data/digital_service_input_data/input/"
+    },
+    {
+      "file": "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/1-loading/api_loading.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: ../../../db_documentation/information_system_and_digital_service_input_data/digital_service_input_data/input/"
+    },
+    {
+      "file": "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/1-loading/api_loading.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: ../../../db_documentation/information_system_and_digital_service_input_data/digital_service_input_data/input/"
+    },
+    {
+      "file": "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/1-loading/api_loading.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: ../../../db_documentation/information_system_and_digital_service_input_data/digital_service_input_data/input/"
+    },
+    {
+      "file": "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/1-loading/api_loading.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: ../../../db_documentation/information_system_and_digital_service_input_data/digital_service_input_data/input/"
+    },
+    {
+      "file": "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/1-loading/api_loading.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: ../../../../2-functional-documentation/use_cases/uc_inventory/uc3_load_files"
+    },
+    {
+      "file": "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/2-evaluation/api_evaluating_inventory.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: {{% ref \"/2-functional-documentation/global_concepts/environmental_footprint_assessment_methodology/uc1_physical_equipment.md\" %}}"
+    },
+    {
+      "file": "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/2-evaluation/api_evaluating_inventory.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: {{% ref \"/2-functional-documentation/use_cases/uc_inventory/uc7_export_files.md\" %}}"
+    },
+    {
+      "file": "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/2-evaluation/api_evaluating_inventory.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: {{% ref \"/2-functional-documentation/use_cases/uc_inventory/uc4_launch_estimation.md\" %}}"
+    },
+    {
+      "file": "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/2-evaluation/digital_service/ecomind/_index.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: {{% ref \"/3-technical-documentation/4-backend_documentation/db_documentation/information_system_and_digital_service_output_data/digital_service_output_data/output.md\" %}}"
+    },
+    {
+      "file": "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/2-evaluation/digital_service/ecomind/_index.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: {{% ref \"/3-technical-documentation/4-backend_documentation/db_documentation/information_system_and_digital_service_output_data/digital_service_output_data/output.md\" %}}"
+    },
+    {
+      "file": "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/2-evaluation/digital_service/ecomind/_index.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: {{% ref \"/3-technical-documentation/4-backend_documentation/db_documentation/information_system_and_digital_service_output_data/digital_service_output_data/output_ecomind.md\" %}}"
+    },
+    {
+      "file": "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/2-evaluation/digital_service/without_ecomind/_index.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: {{% ref \"/3-technical-documentation/4-backend_documentation/db_documentation/information_system_and_digital_service_output_data/digital_service_output_data/output.md\" %}}"
+    },
+    {
+      "file": "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/2-evaluation/digital_service/without_ecomind/_index.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: {{% ref \"/3-technical-documentation/4-backend_documentation/db_documentation/information_system_and_digital_service_output_data/digital_service_output_data/output.md\" %}}"
+    },
+    {
+      "file": "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/3-indicators/api_indicators_digital_service.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: {{% ref \"/2-functional-documentation/use_cases/uc_digital_services/uc5_visualize_footprint.md\" %}}"
+    },
+    {
+      "file": "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/3-indicators/api_indicators_digital_service.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: {{% ref \"/2-functional-documentation/use_cases/uc_digital_services/uc5_visualize_footprint.md\" %}}"
+    },
+    {
+      "file": "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/3-indicators/api_indicators_digital_service.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: {{% ref \"/3-technical-documentation/4-backend_documentation/db_documentation/information_system_and_digital_service_output_data/digital_service_output_data/output.md\" %}}"
+    },
+    {
+      "file": "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/3-indicators/api_indicators_digital_service.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: {{% ref \"/3-technical-documentation/4-backend_documentation/db_documentation/information_system_and_digital_service_output_data/digital_service_output_data/output.md\" %}}"
+    },
+    {
+      "file": "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/3-indicators/api_indicators_inventory.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: {{% ref \"/2-functional-documentation/use_cases/uc_inventory/uc7_export_files.md\" %}}"
+    },
+    {
+      "file": "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/3-indicators/api_indicators_inventory.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: {{% ref \"/2-functional-documentation/use_cases/uc_inventory/uc5_visualize_equipment_footprint.md\" %}}"
+    },
+    {
+      "file": "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/3-indicators/api_indicators_inventory.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: {{% ref \"/2-functional-documentation/use_cases/uc_inventory/uc5_visualize_equipment_footprint.md\" %}}"
+    },
+    {
+      "file": "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/3-indicators/api_indicators_inventory.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: {{% ref \"/2-functional-documentation/use_cases/uc_inventory/uc5_visualize_equipment_footprint.md\" %}}"
+    },
+    {
+      "file": "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/3-indicators/api_indicators_inventory.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: {{% ref \"/2-functional-documentation/use_cases/uc_inventory/uc5_visualize_equipment_footprint.md\" %}}"
+    },
+    {
+      "file": "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/3-indicators/api_indicators_inventory.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: {{% ref \"/2-functional-documentation/use_cases/uc_inventory/uc5_visualize_equipment_footprint.md\" %}}"
+    },
+    {
+      "file": "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/3-indicators/api_indicators_inventory.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: {{% ref \"/2-functional-documentation/use_cases/uc_inventory/uc5_visualize_equipment_footprint.md\" %}}"
+    },
+    {
+      "file": "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/3-indicators/api_indicators_inventory.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: {{% ref \"/2-functional-documentation/use_cases/uc_inventory/uc5_visualize_equipment_footprint.md\" %}}"
+    },
+    {
+      "file": "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/3-indicators/api_indicators_inventory.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: {{% ref \"/2-functional-documentation/use_cases/uc_inventory/uc5_visualize_equipment_footprint.md\" %}}"
+    },
+    {
+      "file": "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/3-indicators/api_indicators_inventory.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: {{% ref \"/2-functional-documentation/use_cases/uc_inventory/uc5_visualize_equipment_footprint.md\" %}}"
+    },
+    {
+      "file": "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/3-indicators/api_indicators_inventory.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: {{% ref \"/2-functional-documentation/use_cases/uc_inventory/uc6_visualize_application_footprint.md\" %}}"
+    },
+    {
+      "file": "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/3-indicators/api_indicators_inventory.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: {{% ref \"/2-functional-documentation/use_cases/uc_inventory/uc6_visualize_application_footprint.md\" %}}"
+    },
+    {
+      "file": "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/3-indicators/api_indicators_inventory.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: {{% ref \"/2-functional-documentation/use_cases/uc_inventory/uc6_visualize_application_footprint.md\" %}}"
+    },
+    {
+      "file": "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/3-indicators/api_indicators_inventory.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: {{% ref \"/2-functional-documentation/use_cases/uc_inventory/uc6_visualize_application_footprint.md\" %}}"
+    },
+    {
+      "file": "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/3-indicators/api_indicators_inventory.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: {{% ref \"/2-functional-documentation/use_cases/uc_inventory/uc6_visualize_application_footprint.md\" %}}"
+    },
+    {
+      "file": "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/3-indicators/api_indicators_inventory.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: {{% ref \"/2-functional-documentation/use_cases/uc_inventory/uc6_visualize_application_footprint.md\" %}}"
+    },
+    {
+      "file": "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/3-indicators/api_indicators_inventory.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: {{% ref \"/2-functional-documentation/use_cases/uc_inventory/uc6_visualize_application_footprint.md\" %}}"
+    },
+    {
+      "file": "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/3-indicators/api_indicators_inventory.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: {{% ref \"/2-functional-documentation/use_cases/uc_inventory/uc6_visualize_application_footprint.md\" %}}"
+    },
+    {
+      "file": "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/3-indicators/api_indicators_inventory.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: {{% ref \"/2-functional-documentation/use_cases/uc_inventory/uc6_visualize_application_footprint.md\" %}}"
+    },
+    {
+      "file": "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/3-indicators/api_indicators_inventory.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: {{% ref \"/3-technical-documentation/4-backend_documentation/db_documentation/information_system_and_digital_service_input_data/information_sytem_input_data/_index.md\" %}}"
+    },
+    {
+      "file": "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/3-indicators/api_indicators_inventory.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: {{% ref \"/3-technical-documentation/4-backend_documentation/db_documentation/information_system_and_digital_service_input_data/information_sytem_input_data/_index.md\" %}}"
+    },
+    {
+      "file": "services/documentation/content/3-technical-documentation/4-backend_documentation/db_documentation/information_system_and_digital_service_input_data/information_sytem_input_data/_index.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: {{% ref \"/3-technical-documentation/4-backend_documentation/2-api_documentation/1-loading/api_loading.md\" %}}"
+    },
+    {
+      "file": "services/documentation/content/3-technical-documentation/4-backend_documentation/db_documentation/information_system_and_digital_service_input_data/information_sytem_input_data/_index.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: {{% ref \"/3-technical-documentation/4-backend_documentation/db_documentation/information_system_and_digital_service_output_data/information_sytem_output_data/_index.md\" %}}"
+    },
+    {
+      "file": "services/documentation/content/3-technical-documentation/4-backend_documentation/db_documentation/information_system_and_digital_service_output_data/information_sytem_output_data/_index.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: {{% ref \"/3-technical-documentation/4-backend_documentation/2-api_documentation/2-evaluation/api_evaluating_inventory.md\" %}}"
+    },
+    {
+      "file": "services/documentation/content/4-help/3-FAQ_Methodology/_index.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: {{% ref \"/2-functional-documentation/use_cases/uc_administration/uc_administration_manage_workspaces/uc5_choose_criteria.md\" %}}"
+    },
+    {
+      "file": "services/documentation/content/5-releases/2-release_v3_3/_index.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: ../images/release_v3_3_Access_to_declarations.png \"Menu to access to the Declarations\""
+    },
+    {
+      "file": "services/documentation/content/5-releases/2-release_v3_3/_index.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: ../images/release_v3_3_Declarations.png \"Presentation of the page associated to the declarations\""
+    },
+    {
+      "file": "services/documentation/content/5-releases/2-release_v3_3/_index.md",
+      "issue": "broken_relative_link",
+      "proposed_fix": "Update or remove link target: {{% ref \"/2-functional-documentation/use_cases/uc_navigation_menu/uc4_declarations_page.md\" %}}"
+    }
+  ],
+  "metadata": {
+    "mode": "local",
+    "changed_files_count": 180,
+    "fix_suggestions_count": 142
+  },
+  "checked_files": [
+    ".github/workflows/backend-build-test-analyze.yml",
+    ".github/workflows/frontend-analyze-main.yml",
+    ".github/workflows/frontend-build-test-analyze.yml",
+    ".gitignore",
+    "DOCKER-DEPLOYMENT.md",
+    "inputs/ba/_source/feature-g4it-48.txt",
+    "outputs/runs/_interactive/2026-11-20/audit-trace.jsonl",
+    "outputs/runs/brownfield-analysis/20261116-144600-g4it-on-github-8da83886/dashboard.json",
+    "outputs/runs/brownfield-analysis/20261119-162225-g4it-on-github-4d1e4282/dashboard.json",
+    "outputs/runs/run-manifest.json",
+    "outputs/specs/constitution.md",
+    "outputs/specs/features/G4IT-48/architecture-review.md",
+    "outputs/specs/features/G4IT-48/clarifications.md",
+    "outputs/specs/features/G4IT-48/context-brief.md",
+    "outputs/specs/features/G4IT-48/coverage-report.md",
+    "outputs/specs/features/G4IT-48/dependency-report.md",
+    "outputs/specs/features/G4IT-48/implementation-log.md",
+    "outputs/specs/features/G4IT-48/lint-report.md",
+    "outputs/specs/features/G4IT-48/plan.md",
+    "outputs/specs/features/G4IT-48/requirements-brief.md",
+    "outputs/specs/features/G4IT-48/sast-report.md",
+    "outputs/specs/features/G4IT-48/spec.md",
+    "outputs/specs/features/G4IT-48/static-analysis-report.md",
+    "outputs/specs/features/G4IT-48/tasks.md",
+    "outputs/specs/features/G4IT-48/test-report.md",
+    "services/backend/.gitignore",
+    "services/backend/README.md",
+    "services/backend/e2e/g4it48-live-e2e.sh",
+    "services/backend/e2e/g4it48-physical-equipment.csv",
+    "services/backend/e2e/test_g4it48_config.py",
+    "services/backend/pom.xml",
+    "services/backend/src/main/java/com/soprasteria/g4it/backend/apievaluating/business/asyncevaluatingservice/EvaluateService.java",
+    "services/backend/src/main/java/com/soprasteria/g4it/backend/apievaluating/business/asyncevaluatingservice/PhysicalEquipmentAllocationService.java",
+    "services/backend/src/main/java/com/soprasteria/g4it/backend/apievaluating/business/asyncevaluatingservice/engine/numecoeval/EvaluateNumEcoEvalService.java",
+    "services/backend/src/main/java/com/soprasteria/g4it/backend/apievaluating/mapper/AggregationToOutput.java",
+    "services/backend/src/main/java/com/soprasteria/g4it/backend/apievaluating/mapper/ImpactToCsvRecord.java",
+    "services/backend/src/main/java/com/soprasteria/g4it/backend/apievaluating/model/AggValuesBO.java",
+    "services/backend/src/main/java/com/soprasteria/g4it/backend/apiindicator/business/InventoryIndicatorService.java",
+    "services/backend/src/main/java/com/soprasteria/g4it/backend/apiindicator/business/InventorySpreadsheetExportService.java",
+    "services/backend/src/main/java/com/soprasteria/g4it/backend/apiindicator/controller/InventoryIndicatorController.java",
+    "services/backend/src/main/java/com/soprasteria/g4it/backend/apiindicator/mapper/EquipmentIndicatorMapper.java",
+    "services/backend/src/main/java/com/soprasteria/g4it/backend/apiindicator/mapper/IndicatorRestMapper.java",
+    "services/backend/src/main/java/com/soprasteria/g4it/backend/apiindicator/model/EquipmentImpactBO.java",
+    "services/backend/src/main/java/com/soprasteria/g4it/backend/apiindicator/model/EquipmentIndicatorBO.java",
+    "services/backend/src/main/java/com/soprasteria/g4it/backend/apiinout/mapper/InPhysicalEquipmentMapper.java",
+    "services/backend/src/main/java/com/soprasteria/g4it/backend/apiinout/mapper/InputToCsvRecord.java",
+    "services/backend/src/main/java/com/soprasteria/g4it/backend/apiinout/modeldb/InPhysicalEquipment.java",
+    "services/backend/src/main/java/com/soprasteria/g4it/backend/apiinout/modeldb/PhysicalEquipmentEvaluationTrace.java",
+    "services/backend/src/main/java/com/soprasteria/g4it/backend/apiinout/repository/PhysicalEquipmentEvaluationTraceRepository.java",
+    "services/backend/src/main/java/com/soprasteria/g4it/backend/apiloadinputfiles/business/asyncloadservice/LoadFileService.java",
+    "services/backend/src/main/java/com/soprasteria/g4it/backend/apiloadinputfiles/business/asyncloadservice/checkobject/CheckPhysicalEquipmentService.java",
+    "services/backend/src/main/java/com/soprasteria/g4it/backend/apiloadinputfiles/business/asyncloadservice/checkobject/PhysicalEquipmentUsageValidator.java",
+    "services/backend/src/main/java/com/soprasteria/g4it/backend/apiloadinputfiles/business/asyncloadservice/loadmetadata/LoadMetadataService.java",
+    "services/backend/src/main/java/com/soprasteria/g4it/backend/apiloadinputfiles/business/asyncloadservice/loadobject/LoadPhysicalEquipmentService.java",
+    "services/backend/src/main/java/com/soprasteria/g4it/backend/apiloadinputfiles/mapper/CsvToInMapper.java",
+    "services/backend/src/main/java/com/soprasteria/g4it/backend/apireferential/business/ItemCategoryResolver.java",
+    "services/backend/src/main/java/com/soprasteria/g4it/backend/apireferential/business/PhysicalEquipmentReferenceResolver.java",
+    "services/backend/src/main/java/com/soprasteria/g4it/backend/apireferential/business/ReferentialImportService.java",
+    "services/backend/src/main/java/com/soprasteria/g4it/backend/apireferential/business/ReferentialService.java",
+    "services/backend/src/main/java/com/soprasteria/g4it/backend/apireferential/business/WorkspaceReferentialImportService.java",
+    "services/backend/src/main/java/com/soprasteria/g4it/backend/apireferential/mapper/ReferentialMapper.java",
+    "services/backend/src/main/java/com/soprasteria/g4it/backend/apireferential/modeldb/ItemType.java",
+    "services/backend/src/main/java/com/soprasteria/g4it/backend/apireferential/persistence/WorkspaceReferentialPersistenceService.java",
+    "services/backend/src/main/java/com/soprasteria/g4it/backend/apiuser/business/AuthService.java",
+    "services/backend/src/main/java/com/soprasteria/g4it/backend/common/utils/CsvUtils.java",
+    "services/backend/src/main/java/com/soprasteria/g4it/backend/config/JsonNullableConfig.java",
+    "services/backend/src/main/java/com/soprasteria/g4it/backend/config/RestExceptionHandler.java",
+    "services/backend/src/main/resources/csv-headers.yml",
+    "services/backend/src/main/resources/db/changelog/greenitdb.changelog-add-item-type-item-category.yml",
+    "services/backend/src/main/resources/db/changelog/greenitdb.changelog-master.yml",
+    "services/backend/src/main/resources/db/changelog/in-out/zz-physical-equipment-evaluation-trace.yml",
+    "services/backend/src/main/resources/db/changelog/in-out/zz-physical-equipment-usage.yml",
+    "services/backend/src/main/resources/messages.properties",
+    "services/backend/src/main/resources/messages_fr.properties",
+    "services/backend/src/main/resources/swagger/greenit/api-in-out/components-in-out.yml",
+    "services/backend/src/main/resources/swagger/greenit/components.yml",
+    "services/backend/src/main/resources/swagger/greenit/inventory-indicator.yml",
+    "services/backend/src/main/resources/swagger/greenit/referential.yml",
+    "services/backend/src/test/java/com/soprasteria/g4it/backend/apievaluating/business/asyncevaluatingservice/EvaluateNumEcoEvalServiceTest.java",
+    "services/backend/src/test/java/com/soprasteria/g4it/backend/apievaluating/business/asyncevaluatingservice/EvaluateServiceTest.java",
+    "services/backend/src/test/java/com/soprasteria/g4it/backend/apievaluating/business/asyncevaluatingservice/PhysicalEquipmentAllocationServiceTest.java",
+    "services/backend/src/test/java/com/soprasteria/g4it/backend/apievaluating/mapper/ImpactToCsvRecordTest.java",
+    "services/backend/src/test/java/com/soprasteria/g4it/backend/apievaluating/mapper/PhysicalEquipmentGroupingTest.java",
+    "services/backend/src/test/java/com/soprasteria/g4it/backend/apiindicator/business/InventoryIndicatorServiceTest.java",
+    "services/backend/src/test/java/com/soprasteria/g4it/backend/apiindicator/business/InventorySpreadsheetExportServiceTest.java",
+    "services/backend/src/test/java/com/soprasteria/g4it/backend/apiindicator/controller/InventoryIndicatorExportControllerTest.java",
+    "services/backend/src/test/java/com/soprasteria/g4it/backend/apiindicator/controller/InventoryIndicatorExportSecurityTest.java",
+    "services/backend/src/test/java/com/soprasteria/g4it/backend/apiinout/PhysicalEquipmentEvaluationTraceMigrationTest.java",
+    "services/backend/src/test/java/com/soprasteria/g4it/backend/apiinout/PhysicalEquipmentPostgresMigrationTest.java",
+    "services/backend/src/test/java/com/soprasteria/g4it/backend/apiinout/PhysicalEquipmentUsageMigrationTest.java",
+    "services/backend/src/test/java/com/soprasteria/g4it/backend/apiinout/controller/InPhysicalEquipmentInventoryContractTest.java",
+    "services/backend/src/test/java/com/soprasteria/g4it/backend/apiinout/mapper/InPhysicalEquipmentMapperTest.java",
+    "services/backend/src/test/java/com/soprasteria/g4it/backend/apiloadinputfiles/business/asyncloadservice/LoadFileServiceTest.java",
+    "services/backend/src/test/java/com/soprasteria/g4it/backend/apiloadinputfiles/business/asyncloadservice/checkobject/CheckPhysicalEquipmentServiceTest.java",
+    "services/backend/src/test/java/com/soprasteria/g4it/backend/apiloadinputfiles/business/asyncloadservice/checkobject/PhysicalEquipmentUsageValidatorTest.java",
+    "services/backend/src/test/java/com/soprasteria/g4it/backend/apiloadinputfiles/business/asyncloadservice/loadmetadata/LoadMetadataServiceTest.java",
+    "services/backend/src/test/java/com/soprasteria/g4it/backend/apiloadinputfiles/business/asyncloadservice/loadobject/LoadPhysicalEquipmentServiceTest.java",
+    "services/backend/src/test/java/com/soprasteria/g4it/backend/apiloadinputfiles/mapper/CsvHeaderNormalizationTest.java",
+    "services/backend/src/test/java/com/soprasteria/g4it/backend/apiloadinputfiles/mapper/CsvToInMapperTest.java",
+    "services/backend/src/test/java/com/soprasteria/g4it/backend/apireferential/business/ItemCategoryResolverTest.java",
+    "services/backend/src/test/java/com/soprasteria/g4it/backend/apireferential/business/PhysicalEquipmentReferenceResolverTest.java",
+    "services/backend/src/test/java/com/soprasteria/g4it/backend/apireferential/business/ReferentialImportServiceTest.java",
+    "services/backend/src/test/java/com/soprasteria/g4it/backend/apireferential/business/ReferentialServiceTest.java",
+    "services/backend/src/test/java/com/soprasteria/g4it/backend/apireferential/business/WorkspaceReferentialImportServiceTest.java",
+    "services/backend/src/test/java/com/soprasteria/g4it/backend/apireferential/mapper/ReferentialItemCategoryMappingTest.java",
+    "services/backend/src/test/java/com/soprasteria/g4it/backend/apiuser/business/AuthServiceTest.java",
+    "services/backend/src/test/resources/apievaluating/eval_nominal/ref/itemType.csv",
+    "services/backend/src/test/resources/apiloadinputfiles/load_nominal/ref/itemType.csv",
+    "services/backend/src/test/resources/apiloadinputfiles/load_reject/ref/itemType.csv",
+    "services/backend/src/test/resources/application-integration-test.yml",
+    "services/backend/src/test/resources/sql/g4it48-local-reference.sql",
+    "services/backend/storage/--INTERNAL-G4IT--/0/templates/G4IT_Datamodel_workspace_reference_data_v1.1.0.xlsx",
+    "services/backend/volume_generation/input_template/2-physical-equipment.csv",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/1-collect_data/01_Help_yourself_with_pre-filled_templates.md",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/2-load_data.md",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/documents/User_Devices_01_Laptop_Template.csv",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/documents/physicalEquipment_example.csv",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/documents/physicalEquipment_toFillIn.csv",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/3-module-administration/01_Manage-users-in-my-space-workspace.md",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/3-module-administration/02_Manage-workspace.md",
+    "services/documentation/content/1-getting-started/2-getting-started-as-a-developper/1-How to setup my local dev env/2-g4it-installation.md",
+    "services/documentation/content/2-functional-documentation/global_concepts/environmental_footprint_assessment_methodology/uc1_physical_equipment.md",
+    "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc2_create_visualize_digital_service.md",
+    "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc3_add_visualize_equipments/_index.md",
+    "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc3_add_visualize_equipments/uc3_add_visualize_cloud_services/_index.md",
+    "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc3_add_visualize_equipments/uc3_add_visualize_network/_index.md",
+    "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc3_add_visualize_equipments/uc3_add_visualize_network/add_visualize_networks_via_forms.md",
+    "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc3_add_visualize_equipments/uc3_add_visualize_noncloud-servers/_index.md",
+    "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc3_add_visualize_equipments/uc3_add_visualize_terminals/_index.md",
+    "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc3_add_visualize_equipments/uc3_add_visualize_terminals/add_visualize_terminals_via_forms.md",
+    "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc4_launch_estimation.md",
+    "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc5_visualize_footprint/_index.md",
+    "services/documentation/content/2-functional-documentation/use_cases/uc_inventory/uc3_load_files.md",
+    "services/documentation/content/2-functional-documentation/use_cases/uc_inventory/uc4_launch_estimation.md",
+    "services/documentation/content/2-functional-documentation/use_cases/uc_inventory/uc5_visualize_equipment_footprint.md",
+    "services/documentation/content/2-functional-documentation/use_cases/uc_inventory/uc7_export_files.md",
+    "services/documentation/content/2-functional-documentation/use_cases/uc_navigation_menu/uc2_header/uc24_workspace_creation.md",
+    "services/documentation/content/3-technical-documentation/3-technical_architecture/ecomind/_index.md",
+    "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/1-loading/api_digitalService_loading.md",
+    "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/1-loading/api_loading.md",
+    "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/2-evaluation/api_evaluating_inventory.md",
+    "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/2-evaluation/digital_service/ecomind/_index.md",
+    "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/2-evaluation/digital_service/without_ecomind/_index.md",
+    "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/3-indicators/api_indicators_digital_service.md",
+    "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/3-indicators/api_indicators_inventory.md",
+    "services/documentation/content/3-technical-documentation/4-backend_documentation/db_documentation/information_system_and_digital_service_input_data/information_sytem_input_data/_index.md",
+    "services/documentation/content/3-technical-documentation/4-backend_documentation/db_documentation/information_system_and_digital_service_output_data/information_sytem_output_data/_index.md",
+    "services/documentation/content/4-help/3-FAQ_Methodology/_index.md",
+    "services/documentation/content/5-releases/2-release_v3_3/_index.md",
+    "services/frontend/README.md",
+    "services/frontend/eslint-suppressions.json",
+    "services/frontend/eslint.config.mjs",
+    "services/frontend/package-lock.json",
+    "services/frontend/package.json",
+    "services/frontend/src/app/core/interceptors/http-error.interceptor.ts",
+    "services/frontend/src/app/core/interfaces/footprint.interface.ts",
+    "services/frontend/src/app/core/service/business/inventory-util.service.ts",
+    "services/frontend/src/app/core/service/data/footprint-data.service.spec.ts",
+    "services/frontend/src/app/core/service/data/footprint-data.service.ts",
+    "services/frontend/src/app/core/service/mapper/sunburst-chart.mapper.spec.ts",
+    "services/frontend/src/app/core/service/mapper/sunburst-chart.mapper.ts",
+    "services/frontend/src/app/core/shared/echarts.module.spec.ts",
+    "services/frontend/src/app/core/shared/echarts.module.ts",
+    "services/frontend/src/app/layout/common/indicator-section/indicator-section.component.html",
+    "services/frontend/src/app/layout/common/indicator-section/indicator-section.component.scss",
+    "services/frontend/src/app/layout/common/indicator-section/indicator-section.component.spec.ts",
+    "services/frontend/src/app/layout/inventories-footprint/application/multicriteria/application-multicriteria-footprint.component.spec.ts",
+    "services/frontend/src/app/layout/inventories-footprint/critere/inventories-critere-footprint.component.ts",
+    "services/frontend/src/app/layout/inventories-footprint/critere/inventories-critere-footprint.spec.ts",
+    "services/frontend/src/app/layout/inventories-footprint/header/inventories-header-footprint.component.html",
+    "services/frontend/src/app/layout/inventories-footprint/header/inventories-header-footprint.component.spec.ts",
+    "services/frontend/src/app/layout/inventories-footprint/header/inventories-header-footprint.component.ts",
+    "services/frontend/src/app/layout/inventories-footprint/inventories-footprint.component.spec.ts",
+    "services/frontend/src/app/layout/inventories-footprint/inventories-footprint.component.ts",
+    "services/frontend/src/app/layout/inventories-footprint/multicriteria/inventories-multicriteria-footprint.component.html",
+    "services/frontend/src/assets/i18n/en.json",
+    "services/frontend/src/assets/i18n/fr.json",
+    "services/frontend/src/constants.ts",
+    "services/frontend/tsconfig.json",
+    "workspace/docker/.env"
+  ]
+}

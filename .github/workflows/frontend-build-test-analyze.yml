@@ -10,6 +10,11 @@ on:
       - ".github/workflows/frontend-analyze-main.yml"
     types: [opened, synchronize, reopened]
 
+# Least privilege: the token is only used to read sources and PR metadata for Sonar.
+permissions:
+  contents: read
+  pull-requests: read
+
 jobs:
   lint:
     runs-on: ubuntu-latest

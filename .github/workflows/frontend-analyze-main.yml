@@ -7,6 +7,10 @@ on:
     branches:
       - main
 
+# Least privilege: jobs only read sources; Sonar authenticates with SONAR_TOKEN.
+permissions:
+  contents: read
+
 jobs:
   lint:
     runs-on: ubuntu-latest
