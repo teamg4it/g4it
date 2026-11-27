@@ -16,6 +16,8 @@ import com.soprasteria.g4it.backend.apiinout.repository.InVirtualEquipmentReposi
 import com.soprasteria.g4it.backend.apiinventory.business.InventoryService;
 import com.soprasteria.g4it.backend.apiinventory.model.InventoryBO;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
+import com.soprasteria.g4it.backend.apireferential.modeldb.ItemType;
+import com.soprasteria.g4it.backend.apireferential.repository.ItemTypeRepository;
 import com.soprasteria.g4it.backend.apiuser.business.WorkspaceService;
 import com.soprasteria.g4it.backend.common.task.business.TaskService;
 import com.soprasteria.g4it.backend.common.task.modeldb.Task;
@@ -25,8 +27,11 @@ import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * Inventory Service.
@@ -55,6 +60,8 @@ public class InventoryIndicatorService {
     private InApplicationRepository inApplicationRepository;
     @Autowired
     private TaskService taskService;
+    @Autowired
+    private ItemTypeRepository itemTypeRepository;
 
     /**
      * Get last batch name in the inventory business object.
@@ -81,7 +88,42 @@ public class InventoryIndicatorService {
      */
     public Map<String, EquipmentIndicatorBO> getEquipmentIndicators(final String organization, final Long workspaceId, final Long inventoryId) {
         final InventoryBO inventory = inventoryService.getInventory(organization, workspaceId, inventoryId);
-        return indicatorService.getEquipmentIndicators(getLastTaskId(inventory));
+        Map<String, EquipmentIndicatorBO> indicators =
+                indicatorService.getEquipmentIndicators(getLastTaskId(inventory));
+        // Keep applicable definitions ordered so workspace and organization overrides win.
+        List<ItemType> itemTypes = itemTypeRepository
+                .findByWorkspaceIdOrWorkspaceIdIsNull(workspaceId).stream()
+                .filter(itemType -> itemType.getOrganization() == null
+                        || Objects.equals(itemType.getOrganization(), organization))
+                .filter(itemType -> itemType.getItemCategory() != null)
+                .sorted(Comparator
+                        .comparing((ItemType itemType) -> !Objects.equals(itemType.getWorkspaceId(), workspaceId))
+                        .thenComparing(itemType -> !Objects.equals(itemType.getOrganization(), organization)))
+                .toList();
+        Map<String, ItemType> itemTypesByType = itemTypes.stream()
+                .collect(Collectors.toMap(
+                        ItemType::getType,
+                        itemType -> itemType,
+                        (preferred, ignored) -> preferred
+                ));
+        Map<String, ItemType> itemTypesByReference = itemTypes.stream()
+                .filter(itemType -> itemType.getRefDefaultItem() != null)
+                .collect(Collectors.toMap(
+                        ItemType::getRefDefaultItem,
+                        itemType -> itemType,
+                        (preferred, ignored) -> preferred
+                ));
+        indicators.values().stream()
+                .flatMap(indicator -> indicator.getImpacts().stream())
+                .forEach(impact -> {
+                    ItemType itemType = itemTypesByReference.get(impact.getReference());
+                    if (itemType == null) {
+                        itemType = itemTypesByType.get(impact.getEquipment());
+                    }
+                    impact.setItemType(itemType == null ? impact.getEquipment() : itemType.getType());
+                    impact.setItemCategory(itemType == null ? "INFRASTRUCTURE" : itemType.getItemCategory());
+                });
+        return indicators;
     }
 
     /**

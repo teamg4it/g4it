@@ -8,6 +8,7 @@
 
 package com.soprasteria.g4it.backend.apireferential.modeldb;
 
+import com.soprasteria.g4it.backend.common.utils.Constants;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -15,6 +16,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.io.Serializable;
+import java.util.Set;
 
 /**
  * Referential ItemType
@@ -43,6 +45,9 @@ public class ItemType implements Serializable {
      * Category
      */
     private String category;
+
+    @Column(name = "item_category", nullable = false)
+    private String itemCategory;
 
     /**
      * Comment
@@ -84,25 +89,27 @@ public class ItemType implements Serializable {
     private Long workspaceId;
 
     public static String[] getCsvHeaders() {
-        return new String[]{"type", "category", "comment", "default_lifespan", "is_server",
+        return new String[]{"type", "category", "item_category", "comment", "default_lifespan", "is_server",
                 "source", "ref_default_item","subscriber", "version"};
     }
 
     public Object[] toCsvRecord() {
-        return new Object[]{type, category, comment, defaultLifespan, isServer,
+        return new Object[]{type, category, itemCategory, comment, defaultLifespan, isServer,
                 source, refDefaultItem, organization, version};
     }
 
     public static String[] getCsvHeadersForWorkspace() {
-        return new String[]{"type", "category", "comment", "default_lifespan", "is_server",
+        return new String[]{"type", "category", "item_category", "comment", "default_lifespan", "is_server",
                 "source", "ref_default_item","version"};
     }
 
     public Object[] toCsvRecordForWorkspace() {
-        return new Object[]{type, category, comment, defaultLifespan, isServer,
+        return new Object[]{type, category, itemCategory, comment, defaultLifespan, isServer,
                 source, refDefaultItem, version};
     }
 
+    public static boolean isValidItemCategory(String itemCategory) {
+        return (itemCategory != null && !itemCategory.isBlank() && Constants.ALLOWED_ITEM_CATEGORIES.contains(itemCategory));
+    }
+
 }
-
-

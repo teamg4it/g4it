@@ -288,7 +288,7 @@ public class WorkspaceReferentialImportService {
 
     /**
      * AC7: Validate that all mandatory fields are present for itemType rows.
-     * Mandatory columns: type, category, default_lifespan, is_server and ref_default_item.
+     * Mandatory columns: type, category, item_category, default_lifespan, is_server and ref_default_item.
      *
      * @param items List of ItemTypeRest to validate
      * @throws BadRequestException if any mandatory field is missing
@@ -297,6 +297,7 @@ public class WorkspaceReferentialImportService {
         for (ItemTypeRest item : items) {
             if (StringUtils.isBlank(item.getType()) ||
                     StringUtils.isBlank(item.getCategory()) ||
+                    !ItemType.isValidItemCategory(item.getItemCategory()) ||
                     item.getDefaultLifespan() == null ||
                     item.getIsServer() == null ||
                     StringUtils.isBlank(item.getRefDefaultItem())) {

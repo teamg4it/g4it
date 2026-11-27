@@ -11,6 +11,7 @@
         />
     }
     @if (!showInconsitencyGraph) {
+        <!-- `inventories-footprint.select-dimension` doesn't exist in i18n json -->
         <p-select
             [options]="dimensions"
             [ngModel]="store.dimension()"

@@ -211,13 +211,13 @@ class IndicatorServiceTest {
                 new Object[]{"resource_group", equipment2}
         ));
 
-        EquipmentIndicatorBO indicatorBO =
-                EquipmentIndicatorBO.builder().build();
+        EquipmentImpactBO impact1 = EquipmentImpactBO.builder().build();
+        EquipmentImpactBO impact2 = EquipmentImpactBO.builder().build();
 
         doReturn(repositoryResult, new ArrayList<>()).when(outPhysicalEquipmentRepository).findCriterionAndEquipmentByTaskId(eq(taskId), any());
 
-        when(equipmentIndicatorMapper.outToDto(List.of(equipment1, equipment2)))
-                .thenReturn(indicatorBO);
+        when(equipmentIndicatorMapper.toImpact(equipment1)).thenReturn(impact1);
+        when(equipmentIndicatorMapper.toImpact(equipment2)).thenReturn(impact2);
 
         Map<String, EquipmentIndicatorBO> result =
                 indicatorService.getEquipmentIndicators(taskId);
@@ -225,13 +225,14 @@ class IndicatorServiceTest {
         assertNotNull(result);
         assertEquals(1, result.size());
         assertTrue(result.containsKey("resource-group"));
-        assertEquals(indicatorBO, result.get("resource-group"));
+        assertEquals("resource_group", result.get("resource-group").getLabel());
+        assertEquals(List.of(impact1, impact2), result.get("resource-group").getImpacts());
 
         verify(outPhysicalEquipmentRepository, atLeast(1))
                 .findCriterionAndEquipmentByTaskId(eq(taskId), any());
 
-        verify(equipmentIndicatorMapper)
-                .outToDto(List.of(equipment1, equipment2));
+        verify(equipmentIndicatorMapper).toImpact(equipment1);
+        verify(equipmentIndicatorMapper).toImpact(equipment2);
     }
 
     @Test
@@ -245,35 +246,27 @@ class IndicatorServiceTest {
         OutPhysicalEquipment equipment2 =
                 OutPhysicalEquipment.builder().id(2L).build();
 
-        EquipmentIndicatorBO indicator1 =
-                EquipmentIndicatorBO.builder().build();
-
-        EquipmentIndicatorBO indicator2 =
-                EquipmentIndicatorBO.builder().build();
+        EquipmentImpactBO impact1 = EquipmentImpactBO.builder().build();
+        EquipmentImpactBO impact2 = EquipmentImpactBO.builder().build();
 
         doReturn(new ArrayList<>(List.of(
                 new Object[]{"resource_group", equipment1},
                 new Object[]{"climate_change", equipment2}
         )), new ArrayList<>()).when(outPhysicalEquipmentRepository).findCriterionAndEquipmentByTaskId(eq(taskId), any());
 
-        when(equipmentIndicatorMapper.outToDto(List.of(equipment1)))
-                .thenReturn(indicator1);
-
-        when(equipmentIndicatorMapper.outToDto(List.of(equipment2)))
-                .thenReturn(indicator2);
+        when(equipmentIndicatorMapper.toImpact(equipment1)).thenReturn(impact1);
+        when(equipmentIndicatorMapper.toImpact(equipment2)).thenReturn(impact2);
 
         Map<String, EquipmentIndicatorBO> result =
                 indicatorService.getEquipmentIndicators(taskId);
 
         assertEquals(2, result.size());
 
-        assertEquals(
-                indicator1,
-                result.get("resource-group"));
+        assertEquals("resource_group", result.get("resource-group").getLabel());
+        assertEquals(List.of(impact1), result.get("resource-group").getImpacts());
 
-        assertEquals(
-                indicator2,
-                result.get("climate-change"));
+        assertEquals("climate_change", result.get("climate-change").getLabel());
+        assertEquals(List.of(impact2), result.get("climate-change").getImpacts());
     }
 
     @Test

@@ -33,6 +33,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -93,51 +94,53 @@ public class IndicatorService {
     @Transactional(readOnly = true)
     public Map<String, EquipmentIndicatorBO> getEquipmentIndicators(final Long taskId) {
 
-        /*List<Object[]> results = outPhysicalEquipmentRepository.findCriterionAndEquipmentByTaskId(taskId);
-        Map<String, List<OutPhysicalEquipment>> grouped = results.stream()
-                .collect(Collectors.groupingBy(
-                        r -> (String) r[0],
-                        Collectors.mapping(r -> (OutPhysicalEquipment) r[1], Collectors.toList())
-                ));
-
-        return grouped.entrySet().stream()
-                .collect(Collectors.toMap(
-                        e -> com.soprasteria.g4it.backend.common.utils.StringUtils.snakeToKebabCase(e.getKey()),
-                        e -> equipmentIndicatorMapper.outToDto(e.getValue())
-                ));*/
+        // Convert each row to its lightweight DTO as soon as it is fetched instead of
+        // accumulating every OutPhysicalEquipment entity for the whole task in memory
+        // before mapping, to avoid exhausting the heap on large inventories.
+        Map<String, List<EquipmentImpactBO>> impactsByKey = new LinkedHashMap<>();
+        Map<String, String> labelByKey = new LinkedHashMap<>();
+        Map<String, String> unitByKey = new LinkedHashMap<>();
 
         int pageNumber = 0;
-        List<Object[]> results = new ArrayList<>();
         while (true) {
             Pageable page = PageRequest.of(
                     pageNumber,
                     Constants.BATCH_SIZE_10000
             );
 
-            List<Object[]> physicalEquipments =
+            List<Object[]> rows =
                     outPhysicalEquipmentRepository
                             .findCriterionAndEquipmentByTaskId(taskId, page);
 
-            if (physicalEquipments.isEmpty()) {
+            if (rows.isEmpty()) {
                 break;
             }
-            results.addAll(physicalEquipments);
-            physicalEquipments.clear();
+
+            for (Object[] row : rows) {
+                final String criterion = (String) row[0];
+                final OutPhysicalEquipment equipment = (OutPhysicalEquipment) row[1];
+                final String key = StringUtils.snakeToKebabCase(criterion);
+
+                labelByKey.putIfAbsent(key, criterion);
+                unitByKey.putIfAbsent(key, equipment.getUnit());
+                impactsByKey.computeIfAbsent(key, k -> new ArrayList<>())
+                        .add(equipmentIndicatorMapper.toImpact(equipment));
+            }
+
+            rows.clear();
             entityManager.clear();
             pageNumber++;
         }
-        Map<String, List<OutPhysicalEquipment>> grouped = results.stream()
-                .collect(Collectors.groupingBy(
-                        r -> (String) r[0],
-                        Collectors.mapping(r -> (OutPhysicalEquipment) r[1], Collectors.toList())
-                ));
 
-        return grouped.entrySet().stream()
+        return impactsByKey.entrySet().stream()
                 .collect(Collectors.toMap(
-                        e -> com.soprasteria.g4it.backend.common.utils.StringUtils.snakeToKebabCase(e.getKey()),
-                        e -> equipmentIndicatorMapper.outToDto(e.getValue())
+                        Map.Entry::getKey,
+                        e -> EquipmentIndicatorBO.builder()
+                                .unit(unitByKey.get(e.getKey()))
+                                .label(labelByKey.get(e.getKey()))
+                                .impacts(e.getValue())
+                                .build()
                 ));
-
     }
 
     /**

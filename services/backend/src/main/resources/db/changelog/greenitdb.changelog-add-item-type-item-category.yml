@@ -1,0 +1,223 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-item-type-item-category
+      author: G4IT Dev Team
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - columnExists:
+                tableName: ref_item_type
+                columnName: item_category
+      changes:
+        - addColumn:
+            tableName: ref_item_type
+            columns:
+              - column:
+                  name: item_category
+                  type: varchar(255)
+
+  - changeSet:
+      id: backfill-item-type-item-category
+      author: G4IT Dev Team
+      changes:
+        - sql:
+            sql: >
+              UPDATE ref_item_type
+              SET item_category = CASE
+                  WHEN type = ANY (ARRAY[
+                      'MAIN_Printer',
+                      'SOPRA-STERIA-GROUP_PC de bureau',
+                      'SOPRA-STERIA-GROUP_Portable',
+                      'SOPRA-STERIA-GROUP_Tablette',
+                      'SOPRA-STERIA-GROUP_Smartphone',
+                      'SOPRA-STERIA-GROUP_Ultra Portable',
+                      'SOPRA-STERIA-GROUP_Ecran',
+                      'SOPRA-STERIA-GROUP_Téléphone fixe',
+                      'SOPRA-STERIA-GROUP_Imprimante',
+                      'DOUANES_PC de bureau',
+                      'DOUANES_Portable',
+                      'DOUANES_Tablette',
+                      'DOUANES_Smartphone',
+                      'DOUANES_Ultra Portable',
+                      'DOUANES_Ecran',
+                      'DOUANES_Téléphone fixe',
+                      'DOUANES_Imprimante',
+                      'MAIN_Docking station',
+                      'MAIN_Portable Scanner',
+                      'MAIN_Digital PT Tag',
+                      'MAIN_Digital PT Tranceiver',
+                      'MAIN_Smartphone Oppo 2 Life',
+                      'MAIN_Smartphone Oppo',
+                      'MAIN_Mobility Device',
+                      'MAIN_Desktop',
+                      'MAIN_Monitor 2 Life',
+                      'MAIN_Laptop 2 Life',
+                      'Terminal',
+                      'mobile phone',
+                      'fix phone',
+                      'Printer',
+                      'Smartphone',
+                      'Communication Device',
+                      'CNR_Ecran',
+                      'CNR_PC fixe',
+                      'CNR_PC portable',
+                      'CNR_Tablette',
+                      'CNR_Téléphone fixe',
+                      'CNR_Smartphone',
+                      'CNR_Camera',
+                      'CNR_Audio',
+                      'Laptop',
+                      'Desktop',
+                      'Tablette',
+                      'monitor',
+                      'Monitor',
+                      'Mobile phone',
+                      'Fix phone',
+                      'Camera',
+                      'Feature phone',
+                      'Self Check Out',
+                      'Mobility Device',
+                      'Tracer',
+                      'Invoice terminal',
+                      'Plotter',
+                      'ADEO_Printer',
+                      'Network Gear',
+                      'Personal Computer',
+                      'Cashing System',
+                      'Cash registered device',
+                      'Docking station',
+                      'TV',
+                      'Speaker',
+                      'Tablet',
+                      'Toner',
+                      'MAIN_Portable Printer',
+                      'MAIN_Cash-desk printer',
+                      'MAIN_Network Gear',
+                      'MAIN_Access Mobile',
+                      'MAIN_Professional laser printer',
+                      'MAIN_Other printer',
+                      'MAIN_Tracer',
+                      'MAIN_Scanner',
+                      'MAIN_Portable Terminal',
+                      'MAIN_Workstation',
+                      'MAIN_Monitor',
+                      'MAIN_Computer monitor',
+                      'MAIN_Personal Computer',
+                      'MAIN_Laptop',
+                      'MAIN_Plotter',
+                      'MAIN_Communication Device',
+                      'MAIN_Cash registered device',
+                      'MAIN_Cashing System',
+                      'MAIN_Self Check Out',
+                      'MAIN_TV',
+                      'MAIN_Personal laser printer',
+                      'MAIN_Smartphone',
+                      'MAIN_Feature phone',
+                      'MAIN_Tablet',
+                      'DOUANES_Appliance',
+                      'DOUANES_Kit visio',
+                      'Video projector'
+                  ]) THEN 'Devices'
+
+                  WHEN type = ANY (ARRAY[
+                      'Wifi',
+                      'SOPRA-STERIA-GROUP_Borne Wifi',
+                      'SOPRA-STERIA-GROUP_Switch',
+                      'SOPRA-STERIA-GROUP_Router',
+                      'SOPRA-STERIA-GROUP_Serveur',
+                      'SOPRA-STERIA-GROUP_Stockage',
+                      'SOPRA-STERIA-GROUP_Appliance',
+                      'SOPRA-STERIA-GROUP_Kit visio',
+                      'DOUANES_Borne Wifi',
+                      'DOUANES_Switch',
+                      'DOUANES_Router',
+                      'DOUANES_Serveur',
+                      'DOUANES_Stockage',
+                      'Network',
+                      'Dedicated Server',
+                      'Shared Server',
+                      'Compute Server',
+                      'Storage Server',
+                      'Switch',
+                      'Cable',
+                      'Casing',
+                      'Server',
+                      'CNR_Firewall',
+                      'CNR_Switch',
+                      'CNR_Routeur',
+                      'CNR_GPU',
+                      'CNR_Passerelle',
+                      'CNR_Modem',
+                      'CNR_Repeteur',
+                      'CNR_Reseau',
+                      'CNR_homewifi',
+                      'CNR_Baie de stockage',
+                      'CNR_Imprimante',
+                      'CNR_PDA',
+                      'CNR_Serveur',
+                      'Firewall',
+                      'IP Router',
+                      'IP Switch',
+                      'Network Load Balancer',
+                      'Bay',
+                      'Network_Exchange',
+                      'Commute',
+                      'Wifi_HO',
+                      'MAIN_WiFi hotspot',
+                      'MAIN_Cable',
+                      'MAIN_Firewall',
+                      'MAIN_Thinclient',
+                      'MAIN_Rack Server',
+                      'MAIN_Hardware',
+                      'MAIN_Firewall Device',
+                      'MAIN_IP Router',
+                      'MAIN_IP Switch',
+                      'MAIN_Wireless Access Point',
+                      'MAIN_Switch Router',
+                      'MAIN_Network Load Balancer',
+                      'MAIN_Server',
+                      'MAIN_Network device',
+                      'MAIN_F5 BIG-IP',
+                      'MAIN_Invoice terminal',
+                      'Serveur',
+                      'Stockage',
+                      'Réseau'
+                  ]) THEN 'Infrastructure'
+
+                  WHEN type = ANY (ARRAY[
+                      'Room',
+                      'SOPRA-STERIA-GROUP_Bureau',
+                      'SOPRA-STERIA-GROUP_Datacenter',
+                      'DOUANES_Bureau',
+                      'DOUANES_Datacenter',
+                      'MAIN_Paper Recycled',
+                      'MAIN_Paper Standard',
+                      'CNR_bureau',
+                      'CNR_collaborateur',
+                      'CNR_datacenter',
+                      'Building',
+                      'Consumable',
+                      'ITService',
+                      'Travel',
+                      'MAIN_Server Power Supply',
+                      'Datacenter',
+                      'MAIN_Accessory et consumable',
+                      'Paper',
+                      'Technical room'
+                  ]) THEN 'Non_IT'
+
+                  WHEN type = 'Arcelor Microsoft Cloud'
+                      THEN 'External Services'
+
+                  ELSE item_category
+              END
+              WHERE item_category IS NULL 
+
+  - changeSet:
+      id: require-item-type-item-category
+      author: G4IT Dev Team
+      changes:
+        - addNotNullConstraint:
+            tableName: ref_item_type
+            columnName: item_category
+            columnDataType: varchar(255)
