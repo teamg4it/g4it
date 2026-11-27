@@ -2,7 +2,7 @@
 workflow: feature-implementation
 trigger: user
 date: '2026-11-27'
-status: draft
+status: validated
 feature: G4IT-48
 trace_id: e6fa33d4-27cf-4d12-84a2-3c70d47d88da
 station: quality-gate
@@ -26,8 +26,11 @@ changeHistory:
   - date: '2026-11-27'
     author: workflow-orchestrator
     changes: 'Recorded owner decisions on M-001, M-002, M-004, M-005 and m-005; fixed m-001..m-003 in plan.md and tasks.md; verdict unchanged'
+  - date: '2026-11-27'
+    author: repository owner (human gate)
+    changes: 'Validated the final quality gate report (CONDITIONAL PASS with owner-accepted or deferred reserves); status set to validated'
 holisticQualityRating: not-rated
-overallStatus: not-reviewed
+overallStatus: warning
 context_manifest:
   - path: .github/skills/spec-quality-gate/SKILL.md
     mode: full
