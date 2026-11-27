@@ -1,0 +1,206 @@
+{
+  "station": "pr-validation/a0-intake",
+  "station_name": "A0 — Intake",
+  "workflow": "feature-implementation",
+  "feature": "G4IT-48",
+  "trace_id": "e6fa33d4-27cf-4d12-84a2-3c70d47d88da",
+  "generated_at": "2026-11-27T15:54:08+01:00",
+  "attempt": "retry",
+  "retry_reason": "previous attempt lacked the diff and the output directory; both now provided",
+  "pr": {
+    "repo": "teamg4it/g4it",
+    "number": 959,
+    "head_branch": "feat/g4it-48",
+    "base_ref": "origin/feat/g4it-ia-backbone",
+    "diff_command": "git diff --name-only origin/feat/g4it-ia-backbone...HEAD",
+    "scope": "git-tracked files only",
+    "total_files_reported": 189,
+    "total_files_counted": 189,
+    "components": ["services/frontend (Angular)", "services/backend (Java)"]
+  },
+  "categories": [
+    {
+      "id": "ci_workflows",
+      "description": "GitHub Actions workflows",
+      "count": 10,
+      "files": [
+        ".github/workflows/backend-analyze-main.yml",
+        ".github/workflows/backend-build-test-analyze.yml",
+        ".github/workflows/backend-dep-check.yml",
+        ".github/workflows/backend-docker-image.yml",
+        ".github/workflows/documentation-docker-image.yml",
+        ".github/workflows/frontend-analyze-main.yml",
+        ".github/workflows/frontend-build-test-analyze.yml",
+        ".github/workflows/frontend-deps-update.yml",
+        ".github/workflows/frontend-docker-image.yml",
+        ".github/workflows/keycloak-docker-image.yml"
+      ]
+    },
+    {
+      "id": "repo_config_docs",
+      "description": "Repo config and docs",
+      "count": 5,
+      "files": [
+        ".gitignore",
+        "DOCKER-DEPLOYMENT.md",
+        "services/backend/.gitignore",
+        "services/backend/README.md",
+        "services/frontend/README.md"
+      ]
+    },
+    {
+      "id": "sensitive_env",
+      "description": "Environment file flagged as sensitive; contents NOT read",
+      "count": 1,
+      "files": ["workspace/docker/.env"]
+    },
+    {
+      "id": "ba_input",
+      "description": "Business analysis input",
+      "count": 1,
+      "files": ["inputs/ba/_source/feature-g4it-48.txt"]
+    },
+    {
+      "id": "outputs_workflow_artifacts",
+      "description": "Workflow outputs and artifacts (not production)",
+      "count": 21,
+      "files": [
+        "outputs/reports/pr-auto-validator.json",
+        "outputs/runs/_interactive/2026-11-20/audit-trace.jsonl",
+        "outputs/runs/brownfield-analysis/20261116-144600-g4it-on-github-8da83886/dashboard.json",
+        "outputs/runs/brownfield-analysis/20261119-162225-g4it-on-github-4d1e4282/dashboard.json",
+        "outputs/runs/run-manifest.json",
+        "outputs/specs/constitution.md",
+        "outputs/specs/features/G4IT-48/{architecture-review,clarifications,context-brief,coverage-report,dependency-report,implementation-log,lint-report,plan,quality-report,requirements-brief,sast-report,spec,static-analysis-report,tasks,test-report}.md"
+      ]
+    },
+    {
+      "id": "backend_e2e_scripts",
+      "description": "Backend e2e test scripts and data",
+      "count": 3,
+      "files": [
+        "services/backend/e2e/g4it48-live-e2e.sh",
+        "services/backend/e2e/test_g4it48_config.py",
+        "services/backend/e2e/g4it48-physical-equipment.csv"
+      ]
+    },
+    {
+      "id": "backend_build",
+      "description": "Backend build config",
+      "count": 1,
+      "files": ["services/backend/pom.xml"]
+    },
+    {
+      "id": "backend_java_production",
+      "description": "Backend Java production sources",
+      "count": 36,
+      "directory": "services/backend/src/main/java/com/soprasteria/g4it/backend/",
+      "notable_files": [
+        "apiindicator/.../InventorySpreadsheetExportService.java",
+        "apiindicator/.../InventoryIndicatorController.java",
+        "apiuser/business/AuthService.java",
+        "common/utils/CsvUtils.java",
+        "config/JsonNullableConfig.java",
+        "config/RestExceptionHandler.java"
+      ],
+      "note": "remaining files grouped under apievaluating, apiindicator, apiinout, apiloadinputfiles, apireferential"
+    },
+    {
+      "id": "backend_resources",
+      "description": "Backend resources (csv-headers, Liquibase, i18n, swagger)",
+      "count": 11,
+      "files": [
+        "csv-headers.yml",
+        "db/changelog/* (4 Liquibase changelogs)",
+        "messages.properties",
+        "messages_fr.properties",
+        "swagger/greenit/* (4 YAML files)"
+      ]
+    },
+    {
+      "id": "backend_tests",
+      "description": "Backend tests and test resources",
+      "count": 33,
+      "directory": "services/backend/src/test/",
+      "breakdown": {
+        "java_test_files": 28,
+        "test_resources": ["itemType.csv x3", "application-integration-test.yml", "sql/g4it48-local-reference.sql"]
+      }
+    },
+    {
+      "id": "backend_data",
+      "description": "Backend data assets",
+      "count": 2,
+      "files": [
+        "services/backend/storage/--INTERNAL-G4IT--/0/templates/G4IT_Datamodel_workspace_reference_data_v1.1.0.xlsx",
+        "services/backend/volume_generation/input_template/2-physical-equipment.csv"
+      ]
+    },
+    {
+      "id": "documentation",
+      "description": "Hugo documentation content",
+      "count": 36,
+      "directory": "services/documentation/content/",
+      "note": "markdown files plus 3 CSV templates"
+    },
+    {
+      "id": "frontend_config",
+      "description": "Frontend config and dependencies",
+      "count": 5,
+      "files": [
+        "services/frontend/eslint-suppressions.json",
+        "services/frontend/eslint.config.mjs",
+        "services/frontend/package.json",
+        "services/frontend/package-lock.json",
+        "services/frontend/tsconfig.json"
+      ]
+    },
+    {
+      "id": "frontend_production",
+      "description": "Frontend Angular production sources",
+      "count": 16,
+      "directory": "services/frontend/src/",
+      "files_under_app": 13,
+      "notable_files": [
+        "services/frontend/src/app/** (http-error.interceptor.ts, footprint.interface.ts, inventory-util.service.ts, footprint-data.service.ts, sunburst-chart.mapper.ts, echarts.module.ts, indicator-section .html/.scss, inventories-critere-footprint.component.ts, inventories-header-footprint .html/.ts, inventories-footprint.component.ts, inventories-multicriteria-footprint.component.html)",
+        "services/frontend/src/assets/i18n/en.json",
+        "services/frontend/src/assets/i18n/fr.json",
+        "services/frontend/src/constants.ts"
+      ]
+    },
+    {
+      "id": "frontend_tests",
+      "description": "Frontend spec tests",
+      "count": 8,
+      "files_pattern": "services/frontend/**/*.spec.ts"
+    }
+  ],
+  "sensitive_paths": [
+    {
+      "path": "workspace/docker/.env",
+      "reason": "environment file; may contain secrets",
+      "content_read": false,
+      "action": "flag for A2 secret-scan review"
+    }
+  ],
+  "agent_skill_prompt_files_in_scope": 0,
+  "applicable_stations": {
+    "A1_policy_validation": {
+      "applicable": false,
+      "reason": "no agent/skill frontmatter files in diff (.github/agents and .github/skills are untracked and out of scope)"
+    },
+    "A2_security_static": {
+      "applicable": true,
+      "reason": "workflows, Java, TypeScript, scripts, and sensitive path workspace/docker/.env"
+    },
+    "A3_prompt_injection": {
+      "applicable": false,
+      "reason": "no prompt or agent definitions in scope"
+    },
+    "A4_red_team": {"applicable": true, "reason": "per station definition"},
+    "A5_sandbox_simulation": {"applicable": true, "reason": "per station definition"},
+    "A6_policy_gate": {"applicable": true, "reason": "aggregates prior reports"},
+    "A7_gitlab_update": {"applicable": true, "reason": "per station definition"}
+  },
+  "open_questions": []
+}

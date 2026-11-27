@@ -1,0 +1,86 @@
+{
+  "station": "pr-validation/a1-policy-validation",
+  "station_name": "A1 — Policy Validation",
+  "workflow": "feature-implementation",
+  "feature": "G4IT-48",
+  "trace_id": "e6fa33d4-27cf-4d12-84a2-3c70d47d88da",
+  "evaluated_at": "2026-11-27T16:04:45+01:00",
+  "input_reference": {
+    "work_order": "outputs/station_out/work_order.json",
+    "pr": {
+      "repo": "teamg4it/g4it",
+      "number": 959,
+      "head_branch": "feat/g4it-48",
+      "base_ref": "origin/feat/g4it-ia-backbone",
+      "scope": "git-tracked files only"
+    },
+    "total_files_in_diff": 189,
+    "agent_skill_prompt_files_in_scope": 0,
+    "out_of_scope_by_user_decision": [".github/agents", ".github/skills"]
+  },
+  "rules": [
+    {
+      "rule": "P-01",
+      "description": "Required frontmatter fields (name, description, tools/triggers) on agent and skill manifests",
+      "files_evaluated": 0,
+      "result": "not_applicable",
+      "findings": []
+    },
+    {
+      "rule": "P-02",
+      "description": "Tool allowlist: tools array values must be in the approved allowlist",
+      "files_evaluated": 0,
+      "result": "not_applicable",
+      "findings": []
+    },
+    {
+      "rule": "P-03",
+      "description": "No wildcard exec: execute/runInTerminal requires a non-empty commandAllowlist",
+      "files_evaluated": 0,
+      "result": "not_applicable",
+      "findings": []
+    },
+    {
+      "rule": "P-04",
+      "description": "Rule not defined in the policy guard skill (no P-04 in source rule set); nothing to evaluate",
+      "files_evaluated": 0,
+      "result": "not_applicable",
+      "findings": []
+    },
+    {
+      "rule": "P-05",
+      "description": "Description quality: description of at least 20 characters",
+      "files_evaluated": 0,
+      "result": "not_applicable",
+      "findings": []
+    },
+    {
+      "rule": "P-06",
+      "description": "Naming convention: agent filenames are lowercase kebab-case (*.agent.md)",
+      "files_evaluated": 0,
+      "result": "not_applicable",
+      "findings": []
+    }
+  ],
+  "totals": {
+    "rules_total": 6,
+    "rules_evaluated": 6,
+    "rules_pass": 0,
+    "rules_not_applicable": 6,
+    "rules_fail": 0,
+    "violations_critical": 0,
+    "violations_high": 0,
+    "violations_medium": 0,
+    "violations_low": 0,
+    "files_evaluated": 0
+  },
+  "gate": {
+    "criteria": [
+      {"criterion": "All policy rules (P-01 to P-06) evaluated", "severity": "blocker", "met": true},
+      {"criterion": "No critical policy violations", "severity": "blocker", "met": true}
+    ],
+    "result": "pass"
+  },
+  "overall_decision": "PASS",
+  "open_questions": []
+}

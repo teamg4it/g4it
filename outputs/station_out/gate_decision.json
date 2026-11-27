@@ -1,0 +1,95 @@
+{
+  "station": "pr-validation/a6-policy-gate",
+  "station_id": "A6",
+  "station_name": "A6 — Policy Gate",
+  "workflow": "feature-implementation",
+  "feature": "G4IT-48",
+  "trace_id": "e6fa33d4-27cf-4d12-84a2-3c70d47d88da",
+  "pr": {"repo": "teamg4it/g4it", "number": 959, "head_branch": "feat/g4it-48", "base_ref": "origin/feat/g4it-ia-backbone"},
+  "evaluated_at": "2026-11-27T17:02:48+01:00",
+  "inputs": [
+    "outputs/station_out/policy_report.json",
+    "outputs/station_out/security_report.json",
+    "outputs/station_out/promptsec_report.json",
+    "outputs/station_out/a4_result.json",
+    "outputs/station_out/sim_report.json"
+  ],
+  "recorded_engine_results": {"A1": "pass", "A2": "passed_with_warning", "A3": "pass", "A4": "passed_with_warning", "A5": "pass"},
+  "decision": "REVIEW",
+  "requested_decision_vocabulary": {
+    "requested": ["PASS", "CONDITIONAL_PASS"],
+    "met": false,
+    "reason": "The policy-gate skill defines only BLOCK, REVIEW and APPROVE. Rule G-REVIEW applies because high-severity findings exist; owner acceptance does not change finding severity and the skill provides no waiver mechanism."
+  },
+  "rule_evaluation": {
+    "G-BLOCK": {
+      "matched": false,
+      "basis": "No critical findings in any report. Security report status is recorded as passed_with_warning per engine result; its file-level decision field still reads fail for the sensitive-path reference. If that file-level fail is treated as binding, G-BLOCK would apply. Owner acceptance is the basis for treating it as non-binding; this must be confirmed in the gate record."
+    },
+    "G-REVIEW": {
+      "matched": true,
+      "basis": "High-severity findings present: A2 sensitive-path reference (owner-accepted) and A4-01 advisory high (owner-accepted). Work order risk hints were not provided as an input, so they were not evaluated."
+    },
+    "G-APPROVE": {
+      "matched": false,
+      "basis": "High-severity findings present, so approval is not permitted under the skill rules."
+    }
+  },
+  "labels": ["agent-factory:scanned", "agent-factory:needs-review", "security:sensitive-path-accepted"],
+  "blocking_findings": [],
+  "review_findings": [
+    {
+      "id": "A2-H1",
+      "source": "security_report.json",
+      "severity": "high",
+      "status": "accepted_by_owner",
+      "path": "services/backend/e2e/g4it48-live-e2e.sh",
+      "line": 10,
+      "type": "sensitive_path_reference",
+      "description": "Script default env-file path points to a local sensitive settings file. File not read; owner attests local-only settings.",
+      "disposition": "Owner-accepted risk. Severity retained as high for the gate record."
+    },
+    {
+      "id": "A4-01",
+      "source": "a4_result.json",
+      "severity": "high",
+      "status": "accepted_by_owner",
+      "category": "RT-02",
+      "description": "Advisory vector: env-file path override could redirect the e2e script to another local settings file. Same root item as A2-H1.",
+      "disposition": "Owner-accepted. Advisory only; optional hardening."
+    }
+  ],
+  "accepted_risks": [
+    {
+      "id": "AR-1",
+      "item": "services/backend/e2e/g4it48-live-e2e.sh:10 reference to local workspace/docker/.env",
+      "accepted_by": "repository owner",
+      "basis": "File attested local-only settings; not read by this station.",
+      "covers": ["A2-H1", "A4-01"]
+    },
+    {
+      "id": "AR-2",
+      "item": ".github/workflows/frontend-deps-update.yml repo-token defect",
+      "status": "closed",
+      "basis": "Workflow removed from the PR; no residual vector."
+    }
+  ],
+  "warnings": [
+    {"id": "W-1", "source": "security_report.json", "severity": "medium", "status": "out_of_pr_scope", "description": "Pre-existing log of a credential prefix in Azure integration test static initializer (AzureGreenItFileSystemApplicationTests.java:78). Outside PR diff."},
+    {"id": "W-2", "source": "a4_result.json", "severity": "medium", "status": "out_of_pr_scope", "finding_ref": "A4-03", "description": "Same item as W-1, rated medium in red-team view."},
+    {"id": "W-3", "source": "sim_report.json", "severity": "low", "status": "open", "finding_ref": "A5-F1", "description": "e2e script archive extraction lacks an explicit path-traversal guard. Local test tooling only."},
+    {"id": "W-4", "source": "security_report.json", "severity": "low", "status": "open", "description": "Dependency CVE scan (S-02) was not executed by A2; dependency_scan_ran is false."},
+    {"id": "W-5", "source": "a4_result.json", "severity": "low", "status": "open", "finding_ref": "A4-04", "description": "Synthetic default datasource credentials in main resources and docs; overridability in deployed profiles unconfirmed."},
+    {"id": "W-6", "source": "a4_result.json", "severity": "low", "status": "open", "finding_ref": "A4-02", "description": "Documentation prose flagged by prompt-injection review as benign; no agent ingests these paths."}
+  ],
+  "skipped_stations": [],
+  "notes": "No station is skipped. A1 has zero agent/skill artefacts in scope, so policy rules are not applicable. A5 has no critical or high scenarios. A3 has zero confirmed findings. No critical findings exist, so the BLOCK condition is not met. The REVIEW decision is driven by two owner-accepted high findings. A human reviewer holding the agent-security-approver role must confirm the owner acceptance before merge. Gate criterion 'no sensitive file paths referenced' remains unmet as written; the owner waiver covers it. The security_report.json file-level decision field still reads fail and should be reconciled with the recorded passed_with_warning engine result.",
+  "follow_ups": [
+    {"id": "FU-1", "item": "Remove credential-prefix log in AzureGreenItFileSystemApplicationTests.java:78; rotate secret if CI logs are broadly readable.", "owner": "repository owner", "scope": "out of PR"},
+    {"id": "FU-2", "item": "Add path-traversal guard to archive extraction in g4it48-live-e2e.sh (A5-F1).", "scope": "optional hardening"},
+    {"id": "FU-3", "item": "Require explicit env-file path in CI for the e2e script instead of the sensitive default (A4-01 optional hardening).", "scope": "optional hardening"},
+    {"id": "FU-4", "item": "Run dependency CVE scan (S-02) in CI for pom.xml and frontend package-lock.json.", "scope": "CI"},
+    {"id": "FU-5", "item": "Confirm RT-05 resource-exhaustion assessment is not required for this PR.", "scope": "PR"}
+  ],
+  "summary": "PR REVIEW — no critical findings; 2 high findings both owner-accepted (sensitive-path reference). Requires agent-security-approver confirmation before merge. Requested PASS/CONDITIONAL_PASS is not a skill outcome."
+}

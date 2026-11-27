@@ -1,0 +1,943 @@
+{
+  "status": "fail",
+  "summary": [
+    "Workflow files scanned: 58",
+    "Blocking issues: 96",
+    "Warnings: 48"
+  ],
+  "blocking_issues": [
+    ".github/workflows/accessibility-barometer.yml: missing top-level 'on'",
+    ".github/workflows/accessibility-barometer.yml: missing or invalid 'jobs'",
+    ".github/workflows/backbone-tailoring.yml: missing top-level 'on'",
+    ".github/workflows/backbone-tailoring.yml: missing or invalid 'jobs'",
+    ".github/workflows/bmad.yml: missing top-level 'on'",
+    ".github/workflows/bmad.yml: missing or invalid 'jobs'",
+    ".github/workflows/brownfield-analysis.yml: missing top-level 'on'",
+    ".github/workflows/brownfield-analysis.yml: missing or invalid 'jobs'",
+    ".github/workflows/bug-fixing.yml: missing top-level 'on'",
+    ".github/workflows/bug-fixing.yml: missing or invalid 'jobs'",
+    ".github/workflows/compliance-check.yml: missing top-level 'on'",
+    ".github/workflows/compliance-check.yml: missing or invalid 'jobs'",
+    ".github/workflows/delivery-retrospective.yml: missing top-level 'on'",
+    ".github/workflows/delivery-retrospective.yml: missing or invalid 'jobs'",
+    ".github/workflows/document-ingestion.yml: missing top-level 'on'",
+    ".github/workflows/document-ingestion.yml: missing or invalid 'jobs'",
+    ".github/workflows/feature-implementation.yml: missing top-level 'on'",
+    ".github/workflows/feature-implementation.yml: missing or invalid 'jobs'",
+    ".github/workflows/gitlab-workitem.yml: missing top-level 'on'",
+    ".github/workflows/gitlab-workitem.yml: missing or invalid 'jobs'",
+    ".github/workflows/idea-to-spec.yml: missing top-level 'on'",
+    ".github/workflows/idea-to-spec.yml: missing or invalid 'jobs'",
+    ".github/workflows/implementation-loop.yml: missing top-level 'on'",
+    ".github/workflows/implementation-loop.yml: missing or invalid 'jobs'",
+    ".github/workflows/incident-resolution.yml: missing top-level 'on'",
+    ".github/workflows/incident-resolution.yml: missing or invalid 'jobs'",
+    ".github/workflows/maturity-assessment.yml: missing top-level 'on'",
+    ".github/workflows/maturity-assessment.yml: missing or invalid 'jobs'",
+    ".github/workflows/modernization.yml: missing top-level 'on'",
+    ".github/workflows/modernization.yml: missing or invalid 'jobs'",
+    ".github/workflows/mr-auto-synchronisation.yml: missing top-level 'on'",
+    ".github/workflows/mr-auto-synchronisation.yml: missing or invalid 'jobs'",
+    ".github/workflows/pr-validation.yml: missing top-level 'on'",
+    ".github/workflows/pr-validation.yml: missing or invalid 'jobs'",
+    ".github/workflows/quality-validation.yml: missing top-level 'on'",
+    ".github/workflows/quality-validation.yml: missing or invalid 'jobs'",
+    ".github/workflows/release-readiness.yml: missing top-level 'on'",
+    ".github/workflows/release-readiness.yml: missing or invalid 'jobs'",
+    ".github/workflows/sdlc-ba-audit.yml: missing top-level 'on'",
+    ".github/workflows/sdlc-ba-audit.yml: missing or invalid 'jobs'",
+    ".github/workflows/sdlc-ba-design.yml: missing top-level 'on'",
+    ".github/workflows/sdlc-ba-design.yml: missing or invalid 'jobs'",
+    ".github/workflows/sdlc-ba-discovery.yml: missing top-level 'on'",
+    ".github/workflows/sdlc-ba-discovery.yml: missing or invalid 'jobs'",
+    ".github/workflows/sdlc-ba-spec.yml: missing top-level 'on'",
+    ".github/workflows/sdlc-ba-spec.yml: missing or invalid 'jobs'",
+    ".github/workflows/sdlc-ba-sprint-loop.yml: missing top-level 'on'",
+    ".github/workflows/sdlc-ba-sprint-loop.yml: missing or invalid 'jobs'",
+    ".github/workflows/sdlc-ba-validation.yml: missing top-level 'on'",
+    ".github/workflows/sdlc-ba-validation.yml: missing or invalid 'jobs'",
+    ".github/workflows/sdlc-ba.yml: missing top-level 'on'",
+    ".github/workflows/sdlc-ba.yml: missing or invalid 'jobs'",
+    ".github/workflows/sdlc-evolution.yml: missing top-level 'on'",
+    ".github/workflows/sdlc-evolution.yml: missing or invalid 'jobs'",
+    ".github/workflows/sdlc-full.yml: missing top-level 'on'",
+    ".github/workflows/sdlc-full.yml: missing or invalid 'jobs'",
+    ".github/workflows/sdlc-scaffold.yml: missing top-level 'on'",
+    ".github/workflows/sdlc-scaffold.yml: missing or invalid 'jobs'",
+    ".github/workflows/sdlc-sprint-loop.yml: missing top-level 'on'",
+    ".github/workflows/sdlc-sprint-loop.yml: missing or invalid 'jobs'",
+    ".github/workflows/sdlc-steer-governance.yml: missing top-level 'on'",
+    ".github/workflows/sdlc-steer-governance.yml: missing or invalid 'jobs'",
+    ".github/workflows/sdlc-steer-init.yml: missing top-level 'on'",
+    ".github/workflows/sdlc-steer-init.yml: missing or invalid 'jobs'",
+    ".github/workflows/sdlc-steer-planning.yml: missing top-level 'on'",
+    ".github/workflows/sdlc-steer-planning.yml: missing or invalid 'jobs'",
+    ".github/workflows/sdlc-steer-sprint.yml: missing top-level 'on'",
+    ".github/workflows/sdlc-steer-sprint.yml: missing or invalid 'jobs'",
+    ".github/workflows/sdlc-steer.yml: missing top-level 'on'",
+    ".github/workflows/sdlc-steer.yml: missing or invalid 'jobs'",
+    ".github/workflows/sdlc-tech-archi.yml: missing top-level 'on'",
+    ".github/workflows/sdlc-tech-archi.yml: missing or invalid 'jobs'",
+    ".github/workflows/sdlc-tech-audit.yml: missing top-level 'on'",
+    ".github/workflows/sdlc-tech-audit.yml: missing or invalid 'jobs'",
+    ".github/workflows/sdlc-tech-design.yml: missing top-level 'on'",
+    ".github/workflows/sdlc-tech-design.yml: missing or invalid 'jobs'",
+    ".github/workflows/sdlc-tech-impl.yml: missing top-level 'on'",
+    ".github/workflows/sdlc-tech-impl.yml: missing or invalid 'jobs'",
+    ".github/workflows/sdlc-tech-quality.yml: missing top-level 'on'",
+    ".github/workflows/sdlc-tech-quality.yml: missing or invalid 'jobs'",
+    ".github/workflows/sdlc-tech-review.yml: missing top-level 'on'",
+    ".github/workflows/sdlc-tech-review.yml: missing or invalid 'jobs'",
+    ".github/workflows/sdlc-tech-sprint-loop.yml: missing top-level 'on'",
+    ".github/workflows/sdlc-tech-sprint-loop.yml: missing or invalid 'jobs'",
+    ".github/workflows/sdlc-tech.yml: missing top-level 'on'",
+    ".github/workflows/sdlc-tech.yml: missing or invalid 'jobs'",
+    ".github/workflows/sdlc-test-campaign.yml: missing top-level 'on'",
+    ".github/workflows/sdlc-test-campaign.yml: missing or invalid 'jobs'",
+    ".github/workflows/sdlc-test-perf.yml: missing top-level 'on'",
+    ".github/workflows/sdlc-test-perf.yml: missing or invalid 'jobs'",
+    ".github/workflows/sdlc-test.yml: missing top-level 'on'",
+    ".github/workflows/sdlc-test.yml: missing or invalid 'jobs'",
+    ".github/workflows/spec-kit.yml: missing top-level 'on'",
+    ".github/workflows/spec-kit.yml: missing or invalid 'jobs'",
+    ".github/workflows/spec-to-execution.yml: missing top-level 'on'",
+    ".github/workflows/spec-to-execution.yml: missing or invalid 'jobs'"
+  ],
+  "warnings": [
+    ".github/workflows/accessibility-barometer.yml: missing explicit permissions block",
+    ".github/workflows/backbone-tailoring.yml: missing explicit permissions block",
+    ".github/workflows/bmad.yml: missing explicit permissions block",
+    ".github/workflows/brownfield-analysis.yml: missing explicit permissions block",
+    ".github/workflows/bug-fixing.yml: missing explicit permissions block",
+    ".github/workflows/compliance-check.yml: missing explicit permissions block",
+    ".github/workflows/delivery-retrospective.yml: missing explicit permissions block",
+    ".github/workflows/document-ingestion.yml: missing explicit permissions block",
+    ".github/workflows/feature-implementation.yml: missing explicit permissions block",
+    ".github/workflows/gitlab-workitem.yml: missing explicit permissions block",
+    ".github/workflows/idea-to-spec.yml: missing explicit permissions block",
+    ".github/workflows/implementation-loop.yml: missing explicit permissions block",
+    ".github/workflows/incident-resolution.yml: missing explicit permissions block",
+    ".github/workflows/maturity-assessment.yml: missing explicit permissions block",
+    ".github/workflows/modernization.yml: missing explicit permissions block",
+    ".github/workflows/mr-auto-synchronisation.yml: missing explicit permissions block",
+    ".github/workflows/pr-validation.yml: missing explicit permissions block",
+    ".github/workflows/quality-validation.yml: missing explicit permissions block",
+    ".github/workflows/release-readiness.yml: missing explicit permissions block",
+    ".github/workflows/sdlc-ba-audit.yml: missing explicit permissions block",
+    ".github/workflows/sdlc-ba-design.yml: missing explicit permissions block",
+    ".github/workflows/sdlc-ba-discovery.yml: missing explicit permissions block",
+    ".github/workflows/sdlc-ba-spec.yml: missing explicit permissions block",
+    ".github/workflows/sdlc-ba-sprint-loop.yml: missing explicit permissions block",
+    ".github/workflows/sdlc-ba-validation.yml: missing explicit permissions block",
+    ".github/workflows/sdlc-ba.yml: missing explicit permissions block",
+    ".github/workflows/sdlc-evolution.yml: missing explicit permissions block",
+    ".github/workflows/sdlc-full.yml: missing explicit permissions block",
+    ".github/workflows/sdlc-scaffold.yml: missing explicit permissions block",
+    ".github/workflows/sdlc-sprint-loop.yml: missing explicit permissions block",
+    ".github/workflows/sdlc-steer-governance.yml: missing explicit permissions block",
+    ".github/workflows/sdlc-steer-init.yml: missing explicit permissions block",
+    ".github/workflows/sdlc-steer-planning.yml: missing explicit permissions block",
+    ".github/workflows/sdlc-steer-sprint.yml: missing explicit permissions block",
+    ".github/workflows/sdlc-steer.yml: missing explicit permissions block",
+    ".github/workflows/sdlc-tech-archi.yml: missing explicit permissions block",
+    ".github/workflows/sdlc-tech-audit.yml: missing explicit permissions block",
+    ".github/workflows/sdlc-tech-design.yml: missing explicit permissions block",
+    ".github/workflows/sdlc-tech-impl.yml: missing explicit permissions block",
+    ".github/workflows/sdlc-tech-quality.yml: missing explicit permissions block",
+    ".github/workflows/sdlc-tech-review.yml: missing explicit permissions block",
+    ".github/workflows/sdlc-tech-sprint-loop.yml: missing explicit permissions block",
+    ".github/workflows/sdlc-tech.yml: missing explicit permissions block",
+    ".github/workflows/sdlc-test-campaign.yml: missing explicit permissions block",
+    ".github/workflows/sdlc-test-perf.yml: missing explicit permissions block",
+    ".github/workflows/sdlc-test.yml: missing explicit permissions block",
+    ".github/workflows/spec-kit.yml: missing explicit permissions block",
+    ".github/workflows/spec-to-execution.yml: missing explicit permissions block"
+  ],
+  "fix_suggestions": [
+    {
+      "file": ".github/workflows/accessibility-barometer.yml",
+      "issue": "workflow_on_missing",
+      "proposed_fix": "Add trigger block, e.g. on:\n  pull_request:\n    branches: [main]"
+    },
+    {
+      "file": ".github/workflows/accessibility-barometer.yml",
+      "issue": "workflow_jobs_missing",
+      "proposed_fix": "Add jobs mapping with at least one job containing runs-on and steps"
+    },
+    {
+      "file": ".github/workflows/accessibility-barometer.yml",
+      "issue": "permissions_missing",
+      "proposed_fix": "Add explicit permissions block, e.g. permissions:\n  contents: read"
+    },
+    {
+      "file": ".github/workflows/backbone-tailoring.yml",
+      "issue": "workflow_on_missing",
+      "proposed_fix": "Add trigger block, e.g. on:\n  pull_request:\n    branches: [main]"
+    },
+    {
+      "file": ".github/workflows/backbone-tailoring.yml",
+      "issue": "workflow_jobs_missing",
+      "proposed_fix": "Add jobs mapping with at least one job containing runs-on and steps"
+    },
+    {
+      "file": ".github/workflows/backbone-tailoring.yml",
+      "issue": "permissions_missing",
+      "proposed_fix": "Add explicit permissions block, e.g. permissions:\n  contents: read"
+    },
+    {
+      "file": ".github/workflows/bmad.yml",
+      "issue": "workflow_on_missing",
+      "proposed_fix": "Add trigger block, e.g. on:\n  pull_request:\n    branches: [main]"
+    },
+    {
+      "file": ".github/workflows/bmad.yml",
+      "issue": "workflow_jobs_missing",
+      "proposed_fix": "Add jobs mapping with at least one job containing runs-on and steps"
+    },
+    {
+      "file": ".github/workflows/bmad.yml",
+      "issue": "permissions_missing",
+      "proposed_fix": "Add explicit permissions block, e.g. permissions:\n  contents: read"
+    },
+    {
+      "file": ".github/workflows/brownfield-analysis.yml",
+      "issue": "workflow_on_missing",
+      "proposed_fix": "Add trigger block, e.g. on:\n  pull_request:\n    branches: [main]"
+    },
+    {
+      "file": ".github/workflows/brownfield-analysis.yml",
+      "issue": "workflow_jobs_missing",
+      "proposed_fix": "Add jobs mapping with at least one job containing runs-on and steps"
+    },
+    {
+      "file": ".github/workflows/brownfield-analysis.yml",
+      "issue": "permissions_missing",
+      "proposed_fix": "Add explicit permissions block, e.g. permissions:\n  contents: read"
+    },
+    {
+      "file": ".github/workflows/bug-fixing.yml",
+      "issue": "workflow_on_missing",
+      "proposed_fix": "Add trigger block, e.g. on:\n  pull_request:\n    branches: [main]"
+    },
+    {
+      "file": ".github/workflows/bug-fixing.yml",
+      "issue": "workflow_jobs_missing",
+      "proposed_fix": "Add jobs mapping with at least one job containing runs-on and steps"
+    },
+    {
+      "file": ".github/workflows/bug-fixing.yml",
+      "issue": "permissions_missing",
+      "proposed_fix": "Add explicit permissions block, e.g. permissions:\n  contents: read"
+    },
+    {
+      "file": ".github/workflows/compliance-check.yml",
+      "issue": "workflow_on_missing",
+      "proposed_fix": "Add trigger block, e.g. on:\n  pull_request:\n    branches: [main]"
+    },
+    {
+      "file": ".github/workflows/compliance-check.yml",
+      "issue": "workflow_jobs_missing",
+      "proposed_fix": "Add jobs mapping with at least one job containing runs-on and steps"
+    },
+    {
+      "file": ".github/workflows/compliance-check.yml",
+      "issue": "permissions_missing",
+      "proposed_fix": "Add explicit permissions block, e.g. permissions:\n  contents: read"
+    },
+    {
+      "file": ".github/workflows/delivery-retrospective.yml",
+      "issue": "workflow_on_missing",
+      "proposed_fix": "Add trigger block, e.g. on:\n  pull_request:\n    branches: [main]"
+    },
+    {
+      "file": ".github/workflows/delivery-retrospective.yml",
+      "issue": "workflow_jobs_missing",
+      "proposed_fix": "Add jobs mapping with at least one job containing runs-on and steps"
+    },
+    {
+      "file": ".github/workflows/delivery-retrospective.yml",
+      "issue": "permissions_missing",
+      "proposed_fix": "Add explicit permissions block, e.g. permissions:\n  contents: read"
+    },
+    {
+      "file": ".github/workflows/document-ingestion.yml",
+      "issue": "workflow_on_missing",
+      "proposed_fix": "Add trigger block, e.g. on:\n  pull_request:\n    branches: [main]"
+    },
+    {
+      "file": ".github/workflows/document-ingestion.yml",
+      "issue": "workflow_jobs_missing",
+      "proposed_fix": "Add jobs mapping with at least one job containing runs-on and steps"
+    },
+    {
+      "file": ".github/workflows/document-ingestion.yml",
+      "issue": "permissions_missing",
+      "proposed_fix": "Add explicit permissions block, e.g. permissions:\n  contents: read"
+    },
+    {
+      "file": ".github/workflows/feature-implementation.yml",
+      "issue": "workflow_on_missing",
+      "proposed_fix": "Add trigger block, e.g. on:\n  pull_request:\n    branches: [main]"
+    },
+    {
+      "file": ".github/workflows/feature-implementation.yml",
+      "issue": "workflow_jobs_missing",
+      "proposed_fix": "Add jobs mapping with at least one job containing runs-on and steps"
+    },
+    {
+      "file": ".github/workflows/feature-implementation.yml",
+      "issue": "permissions_missing",
+      "proposed_fix": "Add explicit permissions block, e.g. permissions:\n  contents: read"
+    },
+    {
+      "file": ".github/workflows/gitlab-workitem.yml",
+      "issue": "workflow_on_missing",
+      "proposed_fix": "Add trigger block, e.g. on:\n  pull_request:\n    branches: [main]"
+    },
+    {
+      "file": ".github/workflows/gitlab-workitem.yml",
+      "issue": "workflow_jobs_missing",
+      "proposed_fix": "Add jobs mapping with at least one job containing runs-on and steps"
+    },
+    {
+      "file": ".github/workflows/gitlab-workitem.yml",
+      "issue": "permissions_missing",
+      "proposed_fix": "Add explicit permissions block, e.g. permissions:\n  contents: read"
+    },
+    {
+      "file": ".github/workflows/idea-to-spec.yml",
+      "issue": "workflow_on_missing",
+      "proposed_fix": "Add trigger block, e.g. on:\n  pull_request:\n    branches: [main]"
+    },
+    {
+      "file": ".github/workflows/idea-to-spec.yml",
+      "issue": "workflow_jobs_missing",
+      "proposed_fix": "Add jobs mapping with at least one job containing runs-on and steps"
+    },
+    {
+      "file": ".github/workflows/idea-to-spec.yml",
+      "issue": "permissions_missing",
+      "proposed_fix": "Add explicit permissions block, e.g. permissions:\n  contents: read"
+    },
+    {
+      "file": ".github/workflows/implementation-loop.yml",
+      "issue": "workflow_on_missing",
+      "proposed_fix": "Add trigger block, e.g. on:\n  pull_request:\n    branches: [main]"
+    },
+    {
+      "file": ".github/workflows/implementation-loop.yml",
+      "issue": "workflow_jobs_missing",
+      "proposed_fix": "Add jobs mapping with at least one job containing runs-on and steps"
+    },
+    {
+      "file": ".github/workflows/implementation-loop.yml",
+      "issue": "permissions_missing",
+      "proposed_fix": "Add explicit permissions block, e.g. permissions:\n  contents: read"
+    },
+    {
+      "file": ".github/workflows/incident-resolution.yml",
+      "issue": "workflow_on_missing",
+      "proposed_fix": "Add trigger block, e.g. on:\n  pull_request:\n    branches: [main]"
+    },
+    {
+      "file": ".github/workflows/incident-resolution.yml",
+      "issue": "workflow_jobs_missing",
+      "proposed_fix": "Add jobs mapping with at least one job containing runs-on and steps"
+    },
+    {
+      "file": ".github/workflows/incident-resolution.yml",
+      "issue": "permissions_missing",
+      "proposed_fix": "Add explicit permissions block, e.g. permissions:\n  contents: read"
+    },
+    {
+      "file": ".github/workflows/maturity-assessment.yml",
+      "issue": "workflow_on_missing",
+      "proposed_fix": "Add trigger block, e.g. on:\n  pull_request:\n    branches: [main]"
+    },
+    {
+      "file": ".github/workflows/maturity-assessment.yml",
+      "issue": "workflow_jobs_missing",
+      "proposed_fix": "Add jobs mapping with at least one job containing runs-on and steps"
+    },
+    {
+      "file": ".github/workflows/maturity-assessment.yml",
+      "issue": "permissions_missing",
+      "proposed_fix": "Add explicit permissions block, e.g. permissions:\n  contents: read"
+    },
+    {
+      "file": ".github/workflows/modernization.yml",
+      "issue": "workflow_on_missing",
+      "proposed_fix": "Add trigger block, e.g. on:\n  pull_request:\n    branches: [main]"
+    },
+    {
+      "file": ".github/workflows/modernization.yml",
+      "issue": "workflow_jobs_missing",
+      "proposed_fix": "Add jobs mapping with at least one job containing runs-on and steps"
+    },
+    {
+      "file": ".github/workflows/modernization.yml",
+      "issue": "permissions_missing",
+      "proposed_fix": "Add explicit permissions block, e.g. permissions:\n  contents: read"
+    },
+    {
+      "file": ".github/workflows/mr-auto-synchronisation.yml",
+      "issue": "workflow_on_missing",
+      "proposed_fix": "Add trigger block, e.g. on:\n  pull_request:\n    branches: [main]"
+    },
+    {
+      "file": ".github/workflows/mr-auto-synchronisation.yml",
+      "issue": "workflow_jobs_missing",
+      "proposed_fix": "Add jobs mapping with at least one job containing runs-on and steps"
+    },
+    {
+      "file": ".github/workflows/mr-auto-synchronisation.yml",
+      "issue": "permissions_missing",
+      "proposed_fix": "Add explicit permissions block, e.g. permissions:\n  contents: read"
+    },
+    {
+      "file": ".github/workflows/pr-validation.yml",
+      "issue": "workflow_on_missing",
+      "proposed_fix": "Add trigger block, e.g. on:\n  pull_request:\n    branches: [main]"
+    },
+    {
+      "file": ".github/workflows/pr-validation.yml",
+      "issue": "workflow_jobs_missing",
+      "proposed_fix": "Add jobs mapping with at least one job containing runs-on and steps"
+    },
+    {
+      "file": ".github/workflows/pr-validation.yml",
+      "issue": "permissions_missing",
+      "proposed_fix": "Add explicit permissions block, e.g. permissions:\n  contents: read"
+    },
+    {
+      "file": ".github/workflows/quality-validation.yml",
+      "issue": "workflow_on_missing",
+      "proposed_fix": "Add trigger block, e.g. on:\n  pull_request:\n    branches: [main]"
+    },
+    {
+      "file": ".github/workflows/quality-validation.yml",
+      "issue": "workflow_jobs_missing",
+      "proposed_fix": "Add jobs mapping with at least one job containing runs-on and steps"
+    },
+    {
+      "file": ".github/workflows/quality-validation.yml",
+      "issue": "permissions_missing",
+      "proposed_fix": "Add explicit permissions block, e.g. permissions:\n  contents: read"
+    },
+    {
+      "file": ".github/workflows/release-readiness.yml",
+      "issue": "workflow_on_missing",
+      "proposed_fix": "Add trigger block, e.g. on:\n  pull_request:\n    branches: [main]"
+    },
+    {
+      "file": ".github/workflows/release-readiness.yml",
+      "issue": "workflow_jobs_missing",
+      "proposed_fix": "Add jobs mapping with at least one job containing runs-on and steps"
+    },
+    {
+      "file": ".github/workflows/release-readiness.yml",
+      "issue": "permissions_missing",
+      "proposed_fix": "Add explicit permissions block, e.g. permissions:\n  contents: read"
+    },
+    {
+      "file": ".github/workflows/sdlc-ba-audit.yml",
+      "issue": "workflow_on_missing",
+      "proposed_fix": "Add trigger block, e.g. on:\n  pull_request:\n    branches: [main]"
+    },
+    {
+      "file": ".github/workflows/sdlc-ba-audit.yml",
+      "issue": "workflow_jobs_missing",
+      "proposed_fix": "Add jobs mapping with at least one job containing runs-on and steps"
+    },
+    {
+      "file": ".github/workflows/sdlc-ba-audit.yml",
+      "issue": "permissions_missing",
+      "proposed_fix": "Add explicit permissions block, e.g. permissions:\n  contents: read"
+    },
+    {
+      "file": ".github/workflows/sdlc-ba-design.yml",
+      "issue": "workflow_on_missing",
+      "proposed_fix": "Add trigger block, e.g. on:\n  pull_request:\n    branches: [main]"
+    },
+    {
+      "file": ".github/workflows/sdlc-ba-design.yml",
+      "issue": "workflow_jobs_missing",
+      "proposed_fix": "Add jobs mapping with at least one job containing runs-on and steps"
+    },
+    {
+      "file": ".github/workflows/sdlc-ba-design.yml",
+      "issue": "permissions_missing",
+      "proposed_fix": "Add explicit permissions block, e.g. permissions:\n  contents: read"
+    },
+    {
+      "file": ".github/workflows/sdlc-ba-discovery.yml",
+      "issue": "workflow_on_missing",
+      "proposed_fix": "Add trigger block, e.g. on:\n  pull_request:\n    branches: [main]"
+    },
+    {
+      "file": ".github/workflows/sdlc-ba-discovery.yml",
+      "issue": "workflow_jobs_missing",
+      "proposed_fix": "Add jobs mapping with at least one job containing runs-on and steps"
+    },
+    {
+      "file": ".github/workflows/sdlc-ba-discovery.yml",
+      "issue": "permissions_missing",
+      "proposed_fix": "Add explicit permissions block, e.g. permissions:\n  contents: read"
+    },
+    {
+      "file": ".github/workflows/sdlc-ba-spec.yml",
+      "issue": "workflow_on_missing",
+      "proposed_fix": "Add trigger block, e.g. on:\n  pull_request:\n    branches: [main]"
+    },
+    {
+      "file": ".github/workflows/sdlc-ba-spec.yml",
+      "issue": "workflow_jobs_missing",
+      "proposed_fix": "Add jobs mapping with at least one job containing runs-on and steps"
+    },
+    {
+      "file": ".github/workflows/sdlc-ba-spec.yml",
+      "issue": "permissions_missing",
+      "proposed_fix": "Add explicit permissions block, e.g. permissions:\n  contents: read"
+    },
+    {
+      "file": ".github/workflows/sdlc-ba-sprint-loop.yml",
+      "issue": "workflow_on_missing",
+      "proposed_fix": "Add trigger block, e.g. on:\n  pull_request:\n    branches: [main]"
+    },
+    {
+      "file": ".github/workflows/sdlc-ba-sprint-loop.yml",
+      "issue": "workflow_jobs_missing",
+      "proposed_fix": "Add jobs mapping with at least one job containing runs-on and steps"
+    },
+    {
+      "file": ".github/workflows/sdlc-ba-sprint-loop.yml",
+      "issue": "permissions_missing",
+      "proposed_fix": "Add explicit permissions block, e.g. permissions:\n  contents: read"
+    },
+    {
+      "file": ".github/workflows/sdlc-ba-validation.yml",
+      "issue": "workflow_on_missing",
+      "proposed_fix": "Add trigger block, e.g. on:\n  pull_request:\n    branches: [main]"
+    },
+    {
+      "file": ".github/workflows/sdlc-ba-validation.yml",
+      "issue": "workflow_jobs_missing",
+      "proposed_fix": "Add jobs mapping with at least one job containing runs-on and steps"
+    },
+    {
+      "file": ".github/workflows/sdlc-ba-validation.yml",
+      "issue": "permissions_missing",
+      "proposed_fix": "Add explicit permissions block, e.g. permissions:\n  contents: read"
+    },
+    {
+      "file": ".github/workflows/sdlc-ba.yml",
+      "issue": "workflow_on_missing",
+      "proposed_fix": "Add trigger block, e.g. on:\n  pull_request:\n    branches: [main]"
+    },
+    {
+      "file": ".github/workflows/sdlc-ba.yml",
+      "issue": "workflow_jobs_missing",
+      "proposed_fix": "Add jobs mapping with at least one job containing runs-on and steps"
+    },
+    {
+      "file": ".github/workflows/sdlc-ba.yml",
+      "issue": "permissions_missing",
+      "proposed_fix": "Add explicit permissions block, e.g. permissions:\n  contents: read"
+    },
+    {
+      "file": ".github/workflows/sdlc-evolution.yml",
+      "issue": "workflow_on_missing",
+      "proposed_fix": "Add trigger block, e.g. on:\n  pull_request:\n    branches: [main]"
+    },
+    {
+      "file": ".github/workflows/sdlc-evolution.yml",
+      "issue": "workflow_jobs_missing",
+      "proposed_fix": "Add jobs mapping with at least one job containing runs-on and steps"
+    },
+    {
+      "file": ".github/workflows/sdlc-evolution.yml",
+      "issue": "permissions_missing",
+      "proposed_fix": "Add explicit permissions block, e.g. permissions:\n  contents: read"
+    },
+    {
+      "file": ".github/workflows/sdlc-full.yml",
+      "issue": "workflow_on_missing",
+      "proposed_fix": "Add trigger block, e.g. on:\n  pull_request:\n    branches: [main]"
+    },
+    {
+      "file": ".github/workflows/sdlc-full.yml",
+      "issue": "workflow_jobs_missing",
+      "proposed_fix": "Add jobs mapping with at least one job containing runs-on and steps"
+    },
+    {
+      "file": ".github/workflows/sdlc-full.yml",
+      "issue": "permissions_missing",
+      "proposed_fix": "Add explicit permissions block, e.g. permissions:\n  contents: read"
+    },
+    {
+      "file": ".github/workflows/sdlc-scaffold.yml",
+      "issue": "workflow_on_missing",
+      "proposed_fix": "Add trigger block, e.g. on:\n  pull_request:\n    branches: [main]"
+    },
+    {
+      "file": ".github/workflows/sdlc-scaffold.yml",
+      "issue": "workflow_jobs_missing",
+      "proposed_fix": "Add jobs mapping with at least one job containing runs-on and steps"
+    },
+    {
+      "file": ".github/workflows/sdlc-scaffold.yml",
+      "issue": "permissions_missing",
+      "proposed_fix": "Add explicit permissions block, e.g. permissions:\n  contents: read"
+    },
+    {
+      "file": ".github/workflows/sdlc-sprint-loop.yml",
+      "issue": "workflow_on_missing",
+      "proposed_fix": "Add trigger block, e.g. on:\n  pull_request:\n    branches: [main]"
+    },
+    {
+      "file": ".github/workflows/sdlc-sprint-loop.yml",
+      "issue": "workflow_jobs_missing",
+      "proposed_fix": "Add jobs mapping with at least one job containing runs-on and steps"
+    },
+    {
+      "file": ".github/workflows/sdlc-sprint-loop.yml",
+      "issue": "permissions_missing",
+      "proposed_fix": "Add explicit permissions block, e.g. permissions:\n  contents: read"
+    },
+    {
+      "file": ".github/workflows/sdlc-steer-governance.yml",
+      "issue": "workflow_on_missing",
+      "proposed_fix": "Add trigger block, e.g. on:\n  pull_request:\n    branches: [main]"
+    },
+    {
+      "file": ".github/workflows/sdlc-steer-governance.yml",
+      "issue": "workflow_jobs_missing",
+      "proposed_fix": "Add jobs mapping with at least one job containing runs-on and steps"
+    },
+    {
+      "file": ".github/workflows/sdlc-steer-governance.yml",
+      "issue": "permissions_missing",
+      "proposed_fix": "Add explicit permissions block, e.g. permissions:\n  contents: read"
+    },
+    {
+      "file": ".github/workflows/sdlc-steer-init.yml",
+      "issue": "workflow_on_missing",
+      "proposed_fix": "Add trigger block, e.g. on:\n  pull_request:\n    branches: [main]"
+    },
+    {
+      "file": ".github/workflows/sdlc-steer-init.yml",
+      "issue": "workflow_jobs_missing",
+      "proposed_fix": "Add jobs mapping with at least one job containing runs-on and steps"
+    },
+    {
+      "file": ".github/workflows/sdlc-steer-init.yml",
+      "issue": "permissions_missing",
+      "proposed_fix": "Add explicit permissions block, e.g. permissions:\n  contents: read"
+    },
+    {
+      "file": ".github/workflows/sdlc-steer-planning.yml",
+      "issue": "workflow_on_missing",
+      "proposed_fix": "Add trigger block, e.g. on:\n  pull_request:\n    branches: [main]"
+    },
+    {
+      "file": ".github/workflows/sdlc-steer-planning.yml",
+      "issue": "workflow_jobs_missing",
+      "proposed_fix": "Add jobs mapping with at least one job containing runs-on and steps"
+    },
+    {
+      "file": ".github/workflows/sdlc-steer-planning.yml",
+      "issue": "permissions_missing",
+      "proposed_fix": "Add explicit permissions block, e.g. permissions:\n  contents: read"
+    },
+    {
+      "file": ".github/workflows/sdlc-steer-sprint.yml",
+      "issue": "workflow_on_missing",
+      "proposed_fix": "Add trigger block, e.g. on:\n  pull_request:\n    branches: [main]"
+    },
+    {
+      "file": ".github/workflows/sdlc-steer-sprint.yml",
+      "issue": "workflow_jobs_missing",
+      "proposed_fix": "Add jobs mapping with at least one job containing runs-on and steps"
+    },
+    {
+      "file": ".github/workflows/sdlc-steer-sprint.yml",
+      "issue": "permissions_missing",
+      "proposed_fix": "Add explicit permissions block, e.g. permissions:\n  contents: read"
+    },
+    {
+      "file": ".github/workflows/sdlc-steer.yml",
+      "issue": "workflow_on_missing",
+      "proposed_fix": "Add trigger block, e.g. on:\n  pull_request:\n    branches: [main]"
+    },
+    {
+      "file": ".github/workflows/sdlc-steer.yml",
+      "issue": "workflow_jobs_missing",
+      "proposed_fix": "Add jobs mapping with at least one job containing runs-on and steps"
+    },
+    {
+      "file": ".github/workflows/sdlc-steer.yml",
+      "issue": "permissions_missing",
+      "proposed_fix": "Add explicit permissions block, e.g. permissions:\n  contents: read"
+    },
+    {
+      "file": ".github/workflows/sdlc-tech-archi.yml",
+      "issue": "workflow_on_missing",
+      "proposed_fix": "Add trigger block, e.g. on:\n  pull_request:\n    branches: [main]"
+    },
+    {
+      "file": ".github/workflows/sdlc-tech-archi.yml",
+      "issue": "workflow_jobs_missing",
+      "proposed_fix": "Add jobs mapping with at least one job containing runs-on and steps"
+    },
+    {
+      "file": ".github/workflows/sdlc-tech-archi.yml",
+      "issue": "permissions_missing",
+      "proposed_fix": "Add explicit permissions block, e.g. permissions:\n  contents: read"
+    },
+    {
+      "file": ".github/workflows/sdlc-tech-audit.yml",
+      "issue": "workflow_on_missing",
+      "proposed_fix": "Add trigger block, e.g. on:\n  pull_request:\n    branches: [main]"
+    },
+    {
+      "file": ".github/workflows/sdlc-tech-audit.yml",
+      "issue": "workflow_jobs_missing",
+      "proposed_fix": "Add jobs mapping with at least one job containing runs-on and steps"
+    },
+    {
+      "file": ".github/workflows/sdlc-tech-audit.yml",
+      "issue": "permissions_missing",
+      "proposed_fix": "Add explicit permissions block, e.g. permissions:\n  contents: read"
+    },
+    {
+      "file": ".github/workflows/sdlc-tech-design.yml",
+      "issue": "workflow_on_missing",
+      "proposed_fix": "Add trigger block, e.g. on:\n  pull_request:\n    branches: [main]"
+    },
+    {
+      "file": ".github/workflows/sdlc-tech-design.yml",
+      "issue": "workflow_jobs_missing",
+      "proposed_fix": "Add jobs mapping with at least one job containing runs-on and steps"
+    },
+    {
+      "file": ".github/workflows/sdlc-tech-design.yml",
+      "issue": "permissions_missing",
+      "proposed_fix": "Add explicit permissions block, e.g. permissions:\n  contents: read"
+    },
+    {
+      "file": ".github/workflows/sdlc-tech-impl.yml",
+      "issue": "workflow_on_missing",
+      "proposed_fix": "Add trigger block, e.g. on:\n  pull_request:\n    branches: [main]"
+    },
+    {
+      "file": ".github/workflows/sdlc-tech-impl.yml",
+      "issue": "workflow_jobs_missing",
+      "proposed_fix": "Add jobs mapping with at least one job containing runs-on and steps"
+    },
+    {
+      "file": ".github/workflows/sdlc-tech-impl.yml",
+      "issue": "permissions_missing",
+      "proposed_fix": "Add explicit permissions block, e.g. permissions:\n  contents: read"
+    },
+    {
+      "file": ".github/workflows/sdlc-tech-quality.yml",
+      "issue": "workflow_on_missing",
+      "proposed_fix": "Add trigger block, e.g. on:\n  pull_request:\n    branches: [main]"
+    },
+    {
+      "file": ".github/workflows/sdlc-tech-quality.yml",
+      "issue": "workflow_jobs_missing",
+      "proposed_fix": "Add jobs mapping with at least one job containing runs-on and steps"
+    },
+    {
+      "file": ".github/workflows/sdlc-tech-quality.yml",
+      "issue": "permissions_missing",
+      "proposed_fix": "Add explicit permissions block, e.g. permissions:\n  contents: read"
+    },
+    {
+      "file": ".github/workflows/sdlc-tech-review.yml",
+      "issue": "workflow_on_missing",
+      "proposed_fix": "Add trigger block, e.g. on:\n  pull_request:\n    branches: [main]"
+    },
+    {
+      "file": ".github/workflows/sdlc-tech-review.yml",
+      "issue": "workflow_jobs_missing",
+      "proposed_fix": "Add jobs mapping with at least one job containing runs-on and steps"
+    },
+    {
+      "file": ".github/workflows/sdlc-tech-review.yml",
+      "issue": "permissions_missing",
+      "proposed_fix": "Add explicit permissions block, e.g. permissions:\n  contents: read"
+    },
+    {
+      "file": ".github/workflows/sdlc-tech-sprint-loop.yml",
+      "issue": "workflow_on_missing",
+      "proposed_fix": "Add trigger block, e.g. on:\n  pull_request:\n    branches: [main]"
+    },
+    {
+      "file": ".github/workflows/sdlc-tech-sprint-loop.yml",
+      "issue": "workflow_jobs_missing",
+      "proposed_fix": "Add jobs mapping with at least one job containing runs-on and steps"
+    },
+    {
+      "file": ".github/workflows/sdlc-tech-sprint-loop.yml",
+      "issue": "permissions_missing",
+      "proposed_fix": "Add explicit permissions block, e.g. permissions:\n  contents: read"
+    },
+    {
+      "file": ".github/workflows/sdlc-tech.yml",
+      "issue": "workflow_on_missing",
+      "proposed_fix": "Add trigger block, e.g. on:\n  pull_request:\n    branches: [main]"
+    },
+    {
+      "file": ".github/workflows/sdlc-tech.yml",
+      "issue": "workflow_jobs_missing",
+      "proposed_fix": "Add jobs mapping with at least one job containing runs-on and steps"
+    },
+    {
+      "file": ".github/workflows/sdlc-tech.yml",
+      "issue": "permissions_missing",
+      "proposed_fix": "Add explicit permissions block, e.g. permissions:\n  contents: read"
+    },
+    {
+      "file": ".github/workflows/sdlc-test-campaign.yml",
+      "issue": "workflow_on_missing",
+      "proposed_fix": "Add trigger block, e.g. on:\n  pull_request:\n    branches: [main]"
+    },
+    {
+      "file": ".github/workflows/sdlc-test-campaign.yml",
+      "issue": "workflow_jobs_missing",
+      "proposed_fix": "Add jobs mapping with at least one job containing runs-on and steps"
+    },
+    {
+      "file": ".github/workflows/sdlc-test-campaign.yml",
+      "issue": "permissions_missing",
+      "proposed_fix": "Add explicit permissions block, e.g. permissions:\n  contents: read"
+    },
+    {
+      "file": ".github/workflows/sdlc-test-perf.yml",
+      "issue": "workflow_on_missing",
+      "proposed_fix": "Add trigger block, e.g. on:\n  pull_request:\n    branches: [main]"
+    },
+    {
+      "file": ".github/workflows/sdlc-test-perf.yml",
+      "issue": "workflow_jobs_missing",
+      "proposed_fix": "Add jobs mapping with at least one job containing runs-on and steps"
+    },
+    {
+      "file": ".github/workflows/sdlc-test-perf.yml",
+      "issue": "permissions_missing",
+      "proposed_fix": "Add explicit permissions block, e.g. permissions:\n  contents: read"
+    },
+    {
+      "file": ".github/workflows/sdlc-test.yml",
+      "issue": "workflow_on_missing",
+      "proposed_fix": "Add trigger block, e.g. on:\n  pull_request:\n    branches: [main]"
+    },
+    {
+      "file": ".github/workflows/sdlc-test.yml",
+      "issue": "workflow_jobs_missing",
+      "proposed_fix": "Add jobs mapping with at least one job containing runs-on and steps"
+    },
+    {
+      "file": ".github/workflows/sdlc-test.yml",
+      "issue": "permissions_missing",
+      "proposed_fix": "Add explicit permissions block, e.g. permissions:\n  contents: read"
+    },
+    {
+      "file": ".github/workflows/spec-kit.yml",
+      "issue": "workflow_on_missing",
+      "proposed_fix": "Add trigger block, e.g. on:\n  pull_request:\n    branches: [main]"
+    },
+    {
+      "file": ".github/workflows/spec-kit.yml",
+      "issue": "workflow_jobs_missing",
+      "proposed_fix": "Add jobs mapping with at least one job containing runs-on and steps"
+    },
+    {
+      "file": ".github/workflows/spec-kit.yml",
+      "issue": "permissions_missing",
+      "proposed_fix": "Add explicit permissions block, e.g. permissions:\n  contents: read"
+    },
+    {
+      "file": ".github/workflows/spec-to-execution.yml",
+      "issue": "workflow_on_missing",
+      "proposed_fix": "Add trigger block, e.g. on:\n  pull_request:\n    branches: [main]"
+    },
+    {
+      "file": ".github/workflows/spec-to-execution.yml",
+      "issue": "workflow_jobs_missing",
+      "proposed_fix": "Add jobs mapping with at least one job containing runs-on and steps"
+    },
+    {
+      "file": ".github/workflows/spec-to-execution.yml",
+      "issue": "permissions_missing",
+      "proposed_fix": "Add explicit permissions block, e.g. permissions:\n  contents: read"
+    }
+  ],
+  "metadata": {
+    "workflow_count": 58,
+    "root": "/root/projects/ssg-g4it/g4it-on-github",
+    "fix_suggestions_count": 144
+  },
+  "checked_files": [
+    ".github/workflows/accessibility-barometer.yml",
+    ".github/workflows/backbone-tailoring.yml",
+    ".github/workflows/backend-analyze-main.yml",
+    ".github/workflows/backend-build-test-analyze.yml",
+    ".github/workflows/backend-dep-check.yml",
+    ".github/workflows/backend-docker-image.yml",
+    ".github/workflows/bmad.yml",
+    ".github/workflows/brownfield-analysis.yml",
+    ".github/workflows/bug-fixing.yml",
+    ".github/workflows/compliance-check.yml",
+    ".github/workflows/delivery-retrospective.yml",
+    ".github/workflows/document-ingestion.yml",
+    ".github/workflows/documentation-docker-image.yml",
+    ".github/workflows/feature-implementation.yml",
+    ".github/workflows/frontend-analyze-main.yml",
+    ".github/workflows/frontend-build-test-analyze.yml",
+    ".github/workflows/frontend-deps-update.yml",
+    ".github/workflows/frontend-docker-image.yml",
+    ".github/workflows/gitlab-workitem.yml",
+    ".github/workflows/idea-to-spec.yml",
+    ".github/workflows/implementation-loop.yml",
+    ".github/workflows/incident-resolution.yml",
+    ".github/workflows/keycloak-docker-image.yml",
+    ".github/workflows/maturity-assessment.yml",
+    ".github/workflows/modernization.yml",
+    ".github/workflows/mr-auto-synchronisation.yml",
+    ".github/workflows/pr-validation.yml",
+    ".github/workflows/quality-validation.yml",
+    ".github/workflows/release-readiness.yml",
+    ".github/workflows/sdlc-ba-audit.yml",
+    ".github/workflows/sdlc-ba-design.yml",
+    ".github/workflows/sdlc-ba-discovery.yml",
+    ".github/workflows/sdlc-ba-spec.yml",
+    ".github/workflows/sdlc-ba-sprint-loop.yml",
+    ".github/workflows/sdlc-ba-validation.yml",
+    ".github/workflows/sdlc-ba.yml",
+    ".github/workflows/sdlc-evolution.yml",
+    ".github/workflows/sdlc-full.yml",
+    ".github/workflows/sdlc-scaffold.yml",
+    ".github/workflows/sdlc-sprint-loop.yml",
+    ".github/workflows/sdlc-steer-governance.yml",
+    ".github/workflows/sdlc-steer-init.yml",
+    ".github/workflows/sdlc-steer-planning.yml",
+    ".github/workflows/sdlc-steer-sprint.yml",
+    ".github/workflows/sdlc-steer.yml",
+    ".github/workflows/sdlc-tech-archi.yml",
+    ".github/workflows/sdlc-tech-audit.yml",
+    ".github/workflows/sdlc-tech-design.yml",
+    ".github/workflows/sdlc-tech-impl.yml",
+    ".github/workflows/sdlc-tech-quality.yml",
+    ".github/workflows/sdlc-tech-review.yml",
+    ".github/workflows/sdlc-tech-sprint-loop.yml",
+    ".github/workflows/sdlc-tech.yml",
+    ".github/workflows/sdlc-test-campaign.yml",
+    ".github/workflows/sdlc-test-perf.yml",
+    ".github/workflows/sdlc-test.yml",
+    ".github/workflows/spec-kit.yml",
+    ".github/workflows/spec-to-execution.yml"
+  ]
+}

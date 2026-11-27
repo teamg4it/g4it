@@ -1,0 +1,65 @@
+{
+  "trace_id": "e6fa33d4-27cf-4d12-84a2-3c70d47d88da",
+  "station": "pr-validation/a3-prompt-injection",
+  "input": "outputs/station_out/work_order.json",
+  "rules": [
+    {
+      "id": "PI-01",
+      "status": "pass",
+      "files": 0,
+      "hits": 0
+    },
+    {
+      "id": "PI-02",
+      "status": "not_applicable",
+      "files_evaluated": 0
+    },
+    {
+      "id": "PI-03",
+      "status": "not_applicable",
+      "files_evaluated": 0
+    },
+    {
+      "id": "PI-04",
+      "status": "not_applicable",
+      "files_evaluated": 0
+    },
+    {
+      "id": "PI-05",
+      "status": "pass",
+      "hits": 0
+    },
+    {
+      "id": "PI-06",
+      "status": "pass_after_review",
+      "raw_hits": 4,
+      "confirmed": 0
+    }
+  ],
+  "reviewed_false_positives": [
+    {
+      "rule": "PI-06",
+      "disposition": "benign_prose",
+      "location": "outputs/specs/features/G4IT-48/lint-report.md:375"
+    },
+    {
+      "rule": "PI-06",
+      "disposition": "benign_prose",
+      "location": "outputs/specs/features/G4IT-48/implementation-log.md:2048"
+    },
+    {
+      "rule": "PI-06",
+      "disposition": "benign_prose",
+      "location": "services/documentation/content/2-functional-documentation/use_cases/uc_inventory/uc3_load_files.md:106"
+    },
+    {
+      "rule": "PI-06",
+      "disposition": "benign_prose",
+      "location": "services/documentation/content/2-functional-documentation/use_cases/uc_inventory/uc7_export_files.md:23"
+    }
+  ],
+  "totals": {
+    "confirmed_findings": 0
+  },
+  "decision": "PASS"
+}
