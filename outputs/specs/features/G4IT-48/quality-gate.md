@@ -23,6 +23,9 @@ changeHistory:
   - date: '2026-11-27'
     author: spec-orchestrator
     changes: 'Initial final quality gate assessment for G4IT-48: conditional pass with explicit open reserves; no release approval, WCAG conformance or human acceptance claimed'
+  - date: '2026-11-27'
+    author: workflow-orchestrator
+    changes: 'Recorded owner decisions on M-001, M-002, M-004, M-005 and m-005; fixed m-001..m-003 in plan.md and tasks.md; verdict unchanged'
 holisticQualityRating: not-rated
 overallStatus: not-reviewed
 context_manifest:
@@ -245,6 +248,21 @@ These are taken as recorded; this station did not re-run them. The A6 accepted r
 7. A5-F1 e2e unzip path guard.
 8. Uncommitted working-tree changes (workflow deletion, implementation-log link fix, reports).
 9. Performance baseline/p95 evidence (M-002), TASK-019/021/023 open (M-003).
+
+## Owner decisions recorded after the gate (2026-11-27)
+
+The repository owner answered the gate's open questions in conversation on 2026-11-27. They are recorded as stated; they are decisions, not new verification evidence, and do not change the CONDITIONAL PASS verdict.
+
+| Reserve | Owner decision | Resulting status |
+|---------|----------------|------------------|
+| M-001 / TASK-020 manual accessibility | Performed manually during the functional qualification of the change | Deferred to qualification; still **Needs human review** until qualification evidence exists. No WCAG conformance claimed |
+| M-002 / TASK-022 performance baseline | Formally deferred | Deferred; no performance claim |
+| M-004 SAST-002 (raw CSV formula risk) | Accepted; to be handled in a separate PR | Accepted risk (owner) |
+| M-005 dependency CVEs (backend medium, frontend moderate/low) | Accepted; to be handled in a separate PR | Accepted risk (owner) |
+| m-001, m-002, m-003 plan/tasks staleness | Fix now | **Fixed**: plan adds FR-019 component, design decision 10 and Phase 3 item, release-note references removed; tasks summary counts 24 tasks and TASK-024 is added to the dependency notes |
+| m-005 uncommitted changes | Committed and pushed by the owner (`24469f130`) | Closed; the plan/tasks fixes above are new local changes to commit |
+
+Still open without an owner decision: backend Sonar result (external), PMD deferral, TASK-019/021/023, A5-F1, pre-existing `AZURE_CLIENT_SECRET` prefix log, refreshed Sonar/dependency evidence on the final revision.
 
 ## Recommendations
 

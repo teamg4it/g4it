@@ -323,6 +323,12 @@ changeHistory:
       - 'Recorded 71 backend and 11 frontend passing tests, configured lint and production-build success'
       - 'Verified real HTTP 422 after correcting its exception mapping, and retained raw CSV risk explicitly'
       - 'Kept independent SAST reassessment, manual accessibility and backend Sonar reserve separate'
+  - date: '2026-11-27'
+    description: 'Corrected the task summary and dependency graph after the final quality gate'
+    changes:
+      - 'Counted TASK-024 in Phase 3 (7 tasks) and the total (24 tasks)'
+      - 'Added TASK-024 (depends on TASK-014) to the dependency graph'
+      - 'Recorded owner decisions: TASK-020 manual accessibility done during functional qualification; SAST-002 and dependency CVEs accepted for a follow-up PR; TASK-022 performance baseline formally deferred'
 holisticQualityRating: not-rated
 overallStatus: not-reviewed
 trace_id: e6fa33d4-27cf-4d12-84a2-3c70d47d88da
@@ -892,6 +898,9 @@ TASK-018 (010/011/012)  TASK-019 (013/014)  TASK-020 (015/016)
                          TASK-021 (017)
                               \   |   /
                                TASK-022 -> TASK-023
+
+Added after the initial breakdown (FR-019, SAST-002 option 1):
+TASK-014 -> TASK-024 (spreadsheet-safe XLSX export)
 ```
 
 ## Summary
@@ -900,10 +909,10 @@ TASK-018 (010/011/012)  TASK-019 (013/014)  TASK-020 (015/016)
 |---|---:|---:|---|
 | Phase 1 — Evidence gates | 7 | 0 | Complete by source/configuration inspection, not runtime verification |
 | Phase 2 — Input/category | 3 | 0 | TASK-008, TASK-009 and TASK-010 done within their task-specific verification boundaries |
-| Phase 3 — Evaluation/export/UI | 6 | 0 | TASK-011 through TASK-016 done within task-specific boundaries; manual accessibility and broader verification remain pending |
+| Phase 3 — Evaluation/export/UI | 7 | 0 | TASK-011 through TASK-016 and TASK-024 (FR-019 spreadsheet-safe export) done within task-specific boundaries; manual accessibility and broader verification remain pending |
 | Phase 4 — Documentation | 1 | 0 | Dedicated FR-014 existing English technical/functional Hugo/template/sample task |
 | Phase 5 — Verification/readiness | 6 | 0 | Regression, accessibility, site output, CI and registry handoff only |
-| **Total** | **23** | **0** | No deployment task in this repository |
+| **Total** | **24** | **0** | No deployment task in this repository |
 
 ## Open Questions
 

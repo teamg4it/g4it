@@ -42,6 +42,11 @@ changeHistory:
       - 'Limit documentation work to existing English technical/functional Hugo content and maintained CSV assets, without a feature release note or version'
       - 'Defer local Docker image compilation and keep frontend/backend code compilation and applicable tests'
       - 'Schedule manual frontend accessibility validation after implementation, without making it an implementation prerequisite'
+  - date: '2026-11-27'
+    description: 'Aligned the plan with FR-019 and the no-release-note decision after the final quality gate'
+    changes:
+      - 'Added the FR-019 spreadsheet-safe XLSX export component, key design decision 10 and Phase 3 delivery item (TASK-024)'
+      - 'Removed remaining release-note references from the component table and Phase 1/Phase 5 checklists'
 holisticQualityRating: not-rated
 overallStatus: not-reviewed
 trace_id: e6fa33d4-27cf-4d12-84a2-3c70d47d88da
@@ -227,7 +232,8 @@ This is a brownfield extension of the existing Spring Boot modular monolith, not
 | `apiinout` output persistence and `apiindicator` export | Persist evaluation-time values with task results and serialize the chosen evaluated artifact | Output/export |
 | `apiindicator` | Calculate BYOD/COPE quantity shares from the existing unallocated equipment quantity aggregation and resolved category | Indicator service |
 | Angular Equipment view | Make the two localized indicators available using existing selection/display patterns | Frontend |
-| Hugo content and CSV fixtures | Update functional documentation, language variants that exist, template/sample CSVs and release note | Documentation |
+| Hugo content and CSV fixtures | Update existing English functional/technical documentation and template/sample CSVs (no feature release note) | Documentation |
+| `apiindicator` spreadsheet export (FR-019) | Convert the authorized stored task ZIP into a separate text-typed XLSX download; keep raw CSV ZIP unchanged behind a formula-risk confirmation | Output/export |
 
 ### Key Design Decisions
 
@@ -240,6 +246,7 @@ This is a brownfield extension of the existing Spring Boot modular monolith, not
 7. **Honor localized and row-level errors.** Use stable message keys with the exact English FR-006 text and French translations. Normalize headers once, detect collisions after trimming, and accumulate all applicable field errors before rejecting the entire line. Report accepted/rejected line counts separately from the number of validation messages.
 8. **Respect the resolved non-Device rule.** Resolve category before feature-specific value validation. Per AS-2, non-Device lines are not rejected for usage values and those values do not affect calculations. The implementation design must retain source values needed for Q-NEW-1 export without eager numeric parsing that turns an ignored non-Device value into a file-level failure. Confirm the persisted representation during the REST/CSV contract inventory.
 9. **Documentation is a required English-only delivery workstream.** The current Hugo configuration declares `en-us`; update the existing technical and especially functional English pages, the physical-equipment template, and every separately maintained sample. Do not create a feature-specific release note, changelog entry, release version, or French Hugo page. Application version assignment belongs to the later merge/release process.
+10. **Offer a separate spreadsheet-safe export (FR-019, user decision 2026-11-27, SAST-002 option 1).** Add a distinct XLSX download built from the authorized stored task ZIP, with every cell typed as text (no formula or hyperlink), reusing the installed Apache POI dependency. Keep the raw CSV ZIP bytes unchanged for machine exchange and require an explicit formula-risk confirmation before it is downloaded from the UI. Both downloads apply the same authentication, inventory ownership and role restrictions. Spreadsheet format limits or invalid archives fail explicitly (HTTP 422), never truncate values or fall back to unsafe CSV, and temporary workbook files are always cleaned up.
 
 ### Data Model and Contract Changes
 
@@ -254,7 +261,7 @@ This is a brownfield extension of the existing Spring Boot modular monolith, not
 ### Phase 1: Resolve contracts and persistence boundary
 
 - Confirm CI responsibilities only; deployment is external to this repository and consumes the Docker registry populated by CI.
-- Inventory the active REST CRUD routes/clients, existing validation conventions, current CSV input/output contracts, evaluated export mapping, task-result identity, and English Hugo/release-note/template/sample assets.
+- Inventory the active REST CRUD routes/clients, existing validation conventions, current CSV input/output contracts, evaluated export mapping, task-result identity, and English Hugo/template/sample assets.
 - Approve the persistence/export representation for source values, effective factor, and unallocated quantity, including legacy reevaluation behavior.
 - Preserve non-Device source context and fraction values for export without applying them to calculation or rejecting those values.
 - **Depends on**: Validated spec, clarifications and this plan.
@@ -276,6 +283,7 @@ This is a brownfield extension of the existing Spring Boot modular monolith, not
 - Persist evaluation-time context/factor and retain unallocated quantity for existing indicator aggregation and denominator.
 - Extend the selected evaluated export artifact with context and the prescribed output fraction; keep raw input export source-faithful.
 - Add BYOD/COPE indicators, labels and no-Devices “no data” behavior using existing percentage rounding and quantity aggregation.
+- Add the separate text-typed XLSX inventory export and the raw-CSV formula-risk confirmation in the UI (FR-019, TASK-024).
 - **Depends on**: Phase 2; artifact and REST decisions from Phase 1.
 - **Delivers**: Functional allocation, reproducible evaluated results, transparent export and Equipment indicators.
 
@@ -291,7 +299,7 @@ This is a brownfield extension of the existing Spring Boot modular monolith, not
 ### Phase 5: Verification and release readiness
 
 - Run backend unit/integration and migration tests, frontend unit/E2E/accessibility checks, API contract checks if relevant, and legacy regression scenarios.
-- Verify docs/template/sample/release-note completeness through a deterministic quality-gate checklist.
+- Verify docs/template/sample completeness through a deterministic quality-gate checklist (no feature release note is required).
 - Perform manual frontend accessibility validation after implementation, covering keyboard, screen reader and 200% zoom. Report any existing automated accessibility results separately; manual validation is not an implementation prerequisite and remains pending until evidence is available.
 - Run and verify this repository's existing CI, including Docker image publication to the registry; do not perform deployment, which is handled by the separate deployment repository.
 - **Depends on**: Phases 2–4.
