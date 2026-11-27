@@ -759,7 +759,7 @@ implemented feature behavior, passing tests or successful builds.
 ### TASK-019: Verify evaluated export, REST parity, and migration contracts
 
 - **Type**: testing
-- **Status**: in_progress — task-scoped export, HTTP authorization, REST contract and PostgreSQL migration criteria are evidenced; the standalone test report now exists, while broader integration remains open.
+- **Status**: done — all acceptance criteria evidenced; the live end-to-end PostgreSQL run of 2026-11-27 closes the remaining impact-ratio, D2 and evaluator-to-download obligations.
 - **Story**: FR-011, FR-015, NFR-C1, NFR-T3
 - **Depends on**: TASK-013, TASK-014
 - **Files**: Backend API/integration tests; OpenAPI definitions if TASK-013 applies; Liquibase migration tests
@@ -788,6 +788,8 @@ implemented feature behavior, passing tests or successful builds.
 - **Test-only decision — 2026-11-25 (current disposition)**: The user declined production Liquibase reference-data changes and retained the synthetic fixture exclusively for tests. The user reports restarting local components, but has not confirmed loading the opt-in fixture after Liquibase initialization. No live API or database was accessed in this continuation. Live impact ratios and D2 remain open; no production data change or completion is claimed.
 - **Automatic setup request — 2026-11-25 (current disposition)**: The user clarified that the fixture must be invoked automatically at the appropriate point in the test flow, not manually loaded. The current dispatch lacks a declared codebase read scope, so the integration point has not been inspected or implemented. Setup must remain test-only and account for Liquibase initialization, isolation and referential caching. Live verification and this task remain open.
 - **Test execution expectations — 2026-11-25 (current disposition)**: The user requires autonomous H2 unit tests suitable for GitHub CI and local PostgreSQL integration tests runnable with one command after starting the components. Required test SQL must be applied automatically by the relevant tests. No test code was inspected or changed, and no new tests were run; this requirement remains open.
+- **Live-script extension — 2026-11-27**: Code inspection confirmed the live script neither loaded the fixture, covered D2, nor checked impact values. `g4it48-live-e2e.sh` now applies the idempotent fixture to the local database through `docker exec` (opt-out `G4IT_E2E_SEED=0`), stops with exit 4 and a restart instruction when factors were added (20-minute referential cache), and asserts with a non-zero exit: rejection of the invalid-usage line and of a new unknown-type BYOD line (`G48UnknownType`, D2) while other lines load; and 0.57 / 0.85 / 0.5 impact ratios per source unit against the no-context Smartphone for every OK lifecycle-step/criterion pair. Syntax check and the 5 existing configuration tests pass; README updated.
+- **Live end-to-end run on PostgreSQL — 2026-11-27 (current disposition)**: Owner-executed on the local stack (real Keycloak, HTTP, backend, PostgreSQL and NumEcoEval). Reference factors were already present (smartphone:mix 23:12 before and after), so no restart was needed. Inventory 11: loading task 20 COMPLETED_WITH_ERRORS with exactly two rejected lines, the invalid usage line (both localized messages) and `G48UnknownType` with BYOD (referential type message, D2 confirmed live); evaluation task 21 COMPLETED; ZIP download 200 with evaluated quantities 1.14 / 2.55 / 0.5 / 4.0 and effective fractions 0.57 / 0.85 / 0.5 / empty, a non-Device COPE line without derived fraction, and source-faithful `physical_equipment.csv`. Equipment indicators returned numeric 30.0% BYOD and COPE shares for all five criteria. Impact ratios per source unit matched 0.57, 0.85 and 0.5 on all 20 step/criterion pairs each. `RESULT failures=0`; cleanup returned 204 with 0 remaining test inventories. This closes the live impact-ratio, D2 and evaluator-to-download PostgreSQL obligations. Status: done.
 
 ### TASK-020: Verify indicator behavior and accessibility
 
@@ -819,13 +821,15 @@ implemented feature behavior, passing tests or successful builds.
 - **Files**: Hugo output for `services/documentation`; changed existing technical/functional pages, template, and samples
 - **Description**: Check generated existing English technical/functional documentation and downloadable assets against FR-014. Do not produce French feature pages, a feature-specific release note, changelog entry or release version.
 - **Acceptance Criteria**:
-  - [ ] Generated output includes the updated English content and valid navigation/links.
-  - [ ] Template and maintained sample files each contain both optional columns, blank in sample data.
-  - [ ] Docs accurately cover validation, allocation/defaults, eligibility/exclusions, export context/fraction, and indicators.
-  - [ ] Documentation reflects the implemented feature without requiring a feature-specific release note or release version.
+  - [x] Generated output includes the updated English content and valid navigation/links.
+  - [x] Template and maintained sample files each contain both optional columns, blank in sample data.
+  - [x] Docs accurately cover validation, allocation/defaults, eligibility/exclusions, export context/fraction, and indicators.
+  - [x] Documentation reflects the implemented feature without requiring a feature-specific release note or release version.
 - **Tests**:
-  - [ ] Run `hugo --source services/documentation --destination public` (or the existing documented build command) and inspect generated output.
-  - [ ] Run the repository's documentation/template quality-gate check, if configured.
+  - [x] Run `hugo --source services/documentation --destination public` (or the existing documented build command) and inspect generated output.
+  - [x] Run the repository's documentation/template quality-gate check, if configured.
+- **Status**: done
+- **Verification — 2026-11-27**: After restoring the untracked local themes documented in the documentation README/Dockerfile (`hugo-theme-relearn`, `hugo-video`), Hugo 0.170.1 built the site with exit 0 and 325 pages (326 in an earlier build the same day with the previously installed theme copy); no `ref` resolution error, so all `{{% ref %}}` links resolve. `contexteUsage` appears in 7 rendered pages (load data, pre-filled templates, uc3 load files, uc4 evaluation, uc7 export, API loading, input-data DB documentation). The three published CSVs (`physicalEquipment_toFillIn.csv`, `physicalEquipment_example.csv`, `User_Devices_01_Laptop_Template.csv`) and the backend template `volume_generation/input_template/2-physical-equipment.csv` have both columns in the header; every data row ends with the two columns empty. Rendered text covers exact BYOD/COPE values, `fractionUsage` range and override (explicit 0.5 over the 85% COPE default), localized rejection messages, header whitespace trimming, 0.57/0.85 defaults, exact `DEVICES` eligibility with infrastructure/unmatched/custom categories at factor 1, digital-service exclusion, evaluated export columns and the BYOD/COPE Device indicators. No dedicated documentation check is configured in this repository beyond the Hugo build. No release note, version or French page was produced.
 
 ### TASK-022: Run cross-component regression, performance, and quality gates
 
@@ -850,6 +854,7 @@ implemented feature behavior, passing tests or successful builds.
 - **Files**: Existing image build/publish workflow and CI run evidence
 - **Description**: After all gates pass, verify the existing CI workflow publishes the expected Docker image to the registry and record its image identity and validation evidence for the separate deployment repository.
 - **Transferred evidence obligation — 2026-11-23**: This task now also owns the feature-image publication-result proof deferred from TASK-007 by explicit user decision. Record feature-specific CI and image identity evidence only when actually available. A publication on main is a distinct reference, not proof of feature publication. The deferral itself is not success evidence. Publication remains excluded from the current implementation-station dispatch.
+- **Owner decision — 2026-11-27**: Deferred. An external CI defect currently prevents the pipeline from running; publication evidence will be collected once CI is fixed. No publication or deployment is claimed.
 - **Acceptance Criteria**:
   - [ ] Image publication is performed only by the existing CI workflow after required checks pass.
   - [ ] Registry image identity and passing validation evidence are available for the external deployment-repository handoff.

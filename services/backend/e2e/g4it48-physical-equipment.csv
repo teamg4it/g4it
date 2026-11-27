@@ -5,3 +5,4 @@ g48-phone-frac;;1;;2022-01-01;;Smartphone;In use;France;;;;;BYOD;0.5
 g48-phone-none;;4;;2022-01-01;;Smartphone;In use;France;;;;;;
 g48-server-ctx;;1;;2022-01-01;;Server;In use;France;;;;;COPE;
 g48-phone-bad;;1;;2022-01-01;;Smartphone;In use;France;;;;;XYZ;1.5
+g48-unknown-byod;;1;;2022-01-01;;G48UnknownType;In use;France;;;;;BYOD;

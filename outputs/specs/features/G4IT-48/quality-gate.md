@@ -262,7 +262,25 @@ The repository owner answered the gate's open questions in conversation on 2026-
 | m-001, m-002, m-003 plan/tasks staleness | Fix now | **Fixed**: plan adds FR-019 component, design decision 10 and Phase 3 item, release-note references removed; tasks summary counts 24 tasks and TASK-024 is added to the dependency notes |
 | m-005 uncommitted changes | Committed and pushed by the owner (`24469f130`) | Closed; the plan/tasks fixes above are new local changes to commit |
 
-Still open without an owner decision: backend Sonar result (external), PMD deferral, TASK-019/021/023, A5-F1, pre-existing `AZURE_CLIENT_SECRET` prefix log, refreshed Sonar/dependency evidence on the final revision.
+Further owner decisions recorded later the same day:
+
+| Reserve | Owner decision | Resulting status |
+|---------|----------------|------------------|
+| Backend Sonar result (G4IT-48-SONAR-BACKEND) | Waiting for an external CI defect that precedes the Sonar step to be fixed | Pending (external); no backend Sonar pass claimed |
+| PMD / Java lint | Kept deferred: PMD was never configured in this repository; it will be added with its fixes in a dedicated PR | Deferred (owner) |
+| A5-F1 e2e archive extraction without path guard | Accepted | Accepted risk (owner) |
+| Pre-existing `AZURE_CLIENT_SECRET` prefix log | Intentional and pre-existing; accepted | Accepted risk (owner) |
+| Sonar and dependency evidence on the final revision | Re-run once the CI defect is fixed | Pending (external) |
+
+Final open-task dispositions (2026-11-27):
+
+| Task | Disposition |
+|------|-------------|
+| TASK-019 | **Done**: owner-executed live end-to-end run on the local PostgreSQL stack, `RESULT failures=0` (D2 rejection, 0.57/0.85/0.5 impact ratios on 20 step/criterion pairs each, evaluated export and indicators) |
+| TASK-021 | **Done**: Hugo build exit 0 (325 pages, no `ref` errors); rendered pages and published CSVs verified |
+| TASK-023 | Deferred by the owner until the external CI defect is fixed |
+
+M-003 is therefore resolved except for the deferred TASK-023.
 
 ## Recommendations
 

@@ -21,7 +21,8 @@ outputs/runs/
 # Temporary files
 tmp/
 /services/backend/e2e/work/
-tools/repo-graph/__pycache__/*
+services/backend/e2e/__pycache__/
+tools/repo-graph/__pycache__/
 
 # IDE settings
 .vscode/

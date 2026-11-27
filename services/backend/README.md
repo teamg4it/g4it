@@ -112,7 +112,22 @@ fixture-loading or cleanup step is needed. The factors are synthetic, explicitly
 labelled and unsuitable for environmental reporting; the fixture is not part of
 the production Liquibase changelog.
 
-The live-stack script above uses the already-running application and is separate
-from these isolated tests: it does not apply the fixture to that application's
-database. A completed evaluation task alone does not prove that numerical impact
-rows were calculated successfully.
+The live-stack script above uses the already-running application. Before
+creating its test inventory, it applies the same idempotent fixture to the local
+application database through `docker exec` on the PostgreSQL container
+(`PG_CONTAINER`, default `postgresdb`; `PG_DB` and `PG_USER`, default
+`postgres`). Existing factors are never changed. Set `G4IT_E2E_SEED=0` to skip
+this step. When factors are actually added, the script stops with exit code 4:
+the backend caches the referential (`g4it.cache.database.ttl`, 20 minutes by
+default), so restart the backend and run the script again.
+
+The script then asserts, and exits non-zero on any failure, that:
+
+- the invalid usage line and the unknown-type line with a BYOD context
+  (`G48UnknownType`) are rejected while the other lines load;
+- per source unit and for each lifecycle step and criterion with an `OK` status,
+  the BYOD, COPE and explicit-fraction Smartphones have 0.57, 0.85 and 0.5 times
+  the impact of the Smartphone without usage context.
+
+These synthetic factors are only suitable for checking allocation ratios, not
+for environmental reporting. Remove them from a shared database if needed.
