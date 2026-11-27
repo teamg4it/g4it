@@ -1,0 +1,635 @@
+{
+  "version": 3,
+  "workflow": "brownfield-analysis",
+  "trigger": "repository-ingestion",
+  "date": "2026-11-20T08:40:45.424554+00:00",
+  "status": "draft",
+  "inputDocuments": [
+    "outputs/ingestion/requests/g4it-on-github/releases-01.json"
+  ],
+  "changeHistory": [],
+  "holisticQualityRating": "not-rated",
+  "overallStatus": "not-reviewed",
+  "sensitivity": "confidential",
+  "trace_id": "g4it-on-github-releases-01",
+  "station": "ingest-documents/extract-and-verify",
+  "request": "outputs/ingestion/requests/g4it-on-github/releases-01.json",
+  "request_sha256": "f1a28bb5c6b9c6f24d75721354a34715c1d7d8cbbd670fb7b2d9003f3aadef9f",
+  "exclusions": [],
+  "dependencies": {
+    "pypdf": "missing",
+    "openpyxl": "missing",
+    "defusedxml": "missing"
+  },
+  "workers": 4,
+  "sources": [
+    {
+      "source": "services/documentation/content/5-releases/1-release_v2.11.2/1-migrate_new_arch/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/5-releases/1-release_v2.11.2/1-migrate_new_arch/_index.md",
+      "source_sha256": "098cbc89326caf3dc9e8fc80e02f0f8e3d59b75bce9466d88c04689874bce5eb",
+      "read_sha256": "098cbc89326caf3dc9e8fc80e02f0f8e3d59b75bce9466d88c04689874bce5eb",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-100",
+          "sha256": "0be87d7512998b3b55c3b1db6495e5cde2075e879c07f4064ec6e58cf0180d28"
+        },
+        {
+          "id": "lines:101-162",
+          "sha256": "5aaf81bf7d51807f187e6f76c3966ff20f11c7ad711c7dba4ffbe316dd2ffb57"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/5-releases/1-release_v2.11.2/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/5-releases/1-release_v2.11.2/_index.md",
+      "source_sha256": "06f89e6f95ef748ba9ecf532479a439f6042213b164d0920466cbb903f662b74",
+      "read_sha256": "06f89e6f95ef748ba9ecf532479a439f6042213b164d0920466cbb903f662b74",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-38",
+          "sha256": "06f89e6f95ef748ba9ecf532479a439f6042213b164d0920466cbb903f662b74"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/5-releases/2-release_v3_3/1-migrate_ds_from_demo_workspace_to_new_ones/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/5-releases/2-release_v3_3/1-migrate_ds_from_demo_workspace_to_new_ones/_index.md",
+      "source_sha256": "d52ccf2dd7ef735f91ca22d10e9cbcb2b93e63e76f59dfa7ccaa13f760b9c608",
+      "read_sha256": "d52ccf2dd7ef735f91ca22d10e9cbcb2b93e63e76f59dfa7ccaa13f760b9c608",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-100",
+          "sha256": "26767ede9fe9bcb63b30b45f9a1bfe28915883501b41b949a434c57f0563d38c"
+        },
+        {
+          "id": "lines:101-200",
+          "sha256": "1cdd79e6352dfb262ceb4025492b61583d55d3353249ca915a2080af33aaee00"
+        },
+        {
+          "id": "lines:201-300",
+          "sha256": "81eeaba722d86b226234a99418f7ae880e908111a3a2b1b4285f9e0789477a11"
+        },
+        {
+          "id": "lines:301-400",
+          "sha256": "f343fa1f3114b3d1b62e71aee3737a7a91471f3369b90643d385db095d7c1275"
+        },
+        {
+          "id": "lines:401-410",
+          "sha256": "bbb86d76dc089760cc7db11811a52acfd5559166ee73f4b390150b730aa9ac2c"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/5-releases/2-release_v3_3/2-rollback_ds_migration_from_demo_workspace_to_new_ones/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/5-releases/2-release_v3_3/2-rollback_ds_migration_from_demo_workspace_to_new_ones/_index.md",
+      "source_sha256": "9159c232dc339e853d3fdd22bc15896a5f76493c0265478a53352ab0c3b01baa",
+      "read_sha256": "9159c232dc339e853d3fdd22bc15896a5f76493c0265478a53352ab0c3b01baa",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-89",
+          "sha256": "9159c232dc339e853d3fdd22bc15896a5f76493c0265478a53352ab0c3b01baa"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/5-releases/2-release_v3_3/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/5-releases/2-release_v3_3/_index.md",
+      "source_sha256": "a0082d4d36af1819dc04e0da6a0721796212b16074f1e553859cb62c150d5dbf",
+      "read_sha256": "a0082d4d36af1819dc04e0da6a0721796212b16074f1e553859cb62c150d5dbf",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-85",
+          "sha256": "a0082d4d36af1819dc04e0da6a0721796212b16074f1e553859cb62c150d5dbf"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/5-releases/3-realease_v3_4/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/5-releases/3-realease_v3_4/_index.md",
+      "source_sha256": "a8d890eab2b485a4edb805af6e7ab3afeb77692879be44f71f5561c1824e1ee4",
+      "read_sha256": "a8d890eab2b485a4edb805af6e7ab3afeb77692879be44f71f5561c1824e1ee4",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-55",
+          "sha256": "a8d890eab2b485a4edb805af6e7ab3afeb77692879be44f71f5561c1824e1ee4"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/5-releases/3-realease_v3_4/rename_randomly_generated_network_name/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/5-releases/3-realease_v3_4/rename_randomly_generated_network_name/_index.md",
+      "source_sha256": "ed0fad7bd3278f10e2d3527486a2590e1fddaee34f0080be3300c2c65b78a70c",
+      "read_sha256": "ed0fad7bd3278f10e2d3527486a2590e1fddaee34f0080be3300c2c65b78a70c",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-45",
+          "sha256": "ed0fad7bd3278f10e2d3527486a2590e1fddaee34f0080be3300c2c65b78a70c"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/5-releases/3-realease_v3_4/rename_randomly_generated_terminal_name/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/5-releases/3-realease_v3_4/rename_randomly_generated_terminal_name/_index.md",
+      "source_sha256": "c09a2d612ad2e7b1d49605f0b3be9b040f29d3a05faa5b84d8db5664ffa51120",
+      "read_sha256": "c09a2d612ad2e7b1d49605f0b3be9b040f29d3a05faa5b84d8db5664ffa51120",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-45",
+          "sha256": "c09a2d612ad2e7b1d49605f0b3be9b040f29d3a05faa5b84d8db5664ffa51120"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/5-releases/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/5-releases/_index.md",
+      "source_sha256": "71bcf7c876077a51b747d055bd415f3ab8b7c7aaea8ae4ca4746ca961c507af3",
+      "read_sha256": "71bcf7c876077a51b747d055bd415f3ab8b7c7aaea8ae4ca4746ca961c507af3",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-20",
+          "sha256": "71bcf7c876077a51b747d055bd415f3ab8b7c7aaea8ae4ca4746ca961c507af3"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/5-releases/release_v3_0.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/5-releases/release_v3_0.md",
+      "source_sha256": "06905ef5d683181feac9e4122863da33c75dd4d467d584391f52c9ada0df87d0",
+      "read_sha256": "06905ef5d683181feac9e4122863da33c75dd4d467d584391f52c9ada0df87d0",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-34",
+          "sha256": "06905ef5d683181feac9e4122863da33c75dd4d467d584391f52c9ada0df87d0"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/5-releases/release_v3_1.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/5-releases/release_v3_1.md",
+      "source_sha256": "0c301f000ed9fdee85239941695a5f9d8f2bfe6ecf53d61a331e26c39194faaa",
+      "read_sha256": "0c301f000ed9fdee85239941695a5f9d8f2bfe6ecf53d61a331e26c39194faaa",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-33",
+          "sha256": "0c301f000ed9fdee85239941695a5f9d8f2bfe6ecf53d61a331e26c39194faaa"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/5-releases/release_v3_10.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/5-releases/release_v3_10.md",
+      "source_sha256": "66cdc7ce253f0c89497a30449b939b78e9e49e2a826df8519212d9b4d46625e3",
+      "read_sha256": "66cdc7ce253f0c89497a30449b939b78e9e49e2a826df8519212d9b4d46625e3",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-100",
+          "sha256": "c7c049c841db3539b0d3ab268236eedb12a005e14057961d6d6d1645309034bc"
+        },
+        {
+          "id": "lines:101-115",
+          "sha256": "aa9ee8ec2a11159c4da65de06992039358ae7dc48be78d165e1f24aa3d417f94"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/5-releases/release_v3_11.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/5-releases/release_v3_11.md",
+      "source_sha256": "5260580af3037c4ae695a191ec81e8bcbeb13f94c4af47a3a31c4d69c851887a",
+      "read_sha256": "5260580af3037c4ae695a191ec81e8bcbeb13f94c4af47a3a31c4d69c851887a",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-100",
+          "sha256": "b6a13144df94955001755cb8bfe208c7fc4d0a8e2969a57f57a1591bad1489f4"
+        },
+        {
+          "id": "lines:101-121",
+          "sha256": "2e27f1dff293be1854f5c52f547ef0614d3fd8cb7d58140b6dc01eae772b3530"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/5-releases/release_v3_12.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/5-releases/release_v3_12.md",
+      "source_sha256": "57d89c8b05414d8cb88295fc534ffe39915911faac3680d3a7e8c2e5866ce7a0",
+      "read_sha256": "57d89c8b05414d8cb88295fc534ffe39915911faac3680d3a7e8c2e5866ce7a0",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-100",
+          "sha256": "bbd70e29235b983d2cff1a6f0a937e9cea814e9f05a31ec24c172e0b47acb604"
+        },
+        {
+          "id": "lines:101-161",
+          "sha256": "d5d7e6f0d780af03417330f5333befa9b1bafe59757c2e4c8f7865d940dae979"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/5-releases/release_v3_12_1.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/5-releases/release_v3_12_1.md",
+      "source_sha256": "5d571381f5b6b4f68c0a283085dcc76e602fb008dc48f6c565914816dd2f9ff6",
+      "read_sha256": "5d571381f5b6b4f68c0a283085dcc76e602fb008dc48f6c565914816dd2f9ff6",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-100",
+          "sha256": "5d571381f5b6b4f68c0a283085dcc76e602fb008dc48f6c565914816dd2f9ff6"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/5-releases/release_v3_13.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/5-releases/release_v3_13.md",
+      "source_sha256": "bedc71e41a41bf8ab6b89f5b8d84e9fa281b19507786eddc9bcab56129d2b353",
+      "read_sha256": "bedc71e41a41bf8ab6b89f5b8d84e9fa281b19507786eddc9bcab56129d2b353",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-100",
+          "sha256": "d3a7a3d053907e69153471fa7b0e3125c57bc13f72304dc4990c7f0b0c851cc5"
+        },
+        {
+          "id": "lines:101-129",
+          "sha256": "d4a4377c093554b56377e84b4ea5998ec1f5815a11187864e8fd852643142fd6"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/5-releases/release_v3_13_1.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/5-releases/release_v3_13_1.md",
+      "source_sha256": "0a36790eef077ad3bfee842195eaabc30f8525716bd5cac0de64745e904aff25",
+      "read_sha256": "0a36790eef077ad3bfee842195eaabc30f8525716bd5cac0de64745e904aff25",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-92",
+          "sha256": "0a36790eef077ad3bfee842195eaabc30f8525716bd5cac0de64745e904aff25"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/5-releases/release_v3_14.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/5-releases/release_v3_14.md",
+      "source_sha256": "1bff4aed158cb67f6f5d6c96e0ef7eed04227b6fc9ba3147ae4799c87df8b565",
+      "read_sha256": "1bff4aed158cb67f6f5d6c96e0ef7eed04227b6fc9ba3147ae4799c87df8b565",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-90",
+          "sha256": "1bff4aed158cb67f6f5d6c96e0ef7eed04227b6fc9ba3147ae4799c87df8b565"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/5-releases/release_v3_14_1.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/5-releases/release_v3_14_1.md",
+      "source_sha256": "86e38a94456845c9d7992f80747bea2933d340268661180836a8bb9471d50998",
+      "read_sha256": "86e38a94456845c9d7992f80747bea2933d340268661180836a8bb9471d50998",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-100",
+          "sha256": "58f07502b9da4afcc7c3a14be1ce78a924bf1c01f21bf72f3467deae74095367"
+        },
+        {
+          "id": "lines:101-138",
+          "sha256": "d77d403c73eb69f946e4e8ffce28715f52216894f67ff48b879c24535727187d"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/5-releases/release_v3_15_0.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/5-releases/release_v3_15_0.md",
+      "source_sha256": "915b15495660fe1b046469f575a493b0d3eda725aa6fdcaf3ffaf2407439b29d",
+      "read_sha256": "915b15495660fe1b046469f575a493b0d3eda725aa6fdcaf3ffaf2407439b29d",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-100",
+          "sha256": "9e801653c8d8caf3966e497f1505ac3025fdc5e274b59f9e277d530815fdc338"
+        },
+        {
+          "id": "lines:101-166",
+          "sha256": "dcf31ae4bf7ecb2cbb95f17df58d1a33c00cd5f8ccc291de52228a8a9ac47b22"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/5-releases/release_v3_15_1.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/5-releases/release_v3_15_1.md",
+      "source_sha256": "ce54e12c0fa7b6e5d6b24c78be95634f850876fb984c288ddcc6e92bd1963841",
+      "read_sha256": "ce54e12c0fa7b6e5d6b24c78be95634f850876fb984c288ddcc6e92bd1963841",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-100",
+          "sha256": "9e516ecb451f71263243698c1f7907f3dd43e530a7481e7ad1c7b637805860bf"
+        },
+        {
+          "id": "lines:101-122",
+          "sha256": "bad80dbbb9edd15bab9df1dc0493f52c0ed03930e25400bc6e716eb0b28e1f4f"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/5-releases/release_v3_2.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/5-releases/release_v3_2.md",
+      "source_sha256": "fd86638eb1febc23b60c8c150b0c6375fb9941d199b81b931fffeb24e3b8054e",
+      "read_sha256": "fd86638eb1febc23b60c8c150b0c6375fb9941d199b81b931fffeb24e3b8054e",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-35",
+          "sha256": "fd86638eb1febc23b60c8c150b0c6375fb9941d199b81b931fffeb24e3b8054e"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/5-releases/release_v3_5.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/5-releases/release_v3_5.md",
+      "source_sha256": "7bbd1754be78baf0cb615b41473bf4d2d6bca0955666ed5af96100550102ad3d",
+      "read_sha256": "7bbd1754be78baf0cb615b41473bf4d2d6bca0955666ed5af96100550102ad3d",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-58",
+          "sha256": "7bbd1754be78baf0cb615b41473bf4d2d6bca0955666ed5af96100550102ad3d"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/5-releases/release_v3_6.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/5-releases/release_v3_6.md",
+      "source_sha256": "cc83a4b627ea8aa121d75efef511a2a022e319a24ba3bf160aa00648ded0d110",
+      "read_sha256": "cc83a4b627ea8aa121d75efef511a2a022e319a24ba3bf160aa00648ded0d110",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-52",
+          "sha256": "cc83a4b627ea8aa121d75efef511a2a022e319a24ba3bf160aa00648ded0d110"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/5-releases/release_v3_7.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/5-releases/release_v3_7.md",
+      "source_sha256": "23af8bf44d5f48159e3929d159a91942c8ce9c11c3c45fa963840971636601e8",
+      "read_sha256": "23af8bf44d5f48159e3929d159a91942c8ce9c11c3c45fa963840971636601e8",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-42",
+          "sha256": "23af8bf44d5f48159e3929d159a91942c8ce9c11c3c45fa963840971636601e8"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/5-releases/release_v3_8.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/5-releases/release_v3_8.md",
+      "source_sha256": "5326f9f7344ee4ff12244a0d2f47fc2d8678d2ce4ddaa786dc7bcd9433eac25a",
+      "read_sha256": "5326f9f7344ee4ff12244a0d2f47fc2d8678d2ce4ddaa786dc7bcd9433eac25a",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-84",
+          "sha256": "5326f9f7344ee4ff12244a0d2f47fc2d8678d2ce4ddaa786dc7bcd9433eac25a"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/5-releases/release_v3_9.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/5-releases/release_v3_9.md",
+      "source_sha256": "b04fbca0eb898c8feb005a630861d9bd5d7744add9a0d0ac59983aba5ec1be56",
+      "read_sha256": "b04fbca0eb898c8feb005a630861d9bd5d7744add9a0d0ac59983aba5ec1be56",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-72",
+          "sha256": "b04fbca0eb898c8feb005a630861d9bd5d7744add9a0d0ac59983aba5ec1be56"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/documentation/content/5-releases/release_v3_9_1.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/5-releases/release_v3_9_1.md",
+      "source_sha256": "c3276c4af56063bf39751d72120bfe5ac08175f735558a1c0fa0da375cc5426f",
+      "read_sha256": "c3276c4af56063bf39751d72120bfe5ac08175f735558a1c0fa0da375cc5426f",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-58",
+          "sha256": "c3276c4af56063bf39751d72120bfe5ac08175f735558a1c0fa0da375cc5426f"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    }
+  ]
+}

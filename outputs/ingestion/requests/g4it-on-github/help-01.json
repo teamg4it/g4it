@@ -1,0 +1,32 @@
+{
+  "workflow": "document-ingestion",
+  "station": "ingest-documents/plan-batches",
+  "trigger": "batch-plan",
+  "date": "2026-11-20T08:11:18.845974+00:00",
+  "status": "draft",
+  "inputDocuments": [
+    "outputs/ingestion/g4it-on-github/triage-report.json",
+    "outputs/ingestion/g4it-on-github/triage-decisions.json"
+  ],
+  "changeHistory": [],
+  "holisticQualityRating": "unassessed",
+  "overallStatus": "pending",
+  "sensitivity": "confidential",
+  "trace_id": "4d1e4282-cc4b-4ea6-83da-14dd38c0b892",
+  "analysis_id": "g4it-on-github",
+  "batch": "help-01",
+  "files": [
+    "services/documentation/content/4-help/1-glossary.md",
+    "services/documentation/content/4-help/2-FAQ_Usage_Access.md",
+    "services/documentation/content/4-help/3-FAQ_Methodology/1-User_Characteristics_with_Matomo.md",
+    "services/documentation/content/4-help/3-FAQ_Methodology/2-User_Characteristics_with_KeyCloak.md",
+    "services/documentation/content/4-help/3-FAQ_Methodology/3-User_Characteristics_with_myELK_myAPIManager.md",
+    "services/documentation/content/4-help/3-FAQ_Methodology/4-Data_Exchanged_with_AWS_CloudWatch_Matomo.md",
+    "services/documentation/content/4-help/3-FAQ_Methodology/5-Servers_AzureCloudInstances.md",
+    "services/documentation/content/4-help/3-FAQ_Methodology/6-Servers_VmCharacteristicsWithvmWare.md",
+    "services/documentation/content/4-help/3-FAQ_Methodology/_index.md",
+    "services/documentation/content/4-help/_index.md"
+  ],
+  "exclusions": [],
+  "source_root": "."
+}

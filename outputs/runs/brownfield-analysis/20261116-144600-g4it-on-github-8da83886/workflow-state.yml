@@ -1,0 +1,139 @@
+workflow: brownfield-analysis
+feature: g4it-on-github
+started: "2026-11-16T14:46:00Z"
+status: in-progress
+trace_id: 8da83886-7755-442c-940f-a40cfa7a90c3
+current_station: actor-catalogue
+stations:
+  - id: discover-repositories
+    status: passed
+    started: "2026-11-16T14:46:17Z"
+    completed: "2026-11-16T14:49:22Z"
+    gate: pass
+  - id: mainframe-inventory
+    status: skipped
+    started: "2026-11-16T14:49:48Z"
+    completed: "2026-11-16T14:49:48Z"
+    gate: —
+  - id: build-codegraph
+    status: passed
+    started: "2026-11-16T14:50:17Z"
+    completed: "2026-11-16T14:52:58Z"
+    gate: pass
+  - id: batch-flow
+    status: skipped
+    started: "2026-11-16T14:55:28Z"
+    completed: "2026-11-16T14:55:28Z"
+    gate: —
+  - id: online-flow
+    status: skipped
+    started: "2026-11-16T14:56:18Z"
+    completed: "2026-11-16T14:56:18Z"
+    gate: —
+  - id: data-model-lineage
+    status: skipped
+    started: "2026-11-16T14:56:56Z"
+    completed: "2026-11-16T14:56:56Z"
+    gate: —
+  - id: business-rules
+    status: skipped
+    started: "2026-11-16T14:57:25Z"
+    completed: "2026-11-16T14:57:25Z"
+    gate: —
+  - id: ingest-documents
+    status: passed
+    started: "2026-11-16T14:57:39Z"
+    completed: "2026-11-16T15:12:15Z"
+    gate: pass
+  - id: ingest-documents/scope-documents
+    status: passed
+    started: "2026-11-16T14:57:39Z"
+    completed: "2026-11-16T15:02:08Z"
+    gate: pass
+    parent: ingest-documents
+  - id: ingest-documents/triage
+    status: passed
+    started: "2026-11-16T15:05:14Z"
+    completed: "2026-11-16T15:07:56Z"
+    gate: pass
+    parent: ingest-documents
+  - id: ingest-documents/convert
+    status: passed
+    started: "2026-11-16T15:10:04Z"
+    completed: "2026-11-16T15:10:23Z"
+    gate: pass
+    parent: ingest-documents
+  - id: ingest-documents/plan-batches
+    status: passed
+    started: "2026-11-16T15:10:52Z"
+    completed: "2026-11-16T15:11:05Z"
+    gate: pass
+    parent: ingest-documents
+  - id: ingest-documents/extract-and-verify
+    status: passed
+    started: "2026-11-16T15:11:19Z"
+    completed: "2026-11-16T15:11:37Z"
+    gate: pass
+    parent: ingest-documents
+  - id: ingest-documents/interpret-images
+    status: passed
+    started: "2026-11-16T15:11:53Z"
+    completed: "2026-11-16T15:12:00Z"
+    gate: pass
+    parent: ingest-documents
+  - id: ingest-documents/aggregate-catalogue
+    status: passed
+    started: "2026-11-16T15:12:14Z"
+    completed: "2026-11-16T15:12:15Z"
+    gate: pass
+    parent: ingest-documents
+  - id: build-document-graph
+    status: passed
+    started: "2026-11-16T15:12:39Z"
+    completed: "2026-11-16T15:12:40Z"
+    gate: pass
+  - id: reverse-backlog
+    status: passed
+    started: "2026-11-16T15:12:45Z"
+    completed: "2026-11-16T15:12:45Z"
+    gate: pass
+  - id: actor-catalogue
+    status: pending
+    started: —
+    completed: —
+    gate: —
+  - id: reverse-stories
+    status: pending
+    started: —
+    completed: —
+    gate: —
+  - id: user-journeys
+    status: pending
+    started: —
+    completed: —
+    gate: —
+  - id: as-is-hld
+    status: pending
+    started: —
+    completed: —
+    gate: —
+  - id: c4-architecture
+    status: pending
+    started: —
+    completed: —
+    gate: —
+  - id: traceability-and-gaps
+    status: pending
+    started: —
+    completed: —
+    gate: —
+  - id: quality-gate
+    status: pending
+    started: —
+    completed: —
+    gate: —
+  - id: reader-pack
+    status: pending
+    started: —
+    completed: —
+    gate: —

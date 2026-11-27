@@ -1,0 +1,47 @@
+{
+  "version": 3,
+  "workflow": "brownfield-analysis",
+  "trigger": "repository-ingestion",
+  "date": "2026-11-20T08:37:23.453127+00:00",
+  "status": "draft",
+  "inputDocuments": [
+    "outputs/ingestion/requests/g4it-on-github/docs-01.json"
+  ],
+  "changeHistory": [],
+  "holisticQualityRating": "not-rated",
+  "overallStatus": "not-reviewed",
+  "sensitivity": "confidential",
+  "trace_id": "g4it-on-github-docs-01",
+  "station": "ingest-documents/extract-and-verify",
+  "request": "outputs/ingestion/requests/g4it-on-github/docs-01.json",
+  "request_sha256": "9f21be53a8de468e97231c4b40c7ec6dd57bbdb3fd7e7a895e3632ca90419bcb",
+  "exclusions": [],
+  "dependencies": {
+    "pypdf": "missing",
+    "openpyxl": "missing",
+    "defusedxml": "missing"
+  },
+  "workers": 4,
+  "sources": [
+    {
+      "source": "services/documentation/content/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/_index.md",
+      "source_sha256": "317e65a3e86a6ab29105556c83f15afde99dbec653b61c6a65f937697b785f09",
+      "read_sha256": "317e65a3e86a6ab29105556c83f15afde99dbec653b61c6a65f937697b785f09",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-88",
+          "sha256": "317e65a3e86a6ab29105556c83f15afde99dbec653b61c6a65f937697b785f09"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    }
+  ]
+}

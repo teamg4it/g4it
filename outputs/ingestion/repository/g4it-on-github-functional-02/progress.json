@@ -1,0 +1,15 @@
+{
+  "state": "complete",
+  "total": 53,
+  "done": 53,
+  "counts": {
+    "excluded": 2,
+    "not_required": 28,
+    "partial": 23
+  },
+  "last_source": null,
+  "started_at": "2026-11-20T08:57:23.789726+00:00",
+  "updated_at": "2026-11-20T08:57:26.397898+00:00",
+  "elapsed_seconds": 3,
+  "eta_seconds": null
+}

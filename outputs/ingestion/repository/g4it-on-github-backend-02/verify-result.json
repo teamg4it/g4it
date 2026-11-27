@@ -1,0 +1,592 @@
+{
+  "allowed": true,
+  "errors": [],
+  "manifest": "outputs/ingestion/repository/g4it-on-github-backend-02/source-coverage.json",
+  "pending_images": [],
+  "pending_bulk_decisions": [],
+  "bulk_decision_template": {
+    "path": "outputs/ingestion/repository/g4it-on-github-backend-02/bulk-image-decisions.json",
+    "template": {
+      "version": 1,
+      "workflow": "brownfield-analysis",
+      "trigger": "repository-ingestion",
+      "date": "2026-11-20T09:24:48.633208+00:00",
+      "status": "draft",
+      "inputDocuments": [
+        "outputs/ingestion/requests/g4it-on-github/backend-02.json"
+      ],
+      "changeHistory": [],
+      "holisticQualityRating": "unassessed",
+      "overallStatus": "pending",
+      "sensitivity": "confidential",
+      "trace_id": "g4it-on-github-backend-02",
+      "station": "ingest-documents/extract-and-verify",
+      "analysis_id": "g4it-on-github-backend-02",
+      "request_sha256": "c5b0298a141114199a9c25323542c92879fa81ce3d25a298f1085ae6aa950bd5",
+      "batches": []
+    },
+    "batch_template": {
+      "members": [],
+      "decision": "omit",
+      "explanation": "",
+      "omission_reason": "",
+      "shared_explanation_confirmed": false,
+      "confirmed": false,
+      "confirmation_digest": ""
+    },
+    "members_path": null,
+    "member_count": 0
+  },
+  "image_decisions": [],
+  "clarifications": [],
+  "sources": [
+    {
+      "source": "services/backend/src/main/resources/db/changelog/referential-data/ref_network_type.csv",
+      "format": ".csv",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/backend/src/main/resources/db/changelog/referential-data/ref_network_type.csv",
+      "source_sha256": "733786fd9205d59ab0f52b697ede37d79c1989d192b823fd3d0b1544ee6597cd",
+      "read_sha256": "733786fd9205d59ab0f52b697ede37d79c1989d192b823fd3d0b1544ee6597cd",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-3",
+          "sha256": "733786fd9205d59ab0f52b697ede37d79c1989d192b823fd3d0b1544ee6597cd"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": [],
+      "image_decisions": [],
+      "clarifications": []
+    },
+    {
+      "source": "services/backend/src/main/resources/db/changelog/referential-data/ref_server_host.csv",
+      "format": ".csv",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/backend/src/main/resources/db/changelog/referential-data/ref_server_host.csv",
+      "source_sha256": "c27045737230ba89c61844af7d1362f101cc7dab0c94009b04d0c079daa80d41",
+      "read_sha256": "c27045737230ba89c61844af7d1362f101cc7dab0c94009b04d0c079daa80d41",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-8",
+          "sha256": "c27045737230ba89c61844af7d1362f101cc7dab0c94009b04d0c079daa80d41"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": [],
+      "image_decisions": [],
+      "clarifications": []
+    },
+    {
+      "source": "services/backend/src/main/resources/db/changelog/referential-data/ref_sustainable_individual_package.csv",
+      "format": ".csv",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/backend/src/main/resources/db/changelog/referential-data/ref_sustainable_individual_package.csv",
+      "source_sha256": "f2c8579c391d98aa9d21ae4ba104ddb946e6f620a628b8ef6a84ccb1ee1c970e",
+      "read_sha256": "f2c8579c391d98aa9d21ae4ba104ddb946e6f620a628b8ef6a84ccb1ee1c970e",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-17",
+          "sha256": "f2c8579c391d98aa9d21ae4ba104ddb946e6f620a628b8ef6a84ccb1ee1c970e"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": [],
+      "image_decisions": [],
+      "clarifications": []
+    },
+    {
+      "source": "services/backend/src/test/resources/external/numecoeval/file/application.csv",
+      "format": ".csv",
+      "status": "excluded",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19",
+      "read_path": null,
+      "source_sha256": "d28594b066366b301d4d4dfd562e558f8093564336c98d495f1e4c31890e94dd",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/test/resources/external/numecoeval/file/datacenter.csv",
+      "format": ".csv",
+      "status": "excluded",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19",
+      "read_path": null,
+      "source_sha256": "c8c64f3a12652cace1c1b46946d98a2164d79a115549f556d74add61057008d5",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/test/resources/external/numecoeval/file/physical_equipment.csv",
+      "format": ".csv",
+      "status": "excluded",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19",
+      "read_path": null,
+      "source_sha256": "9e2597de666617d3bdcb07a91c347c0f25af4d73ebf4070f63452a89b4d2dac3",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/test/resources/external/numecoeval/file/virtual_equipment.csv",
+      "format": ".csv",
+      "status": "excluded",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19",
+      "read_path": null,
+      "source_sha256": "ec75ffa8d4f8c442c1a9101682a6a169d03735b90a2f511f43c06df876e95be6",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/storage/--INTERNAL-G4IT--/0/templates/G4IT_Datamodel_and_reference_data_v3.2.0.xlsx",
+      "format": ".xlsx",
+      "status": "excluded",
+      "reason": "Excluded by user decision 2026-11-20: office-common parser dependencies unavailable; non-essential XLSX templates / PPTX screenshot decks",
+      "read_path": null,
+      "source_sha256": "471b2339a8e4707c4c24ef5d1a9349dd200bb839a3dc568a94e91e01eedfaed0",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/storage/--INTERNAL-G4IT--/0/templates/G4IT_Datamodel_workspace_reference_data_v1.0.0.xlsx",
+      "format": ".xlsx",
+      "status": "excluded",
+      "reason": "Excluded by user decision 2026-11-20: office-common parser dependencies unavailable; non-essential XLSX templates / PPTX screenshot decks",
+      "read_path": null,
+      "source_sha256": "5ed4ab80f9c0e92c46d0ab0cf46eb1507be7df190a442b8fd9ec8d406e516c6b",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/storage/--INTERNAL-G4IT--/0/templates/ds_datacenter.csv",
+      "format": ".csv",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/backend/storage/--INTERNAL-G4IT--/0/templates/ds_datacenter.csv",
+      "source_sha256": "8fb4723a713aa4ebec631a391ff6aae6690a3c8af45fdbc23b13589d54ff8906",
+      "read_sha256": "8fb4723a713aa4ebec631a391ff6aae6690a3c8af45fdbc23b13589d54ff8906",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-1",
+          "sha256": "8fb4723a713aa4ebec631a391ff6aae6690a3c8af45fdbc23b13589d54ff8906"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": [],
+      "image_decisions": [],
+      "clarifications": []
+    },
+    {
+      "source": "services/backend/storage/--INTERNAL-G4IT--/0/templates/ds_physical_equipment_network.csv",
+      "format": ".csv",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/backend/storage/--INTERNAL-G4IT--/0/templates/ds_physical_equipment_network.csv",
+      "source_sha256": "b79c0d82d86640a26256fa556226ebfc4e61b6e83a7f55aeb0138b6739591250",
+      "read_sha256": "b79c0d82d86640a26256fa556226ebfc4e61b6e83a7f55aeb0138b6739591250",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-1",
+          "sha256": "b79c0d82d86640a26256fa556226ebfc4e61b6e83a7f55aeb0138b6739591250"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": [],
+      "image_decisions": [],
+      "clarifications": []
+    },
+    {
+      "source": "services/backend/storage/--INTERNAL-G4IT--/0/templates/ds_physical_equipment_non_cloud.csv",
+      "format": ".csv",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/backend/storage/--INTERNAL-G4IT--/0/templates/ds_physical_equipment_non_cloud.csv",
+      "source_sha256": "4baed03e0bce6fb26579c8a378578276ae12e177ea0c84f2b1f470569b2bba75",
+      "read_sha256": "4baed03e0bce6fb26579c8a378578276ae12e177ea0c84f2b1f470569b2bba75",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-1",
+          "sha256": "4baed03e0bce6fb26579c8a378578276ae12e177ea0c84f2b1f470569b2bba75"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": [],
+      "image_decisions": [],
+      "clarifications": []
+    },
+    {
+      "source": "services/backend/storage/--INTERNAL-G4IT--/0/templates/ds_physical_equipment_terminal.csv",
+      "format": ".csv",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/backend/storage/--INTERNAL-G4IT--/0/templates/ds_physical_equipment_terminal.csv",
+      "source_sha256": "c0a298c0cb6c299b300e910a97f122847867f0c0d003adc09bbbef66bcc46e8f",
+      "read_sha256": "c0a298c0cb6c299b300e910a97f122847867f0c0d003adc09bbbef66bcc46e8f",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-1",
+          "sha256": "c0a298c0cb6c299b300e910a97f122847867f0c0d003adc09bbbef66bcc46e8f"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": [],
+      "image_decisions": [],
+      "clarifications": []
+    },
+    {
+      "source": "services/backend/storage/--INTERNAL-G4IT--/0/templates/ds_virtual_equipment_cloud.csv",
+      "format": ".csv",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/backend/storage/--INTERNAL-G4IT--/0/templates/ds_virtual_equipment_cloud.csv",
+      "source_sha256": "20666902f45de8091e867c2b9054e5bb9db843c9d22d6e886765eaaa9d985298",
+      "read_sha256": "20666902f45de8091e867c2b9054e5bb9db843c9d22d6e886765eaaa9d985298",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-1",
+          "sha256": "20666902f45de8091e867c2b9054e5bb9db843c9d22d6e886765eaaa9d985298"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": [],
+      "image_decisions": [],
+      "clarifications": []
+    },
+    {
+      "source": "services/backend/storage/--INTERNAL-G4IT--/0/templates/ds_virtual_equipment_non_cloud.csv",
+      "format": ".csv",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/backend/storage/--INTERNAL-G4IT--/0/templates/ds_virtual_equipment_non_cloud.csv",
+      "source_sha256": "ba58da047ddf5faec4646738baff401e65d53bb68b67b573f9c807bfe06a5e97",
+      "read_sha256": "ba58da047ddf5faec4646738baff401e65d53bb68b67b573f9c807bfe06a5e97",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-1",
+          "sha256": "ba58da047ddf5faec4646738baff401e65d53bb68b67b573f9c807bfe06a5e97"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": [],
+      "image_decisions": [],
+      "clarifications": []
+    },
+    {
+      "source": "services/backend/storage/--INTERNAL-G4IT--/0/templates/inv_AIservices.csv",
+      "format": ".csv",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/backend/storage/--INTERNAL-G4IT--/0/templates/inv_AIservices.csv",
+      "source_sha256": "e418ee94c890ab9b10bda2cec89b1fdc2fe721c907157c67b548d66c0d90309f",
+      "read_sha256": "e418ee94c890ab9b10bda2cec89b1fdc2fe721c907157c67b548d66c0d90309f",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-1",
+          "sha256": "e418ee94c890ab9b10bda2cec89b1fdc2fe721c907157c67b548d66c0d90309f"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": [],
+      "image_decisions": [],
+      "clarifications": []
+    },
+    {
+      "source": "services/backend/storage/--INTERNAL-G4IT--/0/templates/inv_application.csv",
+      "format": ".csv",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/backend/storage/--INTERNAL-G4IT--/0/templates/inv_application.csv",
+      "source_sha256": "bd81204134abd62202532adb98167495ee7d2cd25ad7637e41af1501f8299854",
+      "read_sha256": "bd81204134abd62202532adb98167495ee7d2cd25ad7637e41af1501f8299854",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-1",
+          "sha256": "bd81204134abd62202532adb98167495ee7d2cd25ad7637e41af1501f8299854"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": [],
+      "image_decisions": [],
+      "clarifications": []
+    },
+    {
+      "source": "services/backend/storage/--INTERNAL-G4IT--/0/templates/inv_datacenter.csv",
+      "format": ".csv",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/backend/storage/--INTERNAL-G4IT--/0/templates/inv_datacenter.csv",
+      "source_sha256": "b90ee70c962d055e6c70be6144ad228a77f4869e5b1f35a0973e8cae76566f5e",
+      "read_sha256": "b90ee70c962d055e6c70be6144ad228a77f4869e5b1f35a0973e8cae76566f5e",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-1",
+          "sha256": "b90ee70c962d055e6c70be6144ad228a77f4869e5b1f35a0973e8cae76566f5e"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": [],
+      "image_decisions": [],
+      "clarifications": []
+    },
+    {
+      "source": "services/backend/storage/--INTERNAL-G4IT--/0/templates/inv_physicalEquipment.csv",
+      "format": ".csv",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/backend/storage/--INTERNAL-G4IT--/0/templates/inv_physicalEquipment.csv",
+      "source_sha256": "44cdefae7666e9efac46c9ffb9fb5e28a007ceaa35c707976fc8d80e0cda310a",
+      "read_sha256": "44cdefae7666e9efac46c9ffb9fb5e28a007ceaa35c707976fc8d80e0cda310a",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-1",
+          "sha256": "44cdefae7666e9efac46c9ffb9fb5e28a007ceaa35c707976fc8d80e0cda310a"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": [],
+      "image_decisions": [],
+      "clarifications": []
+    },
+    {
+      "source": "services/backend/storage/--INTERNAL-G4IT--/0/templates/inv_virtualEquipment.csv",
+      "format": ".csv",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/backend/storage/--INTERNAL-G4IT--/0/templates/inv_virtualEquipment.csv",
+      "source_sha256": "16bf83af2c46883953be841a17612a8ab355c29d8dcc86565133b65c978aea25",
+      "read_sha256": "16bf83af2c46883953be841a17612a8ab355c29d8dcc86565133b65c978aea25",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-1",
+          "sha256": "16bf83af2c46883953be841a17612a8ab355c29d8dcc86565133b65c978aea25"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": [],
+      "image_decisions": [],
+      "clarifications": []
+    },
+    {
+      "source": "services/backend/volume_generation/input_template/1-datacenter.csv",
+      "format": ".csv",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/backend/volume_generation/input_template/1-datacenter.csv",
+      "source_sha256": "368b8024895db19f72bba43aed9a26f3220ccede6d844daa6b5c747e1fe8e341",
+      "read_sha256": "368b8024895db19f72bba43aed9a26f3220ccede6d844daa6b5c747e1fe8e341",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-9",
+          "sha256": "368b8024895db19f72bba43aed9a26f3220ccede6d844daa6b5c747e1fe8e341"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": [],
+      "image_decisions": [],
+      "clarifications": []
+    },
+    {
+      "source": "services/backend/volume_generation/input_template/2-physical-equipment.csv",
+      "format": ".csv",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/backend/volume_generation/input_template/2-physical-equipment.csv",
+      "source_sha256": "27eb112f27cfd819a10d2351879d9c25408389f48cbad1cce668a6f699d948d4",
+      "read_sha256": "27eb112f27cfd819a10d2351879d9c25408389f48cbad1cce668a6f699d948d4",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-2",
+          "sha256": "27eb112f27cfd819a10d2351879d9c25408389f48cbad1cce668a6f699d948d4"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": [],
+      "image_decisions": [],
+      "clarifications": []
+    },
+    {
+      "source": "services/backend/volume_generation/input_template/3-virtual-equipment.csv",
+      "format": ".csv",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/backend/volume_generation/input_template/3-virtual-equipment.csv",
+      "source_sha256": "4668824724b1ed66b72889e57c0cd1324d62baf3fb87328be9f92754919041a3",
+      "read_sha256": "4668824724b1ed66b72889e57c0cd1324d62baf3fb87328be9f92754919041a3",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-2",
+          "sha256": "4668824724b1ed66b72889e57c0cd1324d62baf3fb87328be9f92754919041a3"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": [],
+      "image_decisions": [],
+      "clarifications": []
+    },
+    {
+      "source": "services/backend/volume_generation/input_template/4-application.csv",
+      "format": ".csv",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/backend/volume_generation/input_template/4-application.csv",
+      "source_sha256": "cded9110ff752b2147180e5293d1a3b078022a5136d8e1148b1912a4eb732fb8",
+      "read_sha256": "cded9110ff752b2147180e5293d1a3b078022a5136d8e1148b1912a4eb732fb8",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-2",
+          "sha256": "cded9110ff752b2147180e5293d1a3b078022a5136d8e1148b1912a4eb732fb8"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": [],
+      "image_decisions": [],
+      "clarifications": []
+    },
+    {
+      "source": "services/backend/volume_generation/input_template/5-cloud-virtual-equipment.csv",
+      "format": ".csv",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/backend/volume_generation/input_template/5-cloud-virtual-equipment.csv",
+      "source_sha256": "8e6ed3a5493cb9976ce305d1f472d8394795326c76261ea19a725cd7017f4d75",
+      "read_sha256": "8e6ed3a5493cb9976ce305d1f472d8394795326c76261ea19a725cd7017f4d75",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-2",
+          "sha256": "8e6ed3a5493cb9976ce305d1f472d8394795326c76261ea19a725cd7017f4d75"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": [],
+      "image_decisions": [],
+      "clarifications": []
+    }
+  ],
+  "total": 25,
+  "completed": 19,
+  "counts": {
+    "excluded": 6,
+    "not_required": 19
+  },
+  "unresolved_total": 0,
+  "unresolved": [],
+  "exclusions": [
+    {
+      "source": "services/backend/src/test/resources/external/numecoeval/file/application.csv",
+      "source_sha256": "d28594b066366b301d4d4dfd562e558f8093564336c98d495f1e4c31890e94dd",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19"
+    },
+    {
+      "source": "services/backend/src/test/resources/external/numecoeval/file/datacenter.csv",
+      "source_sha256": "c8c64f3a12652cace1c1b46946d98a2164d79a115549f556d74add61057008d5",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19"
+    },
+    {
+      "source": "services/backend/src/test/resources/external/numecoeval/file/physical_equipment.csv",
+      "source_sha256": "9e2597de666617d3bdcb07a91c347c0f25af4d73ebf4070f63452a89b4d2dac3",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19"
+    },
+    {
+      "source": "services/backend/src/test/resources/external/numecoeval/file/virtual_equipment.csv",
+      "source_sha256": "ec75ffa8d4f8c442c1a9101682a6a169d03735b90a2f511f43c06df876e95be6",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19"
+    },
+    {
+      "source": "services/backend/storage/--INTERNAL-G4IT--/0/templates/G4IT_Datamodel_and_reference_data_v3.2.0.xlsx",
+      "source_sha256": "471b2339a8e4707c4c24ef5d1a9349dd200bb839a3dc568a94e91e01eedfaed0",
+      "reason": "Excluded by user decision 2026-11-20: office-common parser dependencies unavailable; non-essential XLSX templates / PPTX screenshot decks"
+    },
+    {
+      "source": "services/backend/storage/--INTERNAL-G4IT--/0/templates/G4IT_Datamodel_workspace_reference_data_v1.0.0.xlsx",
+      "source_sha256": "5ed4ab80f9c0e92c46d0ab0cf46eb1507be7df190a442b8fd9ec8d406e516c6b",
+      "reason": "Excluded by user decision 2026-11-20: office-common parser dependencies unavailable; non-essential XLSX templates / PPTX screenshot decks"
+    }
+  ],
+  "images": {
+    "sources": 0,
+    "gaps": 0,
+    "interpreted": 0,
+    "omitted": 0,
+    "explained": 0,
+    "pending": 0,
+    "by_source": [],
+    "omitted_sources": 0
+  },
+  "action": "",
+  "evidence_kind": "extraction only; downstream reading and human review remain required"
+}

@@ -1,0 +1,18 @@
+
+# Persistent local installation diagnostics
+/.ai-sdlc/install-logs/
+
+# APM installer staging
+/.apm-dist/
+
+# Repo-graph local index
+/.mygraph/
+outputs/brownfield/*/knowledge-plane/
+
+# Backup and caches
+.state-backups/*
+.github/hooks/.cache/*
+
+# IA Backbone files
+.apm.lock.yaml
+.backbone-settings.json

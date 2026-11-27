@@ -1,0 +1,6857 @@
+{
+  "version": 1,
+  "workflow": "document-ingestion",
+  "station": "ingest-documents/triage",
+  "trigger": "triage-scan",
+  "date": "2026-11-19T17:31:23.971312+00:00",
+  "status": "draft",
+  "inputDocuments": [
+    "."
+  ],
+  "changeHistory": [],
+  "holisticQualityRating": "unassessed",
+  "overallStatus": "pending",
+  "sensitivity": "confidential",
+  "analysis_id": "g4it-on-github",
+  "source_root": ".",
+  "include": [
+    "services/backend",
+    "services/documentation/content",
+    "services/documentation/schemacrawler",
+    "services/frontend",
+    "services/keycloak"
+  ],
+  "legacy_codepage": "cp1252",
+  "image_only_ratio": 0.8,
+  "dependencies": {
+    "pypdf": "missing"
+  },
+  "discovery": {
+    "method": "triage-walk",
+    "reason": "no natively extractable documents"
+  },
+  "inventory": null,
+  "inventory_digest": "7901b2c0e6e293bc4af7e4318df9121996a702574da670d468026a45dbc22ca3",
+  "totals": {
+    "sources": 542,
+    "native": 369,
+    "requestable": 541
+  },
+  "categories": {
+    "sensitive": {
+      "count": 1,
+      "recommended_decision": "exclude",
+      "description": "Key material, secret paths or possible customer data; never read, hashed or converted.",
+      "suggested_reason": "sensitive path or key material; never read",
+      "exclude_only": true,
+      "examples": [
+        "services/backend/volume_generation/.env"
+      ]
+    },
+    "empty": {
+      "count": 4,
+      "recommended_decision": "exclude",
+      "description": "Zero-byte file.",
+      "suggested_reason": "empty or binary file; no readable text",
+      "exclude_only": false,
+      "examples": [
+        "services/backend/src/test/resources/common/filesystem/azure/test-upload.txt",
+        "services/backend/src/test/resources/common/filesystem/local/work/20230511-1815/DATACENTER/datacenter.txt",
+        "services/backend/src/test/resources/common/filesystem/local/work/20230511-1815/DATACENTER/datacenter2.txt",
+        "services/backend/src/test/resources/common/filesystem/local/work/20231904-1808/DATACENTER/datacenter.txt"
+      ]
+    },
+    "path-heuristic": {
+      "count": 4,
+      "recommended_decision": "exclude",
+      "description": "Path suggests third-party, archived, backup, sample or test content.",
+      "suggested_reason": "third-party, archived or sample content by path",
+      "exclude_only": false,
+      "examples": [
+        "services/backend/src/main/resources/samples/inputs/1-datacenter.csv",
+        "services/backend/src/main/resources/samples/inputs/2-physicalEquipments.csv",
+        "services/backend/src/main/resources/samples/inputs/3-virtualEquipments.csv",
+        "services/backend/src/main/resources/samples/inputs/4-applications.csv"
+      ]
+    },
+    "zip-invalid": {
+      "count": 1,
+      "recommended_decision": "exclude",
+      "description": "Corrupt or partial OOXML archive.",
+      "suggested_reason": "corrupt or partial Office archive",
+      "exclude_only": false,
+      "examples": [
+        "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/~$screenshot.pptx"
+      ]
+    },
+    "unknown-needs-dependency": {
+      "count": 2,
+      "recommended_decision": "include",
+      "description": "An optional triage dependency is missing; install it and re-scan, or let extraction decide.",
+      "suggested_reason": "",
+      "exclude_only": false,
+      "examples": [
+        "services/frontend/src/assets/pdf/declarations/rgesn_2024_outil_declaration_ecoconception_V0_EN.pdf",
+        "services/frontend/src/assets/pdf/declarations/rgesn_2024_outil_declaration_ecoconception_V1.pdf"
+      ]
+    },
+    "image-file": {
+      "count": 80,
+      "recommended_decision": "interpret",
+      "description": "Standalone image beside a scoped document; interpret its visual content.",
+      "suggested_reason": "",
+      "exclude_only": false,
+      "examples": [
+        "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/01_ds_module_access.png",
+        "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/02_create_a_ds.png",
+        "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/03_edit_name_create_device.png",
+        "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/04_add_device.png",
+        "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/05_edit_device.png"
+      ]
+    },
+    "encoding-utf16-bom": {
+      "count": 1,
+      "recommended_decision": "include",
+      "description": "UTF-16 with BOM; office-common decodes it natively.",
+      "suggested_reason": "",
+      "exclude_only": false,
+      "examples": [
+        "services/documentation/content/3-technical-documentation/4-backend_documentation/db_documentation/access_management/common_references_tables/_index.md"
+      ]
+    },
+    "encoding-utf8-bom": {
+      "count": 3,
+      "recommended_decision": "include",
+      "description": "UTF-8 with BOM; office-common decodes it natively.",
+      "suggested_reason": "",
+      "exclude_only": false,
+      "examples": [
+        "services/backend/src/main/resources/db/changelog/data/data_for_ref_item_impact_water_use.csv",
+        "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/documents/datacenter_Sample.csv",
+        "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/documents/virtualEquipment_Sample.csv"
+      ]
+    },
+    "html": {
+      "count": 92,
+      "recommended_decision": "convert",
+      "description": "HTML; convert to structured text first.",
+      "suggested_reason": "",
+      "exclude_only": false,
+      "examples": [
+        "services/frontend/nginx/error.html",
+        "services/frontend/src/app/app.component.html",
+        "services/frontend/src/app/layout/about-us/declarations/declarations.component.html",
+        "services/frontend/src/app/layout/about-us/useful-information/useful-information.component.html",
+        "services/frontend/src/app/layout/administration/administration-panel/administration-panel.component.html"
+      ]
+    },
+    "ready": {
+      "count": 354,
+      "recommended_decision": "include",
+      "description": "Natively extractable.",
+      "suggested_reason": "",
+      "exclude_only": false,
+      "examples": [
+        "services/backend/README.md",
+        "services/backend/spec/applicationViewOptimizationFeature/solution.md",
+        "services/backend/spec/applicationViewOptimizationFeature/specification.md",
+        "services/backend/src/main/resources/db/changelog/data/ref_network_type.csv",
+        "services/backend/src/main/resources/db/changelog/data/ref_server_host.csv"
+      ]
+    }
+  },
+  "skipped_directories": [],
+  "sources": [
+    {
+      "path": "services/backend/README.md",
+      "format": ".md",
+      "size": 1162,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/spec/applicationViewOptimizationFeature/solution.md",
+      "format": ".md",
+      "size": 79745,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/spec/applicationViewOptimizationFeature/specification.md",
+      "format": ".md",
+      "size": 4662,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/main/resources/db/changelog/data/data_for_ref_item_impact_water_use.csv",
+      "format": ".csv",
+      "size": 682664,
+      "native": true,
+      "requestable": true,
+      "category": "encoding-utf8-bom",
+      "signals": [
+        "encoding-utf8-bom"
+      ],
+      "details": [
+        "encoding:utf-8-sig"
+      ]
+    },
+    {
+      "path": "services/backend/src/main/resources/db/changelog/data/ref_network_type.csv",
+      "format": ".csv",
+      "size": 699,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/main/resources/db/changelog/data/ref_server_host.csv",
+      "format": ".csv",
+      "size": 25633,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/main/resources/db/changelog/data/ref_sustainable_individual_package.csv",
+      "format": ".csv",
+      "size": 1041,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/main/resources/db/changelog/data/ref_sustainable_individual_package_new_crit.csv",
+      "format": ".csv",
+      "size": 2143,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/main/resources/db/changelog/data/ref_terminal_device_type.csv",
+      "format": ".csv",
+      "size": 1950,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/main/resources/db/changelog/referential-data/ref_criterion.csv",
+      "format": ".csv",
+      "size": 1271,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/main/resources/db/changelog/referential-data/ref_device_type.csv",
+      "format": ".csv",
+      "size": 1950,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/main/resources/db/changelog/referential-data/ref_hypothesis.csv",
+      "format": ".csv",
+      "size": 201,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/main/resources/db/changelog/referential-data/ref_item_impact.csv",
+      "format": ".csv",
+      "size": 259167,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/main/resources/db/changelog/referential-data/ref_item_impact_ai_server.csv",
+      "format": ".csv",
+      "size": 74191,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/main/resources/db/changelog/referential-data/ref_item_impact_ai_server_v2.csv",
+      "format": ".csv",
+      "size": 42715,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/main/resources/db/changelog/referential-data/ref_item_type.csv",
+      "format": ".csv",
+      "size": 656,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/main/resources/db/changelog/referential-data/ref_item_type_ai_server.csv",
+      "format": ".csv",
+      "size": 200,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/main/resources/db/changelog/referential-data/ref_lifecycle_step.csv",
+      "format": ".csv",
+      "size": 104,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/main/resources/db/changelog/referential-data/ref_matching_item.csv",
+      "format": ".csv",
+      "size": 327,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/main/resources/db/changelog/referential-data/ref_matching_item_ai_server.csv",
+      "format": ".csv",
+      "size": 345,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/main/resources/db/changelog/referential-data/ref_matching_item_ai_server_v2.csv",
+      "format": ".csv",
+      "size": 96,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/main/resources/db/changelog/referential-data/ref_network_type.csv",
+      "format": ".csv",
+      "size": 487,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/main/resources/db/changelog/referential-data/ref_server_host.csv",
+      "format": ".csv",
+      "size": 991,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/main/resources/db/changelog/referential-data/ref_sustainable_individual_package.csv",
+      "format": ".csv",
+      "size": 3119,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/main/resources/samples/inputs/1-datacenter.csv",
+      "format": ".csv",
+      "size": 156,
+      "native": true,
+      "requestable": true,
+      "category": "path-heuristic",
+      "signals": [
+        "path-heuristic"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/main/resources/samples/inputs/2-physicalEquipments.csv",
+      "format": ".csv",
+      "size": 719,
+      "native": true,
+      "requestable": true,
+      "category": "path-heuristic",
+      "signals": [
+        "path-heuristic"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/main/resources/samples/inputs/3-virtualEquipments.csv",
+      "format": ".csv",
+      "size": 836,
+      "native": true,
+      "requestable": true,
+      "category": "path-heuristic",
+      "signals": [
+        "path-heuristic"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/main/resources/samples/inputs/4-applications.csv",
+      "format": ".csv",
+      "size": 1203,
+      "native": true,
+      "requestable": true,
+      "category": "path-heuristic",
+      "signals": [
+        "path-heuristic"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/test/resources/apibatchloading/work/20230101-104559/DATACENTER/invalid_headers.csv",
+      "format": ".csv",
+      "size": 24,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/test/resources/apibatchloading/work/20230101-104559/EQUIPEMENT_PHYSIQUE/equipementPhysique_ok.csv",
+      "format": ".csv",
+      "size": 364,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/test/resources/apibatchloading/work/20230401-104551/EQUIPEMENT_PHYSIQUE/invalid_headers.csv",
+      "format": ".csv",
+      "size": 24,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/test/resources/apibatchloading/work/20230401-104552/EQUIPEMENT_PHYSIQUE/equipementPhysique_good_header.csv",
+      "format": ".csv",
+      "size": 241,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/test/resources/apibatchloading/work/20230420-161015/APPLICATION/application_avec_erreur_champs_obligatoire.csv",
+      "format": ".csv",
+      "size": 384,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/test/resources/apibatchloading/work/20230420-161015/APPLICATION/application_avec_erreur_coherence.csv",
+      "format": ".csv",
+      "size": 639,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/test/resources/apibatchloading/work/20230420-161015/APPLICATION/application_ok.csv",
+      "format": ".csv",
+      "size": 1001,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/test/resources/apibatchloading/work/20230420-161015/DATACENTER/dataCenters_ok.csv",
+      "format": ".csv",
+      "size": 320,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/test/resources/apibatchloading/work/20230420-161015/DATACENTER/datacenter_avec_erreur_champs_obligatoire.csv",
+      "format": ".csv",
+      "size": 176,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/test/resources/apibatchloading/work/20230420-161015/DATACENTER/datacenter_avec_erreur_format.csv",
+      "format": ".csv",
+      "size": 249,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/test/resources/apibatchloading/work/20230420-161015/DATACENTER/datacenter_avec_erreur_referentiel.csv",
+      "format": ".csv",
+      "size": 249,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/test/resources/apibatchloading/work/20230420-161015/EQUIPEMENT_PHYSIQUE/equipementPhysique_avec_erreur_champs_obligatoire.csv",
+      "format": ".csv",
+      "size": 875,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/test/resources/apibatchloading/work/20230420-161015/EQUIPEMENT_PHYSIQUE/equipementPhysique_avec_erreur_coherence.csv",
+      "format": ".csv",
+      "size": 362,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/test/resources/apibatchloading/work/20230420-161015/EQUIPEMENT_PHYSIQUE/equipementPhysique_avec_erreur_format.csv",
+      "format": ".csv",
+      "size": 1394,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/test/resources/apibatchloading/work/20230420-161015/EQUIPEMENT_PHYSIQUE/equipementPhysique_avec_erreur_referentiel.csv",
+      "format": ".csv",
+      "size": 637,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/test/resources/apibatchloading/work/20230420-161015/EQUIPEMENT_PHYSIQUE/equipementPhysique_ok.csv",
+      "format": ".csv",
+      "size": 2394,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/test/resources/apibatchloading/work/20230420-161015/EQUIPEMENT_VIRTUEL/equipementVirtuel_avec_erreur_champs_obligatoire.csv",
+      "format": ".csv",
+      "size": 138,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/test/resources/apibatchloading/work/20230420-161015/EQUIPEMENT_VIRTUEL/equipementVirtuel_avec_erreur_de_coherence.csv",
+      "format": ".csv",
+      "size": 98,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/test/resources/apibatchloading/work/20230420-161015/EQUIPEMENT_VIRTUEL/equipementVirtuel_avec_erreurs_format.csv",
+      "format": ".csv",
+      "size": 703,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/test/resources/apibatchloading/work/20230420-161015/EQUIPEMENT_VIRTUEL/equipementVirtuel_ok.csv",
+      "format": ".csv",
+      "size": 909,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/test/resources/apibatchloading/work/20230420-161016/APPLICATION/application.csv",
+      "format": ".csv",
+      "size": 637,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/test/resources/apibatchloading/work/20230420-161016/DATACENTER/datacenter.csv",
+      "format": ".csv",
+      "size": 222,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/test/resources/apibatchloading/work/20230420-161016/DATACENTER/datacenter_with_quote.csv",
+      "format": ".csv",
+      "size": 139,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/test/resources/apibatchloading/work/20230420-161016/EQUIPEMENT_PHYSIQUE/physical_equipement_with_quote.csv",
+      "format": ".csv",
+      "size": 404,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/test/resources/apibatchloading/work/20230420-161016/EQUIPEMENT_PHYSIQUE/physical_equipment.csv",
+      "format": ".csv",
+      "size": 1768,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/test/resources/apibatchloading/work/20230420-161016/EQUIPEMENT_VIRTUEL/virtual_equipment.csv",
+      "format": ".csv",
+      "size": 246,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/test/resources/apibatchloading/work/20230421-103000/DATACENTER/datacenter_for_update_test.csv",
+      "format": ".csv",
+      "size": 123,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/test/resources/apibatchloading/work/20230512-213100/DATACENTER/datacenter_for_zip_test.csv",
+      "format": ".csv",
+      "size": 123,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/test/resources/apibatchloading/work/20230728-100000/DATACENTER/datacenter_19-07-2023 18-05.csv",
+      "format": ".csv",
+      "size": 238,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/test/resources/apibatchloading/work/20230728-100000/EQUIPEMENT_PHYSIQUE/equipementPhysique-light_19-07-2023 18-05.csv",
+      "format": ".csv",
+      "size": 199463,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/test/resources/apibatchloading/work/20230925-161016/APPLICATION/application.csv",
+      "format": ".csv",
+      "size": 1133,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/test/resources/apibatchloading/work/20230925-161016/DATACENTER/datacenter.csv",
+      "format": ".csv",
+      "size": 807,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/test/resources/apibatchloading/work/20230925-161016/EQUIPEMENT_PHYSIQUE/physical_equipment.csv",
+      "format": ".csv",
+      "size": 4141,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/test/resources/apibatchloading/work/20230925-161016/EQUIPEMENT_VIRTUEL/equipementVirtuel.csv",
+      "format": ".csv",
+      "size": 1028,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/test/resources/apievaluating/eval_nominal/export/application.csv",
+      "format": ".csv",
+      "size": 345,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/test/resources/apievaluating/eval_nominal/export/datacenter.csv",
+      "format": ".csv",
+      "size": 147,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/test/resources/apievaluating/eval_nominal/export/ind_application.csv",
+      "format": ".csv",
+      "size": 1135,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/test/resources/apievaluating/eval_nominal/export/ind_physical_equipment.csv",
+      "format": ".csv",
+      "size": 1764,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/test/resources/apievaluating/eval_nominal/export/ind_virtual_equipment.csv",
+      "format": ".csv",
+      "size": 1246,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/test/resources/apievaluating/eval_nominal/export/physical_equipment.csv",
+      "format": ".csv",
+      "size": 499,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/test/resources/apievaluating/eval_nominal/export/virtual_equipment.csv",
+      "format": ".csv",
+      "size": 444,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/test/resources/apievaluating/eval_nominal/input/APPLICATION_nominal.csv",
+      "format": ".csv",
+      "size": 320,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/test/resources/apievaluating/eval_nominal/input/DATACENTER_nominal.csv",
+      "format": ".csv",
+      "size": 148,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/test/resources/apievaluating/eval_nominal/input/EQUIPEMENT_PHYSIQUE_nominal.csv",
+      "format": ".csv",
+      "size": 386,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/test/resources/apievaluating/eval_nominal/input/EQUIPEMENT_VIRTUEL_nominal.csv",
+      "format": ".csv",
+      "size": 295,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/test/resources/apievaluating/eval_nominal/ref/criterion.csv",
+      "format": ".csv",
+      "size": 1279,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/test/resources/apievaluating/eval_nominal/ref/hypothesis.csv",
+      "format": ".csv",
+      "size": 141,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/test/resources/apievaluating/eval_nominal/ref/itemImpact.csv",
+      "format": ".csv",
+      "size": 1295,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/test/resources/apievaluating/eval_nominal/ref/itemType.csv",
+      "format": ".csv",
+      "size": 161,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/test/resources/apievaluating/eval_nominal/ref/lifecycleStep.csv",
+      "format": ".csv",
+      "size": 39,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/test/resources/apiloadinputfiles/load_nominal/input/APPLICATION_nominal.csv",
+      "format": ".csv",
+      "size": 502,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/test/resources/apiloadinputfiles/load_nominal/input/DATACENTER_nominal.csv",
+      "format": ".csv",
+      "size": 148,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/test/resources/apiloadinputfiles/load_nominal/input/EQUIPEMENT_PHYSIQUE_nominal.csv",
+      "format": ".csv",
+      "size": 369,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/test/resources/apiloadinputfiles/load_nominal/input/EQUIPEMENT_VIRTUEL_nominal.csv",
+      "format": ".csv",
+      "size": 537,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/test/resources/apiloadinputfiles/load_nominal/ref/itemImpact.csv",
+      "format": ".csv",
+      "size": 1039,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/test/resources/apiloadinputfiles/load_nominal/ref/itemType.csv",
+      "format": ".csv",
+      "size": 161,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/test/resources/apiloadinputfiles/load_nominal/ref/matchingItem.csv",
+      "format": ".csv",
+      "size": 120,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/test/resources/apiloadinputfiles/load_reject/input/APPLICATION_nominal.csv",
+      "format": ".csv",
+      "size": 859,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/test/resources/apiloadinputfiles/load_reject/input/DATACENTER_nominal.csv",
+      "format": ".csv",
+      "size": 147,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/test/resources/apiloadinputfiles/load_reject/input/EQUIPEMENT_PHYSIQUE_nominal.csv",
+      "format": ".csv",
+      "size": 492,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/test/resources/apiloadinputfiles/load_reject/input/EQUIPEMENT_VIRTUEL_nominal.csv",
+      "format": ".csv",
+      "size": 742,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/test/resources/apiloadinputfiles/load_reject/ref/itemImpact.csv",
+      "format": ".csv",
+      "size": 1039,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/test/resources/apiloadinputfiles/load_reject/ref/itemType.csv",
+      "format": ".csv",
+      "size": 161,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/test/resources/apiloadinputfiles/load_reject/rejects/rejected_application_20240101_000000.csv",
+      "format": ".csv",
+      "size": 1326,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/test/resources/apiloadinputfiles/load_reject/rejects/rejected_datacenter_20240101_000000.csv",
+      "format": ".csv",
+      "size": 304,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/test/resources/apiloadinputfiles/load_reject/rejects/rejected_physical_equipment_20240101_000000.csv",
+      "format": ".csv",
+      "size": 966,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/test/resources/apiloadinputfiles/load_reject/rejects/rejected_virtual_equipment_20240101_000000.csv",
+      "format": ".csv",
+      "size": 1312,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/test/resources/common/filesystem/azure/test-upload.txt",
+      "format": ".txt",
+      "size": 0,
+      "native": true,
+      "requestable": true,
+      "category": "empty",
+      "signals": [
+        "empty"
+      ],
+      "details": []
+    },
+    {
+      "path": "services/backend/src/test/resources/common/filesystem/local/input/file1.txt",
+      "format": ".txt",
+      "size": 15,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/test/resources/common/filesystem/local/input/file2.csv",
+      "format": ".csv",
+      "size": 14,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/test/resources/common/filesystem/local/template/application.csv",
+      "format": ".csv",
+      "size": 133,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/test/resources/common/filesystem/local/template/datamodel.xlsx",
+      "format": ".xlsx",
+      "size": 10656,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": []
+    },
+    {
+      "path": "services/backend/src/test/resources/common/filesystem/local/work/20230511-1815/DATACENTER/datacenter.txt",
+      "format": ".txt",
+      "size": 0,
+      "native": true,
+      "requestable": true,
+      "category": "empty",
+      "signals": [
+        "empty"
+      ],
+      "details": []
+    },
+    {
+      "path": "services/backend/src/test/resources/common/filesystem/local/work/20230511-1815/DATACENTER/datacenter2.txt",
+      "format": ".txt",
+      "size": 0,
+      "native": true,
+      "requestable": true,
+      "category": "empty",
+      "signals": [
+        "empty"
+      ],
+      "details": []
+    },
+    {
+      "path": "services/backend/src/test/resources/common/filesystem/local/work/20231904-1808/DATACENTER/datacenter.txt",
+      "format": ".txt",
+      "size": 0,
+      "native": true,
+      "requestable": true,
+      "category": "empty",
+      "signals": [
+        "empty"
+      ],
+      "details": []
+    },
+    {
+      "path": "services/backend/src/test/resources/external/numecoeval/file/application.csv",
+      "format": ".csv",
+      "size": 1793,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/test/resources/external/numecoeval/file/datacenter.csv",
+      "format": ".csv",
+      "size": 282,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/test/resources/external/numecoeval/file/physical_equipment.csv",
+      "format": ".csv",
+      "size": 992,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/src/test/resources/external/numecoeval/file/virtual_equipment.csv",
+      "format": ".csv",
+      "size": 706,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/storage/--INTERNAL-G4IT--/0/templates/G4IT_Datamodel_and_reference_data_v3.2.0.xlsx",
+      "format": ".xlsx",
+      "size": 176890,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": []
+    },
+    {
+      "path": "services/backend/storage/--INTERNAL-G4IT--/0/templates/G4IT_Datamodel_workspace_reference_data_v1.0.0.xlsx",
+      "format": ".xlsx",
+      "size": 32678,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": []
+    },
+    {
+      "path": "services/backend/storage/--INTERNAL-G4IT--/0/templates/ds_datacenter.csv",
+      "format": ".csv",
+      "size": 80,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/storage/--INTERNAL-G4IT--/0/templates/ds_physical_equipment_network.csv",
+      "format": ".csv",
+      "size": 174,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/storage/--INTERNAL-G4IT--/0/templates/ds_physical_equipment_non_cloud.csv",
+      "format": ".csv",
+      "size": 245,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/storage/--INTERNAL-G4IT--/0/templates/ds_physical_equipment_terminal.csv",
+      "format": ".csv",
+      "size": 208,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/storage/--INTERNAL-G4IT--/0/templates/ds_virtual_equipment_cloud.csv",
+      "format": ".csv",
+      "size": 115,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/storage/--INTERNAL-G4IT--/0/templates/ds_virtual_equipment_non_cloud.csv",
+      "format": ".csv",
+      "size": 212,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/storage/--INTERNAL-G4IT--/0/templates/inv_AIservices.csv",
+      "format": ".csv",
+      "size": 75,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/storage/--INTERNAL-G4IT--/0/templates/inv_application.csv",
+      "format": ".csv",
+      "size": 183,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/storage/--INTERNAL-G4IT--/0/templates/inv_datacenter.csv",
+      "format": ".csv",
+      "size": 64,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/storage/--INTERNAL-G4IT--/0/templates/inv_physicalEquipment.csv",
+      "format": ".csv",
+      "size": 164,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/storage/--INTERNAL-G4IT--/0/templates/inv_virtualEquipment.csv",
+      "format": ".csv",
+      "size": 261,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/volume_generation/.env",
+      "format": "",
+      "size": null,
+      "native": false,
+      "requestable": false,
+      "category": "sensitive",
+      "signals": [
+        "sensitive"
+      ],
+      "details": [
+        "key-material-or-environment-file"
+      ]
+    },
+    {
+      "path": "services/backend/volume_generation/input_template/1-datacenter.csv",
+      "format": ".csv",
+      "size": 241,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/volume_generation/input_template/2-physical-equipment.csv",
+      "format": ".csv",
+      "size": 252,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/volume_generation/input_template/3-virtual-equipment.csv",
+      "format": ".csv",
+      "size": 238,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/volume_generation/input_template/4-application.csv",
+      "format": ".csv",
+      "size": 248,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/backend/volume_generation/input_template/5-cloud-virtual-equipment.csv",
+      "format": ".csv",
+      "size": 334,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/01_First-Login.md",
+      "format": ".md",
+      "size": 2174,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/1-collect_data.md",
+      "format": ".md",
+      "size": 4394,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/2-load_data.md",
+      "format": ".md",
+      "size": 14622,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/3-visualize_impact.md",
+      "format": ".md",
+      "size": 9517,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/_index.md",
+      "format": ".md",
+      "size": 2089,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/01_ds_module_access.png",
+      "format": ".png",
+      "size": 80973,
+      "native": true,
+      "requestable": true,
+      "category": "image-file",
+      "signals": [
+        "image-file"
+      ],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/02_create_a_ds.png",
+      "format": ".png",
+      "size": 79267,
+      "native": true,
+      "requestable": true,
+      "category": "image-file",
+      "signals": [
+        "image-file"
+      ],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/03_edit_name_create_device.png",
+      "format": ".png",
+      "size": 52800,
+      "native": true,
+      "requestable": true,
+      "category": "image-file",
+      "signals": [
+        "image-file"
+      ],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/04_add_device.png",
+      "format": ".png",
+      "size": 77969,
+      "native": true,
+      "requestable": true,
+      "category": "image-file",
+      "signals": [
+        "image-file"
+      ],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/05_edit_device.png",
+      "format": ".png",
+      "size": 49298,
+      "native": true,
+      "requestable": true,
+      "category": "image-file",
+      "signals": [
+        "image-file"
+      ],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/06_add_network.png",
+      "format": ".png",
+      "size": 29530,
+      "native": true,
+      "requestable": true,
+      "category": "image-file",
+      "signals": [
+        "image-file"
+      ],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/07_add_network.png",
+      "format": ".png",
+      "size": 68546,
+      "native": true,
+      "requestable": true,
+      "category": "image-file",
+      "signals": [
+        "image-file"
+      ],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/08_create_server.png",
+      "format": ".png",
+      "size": 36601,
+      "native": true,
+      "requestable": true,
+      "category": "image-file",
+      "signals": [
+        "image-file"
+      ],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/09_add_server_step_1.png",
+      "format": ".png",
+      "size": 65801,
+      "native": true,
+      "requestable": true,
+      "category": "image-file",
+      "signals": [
+        "image-file"
+      ],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/10_add_server_step_2.png",
+      "format": ".png",
+      "size": 48850,
+      "native": true,
+      "requestable": true,
+      "category": "image-file",
+      "signals": [
+        "image-file"
+      ],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/11_add_server_add_datacenter.png",
+      "format": ".png",
+      "size": 20442,
+      "native": true,
+      "requestable": true,
+      "category": "image-file",
+      "signals": [
+        "image-file"
+      ],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/12_add_server_step_3.png",
+      "format": ".png",
+      "size": 39932,
+      "native": true,
+      "requestable": true,
+      "category": "image-file",
+      "signals": [
+        "image-file"
+      ],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/13_B_import_cloud_instance.png",
+      "format": ".png",
+      "size": 122550,
+      "native": true,
+      "requestable": true,
+      "category": "image-file",
+      "signals": [
+        "image-file"
+      ],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/13_add_cloud_instance.png",
+      "format": ".png",
+      "size": 80284,
+      "native": true,
+      "requestable": true,
+      "category": "image-file",
+      "signals": [
+        "image-file"
+      ],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/14_create_cloud_instance.png",
+      "format": ".png",
+      "size": 100171,
+      "native": true,
+      "requestable": true,
+      "category": "image-file",
+      "signals": [
+        "image-file"
+      ],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/15_evaluate_the_impact.png",
+      "format": ".png",
+      "size": 62335,
+      "native": true,
+      "requestable": true,
+      "category": "image-file",
+      "signals": [
+        "image-file"
+      ],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/16_choose_criteria.png",
+      "format": ".png",
+      "size": 136662,
+      "native": true,
+      "requestable": true,
+      "category": "image-file",
+      "signals": [
+        "image-file"
+      ],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/17_visualize_impact.png",
+      "format": ".png",
+      "size": 153358,
+      "native": true,
+      "requestable": true,
+      "category": "image-file",
+      "signals": [
+        "image-file"
+      ],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/18_visualize_impact_criteria.png",
+      "format": ".png",
+      "size": 133905,
+      "native": true,
+      "requestable": true,
+      "category": "image-file",
+      "signals": [
+        "image-file"
+      ],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/19_visualize_impact_terminal.png",
+      "format": ".png",
+      "size": 118191,
+      "native": true,
+      "requestable": true,
+      "category": "image-file",
+      "signals": [
+        "image-file"
+      ],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/20_visualize_impact_terminal_lifecycle.png",
+      "format": ".png",
+      "size": 113075,
+      "native": true,
+      "requestable": true,
+      "category": "image-file",
+      "signals": [
+        "image-file"
+      ],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/21_visualize_impact_network.png",
+      "format": ".png",
+      "size": 113225,
+      "native": true,
+      "requestable": true,
+      "category": "image-file",
+      "signals": [
+        "image-file"
+      ],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/22_visualize_impact_server.png",
+      "format": ".png",
+      "size": 114040,
+      "native": true,
+      "requestable": true,
+      "category": "image-file",
+      "signals": [
+        "image-file"
+      ],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/23_visualize_impact_server_vm.png",
+      "format": ".png",
+      "size": 106077,
+      "native": true,
+      "requestable": true,
+      "category": "image-file",
+      "signals": [
+        "image-file"
+      ],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/24_visualize_impact_cloud.png",
+      "format": ".png",
+      "size": 112680,
+      "native": true,
+      "requestable": true,
+      "category": "image-file",
+      "signals": [
+        "image-file"
+      ],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/25_visualize_impact_cloud_lifecycle.png",
+      "format": ".png",
+      "size": 118826,
+      "native": true,
+      "requestable": true,
+      "category": "image-file",
+      "signals": [
+        "image-file"
+      ],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/3_import-button.png",
+      "format": ".png",
+      "size": 58122,
+      "native": true,
+      "requestable": true,
+      "category": "image-file",
+      "signals": [
+        "image-file"
+      ],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/3_import-devices_physical_equipments.png",
+      "format": ".png",
+      "size": 115002,
+      "native": true,
+      "requestable": true,
+      "category": "image-file",
+      "signals": [
+        "image-file"
+      ],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/6_import-networks_physical_equipments.png",
+      "format": ".png",
+      "size": 110700,
+      "native": true,
+      "requestable": true,
+      "category": "image-file",
+      "signals": [
+        "image-file"
+      ],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/8_import-button.png",
+      "format": ".png",
+      "size": 78826,
+      "native": true,
+      "requestable": true,
+      "category": "image-file",
+      "signals": [
+        "image-file"
+      ],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/8_import-non-cloud-server.png",
+      "format": ".png",
+      "size": 133258,
+      "native": true,
+      "requestable": true,
+      "category": "image-file",
+      "signals": [
+        "image-file"
+      ],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/data_collected.png",
+      "format": ".png",
+      "size": 35957,
+      "native": true,
+      "requestable": true,
+      "category": "image-file",
+      "signals": [
+        "image-file"
+      ],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/screenshot.pptx",
+      "format": ".pptx",
+      "size": 4499925,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/~$screenshot.pptx",
+      "format": ".pptx",
+      "size": 165,
+      "native": true,
+      "requestable": true,
+      "category": "zip-invalid",
+      "signals": [
+        "zip-invalid"
+      ],
+      "details": [
+        "unreadable-archive"
+      ]
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/1-collect_data/01_Help_yourself_with_pre-filled_templates.md",
+      "format": ".md",
+      "size": 2440,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/1-collect_data/_index.md",
+      "format": ".md",
+      "size": 5896,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/2-load_data.md",
+      "format": ".md",
+      "size": 8183,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/3-visualize_impact.md",
+      "format": ".md",
+      "size": 4813,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/4-explore_inventories_data_PowerBI.md",
+      "format": ".md",
+      "size": 1840,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/_index.md",
+      "format": ".md",
+      "size": 3064,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/documents/User_Devices_01_Laptop_Template.csv",
+      "format": ".csv",
+      "size": 414,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/documents/User_Server_01_InstancesCloud_Template.csv",
+      "format": ".csv",
+      "size": 243,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/documents/application_Sample.csv",
+      "format": ".csv",
+      "size": 580,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/documents/application_toFillIn.xlsx",
+      "format": ".xlsx",
+      "size": 13433,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/documents/datacenter_Sample.csv",
+      "format": ".csv",
+      "size": 96,
+      "native": true,
+      "requestable": true,
+      "category": "encoding-utf8-bom",
+      "signals": [
+        "encoding-utf8-bom"
+      ],
+      "details": [
+        "encoding:utf-8-sig"
+      ]
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/documents/datacenter_sampleMandatory1.csv",
+      "format": ".csv",
+      "size": 119,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/documents/datacenter_toFillIn.xlsx",
+      "format": ".xlsx",
+      "size": 12263,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/documents/physicalEquipment_example.csv",
+      "format": ".csv",
+      "size": 203,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/documents/physicalEquipment_toFillIn.csv",
+      "format": ".csv",
+      "size": 513,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/documents/physicalEquipment_toFillIn.xlsx",
+      "format": ".xlsx",
+      "size": 12561,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/documents/virtualEquipment_Sample.csv",
+      "format": ".csv",
+      "size": 795,
+      "native": true,
+      "requestable": true,
+      "category": "encoding-utf8-bom",
+      "signals": [
+        "encoding-utf8-bom"
+      ],
+      "details": [
+        "encoding:utf-8-sig"
+      ]
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/documents/virtualEquipment_toFillIn.xlsx",
+      "format": ".xlsx",
+      "size": 12890,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/images/01_IS_Module_access.png",
+      "format": ".png",
+      "size": 191178,
+      "native": true,
+      "requestable": true,
+      "category": "image-file",
+      "signals": [
+        "image-file"
+      ],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/images/02_create_an_inventory_1.png",
+      "format": ".png",
+      "size": 945090,
+      "native": true,
+      "requestable": true,
+      "category": "image-file",
+      "signals": [
+        "image-file"
+      ],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/images/02_create_an_inventory_2.png",
+      "format": ".png",
+      "size": 1017196,
+      "native": true,
+      "requestable": true,
+      "category": "image-file",
+      "signals": [
+        "image-file"
+      ],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/images/1-PowerBiFolder.png",
+      "format": ".png",
+      "size": 17990,
+      "native": true,
+      "requestable": true,
+      "category": "image-file",
+      "signals": [
+        "image-file"
+      ],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/images/2-PowerBiFolder_InventoriesFiles.png",
+      "format": ".png",
+      "size": 25683,
+      "native": true,
+      "requestable": true,
+      "category": "image-file",
+      "signals": [
+        "image-file"
+      ],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/images/3-PowerBiEditParameters.png",
+      "format": ".png",
+      "size": 104654,
+      "native": true,
+      "requestable": true,
+      "category": "image-file",
+      "signals": [
+        "image-file"
+      ],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/images/4-PowerBiExportInventoryonG4IT.png",
+      "format": ".png",
+      "size": 30542,
+      "native": true,
+      "requestable": true,
+      "category": "image-file",
+      "signals": [
+        "image-file"
+      ],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/images/5-PowerBiUpdate.png",
+      "format": ".png",
+      "size": 103847,
+      "native": true,
+      "requestable": true,
+      "category": "image-file",
+      "signals": [
+        "image-file"
+      ],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/images/Application_View_Specificities.png",
+      "format": ".png",
+      "size": 175101,
+      "native": true,
+      "requestable": true,
+      "category": "image-file",
+      "signals": [
+        "image-file"
+      ],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/images/Choose_criteria.png",
+      "format": ".png",
+      "size": 208762,
+      "native": true,
+      "requestable": true,
+      "category": "image-file",
+      "signals": [
+        "image-file"
+      ],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/images/Common_components.png",
+      "format": ".png",
+      "size": 72331,
+      "native": true,
+      "requestable": true,
+      "category": "image-file",
+      "signals": [
+        "image-file"
+      ],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/images/Datamodel_download.png",
+      "format": ".png",
+      "size": 146323,
+      "native": true,
+      "requestable": true,
+      "category": "image-file",
+      "signals": [
+        "image-file"
+      ],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/images/Equipment_View_Specificities.png",
+      "format": ".png",
+      "size": 218828,
+      "native": true,
+      "requestable": true,
+      "category": "image-file",
+      "signals": [
+        "image-file"
+      ],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/images/Equipment_and_Application_button.png",
+      "format": ".png",
+      "size": 190583,
+      "native": true,
+      "requestable": true,
+      "category": "image-file",
+      "signals": [
+        "image-file"
+      ],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/images/Evaluate_the_impact.png",
+      "format": ".png",
+      "size": 189570,
+      "native": true,
+      "requestable": true,
+      "category": "image-file",
+      "signals": [
+        "image-file"
+      ],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/images/Navigating_in_Application_View.png",
+      "format": ".png",
+      "size": 141076,
+      "native": true,
+      "requestable": true,
+      "category": "image-file",
+      "signals": [
+        "image-file"
+      ],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/images/ScreenShot_ISModule.pptx",
+      "format": ".pptx",
+      "size": 979177,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/images/control_number_of_item.png",
+      "format": ".png",
+      "size": 11072,
+      "native": true,
+      "requestable": true,
+      "category": "image-file",
+      "signals": [
+        "image-file"
+      ],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/images/data_collected.png",
+      "format": ".png",
+      "size": 35957,
+      "native": true,
+      "requestable": true,
+      "category": "image-file",
+      "signals": [
+        "image-file"
+      ],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/images/loadInError.png",
+      "format": ".png",
+      "size": 2925,
+      "native": true,
+      "requestable": true,
+      "category": "image-file",
+      "signals": [
+        "image-file"
+      ],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/images/loadKOpng.png",
+      "format": ".png",
+      "size": 2832,
+      "native": true,
+      "requestable": true,
+      "category": "image-file",
+      "signals": [
+        "image-file"
+      ],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/images/loadOK.png",
+      "format": ".png",
+      "size": 4855,
+      "native": true,
+      "requestable": true,
+      "category": "image-file",
+      "signals": [
+        "image-file"
+      ],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/images/update_estimation.png",
+      "format": ".png",
+      "size": 5802,
+      "native": true,
+      "requestable": true,
+      "category": "image-file",
+      "signals": [
+        "image-file"
+      ],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/3-module-administration/01_Manage-users-in-my-space-workspace.md",
+      "format": ".md",
+      "size": 2325,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/3-module-administration/02_Manage-workspace.md",
+      "format": ".md",
+      "size": 2751,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/3-module-administration/_index.md",
+      "format": ".md",
+      "size": 3298,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/_index.md",
+      "format": ".md",
+      "size": 1281,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/2-getting-started-as-a-developper/1-How to setup my local dev env/1-tools.md",
+      "format": ".md",
+      "size": 3613,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/2-getting-started-as-a-developper/1-How to setup my local dev env/2-g4it-installation.md",
+      "format": ".md",
+      "size": 5002,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/2-getting-started-as-a-developper/1-How to setup my local dev env/3-configure-my-local-Identity-Provider-Keycloack.md",
+      "format": ".md",
+      "size": 3500,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/2-getting-started-as-a-developper/1-How to setup my local dev env/_index.md",
+      "format": ".md",
+      "size": 375,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/2-getting-started-as-a-developper/2-test_strategy/_index.md",
+      "format": ".md",
+      "size": 432,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/2-getting-started-as-a-developper/2-test_strategy/img.png",
+      "format": ".png",
+      "size": 42618,
+      "native": true,
+      "requestable": true,
+      "category": "image-file",
+      "signals": [
+        "image-file"
+      ],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/2-getting-started-as-a-developper/3-document-g4IT/1-generate_database_documentation/_index.md",
+      "format": ".md",
+      "size": 1790,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/2-getting-started-as-a-developper/3-document-g4IT/2-how_to_document_with_hugo_docs/_index.md",
+      "format": ".md",
+      "size": 1457,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/2-getting-started-as-a-developper/3-document-g4IT/2-how_to_document_with_hugo_docs/logo-overgreen.png",
+      "format": ".png",
+      "size": 1481,
+      "native": true,
+      "requestable": true,
+      "category": "image-file",
+      "signals": [
+        "image-file"
+      ],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/2-getting-started-as-a-developper/3-document-g4IT/2-how_to_document_with_hugo_docs/mermaid_sample.md",
+      "format": ".md",
+      "size": 5558,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/2-getting-started-as-a-developper/3-document-g4IT/3-Modify_architecture_schemas/_index.md",
+      "format": ".md",
+      "size": 640,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/2-getting-started-as-a-developper/3-document-g4IT/_index.md",
+      "format": ".md",
+      "size": 252,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/2-getting-started-as-a-developper/4-contribute/1-github-flow.md",
+      "format": ".md",
+      "size": 2078,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/2-getting-started-as-a-developper/4-contribute/2-git-commands.md",
+      "format": ".md",
+      "size": 2140,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/2-getting-started-as-a-developper/4-contribute/_index.md",
+      "format": ".md",
+      "size": 1369,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/2-getting-started-as-a-developper/_index.md",
+      "format": ".md",
+      "size": 287,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/2-getting-started-as-a-developper/missing_dependency.png",
+      "format": ".png",
+      "size": 473745,
+      "native": true,
+      "requestable": true,
+      "category": "image-file",
+      "signals": [
+        "image-file"
+      ],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/3-getting-started-as-a-maintainer/1-how-to/_index.md",
+      "format": ".md",
+      "size": 86,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/3-getting-started-as-a-maintainer/1-how-to/add_storage_or_data_retention_config/_index.md",
+      "format": ".md",
+      "size": 3258,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/3-getting-started-as-a-maintainer/1-how-to/deploy-in-environment/_index.md",
+      "format": ".md",
+      "size": 1605,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/3-getting-started-as-a-maintainer/1-how-to/ecomind/1-enable_ecomind_module/_index.md",
+      "format": ".md",
+      "size": 839,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/3-getting-started-as-a-maintainer/1-how-to/ecomind/2-enable_ecomind_for_an_organization/_index.md",
+      "format": ".md",
+      "size": 1215,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/3-getting-started-as-a-maintainer/1-how-to/ecomind/_index.md",
+      "format": ".md",
+      "size": 84,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/3-getting-started-as-a-maintainer/1-how-to/scripts/_index.md",
+      "format": ".md",
+      "size": 84,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/3-getting-started-as-a-maintainer/1-how-to/scripts/add_user_rigths/_index.md",
+      "format": ".md",
+      "size": 5169,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/3-getting-started-as-a-maintainer/1-how-to/scripts/delete_user_from_platform/_index.md",
+      "format": ".md",
+      "size": 6546,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/3-getting-started-as-a-maintainer/1-how-to/scripts/migrate_ds_to_chosen_workspace/_index.md",
+      "format": ".md",
+      "size": 5684,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/3-getting-started-as-a-maintainer/1-how-to/scripts/remove_write_access_in_demo_org/_index.md",
+      "format": ".md",
+      "size": 6745,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/3-getting-started-as-a-maintainer/1-how-to/scripts/rollback_migration/_index.md",
+      "format": ".md",
+      "size": 2612,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/3-getting-started-as-a-maintainer/_index.md",
+      "format": ".md",
+      "size": 292,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/_index.md",
+      "format": ".md",
+      "size": 205,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/_index.md",
+      "format": ".md",
+      "size": 111,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/global_concepts/_index.md",
+      "format": ".md",
+      "size": 152,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/global_concepts/environmental_footprint_assessment_methodology/_index.md",
+      "format": ".md",
+      "size": 1994,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/global_concepts/environmental_footprint_assessment_methodology/uc1_physical_equipment.md",
+      "format": ".md",
+      "size": 4213,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/global_concepts/environmental_footprint_assessment_methodology/uc2_virtual_equipment.md",
+      "format": ".md",
+      "size": 2499,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/global_concepts/environmental_footprint_assessment_methodology/uc3_application.md",
+      "format": ".md",
+      "size": 882,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/global_concepts/environmental_footprint_assessment_methodology/uc4_network.md",
+      "format": ".md",
+      "size": 3024,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/global_concepts/environmental_footprint_assessment_methodology/uc5_cloud.md",
+      "format": ".md",
+      "size": 574,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/global_concepts/environmental_footprint_assessment_methodology/uc6_ai_service.md",
+      "format": ".md",
+      "size": 6795,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/global_concepts/uc1_dataconsistency.md",
+      "format": ".md",
+      "size": 9240,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/global_concepts/uc2_people_equivalent.md",
+      "format": ".md",
+      "size": 862,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/global_concepts/uc3_low_impact.md",
+      "format": ".md",
+      "size": 1488,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/global_concepts/uc4_hide_reference_value.md",
+      "format": ".md",
+      "size": 3301,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/global_concepts/uc5_extend_the_time.md",
+      "format": ".md",
+      "size": 1714,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/open_api/_index.md",
+      "format": ".md",
+      "size": 7911,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/_index.md",
+      "format": ".md",
+      "size": 224,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_administration/_index.md",
+      "format": ".md",
+      "size": 2070,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_administration/uc_administration_manage_users/_index.md",
+      "format": ".md",
+      "size": 164,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_administration/uc_administration_manage_users/uc1_visualize_roles.md",
+      "format": ".md",
+      "size": 18135,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_administration/uc_administration_manage_users/uc2_add_roles.md",
+      "format": ".md",
+      "size": 10262,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_administration/uc_administration_manage_users/uc3_delete_roles.md",
+      "format": ".md",
+      "size": 3306,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_administration/uc_administration_manage_workspaces/_index.md",
+      "format": ".md",
+      "size": 173,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_administration/uc_administration_manage_workspaces/uc1_visualize_workspaces.md",
+      "format": ".md",
+      "size": 5555,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_administration/uc_administration_manage_workspaces/uc2_edit_workspaces.md",
+      "format": ".md",
+      "size": 10746,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_administration/uc_administration_manage_workspaces/uc3_create_workspaces.md",
+      "format": ".md",
+      "size": 4238,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_administration/uc_administration_manage_workspaces/uc4_delete_workspaces.md",
+      "format": ".md",
+      "size": 6298,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_administration/uc_administration_manage_workspaces/uc5_choose_criteria.md",
+      "format": ".md",
+      "size": 5848,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_administration/uc_administration_update_referential/_index.md",
+      "format": ".md",
+      "size": 568,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_administration/uc_administration_update_referential/csv_formats.md",
+      "format": ".md",
+      "size": 4738,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_administration/uc_administration_update_referential/uc1_import_referential.md",
+      "format": ".md",
+      "size": 5672,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_administration/uc_administration_update_workspace_referential/_index.md",
+      "format": ".md",
+      "size": 591,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_administration/uc_administration_update_workspace_referential/csv_formats.md",
+      "format": ".md",
+      "size": 3862,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_administration/uc_administration_update_workspace_referential/uc1_import_workspace_referential.md",
+      "format": ".md",
+      "size": 5109,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_authentification/_index.md",
+      "format": ".md",
+      "size": 861,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/_index.md",
+      "format": ".md",
+      "size": 1432,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc10_manage_digital-service_version.md",
+      "format": ".md",
+      "size": 5398,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc11_compare_two_versions.md",
+      "format": ".md",
+      "size": 3345,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc12_promote-digital-service-version.md",
+      "format": ".md",
+      "size": 3877,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc13_context_assumptions.md",
+      "format": ".md",
+      "size": 3171,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc1_visualize_digital_services.md",
+      "format": ".md",
+      "size": 7935,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc2_create_visualize_digital_service.md",
+      "format": ".md",
+      "size": 13131,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc3_add_visualize_equipments/_index.md",
+      "format": ".md",
+      "size": 3694,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc3_add_visualize_equipments/uc3_add_visualize_cloud_services/_index.md",
+      "format": ".md",
+      "size": 10195,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc3_add_visualize_equipments/uc3_add_visualize_cloud_services/add_visualize_cloud_services_via_forms.md",
+      "format": ".md",
+      "size": 4931,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc3_add_visualize_equipments/uc3_add_visualize_cloud_services/import_cloud_services_via_button.md",
+      "format": ".md",
+      "size": 10298,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc3_add_visualize_equipments/uc3_add_visualize_network/_index.md",
+      "format": ".md",
+      "size": 5606,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc3_add_visualize_equipments/uc3_add_visualize_network/add_visualize_networks_via_forms.md",
+      "format": ".md",
+      "size": 3868,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc3_add_visualize_equipments/uc3_add_visualize_network/import_network_via_button.md",
+      "format": ".md",
+      "size": 13578,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc3_add_visualize_equipments/uc3_add_visualize_noncloud-servers/_index.md",
+      "format": ".md",
+      "size": 6582,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc3_add_visualize_equipments/uc3_add_visualize_noncloud-servers/add_visualize_nonCloud_servers_via_forms.md",
+      "format": ".md",
+      "size": 22236,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc3_add_visualize_equipments/uc3_add_visualize_noncloud-servers/import_nonCloud_servers_via_button.md",
+      "format": ".md",
+      "size": 21161,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc3_add_visualize_equipments/uc3_add_visualize_terminals/_index.md",
+      "format": ".md",
+      "size": 6517,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc3_add_visualize_equipments/uc3_add_visualize_terminals/add_visualize_terminals_via_forms.md",
+      "format": ".md",
+      "size": 4229,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc3_add_visualize_equipments/uc3_add_visualize_terminals/import_terminal_via_button.md",
+      "format": ".md",
+      "size": 13642,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc4_launch_estimation.md",
+      "format": ".md",
+      "size": 8717,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc5_visualize_footprint/_index.md",
+      "format": ".md",
+      "size": 14771,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc5_visualize_footprint/visualize_cloud-service_footprint.md",
+      "format": ".md",
+      "size": 2184,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc5_visualize_footprint/visualize_network_footprint.md",
+      "format": ".md",
+      "size": 1656,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc5_visualize_footprint/visualize_non-cloud-server_footprint.md",
+      "format": ".md",
+      "size": 2167,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc5_visualize_footprint/visualize_terminal_footprint.md",
+      "format": ".md",
+      "size": 2082,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc6_export_digital_service.md",
+      "format": ".md",
+      "size": 3345,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc7_delete_digital_service.md",
+      "format": ".md",
+      "size": 6200,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc8_share_digital_service.md",
+      "format": ".md",
+      "size": 3852,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_digital_services/uc9_duplicate_digital_service_version.md",
+      "format": ".md",
+      "size": 5429,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_inventory/_index.md",
+      "format": ".md",
+      "size": 1507,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_inventory/uc1_visualize_inventory.md",
+      "format": ".md",
+      "size": 15922,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_inventory/uc2_create_inventory.md",
+      "format": ".md",
+      "size": 25603,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_inventory/uc3_load_files.md",
+      "format": ".md",
+      "size": 12728,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_inventory/uc4_launch_estimation.md",
+      "format": ".md",
+      "size": 9020,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_inventory/uc5_visualize_equipment_footprint.md",
+      "format": ".md",
+      "size": 25105,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_inventory/uc6_visualize_application_footprint.md",
+      "format": ".md",
+      "size": 81211,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_inventory/uc7_export_files.md",
+      "format": ".md",
+      "size": 4374,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_inventory/uc8_delete_inventory.md",
+      "format": ".md",
+      "size": 1884,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_navigation_menu/_index.md",
+      "format": ".md",
+      "size": 121,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_navigation_menu/images/Welcome page.pptx",
+      "format": ".pptx",
+      "size": 799331,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_navigation_menu/images/accessibility_1.png",
+      "format": ".png",
+      "size": 245373,
+      "native": true,
+      "requestable": true,
+      "category": "image-file",
+      "signals": [
+        "image-file"
+      ],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_navigation_menu/images/accessibility_2.png",
+      "format": ".png",
+      "size": 193729,
+      "native": true,
+      "requestable": true,
+      "category": "image-file",
+      "signals": [
+        "image-file"
+      ],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_navigation_menu/images/accessibility_3.png",
+      "format": ".png",
+      "size": 207871,
+      "native": true,
+      "requestable": true,
+      "category": "image-file",
+      "signals": [
+        "image-file"
+      ],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_navigation_menu/images/ecodesign_1.png",
+      "format": ".png",
+      "size": 435885,
+      "native": true,
+      "requestable": true,
+      "category": "image-file",
+      "signals": [
+        "image-file"
+      ],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_navigation_menu/images/ecodesign_2.png",
+      "format": ".png",
+      "size": 289480,
+      "native": true,
+      "requestable": true,
+      "category": "image-file",
+      "signals": [
+        "image-file"
+      ],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_navigation_menu/images/left_panel.png",
+      "format": ".png",
+      "size": 171254,
+      "native": true,
+      "requestable": true,
+      "category": "image-file",
+      "signals": [
+        "image-file"
+      ],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_navigation_menu/images/welcome_page.png",
+      "format": ".png",
+      "size": 195044,
+      "native": true,
+      "requestable": true,
+      "category": "image-file",
+      "signals": [
+        "image-file"
+      ],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_navigation_menu/images/welcome_page_disabled_digital_services.png",
+      "format": ".png",
+      "size": 172843,
+      "native": true,
+      "requestable": true,
+      "category": "image-file",
+      "signals": [
+        "image-file"
+      ],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_navigation_menu/images/welcome_page_disabled_inventories.png",
+      "format": ".png",
+      "size": 186440,
+      "native": true,
+      "requestable": true,
+      "category": "image-file",
+      "signals": [
+        "image-file"
+      ],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_navigation_menu/images/welcome_page_disabled_inventory.png",
+      "format": ".png",
+      "size": 428021,
+      "native": true,
+      "requestable": true,
+      "category": "image-file",
+      "signals": [
+        "image-file"
+      ],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_navigation_menu/uc1_left_panel.md",
+      "format": ".md",
+      "size": 2580,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_navigation_menu/uc2_header/_index.md",
+      "format": ".md",
+      "size": 89,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_navigation_menu/uc2_header/images/Create new organization.pptx",
+      "format": ".pptx",
+      "size": 678507,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_navigation_menu/uc2_header/images/about_g4it.png",
+      "format": ".png",
+      "size": 85541,
+      "native": true,
+      "requestable": true,
+      "category": "image-file",
+      "signals": [
+        "image-file"
+      ],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_navigation_menu/uc2_header/images/account_settings.png",
+      "format": ".png",
+      "size": 108560,
+      "native": true,
+      "requestable": true,
+      "category": "image-file",
+      "signals": [
+        "image-file"
+      ],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_navigation_menu/uc2_header/images/business_hours.PNG",
+      "format": ".png",
+      "size": 162920,
+      "native": true,
+      "requestable": true,
+      "category": "image-file",
+      "signals": [
+        "image-file"
+      ],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_navigation_menu/uc2_header/images/create_organization_button.png",
+      "format": ".png",
+      "size": 59006,
+      "native": true,
+      "requestable": true,
+      "category": "image-file",
+      "signals": [
+        "image-file"
+      ],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_navigation_menu/uc2_header/images/create_organization_form_id.png",
+      "format": ".png",
+      "size": 146850,
+      "native": true,
+      "requestable": true,
+      "category": "image-file",
+      "signals": [
+        "image-file"
+      ],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_navigation_menu/uc2_header/images/create_organization_menu1_selected.png",
+      "format": ".png",
+      "size": 64113,
+      "native": true,
+      "requestable": true,
+      "category": "image-file",
+      "signals": [
+        "image-file"
+      ],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_navigation_menu/uc2_header/images/create_organization_menu2_selected.png",
+      "format": ".png",
+      "size": 63656,
+      "native": true,
+      "requestable": true,
+      "category": "image-file",
+      "signals": [
+        "image-file"
+      ],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_navigation_menu/uc2_header/images/create_organization_name_duplicate.png",
+      "format": ".png",
+      "size": 72235,
+      "native": true,
+      "requestable": true,
+      "category": "image-file",
+      "signals": [
+        "image-file"
+      ],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_navigation_menu/uc2_header/images/create_organization_name_space.png",
+      "format": ".png",
+      "size": 34115,
+      "native": true,
+      "requestable": true,
+      "category": "image-file",
+      "signals": [
+        "image-file"
+      ],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_navigation_menu/uc2_header/images/organization_creation_state_diagram.png",
+      "format": ".png",
+      "size": 42543,
+      "native": true,
+      "requestable": true,
+      "category": "image-file",
+      "signals": [
+        "image-file"
+      ],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_navigation_menu/uc2_header/images/send_mail_button.PNG",
+      "format": ".png",
+      "size": 162920,
+      "native": true,
+      "requestable": true,
+      "category": "image-file",
+      "signals": [
+        "image-file"
+      ],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_navigation_menu/uc2_header/images/support_mail.PNG",
+      "format": ".png",
+      "size": 12973,
+      "native": true,
+      "requestable": true,
+      "category": "image-file",
+      "signals": [
+        "image-file"
+      ],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_navigation_menu/uc2_header/images/workspace_selection.png",
+      "format": ".png",
+      "size": 164660,
+      "native": true,
+      "requestable": true,
+      "category": "image-file",
+      "signals": [
+        "image-file"
+      ],
+      "details": []
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_navigation_menu/uc2_header/uc21_about_G4IT.md",
+      "format": ".md",
+      "size": 3431,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_navigation_menu/uc2_header/uc22_workspace_selection.md",
+      "format": ".md",
+      "size": 2661,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_navigation_menu/uc2_header/uc23_account_settings.md",
+      "format": ".md",
+      "size": 1878,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_navigation_menu/uc2_header/uc24_workspace_creation.md",
+      "format": ".md",
+      "size": 6772,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_navigation_menu/uc3_welcome_page.md",
+      "format": ".md",
+      "size": 4914,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/2-functional-documentation/use_cases/uc_navigation_menu/uc4_declarations_page.md",
+      "format": ".md",
+      "size": 5435,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/3-technical-documentation/1-Non_functional_requirements/_index.md",
+      "format": ".md",
+      "size": 2687,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/3-technical-documentation/2-software_architecture/_index.md",
+      "format": ".md",
+      "size": 3770,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/3-technical-documentation/3-technical_architecture/_index.md",
+      "format": ".md",
+      "size": 2715,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/3-technical-documentation/3-technical_architecture/ecomind/_index.md",
+      "format": ".md",
+      "size": 2201,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/3-technical-documentation/4-backend_documentation/1-software_code_architecture/_index.md",
+      "format": ".md",
+      "size": 5436,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/1-loading/api_digitalService_loading.md",
+      "format": ".md",
+      "size": 11193,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/1-loading/api_loading.md",
+      "format": ".md",
+      "size": 11238,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/2-evaluation/api_evaluating_inventory.md",
+      "format": ".md",
+      "size": 11954,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/2-evaluation/digital_service/_index.md",
+      "format": ".md",
+      "size": 3640,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/2-evaluation/digital_service/ecomind/_index.md",
+      "format": ".md",
+      "size": 5189,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/2-evaluation/digital_service/without_ecomind/_index.md",
+      "format": ".md",
+      "size": 5915,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/3-indicators/api_indicators_digital_service.md",
+      "format": ".md",
+      "size": 3716,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/3-indicators/api_indicators_inventory.md",
+      "format": ".md",
+      "size": 36853,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/_index.md",
+      "format": ".md",
+      "size": 539,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/3-technical-documentation/4-backend_documentation/EcoLogits_Calculation_Engine.md",
+      "format": ".md",
+      "size": 4815,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/3-technical-documentation/4-backend_documentation/_index.md",
+      "format": ".md",
+      "size": 221,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/3-technical-documentation/4-backend_documentation/db_documentation/_index.md",
+      "format": ".md",
+      "size": 101,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/3-technical-documentation/4-backend_documentation/db_documentation/access_management/_index.md",
+      "format": ".md",
+      "size": 104,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/3-technical-documentation/4-backend_documentation/db_documentation/access_management/common_references_tables/_index.md",
+      "format": ".md",
+      "size": 3890,
+      "native": true,
+      "requestable": true,
+      "category": "encoding-utf16-bom",
+      "signals": [
+        "encoding-utf16-bom"
+      ],
+      "details": [
+        "encoding:utf-16-le"
+      ]
+    },
+    {
+      "path": "services/documentation/content/3-technical-documentation/4-backend_documentation/db_documentation/access_management/users_management/_index.md",
+      "format": ".md",
+      "size": 8612,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/3-technical-documentation/4-backend_documentation/db_documentation/information_system_and_digital_service_input_data/_index.md",
+      "format": ".md",
+      "size": 136,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/3-technical-documentation/4-backend_documentation/db_documentation/information_system_and_digital_service_input_data/digital_service_input_data/input.md",
+      "format": ".md",
+      "size": 17735,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/3-technical-documentation/4-backend_documentation/db_documentation/information_system_and_digital_service_input_data/digital_service_input_data/input_ecomind.md",
+      "format": ".md",
+      "size": 4960,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/3-technical-documentation/4-backend_documentation/db_documentation/information_system_and_digital_service_input_data/information_sytem_input_data/_index.md",
+      "format": ".md",
+      "size": 13306,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/3-technical-documentation/4-backend_documentation/db_documentation/information_system_and_digital_service_output_data/_index.md",
+      "format": ".md",
+      "size": 137,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/3-technical-documentation/4-backend_documentation/db_documentation/information_system_and_digital_service_output_data/digital_service_output_data/output.md",
+      "format": ".md",
+      "size": 13799,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/3-technical-documentation/4-backend_documentation/db_documentation/information_system_and_digital_service_output_data/digital_service_output_data/output_ecomind.md",
+      "format": ".md",
+      "size": 2390,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/3-technical-documentation/4-backend_documentation/db_documentation/information_system_and_digital_service_output_data/information_sytem_output_data/_index.md",
+      "format": ".md",
+      "size": 14146,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/3-technical-documentation/4-backend_documentation/db_documentation/referential/_index.md",
+      "format": ".md",
+      "size": 98,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/3-technical-documentation/4-backend_documentation/db_documentation/referential/common_references_tables/_index.md",
+      "format": ".md",
+      "size": 1855,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/3-technical-documentation/4-backend_documentation/db_documentation/referential/correspondences_for_impact_calculation/_index.md",
+      "format": ".md",
+      "size": 3038,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/3-technical-documentation/4-backend_documentation/db_documentation/referential/digital_service_definition/_index.md",
+      "format": ".md",
+      "size": 3732,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/3-technical-documentation/4-backend_documentation/referential_management.md",
+      "format": ".md",
+      "size": 4322,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/3-technical-documentation/4-scheduler/stuck_task_scheduler.md",
+      "format": ".md",
+      "size": 3653,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/3-technical-documentation/5-frontend_documentation/_index.md",
+      "format": ".md",
+      "size": 260,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/3-technical-documentation/5-frontend_documentation/accessibility/Table/_index.md",
+      "format": ".md",
+      "size": 857,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/3-technical-documentation/5-frontend_documentation/accessibility/_index.md",
+      "format": ".md",
+      "size": 217,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/3-technical-documentation/5-frontend_documentation/accessibility/colors/_index.md",
+      "format": ".md",
+      "size": 1044,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/3-technical-documentation/5-frontend_documentation/accessibility/cypress/_index.md",
+      "format": ".md",
+      "size": 4194,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/3-technical-documentation/5-frontend_documentation/accessibility/forms/_index.md",
+      "format": ".md",
+      "size": 419,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/3-technical-documentation/5-frontend_documentation/accessibility/links/_index.md",
+      "format": ".md",
+      "size": 779,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/3-technical-documentation/5-frontend_documentation/accessibility/mandatory_elements/_index.md",
+      "format": ".md",
+      "size": 2432,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/3-technical-documentation/5-frontend_documentation/accessibility/navigation/_index.md",
+      "format": ".md",
+      "size": 1744,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/3-technical-documentation/5-frontend_documentation/accessibility/structure/_index.md",
+      "format": ".md",
+      "size": 1356,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/3-technical-documentation/5-frontend_documentation/accessibility/testing/_index.md",
+      "format": ".md",
+      "size": 1570,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/3-technical-documentation/5-frontend_documentation/accessibility/what_is_accessibility/_index.md",
+      "format": ".md",
+      "size": 2265,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/3-technical-documentation/5-frontend_documentation/interceptors/_index.md",
+      "format": ".md",
+      "size": 1735,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/3-technical-documentation/5-frontend_documentation/services/_index.md",
+      "format": ".md",
+      "size": 965,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/3-technical-documentation/5-frontend_documentation/stores/_index.md",
+      "format": ".md",
+      "size": 2517,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/3-technical-documentation/5-frontend_documentation/utils/_index.md",
+      "format": ".md",
+      "size": 637,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/3-technical-documentation/6-ecomind_roles_and_access/_index.md",
+      "format": ".md",
+      "size": 3074,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/3-technical-documentation/_index.md",
+      "format": ".md",
+      "size": 112,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/4-help/1-glossary.md",
+      "format": ".md",
+      "size": 1513,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/4-help/2-FAQ_Usage_Access.md",
+      "format": ".md",
+      "size": 1767,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/4-help/3-FAQ_Methodology/1-User_Characteristics_with_Matomo.md",
+      "format": ".md",
+      "size": 2752,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/4-help/3-FAQ_Methodology/2-User_Characteristics_with_KeyCloak.md",
+      "format": ".md",
+      "size": 2668,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/4-help/3-FAQ_Methodology/3-User_Characteristics_with_myELK_myAPIManager.md",
+      "format": ".md",
+      "size": 1995,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/4-help/3-FAQ_Methodology/4-Data_Exchanged_with_AWS_CloudWatch_Matomo.md",
+      "format": ".md",
+      "size": 2992,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/4-help/3-FAQ_Methodology/5-Servers_AzureCloudInstances.md",
+      "format": ".md",
+      "size": 2400,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/4-help/3-FAQ_Methodology/6-Servers_VmCharacteristicsWithvmWare.md",
+      "format": ".md",
+      "size": 2333,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/4-help/3-FAQ_Methodology/_index.md",
+      "format": ".md",
+      "size": 19653,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/4-help/_index.md",
+      "format": ".md",
+      "size": 90,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/5-releases/1-release_v2.11.2/1-migrate_new_arch/_index.md",
+      "format": ".md",
+      "size": 4287,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/5-releases/1-release_v2.11.2/_index.md",
+      "format": ".md",
+      "size": 1431,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/5-releases/2-release_v3_3/1-migrate_ds_from_demo_workspace_to_new_ones/_index.md",
+      "format": ".md",
+      "size": 13158,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/5-releases/2-release_v3_3/2-rollback_ds_migration_from_demo_workspace_to_new_ones/_index.md",
+      "format": ".md",
+      "size": 3274,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/5-releases/2-release_v3_3/_index.md",
+      "format": ".md",
+      "size": 3808,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/5-releases/3-realease_v3_4/_index.md",
+      "format": ".md",
+      "size": 1969,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/5-releases/3-realease_v3_4/rename_randomly_generated_network_name/_index.md",
+      "format": ".md",
+      "size": 1142,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/5-releases/3-realease_v3_4/rename_randomly_generated_terminal_name/_index.md",
+      "format": ".md",
+      "size": 1155,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/5-releases/_index.md",
+      "format": ".md",
+      "size": 1312,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/5-releases/release_v3_0.md",
+      "format": ".md",
+      "size": 1267,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/5-releases/release_v3_1.md",
+      "format": ".md",
+      "size": 1259,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/5-releases/release_v3_10.md",
+      "format": ".md",
+      "size": 4476,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/5-releases/release_v3_11.md",
+      "format": ".md",
+      "size": 4465,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/5-releases/release_v3_12.md",
+      "format": ".md",
+      "size": 5445,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/5-releases/release_v3_12_1.md",
+      "format": ".md",
+      "size": 3572,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/5-releases/release_v3_13.md",
+      "format": ".md",
+      "size": 5151,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/5-releases/release_v3_13_1.md",
+      "format": ".md",
+      "size": 3363,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/5-releases/release_v3_14.md",
+      "format": ".md",
+      "size": 3435,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/5-releases/release_v3_14_1.md",
+      "format": ".md",
+      "size": 5795,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/5-releases/release_v3_15_0.md",
+      "format": ".md",
+      "size": 6594,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/5-releases/release_v3_15_1.md",
+      "format": ".md",
+      "size": 5042,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/5-releases/release_v3_2.md",
+      "format": ".md",
+      "size": 1249,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/5-releases/release_v3_5.md",
+      "format": ".md",
+      "size": 2352,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/5-releases/release_v3_6.md",
+      "format": ".md",
+      "size": 2189,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/5-releases/release_v3_7.md",
+      "format": ".md",
+      "size": 1413,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/5-releases/release_v3_8.md",
+      "format": ".md",
+      "size": 3553,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/5-releases/release_v3_9.md",
+      "format": ".md",
+      "size": 3332,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/5-releases/release_v3_9_1.md",
+      "format": ".md",
+      "size": 2449,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/content/_index.md",
+      "format": ".md",
+      "size": 3235,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/documentation/schemacrawler/README.md",
+      "format": ".md",
+      "size": 1554,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/README.md",
+      "format": ".md",
+      "size": 4170,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/cypress/dataset/input/information-system/application.csv",
+      "format": ".csv",
+      "size": 1190,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/cypress/dataset/input/information-system/datacenter.csv",
+      "format": ".csv",
+      "size": 171,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/cypress/dataset/input/information-system/physical_equipment.csv",
+      "format": ".csv",
+      "size": 799,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/cypress/dataset/input/information-system/virtual_equipment.csv",
+      "format": ".csv",
+      "size": 817,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/nginx/error.html",
+      "format": ".html",
+      "size": 788,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/spec/applicationViewOptimizationFeature/solution-frontend.md",
+      "format": ".md",
+      "size": 23357,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/spec/applicationViewOptimizationFeature/specification-frontend.md",
+      "format": ".md",
+      "size": 2608,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/app.component.html",
+      "format": ".html",
+      "size": 77,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/about-us/declarations/declarations.component.html",
+      "format": ".html",
+      "size": 20938,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/about-us/useful-information/useful-information.component.html",
+      "format": ".html",
+      "size": 7349,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/administration/administration-panel/administration-panel.component.html",
+      "format": ".html",
+      "size": 141,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/administration/administration-panel/organizations/organizations.component.html",
+      "format": ".html",
+      "size": 12094,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/administration/administration-panel/release-notes/release-notes.component.html",
+      "format": ".html",
+      "size": 1253,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/administration/administration-panel/super-admin/super-admin.component.html",
+      "format": ".html",
+      "size": 405,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/administration/administration-panel/update-reference/update-reference.component.html",
+      "format": ".html",
+      "size": 9200,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/administration/administration-panel/update-workspace-reference/update-workspace-reference.component.html",
+      "format": ".html",
+      "size": 9220,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/administration/administration-panel/users/add-workspace/add-workspace.component.html",
+      "format": ".html",
+      "size": 4816,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/administration/administration-panel/users/users.component.html",
+      "format": ".html",
+      "size": 14334,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/common/common-editor/common-editor.component.html",
+      "format": ".html",
+      "size": 5421,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/common/configure-view-filters/configure-view-filters.component.html",
+      "format": ".html",
+      "size": 6808,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/common/criteria-popup/criteria-popup.component.html",
+      "format": ".html",
+      "size": 9139,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/common/digital-service-table/digital-service-table.component.html",
+      "format": ".html",
+      "size": 5119,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/common/error/error.component.html",
+      "format": ".html",
+      "size": 528,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/common/form-nav/form-nav.component.html",
+      "format": ".html",
+      "size": 2789,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/common/impact-aggregate-infos/impact-aggregate-infos.component.html",
+      "format": ".html",
+      "size": 1622,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/common/impact-sidebar/impact-sidebar.component.html",
+      "format": ".html",
+      "size": 2656,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/common/indicator-section/indicator-section.component.html",
+      "format": ".html",
+      "size": 3063,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/common/inverse-axis-button/inverse-axis-button.component.html",
+      "format": ".html",
+      "size": 604,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/common/promote-version-dialog/promote-version-dialog.component.html",
+      "format": ".html",
+      "size": 1735,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/common/renew-service-popup/renew-service-popup.component.html",
+      "format": ".html",
+      "size": 2334,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/common/spinner/spinner.component.html",
+      "format": ".html",
+      "size": 369,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/common/stack-bar-chart/stack-bar-chart.component.html",
+      "format": ".html",
+      "size": 202,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/common/workspace/workspace.component.html",
+      "format": ".html",
+      "size": 7999,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/digital-services-compare-versions/digital-services-compare-versions.component.html",
+      "format": ".html",
+      "size": 2332,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/digital-services-footprint/digital-services-cloud-services/digital-services-cloud-services-side-panel/digital-services-cloud-services-side-panel.component.html",
+      "format": ".html",
+      "size": 11907,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/digital-services-footprint/digital-services-cloud-services/digital-services-cloud-services.component.html",
+      "format": ".html",
+      "size": 1547,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/digital-services-footprint/digital-services-ecomind-parameters/digital-services-ai-infrastructure/digital-services-ai-infrastructure.component.html",
+      "format": ".html",
+      "size": 7071,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/digital-services-footprint/digital-services-ecomind-parameters/digital-services-ai-parameters/digital-services-ai-parameters.component.html",
+      "format": ".html",
+      "size": 10367,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/digital-services-footprint/digital-services-ecomind-parameters/digital-services-ecomind-parameters.component.html",
+      "format": ".html",
+      "size": 156,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/digital-services-footprint/digital-services-footprint-dashboard/bar-chart/bar-chart.component.html",
+      "format": ".html",
+      "size": 2385,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/digital-services-footprint/digital-services-footprint-dashboard/digital-services-footprint-dashboard.component.html",
+      "format": ".html",
+      "size": 11220,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/digital-services-footprint/digital-services-footprint-dashboard/graph-description/graph-description.component.html",
+      "format": ".html",
+      "size": 9332,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/digital-services-footprint/digital-services-footprint-dashboard/impact-button/impact-button.component.html",
+      "format": ".html",
+      "size": 2110,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/digital-services-footprint/digital-services-footprint-dashboard/pie-chart/pie-chart.component.html",
+      "format": ".html",
+      "size": 403,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/digital-services-footprint/digital-services-footprint-dashboard/radial-chart/radial-chart.component.html",
+      "format": ".html",
+      "size": 422,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/digital-services-footprint/digital-services-footprint-dashboard/set-view-popup/set-view-popup.component.html",
+      "format": ".html",
+      "size": 2598,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/digital-services-footprint/digital-services-footprint-footer/digital-services-footprint-footer.component.html",
+      "format": ".html",
+      "size": 629,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/digital-services-footprint/digital-services-footprint-header/digital-services-footprint-header.component.html",
+      "format": ".html",
+      "size": 16532,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/digital-services-footprint/digital-services-footprint-header/link-create-popup/link-create-popup.component.html",
+      "format": ".html",
+      "size": 3568,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/digital-services-footprint/digital-services-footprint-header/version-type-tag/version-type-tag.component.html",
+      "format": ".html",
+      "size": 426,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/digital-services-footprint/digital-services-footprint.component.html",
+      "format": ".html",
+      "size": 1254,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/digital-services-footprint/digital-services-import/digital-services-import.component.html",
+      "format": ".html",
+      "size": 11250,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/digital-services-footprint/digital-services-import/multi-file-import/multi-file-import.component.html",
+      "format": ".html",
+      "size": 2026,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/digital-services-footprint/digital-services-networks/digital-services-networks-side-panel/digital-services-networks-side-panel.component.html",
+      "format": ".html",
+      "size": 7752,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/digital-services-footprint/digital-services-networks/digital-services-networks.component.html",
+      "format": ".html",
+      "size": 1705,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/digital-services-footprint/digital-services-resources/digital-services-resources.component.html",
+      "format": ".html",
+      "size": 400,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/digital-services-footprint/digital-services-servers/digital-services-servers.component.html",
+      "format": ".html",
+      "size": 1295,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/digital-services-footprint/digital-services-servers/side-panel/add-datacenter/datacenter.component.html",
+      "format": ".html",
+      "size": 3989,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/digital-services-footprint/digital-services-servers/side-panel/add-vm/add-vm.component.html",
+      "format": ".html",
+      "size": 10005,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/digital-services-footprint/digital-services-servers/side-panel/create-server/create-server.component.html",
+      "format": ".html",
+      "size": 9991,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/digital-services-footprint/digital-services-servers/side-panel/list-vm/list-vm.component.html",
+      "format": ".html",
+      "size": 2466,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/digital-services-footprint/digital-services-servers/side-panel/server-parameters/server-parameters.component.html",
+      "format": ".html",
+      "size": 24087,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/digital-services-footprint/digital-services-terminals/digital-services-terminals-side-panel/digital-services-terminals-side-panel.component.html",
+      "format": ".html",
+      "size": 11910,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/digital-services-footprint/digital-services-terminals/digital-services-terminals.component.html",
+      "format": ".html",
+      "size": 1739,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/digital-services-manage-versions/digital-service-manage-version/digital-service-manage-version-table/digital-service-manage-version-table.component.html",
+      "format": ".html",
+      "size": 7120,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/digital-services-manage-versions/digital-service-manage-version/digital-service-manage-version.component.html",
+      "format": ".html",
+      "size": 196,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/digital-services/create-digital-services-sidebar/create-digital-services-sidebar.component.html",
+      "format": ".html",
+      "size": 10067,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/digital-services/digital-services-item/digital-services-item.component.html",
+      "format": ".html",
+      "size": 2411,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/digital-services/digital-services.component.html",
+      "format": ".html",
+      "size": 2943,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/header/header-siderbar/left-sidebar/left-sidebar.component.html",
+      "format": ".html",
+      "size": 8062,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/header/header-siderbar/top-header/top-header.component.html",
+      "format": ".html",
+      "size": 20371,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/inventories-footprint/application/application-criteria-pie-chart/application-criteria-pie-chart.component.html",
+      "format": ".html",
+      "size": 1902,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/inventories-footprint/application/application-table-view/application-table-view.component.html",
+      "format": ".html",
+      "size": 2735,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/inventories-footprint/application/criteria-stats/criteria-stats.component.html",
+      "format": ".html",
+      "size": 11115,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/inventories-footprint/application/criteria/application-criteria-footprint.component.html",
+      "format": ".html",
+      "size": 6000,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/inventories-footprint/application/dataviz-filter-application/dataviz-filter-application.component.html",
+      "format": ".html",
+      "size": 13999,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/inventories-footprint/application/inventories-application-footprint.component.html",
+      "format": ".html",
+      "size": 13527,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/inventories-footprint/application/multicriteria/application-multicriteria-footprint.component.html",
+      "format": ".html",
+      "size": 3187,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/inventories-footprint/base-filter-sidebar/base-filter-sidebar.component.html",
+      "format": ".html",
+      "size": 10394,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/inventories-footprint/critere/inventories-critere-footprint.component.html",
+      "format": ".html",
+      "size": 2965,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/inventories-footprint/dataviz-filter/dataviz-filter.component.html",
+      "format": ".html",
+      "size": 993,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/inventories-footprint/header/inventories-header-footprint.component.html",
+      "format": ".html",
+      "size": 3392,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/inventories-footprint/inventories-footprint.component.html",
+      "format": ".html",
+      "size": 5158,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/inventories-footprint/multicriteria/inventories-multicriteria-footprint.component.html",
+      "format": ".html",
+      "size": 2879,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/inventories/batch-status/batch-status.component.html",
+      "format": ".html",
+      "size": 2487,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/inventories/equipments-card/equipments-card.component.html",
+      "format": ".html",
+      "size": 231,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/inventories/file-panel/inv-file-panel.component.html",
+      "format": ".html",
+      "size": 15177,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/inventories/file-panel/inv-multi-file-import/inv-multi-file-import.component.html",
+      "format": ".html",
+      "size": 2122,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/inventories/inventories.component.html",
+      "format": ".html",
+      "size": 10781,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/inventories/inventory-item/inventory-item.component.html",
+      "format": ".html",
+      "size": 17730,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/landing-page/landing-page.component.html",
+      "format": ".html",
+      "size": 1682,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/landing-page/release-notes/release-notes.component.html",
+      "format": ".html",
+      "size": 1639,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/layout.component.html",
+      "format": ".html",
+      "size": 32,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/share-digital-service/share-digital-service.component.html",
+      "format": ".html",
+      "size": 857,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/share-digital-service/share-landing-page/share-landing-page.component.html",
+      "format": ".html",
+      "size": 844,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/app/layout/welcome-page/welcome-page.component.html",
+      "format": ".html",
+      "size": 13456,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/assets/pdf/declarations/rgesn_2024_outil_declaration_ecoconception_V0_EN.pdf",
+      "format": ".pdf",
+      "size": 141856,
+      "native": true,
+      "requestable": true,
+      "category": "unknown-needs-dependency",
+      "signals": [
+        "unknown-needs-dependency"
+      ],
+      "details": [
+        "missing:pypdf"
+      ]
+    },
+    {
+      "path": "services/frontend/src/assets/pdf/declarations/rgesn_2024_outil_declaration_ecoconception_V1.pdf",
+      "format": ".pdf",
+      "size": 437914,
+      "native": true,
+      "requestable": true,
+      "category": "unknown-needs-dependency",
+      "signals": [
+        "unknown-needs-dependency"
+      ],
+      "details": [
+        "missing:pypdf"
+      ]
+    },
+    {
+      "path": "services/frontend/src/index.html",
+      "format": ".html",
+      "size": 461,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/frontend/src/index.prod.html",
+      "format": ".html",
+      "size": 477,
+      "native": false,
+      "requestable": true,
+      "category": "html",
+      "signals": [
+        "html"
+      ],
+      "details": [
+        "encoding:utf-8"
+      ]
+    },
+    {
+      "path": "services/keycloak/README.md",
+      "format": ".md",
+      "size": 698,
+      "native": true,
+      "requestable": true,
+      "category": "ready",
+      "signals": [],
+      "details": [
+        "encoding:utf-8"
+      ]
+    }
+  ],
+  "trace_id": "4d1e4282-cc4b-4ea6-83da-14dd38c0b892"
+}

@@ -1,0 +1,181 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Repository Graph Evaluation Telemetry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "experiment_id",
+    "phase",
+    "protocol_hash",
+    "assignment_manifest_hash",
+    "run_id",
+    "task_pair_id",
+    "task_id",
+    "assignment",
+    "stratum",
+    "pair_block_id",
+    "seed",
+    "attempt",
+    "oracle_version",
+    "environment",
+    "repository",
+    "graph",
+    "activity",
+    "timing",
+    "validation",
+    "outcome",
+    "scoring"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.1"},
+    "experiment_id": {"type": "string", "minLength": 1},
+    "phase": {"enum": ["pilot", "confirmatory"]},
+    "protocol_hash": {"type": "string", "minLength": 1},
+    "assignment_manifest_hash": {"type": "string", "minLength": 1},
+    "run_id": {"type": "string", "minLength": 1},
+    "task_pair_id": {"type": "string", "minLength": 1},
+    "task_id": {"type": "string", "minLength": 1},
+    "assignment": {"enum": ["control", "treatment"]},
+    "stratum": {"type": "string", "minLength": 1},
+    "pair_block_id": {"type": "string", "minLength": 1},
+    "seed": {"type": "integer", "minimum": 0},
+    "attempt": {"type": "integer", "minimum": 1},
+    "oracle_version": {"type": "string", "minLength": 1},
+    "environment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["provider", "model_tier", "prompt_version", "configuration_fingerprint", "agent_config_hash", "permissions", "time_limit_seconds"],
+      "properties": {
+        "provider": {"type": "string"},
+        "model_tier": {"type": "string"},
+        "prompt_version": {"type": "string"},
+        "configuration_fingerprint": {"type": "string", "minLength": 1},
+        "agent_config_hash": {"type": "string", "minLength": 1},
+        "permissions": {"type": "array", "items": {"type": "string"}},
+        "time_limit_seconds": {"type": "integer", "minimum": 0},
+        "os": {"type": "string"},
+        "python_version": {"type": "string"}
+      }
+    },
+    "repository": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["revision", "snapshot_hash"],
+      "properties": {
+        "revision": {"type": "string", "minLength": 1},
+        "snapshot_hash": {"type": "string", "minLength": 1},
+        "origin": {"type": "string"}
+      }
+    },
+    "graph": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state", "revision", "schema_version", "parser_fingerprint", "config_hash", "refresh_ms", "query_ms", "truncations", "fallbacks", "stale_disclosures", "readiness_artifact_hash", "classification_policy_version", "conformance_policy_version", "readiness_artifact"],
+      "properties": {
+        "state": {"type": "string"},
+        "revision": {"type": "string"},
+        "schema_version": {"type": "string"},
+        "parser_fingerprint": {"type": "string"},
+        "config_hash": {"type": "string"},
+        "readiness_artifact_hash": {"type": "string", "minLength": 1},
+        "classification_policy_version": {"type": "string", "minLength": 1},
+        "conformance_policy_version": {"type": "string", "minLength": 1},
+        "readiness_artifact": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["status", "content_hash", "revision", "snapshot_hash", "schema_version", "parser_fingerprint", "config_hash", "classification_policy_version", "conformance_policy_version"],
+          "properties": {
+            "status": {"const": "passed"},
+            "content_hash": {"type": "string", "minLength": 1},
+            "revision": {"type": "string", "minLength": 1},
+            "snapshot_hash": {"type": "string", "minLength": 1},
+            "schema_version": {"type": "string", "minLength": 1},
+            "parser_fingerprint": {"type": "string", "minLength": 1},
+            "config_hash": {"type": "string", "minLength": 1},
+            "classification_policy_version": {"type": "string", "minLength": 1},
+            "conformance_policy_version": {"type": "string", "minLength": 1}
+          }
+        },
+        "refresh_ms": {"type": "number", "minimum": 0},
+        "query_ms": {"type": "number", "minimum": 0},
+        "truncations": {"type": "integer", "minimum": 0},
+        "fallbacks": {"type": "integer", "minimum": 0},
+        "stale_disclosures": {"type": "integer", "minimum": 0}
+      }
+    },
+    "activity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["files_read", "search_calls", "tool_calls", "token_counts", "unavailable_measurements"],
+      "properties": {
+        "files_read": {"type": "integer", "minimum": 0},
+        "search_calls": {"type": "integer", "minimum": 0},
+        "tool_calls": {"type": "integer", "minimum": 0},
+        "token_counts": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["input", "output", "tool"],
+          "properties": {
+            "input": {"oneOf": [{"type": "integer", "minimum": 0}, {"$ref": "#/definitions/unavailable"}]},
+            "output": {"oneOf": [{"type": "integer", "minimum": 0}, {"$ref": "#/definitions/unavailable"}]},
+            "tool": {"oneOf": [{"type": "integer", "minimum": 0}, {"$ref": "#/definitions/unavailable"}]}
+          }
+        },
+        "unavailable_measurements": {"type": "array", "items": {"type": "string", "minLength": 1}}
+      }
+    },
+    "timing": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["first_edit_ms", "task_execution_ms", "total_ms", "clock"],
+      "properties": {
+        "first_edit_ms": {"oneOf": [{"type": "number", "minimum": 0}, {"$ref": "#/definitions/unavailable"}]},
+        "task_execution_ms": {"oneOf": [{"type": "number", "minimum": 0}, {"$ref": "#/definitions/unavailable"}]},
+        "total_ms": {"oneOf": [{"type": "number", "minimum": 0}, {"$ref": "#/definitions/unavailable"}]},
+        "clock": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["source", "overhead_policy"],
+          "properties": {
+            "source": {"const": "monotonic"},
+            "overhead_policy": {"enum": ["included_in_total"]}
+          }
+        }
+      }
+    },
+    "validation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["cycles"],
+      "properties": {
+        "cycles": {"type": "integer", "minimum": 0},
+        "first_run_passed": {"type": ["boolean", "null"]}
+      }
+    },
+    "outcome": {"enum": ["completed", "failed", "excluded"]},
+    "termination_reason": {"type": "string", "minLength": 1},
+    "scoring": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["pre_edit_impacts", "acceptance_passed", "escaped_defects", "retained_correct_edit_ms"],
+      "properties": {
+        "pre_edit_impacts": {"type": "array", "items": {"type": "string"}},
+        "acceptance_passed": {"type": "boolean"},
+        "escaped_defects": {"type": "integer", "minimum": 0},
+        "retained_correct_edit_ms": {"oneOf": [{"type": "number", "minimum": 0}, {"$ref": "#/definitions/unavailable"}]}
+      }
+    }
+  },
+  "definitions": {
+    "unavailable": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["available", "reason"],
+      "properties": {
+        "available": {"const": false},
+        "reason": {"type": "string", "minLength": 1}
+      }
+    }
+  }
+}

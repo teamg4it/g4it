@@ -1,8 +1,13 @@
+# This file has been created (totally or partially) with the assistance of artificial intelligence tools.
+# All content has been generated under the direct supervision of a named individual,
+# and under the AI.Backbone Orchestrator Compliance framework
+
 name: Backend - Build - Test - Analyze
 on:
   pull_request:
     paths:
       - "services/backend/**"
+      - ".github/workflows/backend-build-test-analyze.yml"
     types: [ opened, synchronize, reopened ]
 
 jobs:

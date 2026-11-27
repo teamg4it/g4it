@@ -1,0 +1,111 @@
+{
+  "workflow": "brownfield-analysis",
+  "station": "ingest-documents/extract-and-verify",
+  "trigger": "batch-plan",
+  "date": "2026-11-20T08:54:55.598155+00:00",
+  "status": "draft",
+  "inputDocuments": [
+    "outputs/ingestion/g4it-on-github/triage-report.json",
+    "outputs/ingestion/g4it-on-github/triage-decisions.json"
+  ],
+  "changeHistory": [],
+  "holisticQualityRating": "unassessed",
+  "overallStatus": "pending",
+  "sensitivity": "confidential",
+  "trace_id": "4d1e4282-cc4b-4ea6-83da-14dd38c0b892",
+  "analysis_id": "g4it-on-github",
+  "batch": "getstarted-01",
+  "files": [
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/01_First-Login.md",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/1-collect_data.md",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/2-load_data.md",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/3-visualize_impact.md",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/_index.md",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/01_ds_module_access.png",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/02_create_a_ds.png",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/03_edit_name_create_device.png",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/04_add_device.png",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/05_edit_device.png",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/06_add_network.png",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/07_add_network.png",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/08_create_server.png",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/09_add_server_step_1.png",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/10_add_server_step_2.png",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/11_add_server_add_datacenter.png",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/12_add_server_step_3.png",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/13_B_import_cloud_instance.png",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/13_add_cloud_instance.png",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/14_create_cloud_instance.png",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/15_evaluate_the_impact.png",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/16_choose_criteria.png",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/17_visualize_impact.png",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/18_visualize_impact_criteria.png",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/19_visualize_impact_terminal.png",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/20_visualize_impact_terminal_lifecycle.png",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/21_visualize_impact_network.png",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/22_visualize_impact_server.png",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/23_visualize_impact_server_vm.png",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/24_visualize_impact_cloud.png",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/25_visualize_impact_cloud_lifecycle.png",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/3_import-button.png",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/3_import-devices_physical_equipments.png",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/6_import-networks_physical_equipments.png",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/8_import-button.png",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/8_import-non-cloud-server.png",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/data_collected.png",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/screenshot.pptx",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/~$screenshot.pptx",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/1-collect_data/01_Help_yourself_with_pre-filled_templates.md",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/1-collect_data/_index.md",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/2-load_data.md",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/3-visualize_impact.md",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/4-explore_inventories_data_PowerBI.md",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/_index.md",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/documents/User_Devices_01_Laptop_Template.csv",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/documents/User_Server_01_InstancesCloud_Template.csv",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/documents/application_Sample.csv",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/documents/application_toFillIn.xlsx",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/documents/datacenter_Sample.csv",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/documents/datacenter_sampleMandatory1.csv",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/documents/datacenter_toFillIn.xlsx",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/documents/physicalEquipment_example.csv",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/documents/physicalEquipment_toFillIn.csv",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/documents/physicalEquipment_toFillIn.xlsx",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/documents/virtualEquipment_Sample.csv",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/documents/virtualEquipment_toFillIn.xlsx",
+    "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/images/01_IS_Module_access.png"
+  ],
+  "exclusions": [
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/screenshot.pptx",
+      "source_sha256": "9c67c86b5efc760d14c20d1f8f268d6784669c9183637560f11f04162fac4c02",
+      "reason": "Excluded by user decision 2026-11-20: office-common parser dependencies unavailable; non-essential XLSX templates / PPTX screenshot decks"
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/1-module-digital-service/media/~$screenshot.pptx",
+      "source_sha256": "dfc3197d0f7fa0f6081fa971b1cb494941e041d79407c2ad52b49c772155684c",
+      "reason": "Office owner lock file, not content"
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/documents/application_toFillIn.xlsx",
+      "source_sha256": "77bf22475fa44875a3db212ab7ac83c631ef8c160b592aa1326a709f02cbff4b",
+      "reason": "Excluded by user decision 2026-11-20: office-common parser dependencies unavailable; non-essential XLSX templates / PPTX screenshot decks"
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/documents/datacenter_toFillIn.xlsx",
+      "source_sha256": "f603ba43762a2c7bd725399f3c0288a7bd90027926773d8131ec26bccf31afaf",
+      "reason": "Excluded by user decision 2026-11-20: office-common parser dependencies unavailable; non-essential XLSX templates / PPTX screenshot decks"
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/documents/physicalEquipment_toFillIn.xlsx",
+      "source_sha256": "e51d70dc86756eb6360eea90c2a82872cae95027c5034ee8f99b33e15975f98c",
+      "reason": "Excluded by user decision 2026-11-20: office-common parser dependencies unavailable; non-essential XLSX templates / PPTX screenshot decks"
+    },
+    {
+      "path": "services/documentation/content/1-getting-started/1-getting-started-as-a-user/2-module-information-system/documents/virtualEquipment_toFillIn.xlsx",
+      "source_sha256": "23ee3d194aaba82b1992bf69a0a27d28903b9902d2e05a3577ee87642d7530ee",
+      "reason": "Excluded by user decision 2026-11-20: office-common parser dependencies unavailable; non-essential XLSX templates / PPTX screenshot decks"
+    }
+  ],
+  "source_root": "."
+}

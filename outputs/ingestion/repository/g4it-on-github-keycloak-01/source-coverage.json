@@ -1,0 +1,47 @@
+{
+  "version": 3,
+  "workflow": "brownfield-analysis",
+  "trigger": "repository-ingestion",
+  "date": "2026-11-20T08:40:36.599561+00:00",
+  "status": "draft",
+  "inputDocuments": [
+    "outputs/ingestion/requests/g4it-on-github/keycloak-01.json"
+  ],
+  "changeHistory": [],
+  "holisticQualityRating": "not-rated",
+  "overallStatus": "not-reviewed",
+  "sensitivity": "confidential",
+  "trace_id": "g4it-on-github-keycloak-01",
+  "station": "ingest-documents/extract-and-verify",
+  "request": "outputs/ingestion/requests/g4it-on-github/keycloak-01.json",
+  "request_sha256": "751bca8697094b4d12d31c1bdd369d4baa09d3d28f8fd1a6a2d4e0b8ecc99e71",
+  "exclusions": [],
+  "dependencies": {
+    "pypdf": "missing",
+    "openpyxl": "missing",
+    "defusedxml": "missing"
+  },
+  "workers": 4,
+  "sources": [
+    {
+      "source": "services/keycloak/README.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/keycloak/README.md",
+      "source_sha256": "c44bd5e3a8ed0c8d4759132535360602bed6640c4d507537b374e06086cd684a",
+      "read_sha256": "c44bd5e3a8ed0c8d4759132535360602bed6640c4d507537b374e06086cd684a",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-26",
+          "sha256": "c44bd5e3a8ed0c8d4759132535360602bed6640c4d507537b374e06086cd684a"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    }
+  ]
+}

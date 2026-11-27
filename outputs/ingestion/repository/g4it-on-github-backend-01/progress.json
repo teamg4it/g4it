@@ -1,0 +1,14 @@
+{
+  "state": "complete",
+  "total": 100,
+  "done": 100,
+  "counts": {
+    "excluded": 79,
+    "not_required": 21
+  },
+  "last_source": null,
+  "started_at": "2026-11-20T08:56:35.998129+00:00",
+  "updated_at": "2026-11-20T08:56:39.099324+00:00",
+  "elapsed_seconds": 3,
+  "eta_seconds": null
+}

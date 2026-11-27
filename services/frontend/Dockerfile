@@ -1,12 +1,12 @@
-# Use an official Maven image as the base image
-FROM node:20-alpine as build
+# Use an official Node image as the base image
+FROM docker.io/library/node:20-alpine as build
 
 WORKDIR /app
 COPY . .
 RUN npm ci \
     && npm run build
 
-FROM nginx:latest
+FROM docker.io/library/nginx:latest
 COPY --from=build /app/dist/browser /usr/share/nginx/html
 COPY nginx/nginx.conf /etc/nginx/nginx.conf
 # ADD (for custom error page)
@@ -16,7 +16,7 @@ COPY nginx/25-inject-env-var.sh /docker-entrypoint.d/25-inject-env-var.sh
 
 USER root
 
-RUN chmod a+rwx -R /usr/share/nginx/html \
+RUN find /usr/share/nginx/html -exec chmod a+rwx {} + \
     && chmod a+x /docker-entrypoint.d/25-inject-env-var.sh \
     && chown -R nginx:nginx /var/cache/nginx
 

@@ -1,0 +1,2110 @@
+{
+  "version": 3,
+  "workflow": "brownfield-analysis",
+  "trigger": "repository-ingestion",
+  "date": "2026-11-20T08:56:39.118486+00:00",
+  "status": "draft",
+  "inputDocuments": [
+    "outputs/ingestion/requests/g4it-on-github/backend-01.json"
+  ],
+  "changeHistory": [],
+  "holisticQualityRating": "not-rated",
+  "overallStatus": "not-reviewed",
+  "sensitivity": "confidential",
+  "trace_id": "g4it-on-github-backend-01",
+  "station": "ingest-documents/extract-and-verify",
+  "request": "outputs/ingestion/requests/g4it-on-github/backend-01.json",
+  "request_sha256": "c3c66e382373d7a8595e736b2159319694b76760af1848aefc9bc4a598739724",
+  "exclusions": [
+    {
+      "path": "services/backend/src/main/resources/samples/inputs/1-datacenter.csv",
+      "source_sha256": "56b5cd7c671f50e0d4dffb49bf6d6f89dfd5b755fa2ae9a20ca502570570b2f1",
+      "reason": "third-party, archived or sample content by path"
+    },
+    {
+      "path": "services/backend/src/main/resources/samples/inputs/2-physicalEquipments.csv",
+      "source_sha256": "71138e4b25d82b386cb336d39c71d746b5353edd9832b6e46e3bc5a797f8aacd",
+      "reason": "third-party, archived or sample content by path"
+    },
+    {
+      "path": "services/backend/src/main/resources/samples/inputs/3-virtualEquipments.csv",
+      "source_sha256": "71c0324f1c5dea66bce847348ba426075236839110271cfb1444e6cc4d31aa46",
+      "reason": "third-party, archived or sample content by path"
+    },
+    {
+      "path": "services/backend/src/main/resources/samples/inputs/4-applications.csv",
+      "source_sha256": "a6ac0b47c60521cac5d526cdfb945194a7a3f13d56b261d6bcb16aa17673057a",
+      "reason": "third-party, archived or sample content by path"
+    },
+    {
+      "path": "services/backend/src/test/resources/apibatchloading/work/20230101-104559/DATACENTER/invalid_headers.csv",
+      "source_sha256": "e932b39a283332ca595884c42ec6125e452b916644e8912e3968e64e096fdd05",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/backend/src/test/resources/apibatchloading/work/20230101-104559/EQUIPEMENT_PHYSIQUE/equipementPhysique_ok.csv",
+      "source_sha256": "c2cfa6dad679cef20fdaadf844b8af61fb90696f728483da7e5ae9efaea688c4",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/backend/src/test/resources/apibatchloading/work/20230401-104551/EQUIPEMENT_PHYSIQUE/invalid_headers.csv",
+      "source_sha256": "e932b39a283332ca595884c42ec6125e452b916644e8912e3968e64e096fdd05",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/backend/src/test/resources/apibatchloading/work/20230401-104552/EQUIPEMENT_PHYSIQUE/equipementPhysique_good_header.csv",
+      "source_sha256": "f1d256a17a5dd75568b34e8c3185cf1c599822dd66298ec19024bd9dbb4fc5b8",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/backend/src/test/resources/apibatchloading/work/20230420-161015/APPLICATION/application_avec_erreur_champs_obligatoire.csv",
+      "source_sha256": "1043ffea8610f143f9dd1b8fe72aa24e1da7a5bbba6fbb585903c46958a7b963",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/backend/src/test/resources/apibatchloading/work/20230420-161015/APPLICATION/application_avec_erreur_coherence.csv",
+      "source_sha256": "0848f39fd10f8c9c88f81f6f40d25713a8d828a664d51c67b2ed141a2b91a149",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/backend/src/test/resources/apibatchloading/work/20230420-161015/APPLICATION/application_ok.csv",
+      "source_sha256": "3b00d2fff7819f97aea730f3c382e1f5f97a0cb3f1546477db42b6f7dedf06da",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/backend/src/test/resources/apibatchloading/work/20230420-161015/DATACENTER/dataCenters_ok.csv",
+      "source_sha256": "b250c61530babecbf5ef764698bccb32bc3c0e9ecf3b652900f7d974e5f81f88",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/backend/src/test/resources/apibatchloading/work/20230420-161015/DATACENTER/datacenter_avec_erreur_champs_obligatoire.csv",
+      "source_sha256": "4c4d3737f33fa7f35b4cbf6a680d9e66256fa57ff0dd410cb2374c858386146a",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/backend/src/test/resources/apibatchloading/work/20230420-161015/DATACENTER/datacenter_avec_erreur_format.csv",
+      "source_sha256": "12b70ddf7521383a402e6091731a0325a82a280c1e03fd9f1c926f33cb0e7c53",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/backend/src/test/resources/apibatchloading/work/20230420-161015/DATACENTER/datacenter_avec_erreur_referentiel.csv",
+      "source_sha256": "2149001968a86492a015709ab06365b21255f8b0b402ddc50fa2a1b01084b9f8",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/backend/src/test/resources/apibatchloading/work/20230420-161015/EQUIPEMENT_PHYSIQUE/equipementPhysique_avec_erreur_champs_obligatoire.csv",
+      "source_sha256": "057624a4203c3036d17e2bb488b76b803863b3d46e35f8a5fa582285d92447b0",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/backend/src/test/resources/apibatchloading/work/20230420-161015/EQUIPEMENT_PHYSIQUE/equipementPhysique_avec_erreur_coherence.csv",
+      "source_sha256": "3776c87389a05ee1ee7cfaf7b11662e27f9786da49aab295311851faca6af78a",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/backend/src/test/resources/apibatchloading/work/20230420-161015/EQUIPEMENT_PHYSIQUE/equipementPhysique_avec_erreur_format.csv",
+      "source_sha256": "d79af27dc452986e045f4cfc870033682bca687b04ca7d86c1fc2a77f10a809f",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/backend/src/test/resources/apibatchloading/work/20230420-161015/EQUIPEMENT_PHYSIQUE/equipementPhysique_avec_erreur_referentiel.csv",
+      "source_sha256": "d840cb7ad38a1649c4377bf49188ecf169f2072966f3d9e532648285b9639a53",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/backend/src/test/resources/apibatchloading/work/20230420-161015/EQUIPEMENT_PHYSIQUE/equipementPhysique_ok.csv",
+      "source_sha256": "be687ff0b7849eb0cb49edc28eba4c2087f407b4f14790e9d2f4e2d9696e76ef",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/backend/src/test/resources/apibatchloading/work/20230420-161015/EQUIPEMENT_VIRTUEL/equipementVirtuel_avec_erreur_champs_obligatoire.csv",
+      "source_sha256": "6c336a4cce545a37ed488f19f3d85092e74ef87f2a9ebee239db4a92741d0965",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/backend/src/test/resources/apibatchloading/work/20230420-161015/EQUIPEMENT_VIRTUEL/equipementVirtuel_avec_erreur_de_coherence.csv",
+      "source_sha256": "3040279621229c681156b82af899fde6735f71f2b429106d0a7ce7609fe0c97d",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/backend/src/test/resources/apibatchloading/work/20230420-161015/EQUIPEMENT_VIRTUEL/equipementVirtuel_avec_erreurs_format.csv",
+      "source_sha256": "56e9480e7e6492afd4e43daeeea12e03c3ca8204cd8f967b1e213e87b9122613",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/backend/src/test/resources/apibatchloading/work/20230420-161015/EQUIPEMENT_VIRTUEL/equipementVirtuel_ok.csv",
+      "source_sha256": "c05277738ca48205e6fc304c3035456e3a403213a7040b9788b8400c743d99a1",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/backend/src/test/resources/apibatchloading/work/20230420-161016/APPLICATION/application.csv",
+      "source_sha256": "8ead2c958d2bed9a2e39c72ad1b9a7bad800e47b3281161ecac0b603e918aaeb",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/backend/src/test/resources/apibatchloading/work/20230420-161016/DATACENTER/datacenter.csv",
+      "source_sha256": "d1da9b3ee54e1d120cedc64811514ec833467da281b1db137688a08bf133474f",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/backend/src/test/resources/apibatchloading/work/20230420-161016/DATACENTER/datacenter_with_quote.csv",
+      "source_sha256": "529210b1f6b644cbe6bbcd1f4f1aa34ad8349f7b20684989b73a45665b73cd15",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/backend/src/test/resources/apibatchloading/work/20230420-161016/EQUIPEMENT_PHYSIQUE/physical_equipement_with_quote.csv",
+      "source_sha256": "a5b0a8886cc4571c1d3da53302f0e5030f5603d09a746e2dbd7bf51d12232154",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/backend/src/test/resources/apibatchloading/work/20230420-161016/EQUIPEMENT_PHYSIQUE/physical_equipment.csv",
+      "source_sha256": "4ee737b528f15819552fc6a4fc218dcab2535c93723eb4d9d18cca270c38206a",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/backend/src/test/resources/apibatchloading/work/20230420-161016/EQUIPEMENT_VIRTUEL/virtual_equipment.csv",
+      "source_sha256": "53ed42a3bb760bb9d69cc2710b263703b1943d4ddb45cd7b5452a695ce11de65",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/backend/src/test/resources/apibatchloading/work/20230421-103000/DATACENTER/datacenter_for_update_test.csv",
+      "source_sha256": "cceb7324612e491fa486f4239f6dec8d44b16732075c2796cf7b2ca0286c077a",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/backend/src/test/resources/apibatchloading/work/20230512-213100/DATACENTER/datacenter_for_zip_test.csv",
+      "source_sha256": "4e4b144ca6a0445812468786396acab3fedff29d861c313a843f828e22e99458",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/backend/src/test/resources/apibatchloading/work/20230728-100000/DATACENTER/datacenter_19-07-2023 18-05.csv",
+      "source_sha256": "ee881a04c13055d728a5b916fcb56da41c38122331d91854e067c5e2a3ef82be",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/backend/src/test/resources/apibatchloading/work/20230728-100000/EQUIPEMENT_PHYSIQUE/equipementPhysique-light_19-07-2023 18-05.csv",
+      "source_sha256": "35c5d7f03ec1196e6809f3ff101b7d33de4d71ef9d068ea973709bc3830f5bf1",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/backend/src/test/resources/apibatchloading/work/20230925-161016/APPLICATION/application.csv",
+      "source_sha256": "e7bc8cded98b0e5f0191d3c49d5cba459250c9cd4a2e3e0f1f38844d8fdcf477",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/backend/src/test/resources/apibatchloading/work/20230925-161016/DATACENTER/datacenter.csv",
+      "source_sha256": "13e86a88bac975e011282b7ccac08924115dea49b13d7bb7e3609f101e0a59e5",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/backend/src/test/resources/apibatchloading/work/20230925-161016/EQUIPEMENT_PHYSIQUE/physical_equipment.csv",
+      "source_sha256": "2144f95a8230bd293fb85788d068394a2a5fd35eb94e05160ad69bb1d8bc339f",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/backend/src/test/resources/apibatchloading/work/20230925-161016/EQUIPEMENT_VIRTUEL/equipementVirtuel.csv",
+      "source_sha256": "43b565806e9bfe2d73d367e5700ce016122db977dfc9de9fbc72b9f249e55043",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/backend/src/test/resources/apievaluating/eval_nominal/export/application.csv",
+      "source_sha256": "3dc346ab713301b192f336d1c90c1fe7a0c5fb7a4dcce89f84919116a8ed3744",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/backend/src/test/resources/apievaluating/eval_nominal/export/datacenter.csv",
+      "source_sha256": "303b5f26d151777a19ad217d7a057bd31bf34f422faed661c12ab59e10e50b6a",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/backend/src/test/resources/apievaluating/eval_nominal/export/ind_application.csv",
+      "source_sha256": "3b0055b6698a1e1363030826dfd6226a9e0ddfec1d013d889703c1299f9bf8d2",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/backend/src/test/resources/apievaluating/eval_nominal/export/ind_physical_equipment.csv",
+      "source_sha256": "166f24b7de38bb25b3866459e48c83fdcabb5b667ad6a59043742a56fbe15186",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/backend/src/test/resources/apievaluating/eval_nominal/export/ind_virtual_equipment.csv",
+      "source_sha256": "b47d80f75ce76d10e1a008599c88d6623e6809cea5c937df5488872248958ab7",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/backend/src/test/resources/apievaluating/eval_nominal/export/physical_equipment.csv",
+      "source_sha256": "f4b8caa8d23702070dd319badca61fd4fda53be99c79d6331a965cf938d622ad",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/backend/src/test/resources/apievaluating/eval_nominal/export/virtual_equipment.csv",
+      "source_sha256": "35adcdebdd6f9714e14b39287157134c2842f061add174aab3d1eefa8bd197de",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/backend/src/test/resources/apievaluating/eval_nominal/input/APPLICATION_nominal.csv",
+      "source_sha256": "871437508b5a9ae9400d1f1a421cc4d9d355f6545bd3cc47e60217542e8a3418",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/backend/src/test/resources/apievaluating/eval_nominal/input/DATACENTER_nominal.csv",
+      "source_sha256": "2e42b7c0598786ae4e9ea92361fa09e056e34f1a56cc0d19d3826c395025a26f",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/backend/src/test/resources/apievaluating/eval_nominal/input/EQUIPEMENT_PHYSIQUE_nominal.csv",
+      "source_sha256": "543cc1d5ff496a46b44cddcf4b49f671d9b13ca83274b933c764983ae9044e06",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/backend/src/test/resources/apievaluating/eval_nominal/input/EQUIPEMENT_VIRTUEL_nominal.csv",
+      "source_sha256": "21a09b41ce9910fb158a334393c45ab40ec48e4eff321a56e1653d30c2886d0b",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/backend/src/test/resources/apievaluating/eval_nominal/ref/criterion.csv",
+      "source_sha256": "7d7851dc2b2a49303d9d56eb6ae88a8c1794af78c0c65b18ce318a97cb6dde73",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/backend/src/test/resources/apievaluating/eval_nominal/ref/hypothesis.csv",
+      "source_sha256": "0e91fed450f9fd5f767dd2b19d3e2d47a9a1fe8186cf74a5ac8a36568ef516a3",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/backend/src/test/resources/apievaluating/eval_nominal/ref/itemImpact.csv",
+      "source_sha256": "3830ffaafe92155ad7453ef15ee8b6b8d51ca256378becf526cf8a9080dffec2",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/backend/src/test/resources/apievaluating/eval_nominal/ref/itemType.csv",
+      "source_sha256": "aba052eeb88b0fb6ecb97eaec7454eb7e7ce1568270d1bb62b967961812c4fbf",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/backend/src/test/resources/apievaluating/eval_nominal/ref/lifecycleStep.csv",
+      "source_sha256": "40577424cb5d59f51e9bdf0e4ed1b832ef10c0f92613aea9bf1ed3e8e8a2b783",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/backend/src/test/resources/apiloadinputfiles/load_nominal/input/APPLICATION_nominal.csv",
+      "source_sha256": "b7df8a94e2fe9ef82d1d15ad9ab37612744f989ac97323e13af5a0446c56bb49",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/backend/src/test/resources/apiloadinputfiles/load_nominal/input/DATACENTER_nominal.csv",
+      "source_sha256": "2e42b7c0598786ae4e9ea92361fa09e056e34f1a56cc0d19d3826c395025a26f",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/backend/src/test/resources/apiloadinputfiles/load_nominal/input/EQUIPEMENT_PHYSIQUE_nominal.csv",
+      "source_sha256": "402f0ed643ffc415b45ad9409c56c197d65b8058f81e450a4e26271e06c55be4",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/backend/src/test/resources/apiloadinputfiles/load_nominal/input/EQUIPEMENT_VIRTUEL_nominal.csv",
+      "source_sha256": "4d7977250a3acaac425944d822199d63388766c312224d60e147e1d5dd9cd9e6",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/backend/src/test/resources/apiloadinputfiles/load_nominal/ref/itemImpact.csv",
+      "source_sha256": "018f0628ec1be7c49658bac046d093e9c9e546c1b44a73ad95bdb9e4252f5a51",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/backend/src/test/resources/apiloadinputfiles/load_nominal/ref/itemType.csv",
+      "source_sha256": "aba052eeb88b0fb6ecb97eaec7454eb7e7ce1568270d1bb62b967961812c4fbf",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/backend/src/test/resources/apiloadinputfiles/load_nominal/ref/matchingItem.csv",
+      "source_sha256": "6cc9f26d234d064f5e1d2b4406884f45db2e95769bdbac5deb31c7433435d44a",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/backend/src/test/resources/apiloadinputfiles/load_reject/input/APPLICATION_nominal.csv",
+      "source_sha256": "b026470d59f5bafbe94bf7e937e2450cc3ba0f7b37df521e8a2b264dd364970c",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/backend/src/test/resources/apiloadinputfiles/load_reject/input/DATACENTER_nominal.csv",
+      "source_sha256": "1f42d7bcf20c61b9d8baae4c9c2169639a70d128612fcbde3575acf445169de2",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/backend/src/test/resources/apiloadinputfiles/load_reject/input/EQUIPEMENT_PHYSIQUE_nominal.csv",
+      "source_sha256": "2827b41c227bbaecc31ccda5519db5876d99366b8a32bc2d95f72f096d9a4736",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/backend/src/test/resources/apiloadinputfiles/load_reject/input/EQUIPEMENT_VIRTUEL_nominal.csv",
+      "source_sha256": "984ae92f674d7ec29284bc2b1039276b00f03620d87f34eebb7cf0c4633c9150",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/backend/src/test/resources/apiloadinputfiles/load_reject/ref/itemImpact.csv",
+      "source_sha256": "018f0628ec1be7c49658bac046d093e9c9e546c1b44a73ad95bdb9e4252f5a51",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/backend/src/test/resources/apiloadinputfiles/load_reject/ref/itemType.csv",
+      "source_sha256": "aba052eeb88b0fb6ecb97eaec7454eb7e7ce1568270d1bb62b967961812c4fbf",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/backend/src/test/resources/apiloadinputfiles/load_reject/rejects/rejected_application_20240101_000000.csv",
+      "source_sha256": "7350c1b5f0cb5063e19c521dd17d82408866da1f419417ea670c42a75d51a82f",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/backend/src/test/resources/apiloadinputfiles/load_reject/rejects/rejected_datacenter_20240101_000000.csv",
+      "source_sha256": "f1e6386e44499d22174c077c32223c3db210a8834879ed56c7cb4aa4d4e3e142",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/backend/src/test/resources/apiloadinputfiles/load_reject/rejects/rejected_physical_equipment_20240101_000000.csv",
+      "source_sha256": "a142a562b94b00c022d6efd2afa54154126af3bf35243893a0701fe0810b53b4",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/backend/src/test/resources/apiloadinputfiles/load_reject/rejects/rejected_virtual_equipment_20240101_000000.csv",
+      "source_sha256": "66c5622ef7af725b5db1d73791aededa51bbcea15e825dea5e55d06d4d4c6500",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/backend/src/test/resources/common/filesystem/azure/test-upload.txt",
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "reason": "empty or binary file; no readable text"
+    },
+    {
+      "path": "services/backend/src/test/resources/common/filesystem/local/input/file1.txt",
+      "source_sha256": "d6746a5ef409f28e6609f6d14e947c3e51db6c6a0cc7a9fc275db8b9c7637ba8",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/backend/src/test/resources/common/filesystem/local/input/file2.csv",
+      "source_sha256": "19509517a6ff009aa721d02dc077ea329f693d8c7c461052298b5a9b3d17dddc",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/backend/src/test/resources/common/filesystem/local/template/application.csv",
+      "source_sha256": "f1e81032408f49d4396c88d831ce2176fa497db2743a98f2105a7e60452e23fc",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/backend/src/test/resources/common/filesystem/local/template/datamodel.xlsx",
+      "source_sha256": "aa6f6ca21dbd45eacada35888dbb628fa10e0db8d9c6d73339e65360e5a9041c",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/backend/src/test/resources/common/filesystem/local/work/20230511-1815/DATACENTER/datacenter.txt",
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "reason": "empty or binary file; no readable text"
+    },
+    {
+      "path": "services/backend/src/test/resources/common/filesystem/local/work/20230511-1815/DATACENTER/datacenter2.txt",
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "reason": "empty or binary file; no readable text"
+    },
+    {
+      "path": "services/backend/src/test/resources/common/filesystem/local/work/20231904-1808/DATACENTER/datacenter.txt",
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "reason": "empty or binary file; no readable text"
+    }
+  ],
+  "dependencies": {
+    "pypdf": "missing",
+    "openpyxl": "missing",
+    "defusedxml": "missing"
+  },
+  "workers": 4,
+  "sources": [
+    {
+      "source": "services/backend/README.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/backend/README.md",
+      "source_sha256": "00dcb764aa2868d68f3e145c237935c3095217e62af446e08e8458264bd705e4",
+      "read_sha256": "00dcb764aa2868d68f3e145c237935c3095217e62af446e08e8458264bd705e4",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-42",
+          "sha256": "00dcb764aa2868d68f3e145c237935c3095217e62af446e08e8458264bd705e4"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/spec/applicationViewOptimizationFeature/solution.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/backend/spec/applicationViewOptimizationFeature/solution.md",
+      "source_sha256": "94c1d57c36593a8e7eb472cfe22ff7f8a8551487cf4cb7cfa596e9ec14aec0b1",
+      "read_sha256": "94c1d57c36593a8e7eb472cfe22ff7f8a8551487cf4cb7cfa596e9ec14aec0b1",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-100",
+          "sha256": "7614afbb7bfa9a202513c65562dbb2c45841d38e4db522b44ddea6c1f818b5ab"
+        },
+        {
+          "id": "lines:101-200",
+          "sha256": "b005abbdca2d2eed7308d9767fa3d8633400ff1e6db435a2b289142cf619428f"
+        },
+        {
+          "id": "lines:201-300",
+          "sha256": "7c62e4c2498d7237df75aec4551d7eab97e04165b3c27fa5233e51630a410d57"
+        },
+        {
+          "id": "lines:301-400",
+          "sha256": "2d5bd8b2764b60b510b38481c6f018e3ffabb64148cbfb2ff6f2f74bc88ab90d"
+        },
+        {
+          "id": "lines:401-500",
+          "sha256": "b1e60e90436c3cbb4823731b89596faa707811d42160a72ce8e35327978f2e0b"
+        },
+        {
+          "id": "lines:501-600",
+          "sha256": "cac6c516c9317cf9fdc699445bde80bf41f786449ad21592bab7f5416ce7d2d9"
+        },
+        {
+          "id": "lines:601-700",
+          "sha256": "b7746b030300d1505bc3b7518043b0a23522873752473e4263c8b75597b2ecbb"
+        },
+        {
+          "id": "lines:701-800",
+          "sha256": "017ac42b8b269d2e610f2a139e31d3fe54bf6fd4a67b0a313af9ad83863acad9"
+        },
+        {
+          "id": "lines:801-900",
+          "sha256": "7802316a717d3ef00b80e3b0ddba2724fb1d927b0e7c13aeb88db1d980185a5d"
+        },
+        {
+          "id": "lines:901-995",
+          "sha256": "eff5cd7bf6d2ca88e1a1473b1a6b7cb0e8980087dadd6e84e15dceadd5b52143"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/spec/applicationViewOptimizationFeature/specification.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/backend/spec/applicationViewOptimizationFeature/specification.md",
+      "source_sha256": "f1a75d38774f075c7d48d36ee9c2318541bc983482f127dfe2874a21d03a2e4e",
+      "read_sha256": "f1a75d38774f075c7d48d36ee9c2318541bc983482f127dfe2874a21d03a2e4e",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-25",
+          "sha256": "f1a75d38774f075c7d48d36ee9c2318541bc983482f127dfe2874a21d03a2e4e"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/main/resources/db/changelog/data/data_for_ref_item_impact_water_use.csv",
+      "format": ".csv",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/backend/src/main/resources/db/changelog/data/data_for_ref_item_impact_water_use.csv",
+      "source_sha256": "25a7edfc464eaace23437da4df875e3089998c0fa58786ade67d7ff13ec488bb",
+      "read_sha256": "25a7edfc464eaace23437da4df875e3089998c0fa58786ade67d7ff13ec488bb",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-100",
+          "sha256": "577425213090f4298cc2109cfd774487ebc615dc540dd71d6e2fcb2b8c5e7e00"
+        },
+        {
+          "id": "lines:101-200",
+          "sha256": "6b72329a4b43ebc6036e7d6a3a3663c2b16a48f860c84b86c243eb1541307481"
+        },
+        {
+          "id": "lines:201-300",
+          "sha256": "284f10b60c27a491d18fa364c9bbf30313b5beb4a4992ad9c234495f9693d764"
+        },
+        {
+          "id": "lines:301-400",
+          "sha256": "93bc20753101c1a33c110131b6f8ca695cc424bfa3a459fe0ad6f6adc29a1d9c"
+        },
+        {
+          "id": "lines:401-500",
+          "sha256": "633d52a1122af55ad82d5be3b15ec9d75f06b4f8e74e1d813b2c4ea27ab04d68"
+        },
+        {
+          "id": "lines:501-600",
+          "sha256": "06eb2923266ce21e6754c322cd390d69d991d55a242eda4274840499249d23cf"
+        },
+        {
+          "id": "lines:601-700",
+          "sha256": "cc00536304ee8325b2ba09f80193b6ac12110f5ce7b15c2671aa523004c9fc4a"
+        },
+        {
+          "id": "lines:701-800",
+          "sha256": "5f2f67b048feddb9951894b73578f34ac3361912bc42c6af67236279f7934414"
+        },
+        {
+          "id": "lines:801-900",
+          "sha256": "3e7df5efc09101c0ee0a800134c4fc40f3ba1f9093be2a70498a9206c44c507f"
+        },
+        {
+          "id": "lines:901-1000",
+          "sha256": "576e13ea8cdfcdea6555dc27c2d2ae6886d6b750d1ffe1f4e389fbd267b1020a"
+        },
+        {
+          "id": "lines:1001-1100",
+          "sha256": "55adb056a8bd1b215d3af1e54a9177bac3fbbe23b9d0d1d62a411524ce8b21f8"
+        },
+        {
+          "id": "lines:1101-1200",
+          "sha256": "d28f0f3647ba40dc2ac8d0845d8aa3fe703df7a7b84694833c23820994824c07"
+        },
+        {
+          "id": "lines:1201-1300",
+          "sha256": "672216fde0b5bf7dd6c17818f08c306074a3b01cb5dbcaf4c476f2537f5c58b6"
+        },
+        {
+          "id": "lines:1301-1400",
+          "sha256": "2dcdc75856b6dcbfbb078c9f2f899f955debbffe1efe98a534da803037252683"
+        },
+        {
+          "id": "lines:1401-1500",
+          "sha256": "0cfc5f179d93db2457c1ca8d50179d52bd4943cd4329335d973c1b7a05170f99"
+        },
+        {
+          "id": "lines:1501-1600",
+          "sha256": "9e61ece6f599e64ab54f88865352996ecd6dc9091238fe7c38922c0e8e23c774"
+        },
+        {
+          "id": "lines:1601-1700",
+          "sha256": "b991c9c4886e798c8865584abb58b2d69bc59c8ddbca16cea12e7d9a716f8527"
+        },
+        {
+          "id": "lines:1701-1800",
+          "sha256": "0eab874f4890c8c5ea5bdb6d83d98e02193cae25ffd1e5e81c6e714c7c6c5e0e"
+        },
+        {
+          "id": "lines:1801-1900",
+          "sha256": "98a8433c719a0cbe8fd9122a486b099bb63952c96a211c5715e8b4606a2aafa5"
+        },
+        {
+          "id": "lines:1901-2000",
+          "sha256": "3cdcb3ff2d80abd98c2981d165e361be9e58abc0b087f28e255323ce15ad1ef2"
+        },
+        {
+          "id": "lines:2001-2100",
+          "sha256": "10e41461cbdcb8098fe80dadd87c90be154d5dd2b814eb0321b03a0481dcc301"
+        },
+        {
+          "id": "lines:2101-2200",
+          "sha256": "15e27b7a7af5fa58674a7ddc85360a19f7fb04e3f86bc63eeb1f44281a70d52d"
+        },
+        {
+          "id": "lines:2201-2300",
+          "sha256": "47eacc6bcd97dd079fb6eb07f6a7a718e0eb7c2eccf82d94adc2a13adc7efd9d"
+        },
+        {
+          "id": "lines:2301-2400",
+          "sha256": "96b029460c3333c28fc764819841c734dfc50ee4d26a5acec9fbed13577c27f2"
+        },
+        {
+          "id": "lines:2401-2500",
+          "sha256": "e76c16a9d303413e321f33e094573b2fd3bb986bf826999cc42e6d66195610cf"
+        },
+        {
+          "id": "lines:2501-2600",
+          "sha256": "02d8349d35c87e7e2415ea6e9cc5c4c5c1008d308e68f78417ea0082d4b030ba"
+        },
+        {
+          "id": "lines:2601-2700",
+          "sha256": "8028adaab4cb5ee479d7811a93924cba88b245fc312acffa6bac27c53587bf47"
+        },
+        {
+          "id": "lines:2701-2800",
+          "sha256": "ebb5429f5e3bd9e5211c40e0276093084f69c2137d6c5a84e67a8621ed288422"
+        },
+        {
+          "id": "lines:2801-2900",
+          "sha256": "af8ca3ec54fb17a26d9146ff0607e4c2c1920562acefb7ccfe6f3ca4c21f420e"
+        },
+        {
+          "id": "lines:2901-3000",
+          "sha256": "16629c5cdbef2333d6bbb01a8d9f0016947edf5814193dc89630b0602219b011"
+        },
+        {
+          "id": "lines:3001-3100",
+          "sha256": "f330d5ebf1d1d5f8df84c6badcccf64f22be8bf86e6c261db046d5c530eac7b7"
+        },
+        {
+          "id": "lines:3101-3200",
+          "sha256": "c1153d27c31fb0a8c3c494ba20472a146098d47a632f76735e84fb794eb6d6b3"
+        },
+        {
+          "id": "lines:3201-3300",
+          "sha256": "2314f4b68e3ee694f826fbbf9205027b95226ab0de5eaccbb0c5ab73e653ba1e"
+        },
+        {
+          "id": "lines:3301-3388",
+          "sha256": "64e05f04c39b3cf0bbec8d3730a03056df231240b919161ff8a4ea32f244cf40"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/main/resources/db/changelog/data/ref_network_type.csv",
+      "format": ".csv",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/backend/src/main/resources/db/changelog/data/ref_network_type.csv",
+      "source_sha256": "b383b7f6c815c89671f019cbb3d0aa0935c9ffc1d3cdf8547a7a94a72d135da5",
+      "read_sha256": "b383b7f6c815c89671f019cbb3d0aa0935c9ffc1d3cdf8547a7a94a72d135da5",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-5",
+          "sha256": "b383b7f6c815c89671f019cbb3d0aa0935c9ffc1d3cdf8547a7a94a72d135da5"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/main/resources/db/changelog/data/ref_server_host.csv",
+      "format": ".csv",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/backend/src/main/resources/db/changelog/data/ref_server_host.csv",
+      "source_sha256": "2ebee72c5bc9b8c5a444da8d2b7c6546c0ecfab1f54997030f9897be8e7fcc18",
+      "read_sha256": "2ebee72c5bc9b8c5a444da8d2b7c6546c0ecfab1f54997030f9897be8e7fcc18",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-100",
+          "sha256": "9c3a242698b7d2d87375e4033a531b1d101ef09dae4975d544f4bfe30beab43e"
+        },
+        {
+          "id": "lines:101-137",
+          "sha256": "9199d278f16003dfa08cc53e755001c42cf3c6b303644ff9377d835b3a503267"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/main/resources/db/changelog/data/ref_sustainable_individual_package.csv",
+      "format": ".csv",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/backend/src/main/resources/db/changelog/data/ref_sustainable_individual_package.csv",
+      "source_sha256": "18e15e58e7058540bd957faed59d61f14f332047d184d3297098a648204fb7ea",
+      "read_sha256": "18e15e58e7058540bd957faed59d61f14f332047d184d3297098a648204fb7ea",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-6",
+          "sha256": "18e15e58e7058540bd957faed59d61f14f332047d184d3297098a648204fb7ea"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/main/resources/db/changelog/data/ref_sustainable_individual_package_new_crit.csv",
+      "format": ".csv",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/backend/src/main/resources/db/changelog/data/ref_sustainable_individual_package_new_crit.csv",
+      "source_sha256": "4f51fcedd518d457111c6a1485a2636281b9d62d460953e77af50fbaa132b73c",
+      "read_sha256": "4f51fcedd518d457111c6a1485a2636281b9d62d460953e77af50fbaa132b73c",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-12",
+          "sha256": "4f51fcedd518d457111c6a1485a2636281b9d62d460953e77af50fbaa132b73c"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/main/resources/db/changelog/data/ref_terminal_device_type.csv",
+      "format": ".csv",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/backend/src/main/resources/db/changelog/data/ref_terminal_device_type.csv",
+      "source_sha256": "8256db206aff1c0322024bb2480cf24cf68d99d18f24e524e4d1c264ec2193dd",
+      "read_sha256": "8256db206aff1c0322024bb2480cf24cf68d99d18f24e524e4d1c264ec2193dd",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-12",
+          "sha256": "8256db206aff1c0322024bb2480cf24cf68d99d18f24e524e4d1c264ec2193dd"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/main/resources/db/changelog/referential-data/ref_criterion.csv",
+      "format": ".csv",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/backend/src/main/resources/db/changelog/referential-data/ref_criterion.csv",
+      "source_sha256": "b4b726a897523cf5dc28f788b7a783fdda22de472889928cf3cd0d3377b401e4",
+      "read_sha256": "b4b726a897523cf5dc28f788b7a783fdda22de472889928cf3cd0d3377b401e4",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-6",
+          "sha256": "b4b726a897523cf5dc28f788b7a783fdda22de472889928cf3cd0d3377b401e4"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/main/resources/db/changelog/referential-data/ref_device_type.csv",
+      "format": ".csv",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/backend/src/main/resources/db/changelog/referential-data/ref_device_type.csv",
+      "source_sha256": "8256db206aff1c0322024bb2480cf24cf68d99d18f24e524e4d1c264ec2193dd",
+      "read_sha256": "8256db206aff1c0322024bb2480cf24cf68d99d18f24e524e4d1c264ec2193dd",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-12",
+          "sha256": "8256db206aff1c0322024bb2480cf24cf68d99d18f24e524e4d1c264ec2193dd"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/main/resources/db/changelog/referential-data/ref_hypothesis.csv",
+      "format": ".csv",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/backend/src/main/resources/db/changelog/referential-data/ref_hypothesis.csv",
+      "source_sha256": "4d0faa599ba5be59993aac6346c507fd6a4693fa635967c238134e515e6d2c57",
+      "read_sha256": "4d0faa599ba5be59993aac6346c507fd6a4693fa635967c238134e515e6d2c57",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-5",
+          "sha256": "4d0faa599ba5be59993aac6346c507fd6a4693fa635967c238134e515e6d2c57"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/main/resources/db/changelog/referential-data/ref_item_impact.csv",
+      "format": ".csv",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/backend/src/main/resources/db/changelog/referential-data/ref_item_impact.csv",
+      "source_sha256": "36d3f0d83822736ca53432c85b6b5101a21373698e66231ea389f19566513d6d",
+      "read_sha256": "36d3f0d83822736ca53432c85b6b5101a21373698e66231ea389f19566513d6d",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-100",
+          "sha256": "e9412f72f9eedb18c2b7aa2b03a8d8bfc5d705ff96d968885e617d970b2df155"
+        },
+        {
+          "id": "lines:101-200",
+          "sha256": "10559d64b02983849261312349223fadeed244eaea6b06c67beb0778fd90003f"
+        },
+        {
+          "id": "lines:201-300",
+          "sha256": "d7b1fa105f0aa400601ce5db56fe3b99abe428b5342a44d86002521624e6bf92"
+        },
+        {
+          "id": "lines:301-400",
+          "sha256": "0d70c8352f996ff9d4241ed7d6c45056b372fd7bce31c6fa28caf70676b410dc"
+        },
+        {
+          "id": "lines:401-500",
+          "sha256": "95f5cd5a92bdd15b4f203a178461349c8dc15d2fbf606eda9eb2fd0bcec6b11a"
+        },
+        {
+          "id": "lines:501-600",
+          "sha256": "2ca70125cfed298abaae32fa6797ddc9e0033be68cf91d46d54fd7ff1a2b4d5a"
+        },
+        {
+          "id": "lines:601-700",
+          "sha256": "4e465fccde409940063f6104deb51cbcb55d40265dc69293ac28a4558be4db8a"
+        },
+        {
+          "id": "lines:701-800",
+          "sha256": "63698cc232f63f8df608cebbfbf9872840b6b8fe04cb871d523b5a1905a51c7b"
+        },
+        {
+          "id": "lines:801-900",
+          "sha256": "8f45ca075884cb98342bd73574eafdb52c0237c814e39b8796c6d85ad2a610d6"
+        },
+        {
+          "id": "lines:901-1000",
+          "sha256": "1f2a37041b6d7ef5f6309bd90081f8e9b846afbffd3c7d91cea5cd5b41e8a511"
+        },
+        {
+          "id": "lines:1001-1100",
+          "sha256": "17c738de5307130aa93676068d27ae2722685cfc97d31c275a9998d361b7a45d"
+        },
+        {
+          "id": "lines:1101-1200",
+          "sha256": "9387decf468f35be6505a78ad1473e4f6ae7ee54ed711315a8d8d249f92b2404"
+        },
+        {
+          "id": "lines:1201-1300",
+          "sha256": "fb7d5db2fb6a90a2e9f3dfda4f48fee45cc83eedc3c354da575b178f28df9d58"
+        },
+        {
+          "id": "lines:1301-1400",
+          "sha256": "78175b14aab1e974264a9b886313d35c386694e85acbdedebd5e8585b664c15c"
+        },
+        {
+          "id": "lines:1401-1500",
+          "sha256": "66efe0cbdb254708b80316864eca502f775f7d3949421315aa9d75ef83ce87a4"
+        },
+        {
+          "id": "lines:1501-1600",
+          "sha256": "04ecba729015817600ae4d5b0a10d833a1e427d42e415ee15a7223b36429d752"
+        },
+        {
+          "id": "lines:1601-1699",
+          "sha256": "0428dc4bf0f3b96d65a98da95888c1d0e57ceebc08034f209ba1f0818517639a"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/main/resources/db/changelog/referential-data/ref_item_impact_ai_server.csv",
+      "format": ".csv",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/backend/src/main/resources/db/changelog/referential-data/ref_item_impact_ai_server.csv",
+      "source_sha256": "b3c6b9fb0e141bb86b853c2a45952872ac4773451ace668d63653783956a58a4",
+      "read_sha256": "b3c6b9fb0e141bb86b853c2a45952872ac4773451ace668d63653783956a58a4",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-100",
+          "sha256": "875e96cabd89f04c10e98124d30a0401ee0b210e8b0e61f146d38b994481dbf3"
+        },
+        {
+          "id": "lines:101-193",
+          "sha256": "2bc364f658227176594aefb96cb7cafad1b6a78ebce1d7e22ced3cdaa7133fcb"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/main/resources/db/changelog/referential-data/ref_item_impact_ai_server_v2.csv",
+      "format": ".csv",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/backend/src/main/resources/db/changelog/referential-data/ref_item_impact_ai_server_v2.csv",
+      "source_sha256": "01eeea929fbe01400b01b7c22cf1e01783e4b9d3c4befd044636c46f2c2cbe29",
+      "read_sha256": "01eeea929fbe01400b01b7c22cf1e01783e4b9d3c4befd044636c46f2c2cbe29",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-97",
+          "sha256": "01eeea929fbe01400b01b7c22cf1e01783e4b9d3c4befd044636c46f2c2cbe29"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/main/resources/db/changelog/referential-data/ref_item_type.csv",
+      "format": ".csv",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/backend/src/main/resources/db/changelog/referential-data/ref_item_type.csv",
+      "source_sha256": "8efc6dc76247a4ea40058ef52504534b227fa71cf7abb137e828f78f1ce304e1",
+      "read_sha256": "8efc6dc76247a4ea40058ef52504534b227fa71cf7abb137e828f78f1ce304e1",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-7",
+          "sha256": "8efc6dc76247a4ea40058ef52504534b227fa71cf7abb137e828f78f1ce304e1"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/main/resources/db/changelog/referential-data/ref_item_type_ai_server.csv",
+      "format": ".csv",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/backend/src/main/resources/db/changelog/referential-data/ref_item_type_ai_server.csv",
+      "source_sha256": "d2aa4560faf53eb7e9bb3bc7637f2d6ef523e1735aebb4665544490c16a76720",
+      "read_sha256": "d2aa4560faf53eb7e9bb3bc7637f2d6ef523e1735aebb4665544490c16a76720",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-3",
+          "sha256": "d2aa4560faf53eb7e9bb3bc7637f2d6ef523e1735aebb4665544490c16a76720"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/main/resources/db/changelog/referential-data/ref_lifecycle_step.csv",
+      "format": ".csv",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/backend/src/main/resources/db/changelog/referential-data/ref_lifecycle_step.csv",
+      "source_sha256": "128f624c72787a6d8ffb0a2ed119ccfb62750bb185c1140390bce71cd5dcca37",
+      "read_sha256": "128f624c72787a6d8ffb0a2ed119ccfb62750bb185c1140390bce71cd5dcca37",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-5",
+          "sha256": "128f624c72787a6d8ffb0a2ed119ccfb62750bb185c1140390bce71cd5dcca37"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/main/resources/db/changelog/referential-data/ref_matching_item.csv",
+      "format": ".csv",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/backend/src/main/resources/db/changelog/referential-data/ref_matching_item.csv",
+      "source_sha256": "6716f047874342b704e415bbda0c2e2163fa4c164c178d2dd8fb9a2cf448ed3b",
+      "read_sha256": "6716f047874342b704e415bbda0c2e2163fa4c164c178d2dd8fb9a2cf448ed3b",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-10",
+          "sha256": "6716f047874342b704e415bbda0c2e2163fa4c164c178d2dd8fb9a2cf448ed3b"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/main/resources/db/changelog/referential-data/ref_matching_item_ai_server.csv",
+      "format": ".csv",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/backend/src/main/resources/db/changelog/referential-data/ref_matching_item_ai_server.csv",
+      "source_sha256": "bc38fe0623dd13c729e0764dc44872560c0bff289bbaba6331816e5115574473",
+      "read_sha256": "bc38fe0623dd13c729e0764dc44872560c0bff289bbaba6331816e5115574473",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-6",
+          "sha256": "bc38fe0623dd13c729e0764dc44872560c0bff289bbaba6331816e5115574473"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/main/resources/db/changelog/referential-data/ref_matching_item_ai_server_v2.csv",
+      "format": ".csv",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/backend/src/main/resources/db/changelog/referential-data/ref_matching_item_ai_server_v2.csv",
+      "source_sha256": "d57a92c08ee169fcd757a1e1c54170ea19e6c91c009adf5424d4ef48e160aee5",
+      "read_sha256": "d57a92c08ee169fcd757a1e1c54170ea19e6c91c009adf5424d4ef48e160aee5",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-3",
+          "sha256": "d57a92c08ee169fcd757a1e1c54170ea19e6c91c009adf5424d4ef48e160aee5"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/main/resources/samples/inputs/1-datacenter.csv",
+      "format": ".csv",
+      "status": "excluded",
+      "reason": "third-party, archived or sample content by path",
+      "read_path": null,
+      "source_sha256": "56b5cd7c671f50e0d4dffb49bf6d6f89dfd5b755fa2ae9a20ca502570570b2f1",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/main/resources/samples/inputs/2-physicalEquipments.csv",
+      "format": ".csv",
+      "status": "excluded",
+      "reason": "third-party, archived or sample content by path",
+      "read_path": null,
+      "source_sha256": "71138e4b25d82b386cb336d39c71d746b5353edd9832b6e46e3bc5a797f8aacd",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/main/resources/samples/inputs/3-virtualEquipments.csv",
+      "format": ".csv",
+      "status": "excluded",
+      "reason": "third-party, archived or sample content by path",
+      "read_path": null,
+      "source_sha256": "71c0324f1c5dea66bce847348ba426075236839110271cfb1444e6cc4d31aa46",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/main/resources/samples/inputs/4-applications.csv",
+      "format": ".csv",
+      "status": "excluded",
+      "reason": "third-party, archived or sample content by path",
+      "read_path": null,
+      "source_sha256": "a6ac0b47c60521cac5d526cdfb945194a7a3f13d56b261d6bcb16aa17673057a",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/test/resources/apibatchloading/work/20230101-104559/DATACENTER/invalid_headers.csv",
+      "format": ".csv",
+      "status": "excluded",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19",
+      "read_path": null,
+      "source_sha256": "e932b39a283332ca595884c42ec6125e452b916644e8912e3968e64e096fdd05",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/test/resources/apibatchloading/work/20230101-104559/EQUIPEMENT_PHYSIQUE/equipementPhysique_ok.csv",
+      "format": ".csv",
+      "status": "excluded",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19",
+      "read_path": null,
+      "source_sha256": "c2cfa6dad679cef20fdaadf844b8af61fb90696f728483da7e5ae9efaea688c4",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/test/resources/apibatchloading/work/20230401-104551/EQUIPEMENT_PHYSIQUE/invalid_headers.csv",
+      "format": ".csv",
+      "status": "excluded",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19",
+      "read_path": null,
+      "source_sha256": "e932b39a283332ca595884c42ec6125e452b916644e8912e3968e64e096fdd05",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/test/resources/apibatchloading/work/20230401-104552/EQUIPEMENT_PHYSIQUE/equipementPhysique_good_header.csv",
+      "format": ".csv",
+      "status": "excluded",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19",
+      "read_path": null,
+      "source_sha256": "f1d256a17a5dd75568b34e8c3185cf1c599822dd66298ec19024bd9dbb4fc5b8",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/test/resources/apibatchloading/work/20230420-161015/APPLICATION/application_avec_erreur_champs_obligatoire.csv",
+      "format": ".csv",
+      "status": "excluded",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19",
+      "read_path": null,
+      "source_sha256": "1043ffea8610f143f9dd1b8fe72aa24e1da7a5bbba6fbb585903c46958a7b963",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/test/resources/apibatchloading/work/20230420-161015/APPLICATION/application_avec_erreur_coherence.csv",
+      "format": ".csv",
+      "status": "excluded",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19",
+      "read_path": null,
+      "source_sha256": "0848f39fd10f8c9c88f81f6f40d25713a8d828a664d51c67b2ed141a2b91a149",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/test/resources/apibatchloading/work/20230420-161015/APPLICATION/application_ok.csv",
+      "format": ".csv",
+      "status": "excluded",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19",
+      "read_path": null,
+      "source_sha256": "3b00d2fff7819f97aea730f3c382e1f5f97a0cb3f1546477db42b6f7dedf06da",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/test/resources/apibatchloading/work/20230420-161015/DATACENTER/dataCenters_ok.csv",
+      "format": ".csv",
+      "status": "excluded",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19",
+      "read_path": null,
+      "source_sha256": "b250c61530babecbf5ef764698bccb32bc3c0e9ecf3b652900f7d974e5f81f88",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/test/resources/apibatchloading/work/20230420-161015/DATACENTER/datacenter_avec_erreur_champs_obligatoire.csv",
+      "format": ".csv",
+      "status": "excluded",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19",
+      "read_path": null,
+      "source_sha256": "4c4d3737f33fa7f35b4cbf6a680d9e66256fa57ff0dd410cb2374c858386146a",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/test/resources/apibatchloading/work/20230420-161015/DATACENTER/datacenter_avec_erreur_format.csv",
+      "format": ".csv",
+      "status": "excluded",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19",
+      "read_path": null,
+      "source_sha256": "12b70ddf7521383a402e6091731a0325a82a280c1e03fd9f1c926f33cb0e7c53",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/test/resources/apibatchloading/work/20230420-161015/DATACENTER/datacenter_avec_erreur_referentiel.csv",
+      "format": ".csv",
+      "status": "excluded",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19",
+      "read_path": null,
+      "source_sha256": "2149001968a86492a015709ab06365b21255f8b0b402ddc50fa2a1b01084b9f8",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/test/resources/apibatchloading/work/20230420-161015/EQUIPEMENT_PHYSIQUE/equipementPhysique_avec_erreur_champs_obligatoire.csv",
+      "format": ".csv",
+      "status": "excluded",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19",
+      "read_path": null,
+      "source_sha256": "057624a4203c3036d17e2bb488b76b803863b3d46e35f8a5fa582285d92447b0",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/test/resources/apibatchloading/work/20230420-161015/EQUIPEMENT_PHYSIQUE/equipementPhysique_avec_erreur_coherence.csv",
+      "format": ".csv",
+      "status": "excluded",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19",
+      "read_path": null,
+      "source_sha256": "3776c87389a05ee1ee7cfaf7b11662e27f9786da49aab295311851faca6af78a",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/test/resources/apibatchloading/work/20230420-161015/EQUIPEMENT_PHYSIQUE/equipementPhysique_avec_erreur_format.csv",
+      "format": ".csv",
+      "status": "excluded",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19",
+      "read_path": null,
+      "source_sha256": "d79af27dc452986e045f4cfc870033682bca687b04ca7d86c1fc2a77f10a809f",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/test/resources/apibatchloading/work/20230420-161015/EQUIPEMENT_PHYSIQUE/equipementPhysique_avec_erreur_referentiel.csv",
+      "format": ".csv",
+      "status": "excluded",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19",
+      "read_path": null,
+      "source_sha256": "d840cb7ad38a1649c4377bf49188ecf169f2072966f3d9e532648285b9639a53",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/test/resources/apibatchloading/work/20230420-161015/EQUIPEMENT_PHYSIQUE/equipementPhysique_ok.csv",
+      "format": ".csv",
+      "status": "excluded",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19",
+      "read_path": null,
+      "source_sha256": "be687ff0b7849eb0cb49edc28eba4c2087f407b4f14790e9d2f4e2d9696e76ef",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/test/resources/apibatchloading/work/20230420-161015/EQUIPEMENT_VIRTUEL/equipementVirtuel_avec_erreur_champs_obligatoire.csv",
+      "format": ".csv",
+      "status": "excluded",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19",
+      "read_path": null,
+      "source_sha256": "6c336a4cce545a37ed488f19f3d85092e74ef87f2a9ebee239db4a92741d0965",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/test/resources/apibatchloading/work/20230420-161015/EQUIPEMENT_VIRTUEL/equipementVirtuel_avec_erreur_de_coherence.csv",
+      "format": ".csv",
+      "status": "excluded",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19",
+      "read_path": null,
+      "source_sha256": "3040279621229c681156b82af899fde6735f71f2b429106d0a7ce7609fe0c97d",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/test/resources/apibatchloading/work/20230420-161015/EQUIPEMENT_VIRTUEL/equipementVirtuel_avec_erreurs_format.csv",
+      "format": ".csv",
+      "status": "excluded",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19",
+      "read_path": null,
+      "source_sha256": "56e9480e7e6492afd4e43daeeea12e03c3ca8204cd8f967b1e213e87b9122613",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/test/resources/apibatchloading/work/20230420-161015/EQUIPEMENT_VIRTUEL/equipementVirtuel_ok.csv",
+      "format": ".csv",
+      "status": "excluded",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19",
+      "read_path": null,
+      "source_sha256": "c05277738ca48205e6fc304c3035456e3a403213a7040b9788b8400c743d99a1",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/test/resources/apibatchloading/work/20230420-161016/APPLICATION/application.csv",
+      "format": ".csv",
+      "status": "excluded",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19",
+      "read_path": null,
+      "source_sha256": "8ead2c958d2bed9a2e39c72ad1b9a7bad800e47b3281161ecac0b603e918aaeb",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/test/resources/apibatchloading/work/20230420-161016/DATACENTER/datacenter.csv",
+      "format": ".csv",
+      "status": "excluded",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19",
+      "read_path": null,
+      "source_sha256": "d1da9b3ee54e1d120cedc64811514ec833467da281b1db137688a08bf133474f",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/test/resources/apibatchloading/work/20230420-161016/DATACENTER/datacenter_with_quote.csv",
+      "format": ".csv",
+      "status": "excluded",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19",
+      "read_path": null,
+      "source_sha256": "529210b1f6b644cbe6bbcd1f4f1aa34ad8349f7b20684989b73a45665b73cd15",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/test/resources/apibatchloading/work/20230420-161016/EQUIPEMENT_PHYSIQUE/physical_equipement_with_quote.csv",
+      "format": ".csv",
+      "status": "excluded",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19",
+      "read_path": null,
+      "source_sha256": "a5b0a8886cc4571c1d3da53302f0e5030f5603d09a746e2dbd7bf51d12232154",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/test/resources/apibatchloading/work/20230420-161016/EQUIPEMENT_PHYSIQUE/physical_equipment.csv",
+      "format": ".csv",
+      "status": "excluded",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19",
+      "read_path": null,
+      "source_sha256": "4ee737b528f15819552fc6a4fc218dcab2535c93723eb4d9d18cca270c38206a",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/test/resources/apibatchloading/work/20230420-161016/EQUIPEMENT_VIRTUEL/virtual_equipment.csv",
+      "format": ".csv",
+      "status": "excluded",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19",
+      "read_path": null,
+      "source_sha256": "53ed42a3bb760bb9d69cc2710b263703b1943d4ddb45cd7b5452a695ce11de65",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/test/resources/apibatchloading/work/20230421-103000/DATACENTER/datacenter_for_update_test.csv",
+      "format": ".csv",
+      "status": "excluded",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19",
+      "read_path": null,
+      "source_sha256": "cceb7324612e491fa486f4239f6dec8d44b16732075c2796cf7b2ca0286c077a",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/test/resources/apibatchloading/work/20230512-213100/DATACENTER/datacenter_for_zip_test.csv",
+      "format": ".csv",
+      "status": "excluded",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19",
+      "read_path": null,
+      "source_sha256": "4e4b144ca6a0445812468786396acab3fedff29d861c313a843f828e22e99458",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/test/resources/apibatchloading/work/20230728-100000/DATACENTER/datacenter_19-07-2023 18-05.csv",
+      "format": ".csv",
+      "status": "excluded",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19",
+      "read_path": null,
+      "source_sha256": "ee881a04c13055d728a5b916fcb56da41c38122331d91854e067c5e2a3ef82be",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/test/resources/apibatchloading/work/20230728-100000/EQUIPEMENT_PHYSIQUE/equipementPhysique-light_19-07-2023 18-05.csv",
+      "format": ".csv",
+      "status": "excluded",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19",
+      "read_path": null,
+      "source_sha256": "35c5d7f03ec1196e6809f3ff101b7d33de4d71ef9d068ea973709bc3830f5bf1",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/test/resources/apibatchloading/work/20230925-161016/APPLICATION/application.csv",
+      "format": ".csv",
+      "status": "excluded",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19",
+      "read_path": null,
+      "source_sha256": "e7bc8cded98b0e5f0191d3c49d5cba459250c9cd4a2e3e0f1f38844d8fdcf477",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/test/resources/apibatchloading/work/20230925-161016/DATACENTER/datacenter.csv",
+      "format": ".csv",
+      "status": "excluded",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19",
+      "read_path": null,
+      "source_sha256": "13e86a88bac975e011282b7ccac08924115dea49b13d7bb7e3609f101e0a59e5",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/test/resources/apibatchloading/work/20230925-161016/EQUIPEMENT_PHYSIQUE/physical_equipment.csv",
+      "format": ".csv",
+      "status": "excluded",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19",
+      "read_path": null,
+      "source_sha256": "2144f95a8230bd293fb85788d068394a2a5fd35eb94e05160ad69bb1d8bc339f",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/test/resources/apibatchloading/work/20230925-161016/EQUIPEMENT_VIRTUEL/equipementVirtuel.csv",
+      "format": ".csv",
+      "status": "excluded",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19",
+      "read_path": null,
+      "source_sha256": "43b565806e9bfe2d73d367e5700ce016122db977dfc9de9fbc72b9f249e55043",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/test/resources/apievaluating/eval_nominal/export/application.csv",
+      "format": ".csv",
+      "status": "excluded",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19",
+      "read_path": null,
+      "source_sha256": "3dc346ab713301b192f336d1c90c1fe7a0c5fb7a4dcce89f84919116a8ed3744",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/test/resources/apievaluating/eval_nominal/export/datacenter.csv",
+      "format": ".csv",
+      "status": "excluded",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19",
+      "read_path": null,
+      "source_sha256": "303b5f26d151777a19ad217d7a057bd31bf34f422faed661c12ab59e10e50b6a",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/test/resources/apievaluating/eval_nominal/export/ind_application.csv",
+      "format": ".csv",
+      "status": "excluded",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19",
+      "read_path": null,
+      "source_sha256": "3b0055b6698a1e1363030826dfd6226a9e0ddfec1d013d889703c1299f9bf8d2",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/test/resources/apievaluating/eval_nominal/export/ind_physical_equipment.csv",
+      "format": ".csv",
+      "status": "excluded",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19",
+      "read_path": null,
+      "source_sha256": "166f24b7de38bb25b3866459e48c83fdcabb5b667ad6a59043742a56fbe15186",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/test/resources/apievaluating/eval_nominal/export/ind_virtual_equipment.csv",
+      "format": ".csv",
+      "status": "excluded",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19",
+      "read_path": null,
+      "source_sha256": "b47d80f75ce76d10e1a008599c88d6623e6809cea5c937df5488872248958ab7",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/test/resources/apievaluating/eval_nominal/export/physical_equipment.csv",
+      "format": ".csv",
+      "status": "excluded",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19",
+      "read_path": null,
+      "source_sha256": "f4b8caa8d23702070dd319badca61fd4fda53be99c79d6331a965cf938d622ad",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/test/resources/apievaluating/eval_nominal/export/virtual_equipment.csv",
+      "format": ".csv",
+      "status": "excluded",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19",
+      "read_path": null,
+      "source_sha256": "35adcdebdd6f9714e14b39287157134c2842f061add174aab3d1eefa8bd197de",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/test/resources/apievaluating/eval_nominal/input/APPLICATION_nominal.csv",
+      "format": ".csv",
+      "status": "excluded",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19",
+      "read_path": null,
+      "source_sha256": "871437508b5a9ae9400d1f1a421cc4d9d355f6545bd3cc47e60217542e8a3418",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/test/resources/apievaluating/eval_nominal/input/DATACENTER_nominal.csv",
+      "format": ".csv",
+      "status": "excluded",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19",
+      "read_path": null,
+      "source_sha256": "2e42b7c0598786ae4e9ea92361fa09e056e34f1a56cc0d19d3826c395025a26f",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/test/resources/apievaluating/eval_nominal/input/EQUIPEMENT_PHYSIQUE_nominal.csv",
+      "format": ".csv",
+      "status": "excluded",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19",
+      "read_path": null,
+      "source_sha256": "543cc1d5ff496a46b44cddcf4b49f671d9b13ca83274b933c764983ae9044e06",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/test/resources/apievaluating/eval_nominal/input/EQUIPEMENT_VIRTUEL_nominal.csv",
+      "format": ".csv",
+      "status": "excluded",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19",
+      "read_path": null,
+      "source_sha256": "21a09b41ce9910fb158a334393c45ab40ec48e4eff321a56e1653d30c2886d0b",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/test/resources/apievaluating/eval_nominal/ref/criterion.csv",
+      "format": ".csv",
+      "status": "excluded",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19",
+      "read_path": null,
+      "source_sha256": "7d7851dc2b2a49303d9d56eb6ae88a8c1794af78c0c65b18ce318a97cb6dde73",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/test/resources/apievaluating/eval_nominal/ref/hypothesis.csv",
+      "format": ".csv",
+      "status": "excluded",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19",
+      "read_path": null,
+      "source_sha256": "0e91fed450f9fd5f767dd2b19d3e2d47a9a1fe8186cf74a5ac8a36568ef516a3",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/test/resources/apievaluating/eval_nominal/ref/itemImpact.csv",
+      "format": ".csv",
+      "status": "excluded",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19",
+      "read_path": null,
+      "source_sha256": "3830ffaafe92155ad7453ef15ee8b6b8d51ca256378becf526cf8a9080dffec2",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/test/resources/apievaluating/eval_nominal/ref/itemType.csv",
+      "format": ".csv",
+      "status": "excluded",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19",
+      "read_path": null,
+      "source_sha256": "aba052eeb88b0fb6ecb97eaec7454eb7e7ce1568270d1bb62b967961812c4fbf",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/test/resources/apievaluating/eval_nominal/ref/lifecycleStep.csv",
+      "format": ".csv",
+      "status": "excluded",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19",
+      "read_path": null,
+      "source_sha256": "40577424cb5d59f51e9bdf0e4ed1b832ef10c0f92613aea9bf1ed3e8e8a2b783",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/test/resources/apiloadinputfiles/load_nominal/input/APPLICATION_nominal.csv",
+      "format": ".csv",
+      "status": "excluded",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19",
+      "read_path": null,
+      "source_sha256": "b7df8a94e2fe9ef82d1d15ad9ab37612744f989ac97323e13af5a0446c56bb49",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/test/resources/apiloadinputfiles/load_nominal/input/DATACENTER_nominal.csv",
+      "format": ".csv",
+      "status": "excluded",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19",
+      "read_path": null,
+      "source_sha256": "2e42b7c0598786ae4e9ea92361fa09e056e34f1a56cc0d19d3826c395025a26f",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/test/resources/apiloadinputfiles/load_nominal/input/EQUIPEMENT_PHYSIQUE_nominal.csv",
+      "format": ".csv",
+      "status": "excluded",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19",
+      "read_path": null,
+      "source_sha256": "402f0ed643ffc415b45ad9409c56c197d65b8058f81e450a4e26271e06c55be4",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/test/resources/apiloadinputfiles/load_nominal/input/EQUIPEMENT_VIRTUEL_nominal.csv",
+      "format": ".csv",
+      "status": "excluded",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19",
+      "read_path": null,
+      "source_sha256": "4d7977250a3acaac425944d822199d63388766c312224d60e147e1d5dd9cd9e6",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/test/resources/apiloadinputfiles/load_nominal/ref/itemImpact.csv",
+      "format": ".csv",
+      "status": "excluded",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19",
+      "read_path": null,
+      "source_sha256": "018f0628ec1be7c49658bac046d093e9c9e546c1b44a73ad95bdb9e4252f5a51",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/test/resources/apiloadinputfiles/load_nominal/ref/itemType.csv",
+      "format": ".csv",
+      "status": "excluded",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19",
+      "read_path": null,
+      "source_sha256": "aba052eeb88b0fb6ecb97eaec7454eb7e7ce1568270d1bb62b967961812c4fbf",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/test/resources/apiloadinputfiles/load_nominal/ref/matchingItem.csv",
+      "format": ".csv",
+      "status": "excluded",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19",
+      "read_path": null,
+      "source_sha256": "6cc9f26d234d064f5e1d2b4406884f45db2e95769bdbac5deb31c7433435d44a",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/test/resources/apiloadinputfiles/load_reject/input/APPLICATION_nominal.csv",
+      "format": ".csv",
+      "status": "excluded",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19",
+      "read_path": null,
+      "source_sha256": "b026470d59f5bafbe94bf7e937e2450cc3ba0f7b37df521e8a2b264dd364970c",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/test/resources/apiloadinputfiles/load_reject/input/DATACENTER_nominal.csv",
+      "format": ".csv",
+      "status": "excluded",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19",
+      "read_path": null,
+      "source_sha256": "1f42d7bcf20c61b9d8baae4c9c2169639a70d128612fcbde3575acf445169de2",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/test/resources/apiloadinputfiles/load_reject/input/EQUIPEMENT_PHYSIQUE_nominal.csv",
+      "format": ".csv",
+      "status": "excluded",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19",
+      "read_path": null,
+      "source_sha256": "2827b41c227bbaecc31ccda5519db5876d99366b8a32bc2d95f72f096d9a4736",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/test/resources/apiloadinputfiles/load_reject/input/EQUIPEMENT_VIRTUEL_nominal.csv",
+      "format": ".csv",
+      "status": "excluded",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19",
+      "read_path": null,
+      "source_sha256": "984ae92f674d7ec29284bc2b1039276b00f03620d87f34eebb7cf0c4633c9150",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/test/resources/apiloadinputfiles/load_reject/ref/itemImpact.csv",
+      "format": ".csv",
+      "status": "excluded",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19",
+      "read_path": null,
+      "source_sha256": "018f0628ec1be7c49658bac046d093e9c9e546c1b44a73ad95bdb9e4252f5a51",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/test/resources/apiloadinputfiles/load_reject/ref/itemType.csv",
+      "format": ".csv",
+      "status": "excluded",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19",
+      "read_path": null,
+      "source_sha256": "aba052eeb88b0fb6ecb97eaec7454eb7e7ce1568270d1bb62b967961812c4fbf",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/test/resources/apiloadinputfiles/load_reject/rejects/rejected_application_20240101_000000.csv",
+      "format": ".csv",
+      "status": "excluded",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19",
+      "read_path": null,
+      "source_sha256": "7350c1b5f0cb5063e19c521dd17d82408866da1f419417ea670c42a75d51a82f",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/test/resources/apiloadinputfiles/load_reject/rejects/rejected_datacenter_20240101_000000.csv",
+      "format": ".csv",
+      "status": "excluded",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19",
+      "read_path": null,
+      "source_sha256": "f1e6386e44499d22174c077c32223c3db210a8834879ed56c7cb4aa4d4e3e142",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/test/resources/apiloadinputfiles/load_reject/rejects/rejected_physical_equipment_20240101_000000.csv",
+      "format": ".csv",
+      "status": "excluded",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19",
+      "read_path": null,
+      "source_sha256": "a142a562b94b00c022d6efd2afa54154126af3bf35243893a0701fe0810b53b4",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/test/resources/apiloadinputfiles/load_reject/rejects/rejected_virtual_equipment_20240101_000000.csv",
+      "format": ".csv",
+      "status": "excluded",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19",
+      "read_path": null,
+      "source_sha256": "66c5622ef7af725b5db1d73791aededa51bbcea15e825dea5e55d06d4d4c6500",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/test/resources/common/filesystem/azure/test-upload.txt",
+      "format": ".txt",
+      "status": "excluded",
+      "reason": "empty or binary file; no readable text",
+      "read_path": null,
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/test/resources/common/filesystem/local/input/file1.txt",
+      "format": ".txt",
+      "status": "excluded",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19",
+      "read_path": null,
+      "source_sha256": "d6746a5ef409f28e6609f6d14e947c3e51db6c6a0cc7a9fc275db8b9c7637ba8",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/test/resources/common/filesystem/local/input/file2.csv",
+      "format": ".csv",
+      "status": "excluded",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19",
+      "read_path": null,
+      "source_sha256": "19509517a6ff009aa721d02dc077ea329f693d8c7c461052298b5a9b3d17dddc",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/test/resources/common/filesystem/local/template/application.csv",
+      "format": ".csv",
+      "status": "excluded",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19",
+      "read_path": null,
+      "source_sha256": "f1e81032408f49d4396c88d831ce2176fa497db2743a98f2105a7e60452e23fc",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/test/resources/common/filesystem/local/template/datamodel.xlsx",
+      "format": ".xlsx",
+      "status": "excluded",
+      "reason": "Backend test fixture, not documentation; user decision 2026-11-19",
+      "read_path": null,
+      "source_sha256": "aa6f6ca21dbd45eacada35888dbb628fa10e0db8d9c6d73339e65360e5a9041c",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/test/resources/common/filesystem/local/work/20230511-1815/DATACENTER/datacenter.txt",
+      "format": ".txt",
+      "status": "excluded",
+      "reason": "empty or binary file; no readable text",
+      "read_path": null,
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/test/resources/common/filesystem/local/work/20230511-1815/DATACENTER/datacenter2.txt",
+      "format": ".txt",
+      "status": "excluded",
+      "reason": "empty or binary file; no readable text",
+      "read_path": null,
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [],
+      "blocking_reasons": []
+    },
+    {
+      "source": "services/backend/src/test/resources/common/filesystem/local/work/20231904-1808/DATACENTER/datacenter.txt",
+      "format": ".txt",
+      "status": "excluded",
+      "reason": "empty or binary file; no readable text",
+      "read_path": null,
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "read_sha256": null,
+      "locators": [],
+      "chunks": [],
+      "image_gaps": [],
+      "blocking_reasons": []
+    }
+  ]
+}

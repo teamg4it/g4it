@@ -1,0 +1,1342 @@
+{
+  "allowed": true,
+  "errors": [],
+  "manifest": "outputs/ingestion/repository/g4it-on-github-technical-01/source-coverage.json",
+  "pending_images": [],
+  "pending_bulk_decisions": [],
+  "bulk_decision_template": {
+    "path": "outputs/ingestion/repository/g4it-on-github-technical-01/bulk-image-decisions.json",
+    "template": {
+      "version": 1,
+      "workflow": "brownfield-analysis",
+      "trigger": "repository-ingestion",
+      "date": "2026-11-20T09:25:15.143101+00:00",
+      "status": "draft",
+      "inputDocuments": [
+        "outputs/ingestion/requests/g4it-on-github/technical-01.json"
+      ],
+      "changeHistory": [],
+      "holisticQualityRating": "unassessed",
+      "overallStatus": "pending",
+      "sensitivity": "confidential",
+      "trace_id": "g4it-on-github-technical-01",
+      "station": "ingest-documents/extract-and-verify",
+      "analysis_id": "g4it-on-github-technical-01",
+      "request_sha256": "93224a2fac5cdca26e04363b3a3dd6a4216cf43ccf46b5c4bc76705b54902fea",
+      "batches": []
+    },
+    "batch_template": {
+      "members": [],
+      "decision": "omit",
+      "explanation": "",
+      "omission_reason": "",
+      "shared_explanation_confirmed": false,
+      "confirmed": false,
+      "confirmation_digest": ""
+    },
+    "members_path": null,
+    "member_count": 0
+  },
+  "image_decisions": [],
+  "clarifications": [],
+  "sources": [
+    {
+      "source": "services/documentation/content/3-technical-documentation/1-Non_functional_requirements/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/3-technical-documentation/1-Non_functional_requirements/_index.md",
+      "source_sha256": "cb1ad69a9b91eee8dd4c82b935d4d714278c130a831099621dc6e0bd087034d4",
+      "read_sha256": "cb1ad69a9b91eee8dd4c82b935d4d714278c130a831099621dc6e0bd087034d4",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-79",
+          "sha256": "cb1ad69a9b91eee8dd4c82b935d4d714278c130a831099621dc6e0bd087034d4"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": [],
+      "image_decisions": [],
+      "clarifications": []
+    },
+    {
+      "source": "services/documentation/content/3-technical-documentation/2-software_architecture/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/3-technical-documentation/2-software_architecture/_index.md",
+      "source_sha256": "d0393bd72ac174d4df0b6fc1d7fee4efb6c47c3266b4a652425f3795ff8e2dc4",
+      "read_sha256": "d0393bd72ac174d4df0b6fc1d7fee4efb6c47c3266b4a652425f3795ff8e2dc4",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-71",
+          "sha256": "d0393bd72ac174d4df0b6fc1d7fee4efb6c47c3266b4a652425f3795ff8e2dc4"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": [],
+      "image_decisions": [],
+      "clarifications": []
+    },
+    {
+      "source": "services/documentation/content/3-technical-documentation/3-technical_architecture/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/3-technical-documentation/3-technical_architecture/_index.md",
+      "source_sha256": "2b9415b7e0295df712d37a8445a13a2492ab4fc8827fe967bfe019f11eac02a6",
+      "read_sha256": "2b9415b7e0295df712d37a8445a13a2492ab4fc8827fe967bfe019f11eac02a6",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-49",
+          "sha256": "2b9415b7e0295df712d37a8445a13a2492ab4fc8827fe967bfe019f11eac02a6"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": [],
+      "image_decisions": [],
+      "clarifications": []
+    },
+    {
+      "source": "services/documentation/content/3-technical-documentation/3-technical_architecture/ecomind/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/3-technical-documentation/3-technical_architecture/ecomind/_index.md",
+      "source_sha256": "e8c3f22a2479de6644a80c5978acae3b751c7647b1dcabf50e89ef4133fe4668",
+      "read_sha256": "e8c3f22a2479de6644a80c5978acae3b751c7647b1dcabf50e89ef4133fe4668",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-84",
+          "sha256": "e8c3f22a2479de6644a80c5978acae3b751c7647b1dcabf50e89ef4133fe4668"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": [],
+      "image_decisions": [],
+      "clarifications": []
+    },
+    {
+      "source": "services/documentation/content/3-technical-documentation/4-backend_documentation/1-software_code_architecture/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/3-technical-documentation/4-backend_documentation/1-software_code_architecture/_index.md",
+      "source_sha256": "dbfc2af3a08b243b719be47aa980a03d69827c31272a27aaa28b80abce7a92a0",
+      "read_sha256": "dbfc2af3a08b243b719be47aa980a03d69827c31272a27aaa28b80abce7a92a0",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-82",
+          "sha256": "dbfc2af3a08b243b719be47aa980a03d69827c31272a27aaa28b80abce7a92a0"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": [],
+      "image_decisions": [],
+      "clarifications": []
+    },
+    {
+      "source": "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/1-loading/api_digitalService_loading.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/1-loading/api_digitalService_loading.md",
+      "source_sha256": "2fe27f69bc92b73e3d1530268028b863cded2d7d383bf986f8626286ae73f049",
+      "read_sha256": "2fe27f69bc92b73e3d1530268028b863cded2d7d383bf986f8626286ae73f049",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-100",
+          "sha256": "140df7d7005de9aa3e172f04266ee81cda45c85f05949d51d82a2df1c19ba7aa"
+        },
+        {
+          "id": "lines:101-191",
+          "sha256": "c018443f42ae5d49993187bff4b8be8d8bf5e44d06b9a8cd6c0b6fc373b0db4d"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": [],
+      "image_decisions": [],
+      "clarifications": []
+    },
+    {
+      "source": "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/1-loading/api_loading.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/1-loading/api_loading.md",
+      "source_sha256": "868557137c42de93edf7eb02b8be3b379ba720dc3d91f15b7f88ade22bc622af",
+      "read_sha256": "868557137c42de93edf7eb02b8be3b379ba720dc3d91f15b7f88ade22bc622af",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-100",
+          "sha256": "0376aeea9c5d628514c99df476283e2e104435a7b566e9c597facf261d7d7eaf"
+        },
+        {
+          "id": "lines:101-190",
+          "sha256": "ce5daba9c2c13295bb2f61016887ddef0651a165a894ce2a029237082fb50773"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": [],
+      "image_decisions": [],
+      "clarifications": []
+    },
+    {
+      "source": "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/2-evaluation/api_evaluating_inventory.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/2-evaluation/api_evaluating_inventory.md",
+      "source_sha256": "a02fcacbebb06e9fec13ecce162246630421118043faf44e75be6555ba65db53",
+      "read_sha256": "a02fcacbebb06e9fec13ecce162246630421118043faf44e75be6555ba65db53",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-100",
+          "sha256": "f5ab53ae1120f8376e569b35257e51a21fdfab82af0c589ab76beab7b73d3d01"
+        },
+        {
+          "id": "lines:101-200",
+          "sha256": "76e1f905bdfa8a951f54b75053cf808d551f97b946ce8ca1bbae66fdf5c743d3"
+        },
+        {
+          "id": "lines:201-202",
+          "sha256": "cbd6a62ff1135a0596a37aebd289c668fcc29931c0c60d8630e42c74562e1b87"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": [],
+      "image_decisions": [],
+      "clarifications": []
+    },
+    {
+      "source": "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/2-evaluation/digital_service/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/2-evaluation/digital_service/_index.md",
+      "source_sha256": "06cd59765933b03727cbc17c9e13dfafd8c3744d954292bb3fa1b7029ccfbfa0",
+      "read_sha256": "06cd59765933b03727cbc17c9e13dfafd8c3744d954292bb3fa1b7029ccfbfa0",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-63",
+          "sha256": "06cd59765933b03727cbc17c9e13dfafd8c3744d954292bb3fa1b7029ccfbfa0"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": [],
+      "image_decisions": [],
+      "clarifications": []
+    },
+    {
+      "source": "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/2-evaluation/digital_service/ecomind/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/2-evaluation/digital_service/ecomind/_index.md",
+      "source_sha256": "400f8f232d59ac2c9aa16616e0e1a3ec0933899d738901186411d8da29ea5597",
+      "read_sha256": "400f8f232d59ac2c9aa16616e0e1a3ec0933899d738901186411d8da29ea5597",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-85",
+          "sha256": "400f8f232d59ac2c9aa16616e0e1a3ec0933899d738901186411d8da29ea5597"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": [],
+      "image_decisions": [],
+      "clarifications": []
+    },
+    {
+      "source": "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/2-evaluation/digital_service/without_ecomind/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/2-evaluation/digital_service/without_ecomind/_index.md",
+      "source_sha256": "73238c7b372997f1a5e91072661ab64082a83775d4b998f57125a2716c656f83",
+      "read_sha256": "73238c7b372997f1a5e91072661ab64082a83775d4b998f57125a2716c656f83",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-100",
+          "sha256": "5b038cd522ea0d2d91633d67c914c5de8fc303ce71237018cf9240d1b5da49fc"
+        },
+        {
+          "id": "lines:101-102",
+          "sha256": "cbd6a62ff1135a0596a37aebd289c668fcc29931c0c60d8630e42c74562e1b87"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": [],
+      "image_decisions": [],
+      "clarifications": []
+    },
+    {
+      "source": "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/3-indicators/api_indicators_digital_service.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/3-indicators/api_indicators_digital_service.md",
+      "source_sha256": "7b769ff4590d123382d047947ad7f332bb7db98d2e78128e2d024004a4e94abe",
+      "read_sha256": "7b769ff4590d123382d047947ad7f332bb7db98d2e78128e2d024004a4e94abe",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-38",
+          "sha256": "7b769ff4590d123382d047947ad7f332bb7db98d2e78128e2d024004a4e94abe"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": [],
+      "image_decisions": [],
+      "clarifications": []
+    },
+    {
+      "source": "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/3-indicators/api_indicators_inventory.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/3-indicators/api_indicators_inventory.md",
+      "source_sha256": "fd3816590b76358a59f4e8a49c89d53454495fc5d1767c7295bc4b09d3a57956",
+      "read_sha256": "fd3816590b76358a59f4e8a49c89d53454495fc5d1767c7295bc4b09d3a57956",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-100",
+          "sha256": "d721c34ac1fd2919b51246c7d41968575b0f0647779d0255fd0ffc19e48ab100"
+        },
+        {
+          "id": "lines:101-200",
+          "sha256": "74b9e1dceb8262558c1e64af67e3cd04ac802de3454d03a6a27b0019cd96f2d5"
+        },
+        {
+          "id": "lines:201-300",
+          "sha256": "88c13162c352da50bf5a28c71e754872b7e968accbba3df109da3d011e6769e8"
+        },
+        {
+          "id": "lines:301-368",
+          "sha256": "dc1a1963427bf879deb3b9e17f91736ac8f999fd25e887d08302bae77e5a139f"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": [],
+      "image_decisions": [],
+      "clarifications": []
+    },
+    {
+      "source": "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/3-technical-documentation/4-backend_documentation/2-api_documentation/_index.md",
+      "source_sha256": "dd93d80131725ef2e8139194f52f52e1b4c5027b7d0f14d469d42acc8c849718",
+      "read_sha256": "dd93d80131725ef2e8139194f52f52e1b4c5027b7d0f14d469d42acc8c849718",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-17",
+          "sha256": "dd93d80131725ef2e8139194f52f52e1b4c5027b7d0f14d469d42acc8c849718"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": [],
+      "image_decisions": [],
+      "clarifications": []
+    },
+    {
+      "source": "services/documentation/content/3-technical-documentation/4-backend_documentation/EcoLogits_Calculation_Engine.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/3-technical-documentation/4-backend_documentation/EcoLogits_Calculation_Engine.md",
+      "source_sha256": "b750644d7c4b9059d3d2cf5005af9cfed773a0dd00f8a6e2125b7f272fa67eba",
+      "read_sha256": "b750644d7c4b9059d3d2cf5005af9cfed773a0dd00f8a6e2125b7f272fa67eba",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-100",
+          "sha256": "4658044007703696cd416b502b23ed2c8ffd275175c9aafe2c0e42a97b61dcc7"
+        },
+        {
+          "id": "lines:101-120",
+          "sha256": "5af898f615d7211e49ab461a413dff949fd21c1ebc0d0e5eb392f8f5037aadad"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": [],
+      "image_decisions": [],
+      "clarifications": []
+    },
+    {
+      "source": "services/documentation/content/3-technical-documentation/4-backend_documentation/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/3-technical-documentation/4-backend_documentation/_index.md",
+      "source_sha256": "6666650d544a8d10a0a3894367507572b04ac7eb1fa7fb2cf1763ec727438c6a",
+      "read_sha256": "6666650d544a8d10a0a3894367507572b04ac7eb1fa7fb2cf1763ec727438c6a",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-12",
+          "sha256": "6666650d544a8d10a0a3894367507572b04ac7eb1fa7fb2cf1763ec727438c6a"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": [],
+      "image_decisions": [],
+      "clarifications": []
+    },
+    {
+      "source": "services/documentation/content/3-technical-documentation/4-backend_documentation/db_documentation/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/3-technical-documentation/4-backend_documentation/db_documentation/_index.md",
+      "source_sha256": "f3284345dd3ef686369592920f22fe684d6ed36f55dbef77b1f473f80c8bb2f6",
+      "read_sha256": "f3284345dd3ef686369592920f22fe684d6ed36f55dbef77b1f473f80c8bb2f6",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-9",
+          "sha256": "f3284345dd3ef686369592920f22fe684d6ed36f55dbef77b1f473f80c8bb2f6"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": [],
+      "image_decisions": [],
+      "clarifications": []
+    },
+    {
+      "source": "services/documentation/content/3-technical-documentation/4-backend_documentation/db_documentation/access_management/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/3-technical-documentation/4-backend_documentation/db_documentation/access_management/_index.md",
+      "source_sha256": "76218ff9f131be37ff9521b2d33a346a22c5c17436be495b85fa0411c86be641",
+      "read_sha256": "76218ff9f131be37ff9521b2d33a346a22c5c17436be495b85fa0411c86be641",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-8",
+          "sha256": "76218ff9f131be37ff9521b2d33a346a22c5c17436be495b85fa0411c86be641"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": [],
+      "image_decisions": [],
+      "clarifications": []
+    },
+    {
+      "source": "services/documentation/content/3-technical-documentation/4-backend_documentation/db_documentation/access_management/common_references_tables/_index.md",
+      "format": ".md",
+      "status": "extracted",
+      "reason": "",
+      "read_path": "outputs/ingestion/repository/g4it-on-github-technical-01/extracted/e3af7ba22d3cbe6c9552ad846bfd70cf5460c6686c55ed162fef73c272c50c6e.md",
+      "source_sha256": "329b6e0f25cf562622098d8cce03c69b4f56468fa66cbac53cea97410a1c0c1d",
+      "read_sha256": "7255d64a9b50fb0cd840ac987d344fc25e8170e629896251f3cb797c8d332d51",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-100",
+          "sha256": "a19ad0b8371bfc5b1a98ea07cee6378094161e1597c5f0bd5ba7bbe1a170318c"
+        },
+        {
+          "id": "lines:101-111",
+          "sha256": "7eab7fad600842ebc5c3035cb529b5e81a87f57b76faa0bd92e05b2014561269"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": [],
+      "detected_encoding": "utf-16-le",
+      "image_decisions": [],
+      "clarifications": []
+    },
+    {
+      "source": "services/documentation/content/3-technical-documentation/4-backend_documentation/db_documentation/access_management/users_management/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/3-technical-documentation/4-backend_documentation/db_documentation/access_management/users_management/_index.md",
+      "source_sha256": "436589c201231283a911a37d59fd857ea68749c001b86a0251e02dfc963edcac",
+      "read_sha256": "436589c201231283a911a37d59fd857ea68749c001b86a0251e02dfc963edcac",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-100",
+          "sha256": "4c03a31a3bf8f50ed3c6c6e301105b067115789918eaf55a50a6cee2d9927c97"
+        },
+        {
+          "id": "lines:101-200",
+          "sha256": "707d7b5d93bf4a5d77857febf8160d83cf9cbda1fe6bcdde71e22b462210d847"
+        },
+        {
+          "id": "lines:201-300",
+          "sha256": "765ad5804edb85c5b1043c2f98071420c4d70ee8500a1c0f8a8e4f0edcd4ab1c"
+        },
+        {
+          "id": "lines:301-324",
+          "sha256": "a1dcaab431d686cfcc38f1dfcd680362fde101b552faecad8560e393de981c34"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": [],
+      "image_decisions": [],
+      "clarifications": []
+    },
+    {
+      "source": "services/documentation/content/3-technical-documentation/4-backend_documentation/db_documentation/information_system_and_digital_service_input_data/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/3-technical-documentation/4-backend_documentation/db_documentation/information_system_and_digital_service_input_data/_index.md",
+      "source_sha256": "eba8d271b94c0330b574809e3723ce08ac5f847981747a3ad7ea00fb25fd484a",
+      "read_sha256": "eba8d271b94c0330b574809e3723ce08ac5f847981747a3ad7ea00fb25fd484a",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-8",
+          "sha256": "eba8d271b94c0330b574809e3723ce08ac5f847981747a3ad7ea00fb25fd484a"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": [],
+      "image_decisions": [],
+      "clarifications": []
+    },
+    {
+      "source": "services/documentation/content/3-technical-documentation/4-backend_documentation/db_documentation/information_system_and_digital_service_input_data/digital_service_input_data/input.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/3-technical-documentation/4-backend_documentation/db_documentation/information_system_and_digital_service_input_data/digital_service_input_data/input.md",
+      "source_sha256": "7ea4f087eb206cfe1bc40cf7e5f36c13f1be8db4a92e03ffcda4aeeefca0c8b0",
+      "read_sha256": "7ea4f087eb206cfe1bc40cf7e5f36c13f1be8db4a92e03ffcda4aeeefca0c8b0",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-100",
+          "sha256": "0870a21059041049a929ca0c2de490222608ca312e061aa5e9f2cbcc4dce0875"
+        },
+        {
+          "id": "lines:101-200",
+          "sha256": "3296ddf401beaa061672c3c9b2577aae8213e0cd7b7b8bb3af1be1fdf1d3ec0f"
+        },
+        {
+          "id": "lines:201-300",
+          "sha256": "6f849c75b5d2f204d5c09b03a1deb2260e93ec5a0cd9802aabd8a48a623fb610"
+        },
+        {
+          "id": "lines:301-396",
+          "sha256": "b749bb932235005ebd6a7ee1115ca143b09801223ae2b16395e4be42737f2b37"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": [],
+      "image_decisions": [],
+      "clarifications": []
+    },
+    {
+      "source": "services/documentation/content/3-technical-documentation/4-backend_documentation/db_documentation/information_system_and_digital_service_input_data/digital_service_input_data/input_ecomind.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/3-technical-documentation/4-backend_documentation/db_documentation/information_system_and_digital_service_input_data/digital_service_input_data/input_ecomind.md",
+      "source_sha256": "30bd57a181ac1846e13e71c1aa5ed2fa6db4edf11177cabdf3610509fe010e07",
+      "read_sha256": "30bd57a181ac1846e13e71c1aa5ed2fa6db4edf11177cabdf3610509fe010e07",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-100",
+          "sha256": "341236581074de136b4c660de9b5e47b826d85dae0846975c2980a2e17c1ec9a"
+        },
+        {
+          "id": "lines:101-133",
+          "sha256": "01111e46e93f523cafe79891d3e2256c09953949e7a9ede91afe399323477ac8"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": [],
+      "image_decisions": [],
+      "clarifications": []
+    },
+    {
+      "source": "services/documentation/content/3-technical-documentation/4-backend_documentation/db_documentation/information_system_and_digital_service_input_data/information_sytem_input_data/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/3-technical-documentation/4-backend_documentation/db_documentation/information_system_and_digital_service_input_data/information_sytem_input_data/_index.md",
+      "source_sha256": "30669fdf2b3b56fc14896f310f1c4d68261c61ae4c0ccba5f5f2a3566939e3ce",
+      "read_sha256": "30669fdf2b3b56fc14896f310f1c4d68261c61ae4c0ccba5f5f2a3566939e3ce",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-100",
+          "sha256": "c32c32c49553e3accce86fbcb00a4dd0422e608025716c64bad1238d42e1dee9"
+        },
+        {
+          "id": "lines:101-200",
+          "sha256": "4890c3318393960d127af9d78a08fac8f8957ee42cfe0bc0f36fc7aef3978343"
+        },
+        {
+          "id": "lines:201-300",
+          "sha256": "4cf32e1ee6fc9f5d205a8160cc5b2dc12ad4cdaf284da4fae27f247d6fc819c2"
+        },
+        {
+          "id": "lines:301-400",
+          "sha256": "4ddd3f0cfe389b78e122022fbd1fdb9db42d92f617c825d48d307bd67b5600d2"
+        },
+        {
+          "id": "lines:401-413",
+          "sha256": "62dc01658d844125a44993c33a1c8d1de76be9ca66c26c0f72f9ebb50f8a8048"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": [],
+      "image_decisions": [],
+      "clarifications": []
+    },
+    {
+      "source": "services/documentation/content/3-technical-documentation/4-backend_documentation/db_documentation/information_system_and_digital_service_output_data/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/3-technical-documentation/4-backend_documentation/db_documentation/information_system_and_digital_service_output_data/_index.md",
+      "source_sha256": "ab07bd1b09f3f212a14f12b440dd46744202bf05fa40837c39bf0346dd354e64",
+      "read_sha256": "ab07bd1b09f3f212a14f12b440dd46744202bf05fa40837c39bf0346dd354e64",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-8",
+          "sha256": "ab07bd1b09f3f212a14f12b440dd46744202bf05fa40837c39bf0346dd354e64"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": [],
+      "image_decisions": [],
+      "clarifications": []
+    },
+    {
+      "source": "services/documentation/content/3-technical-documentation/4-backend_documentation/db_documentation/information_system_and_digital_service_output_data/digital_service_output_data/output.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/3-technical-documentation/4-backend_documentation/db_documentation/information_system_and_digital_service_output_data/digital_service_output_data/output.md",
+      "source_sha256": "a8868d43be561d02b6bf4eda37af2d33591c1bbcd27cf9aac45488f431ccd6af",
+      "read_sha256": "a8868d43be561d02b6bf4eda37af2d33591c1bbcd27cf9aac45488f431ccd6af",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-100",
+          "sha256": "bb95299a643b97b96f816ca14246f7afa844e9e3d638a873f3ec8472dd9bb89e"
+        },
+        {
+          "id": "lines:101-200",
+          "sha256": "fc3cb2d54f66d57b508359c2138f054343f9d010d8174bdae453ec58844428e5"
+        },
+        {
+          "id": "lines:201-300",
+          "sha256": "b9b8e6d106f00c85dba5efcdba6965c554e1aa2552d0bad19e471a26c85e551a"
+        },
+        {
+          "id": "lines:301-400",
+          "sha256": "59393e801df9418fe92dc655de3416a7dd185972ef045286e06936e918be6a85"
+        },
+        {
+          "id": "lines:401-410",
+          "sha256": "c9cabd9aa66620badf75e9bd9d6edeb474f91414f90b1c62f4e456c8e9bb2053"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": [],
+      "image_decisions": [],
+      "clarifications": []
+    },
+    {
+      "source": "services/documentation/content/3-technical-documentation/4-backend_documentation/db_documentation/information_system_and_digital_service_output_data/digital_service_output_data/output_ecomind.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/3-technical-documentation/4-backend_documentation/db_documentation/information_system_and_digital_service_output_data/digital_service_output_data/output_ecomind.md",
+      "source_sha256": "c33ae056f7ef427891dd32e5109675f61b0dadf3581d5c7dce954724a7ddd031",
+      "read_sha256": "c33ae056f7ef427891dd32e5109675f61b0dadf3581d5c7dce954724a7ddd031",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-79",
+          "sha256": "c33ae056f7ef427891dd32e5109675f61b0dadf3581d5c7dce954724a7ddd031"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": [],
+      "image_decisions": [],
+      "clarifications": []
+    },
+    {
+      "source": "services/documentation/content/3-technical-documentation/4-backend_documentation/db_documentation/information_system_and_digital_service_output_data/information_sytem_output_data/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/3-technical-documentation/4-backend_documentation/db_documentation/information_system_and_digital_service_output_data/information_sytem_output_data/_index.md",
+      "source_sha256": "21c760eef458ecf409acdd8c1fd484d0f6853b066efe3716598bffeb069b23dc",
+      "read_sha256": "21c760eef458ecf409acdd8c1fd484d0f6853b066efe3716598bffeb069b23dc",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-100",
+          "sha256": "864a489e03769f94f4b3bbb25eb45524c1d5f03a33480fcd3de93772844d5661"
+        },
+        {
+          "id": "lines:101-200",
+          "sha256": "edd0f394cbafca399ceb40b18f9da3ec6381dcc0fe0c7ea35db68f8a10a01fed"
+        },
+        {
+          "id": "lines:201-300",
+          "sha256": "16ef20d5fa65e2d29828d66495ab5302908142c9f8ce66fd66feec62bf8083b2"
+        },
+        {
+          "id": "lines:301-400",
+          "sha256": "b9afcc584d57ac6857b8809701bb613bfb86033c36defbab2958310160707287"
+        },
+        {
+          "id": "lines:401-448",
+          "sha256": "9b14c10bdc4c77d05d4ef93d4b5f9ca8186f1bc6893f353e1f8f13c756d63c96"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": [],
+      "image_decisions": [],
+      "clarifications": []
+    },
+    {
+      "source": "services/documentation/content/3-technical-documentation/4-backend_documentation/db_documentation/referential/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/3-technical-documentation/4-backend_documentation/db_documentation/referential/_index.md",
+      "source_sha256": "112a9cb6c801f25c20fc925e5ec6738fd3add52d7d3f37e67cbb0c6f51c0cb3b",
+      "read_sha256": "112a9cb6c801f25c20fc925e5ec6738fd3add52d7d3f37e67cbb0c6f51c0cb3b",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-8",
+          "sha256": "112a9cb6c801f25c20fc925e5ec6738fd3add52d7d3f37e67cbb0c6f51c0cb3b"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": [],
+      "image_decisions": [],
+      "clarifications": []
+    },
+    {
+      "source": "services/documentation/content/3-technical-documentation/4-backend_documentation/db_documentation/referential/common_references_tables/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/3-technical-documentation/4-backend_documentation/db_documentation/referential/common_references_tables/_index.md",
+      "source_sha256": "34877efd84bb85da914732d30d157067096e9f44913b1c900a6bb35a28ccdf04",
+      "read_sha256": "34877efd84bb85da914732d30d157067096e9f44913b1c900a6bb35a28ccdf04",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-89",
+          "sha256": "34877efd84bb85da914732d30d157067096e9f44913b1c900a6bb35a28ccdf04"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": [],
+      "image_decisions": [],
+      "clarifications": []
+    },
+    {
+      "source": "services/documentation/content/3-technical-documentation/4-backend_documentation/db_documentation/referential/correspondences_for_impact_calculation/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/3-technical-documentation/4-backend_documentation/db_documentation/referential/correspondences_for_impact_calculation/_index.md",
+      "source_sha256": "eb75057aacf9cf292e7167dc5eb28e1c7d08a48d21b9bbf62a3736ebcc3940a3",
+      "read_sha256": "eb75057aacf9cf292e7167dc5eb28e1c7d08a48d21b9bbf62a3736ebcc3940a3",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-100",
+          "sha256": "2ff8c65f1cdd99cdb992bb9d31bd425872b1d166d34dcb4f1f5c1e1eec6904fc"
+        },
+        {
+          "id": "lines:101-130",
+          "sha256": "caececc52b290a4caf78062dd92ba5fb138440f6b4a1b8620608550b650bf27b"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": [],
+      "image_decisions": [],
+      "clarifications": []
+    },
+    {
+      "source": "services/documentation/content/3-technical-documentation/4-backend_documentation/db_documentation/referential/digital_service_definition/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/3-technical-documentation/4-backend_documentation/db_documentation/referential/digital_service_definition/_index.md",
+      "source_sha256": "38b503f9568f967b14246336ddd1c516b753e1b5e254f5214896aefeb234bdc3",
+      "read_sha256": "38b503f9568f967b14246336ddd1c516b753e1b5e254f5214896aefeb234bdc3",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-100",
+          "sha256": "dd2c7ad307f8d9212d4267367f97b7fbe917c8f7486fedf2e6747985ddd7b78d"
+        },
+        {
+          "id": "lines:101-186",
+          "sha256": "5277085ab6abea799a6f15bb4ac2a061b2ad665eb37a69a1fd905ec1379e5728"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": [],
+      "image_decisions": [],
+      "clarifications": []
+    },
+    {
+      "source": "services/documentation/content/3-technical-documentation/4-backend_documentation/referential_management.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/3-technical-documentation/4-backend_documentation/referential_management.md",
+      "source_sha256": "00b1344ab7de449c9d0c4742a4ba6b38cbea96f1aac45b881f9a655568bb35cb",
+      "read_sha256": "00b1344ab7de449c9d0c4742a4ba6b38cbea96f1aac45b881f9a655568bb35cb",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-72",
+          "sha256": "00b1344ab7de449c9d0c4742a4ba6b38cbea96f1aac45b881f9a655568bb35cb"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": [],
+      "image_decisions": [],
+      "clarifications": []
+    },
+    {
+      "source": "services/documentation/content/3-technical-documentation/4-scheduler/stuck_task_scheduler.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/3-technical-documentation/4-scheduler/stuck_task_scheduler.md",
+      "source_sha256": "ceb520c4d83d8d7cc3c2087f4754599c360d4fdfdea705f4b54a927bedf47fe4",
+      "read_sha256": "ceb520c4d83d8d7cc3c2087f4754599c360d4fdfdea705f4b54a927bedf47fe4",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-100",
+          "sha256": "a6e58d8fd5c9aee794646876ea6f164158fa9bb85ea5885844b27c5226f688dc"
+        },
+        {
+          "id": "lines:101-183",
+          "sha256": "a1e4f4722587282bd82f62b7b17a92340a815ec0f9787bc337e21233681dfb65"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": [],
+      "image_decisions": [],
+      "clarifications": []
+    },
+    {
+      "source": "services/documentation/content/3-technical-documentation/5-frontend_documentation/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/3-technical-documentation/5-frontend_documentation/_index.md",
+      "source_sha256": "df7702cba05c1cc5e2a672d77382c293163dc54cad1667184f65dc3cec2c1374",
+      "read_sha256": "df7702cba05c1cc5e2a672d77382c293163dc54cad1667184f65dc3cec2c1374",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-12",
+          "sha256": "df7702cba05c1cc5e2a672d77382c293163dc54cad1667184f65dc3cec2c1374"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": [],
+      "image_decisions": [],
+      "clarifications": []
+    },
+    {
+      "source": "services/documentation/content/3-technical-documentation/5-frontend_documentation/accessibility/Table/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/3-technical-documentation/5-frontend_documentation/accessibility/Table/_index.md",
+      "source_sha256": "660ee57c32ea2a12a61b1bd9c43be582484a4d065e06ad6706d166b177bef255",
+      "read_sha256": "660ee57c32ea2a12a61b1bd9c43be582484a4d065e06ad6706d166b177bef255",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-29",
+          "sha256": "660ee57c32ea2a12a61b1bd9c43be582484a4d065e06ad6706d166b177bef255"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": [],
+      "image_decisions": [],
+      "clarifications": []
+    },
+    {
+      "source": "services/documentation/content/3-technical-documentation/5-frontend_documentation/accessibility/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/3-technical-documentation/5-frontend_documentation/accessibility/_index.md",
+      "source_sha256": "c4894560443933d464a67cf59b6c99cc12e43eb170824b6d2ffa9af1cc403465",
+      "read_sha256": "c4894560443933d464a67cf59b6c99cc12e43eb170824b6d2ffa9af1cc403465",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-12",
+          "sha256": "c4894560443933d464a67cf59b6c99cc12e43eb170824b6d2ffa9af1cc403465"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": [],
+      "image_decisions": [],
+      "clarifications": []
+    },
+    {
+      "source": "services/documentation/content/3-technical-documentation/5-frontend_documentation/accessibility/colors/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/3-technical-documentation/5-frontend_documentation/accessibility/colors/_index.md",
+      "source_sha256": "bbdd29a7ba3ce0da458827ecf8daeb42fff750dc4ce9ca2029d3040a8288e973",
+      "read_sha256": "bbdd29a7ba3ce0da458827ecf8daeb42fff750dc4ce9ca2029d3040a8288e973",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-24",
+          "sha256": "bbdd29a7ba3ce0da458827ecf8daeb42fff750dc4ce9ca2029d3040a8288e973"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": [],
+      "image_decisions": [],
+      "clarifications": []
+    },
+    {
+      "source": "services/documentation/content/3-technical-documentation/5-frontend_documentation/accessibility/cypress/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/3-technical-documentation/5-frontend_documentation/accessibility/cypress/_index.md",
+      "source_sha256": "3489c2956389449a32179e1233418730bcbff06d05abb845a86e0c81e9dc8100",
+      "read_sha256": "3489c2956389449a32179e1233418730bcbff06d05abb845a86e0c81e9dc8100",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-100",
+          "sha256": "9214b5ecb68c585e7d9be1f6fc2e02ab016f015d264e244b786627a0d5c7f3e8"
+        },
+        {
+          "id": "lines:101-103",
+          "sha256": "800f00dc02fda494aa63c5c8ac1859482a13f38880b82c7c4fab6d8b4430bcee"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": [],
+      "image_decisions": [],
+      "clarifications": []
+    },
+    {
+      "source": "services/documentation/content/3-technical-documentation/5-frontend_documentation/accessibility/forms/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/3-technical-documentation/5-frontend_documentation/accessibility/forms/_index.md",
+      "source_sha256": "43c2c37cf824b937f05536208cb96b386a73e4ca7a8f26db1631f994e1033b8a",
+      "read_sha256": "43c2c37cf824b937f05536208cb96b386a73e4ca7a8f26db1631f994e1033b8a",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-14",
+          "sha256": "43c2c37cf824b937f05536208cb96b386a73e4ca7a8f26db1631f994e1033b8a"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": [],
+      "image_decisions": [],
+      "clarifications": []
+    },
+    {
+      "source": "services/documentation/content/3-technical-documentation/5-frontend_documentation/accessibility/links/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/3-technical-documentation/5-frontend_documentation/accessibility/links/_index.md",
+      "source_sha256": "3b549713ea7d291fd84c091258b67b2f8691d50649eef9bf7a7cf1cc251bdf07",
+      "read_sha256": "3b549713ea7d291fd84c091258b67b2f8691d50649eef9bf7a7cf1cc251bdf07",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-20",
+          "sha256": "3b549713ea7d291fd84c091258b67b2f8691d50649eef9bf7a7cf1cc251bdf07"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": [],
+      "image_decisions": [],
+      "clarifications": []
+    },
+    {
+      "source": "services/documentation/content/3-technical-documentation/5-frontend_documentation/accessibility/mandatory_elements/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/3-technical-documentation/5-frontend_documentation/accessibility/mandatory_elements/_index.md",
+      "source_sha256": "8de1c4b1c9116d8d58c9f8921e2031c50884ee3105a20e179173cd83c8aa2c4f",
+      "read_sha256": "8de1c4b1c9116d8d58c9f8921e2031c50884ee3105a20e179173cd83c8aa2c4f",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-48",
+          "sha256": "8de1c4b1c9116d8d58c9f8921e2031c50884ee3105a20e179173cd83c8aa2c4f"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": [],
+      "image_decisions": [],
+      "clarifications": []
+    },
+    {
+      "source": "services/documentation/content/3-technical-documentation/5-frontend_documentation/accessibility/navigation/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/3-technical-documentation/5-frontend_documentation/accessibility/navigation/_index.md",
+      "source_sha256": "1b15f1ed40420180fbd700a5ce78401f1534043ce089e97e551f1ca343023c96",
+      "read_sha256": "1b15f1ed40420180fbd700a5ce78401f1534043ce089e97e551f1ca343023c96",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-42",
+          "sha256": "1b15f1ed40420180fbd700a5ce78401f1534043ce089e97e551f1ca343023c96"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": [],
+      "image_decisions": [],
+      "clarifications": []
+    },
+    {
+      "source": "services/documentation/content/3-technical-documentation/5-frontend_documentation/accessibility/structure/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/3-technical-documentation/5-frontend_documentation/accessibility/structure/_index.md",
+      "source_sha256": "61eb96fc5085fe37be5ed57bd2a19a2b58818b759821dd7e7127d0bb7a5ea40d",
+      "read_sha256": "61eb96fc5085fe37be5ed57bd2a19a2b58818b759821dd7e7127d0bb7a5ea40d",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-32",
+          "sha256": "61eb96fc5085fe37be5ed57bd2a19a2b58818b759821dd7e7127d0bb7a5ea40d"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": [],
+      "image_decisions": [],
+      "clarifications": []
+    },
+    {
+      "source": "services/documentation/content/3-technical-documentation/5-frontend_documentation/accessibility/testing/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/3-technical-documentation/5-frontend_documentation/accessibility/testing/_index.md",
+      "source_sha256": "ca8641c205a0fc3579b09069577c03d69fd32c873e5fcdf6d8f39fbc31c32eff",
+      "read_sha256": "ca8641c205a0fc3579b09069577c03d69fd32c873e5fcdf6d8f39fbc31c32eff",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-45",
+          "sha256": "ca8641c205a0fc3579b09069577c03d69fd32c873e5fcdf6d8f39fbc31c32eff"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": [],
+      "image_decisions": [],
+      "clarifications": []
+    },
+    {
+      "source": "services/documentation/content/3-technical-documentation/5-frontend_documentation/accessibility/what_is_accessibility/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/3-technical-documentation/5-frontend_documentation/accessibility/what_is_accessibility/_index.md",
+      "source_sha256": "de974ea399caff2deb44f9d54c4d13c061ef32a5fd783e3465792e7af5e1bac3",
+      "read_sha256": "de974ea399caff2deb44f9d54c4d13c061ef32a5fd783e3465792e7af5e1bac3",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-48",
+          "sha256": "de974ea399caff2deb44f9d54c4d13c061ef32a5fd783e3465792e7af5e1bac3"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": [],
+      "image_decisions": [],
+      "clarifications": []
+    },
+    {
+      "source": "services/documentation/content/3-technical-documentation/5-frontend_documentation/interceptors/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/3-technical-documentation/5-frontend_documentation/interceptors/_index.md",
+      "source_sha256": "c5c9653013b154fb24ecf7be30892c3144799994cafaaaabdaa21c8886d43de1",
+      "read_sha256": "c5c9653013b154fb24ecf7be30892c3144799994cafaaaabdaa21c8886d43de1",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-42",
+          "sha256": "c5c9653013b154fb24ecf7be30892c3144799994cafaaaabdaa21c8886d43de1"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": [],
+      "image_decisions": [],
+      "clarifications": []
+    },
+    {
+      "source": "services/documentation/content/3-technical-documentation/5-frontend_documentation/services/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/3-technical-documentation/5-frontend_documentation/services/_index.md",
+      "source_sha256": "35de42d30e960f52090bb0bfef155595f7567061872b87efa9330586abd6bfc4",
+      "read_sha256": "35de42d30e960f52090bb0bfef155595f7567061872b87efa9330586abd6bfc4",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-25",
+          "sha256": "35de42d30e960f52090bb0bfef155595f7567061872b87efa9330586abd6bfc4"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": [],
+      "image_decisions": [],
+      "clarifications": []
+    },
+    {
+      "source": "services/documentation/content/3-technical-documentation/5-frontend_documentation/stores/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/3-technical-documentation/5-frontend_documentation/stores/_index.md",
+      "source_sha256": "58759f503e45441b7ca300598d8090db874a0f93d988fae90ae6cec6aae17b44",
+      "read_sha256": "58759f503e45441b7ca300598d8090db874a0f93d988fae90ae6cec6aae17b44",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-66",
+          "sha256": "58759f503e45441b7ca300598d8090db874a0f93d988fae90ae6cec6aae17b44"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": [],
+      "image_decisions": [],
+      "clarifications": []
+    },
+    {
+      "source": "services/documentation/content/3-technical-documentation/5-frontend_documentation/utils/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/3-technical-documentation/5-frontend_documentation/utils/_index.md",
+      "source_sha256": "170382ce9730950ee341762a4101bb62a0db499625246cbd8b34b038128e64a1",
+      "read_sha256": "170382ce9730950ee341762a4101bb62a0db499625246cbd8b34b038128e64a1",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-17",
+          "sha256": "170382ce9730950ee341762a4101bb62a0db499625246cbd8b34b038128e64a1"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": [],
+      "image_decisions": [],
+      "clarifications": []
+    },
+    {
+      "source": "services/documentation/content/3-technical-documentation/6-ecomind_roles_and_access/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/3-technical-documentation/6-ecomind_roles_and_access/_index.md",
+      "source_sha256": "d1666f40aee178ceb6aa64cd3cea563f93bae164fc234a5dd27f9a0bf22a4b5e",
+      "read_sha256": "d1666f40aee178ceb6aa64cd3cea563f93bae164fc234a5dd27f9a0bf22a4b5e",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-89",
+          "sha256": "d1666f40aee178ceb6aa64cd3cea563f93bae164fc234a5dd27f9a0bf22a4b5e"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": [],
+      "image_decisions": [],
+      "clarifications": []
+    },
+    {
+      "source": "services/documentation/content/3-technical-documentation/_index.md",
+      "format": ".md",
+      "status": "not_required",
+      "reason": "",
+      "read_path": "services/documentation/content/3-technical-documentation/_index.md",
+      "source_sha256": "551c4b7927caecc265acb964dfddde94462868cbb0e76c478e4aa15d5499a8ae",
+      "read_sha256": "551c4b7927caecc265acb964dfddde94462868cbb0e76c478e4aa15d5499a8ae",
+      "locators": [
+        "original-lines"
+      ],
+      "chunks": [
+        {
+          "id": "lines:1-8",
+          "sha256": "551c4b7927caecc265acb964dfddde94462868cbb0e76c478e4aa15d5499a8ae"
+        }
+      ],
+      "image_gaps": [],
+      "blocking_reasons": [],
+      "image_decisions": [],
+      "clarifications": []
+    }
+  ],
+  "total": 52,
+  "completed": 52,
+  "counts": {
+    "extracted": 1,
+    "not_required": 51
+  },
+  "unresolved_total": 0,
+  "unresolved": [],
+  "exclusions": [],
+  "images": {
+    "sources": 0,
+    "gaps": 0,
+    "interpreted": 0,
+    "omitted": 0,
+    "explained": 0,
+    "pending": 0,
+    "by_source": [],
+    "omitted_sources": 0
+  },
+  "action": "",
+  "evidence_kind": "extraction only; downstream reading and human review remain required"
+}

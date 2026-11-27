@@ -1,10 +1,10 @@
-## Things to know to happily work on this project 🌈
- 
-### Getting started
+# Things to know to happily work on this project 🌈
+
+## Getting started
 
 To start the project, follow these steps :
 
-```
+```bash
 npm i
 npm start
 ```
@@ -12,17 +12,17 @@ npm start
 Open your browser on `http://localhost:4200/`. The app will automatically reload if you
 change any of the source files.
 
-### Backend Configuration   
+### Backend Configuration
 
 You have two options for working with the backend:
 
-Keep the entire backend running.
-Open another terminal and run the command `npm run start:mockserver`. This will use the
+- Keep the entire backend running.
+- Or open another terminal and run the command `npm run start:mockserver`. This will use the
 mock server defined in the file `mock-server/server`.js to simulate data.
 
 #### Unit tests
 
-```
+```bash
 npm test
 ```
 
@@ -42,7 +42,7 @@ npm run start:mockserver
 
 _Note:_
 
--   _This will use the mock server defined in the file `mock-server/server.js` to simulate
+- _This will use the mock server defined in the file `mock-server/server.js` to simulate
     data._
 
 The best way to develop is to have end to end project locally.
@@ -95,7 +95,7 @@ icons and designs.
 
 List of tools to be installed:
 
--   Node.js 20
+- Node.js 20
 
 #### Cypress tests
 

@@ -1,0 +1,591 @@
+{
+  "workflow": "document-ingestion",
+  "station": "ingest-documents/plan-batches",
+  "trigger": "batch-plan",
+  "date": "2026-11-20T08:11:18.725239+00:00",
+  "status": "draft",
+  "inputDocuments": [
+    "outputs/ingestion/g4it-on-github/triage-report.json",
+    "outputs/ingestion/g4it-on-github/triage-decisions.json"
+  ],
+  "changeHistory": [],
+  "holisticQualityRating": "unassessed",
+  "overallStatus": "pending",
+  "sensitivity": "confidential",
+  "trace_id": "4d1e4282-cc4b-4ea6-83da-14dd38c0b892",
+  "analysis_id": "g4it-on-github",
+  "batch": "frontend-01",
+  "files": [
+    "services/frontend/README.md",
+    "services/frontend/cypress/dataset/input/information-system/application.csv",
+    "services/frontend/cypress/dataset/input/information-system/datacenter.csv",
+    "services/frontend/cypress/dataset/input/information-system/physical_equipment.csv",
+    "services/frontend/nginx/error.html",
+    "services/frontend/src/app/app.component.html",
+    "services/frontend/src/app/layout/about-us/declarations/declarations.component.html",
+    "services/frontend/src/app/layout/about-us/useful-information/useful-information.component.html",
+    "services/frontend/src/app/layout/administration/administration-panel/administration-panel.component.html",
+    "services/frontend/src/app/layout/administration/administration-panel/organizations/organizations.component.html",
+    "services/frontend/src/app/layout/administration/administration-panel/release-notes/release-notes.component.html",
+    "services/frontend/src/app/layout/administration/administration-panel/super-admin/super-admin.component.html",
+    "services/frontend/src/app/layout/administration/administration-panel/update-reference/update-reference.component.html",
+    "services/frontend/src/app/layout/administration/administration-panel/update-workspace-reference/update-workspace-reference.component.html",
+    "services/frontend/src/app/layout/administration/administration-panel/users/add-workspace/add-workspace.component.html",
+    "services/frontend/src/app/layout/administration/administration-panel/users/users.component.html",
+    "services/frontend/src/app/layout/common/common-editor/common-editor.component.html",
+    "services/frontend/src/app/layout/common/configure-view-filters/configure-view-filters.component.html",
+    "services/frontend/src/app/layout/common/criteria-popup/criteria-popup.component.html",
+    "services/frontend/src/app/layout/common/digital-service-table/digital-service-table.component.html",
+    "services/frontend/src/app/layout/common/error/error.component.html",
+    "services/frontend/src/app/layout/common/form-nav/form-nav.component.html",
+    "services/frontend/src/app/layout/common/impact-aggregate-infos/impact-aggregate-infos.component.html",
+    "services/frontend/src/app/layout/common/impact-sidebar/impact-sidebar.component.html",
+    "services/frontend/src/app/layout/common/indicator-section/indicator-section.component.html",
+    "services/frontend/src/app/layout/common/inverse-axis-button/inverse-axis-button.component.html",
+    "services/frontend/src/app/layout/common/promote-version-dialog/promote-version-dialog.component.html",
+    "services/frontend/src/app/layout/common/renew-service-popup/renew-service-popup.component.html",
+    "services/frontend/src/app/layout/common/spinner/spinner.component.html",
+    "services/frontend/src/app/layout/common/stack-bar-chart/stack-bar-chart.component.html",
+    "services/frontend/src/app/layout/common/workspace/workspace.component.html",
+    "services/frontend/src/app/layout/digital-services-compare-versions/digital-services-compare-versions.component.html",
+    "services/frontend/src/app/layout/digital-services-footprint/digital-services-cloud-services/digital-services-cloud-services-side-panel/digital-services-cloud-services-side-panel.component.html",
+    "services/frontend/src/app/layout/digital-services-footprint/digital-services-cloud-services/digital-services-cloud-services.component.html",
+    "services/frontend/src/app/layout/digital-services-footprint/digital-services-ecomind-parameters/digital-services-ai-infrastructure/digital-services-ai-infrastructure.component.html",
+    "services/frontend/src/app/layout/digital-services-footprint/digital-services-ecomind-parameters/digital-services-ai-parameters/digital-services-ai-parameters.component.html",
+    "services/frontend/src/app/layout/digital-services-footprint/digital-services-ecomind-parameters/digital-services-ecomind-parameters.component.html",
+    "services/frontend/src/app/layout/digital-services-footprint/digital-services-footprint-dashboard/bar-chart/bar-chart.component.html",
+    "services/frontend/src/app/layout/digital-services-footprint/digital-services-footprint-dashboard/digital-services-footprint-dashboard.component.html",
+    "services/frontend/src/app/layout/digital-services-footprint/digital-services-footprint-dashboard/graph-description/graph-description.component.html",
+    "services/frontend/src/app/layout/digital-services-footprint/digital-services-footprint-dashboard/impact-button/impact-button.component.html",
+    "services/frontend/src/app/layout/digital-services-footprint/digital-services-footprint-dashboard/pie-chart/pie-chart.component.html",
+    "services/frontend/src/app/layout/digital-services-footprint/digital-services-footprint-dashboard/radial-chart/radial-chart.component.html",
+    "services/frontend/src/app/layout/digital-services-footprint/digital-services-footprint-dashboard/set-view-popup/set-view-popup.component.html",
+    "services/frontend/src/app/layout/digital-services-footprint/digital-services-footprint-footer/digital-services-footprint-footer.component.html",
+    "services/frontend/src/app/layout/digital-services-footprint/digital-services-footprint-header/digital-services-footprint-header.component.html",
+    "services/frontend/src/app/layout/digital-services-footprint/digital-services-footprint-header/link-create-popup/link-create-popup.component.html",
+    "services/frontend/src/app/layout/digital-services-footprint/digital-services-footprint-header/version-type-tag/version-type-tag.component.html",
+    "services/frontend/src/app/layout/digital-services-footprint/digital-services-footprint.component.html",
+    "services/frontend/src/app/layout/digital-services-footprint/digital-services-import/digital-services-import.component.html",
+    "services/frontend/src/app/layout/digital-services-footprint/digital-services-import/multi-file-import/multi-file-import.component.html",
+    "services/frontend/src/app/layout/digital-services-footprint/digital-services-networks/digital-services-networks-side-panel/digital-services-networks-side-panel.component.html",
+    "services/frontend/src/app/layout/digital-services-footprint/digital-services-networks/digital-services-networks.component.html",
+    "services/frontend/src/app/layout/digital-services-footprint/digital-services-resources/digital-services-resources.component.html",
+    "services/frontend/src/app/layout/digital-services-footprint/digital-services-servers/digital-services-servers.component.html",
+    "services/frontend/src/app/layout/digital-services-footprint/digital-services-servers/side-panel/add-datacenter/datacenter.component.html",
+    "services/frontend/src/app/layout/digital-services-footprint/digital-services-servers/side-panel/add-vm/add-vm.component.html",
+    "services/frontend/src/app/layout/digital-services-footprint/digital-services-servers/side-panel/create-server/create-server.component.html",
+    "services/frontend/src/app/layout/digital-services-footprint/digital-services-servers/side-panel/list-vm/list-vm.component.html",
+    "services/frontend/src/app/layout/digital-services-footprint/digital-services-servers/side-panel/server-parameters/server-parameters.component.html",
+    "services/frontend/src/app/layout/digital-services-footprint/digital-services-terminals/digital-services-terminals-side-panel/digital-services-terminals-side-panel.component.html",
+    "services/frontend/src/app/layout/digital-services-footprint/digital-services-terminals/digital-services-terminals.component.html",
+    "services/frontend/src/app/layout/digital-services-manage-versions/digital-service-manage-version/digital-service-manage-version-table/digital-service-manage-version-table.component.html",
+    "services/frontend/src/app/layout/digital-services-manage-versions/digital-service-manage-version/digital-service-manage-version.component.html",
+    "services/frontend/src/app/layout/digital-services/create-digital-services-sidebar/create-digital-services-sidebar.component.html",
+    "services/frontend/src/app/layout/digital-services/digital-services-item/digital-services-item.component.html",
+    "services/frontend/src/app/layout/digital-services/digital-services.component.html",
+    "services/frontend/src/app/layout/header/header-siderbar/left-sidebar/left-sidebar.component.html",
+    "services/frontend/src/app/layout/header/header-siderbar/top-header/top-header.component.html",
+    "services/frontend/src/app/layout/inventories-footprint/application/application-criteria-pie-chart/application-criteria-pie-chart.component.html",
+    "services/frontend/src/app/layout/inventories-footprint/application/application-table-view/application-table-view.component.html",
+    "services/frontend/src/app/layout/inventories-footprint/application/criteria-stats/criteria-stats.component.html",
+    "services/frontend/src/app/layout/inventories-footprint/application/criteria/application-criteria-footprint.component.html",
+    "services/frontend/src/app/layout/inventories-footprint/application/dataviz-filter-application/dataviz-filter-application.component.html",
+    "services/frontend/src/app/layout/inventories-footprint/application/inventories-application-footprint.component.html",
+    "services/frontend/src/app/layout/inventories-footprint/application/multicriteria/application-multicriteria-footprint.component.html",
+    "services/frontend/src/app/layout/inventories-footprint/base-filter-sidebar/base-filter-sidebar.component.html",
+    "services/frontend/src/app/layout/inventories-footprint/critere/inventories-critere-footprint.component.html",
+    "services/frontend/src/app/layout/inventories-footprint/dataviz-filter/dataviz-filter.component.html",
+    "services/frontend/src/app/layout/inventories-footprint/header/inventories-header-footprint.component.html",
+    "services/frontend/src/app/layout/inventories-footprint/inventories-footprint.component.html",
+    "services/frontend/src/app/layout/inventories-footprint/multicriteria/inventories-multicriteria-footprint.component.html",
+    "services/frontend/src/app/layout/inventories/batch-status/batch-status.component.html",
+    "services/frontend/src/app/layout/inventories/equipments-card/equipments-card.component.html",
+    "services/frontend/src/app/layout/inventories/file-panel/inv-file-panel.component.html",
+    "services/frontend/src/app/layout/inventories/file-panel/inv-multi-file-import/inv-multi-file-import.component.html",
+    "services/frontend/src/app/layout/inventories/inventories.component.html",
+    "services/frontend/src/app/layout/inventories/inventory-item/inventory-item.component.html",
+    "services/frontend/src/app/layout/landing-page/landing-page.component.html",
+    "services/frontend/src/app/layout/landing-page/release-notes/release-notes.component.html",
+    "services/frontend/src/app/layout/layout.component.html",
+    "services/frontend/src/app/layout/share-digital-service/share-digital-service.component.html",
+    "services/frontend/src/app/layout/share-digital-service/share-landing-page/share-landing-page.component.html",
+    "services/frontend/src/app/layout/welcome-page/welcome-page.component.html",
+    "services/frontend/src/assets/pdf/declarations/rgesn_2024_outil_declaration_ecoconception_V0_EN.pdf",
+    "services/frontend/src/assets/pdf/declarations/rgesn_2024_outil_declaration_ecoconception_V1.pdf",
+    "services/frontend/src/index.html",
+    "services/frontend/src/index.prod.html"
+  ],
+  "exclusions": [
+    {
+      "path": "services/frontend/nginx/error.html",
+      "source_sha256": "1fda3f788b7cdb1d50259d2d8075633a73a99b19634c2207de31bccd156ddec0",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/app.component.html",
+      "source_sha256": "e5136621bc5440992a0218747837593045a1d434f5fc68f4a9f0dbbd4bbcabfc",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/about-us/declarations/declarations.component.html",
+      "source_sha256": "9772cf0e8f4c215e15a68e3582b8d1696c1f6b7ecbb5aeb3583a29b48e7c2109",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/about-us/useful-information/useful-information.component.html",
+      "source_sha256": "96a18f1ddd6d2fbcc60eff103e00a2c4317bd33d7cf6ea16d92abe602f4447dc",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/administration/administration-panel/administration-panel.component.html",
+      "source_sha256": "865353d26d23bb4a82a14aa1529a1481638c2e5daa5716b5cb1b2eeb5c552c67",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/administration/administration-panel/organizations/organizations.component.html",
+      "source_sha256": "9da65f824ea203b1d6a184b6e0ae6ce96322fadad42952b97a08c3dfc1e442a3",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/administration/administration-panel/release-notes/release-notes.component.html",
+      "source_sha256": "1705c619ac905557f108f0cc0a7ebf964bc5bccf2b0186c081d1e6e91e22e8d4",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/administration/administration-panel/super-admin/super-admin.component.html",
+      "source_sha256": "5e23600aa0839af8ec518384b95da3d1d90f8ed5cc566e85437db138d8d913d4",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/administration/administration-panel/update-reference/update-reference.component.html",
+      "source_sha256": "95bdbb91d41fdec5c1e2b728f1b9555e850f2519f74be1b4382b4728c850d791",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/administration/administration-panel/update-workspace-reference/update-workspace-reference.component.html",
+      "source_sha256": "598d97e5531cb9d0de2e3a280bedab85e4f5e5fa37b2946569ce3c5b6e9a6152",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/administration/administration-panel/users/add-workspace/add-workspace.component.html",
+      "source_sha256": "0ffc4f60727a77d7fabed6dc2c014a327a4a83c3813c468436900ed833dcded0",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/administration/administration-panel/users/users.component.html",
+      "source_sha256": "d51b67d417e63a037d413c2bf6da3ad8027430e6211e87baaf7c62768e15f996",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/common/common-editor/common-editor.component.html",
+      "source_sha256": "68186521a31e20aba9f1a3cf685a47c2d1f2697acb13f73ef986174e5bc669b2",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/common/configure-view-filters/configure-view-filters.component.html",
+      "source_sha256": "925dbb3306b4c4e1f8ed35835b5b49bcf0c89473bac88f89c26fc9bd52cb4256",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/common/criteria-popup/criteria-popup.component.html",
+      "source_sha256": "e33cd236b36cdd886f42e58d59168380418ad118abc750ca1193c82e0702aed1",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/common/digital-service-table/digital-service-table.component.html",
+      "source_sha256": "ebd20c3258969c0fe66a2d7e78f05e714e8bf658fde640a9625987ffb6b2205b",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/common/error/error.component.html",
+      "source_sha256": "e901a6752bea003068918008eca7a7fb799316083fe9ce427ae418bb0da2f85e",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/common/form-nav/form-nav.component.html",
+      "source_sha256": "96adf7d021fe50e63ed0f5cc2fe61bcf08ea9da2d98279bdda7df372448614a0",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/common/impact-aggregate-infos/impact-aggregate-infos.component.html",
+      "source_sha256": "fa41e09fff1f2237e4bb71b219495442be0a0393c97d674a637b2105e9b53877",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/common/impact-sidebar/impact-sidebar.component.html",
+      "source_sha256": "33ee973975d6f106827900c909fa5b170d4ef0d573f1585bca4e9ee30da2ad51",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/common/indicator-section/indicator-section.component.html",
+      "source_sha256": "28b001d86940d7a23166de032a9a5be13c85787fdbe593b0079faa1cffd51cc4",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/common/inverse-axis-button/inverse-axis-button.component.html",
+      "source_sha256": "856badf7ca653164666f7d6f8571002e2b13fedf3d31008d560cf0c86b1ecff1",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/common/promote-version-dialog/promote-version-dialog.component.html",
+      "source_sha256": "8d63f6a5758c75760f60aafe5e1140e5a245678f30caaeea6aa9308130cdad38",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/common/renew-service-popup/renew-service-popup.component.html",
+      "source_sha256": "d8032c2ec2d05f8c1bfeec197a44241338c49298ffcabbcf86edd15b64f3b914",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/common/spinner/spinner.component.html",
+      "source_sha256": "1e59c26625b13f9615f93da6965f714e5ca3b218d81f3b2a7f4a03435bdfc9b8",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/common/stack-bar-chart/stack-bar-chart.component.html",
+      "source_sha256": "efc1cbfeb9bea83762170e27d1f116fd3bb0a2f741c70faee397f5391e0e4bf1",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/common/workspace/workspace.component.html",
+      "source_sha256": "5a33dbc9b99e4c41ee83dc38ce068aa816d51c2c93b75cda2279266f3435ce27",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/digital-services-compare-versions/digital-services-compare-versions.component.html",
+      "source_sha256": "1f00333a1e7f35316197e69efa066d3907de97a0cc13f2fae929967c4584466d",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/digital-services-footprint/digital-services-cloud-services/digital-services-cloud-services-side-panel/digital-services-cloud-services-side-panel.component.html",
+      "source_sha256": "fd93cb2e38b91e2ed83988f7e8572406b3d1615ea4f47ec02294112df1e6b2ab",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/digital-services-footprint/digital-services-cloud-services/digital-services-cloud-services.component.html",
+      "source_sha256": "54b680c04a29f2fb5d29e4cc993e831fdc351c3d3337e399ad92eaa67bb3e763",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/digital-services-footprint/digital-services-ecomind-parameters/digital-services-ai-infrastructure/digital-services-ai-infrastructure.component.html",
+      "source_sha256": "94f1ba7db43a0258107efcc859019d55b4e58b7a17a78f1c445c25d67ad0d7f9",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/digital-services-footprint/digital-services-ecomind-parameters/digital-services-ai-parameters/digital-services-ai-parameters.component.html",
+      "source_sha256": "7ede00dc241abdd90cd6ef55dbe053a2aebdc911eb25d02355fcd7ce49cb6280",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/digital-services-footprint/digital-services-ecomind-parameters/digital-services-ecomind-parameters.component.html",
+      "source_sha256": "66ecc4c5772c659712d805c024c631bf958f549e8673a5d02ae9104c3c2ed8e0",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/digital-services-footprint/digital-services-footprint-dashboard/bar-chart/bar-chart.component.html",
+      "source_sha256": "c2f8f9b1f1902b7642f400c6509be20b760e6a8296831fb0e79ded523e7d4413",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/digital-services-footprint/digital-services-footprint-dashboard/digital-services-footprint-dashboard.component.html",
+      "source_sha256": "b27b2d40c417452b628083c17bcb2a57c9279dc244ed459784543096751cfdce",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/digital-services-footprint/digital-services-footprint-dashboard/graph-description/graph-description.component.html",
+      "source_sha256": "c979b488203f318eca7f23c7628fc73891e944904d8563b51926008f69b06135",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/digital-services-footprint/digital-services-footprint-dashboard/impact-button/impact-button.component.html",
+      "source_sha256": "5a1a6dc406246ee2ef658b39160b3b82d98ae856c9c79dc5512ad0c7ed3b099c",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/digital-services-footprint/digital-services-footprint-dashboard/pie-chart/pie-chart.component.html",
+      "source_sha256": "204e0f494c53244a83536b8d84bf486ba85f563343620948b4c2d941123e60e2",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/digital-services-footprint/digital-services-footprint-dashboard/radial-chart/radial-chart.component.html",
+      "source_sha256": "a530263a18bc9498879d62c9390494ba7b7bfc897d8643f286ede462fd1da2f3",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/digital-services-footprint/digital-services-footprint-dashboard/set-view-popup/set-view-popup.component.html",
+      "source_sha256": "6c421d7ad87e37e06b30e0d01dcf7d9d07a83b55a74ef99a2122955884d5bfa3",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/digital-services-footprint/digital-services-footprint-footer/digital-services-footprint-footer.component.html",
+      "source_sha256": "4f508facfde2e7f163fa64931d0fa16cbf0fe7c70f70048a6eec0b0b9e3e2a0c",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/digital-services-footprint/digital-services-footprint-header/digital-services-footprint-header.component.html",
+      "source_sha256": "1738198272e5f1b35b0d8d3ff91a99ef3cf0ab24fa9203f42450af7e0e3b1e4b",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/digital-services-footprint/digital-services-footprint-header/link-create-popup/link-create-popup.component.html",
+      "source_sha256": "b6b3715cebc8cafefa9d02c4b2453aa8d05f791928379166db43e112020986b8",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/digital-services-footprint/digital-services-footprint-header/version-type-tag/version-type-tag.component.html",
+      "source_sha256": "d4fbfc92409b4ba9eea38241c60d2d4c6b0dad29c42c01bc12088cf147379295",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/digital-services-footprint/digital-services-footprint.component.html",
+      "source_sha256": "dd3ce07d1916e018c17d299ce550f8d1571d2a617c91ef240d680579c5ab7d39",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/digital-services-footprint/digital-services-import/digital-services-import.component.html",
+      "source_sha256": "9d7c4f2987baadc404fca5c2f78cdb6a5e7641a5ab148cf1ffaa525319d5d017",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/digital-services-footprint/digital-services-import/multi-file-import/multi-file-import.component.html",
+      "source_sha256": "c137e8a2fbaad0b7b7d967eeb18aed400c9670b5652173c5fee8f268261dad4e",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/digital-services-footprint/digital-services-networks/digital-services-networks-side-panel/digital-services-networks-side-panel.component.html",
+      "source_sha256": "63cb4f74068e34b59de789d6363cdabc7a5a214485b83b0e507af93c8a5997b3",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/digital-services-footprint/digital-services-networks/digital-services-networks.component.html",
+      "source_sha256": "dad34c0bc1e4d1190e80537f40fa3e4e9ea227c911cfc58debb12ad1b318dbc0",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/digital-services-footprint/digital-services-resources/digital-services-resources.component.html",
+      "source_sha256": "f51f610a8dafe121699e4e7479c1169d4456c9d1d0d509654570f07080b76288",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/digital-services-footprint/digital-services-servers/digital-services-servers.component.html",
+      "source_sha256": "57296faf151547e507e7b5f7ccd2317b9cb43d5e4ada3b712841e993709d1bd1",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/digital-services-footprint/digital-services-servers/side-panel/add-datacenter/datacenter.component.html",
+      "source_sha256": "12772207bfad4ab58d03cba5c24c773ecedf0596153553dff25db5d0e91a333e",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/digital-services-footprint/digital-services-servers/side-panel/add-vm/add-vm.component.html",
+      "source_sha256": "203c1bb2485ea220735a4b6e8f7e233a4368becb3b4d5880c717214f1fdf8c45",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/digital-services-footprint/digital-services-servers/side-panel/create-server/create-server.component.html",
+      "source_sha256": "54961e112826ac3e96f6760097a2225b2958001dc3c80043540849c2df392777",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/digital-services-footprint/digital-services-servers/side-panel/list-vm/list-vm.component.html",
+      "source_sha256": "e29a74df45d9e3c2598ae0831b2f42671232dc56adc560fee332c1d751ca9f16",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/digital-services-footprint/digital-services-servers/side-panel/server-parameters/server-parameters.component.html",
+      "source_sha256": "1435f7b509a25ad7270148e69c13e96ba66e7d45afe550c20a574cb10dca63c6",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/digital-services-footprint/digital-services-terminals/digital-services-terminals-side-panel/digital-services-terminals-side-panel.component.html",
+      "source_sha256": "5c135fc477f91593d5fe66af1d60013c642898ab84d18d121272889f4005a29e",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/digital-services-footprint/digital-services-terminals/digital-services-terminals.component.html",
+      "source_sha256": "891265b004b559e4f922775d76dbc99fad14f857214f7817059851c2342e5a33",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/digital-services-manage-versions/digital-service-manage-version/digital-service-manage-version-table/digital-service-manage-version-table.component.html",
+      "source_sha256": "98eb63e34f03e69464a2bb4b22798f2650afe0220121a4027305f06121c36642",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/digital-services-manage-versions/digital-service-manage-version/digital-service-manage-version.component.html",
+      "source_sha256": "e948e3bff69497201cf0aa879df0a694cb3729e0a1cbf3a0f0be34e051b563e1",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/digital-services/create-digital-services-sidebar/create-digital-services-sidebar.component.html",
+      "source_sha256": "d2cd28bd706ac30171993cbb8bc834c88e0b22960a1990c89f2352e8a739761b",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/digital-services/digital-services-item/digital-services-item.component.html",
+      "source_sha256": "6eb286e2f3353432786cbfe8be8210cd2675ed4f228864c63d0cdb50836ef3ea",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/digital-services/digital-services.component.html",
+      "source_sha256": "3c1a2851c83eb05119c402c66d6bfae0d5e6e09732c22c6c50f062f08434e8a0",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/header/header-siderbar/left-sidebar/left-sidebar.component.html",
+      "source_sha256": "0820ad9ec06994014ece3abc35566ff166d6a55f93684324f64824af914de8c8",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/header/header-siderbar/top-header/top-header.component.html",
+      "source_sha256": "ab378165745dddd5cea9ce556fe12f5ef6cd5d100899dcfdf773991c98c5620a",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/inventories-footprint/application/application-criteria-pie-chart/application-criteria-pie-chart.component.html",
+      "source_sha256": "bb405176e9bb8f5b332103d7904becdd12b2332589e1bb5ad273b6b247df16e4",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/inventories-footprint/application/application-table-view/application-table-view.component.html",
+      "source_sha256": "2ba689dec1f26cce5868281e70212401042f8a3f43a83afb551dae2a670ad88a",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/inventories-footprint/application/criteria-stats/criteria-stats.component.html",
+      "source_sha256": "ec5e2683e9dc6c2aa8beb709e85f76655ff47b764245c477b37c26d567ee7805",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/inventories-footprint/application/criteria/application-criteria-footprint.component.html",
+      "source_sha256": "b7f425ed4917031a7fdfe0a480f44f8953d2dbe91dbbee9f6e54e19d2b8b0ec0",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/inventories-footprint/application/dataviz-filter-application/dataviz-filter-application.component.html",
+      "source_sha256": "bb7647206cc1f7e6cc35c6bd593b4029993a055d81b5699b6a59d19073cd052d",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/inventories-footprint/application/inventories-application-footprint.component.html",
+      "source_sha256": "b26280a4540c0de11e4901a53f203beb922352685b6c37d020776f41a58d2ea1",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/inventories-footprint/application/multicriteria/application-multicriteria-footprint.component.html",
+      "source_sha256": "109ca4c0d5db77b0e799f9642bd6cbb5582eb8f8ad2399e5d0e9d9b604ea1ec5",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/inventories-footprint/base-filter-sidebar/base-filter-sidebar.component.html",
+      "source_sha256": "7157d833895dfa9b576058850a6f041961ab84e949286d29855fc02c4a49f4c5",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/inventories-footprint/critere/inventories-critere-footprint.component.html",
+      "source_sha256": "958c09c8897c885242d2bb5f9046468ae1b6d9d53a17b007592ffa166284d643",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/inventories-footprint/dataviz-filter/dataviz-filter.component.html",
+      "source_sha256": "fe046016279251cf1c2b00449ed2df1773a0e59f6a9b0fe66f933f463e8e3fdb",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/inventories-footprint/header/inventories-header-footprint.component.html",
+      "source_sha256": "a8e69251384c5219a1da3824dbd4a4c47bcc9fe311d541b8a60aa82333437c2f",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/inventories-footprint/inventories-footprint.component.html",
+      "source_sha256": "8bda1c20075ebd06659732219ee54daa5767aa8a41cf7d765792d7a800b42972",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/inventories-footprint/multicriteria/inventories-multicriteria-footprint.component.html",
+      "source_sha256": "0dece65387672da19c7f87f3d19e49c8f7dfad122d6ee97f143816a7f8272909",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/inventories/batch-status/batch-status.component.html",
+      "source_sha256": "c00102a7e734ecf8146f04d883db88cac7a0e1b3f493f7ef756a4e0b1b0ec492",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/inventories/equipments-card/equipments-card.component.html",
+      "source_sha256": "c636432816546596e3ed42d5912abd62169d2b79669d72a124d4088d829eb22c",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/inventories/file-panel/inv-file-panel.component.html",
+      "source_sha256": "e39aae22c09f2a3c3cbdfd4bcc42bbf2dd65f83a78721e1793f3bfa224bafd80",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/inventories/file-panel/inv-multi-file-import/inv-multi-file-import.component.html",
+      "source_sha256": "feae132694a6c2a97e3c544c795f3c1ae584b5f6d9ee7a648a6c0679c20c634e",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/inventories/inventories.component.html",
+      "source_sha256": "0bd709deb68cfd67c3d5c0478f23b22cce4578c27f94ac2cced8dd7e5f00d031",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/inventories/inventory-item/inventory-item.component.html",
+      "source_sha256": "5c9071f0654f20c954b00e7f2748f6a77594e51fb2b18a3385ef0332a34eda19",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/landing-page/landing-page.component.html",
+      "source_sha256": "bb7cff2595e9e7a76691bedf59c142caf32216961142bf15bae5fcce20adf83d",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/landing-page/release-notes/release-notes.component.html",
+      "source_sha256": "006c11bc1f2328c28fd40f7abcf5f74f32dd37bdb903da9a457317a9bfbda3a5",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/layout.component.html",
+      "source_sha256": "4faaedd0fde080d5d3a1bcc475d80ca04d59c9724e9f642273a57576b45ad65c",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/share-digital-service/share-digital-service.component.html",
+      "source_sha256": "ba6e4a1a362c9715c633988017914b7a8c20c06b0aa8602c705671e47118a1ea",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/share-digital-service/share-landing-page/share-landing-page.component.html",
+      "source_sha256": "314558add799e56ca41501e644cd55cad6eefea4ce447bb1cd0d05054f65d19e",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/app/layout/welcome-page/welcome-page.component.html",
+      "source_sha256": "a0febd4f1de65b975d94e846c539c23482561f3068174022ad10af40fb33d179",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/assets/pdf/declarations/rgesn_2024_outil_declaration_ecoconception_V0_EN.pdf",
+      "source_sha256": "d8feec2a7e7d145ddb3d6f5ee09c5b2b015a6e541d84e4de7eb0a24abb749972",
+      "reason": "pypdf not provisioned \u2014 accepted gap"
+    },
+    {
+      "path": "services/frontend/src/assets/pdf/declarations/rgesn_2024_outil_declaration_ecoconception_V1.pdf",
+      "source_sha256": "2ae40b6b7eefaa79ff937e938c0b47ddbe553794d8e07e3decc3c9f0460559e9",
+      "reason": "pypdf not provisioned \u2014 accepted gap"
+    },
+    {
+      "path": "services/frontend/src/index.html",
+      "source_sha256": "a06d184d49fae7bc0453f9dd7503b676066d9de988c0a08badf3f0fbbe813185",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    },
+    {
+      "path": "services/frontend/src/index.prod.html",
+      "source_sha256": "6cef2a0b9a255ef9cb37987b7328735df3d94f48e04298981e0856da03e8fc50",
+      "reason": "UI source code (Angular templates and nginx error page), not documentation; user decision 2026-11-19"
+    }
+  ],
+  "source_root": "."
+}

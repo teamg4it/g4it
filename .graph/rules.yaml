@@ -1,0 +1,12 @@
+# This file has been created (totally or partially) with the assistance of artificial intelligence tools.
+# All content has been generated under the direct supervision of a named individual,
+# and under the AI.Backbone Orchestrator Compliance framework
+---
+version: "1"
+rules:
+  - id: workflow-skills-must-exist
+    severity: error
+    description: Every skill referenced by an installed workflow should resolve to an indexed skill.
+  - id: agent-tools-must-be-declared
+    severity: error
+    description: Every tool used by an installed agent should be declared in its provider configuration.
