@@ -68,6 +68,7 @@ import tools.jackson.databind.json.JsonMapper;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
@@ -327,6 +328,22 @@ class InventoryIndicatorExportSecurityTest {
                         .accept("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "application/json"))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("$.status").value(422));
+
+        verify(files, times(1)).downloadFile("synthetic-org", 7L, FileFolder.EXPORT, "42.zip");
+    }
+
+    @Test
+    void spreadsheetReturnsAJsonServerErrorWhenStorageFailsWithoutRetryingTheDownload() throws Exception {
+        givenWorkspaceRoles(List.of("ROLE_INVENTORY_WRITE"));
+        when(files.downloadFile("synthetic-org", 7L, FileFolder.EXPORT, "42.zip"))
+                .thenThrow(new IOException("synthetic storage failure"));
+
+        mvc.perform(get(SPREADSHEET_URL).header("Authorization", "Bearer " + VALID_TOKEN)
+                        .accept("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "application/json"))
+                .andExpect(status().isInternalServerError())
+                .andExpect(jsonPath("$.code").value("500"))
+                .andExpect(jsonPath("$.status").value(500))
+                .andExpect(jsonPath("$.message").isNotEmpty());
 
         verify(files, times(1)).downloadFile("synthetic-org", 7L, FileFolder.EXPORT, "42.zip");
     }

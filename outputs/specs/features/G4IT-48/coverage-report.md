@@ -4,13 +4,67 @@ trigger: user
 date: '2026-11-25'
 status: validated
 trace_id: e6fa33d4-27cf-4d12-84a2-3c70d47d88da
-station: implementation
-agent: implementer
-skill:
-  - knowledge-plane
-  - code-implementation
+station: quality-validation/coverage
+agent: quality-validator
+skill: coverage-assessment
 sensitivity: internal
 context_retrieval: files
+revision: 27a4ddc678e48d78ce3fcc90205956f907b277e0
+comparison_base: origin/feat/g4it-ia-backbone
+comparison_base_revision: 3aa81b674dab9b579c672bfc6186dc8dd9268ba6
+baseline_source_trees:
+  backend_java: be3558b8a06bc8756a04b845fe78c27cc8e9fbac
+  frontend_src: e27c3b70ccddc764c1d0077ad7b3ee0cc3999bb7
+validation_status: passed
+gate_result: pass
+thresholds:
+  backend_new_code_percent: 80
+  backend_impact_paths_percent: 100
+  frontend_new_components_services_percent: 80
+fresh_tests:
+  backend:
+    total: 1450
+    passed: 1441
+    failures: 0
+    errors: 0
+    skipped: 9
+  frontend:
+    total: 1737
+    passed: 1737
+    failed: 0
+global_coverage_context:
+  backend:
+    covered_lines: 7355
+    total_lines: 11754
+    covered_branches: 2196
+    total_branches: 4068
+  frontend:
+    covered_lines: 5726
+    total_lines: 7737
+    covered_branches: 1599
+    total_branches: 2760
+new_code_coverage_status: reconciled-for-current-base-all-measured-delta-covered
+new_code_coverage:
+  backend:
+    covered_lines: 350
+    total_lines: 350
+    covered_branches: 236
+    total_branches: 236
+    line_percent: 100
+    branch_percent: 100
+  frontend:
+    covered_lines: 63
+    total_lines: 63
+    covered_branches: 49
+    total_branches: 49
+    line_percent: 100
+    branch_percent: 100
+  core_changed_impact_paths:
+    covered_lines: 135
+    total_lines: 135
+    covered_branches: 88
+    total_branches: 88
+dast_status: skipped-by-user
 inputDocuments:
   - outputs/specs/constitution.md
   - outputs/specs/features/G4IT-48/tasks.md
@@ -25,6 +79,20 @@ inputDocuments:
   - .github/workflows/feature-implementation.yml
   - services/documentation/hugo.toml
   - services/documentation/.htmltest.yml
+  - .github/skills/coverage-assessment/SKILL.md
+  - .github/workflows/quality-validation.yml
+  - services/frontend/package.json
+  - services/frontend/angular.json
+  - services/frontend/karma.conf.js
+  - services/backend/target/site/jacoco/index.html
+  - services/backend/target/site/jacoco/jacoco.csv
+  - services/frontend/coverage/frontend/lcov.info
+  - services/backend/src/test/java/com/soprasteria/g4it/backend/apiindicator/business/InventorySpreadsheetExportServiceTest.java
+  - services/backend/src/test/java/com/soprasteria/g4it/backend/apiuser/business/AuthServiceTest.java
+  - services/backend/src/test/java/com/soprasteria/g4it/backend/apiindicator/controller/InventoryIndicatorExportSecurityTest.java
+  - services/frontend/src/app/layout/inventories-footprint/header/inventories-header-footprint.component.spec.ts
+  - .github/skills/java-testing/SKILL.md
+  - .github/skills/angular-testing/SKILL.md
 changeHistory:
   - date: '2026-11-25'
     description: 'Created the implementation-owned coverage evidence report at the exact declared shared path'
@@ -109,9 +177,102 @@ changeHistory:
     description: 'Updated the report lifecycle status to validated at the user’s request'
     changes:
       - 'Changed status from draft to validated without altering coverage evidence'
-holisticQualityRating: not-rated
-overallStatus: not-reviewed
+  - date: '2026-11-27'
+    description: 'Executed independent frontend and backend coverage runs for the quality station'
+    changes:
+      - 'Preserved initial creation date, all implementation history and its original main-based provenance'
+      - 'Measured 1445 backend tests with nine skips and 1733 passing frontend tests using existing instrumentation'
+      - 'Used isolated non-appending JaCoCo execution data and preserved the existing coverage profile exclusions'
+      - 'Recorded fresh global counters and directly inspected selected impact/allocation paths without treating them as whole-feature proof'
+      - 'Recorded the denied inline XML processing and retained the unverified complete current-base new-code denominator'
+      - 'Reopened document review and assessed the mandatory gate as blocked by missing differential evidence, not by global coverage alone'
+  - date: '2026-11-27'
+    description: 'Completed current-base differential reconciliation using permitted native reads'
+    changes:
+      - 'Proved the historical reference and confirmed base have identical backend Java and frontend source Git tree objects'
+      - 'Reconciled the current diff with current generated HTML and LCOV, without reusing historical hit counters'
+      - 'Measured backend source-unique new/changed statements at 348/350 lines and 231/236 branch outcomes'
+      - 'Measured frontend source-mapped new/changed statements at 62/63 lines and 44/49 branch outcomes; every measured file exceeds 80 percent line coverage'
+      - 'Verified all changed core allocation/calculation decision families at 135/135 lines and 88/88 branch outcomes'
+      - 'Deduplicated anonymous-class source line 76 in the new spreadsheet exporter and retained noncritical missed branches'
+      - 'Recorded the user-requested intentional skip of the optional DAST station without executing a scan'
+      - 'Validated coverage with warnings while preserving historical findings, configured exclusions, tests, thresholds and instrumentation'
+  - date: '2026-11-27'
+    description: 'Resolved the measured coverage reserve with focused regression tests and fresh complete instrumented suites'
+    changes:
+      - 'Added five backend and four frontend test cases in four existing test files without production-code or configuration changes'
+      - 'Covered ZIP directories, empty CSV, the actual Excel row boundary, suppressed cleanup failures, a non-workspace route and the HTTP 500 error response'
+      - 'Executed actual XLSX and raw CSV saving, targetless explicit confirmation, and the raw CSV error alternative without format fallback'
+      - 'Passed 56 focused backend tests and nine focused frontend tests, then 1450 complete backend tests with nine existing skips and 1737 complete frontend tests'
+      - 'Measured all 350/350 backend changed mapped lines and 236/236 outcomes, all 63/63 frontend changed mapped lines and 49/49 outcomes, and the unchanged complete critical subset'
+      - 'Confirmed targeted Angular ESLint success and retained existing thresholds, exclusions, integration boundaries and the intentional DAST skip'
+      - 'Superseded only the coverage reserve; other quality-station warnings and aggregate approval remain separate'
+holisticQualityRating: good
+overallStatus: good
 context_manifest:
+  - path: .github/skills/coverage-assessment/SKILL.md
+    mode: full
+    key_facts:
+      - 'Coverage is measured with the language-specific tool and compared with configured thresholds.'
+      - 'The fallback default is 80 percent, but the validated project constitution defines the applicable new-code and impact-path scope.'
+  - path: outputs/specs/constitution.md
+    mode: full
+    key_facts:
+      - 'Backend new code requires at least 80 percent coverage and impact allocation/calculation paths require 100 percent.'
+      - 'Frontend new components/services require at least 80 percent coverage; this is not an 80 percent whole-SPA criterion.'
+  - path: .github/workflows/quality-validation.yml
+    mode: full
+    key_facts:
+      - 'coverage is mandatory with a blocker gate and requires coverage-report.md.'
+      - 'The aggregate quality-report requires the coverage station to have passed.'
+      - 'security-dast is optional with warning severity; the user explicitly requested an intentional skip.'
+  - path: services/backend/pom.xml
+    mode: targeted
+    key_facts:
+      - 'The existing coverage profile measures handwritten mapper/model/configuration logic while retaining controller/generated/persistence-boundary exclusions.'
+      - 'JaCoCo 0.8.13 prepares its agent and normally reports at verify; the report goal was invoked explicitly after tests without a packaging build.'
+      - 'The default test selection excludes the PostgreSQL integration group; no numerical JaCoCo check goal is configured.'
+  - path: services/frontend/karma.conf.js
+    mode: full
+    key_facts:
+      - 'karma-coverage writes text-summary, HTML and LCOV into coverage/frontend.'
+      - 'The existing browser is ChromeHeadlessNoSandbox and no numerical coverage threshold is configured here.'
+  - path: services/frontend/angular.json
+    mode: targeted
+    key_facts:
+      - 'The ci test configuration sets watch false, codeCoverage true and ChromeHeadlessNoSandbox.'
+      - 'Both local and ci test configurations replace the environment with the existing test configuration.'
+  - path: services/backend/target/site/jacoco/jacoco.csv
+    mode: targeted
+    key_facts:
+      - 'PhysicalEquipmentAllocationService reports 38 covered lines and 24 covered branch outcomes, with none missed.'
+      - 'ItemCategoryResolver and PhysicalEquipmentReferenceResolver report 9/9 and 14/14 lines, with 10/10 and 18/18 branch outcomes.'
+      - 'The fresh InventorySpreadsheetExportService main-class record has 46 covered lines, zero missed lines and all 22 branch outcomes; its anonymous wrapper contributes a separate 2/2-line record.'
+  - path: services/backend/target/site/jacoco
+    mode: targeted
+    key_facts:
+      - 'Native source-HTML reads reconcile all 29 measured changed Java files; spreadsheet line 76 occurs in two class counters but once in the source-line denominator.'
+      - 'All seven changed core allocation/calculation sources remain fully covered; AuthService 278 and RestExceptionHandler 96 now each cover both branch outcomes.'
+      - 'The fresh spreadsheet source report covers cleanup lines 68/69 and all outcomes at directory guard 46, empty/BOM guard 84 and row/column guard 96.'
+  - path: services/frontend/coverage/frontend/lcov.info
+    mode: targeted
+    key_facts:
+      - 'All changed chart/filter outcomes in criterion range 215-295 and new sunburst mapper outcomes have positive hits.'
+      - 'Header containing DA122, DA127 and DA133 now have positive execution counts; all seven changed mapped lines and all nine header branch outcomes execute.'
+      - 'Container properties map to DA155, DA538 and DA564, and runtime chart registration maps to DA19; these containing statements all have positive hits.'
+  - path: .github/skills/java-testing/SKILL.md
+    mode: full
+    key_facts:
+      - 'JUnit 5 parameterized cases and temporary-directory cleanup extend existing fixtures without adding test infrastructure.'
+      - 'Scoped Mockito fault injection preserves real filesystem behavior except the explicitly simulated cleanup failure.'
+      - 'The row-boundary test uses the real Excel limit without materializing a million input records; its reflection tradeoff is recorded below.'
+  - path: .github/skills/angular-testing/SKILL.md
+    mode: full
+    key_facts:
+      - 'Angular TestBed retains the real component implementation while only the remote service boundary is stubbed.'
+      - 'fakeAsync, microtask flushing and tick exercise the awaited blob and progress-delay behavior without real waiting.'
+      - 'Browser download side effects are intercepted; production downloadFile and file-saver execution are not replaced with success spies.'
+historical_implementation_context_manifest:
   - path: outputs/specs/constitution.md
     mode: full
     key_facts:
@@ -155,7 +316,549 @@ context_manifest:
 ---
 <!-- AI_DISCLAIMER v1.0 -->
 
-## 2026-11-26 — R01–R18 completion: coverage boundary (LATEST)
+# Coverage Assessment Report
+
+> This file has been created (totally or partially) with the assistance of artificial intelligence tools.
+> All content has been generated under the direct supervision of a named individual,
+> and under the AI.Backbone Orchestrator Compliance framework
+
+## 2026-11-27 - Coverage reserve resolved after regression-test additions
+
+**Current coverage assessment: passed / pass. The measured new-code coverage
+reserve is resolved for both application stacks. DAST remains intentionally
+skipped.**
+
+This section supersedes the earlier coverage verdict and hit counts below.
+The earlier assessments remain as historical evidence, including their
+then-correct statements that tests had not changed. The baseline, production
+line identities, source-map reconciliation and configured measurement scope
+are unchanged. This correction modifies four existing test files only; it
+does not modify production behavior, dependencies, instrumentation, exclusions
+or coverage thresholds.
+
+### Added regression behavior
+
+The complete suites contain **nine additional cases: five backend and four
+frontend**. Existing spreadsheet error assertions were also strengthened.
+
+| Existing test suite | Added or strengthened behavior |
+|---|---|
+| InventorySpreadsheetExportServiceTest | Ignore ZIP directory entries and retain an empty CSV as an empty sheet; accept the actual last Excel row and reject the next without truncating the valid row; preserve the primary export exception and attach cleanup failure as suppressed |
+| AuthServiceTest | Ignore a sufficiently long route whose organization/inventory segments match but whose workspace segment does not, without calling the inventory service |
+| InventoryIndicatorExportSecurityTest | Return a real JSON HTTP 500 response through the existing authentication, authorization, controller and exception-handler chain when storage throws; do not retry the download |
+| InventoriesHeaderFootprintComponent spec | Preserve explicit raw-export confirmation for an event without a target; execute real XLSX and raw CSV saving with the correct filename and progress reset; report raw CSV failure without spreadsheet fallback; assert the existing XLSX-specific error summary |
+
+The Excel boundary test invokes the existing private row-copy helper through
+the repository-standard `ReflectionTestUtils`: allocating 1,048,576 CSV rows
+solely to reach this guard would make a regression test unnecessarily expensive.
+It uses the actual `SpreadsheetVersion.EXCEL2007` limit and a real streaming
+sheet, checking the last accepted row and rejection of the first invalid row.
+No production visibility or limit was changed.
+
+The cleanup test redirects only the export temporary-file creation and its
+deletion failure in a scoped `Files` mock; other filesystem calls retain real
+behavior. JUnit owns the temporary directory and removes the retained test file.
+Angular success cases execute `downloadFile` and file-saver, while intercepting
+browser URL/click effects to avoid actual downloads. They check the requested
+blob, exclusive format endpoint, filename extension, pending/completed state
+and URL revocation. Synthetic data only is used.
+
+### Fresh executions and exact coverage
+
+| Verification | Observed result |
+|---|---|
+| Backend focused instrumented run: the three changed Java suites | **56 tests passed**, no failures, errors or skips |
+| Frontend focused header run | **9 tests passed** |
+| Backend fresh unfiltered configured suite | **1,450 tests: 1,441 passed, 9 pre-existing skips, no failures or errors** |
+| Frontend fresh unfiltered CI suite | **1,737 tests passed** |
+| Targeted Angular ESLint from the frontend directory | **Exit 0**, no diagnostics |
+
+The fresh backend report is generated exclusively from
+`services/backend/target/g4it48-reserve-full.exec`, with
+`jacoco.append=false`; it is not merged with previous or focused-run data.
+The fresh frontend HTML/LCOV is from the unfiltered CI suite, not the nine-case
+focused run. The whole-suite counts are therefore not combined with partial
+coverage reports.
+
+Commands used for the complete measurements:
+
+```sh
+mvn -o -f services/backend/pom.xml -Pcoverage -Djacoco.destFile=target/g4it48-reserve-full.exec -Djacoco.dataFile=target/g4it48-reserve-full.exec -Djacoco.append=false -Dorg.slf4j.simpleLogger.defaultLogLevel=warn -Dorg.slf4j.simpleLogger.log.org.apache.maven.plugin.surefire=info -Dorg.slf4j.simpleLogger.log.org.jacoco.maven=info -Dmaven.test.redirectTestOutputToFile=true -DtrimStackTrace=true test org.jacoco:jacoco-maven-plugin:0.8.13:report
+npm --prefix services/frontend run test:ci -- --reporters=dots
+```
+
+The confirmed comparison base remains
+`origin/feat/g4it-ia-backbone`
+(`3aa81b674dab9b579c672bfc6186dc8dd9268ba6`), with application HEAD
+`27a4ddc678e48d78ce3fcc90205956f907b277e0` plus the four test-file edits.
+Native fresh JaCoCo HTML/CSV and LCOV reads rechecked the established executable
+inventory. Fully covered source-line matches were counted directly for changed
+spans within partially covered legacy classes; complete-class records and
+source HTML establish the fully covered new classes and nested bodies.
+Source-unique line deduplication and frontend containing-statement rules are
+the same as in the detailed inventory below.
+
+| Scope | Covered / executable changed lines | Covered / changed branch outcomes |
+|---|---:|---:|
+| Backend: all 29 measured changed Java sources | **350/350 (100%)** | **236/236 (100%)** |
+| Frontend: all eight measured changed runtime sources | **63/63 (100%)** | **49/49 (100%)** |
+| Changed critical allocation/calculation subset: seven backend sources | **135/135 (100%)** | **88/88 (100%)** |
+
+Every measured changed file now individually has 100% mapped line and branch
+coverage where a branch denominator exists; files without decisions remain
+`0/0`, not an invented percentage. The strict physical-added-line subsets are
+also complete at **349/349 backend** and **55/55 frontend**. The larger gate
+denominators above still include all previously identified containing
+statements rather than dropping them.
+
+| Previously incomplete source | Fresh changed lines | Fresh changed outcomes | Directly observed closure |
+|---|---:|---:|---|
+| InventorySpreadsheetExportService | 47/47 | 22/22 | Cleanup lines 68/69 execute; guards 46/84/96 report all 2/4/4 outcomes covered |
+| AuthService | 1/1 | 2/2 | Guard 278 reports both outcomes covered |
+| RestExceptionHandler | 8/8 | 2/2 | Guard 96 reports both outcomes covered |
+| InventoriesHeaderFootprintComponent | 7/7 | 9/9 | DA127 executes; every BRDA outcome at 107/120/123/129/136 has positive hits |
+
+The other changed line/decision families remain fully covered in the new full
+reports. The spreadsheet source total remains **47**, not 48: source line 76
+appears in both the main and anonymous class counters and is counted once.
+
+Fresh **whole-project context only**, not the new-code gate:
+
+| Stack | Covered / total lines | Covered / total branch outcomes |
+|---|---:|---:|
+| Backend configured scope, fresh report totals | 7,355/11,754 | 2,196/4,068 |
+| Frontend full CI report | 5,726/7,737 | 1,599/2,760 |
+
+These are the totals actually read from the new reports, not prior global
+denominators carried forward. Existing legacy misses do not become new-code
+misses. This result is **not 100% whole-application coverage**.
+
+### Gate, boundaries and audit
+
+- **Coverage gate: pass.** Both stacks exceed the unchanged 80% new-code
+  requirement and the changed critical calculation subset meets the unchanged
+  100% requirement. No measured changed line or branch reserve remains.
+- Existing classifications still apply: six declaration-only Java files, the
+  already-excluded controller, generated/persistence boundaries, type-only
+  TypeScript and non-TypeScript assets are not assigned fabricated coverage.
+  The controller HTTP fixture supplies behavioral evidence, not JaCoCo
+  percentages for an excluded source.
+- The nine existing backend skips remain explicit. No live PostgreSQL, full
+  evaluation-to-download integration, E2E or accessibility certification is
+  claimed.
+- **DAST remains `skipped / skipped-by-user`, intentional.** No scan ran and
+  no DAST security success is implied.
+- Maven offline and Angular/Karma executed locally; native file/regex reads and
+  session SQLite checked the inventory and arithmetic. No external MCP,
+  production data, deployment or destructive operation was involved.
+- An initial ESLint invocation used the repository working directory and
+  matched no file. Correcting the working directory produced the successful
+  targeted result above; the failed invocation is not counted as validation.
+  An optional combined Git status/diff command was denied for command chaining
+  and was not retried or represented as a successful inspection.
+- The coverage skill names adapter documents that are not installed here.
+  Existing Maven and Karma configuration supplied the working instrumentation;
+  no missing adapter read or new installation is claimed.
+
+This correction closes **coverage only**. Native completion hooks and the
+station transition record its publication; the aggregate quality report and
+its human checkpoint remain separate. Earlier Sonar, Java-lint and other
+quality-station limitations are not removed by these tests.
+
+## 2026-11-27 - Completed current-base reconciliation (superseded by post-test assessment above)
+
+**Coverage assessment: passed / warning. DAST: skipped by explicit user request.**
+
+The retry closes the differential-evidence blocker below using **native
+Git/file/regex reads and session SQLite arithmetic**, without executing inline
+Python, creating an analysis script, installing a tool, changing permissions or
+modifying application code/tests. This is coverage validation only, not aggregate
+quality, Sonar, integration, accessibility or release approval.
+
+### Confirmed baseline, unchanged code and report provenance
+
+- Measured HEAD remains **27a4ddc678e48d78ce3fcc90205956f907b277e0**.
+  The worktree has no application source/test changes relative to this HEAD.
+- Requested base **origin/feat/g4it-ia-backbone** resolves to
+  **3aa81b674dab9b579c672bfc6186dc8dd9268ba6**.
+- A native Git comparison between the historical reference
+  **e33f2158b1ed56bdebf682532a3d1549cb255dce** and that confirmed base returns
+  **no difference** under backend Java production sources or frontend sources.
+  Independent Git tree-object reads establish the stronger identity:
+
+| Production tree | Object at historical reference | Object at confirmed base |
+|---|---|---|
+| Backend Java | `be3558b8a06bc8756a04b845fe78c27cc8e9fbac` | `be3558b8a06bc8756a04b845fe78c27cc8e9fbac` |
+| Frontend sources | `e27c3b70ccddc764c1d0077ad7b3ee0cc3999bb7` | `e27c3b70ccddc764c1d0077ad7b3ee0cc3999bb7` |
+
+This proves baseline equivalence for these **specific source trees**, not that
+the Git commits, branches, manifests or entire repositories are identical.
+It permits verification of the earlier line-inventory candidates against the
+confirmed base; it does **not** make old coverage hit counters current.
+The current diff and current report spans were reconciled again, including
+the later spreadsheet exporter, authorization guard and 422 handler.
+
+The isolated JaCoCo execution data, CSV/index and frontend LCOV still have
+exactly the sizes and modification times recorded in the initial assessment.
+The underlying sources have not changed. The successful instrumented runs
+therefore remain applicable: **1,445 backend tests (1,436 passed, nine Azure
+skips, no failures/errors)** and **1,733 frontend successes**. They were **not
+run again** during this read-only reconciliation.
+
+### Measurement rules and exact results
+
+1. Intersect current zero-context added/changed source ranges with current
+   instrumented source lines. New files contribute every instrumented source
+   line, including their handwritten nested/anonymous bodies.
+2. Count a covered line when its execution counter is positive. In generated
+   JaCoCo source HTML, `fc` and `pc` are executed lines; `nc` is missed. Count
+   branch outcomes separately from their displayed covered/missed counters.
+3. If a changed expression lacks its own line counter, retain the containing
+   instrumented statement instead of silently dropping the change. These
+   additions are explicit below; do not include unrelated pre-existing code.
+4. Deduplicate by **source path and line**, not by class. In particular,
+   spreadsheet line **76** belongs to both an outer method and anonymous-class
+   constructor in class-level counters, but counts **once** at source level.
+5. LCOV branch mappings are independent of DA membership: branch entries in
+   changed expressions/default arguments remain included even without a DA on
+   the same physical line. Erased assertions, annotations, declarations and
+   nonexecutable assets do not receive invented line counters.
+
+| Scope | Covered / executable lines | Line coverage | Covered / branch outcomes | Branch coverage |
+|---|---:|---:|---:|---:|
+| Backend, current configured handwritten-code scope | **348/350** | **99.43%** | **231/236** | **97.88%** |
+| Frontend, complete changed source-mapped union | **62/63** | **98.41%** | **44/49** | **89.80%** |
+| Core changed allocation/calculation paths, backend subset | **135/135** | **100%** | **88/88** | **100%** |
+
+For comparison, strict physical-added-line intersections alone are **347/349**
+backend lines and **55/55** frontend lines. Those narrower denominators do not
+hide the containing-statement changes: the gate uses the larger unions above.
+All **29** measured Java files and **eight** measured frontend files individually
+exceed **80% changed-line coverage**; the lowest files are the spreadsheet
+exporter (**45/47 = 95.74%**) and export header (**6/7 = 85.71%**).
+The frontend result is not obtained by averaging away an under-80% component.
+The constitution does not declare a separate per-component 80% branch floor;
+noncritical branch gaps remain warnings, not claims of complete branch testing.
+The separate **100% changed impact-path** requirement includes both executable
+lines and decision outcomes.
+
+### Complete backend inventory
+
+Paths are relative to `services/backend/src/main/java/com/soprasteria/g4it/backend/`.
+The listed numbers are **current source-line identities**, not copied historical
+hit totals. Every listed line is executed except spreadsheet **68,69**.
+`0/0` means no reported decision. Asterisk marks the core impact-path subset.
+
+| Changed source | Reconciled executable lines | Covered/total lines | Covered/total branches |
+|---|---|---:|---:|
+| apievaluating/business/asyncevaluatingservice/EvaluateService.java * | 196,197,230,386-394,396-400,402-405,426,427,438-446,454,456,526,535-539 | 40/40 | 22/22 |
+| apievaluating/business/asyncevaluatingservice/PhysicalEquipmentAllocationService.java * | 25,26,31,33-46,50,51,54,55,57-59,61,62,65-70,72,74,75,77,78,80,83 | 39/39 | 24/24 |
+| apievaluating/business/asyncevaluatingservice/engine/numecoeval/EvaluateNumEcoEvalService.java * | 94-96,108,109,118,129,131,160 | 9/9 | 2/2 |
+| apievaluating/mapper/AggregationToOutput.java * | 51,99 | 2/2 | 2/2 |
+| apievaluating/mapper/ImpactToCsvRecord.java | 56-59,61,63-65,69,70,72-74,76 | 14/14 | 20/20 |
+| apievaluating/model/AggValuesBO.java * | 51,52,72,73,75 | 5/5 | 4/4 |
+| apiindicator/business/InventoryIndicatorService.java | 99-115,117,130-133,136-142,144-149,151-154,157 | 40/40 | 16/16 |
+| apiindicator/business/InventorySpreadsheetExportService.java | 33,40,42-48,50-55,57,58,60,61,64,65,67-71,76,80,82-89,92,95-97,99-103,105,107 | 45/47 | 19/22 |
+| apiindicator/mapper/IndicatorRestMapper.java | 24 | 1/1 | 0/0 |
+| apiinout/mapper/InPhysicalEquipmentMapper.java | 44,48 | 2/2 | 2/2 |
+| apiinout/mapper/InputToCsvRecord.java | 92-94 | 3/3 | 0/0 |
+| apiloadinputfiles/business/asyncloadservice/LoadFileService.java | 133,163-166,430,443-446 | 10/10 | 0/0 |
+| apiloadinputfiles/business/asyncloadservice/checkobject/CheckPhysicalEquipmentService.java | 96,97 | 2/2 | 4/4 |
+| apiloadinputfiles/business/asyncloadservice/checkobject/PhysicalEquipmentUsageValidator.java | 26-29,31-35,37-39,41,42,44,48,53-56,61,65 | 22/22 | 32/32 |
+| apiloadinputfiles/business/asyncloadservice/loadmetadata/LoadMetadataService.java | 62 | 1/1 | 0/0 |
+| apiloadinputfiles/business/asyncloadservice/loadobject/LoadPhysicalEquipmentService.java | 78 | 1/1 | 0/0 |
+| apiloadinputfiles/mapper/CsvToInMapper.java | 71,72 | 2/2 | 0/0 |
+| apireferential/business/ItemCategoryResolver.java * | 25-33,36,38,46-53,56-58,60-62 | 25/25 | 16/16 |
+| apireferential/business/PhysicalEquipmentReferenceResolver.java * | 18-21,23,24,28-30,32,33,36-38,41 | 15/15 | 18/18 |
+| apireferential/business/ReferentialImportService.java | 254-257,259,262-264,277,278,494,505-507 | 14/14 | 14/14 |
+| apireferential/business/ReferentialService.java | 108 | 1/1 | 2/2 |
+| apireferential/business/WorkspaceReferentialImportService.java | 300 | 1/1 | 2/2 |
+| apireferential/mapper/ReferentialMapper.java | 76 | 1/1 | 0/0 |
+| apireferential/modeldb/ItemType.java | 91,96,101,106,111 | 5/5 | 4/4 |
+| apireferential/persistence/WorkspaceReferentialPersistenceService.java | 47 | 1/1 | 0/0 |
+| apiuser/business/AuthService.java | 278 | 1/1 | 1/2 |
+| common/utils/CsvUtils.java | 39,40,42-45,47-56,60,61,63-71,75,82-84,87 | 32/32 | 26/26 |
+| config/JsonNullableConfig.java | 16,20,26,27,31,32 | 6/6 | 0/0 |
+| config/RestExceptionHandler.java | 96-103 | 8/8 | 1/2 |
+| **Total measured source-unique delta** | **350 lines** | **348/350** | **231/236** |
+
+EvaluateService's changed argument at physical line **232** is represented by
+its containing constructor-call counter at **230**, explaining the additional
+line versus a strict hunk-only intersection. Spreadsheet anonymous-wrapper line
+**80** is included; shared constructor line **76** is not counted twice.
+
+The **36** changed Java files are fully classified: the **29 measured** above,
+**six declaration-only** files below, and **one configured-excluded controller**:
+
+- EquipmentIndicatorMapper: mapping annotations only; EquipmentImpactBO and
+  EquipmentIndicatorBO: fields/comments only.
+- InPhysicalEquipment: fields/annotations; PhysicalEquipmentEvaluationTrace:
+  entity declarations and filtered Lombok boilerplate.
+- PhysicalEquipmentEvaluationTraceRepository: abstract queries and annotations,
+  no handwritten Java method body; the existing repository exclusion remains.
+- InventoryIndicatorController: its new spreadsheet endpoint remains excluded
+  by the **existing controller exclusion**. It is **unmeasured here**, not 100%
+  covered. No exclusion was added to make this assessment pass.
+
+Generated MapStruct/Lombok code, SQL/OpenAPI assets and live database behavior
+are not silently assigned handwritten Java line percentages. This assessment
+confirms coverage within the established instrumented scope, not unrestricted
+whole-application or PostgreSQL integration coverage.
+
+### Complete frontend inventory and source-map reconciliation
+
+Paths are relative to `services/frontend/src/app/`, except `src/constants.ts`.
+Every listed DA counter is positive except header **127**.
+
+| Changed runtime source | Strict added DA lines | Additional containing DA lines | Covered/total union | Covered/total branches |
+|---|---|---|---:|---:|
+| core/service/business/inventory-util.service.ts | 268,269,272 | none | 3/3 | 4/4 |
+| core/service/data/footprint-data.service.ts | 163 | none | 1/1 | 0/0 |
+| core/service/mapper/sunburst-chart.mapper.ts | 28,30,32,34,40,42,65 | none | 7/7 | 8/8 |
+| core/shared/echarts.module.ts | none | 19 | 1/1 | 0/0 |
+| layout/inventories-footprint/critere/inventories-critere-footprint.component.ts | 215,221-224,226,229,231,233,236,239,243,244,246,255-257,259,261,263,269-272,274,276,278,283,285,291 | none | 30/30 | 28/28 |
+| layout/inventories-footprint/header/inventories-header-footprint.component.ts | 57,106,114,115 | 122,127,133 | 6/7 | 4/9 |
+| layout/inventories-footprint/inventories-footprint.component.ts | 147,150 | 155,538,564 | 5/5 | 0/0 |
+| src/constants.ts | 93,171,195,201-203,205,207 | 158 | 9/9 | 0/0 |
+| **Total** | **55/55 executed** | **7/8 executed** | **62/63** | **44/49** |
+
+Containing statements retain the real runtime changes: ECharts registration
+28 maps to **19**; new usage cards 158-165 map to **155**; cloud/AI fields
+545-547 and 577-578 map to **538/564**; the reordered equipment view maps to
+**158**. Header format selection, extension and error-summary changes map to
+**122/127/133**. The default argument at header **120** has its own BRDA
+outcome, not a separate invented DA entry.
+
+The interceptor delta is an erased `keyof` assertion; the interface file
+contains declarations only. Type-only annotations without changed runtime
+statements and formatting-only hunks do not create missing executable
+denominators. The three changed HTML templates, SCSS and two translation files
+have no independent TypeScript DA denominator: they remain behavioral and
+accessibility obligations, not fabricated coverage records.
+
+### Changed impact-path verification
+
+The seven asterisked backend sources above cover **135/135 changed mapped
+lines and 88/88 decision outcomes**. Current source HTML confirms every
+included decision is fully covered. This measures the changed allocation/
+calculation decision families, not every combination of unrelated legacy
+branches or a formal all-path proof.
+
+Current Surefire suite records additionally confirm **zero failures/errors/
+skips** in the relevant suites: reference resolver **4**, category resolver
+**9**, allocation service **8**, evaluator **28**, NumEcoEval service **30**,
+and grouping **1**. The current NumEcoEval report includes all **five**
+`allocationIsAppliedOnceToEachCriterionAndLifecycleRequest` parameter cases
+and `realCalculationScalesEachLifecycleAndElectricityWithoutChangingInput`.
+Thus instrumented decision coverage is backed by the request/factor and real
+numerical regression cases, not inferred solely from mocked class totals.
+
+| Changed family | Current coverage evidence |
+|---|---|
+| Reference/category selection, workspace/global fallback and exact Device classification | Reference 15/15 lines, 18/18 outcomes; category including nested lookup 25/25, 16/16 |
+| BYOD/COPE defaults, explicit bounds/override, exemption, snapshot and source preservation | Allocation 39/39, 24/24 |
+| Task-scoped orchestration, persisted trace requirement, allocated versus legacy calculation dispatch | EvaluateService changed union 40/40, 22/22 |
+| Every changed calculation request and single quantity-fraction application | Changed NumEcoEval lines 9/9, guard 2/2; current five-case request and real-numerical tests above |
+| Inventory/digital-service grouping key and quantity-weighted electricity normalization | Aggregation mapper 2/2, 2/2; AggValuesBO 5/5, 4/4 |
+| Adjacent evaluated-export and adoption consumers | Separately measured: ImpactToCsvRecord 14/14, 20/20; inventory indicators 40/40, 16/16 |
+
+Unchanged misses such as the old AggValuesBO source-selection branch and the
+old hypothesis-mapping lambda are not reclassified as new allocation changes.
+Live PostgreSQL, native-view evaluation-to-download and E2E behavior are not
+certified by these local unit/regression counters.
+
+### Warnings, exclusions and native station disposition
+
+- **Backend**: spreadsheet cleanup-failure lines **68/69** are unexecuted.
+  Spreadsheet branch lines **46/84/96**, authorization guard **278**, and
+  the 422 handler guard **96** each have one missed outcome. These are outside
+  the changed allocation/calculation subset; they do not get a fabricated 100%.
+- **Frontend**: header save/export statement **127** is missed. BRDA **107**
+  (target fallback), **123** (format), **129** (extension, both outcomes) and
+  **136** (error summary) account for **five missed outcomes**. Successful
+  downloads and raw-format error alternatives remain focused test improvements.
+  Passing 6/7 changed lines is not represented as full branch-path coverage.
+- **Gate**: backend **99.43%**, frontend **98.41%**, and each measured changed
+  file exceed the constitutional **80% line** target; the changed critical
+  decision families satisfy **100%**. The global rates in the initial section
+  remain context only. No configured threshold or exclusion was lowered.
+- **DAST**: the optional `quality-validation/security-dast` station is natively
+  **skipped / skipped-by-user**, `skip-kind: intentional`, following the current
+  user request and acknowledged checkpoint. **No DAST scan was executed and no
+  DAST security success is claimed.**
+- **Tools/audit**: Git read-only inspection, native HTML/LCOV/CSV/regex reads,
+  session SQLite aggregation/duplicate checks, and native workflow hooks/state
+  commands. No external service, production data or destructive action was used.
+
+Coverage can therefore close **passed / warning**, subject to the native
+publication hooks and completion transition. The report itself does not
+complete the parent quality workflow. The next aggregate quality station
+remains separate and must retain the backend Sonar limitation, deferred Java
+linter and other earlier station warnings.
+
+## 2026-11-27 - Initial quality assessment (superseded by reconciliation above)
+
+- **Assessment**: **incomplete / blocked-diff-coverage-evidence**.
+- **Tools**: JaCoCo **0.8.13**, configured Maven unit/regression lifecycle;
+  Angular/Karma **6.4.4**, existing Istanbul coverage instrumentation.
+- **Tests**: both unfiltered test commands completed with exit **0**.
+  Backend: **1,445 run, 1,436 passed, 0 failures, 0 errors, 9 skipped**.
+  Frontend: **1,733 / 1,733 passed**.
+- **Gate limitation**: fresh global metrics and selected source-path counters
+  are available, but a complete executable new-code denominator and full
+  impact-path reconciliation against the **current confirmed base** are not
+  established. No passing coverage gate is claimed.
+- **Sensitivity**: internal; no production data, credentials, environment
+  values or external resources were accessed during this station.
+
+### Applicable thresholds and baseline
+
+The validated constitution defines **80% on backend new code**, **100% on
+backend impact allocation/calculation paths**, and **80% on frontend new
+components/services**. These take precedence over a generic whole-project
+80% assumption. No threshold or exclusion was changed, and no environment
+variable value was read.
+
+The assessed HEAD is **27a4ddc678e48d78ce3fcc90205956f907b277e0**.
+The comparison base is the user-confirmed
+**origin/feat/g4it-ia-backbone**, not main. Current diff inspection includes
+the authorization and XLSX remediations as well as the original feature.
+The earlier implementation measurements below used a different, main-based
+intersection and precede the latest remediations. Their successful counters
+are retained as historical evidence, **not relabelled as today's denominator**.
+
+### Fresh executions
+
+From the repository root, without a test selector, skipped-test flag,
+failure-ignore setting, new exclusion or dependency installation:
+
+```text
+mvn -o -f services/backend/pom.xml -Pcoverage -Djacoco.destFile=target/g4it48-quality-coverage-20261127-e85fc5c2.exec -Djacoco.dataFile=target/g4it48-quality-coverage-20261127-e85fc5c2.exec -Djacoco.append=false -Dorg.slf4j.simpleLogger.defaultLogLevel=warn -Dorg.slf4j.simpleLogger.log.org.apache.maven.plugin.compiler=info -Dorg.slf4j.simpleLogger.log.org.apache.maven.plugin.surefire=info -Dorg.slf4j.simpleLogger.log.org.jacoco.maven=info -Dmaven.test.redirectTestOutputToFile=true -DtrimStackTrace=true test org.jacoco:jacoco-maven-plugin:0.8.13:report
+npm --prefix services/frontend run test:ci -- --reporters=dots
+```
+
+The JaCoCo execution filename was absent before the run. The report log
+confirms loading that exact file and analyzing **316 classes**.
+`jacoco.append=false` prevents merging stale execution data. The existing
+coverage profile is active; its handwritten-code scope differs from the
+narrower default profile. No packaging, Maven verify, remote backend build
+or Sonar result is inferred from this test/report command.
+
+The backend's nine skips are all reported by
+`AzureGreenItFileSystemApplicationTests`. The configured PostgreSQL integration
+group remains outside this run, separately from those nine skips. No live
+integration, E2E or PostgreSQL coverage is claimed.
+
+The frontend suite logs console errors, including test-context TypeErrors,
+but Jasmine reports no failed tests and the command exits 0. Those logged
+messages are not silently reclassified as failing assertions, nor repaired
+as unrelated work.
+
+### Fresh global metrics - context, not the new-code gate
+
+| Stack | Covered / total lines | Line coverage | Covered / total branch outcomes | Branch coverage |
+|---|---:|---:|---:|---:|
+| Backend, current coverage profile | **7,340 / 11,760** | **62.41%** | **2,191 / 4,068** | **53.86%** |
+| Frontend, entire CI suite | **5,722 / 7,737** | **73.95% reported** | **1,592 / 2,760** | **57.68%** |
+
+The backend totals come from the generated JaCoCo index footer
+(4,420 missed lines; 1,877 missed branches). The frontend runner also reports
+**73.69% statements (5,921 / 8,034)** and
+**68.31% functions (1,574 / 2,304)**.
+Istanbul's displayed line percentage is truncated; rounding its exact
+5,722/7,737 ratio to two decimals gives 73.96%, not a second measurement.
+
+Global scope includes pre-existing code and, for the expanded backend profile,
+generated mapper implementations located in otherwise measured packages.
+Its percentages are therefore not comparable to the old narrower-profile
+global percentage without scope reconciliation. These global rates are
+**not** used to assert failure of an 80% **new-code** threshold.
+
+### Directly verified paths and remaining gaps
+
+Fresh native CSV/source-HTML reads establish:
+
+| Source / selected path | Line evidence | Branch evidence | Boundary |
+|---|---:|---:|---|
+| PhysicalEquipmentAllocationService | **38/38** | **24/24** | Entire reported main class; allocation record is separate |
+| ItemCategoryResolver | **9/9** | **10/10** | Entire reported class |
+| PhysicalEquipmentReferenceResolver | **14/14** | **18/18** | Entire reported class |
+| EvaluateNumEcoEvalService quantity-allocation guard | Line 129 and multiplication line 131 covered | **2/2** outcomes on the guard | Selected changed path, not the entire class or calculation call graph |
+| AggValuesBO electricity normalization | Changed lines 51/52 and method lines 72/73/75 covered | **4/4** outcomes in the normalization method | The unrelated existing source-selection condition at line 60 misses one outcome |
+| InventorySpreadsheetExportService | **44/46** main-class lines; **2/2** anonymous-wrapper lines | **19/22** main-class outcomes | New class; cleanup-failure lines 68/69 are unexecuted |
+
+The three wholly covered resolver/allocation classes sum to **61/61 lines
+and 52/52 branch outcomes**. This is a **selected subset**, not the complete
+new-code denominator or proof of every lifecycle/electricity impact path.
+The XLSX class also has missed directory-entry, empty-artifact and row-limit
+branch outcomes; its noncritical export scope is not silently assigned the
+100% allocation-path criterion.
+
+Current frontend LCOV inspection also identifies concrete gaps: in the export
+header, lines **127** and **131** have zero hits, and format-dependent branches
+at **123**, **129** and **136** have missed outcomes. The error-path test does
+not replace successful XLSX/raw-download execution. The raw-warning target
+fallback at line **107** has one unexecuted outcome. These are focused test
+improvement candidates, not an asserted complete list of uncovered feature
+code or proof that the aggregate 80% new-code threshold is missed.
+
+The existing JaCoCo exclusions remain active for generated API, controllers,
+exceptions, repositories, tasklets, clients, constants and the application
+entry point. Frontend LCOV maps containing statements rather than every
+physical added line; type-only/declaration/template changes cannot simply be
+counted as uncovered executable lines. Excluded/unreported code and changed
+expressions inside older mapped statements require explicit reconciliation.
+
+### Artifact freshness and analysis limitation
+
+Fresh artifacts observed after the commands:
+
+| Artifact | Size | Last modification |
+|---|---:|---|
+| Isolated JaCoCo execution data | 1,020,221 bytes | 2026-11-27 12:15:52 +01:00 |
+| JaCoCo CSV | 34,855 bytes | 2026-11-27 12:15:54 +01:00 |
+| JaCoCo index | 64,849 bytes | 2026-11-27 12:15:54 +01:00 |
+| Frontend LCOV | 232,185 bytes | 2026-11-27 12:13:57 +01:00 |
+
+Native reads of CSV, LCOV and selected generated HTML supplied the counters
+above. A read-only inline Python command intended to parse JaCoCo XML was
+**denied before execution** by the command policy. No script variant,
+alternative execution route or policy change was attempted. Native report
+reads are not a substitute for a complete reconciled diff-coverage result.
+The XML was not parsed by that denied command.
+
+A permitted, deterministic **read-only differential coverage analyzer**, or a
+user-produced equivalent result, is needed to finish the complete current-base
+intersection. It must include executable added/changed lines, changed
+containing source-map statements, branch outcomes and explicit exclusion
+classification. Passing test totals and historical 100% measurements cannot
+fill that evidence gap.
+
+### Gate evaluation
+
+| Criterion | Current result |
+|---|---|
+| Required report and fresh instruments | **Pass** |
+| Applicable instrumented tests pass | **Pass**, with nine declared backend skips and integration boundary above |
+| Backend new code >=80% | **Not established** for the complete current-base executable denominator |
+| Backend impact allocation/calculation paths =100% | **Verified subsets only**; full current changed-path reconciliation not established |
+| Frontend new components/services >=80% | **Not established** for the complete current-base/source-map intersection |
+| Coverage station | **Blocked: missing differential evidence**, not a proven global-threshold violation |
+
+The native engine has no separate blocked station status; this prerequisite
+blocker is registered as **failed / blocked-diff-coverage-evidence** after
+publication checks. No threshold waiver, source/test change, new exclusion,
+installation, network request or manual workflow-state edit is made.
+The parent quality workflow must not advance as if this gate passed.
+The report alone does not register a native transition.
+
+## Historical implementation evidence
+
+All following records retain their original execution dates, baselines and
+scope. Historical labels such as "LATEST" refer to their implementation
+checkpoint, not to the quality-validation assessment above.
+
+## 2026-11-26 — R01–R18 completion: coverage boundary (historical)
 
 Station: implementation / G4IT-48.
 Trace: e6fa33d4-27cf-4d12-84a2-3c70d47d88da.

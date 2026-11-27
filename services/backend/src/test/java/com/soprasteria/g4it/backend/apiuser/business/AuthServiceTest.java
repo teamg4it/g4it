@@ -332,6 +332,7 @@ class AuthServiceTest {
     @ValueSource(strings = {
             "/organizations/org/workspaces/1/inventories",
             "/organizations/org/workspaces/1/digital-services/synthetic-service",
+            "/organizations/org/not-workspaces/1/inventories/2",
             "/users/me"
     })
     void testCheckUserRightForInventory_otherRoutesDoNotLookUpInventory(String path) {

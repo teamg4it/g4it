@@ -7,22 +7,30 @@ package com.soprasteria.g4it.backend.apiindicator.business;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
+import org.apache.poi.ss.SpreadsheetVersion;
 import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mockStatic;
 
 class InventorySpreadsheetExportServiceTest {
 
@@ -105,6 +113,65 @@ class InventorySpreadsheetExportServiceTest {
                 () -> service.toSpreadsheet(new ByteArrayInputStream(
                         zip("physical_equipment.csv", "x;".repeat(16384) + "x"))));
         assertEquals("422", error.getCode());
+    }
+
+    @Test
+    void ignoresArchiveDirectoriesAndPreservesAnEmptyCsvAsAnEmptySheet() throws Exception {
+        var resource = service.toSpreadsheet(new ByteArrayInputStream(
+                zip("artifacts/", "", "artifacts/physical_equipment.csv", "")));
+
+        try (var input = resource.getInputStream(); var workbook = new XSSFWorkbook(input)) {
+            assertEquals(1, workbook.getNumberOfSheets());
+            assertEquals("1 physical_equipment", workbook.getSheetName(0));
+            assertEquals(0, workbook.getSheetAt(0).getPhysicalNumberOfRows());
+        }
+    }
+
+    @Test
+    void preservesTheLastAllowedRowAndRejectsAnExtraRow() throws Exception {
+        try (var workbook = new SXSSFWorkbook(1);
+             var parser = CSVFormat.RFC4180.parse(new StringReader("synthetic value"))) {
+            var sheet = workbook.createSheet("boundary");
+            var record = parser.iterator().next();
+            int lastRow = SpreadsheetVersion.EXCEL2007.getLastRowIndex();
+
+            // Exercise the real row limit without constructing a million CSV records.
+            ReflectionTestUtils.invokeMethod(service, "copyRow", sheet, lastRow, record);
+            assertEquals("synthetic value", sheet.getRow(lastRow).getCell(0).getStringCellValue());
+
+            var error = assertThrows(G4itRestException.class,
+                    () -> ReflectionTestUtils.invokeMethod(service, "copyRow", sheet, lastRow + 1, record));
+
+            assertEquals("422", error.getCode());
+            assertEquals(1, sheet.getPhysicalNumberOfRows());
+            assertEquals(lastRow, sheet.getLastRowNum());
+        }
+    }
+
+    @Test
+    void preservesTheExportFailureWhenTemporaryFileCleanupAlsoFails(@TempDir Path directory) throws Exception {
+        Path output = Files.createFile(directory.resolve("failed-export.xlsx"));
+        var cleanupFailure = new IOException("synthetic cleanup failure");
+        byte[] archive = zip("unexpected.txt", "synthetic data");
+
+        try (var files = mockStatic(Files.class, invocation -> {
+            String method = invocation.getMethod().getName();
+            if ("createTempFile".equals(method) && "g4it-spreadsheet-".equals(invocation.getArgument(0))) {
+                return output;
+            }
+            if ("deleteIfExists".equals(method) && output.equals(invocation.getArgument(0))) {
+                throw cleanupFailure;
+            }
+            return invocation.callRealMethod();
+        })) {
+            var error = assertThrows(G4itRestException.class,
+                    () -> service.toSpreadsheet(new ByteArrayInputStream(archive)));
+
+            assertEquals("422", error.getCode());
+            assertEquals(1, error.getSuppressed().length);
+            assertSame(cleanupFailure, error.getSuppressed()[0]);
+        }
+        assertTrue(Files.exists(output));
     }
 
     private static byte[] zip(String... namesAndContents) throws IOException {
