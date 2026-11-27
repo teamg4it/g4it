@@ -823,6 +823,11 @@
         "header": {
             "manage": "Manage inventories",
             "export": "Exporter",
+            "export-xlsx": "Exporter pour tableur (XLSX)",
+            "export-csv": "CSV brut (ZIP)",
+            "raw-warning": "Les fichiers CSV bruts conservent le texte importé et peuvent contenir des formules de tableur. Utilisez l'export XLSX pour les consulter. Continuez uniquement pour un échange automatisé ; n'ouvrez pas directement les CSV bruts dans un tableur.",
+            "raw-confirm": "Télécharger les CSV bruts",
+            "export-error": "Impossible de créer l'export tableur. L'archive est peut-être indisponible, non prise en charge ou dépasse les limites du tableur.",
             "download": "Télécharger"
         },
         "data-consistency": "Cohérence des données",

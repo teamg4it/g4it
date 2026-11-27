@@ -2,7 +2,7 @@
 workflow: feature-implementation
 trigger: user
 date: '2026-11-26'
-status: draft
+status: review
 feature: G4IT-48
 trace_id: e6fa33d4-27cf-4d12-84a2-3c70d47d88da
 station: quality-validation/static-analysis
@@ -10,12 +10,21 @@ agent: quality-validator
 skill: static-analysis
 sensitivity: internal
 context_retrieval: files
-validation_status: blocked
-gate_result: not-established
+validation_status: completed-with-reservation
+gate_result: warning
 frontend_validation_status: passed
 backend_validation_status: blocked-external
-frontend_evidence_revision: 11594aa
+frontend_evidence_revision: c65fbfc9
 comparison_base: origin/feat/g4it-ia-backbone
+continuation_reserve:
+  id: G4IT-48-SONAR-BACKEND
+  disposition: temporarily-deferred-by-user
+  authority: user-request
+  date: '2026-11-26'
+  scope: continuation-of-static-analysis-station
+  backend_validation: not-established
+  release_approval: false
+  follow_up: verify-backend-sonar-when-external-blocker-is-resolved
 evidence_sources:
   - url: https://github.com/teamg4it/g4it/pull/959/checks
     kind: user-provided-link
@@ -28,6 +37,11 @@ evidence_sources:
     verification: visually-reviewed
     pull_request: 959
     revision: 11594aa
+  - name: Pasted Image.png (latest frontend PR summary)
+    kind: user-provided-screenshot
+    verification: visually-reviewed
+    pull_request: 959
+    revision: c65fbfc9
 inputDocuments:
   - .github/skills/static-analysis/SKILL.md
   - .github/workflows/quality-validation.yml
@@ -63,6 +77,22 @@ changeHistory:
       - 'Recorded the two visible warning annotations without changing source code'
       - 'Attributed the backend build blocker to an external cause as stated by the user'
       - 'Removed requests to investigate or correct the backend build; did not fabricate a backend analysis result'
+  - date: '2026-11-26'
+    description: 'Recorded the latest frontend SonarCloud result after the reported issue corrections'
+    changes:
+      - 'Accepted screenshot evidence of a passing frontend gate with zero new and zero accepted issues'
+      - 'Recorded 100 percent coverage on 56 new lines to cover, zero duplication and zero hotspots'
+      - 'Matched the displayed revision prefix to local HEAD and retained the previous annotations as historical only'
+      - 'Distinguished three analysis warnings with undisclosed details from source issues'
+      - 'Kept the external backend blocker and overall workflow status unchanged'
+  - date: '2026-11-26'
+    description: 'Completed the static-analysis assessment with an explicit user-requested continuation reserve'
+    changes:
+      - 'Submitted the report for review with gate warning, not an unconditional pass'
+      - 'Recorded the temporary backend Sonar deferral authorized by the user at 18:19 in the live conversation'
+      - 'Preserved frontend pass evidence and backend validation not established'
+      - 'Retained backend verification as follow-up after the external blocker is resolved'
+      - 'Did not waive other stations or approve release, backend code quality or global workflow completion'
 holisticQualityRating: not-rated
 overallStatus: not-reviewed
 context_manifest:
@@ -111,12 +141,36 @@ context_manifest:
 > and under the AI.Backbone Orchestrator Compliance framework
 
 - **Tool**: GitHub Actions and SonarCloud, separately for frontend and backend.
-- **Status**: frontend passed; backend analysis blocked by an external cause.
-- **Summary**: the supplied screenshot confirms the frontend Quality Gate passed
-  for PR 959, displayed revision `11594aa`, matching local short HEAD. The user
+- **Status**: assessment completed with a continuation reserve (`warning`);
+  frontend passed, backend analysis unavailable for an external cause.
+- **Summary**: the latest supplied screenshot confirms the frontend Quality Gate
+  passed with zero new issues for PR 959, displayed revision `c65fbfc9`, whose
+  prefix matches local short HEAD. The user
   attributes the backend build failure to a cause outside G4IT and explicitly
   excludes its diagnosis from this work. Local scanner installation is not required.
 - **Sensitivity**: internal.
+
+## User-authorized continuation reserve
+
+The user explicitly requested continuation of this station while backend Sonar
+validation is temporarily impossible (live conversation, 2026-11-26, 18:19).
+This instruction is recorded as **G4IT-48-SONAR-BACKEND**, a temporary deferral
+for station processing, not as evidence of a backend Sonar pass.
+
+- **Available evidence**: frontend PR 959 Quality Gate passed for `c65fbfc9`,
+  zero new issues, zero accepted issues and 100% new-code coverage.
+- **Unavailable evidence**: backend Sonar analysis and quality-gate result.
+- **Reason**: preceding remote build blocked by an external cause, as stated
+  by the user. Diagnosis remains explicitly excluded.
+- **Disposition**: complete the assessment with native engine `gate: warning`;
+  do not skip the mandatory station or record an unconditional `gate: pass`.
+- **Residual risk**: backend blocker/critical issues are unmeasured, not zero.
+- **Follow-up owner**: workflow operator, when backend CI evidence is available.
+- **Closure condition for the reserve**: obtain backend Sonar results for the
+  relevant PR revision after the external blocker is resolved, then review the
+  backend gate and blocker/critical findings.
+- **Limits**: no automatic release, merge, aggregate quality approval, waiver of
+  other stations, or manual accessibility certification follows from this reserve.
 
 ## Corrected evidence source
 
@@ -153,8 +207,9 @@ The initial retry status showed staged changes to the root ignore file, the
 existing lint report and frontend dependency manifests; a later status no longer
 showed them. This validator did not stage, commit, revert or modify those files.
 The earlier working-tree configuration reads and committed branch diff describe
-different snapshots. On screenshot review, `git rev-parse --short=7 HEAD` returned
-`11594aa`, matching the short revision displayed in the supplied PR screenshot.
+different snapshots. The first screenshot matched local revision `11594aa`.
+On the latest screenshot review, `git rev-parse --short=7 HEAD` returned
+`c65fbfc`, matching the prefix of displayed revision `c65fbfc9`.
 This corroborates the frontend evidence's revision; it does not attest a
 backend analysis. No checkout, stash, reset or source modification was used.
 
@@ -166,7 +221,7 @@ backend CI evidence and results are separated below.
 - **Application**: [services/frontend](../../../../services/frontend/).
 - **Configuration**: [sonar-project.properties](../../../../services/frontend/sonar-project.properties).
 - **Adapter**: dedicated SonarCloud action in GitHub CI.
-- **Analysis**: PR 959, displayed revision `11594aa`.
+- **Analysis**: PR 959, displayed revision `c65fbfc9`, targeting `feat/g4it-ia-backbone`.
 - **Quality gate**: **passed**, verified from the supplied screenshot.
 - **Evidence**: [PR-specific frontend dashboard](https://sonarcloud.io/summary/new_code?id=g4itteam_g4it_frontend&pullRequest=959).
 
@@ -175,17 +230,23 @@ uses `services/frontend` as the scanner base directory. The screenshot displays:
 
 | Metric | Screenshot evidence |
 |---|---|
-| Check conclusion | Succeeded |
 | Quality Gate | Passed |
-| New issues | 2 |
+| New issues | 0 |
 | Accepted issues | 0 |
 | Security hotspots | 0 |
-| Coverage on new code | 100.0% |
+| Coverage on new code | 100.0% on 56 new lines to cover; required at least 80.0% |
 | Duplication on new code | 0.0% |
+| Analysis warnings | 3; details not shown |
 
 These are frontend PR new-code metrics, not whole-project or backend metrics.
-The two visible annotations are presented as check warnings and did not fail
-the displayed gate:
+The 67.2% estimated post-merge coverage shown separately is not the measured
+new-code coverage. The three analysis warnings are not three new source issues:
+the screenshot explicitly reports zero new issues. Their contents and causes
+are not visible, so no diagnosis or fix is inferred.
+
+### Historical annotations, superseded by the latest zero-new-issues result
+
+The earlier screenshot at revision `11594aa` showed two warning annotations:
 
 1. [indicator-section.component.html](../../../../services/frontend/src/app/layout/common/indicator-section/indicator-section.component.html),
    reported line 28: prefer an appropriate native semantic element rather than
@@ -194,9 +255,12 @@ the displayed gate:
    reported line 84: prefer `expect(cards).toHaveSize(2)` over asserting
    `cards.length` with `toBe(2)` for better test reporting.
 
-The relevant local source excerpts were read to corroborate these annotations;
-no source or test was modified. The screenshot does not export a full issue
-severity breakdown. No such breakdown or zero-total-issues claim is invented.
+The related local source excerpts were read during the earlier assessment.
+Subsequent frontend corrections replaced the explicit group role with a native
+fieldset, used the Jasmine size matcher, and removed the fieldset's tabindex
+while retaining the interactive tooltip button. The latest screenshot reports
+zero new issues after these corrections. It does not establish zero issues
+across the entire project or full manual accessibility compliance.
 
 No local frontend Sonar scan is needed to reproduce this supplied result.
 ESLint remains a separate check, not a substitute for
@@ -249,13 +313,15 @@ requiring local scanner installation. No tool was installed.
 | Correct application configuration identified | Yes | Yes |
 | Remote analysis | Succeeded in supplied screenshot | Prevented by external build failure, user-reported |
 | Evidence reviewed | Screenshot; displayed revision matches local short HEAD | User statement; no investigation requested |
-| Findings | 2 new issues, shown as warning annotations | Unmeasured, not zero |
+| Findings | 0 new issues, 0 accepted issues | Unmeasured, not zero |
+| Analysis warnings | 3, details not shown | Not available |
 | Full severity export | Not supplied | Not available |
 | Sonar quality gate | Passed | Not available for the failed execution |
 
 No new lint counts or performance defects are asserted from previous
-conversational summaries. The two frontend new issues above come from the
-supplied Sonar check, not an independently rerun local analysis.
+conversational summaries. Current frontend metrics come from the latest
+supplied screenshot, not an independently rerun local analysis. The old
+annotations are retained as history, not current unresolved source findings.
 
 No external API or server was contacted, and reachability was not tested.
 No credentials, environment-variable values, production data or secret files
@@ -266,20 +332,25 @@ were accessed. All executed commands were local and completed within the
 
 - **Criterion**: no blocker or critical issues, with a successful tool quality gate.
 - **Frontend result**: **passed**, based on the supplied CI screenshot for
-  revision `11594aa`. The two displayed warnings do not negate that result.
+  revision `c65fbfc9`, with zero new issues. Three undisclosed analysis warnings
+  remain visible without failing the displayed gate.
 - **Backend result**: **blocked-external**, with diagnosis excluded by the user;
   no backend Sonar gate is available.
-- **Combined result**: **not established**, not a full two-application pass.
-  Excluding backend build diagnosis is not treated as evidence of a backend
-  Sonar pass or an authorization to bypass a mandatory gate.
+- **Combined technical validation**: **not established**, not a full
+  two-application pass. Backend analysis remains unavailable.
+- **Station disposition**: **completed with reservation**, `gate: warning`,
+  under the explicit user continuation decision recorded above. This is
+  successful delivery of the qualified assessment, not backend Sonar success.
 - **Artifact check**: this required report is written; artifact existence alone
   does not establish a successful analysis.
-- **Workflow implication**: `static-analysis` is mandatory. The workflow engine
-  permits skips only for optional stations. A failed preceding CI build must not
-  be converted into a passing static-analysis result or bypass the aggregate gate.
-- **State at assessment**: `quality-validation/static-analysis` and
-  `quality-validation/lint-analysis` are still `running`. This retry does not
-  mark either station passed or failed, or start a downstream station.
+- **Workflow implication**: `static-analysis` remains mandatory and is not
+  skipped. The engine's supported successful station completion with a
+  `warning` gate records the qualified assessment and its explicit reserve.
+  The overall quality/release review must retain the backend evidence gap.
+- **Transition requested**: close only `quality-validation/static-analysis`
+  with station status `passed` and gate `warning`. The workflow engine response,
+  not this report, is authoritative for whether this transition is persisted.
+  The lint station and downstream stations are not completed by this assessment.
 
 ## Remaining scope
 
@@ -289,11 +360,16 @@ were accessed. All executed commands were local and completed within the
   logs, repository fix, local reproduction or CI retry is made by this validator.
 - Backend Sonar evidence remains unavailable until the external dependency is
   restored and an analysis becomes available through the existing CI process.
-- The two frontend warning annotations remain documented, not silently fixed
-  or counted as accepted issues; Sonar explicitly reports zero accepted issues.
+  This is tracked follow-up under G4IT-48-SONAR-BACKEND, not a reason to repeat
+  the same unavailable check during this user-authorized station completion.
+- The previous frontend source annotations are historical. The latest Sonar
+  evidence reports zero new issues and zero accepted issues.
+- Three analysis warnings remain visible, but their details are not supplied;
+  they are not classified as source defects or silently declared resolved.
 
-This validator does not modify source or CI configuration, install scanners,
-trigger CI, or declare the aggregate workflow passed.
+This evidence update does not modify source or CI configuration, install
+scanners, trigger CI, or declare the aggregate workflow passed. Only the
+current station's qualified completion is submitted through the workflow engine.
 
 The existing lint station also remains unresolved independently of this report.
 Do not treat a frontend lint exit code, a Maven build or configured CI jobs as a

@@ -1,3 +1,7 @@
+// This file has been created (totally or partially) with the assistance of artificial intelligence tools.
+// All content has been generated under the direct supervision of a named individual,
+// and under the AI.Backbone Orchestrator Compliance framework
+
 import {
     HttpClientTestingModule,
     HttpTestingController,
@@ -17,6 +21,36 @@ describe("FootprintDataService application summaries", () => {
     });
 
     afterEach(() => http.verify());
+
+    it("downloads a separate spreadsheet without requesting the raw CSV archive", () => {
+        const workbook = new Blob(["synthetic workbook"]);
+        service.downloadSpreadsheetExport(42).subscribe((result) => {
+            expect(result).toBe(workbook);
+        });
+
+        const request = http.expectOne(
+            `${Constants.ENDPOINTS.inventories}/42/indicators/export/spreadsheet/download`,
+        );
+        expect(request.request.responseType).toBe("blob");
+        expect(request.request.headers.get("Accept")).toBe(
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/json",
+        );
+        request.flush(workbook);
+    });
+
+    it("keeps the existing raw CSV ZIP download unchanged", () => {
+        const archive = new Blob(["synthetic CSV archive"]);
+        service.downloadExportResultsFile(42).subscribe((result) => {
+            expect(result).toBe(archive);
+        });
+
+        const request = http.expectOne(
+            `${Constants.ENDPOINTS.inventories}/42/indicators/export/download`,
+        );
+        expect(request.request.responseType).toBe("blob");
+        expect(request.request.headers.get("Accept")).toBe("application/zip");
+        request.flush(archive);
+    });
 
     it("posts supported filters as JSON and returns server aggregates unchanged", () => {
         const filters = {

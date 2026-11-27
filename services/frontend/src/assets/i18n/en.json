@@ -826,6 +826,11 @@
         "header": {
             "manage": "Manage inventories",
             "export": "Export",
+            "export-xlsx": "Export spreadsheet (XLSX)",
+            "export-csv": "Raw CSV (ZIP)",
+            "raw-warning": "Raw CSV files preserve imported text and may contain spreadsheet formulas. Use the XLSX export for viewing. Continue only for machine exchange; do not open raw CSV files directly in a spreadsheet.",
+            "raw-confirm": "Download raw CSV",
+            "export-error": "Unable to create the spreadsheet export. The archive may be unavailable, unsupported or exceed spreadsheet limits.",
             "download": "Download"
         },
         "data-consistency": "Data consistency",

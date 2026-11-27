@@ -1,3 +1,7 @@
+# This file has been created (totally or partially) with the assistance of artificial intelligence tools.
+# All content has been generated under the direct supervision of a named individual,
+# and under the AI.Backbone Orchestrator Compliance framework
+
 openapi: "3.0.3"
 info:
   title: Swagger GreenIT - Open API 3.0 - Inventory Indicator
@@ -355,6 +359,41 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
         '404':
           $ref: '#/components/responses/NotFoundError'
+        "500":
+          $ref: '#/components/responses/InternalServerError'
+
+  /organizations/{organization}/workspaces/{workspace}/inventories/{inventoryId}/indicators/export/spreadsheet/download:
+    parameters:
+      - $ref: '#/components/parameters/organizationPathParam'
+      - $ref: '#/components/parameters/workspacePathParam'
+      - $ref: '#/components/parameters/inventoryIdPathParam'
+    get:
+      summary: Download inventory results as a spreadsheet-safe workbook
+      description: >
+        Converts the latest task's stored CSV artifacts to an XLSX workbook, one
+        worksheet per artifact. Every cell is text, never a formula or hyperlink.
+        Raw CSV exchange archives and persisted evaluation values are unchanged.
+        The same inventory ownership and export role restrictions apply.
+      tags:
+        - inventory-indicator
+      operationId: getIndicatorsSpreadsheetExport
+      x-custom-role: "hasRole('INVENTORY_READ')"
+      responses:
+        "200":
+          description: Workbook containing the stored artifact values as text
+          content:
+            application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
+              schema:
+                type: string
+                format: binary
+        "401":
+          $ref: '#/components/responses/UnauthorizedError'
+        "403":
+          description: Inventory or export access is not authorized
+        "404":
+          $ref: '#/components/responses/NotFoundError'
+        "422":
+          description: Archive is empty, contains a non-CSV artifact, or exceeds spreadsheet format limits
         "500":
           $ref: '#/components/responses/InternalServerError'
 

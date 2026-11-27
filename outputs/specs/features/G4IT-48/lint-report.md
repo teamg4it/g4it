@@ -11,9 +11,10 @@ skill: lint-analysis
 sensitivity: internal
 context_retrieval: files
 tool_scope: inherit
-validation_status: skipped
+validation_status: completed-with-reservation
 frontend_validation_status: passed-full-configured-scope-with-accepted-baseline
-gate_result: not-established
+backend_validation_status: skipped-no-configured-linter
+gate_result: warning
 inputDocuments:
   - .github/skills/lint-analysis/SKILL.md
   - .github/agents/quality-validator.agent.md
@@ -81,6 +82,15 @@ changeHistory:
     changes:
       - 'Recorded the reported successful frontend lint retry and the pre-hook invocation with empty content'
       - 'Kept the blocker gate unestablished pending valid input coverage and post-hooks'
+  - date: '2026-11-26'
+    description: 'Completed the qualified lint assessment after acknowledgement of the static-analysis checkpoint'
+    changes:
+      - 'Reused the previously observed full configured frontend lint success at the unchanged c65fbfc9 source revision'
+      - 'Independently checked the two Sonar-corrected frontend files: zero errors, warnings or suppressed messages'
+      - 'Recorded the failed relative-path invocation explicitly; no source files were analyzed by that attempt'
+      - 'Ran pre-hooks on a nonempty scope manifest, without claiming a recursive source-content governance scan'
+      - 'Separated the unconfigured Java lint adapter from the externally blocked backend Sonar analysis'
+      - 'Submitted a warning gate with the existing baseline and coverage limitations preserved'
 holisticQualityRating: not-rated
 overallStatus: not-reviewed
 ---
@@ -94,7 +104,48 @@ overallStatus: not-reviewed
 
 The preceding text is the repository's canonical disclaimer. This execution does not independently attest a named human supervisor.
 
-## Relance de la station — 2026-11-26
+## Current station assessment — 2026-11-26
+
+- **Tool**: ESLint **10.15.0**, installed locally.
+- **Status**: **passed with warning** for the qualified configured-lint assessment; backend lint is **skipped / not configured**, not passed.
+- **Summary**: the previously observed full frontend lint run passed with its accepted baseline. A fresh, bounded regression check of both Sonar-corrected files also passed, without suppressions. No unconditional repository-wide lint certification is issued.
+- **Scope**: frontend Angular/TypeScript and HTML, with backend Java assessed separately.
+- **State ownership**: this report records the assessment. Only a successful native engine transition establishes station completion.
+- **Network / changes**: all checks were local and offline. No source, configuration, dependency, suppression baseline or CI change was made. No backend build or Sonar troubleshooting was performed.
+
+This section supersedes the earlier station decisions below. They remain historical evidence, including their failed or incomplete attempts; they are not current blockers automatically carried forward.
+
+### Findings and evidence
+
+| Application / check | Evidence | Assessment |
+|---|---|---|
+| Frontend, full configured scope | The independent `npm run lint --prefix services/frontend` run already recorded below exited **0** with the existing accepted baseline. The subsequent Sonar correction validation also passed frontend lint in this session. The latest frontend source revision is still **c65fbfc9**, and the worktree inspection showed no frontend changes. | **passed with accepted baseline**; reused execution evidence, not a new full-tree execution in this resumption |
+| Frontend, fresh targeted regression | `npm --prefix services/frontend exec --offline -- eslint --format json services/frontend/src/app/layout/common/indicator-section/indicator-section.component.html services/frontend/src/app/layout/common/indicator-section/indicator-section.component.spec.ts` exited **0**. JSON results contain **2 files, 0 errors, 0 fatal errors, 0 warnings and 0 suppressed messages**. | **passed**; bounded explicit-file check, no recursive traversal |
+| Initial resumption attempt | `npm --prefix services/frontend exec --offline -- eslint --format json --pass-on-unpruned-suppressions` followed by the 16 changed TS/HTML paths relative to the frontend directory exited **2**: the first `src/...` pattern was not found from the repository working directory. | Tool/path invocation failure, **not** a source diagnostic or a successful 16-file check; corrected using repository-relative paths for the two-file regression above |
+| Backend Java | The backend POM was inspected and searched for Checkstyle, PMD, SpotBugs, Spotless, formatter and lint declarations; no such configured plugin was found. The lint skill provides no Java adapter. | **skipped / not configured**, no Java lint success claimed and no tool installed |
+
+The existing baseline is accepted configuration, not evidence that suppressed violations were fixed. The configured frontend script covers `src/**/*.{ts,html}`; JS, SCSS and JSON are not certified by that command. The historical **14 files / 17 suppressed diagnostics** measurement below is not a new measurement of the full frontend and is not extrapolated to it. The fresh two-file check selected files explicitly, added no exclusions, requested no fixes/cache, and generated or pruned no suppressions.
+
+The backend lint limitation is distinct from reserve **G4IT-48-SONAR-BACKEND** in the static-analysis report. That Sonar reserve remains open; this lint assessment neither resolves it nor investigates its external cause.
+
+### Context and governance
+
+Pre-hooks were explicitly executed with a nonempty session input manifest describing the comparison base `origin/feat/g4it-ia-backbone`, revision, planned changed-file scope, accepted baseline, prior full-run evidence, backend adapter limitation and resolved report path. The result was **not blocked**, with **no PII findings**, **no injection findings**, and policy checks **P-02/P-03 passed**.
+
+Those hooks scanned the manifest content, **not** all source file contents and **not** the repository directory. The manifest's 16-file planned regression scope was not completed by the failed path invocation; the successful new source check covers only the two files explicitly named above. Broader configured frontend coverage is supported separately by the prior full-run evidence, not by the pre-hook or the two-file regression.
+
+The report is submitted to the native post-hook chain before the station transition; its terminal result and the engine-authored audit trace are authoritative. No manual gate bypass, fabricated hook result or future-station completion is used.
+
+### Gate evaluation
+
+| Criterion | Result |
+|---|---|
+| Required lint report exists | **pass** |
+| No lint errors; warnings acceptable | **pass for the configured frontend checks with the accepted baseline**: existing full-run exit 0 on unchanged source, corroborated by the fresh zero-diagnostic regression |
+| Backend and other-language coverage | **warning**: Java lint not configured; JS/SCSS/JSON outside the configured frontend lint command; no success claimed for these scopes |
+| Overall station disposition | **passed / gate warning**, qualified assessment only; not a clean raw diagnostic count, a new full-tree run, or aggregate quality/release approval |
+
+## Historical retry — 2026-11-26
 
 - **Tool**: ESLint 10.15.0 ; `npm run lint --prefix services/frontend` a été rapporté avec exit **0**, sans diagnostic actif affiché et avec la baseline acceptée. Une exécution complète indépendante est également consignée ci-dessous.
 - **Station**: `running` dans l'état du workflow ; la gate reste **non établie**.

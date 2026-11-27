@@ -44,6 +44,12 @@ changeHistory:
       - 'Update existing English technical and functional Hugo documentation without a feature-specific release note or release version'
       - 'Defer local Docker image compilation; frontend and backend code compilation remain required, with no Dockerfile change planned'
       - 'Perform manual frontend accessibility validation after implementation, not as an implementation prerequisite'
+  - date: '2026-11-27'
+    description: 'User selected a distinct spreadsheet-safe export for SAST-002'
+    changes:
+      - 'Preserve raw CSV exchange values and the existing ZIP download'
+      - 'Add an explicitly text-typed XLSX download and make it the spreadsheet-oriented UI action'
+      - 'Keep raw CSV available with an explicit formula-risk warning rather than silently changing source values'
 holisticQualityRating: not-rated
 overallStatus: not-reviewed
 context_manifest:
@@ -250,6 +256,7 @@ As an inventory manager, I add Key Indicators showing the share of BYOD and COPE
 - **FR-016** (CQ-2): Indicators MUST use the same rounding as existing percentage indicators; the export MUST write the plain decimal value (e.g. 0.57, 0.85, 0.5).
 - **FR-017** (AS-2 confirmed): A line with any invalid field MUST be rejected entirely and reported in the rejected-file report. Values on non-Devices lines are ignored (Q1), not invalid.
 - **FR-018** (CQ-4): BYOD/COPE % indicators MUST use the same quantity field and aggregation as existing equipment indicators, with no special case.
+- **FR-019** (user decision 2026-11-27, SAST-002 option 1): Provide a separate XLSX export of the stored inventory CSV artifacts, with every cell explicitly typed as text, never a formula or hyperlink. Preserve cell text, persisted evaluation values and existing raw CSV ZIP bytes. Offer XLSX as the spreadsheet-oriented UI action and retain raw CSV for machine exchange behind a formula-risk confirmation. Apply the same authentication, inventory ownership and role restrictions to both downloads. Unsupported or oversized spreadsheet content must fail explicitly rather than truncate values or fall back to unsafe CSV.
 
 ### Key Entities
 

@@ -1,3 +1,7 @@
+// This file has been created (totally or partially) with the assistance of artificial intelligence tools.
+// All content has been generated under the direct supervision of a named individual,
+// and under the AI.Backbone Orchestrator Compliance framework
+
 /*
  * G4IT
  * Copyright 2023 Sopra Steria
@@ -271,7 +275,7 @@ public class AuthService {
     public void checkUserRightForInventory(String[] urlSplit) {
         if (urlSplit.length <= 6) return;
         if (!(ORGANIZATIONS.equals(urlSplit[1]) &&
-                "organizations".equals(urlSplit[3]) &&
+                "workspaces".equals(urlSplit[3]) &&
                 "inventories".equals(urlSplit[5]))) return;
 
         String organization = urlSplit[2];

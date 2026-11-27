@@ -8,6 +8,7 @@ import com.soprasteria.g4it.backend.apidigitalservice.business.DigitalServiceSer
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
 import com.soprasteria.g4it.backend.apifiles.business.FileSystemService;
 import com.soprasteria.g4it.backend.apiindicator.business.InventoryIndicatorService;
+import com.soprasteria.g4it.backend.apiindicator.business.InventorySpreadsheetExportService;
 import com.soprasteria.g4it.backend.apiindicator.mapper.ApplicationIndicatorMapper;
 import com.soprasteria.g4it.backend.apiindicator.mapper.IndicatorRestMapper;
 import com.soprasteria.g4it.backend.apiindicator.model.EquipmentIndicatorBO;
@@ -37,6 +38,8 @@ import jakarta.servlet.Filter;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mockito;
 import org.mapstruct.factory.Mappers;
 import org.springframework.context.annotation.Bean;
@@ -56,6 +59,8 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -90,6 +95,7 @@ class InventoryIndicatorExportSecurityTest {
 
     private static final String URL = "/organizations/synthetic-org/workspaces/7/inventories/9/indicators/export/download";
     private static final String VALID_TOKEN = "synthetic-valid-token";
+    private static final String SPREADSHEET_URL = URL.replace("/export/download", "/export/spreadsheet/download");
 
     private AnnotationConfigWebApplicationContext context;
     private MockMvc mvc;
@@ -103,6 +109,7 @@ class InventoryIndicatorExportSecurityTest {
     @EnableWebSecurity
     @ImportAutoConfiguration(JacksonAutoConfiguration.class)
     @Import({SecurityConfig.class, AuthenticationFilter.class, AuthService.class, RestExceptionHandler.class,
+            InventorySpreadsheetExportService.class,
             InventoryIndicatorApiController.class, InventoryIndicatorController.class, JsonNullableConfig.class})
     static class TestConfig {
         @Bean
@@ -229,6 +236,21 @@ class InventoryIndicatorExportSecurityTest {
         verifyNoInteractions(files);
     }
 
+    @ParameterizedTest
+    @ValueSource(strings = {"/export/download", "/export/spreadsheet/download", "/equipments"})
+    void inventoryOutsideAuthorizedWorkspaceIsRejectedBeforeDataAccess(String endpoint) throws Exception {
+        givenWorkspaceRoles(List.of("ROLE_INVENTORY_WRITE"));
+        when(inventoryService.inventoryExists("synthetic-org", 7L, 9L)).thenReturn(false);
+
+        mvc.perform(get(URL.replace("/export/download", endpoint))
+                        .header("Authorization", "Bearer " + VALID_TOKEN))
+                .andExpect(status().isForbidden());
+
+        verify(inventoryService).inventoryExists("synthetic-org", 7L, 9L);
+        verifyNoInteractions(files, context.getBean(TaskRepository.class),
+                context.getBean(InventoryIndicatorService.class));
+    }
+
     @Test
     void authorizedWriterReceivesZipWithEvaluatedColumns() throws Exception {
         givenWorkspaceRoles(List.of("ROLE_INVENTORY_WRITE"));
@@ -246,7 +268,67 @@ class InventoryIndicatorExportSecurityTest {
             assertEquals("ind_physical_equipment.csv", entry.getName());
             assertEquals("BYOD,0.57\n", new String(zip.readAllBytes(), StandardCharsets.UTF_8));
         }
+        verify(inventoryService).inventoryExists("synthetic-org", 7L, 9L);
         verify(files).downloadFile("synthetic-org", 7L, FileFolder.EXPORT, "42.zip");
+    }
+
+    @Test
+    void spreadsheetUsesTheSameExportAuthorizationAndLiteralTextCells() throws Exception {
+        givenWorkspaceRoles(List.of("ROLE_INVENTORY_WRITE"));
+        var archive = new ByteArrayOutputStream();
+        try (var zip = new ZipOutputStream(archive)) {
+            zip.putNextEntry(new ZipEntry("physical_equipment.csv"));
+            zip.write("contexteUsage;fractionUsage\n=1+1;0.5000\n".getBytes(StandardCharsets.UTF_8));
+            zip.closeEntry();
+        }
+        when(files.downloadFile("synthetic-org", 7L, FileFolder.EXPORT, "42.zip"))
+                .thenReturn(new ByteArrayInputStream(archive.toByteArray()));
+
+        var response = mvc.perform(get(SPREADSHEET_URL)
+                        .header("Authorization", "Bearer " + VALID_TOKEN)
+                        .accept("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "application/json"))
+                .andExpect(status().isOk()).andReturn().getResponse();
+
+        assertEquals("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", response.getContentType());
+        assertEquals("attachment; filename=\"inventory-9.xlsx\"", response.getHeader("Content-Disposition"));
+        try (var workbook = new XSSFWorkbook(new ByteArrayInputStream(response.getContentAsByteArray()))) {
+            var row = workbook.getSheetAt(0).getRow(1);
+            assertEquals(CellType.STRING, row.getCell(0).getCellType());
+            assertEquals("=1+1", row.getCell(0).getStringCellValue());
+            assertEquals("0.5000", row.getCell(1).getStringCellValue());
+        }
+        verify(inventoryService).inventoryExists("synthetic-org", 7L, 9L);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"ROLE_DIGITAL_SERVICE_READ", "ROLE_INVENTORY_READ"})
+    void spreadsheetRejectsMissingExportRolesBeforeStorageAccess(String role) throws Exception {
+        givenWorkspaceRoles(List.of(role));
+
+        mvc.perform(get(SPREADSHEET_URL).header("Authorization", "Bearer " + VALID_TOKEN))
+                .andExpect(status().isForbidden());
+
+        verifyNoInteractions(files);
+    }
+
+    @Test
+    void spreadsheetRejectsMissingToken() throws Exception {
+        mvc.perform(get(SPREADSHEET_URL)).andExpect(status().isUnauthorized());
+        verifyNoInteractions(files);
+    }
+
+    @Test
+    void spreadsheetReturnsAnErrorInsteadOfAnUnsafeFallbackForAnInvalidArchive() throws Exception {
+        givenWorkspaceRoles(List.of("ROLE_INVENTORY_WRITE"));
+        when(files.downloadFile("synthetic-org", 7L, FileFolder.EXPORT, "42.zip"))
+                .thenReturn(new ByteArrayInputStream(new byte[0]));
+
+        mvc.perform(get(SPREADSHEET_URL).header("Authorization", "Bearer " + VALID_TOKEN)
+                        .accept("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "application/json"))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.status").value(422));
+
+        verify(files, times(1)).downloadFile("synthetic-org", 7L, FileFolder.EXPORT, "42.zip");
     }
 
     @Test

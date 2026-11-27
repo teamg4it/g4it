@@ -1,3 +1,7 @@
+// This file has been created (totally or partially) with the assistance of artificial intelligence tools.
+// All content has been generated under the direct supervision of a named individual,
+// and under the AI.Backbone Orchestrator Compliance framework
+
 /*
  * G4IT
  * Copyright 2023 Sopra Steria
@@ -29,7 +33,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.soprasteria.g4it.backend.apiinventory.business.InventoryService;
 import com.soprasteria.g4it.backend.apidigitalservice.business.DigitalServiceService;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.List;
 import java.util.stream.Stream;
@@ -288,18 +294,49 @@ class AuthServiceTest {
 
     @Test
     void testCheckUserRightForInventory_inventoryExistsFalse() {
-        String[] urlSplit = {"", "organizations", "org", "organizations", "1", "inventories", "2"};
+        String[] urlSplit = {"", "organizations", "org", "workspaces", "1", "inventories", "2"};
         when(inventoryService.inventoryExists("org", 1L, 2L)).thenReturn(false);
         AuthorizationException ex = Assertions.assertThrows(AuthorizationException.class,
-            () -> ReflectionTestUtils.invokeMethod(authService, "checkUserRightForInventory", (Object) urlSplit));
+            () -> authService.checkUserRightForInventory(urlSplit));
+        Assertions.assertEquals(403, ex.getStatusCode());
         Assertions.assertTrue(ex.getMessage().contains("does not exist or is not linked"));
+        verify(inventoryService).inventoryExists("org", 1L, 2L);
     }
 
-    @Test
-    void testCheckUserRightForInventory_invalidIdFormat() {
-        String[] urlSplit = {"", "organizations", "org", "organizations", "notLong", "inventories", "notLong"};
+    @ParameterizedTest
+    @CsvSource({"notLong, 2", "1, notLong"})
+    void testCheckUserRightForInventory_invalidIdFormat(String workspaceId, String inventoryId) {
+        String[] urlSplit = {"", "organizations", "org", "workspaces", workspaceId, "inventories", inventoryId};
         AuthorizationException ex = Assertions.assertThrows(AuthorizationException.class,
-            () -> ReflectionTestUtils.invokeMethod(authService, "checkUserRightForInventory", (Object) urlSplit));
+            () -> authService.checkUserRightForInventory(urlSplit));
+        Assertions.assertEquals(403, ex.getStatusCode());
         Assertions.assertTrue(ex.getMessage().contains("must be in Long format"));
+        verifyNoInteractions(inventoryService);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "/organizations/org/workspaces/1/inventories/2",
+            "/organizations/org/workspaces/1/inventories/2/inputs/physical-equipments",
+            "/organizations/org/workspaces/1/inventories/2/indicators/export/download"
+    })
+    void testCheckUserRightForInventory_linkedInventoryIsAllowed(String path) {
+        when(inventoryService.inventoryExists("org", 1L, 2L)).thenReturn(true);
+
+        Assertions.assertDoesNotThrow(() -> authService.checkUserRightForInventory(path.split("/")));
+
+        verify(inventoryService).inventoryExists("org", 1L, 2L);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "/organizations/org/workspaces/1/inventories",
+            "/organizations/org/workspaces/1/digital-services/synthetic-service",
+            "/users/me"
+    })
+    void testCheckUserRightForInventory_otherRoutesDoNotLookUpInventory(String path) {
+        authService.checkUserRightForInventory(path.split("/"));
+
+        verifyNoInteractions(inventoryService);
     }
 }

@@ -312,6 +312,17 @@ changeHistory:
       - 'Recorded fresh successful Hugo generation and zero local link errors in 223 documents against an eighteen-error baseline'
       - 'Closed only the remaining TASK-017 accuracy/rendering assertions using retained content evidence and current navigation verification'
       - 'Preserved later verification tasks and manual accessibility as open without changing workflow state'
+  - date: '2026-11-27'
+    description: 'Added the user-approved SAST-002 separate spreadsheet-export remediation'
+    changes:
+      - 'Recorded FR-019 scope without changing the source-faithful raw CSV contract'
+      - 'Separated backend conversion/security and frontend safe-download/confirmation verification'
+  - date: '2026-11-27'
+    description: 'Implemented and locally verified TASK-024 without changing the registered SAST gate'
+    changes:
+      - 'Recorded 71 backend and 11 frontend passing tests, configured lint and production-build success'
+      - 'Verified real HTTP 422 after correcting its exception mapping, and retained raw CSV risk explicitly'
+      - 'Kept independent SAST reassessment, manual accessibility and backend Sonar reserve separate'
 holisticQualityRating: not-rated
 overallStatus: not-reviewed
 trace_id: e6fa33d4-27cf-4d12-84a2-3c70d47d88da
@@ -839,6 +850,25 @@ implemented feature behavior, passing tests or successful builds.
   - [ ] No task in this repository deploys the image, changes an environment, or modifies the deployment repository.
 - **Tests**:
   - [ ] CI run and registry publication evidence are attached to the handoff; no deployment is performed here.
+
+### TASK-024: Provide a distinct spreadsheet-safe inventory export
+
+- **Type**: implementation
+- **Status**: done - scoped implementation and automated verification complete; independent SAST reassessment and manual accessibility remain pending.
+- **Story**: FR-019, NFR-S1, G4IT-48-SAST-002
+- **Depends on**: TASK-014
+- **Files**: InventoryIndicatorController and inventory-indicator OpenAPI contract; new InventorySpreadsheetExportService and focused tests; existing export-security tests and RestExceptionHandler for the new 422 response; FootprintDataService and inventory-header component/tests; EN/FR translations; existing English export/API documentation; implementation-log.md and sast-report.md.
+- **Description**: Implement the user's option 1 decision. Convert the authorized stored task ZIP into a separate XLSX download without rewriting raw CSV or persisted inputs. Reuse the installed Apache POI dependency. Keep the existing raw download unchanged and present it explicitly as machine exchange, not a spreadsheet-safe artifact.
+- **Acceptance Criteria**:
+  - [x] XLSX cells retain CSV text but have string types and no formulas or hyperlinks, including formula-like prefixes and quoted separators or newlines.
+  - [x] Existing raw CSV ZIP bytes, input values and evaluated fraction semantics remain unchanged.
+  - [x] Both downloads enforce existing authentication, inventory ownership and role restrictions.
+  - [x] Spreadsheet format limits and invalid archives fail explicitly without truncation or unsafe fallback, and temporary workbook files are cleaned up.
+  - [x] The UI offers the spreadsheet download and requires explicit formula-risk confirmation for the separate raw CSV download, with EN and FR labels.
+  - [x] Existing English functional and API documentation distinguishes spreadsheet safety from raw machine exchange.
+- **Tests**:
+  - [x] Run focused backend workbook/security/export regressions and frontend service/header tests, then configured frontend lint and production build.
+- **Verification - 2026-11-27**: The five-suite offline Maven selection passed 71 tests with zero failures, errors or skips: workbook conversion 6, real security/MVC export 16, raw-export controller 4, ownership guard 29 and evaluated CSV mapper 16. The exact 32,767-character cell boundary and rejection at 32,768 and 16,385 columns were exercised; the 1,048,576-row guard is implemented, not million-row load-tested. Successful and exceptional temporary-file cleanup is implemented; no independent OS-level leak/load test is claimed. Eleven frontend tests passed, including explicit raw confirmation and no unsafe fallback. Configured lint, final production build and Hugo build exited 0 with documented build/theme warnings. An added HTTP regression first caught 422 being mapped to 500; the directly dependent handler was corrected and the same selection passed. An exact-client-header check then caught binary-only Accept blocking JSON error serialization. The client now accepts XLSX and JSON, and a separate final 16-case HTTP run verifies both success and the actual 422 JSON payload with that same header. Those sixteen cases are not added to the earlier 71-case total; frontend tests, lint and production build also passed again afterward. Raw CSV is still unsafe for direct spreadsheet opening by design, as explicitly warned. No independent SAST pass, coverage threshold, manual accessibility, live Excel/LibreOffice test, full suite or CI result is newly claimed.
 
 ## Dependency Graph
 

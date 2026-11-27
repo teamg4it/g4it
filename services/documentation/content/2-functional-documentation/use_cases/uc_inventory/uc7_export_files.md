@@ -11,7 +11,28 @@ mermaid: true
 
 ## Source versus evaluated usage values
 
-The inventory export ZIP distinguishes two physical-equipment artifacts:
+### Choose the export for its intended use
+
+- **Export spreadsheet (XLSX)** is the viewing format. It creates one worksheet
+  for each CSV in the stored evaluation archive. Every cell, including numbers
+  and formula-like text such as `=1+1`, is explicitly stored as text, never as
+  a formula or hyperlink. Source formatting such as `0.5000` is preserved.
+  Spreadsheet calculations require deliberately converting trusted values.
+- **Raw CSV (ZIP)** is the unchanged machine-exchange format. Downloading it
+  requires confirmation in the UI: imported text can contain formulas that a
+  spreadsheet would execute. Do not open these CSV files directly in a
+  spreadsheet. CSV quoting is not formula protection. Re-exporting the XLSX
+  as CSV and opening that CSV can reintroduce the same risk.
+
+The XLSX is generated on download from the same authorized stored task ZIP;
+it does not reevaluate equipment, overwrite stored CSVs or fabricate metadata
+for historical evaluations. Worksheet names have a numeric prefix and a safe,
+possibly shortened artifact name. Each sheet retains its original headers
+and data order. A non-CSV artifact, empty archive or Excel format limit
+(1,048,576 rows including headers, 16,384 columns, 32,767 characters per cell)
+causes an explicit error, never truncation or an automatic raw-CSV fallback.
+
+The raw inventory export ZIP distinguishes two physical-equipment artifacts:
 
 - `physical_equipment.csv` is the source/input export for that evaluation. Its
   optional `contexteUsage` and `fractionUsage` cells retain source text, for
@@ -46,6 +67,12 @@ endpoint or a latest-successful-task selection. Historical ZIPs are not
 regenerated or backfilled with usage columns. Digital-service evaluated export
 columns are unchanged.
 
+The distinct spreadsheet endpoint is
+`GET /organizations/{organization}/workspaces/{workspace}/inventories/{inventoryId}/indicators/export/spreadsheet/download`.
+It returns an `.xlsx` file and enforces the same inventory ownership,
+authentication and export-role restrictions as the raw download. Existing
+export access restrictions are not widened by this format.
+
 ## Table of contents
 
 -   [Table of contents](#table-of-contents)
@@ -57,10 +84,14 @@ columns are unchanged.
 ## Description
 
 This use case allows a sustainable IT leader to generate and download the previously uploaded files, used to create
-datacenters, physical and virtual equipment or applications, as well as their evaluated impacts, in .csv format.
+datacenters, physical and virtual equipment or applications, as well as their
+evaluated impacts. Use XLSX for spreadsheet viewing and raw CSV ZIP for machine
+exchange.
 
 **Restrictions :**  
-This is for users with "read" role access for the inventory module to access it.  
+The export controls are displayed for inventory readers. The backend additionally
+requires the existing writer, administrator or default DEMO-workspace permission
+to download, and checks that the inventory belongs to the authorized workspace.
 Export files generated during export are kept for 7 days on Azure storage space and deleted afterward.  
 When this allowed time expires, an error message appears when user tries to download.
 
@@ -73,8 +104,8 @@ When this allowed time expires, an error message appears when user tries to down
 
 | Management rules | Title            | Rule description                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 | ---------------- | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1                | Export button    | The button is displayed for users with “read” role access on inventory module. The label of the button depends of the state of the export request. <br> If no request have been triggered, label is "Export".<br> If request have been triggered but not completed, label is "Preparing your results".<br> If request have been triggered and completed, label is "Download".<br> When a user launch a new evaluation, the button is reset from ‘Download’ to ‘Export’. |
-| 2                | Export files     | The files produced are :<br> - 5 files which represent the inventory (inventory.csv, datacenter.csv, application.csv, physical_equipment.csv, virtual_equipment.csv), <br> - 3 files which represent the impact indicator of the inventory (ind_application.csv, ind_physical_equipment.csv, ind_virtual_equipment.csv).                                                                                                                                  |
+| 1                | Export controls  | Inventory readers see the primary spreadsheet (XLSX) action and the separate raw CSV (ZIP) action. Raw CSV requires explicit risk confirmation. Both controls are disabled while a download is in progress. Existing backend permissions still apply. |
+| 2                | Export files     | The stored CSV ZIP contains inventory.csv, datacenter.csv, application.csv, physical_equipment.csv, virtual_equipment.csv and the evaluated indicator files ind_application.csv, ind_physical_equipment.csv and ind_virtual_equipment.csv. The separate XLSX presents these artifacts as text-only worksheets. Raw CSV requires formula-risk confirmation. |
 | 3                | Retention period | Export files generated during export are kept for 7 days on Azure storage space and deleted afterwards.<br>When the files have been purged (after a period of 7 days), try to download them produce an error message. <br> When a user launch a new evaluation, the button is reset from ‘Download’ to ‘Export’.                                                                                                                                          |
 
 {{% /expand %}}
@@ -83,8 +114,10 @@ When this allowed time expires, an error message appears when user tries to down
 
 {{< mermaid align="center">}}
 graph TD;
-Step1[Application or <br>Equipment view] -->|Click on 'Export' button| Step2
-Step2[Retrieve  CSV files stored<br> in azure stoage] --> Step3[Files downloaded]
+Step1[Application or <br>Equipment view] -->|Export spreadsheet| Step2[Retrieve stored CSV ZIP]
+Step2 --> Step3[Convert to text-only XLSX]
+Step3 --> Step4[XLSX downloaded]
+Step1 -->|Raw CSV and risk confirmation| Step5[Stored CSV ZIP downloaded unchanged]
 
 {{</ mermaid >}}
 
@@ -98,10 +131,11 @@ participant front as G4IT Front-End
 participant back as G4IT Back-End
 participant azure as Azure storage
 
-    RND ->> front: Click on 'export' button on the equipment or application view
-    front ->> back: GET /api/organizations/{organization}/workspaces/{workspace}/inventories/{inventoryId}/indicators/export/download
+    RND ->> front: Choose spreadsheet export on the equipment or application view
+    front ->> back: GET /api/organizations/{organization}/workspaces/{workspace}/inventories/{inventoryId}/indicators/export/spreadsheet/download
    azure ->> back: Retrieve the stored zipped files
-    back ->> front: Files downloaded in user's local
-    front ->> RND: Exported zipped CSV files
+    back ->> back: Convert CSV cells to explicit text cells
+    back ->> front: XLSX workbook
+    front ->> RND: Spreadsheet-safe workbook
 
 {{</ mermaid >}}

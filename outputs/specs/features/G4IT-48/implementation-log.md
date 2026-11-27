@@ -49,6 +49,17 @@ inputDocuments:
   - services/backend/src/test/java/com/soprasteria/g4it/backend/apiinout/PhysicalEquipmentEvaluationTraceMigrationTest.java
   - services/backend/src/test/java/com/soprasteria/g4it/backend/apievaluating/business/asyncevaluatingservice/PhysicalEquipmentAllocationServiceTest.java
   - services/backend/src/test/java/com/soprasteria/g4it/backend/apiindicator/controller/InventoryIndicatorExportSecurityTest.java
+  - services/backend/src/main/java/com/soprasteria/g4it/backend/apiuser/business/AuthService.java
+  - services/backend/src/test/java/com/soprasteria/g4it/backend/apiuser/business/AuthServiceTest.java
+  - services/backend/src/main/java/com/soprasteria/g4it/backend/exception/AuthorizationException.java
+  - outputs/specs/features/G4IT-48/sast-report.md
+  - services/backend/src/main/java/com/soprasteria/g4it/backend/apiindicator/business/InventorySpreadsheetExportService.java
+  - services/backend/src/main/java/com/soprasteria/g4it/backend/apiindicator/controller/InventoryIndicatorController.java
+  - services/backend/src/main/java/com/soprasteria/g4it/backend/config/RestExceptionHandler.java
+  - services/backend/src/main/resources/swagger/greenit/inventory-indicator.yml
+  - services/backend/src/test/java/com/soprasteria/g4it/backend/apiindicator/business/InventorySpreadsheetExportServiceTest.java
+  - services/frontend/src/app/layout/inventories-footprint/header/inventories-header-footprint.component.ts
+  - services/frontend/src/app/core/service/data/footprint-data.service.ts
 changeHistory:
   - date: '2026-11-23'
     description: 'Opened the implementation execution log after complete reads of the two dispatched skills and six required context documents.'
@@ -507,8 +518,55 @@ changeHistory:
     description: 'Updated the implementation log lifecycle status to validated at the user request'
     changes:
       - 'Changed status from draft to validated without altering implementation evidence'
+  - date: '2026-11-27'
+    description: 'Implemented the explicitly authorized SAST-001 inventory authorization correction'
+    changes:
+      - 'Restored the existing ownership check on actual workspaces routes without introducing a new authorization policy'
+      - 'Corrected misleading route fixtures and added unit and real-security-chain regressions'
+      - 'Recorded the red run with nine failures and the green run with all 39 tests passing'
+      - 'Left CSV remediation, PMD, backend Sonar and native SAST reassessment pending'
+  - date: '2026-11-27'
+    description: 'Implemented the user-selected separate spreadsheet export for SAST-002'
+    changes:
+      - 'Recorded FR-019 and TASK-024 with preserved raw CSV exchange semantics'
+      - 'Added text-only streamed XLSX conversion, API/security tests and the tightly coupled HTTP 422 mapping'
+      - 'Added the safe spreadsheet UI action and explicit EN/FR confirmation for raw CSV'
+      - 'Verified 71 backend and 11 frontend tests, configured lint, production build and Hugo generation'
+      - 'Preserved raw CSV residual risk and pending independent security reassessment without a native gate transition'
+  - date: '2026-11-27'
+    description: 'Validated the spreadsheet error contract against the exact frontend Accept header'
+    changes:
+      - 'Caught binary-only Accept preventing JSON error serialization and corrected the new client header'
+      - 'Reran sixteen HTTP/security cases with the real XLSX-plus-JSON Accept header and asserted the 422 JSON status'
+      - 'Reran eleven frontend cases, configured lint and final production build successfully'
 holisticQualityRating: not-rated
 overallStatus: not-reviewed
+remediation_context_manifest:
+  - path: outputs/specs/features/G4IT-48/spec.md
+    mode: targeted
+    key_facts:
+      - 'NFR-S1 preserves existing organization/workspace authorization.'
+      - 'NFR-T2 includes export and indicator integration tests.'
+  - path: outputs/specs/features/G4IT-48/plan.md
+    mode: targeted
+    key_facts:
+      - 'Existing REST paths must preserve organization/workspace authorization.'
+      - 'Targeted tests must be written before or alongside implementation.'
+  - path: outputs/specs/features/G4IT-48/tasks.md
+    mode: targeted
+    key_facts:
+      - 'TASK-019 covers existing task scoping and authorization.'
+      - 'Earlier HTTP role checks did not cover a mismatched inventory owner.'
+  - path: services/backend/src/main/java/com/soprasteria/g4it/backend/apiuser/business/AuthService.java
+    mode: full
+    key_facts:
+      - 'The inventory guard checked organizations at segment 3 instead of the real workspaces segment.'
+      - 'The existing inventoryExists lookup already checks the requested organization/workspace/inventory association.'
+  - path: services/backend/src/test/java/com/soprasteria/g4it/backend/apiindicator/controller/InventoryIndicatorExportSecurityTest.java
+    mode: full
+    key_facts:
+      - 'MockMvc loads the real JWT chain, AuthenticationFilter, AuthService and method security.'
+      - 'Persistence and storage are mocked; this does not exercise a live database or identity provider.'
 context_retrieval: files
 resumption_context_manifest:
   - path: .github/skills/knowledge-plane/SKILL.md
@@ -627,7 +685,180 @@ context_manifest:
 ---
 <!-- AI_DISCLAIMER v1.0 -->
 
-## 2026-11-26 — Authorized R01–R18 completion (LATEST)
+## 2026-11-27 - Separate spreadsheet-safe export for SAST-002 (LATEST)
+
+Station: implementation remediation for quality-validation/security-sast.
+Trace: e6fa33d4-27cf-4d12-84a2-3c70d47d88da.
+Sensitivity: internal. User decision: option 1, separate spreadsheet-safe export
+while retaining raw CSV for machine exchange.
+
+The user explicitly approved this format split. It is recorded as FR-019 and
+TASK-024 before implementation. This is a local worktree on c65fbfc9, not a new
+commit, remote CI result or an independent security approval.
+
+| Task | Status | Files changed | Tests |
+|------|--------|---------------|-------|
+| Approved export contract | done | spec.md, tasks.md | decision recorded |
+| Text-only XLSX conversion | done | InventorySpreadsheetExportService.java and its new test | 6 passed |
+| Authenticated spreadsheet endpoint | done | InventoryIndicatorController.java, inventory-indicator.yml, InventoryIndicatorExportSecurityTest.java | 16 HTTP/security tests passed |
+| Explicit conversion error status | done | RestExceptionHandler.java | HTTP 422 regression passed |
+| Safe primary download and confirmed raw exchange | done | FootprintDataService and its spec, inventory-header TS/HTML/spec, en.json, fr.json | 11 frontend tests passed |
+| Functional/API and quality evidence | done | Existing two English export/API pages, implementation-log.md, sast-report.md | Hugo build passed |
+
+### Behavior and boundaries
+
+- The new API-first route is
+  `GET /organizations/{organization}/workspaces/{workspace}/inventories/{inventoryId}/indicators/export/spreadsheet/download`.
+  It converts the same latest task's stored CSV ZIP after the existing
+  authentication, ownership and export-role checks. The raw route is unchanged.
+- Existing Apache POI 5.4.1 (Apache-2.0) and Commons CSV are reused without a
+  dependency or lockfile change. SXSSF writes a workbook with a bounded row
+  window and compressed temporary sheets, one numbered safe sheet per CSV.
+- Every cell is explicitly STRING, including headers and numeric-looking
+  values. No formula, hyperlink, external link or active object is constructed.
+  The tests preserve `=`, `+`, `-`, `@`, leading whitespace/control characters,
+  quoted separators/newlines, empty text and original decimal formatting.
+- A leading CSV BOM is removed only at the start of each artifact. No source
+  value, allocation/default, trace, grouping, CSV serializer or stored archive
+  is rewritten.
+- Excel row, column and text limits, empty archives and unexpected non-CSV
+  artifacts produce explicit errors rather than truncation or a raw fallback.
+  Workbook temporary files are closed; completed XLSX streams use delete-on-close
+  and failed conversion deletes its output. This cleanup is code-backed, not an
+  independent OS-level leak or concurrent-load measurement.
+- The UI uses XLSX for spreadsheet viewing and offers raw CSV ZIP separately
+  behind a localized formula-risk confirmation. Download controls are disabled
+  while in progress; errors produce a notification, never unsafe CSV fallback.
+- The existing constructor injection baseline rejected one extra parameter
+  under configured ESLint. Only the new confirmation dependency uses `inject()`;
+  the legacy constructor and suppression files were not migrated or changed.
+
+### Exact verification
+
+```text
+mvn -o -f services/backend/pom.xml -Dtest=InventorySpreadsheetExportServiceTest,InventoryIndicatorExportSecurityTest,InventoryIndicatorExportControllerTest,AuthServiceTest,ImpactToCsvRecordTest -Dorg.slf4j.simpleLogger.defaultLogLevel=warn -Dorg.slf4j.simpleLogger.log.org.apache.maven.plugin.compiler=info -Dorg.slf4j.simpleLogger.log.org.apache.maven.plugin.surefire=info -Dmaven.test.redirectTestOutputToFile=true -DtrimStackTrace=true test
+npm --prefix services/frontend run test:ci -- --include=src/app/core/service/data/footprint-data.service.spec.ts --include=src/app/layout/inventories-footprint/header/inventories-header-footprint.component.spec.ts --reporters=dots
+npm --prefix services/frontend run lint
+npm --prefix services/frontend run build -- --configuration=production
+hugo --source services/documentation --destination public
+```
+
+| Final check | Result |
+|-------------|--------|
+| Backend selected Maven test lifecycle | exit 0: 71 tests, 0 failures, 0 errors, 0 skips |
+| Workbook converter | 6 passed |
+| Real HTTP/security export chain | 16 passed |
+| Final exact-client Accept recheck | 16 passed separately, not added to the 71-case total |
+| Unchanged raw-export controller | 4 passed |
+| Inventory ownership guard | 29 passed |
+| Persisted evaluated CSV mapper | 16 passed |
+| Frontend selected Karma/Chrome tests | exit 0: 11 of 11 passed |
+| Configured frontend lint | exit 0 |
+| Final production frontend build | exit 0, bundle/style budget warnings |
+| Hugo generation | exit 0, 326 pages, theme deprecation/raw-HTML warnings |
+| Targeted tracked-file whitespace check | exit 0 |
+
+An initial 69-case backend selection passed. Adding cell/column boundaries
+and an HTTP conversion-error test raised the selection to 71; this revealed
+that the existing exception handler mapped the new 422 code to 500.
+The handler now explicitly maps 422 using the standard error payload, and the
+same 71-case selection passed. No failure was ignored or asserted as success.
+
+A final check using the exact client header then exposed a second issue:
+binary-only `Accept` prevented serialization of the JSON conversion-error
+payload. The new spreadsheet client now accepts both XLSX and JSON. Both
+HTTP success and error tests use that actual header, including the 422 JSON
+status field. A separate final run with
+`-Dtest=InventoryIndicatorExportSecurityTest` and the same remaining Maven
+options passed all 16 cases, zero failures/errors/skips. That recheck is not
+added to the earlier 71-case total. Eleven frontend cases, configured lint
+and production build were rerun successfully after the header correction.
+
+The workbook tests exercise 32,767-character preservation, rejection at 32,768
+characters and 16,385 columns, BOM removal, multiple artifacts, name collisions
+and rows beyond the 100-row streaming window. The row maximum is guarded in
+code, not tested by generating a million-row file in the shared environment.
+
+### Residual risk and handoff
+
+Raw CSV **remains unsafe for direct spreadsheet opening**. This is the explicitly
+selected format split, not formula neutralization or a blanket CSV safety claim.
+XLSX-to-CSV conversion followed by spreadsheet reopening can reintroduce the
+risk. The raw exchange path remains available for existing API clients; its
+UI warning is not an API access restriction or a formal security-risk waiver.
+
+SAST-001 and SAST-002 now have implemented local remediations, pending the
+affected security reassessment and native workflow transition. The prior
+failed/fail assessment remains authoritative. Java PMD remains deferred and
+the backend Sonar reserve remains open. No unfiltered suite, new coverage
+threshold, live Excel/LibreOffice test, full browser journey, manual
+accessibility or independent security approval is claimed.
+All commands used local files/tools; no external service, dependency download,
+credential access, backend remote-build investigation, commit or push occurred.
+
+## 2026-11-27 - Authorized SAST-001 inventory guard correction (PRIOR CHECKPOINT)
+
+Station: implementation remediation for quality-validation/security-sast.
+Trace: e6fa33d4-27cf-4d12-84a2-3c70d47d88da.
+Scope: NFR-S1 and TASK-019 authorization regression, explicitly authorized
+by the user after the blocking SAST finding. Evidence applies to the local
+worktree on c65fbfc9, not a new commit or a remote CI run.
+
+| Task | Status | Files changed | Tests |
+|------|--------|---------------|-------|
+| G4IT-48-SAST-001 correction | done, pending security reassessment | AuthService.java | pass |
+| Real-route unit regressions | done | AuthServiceTest.java | 29 passed |
+| Cross-workspace HTTP regressions | done | InventoryIndicatorExportSecurityTest.java | 10 passed |
+| Remediation evidence | done | implementation-log.md and sast-report.md | recorded |
+
+### Change and regression evidence
+
+- Replaced only the incorrect segment-3 literal in the production guard:
+  `organizations` becomes `workspaces`. Existing ownership lookup, 403
+  handling, role resolution and downstream services remain unchanged.
+- Unit tests now use actual workspace routes, check rejected foreign
+  inventories and malformed IDs, verify ownership lookup for authorized
+  inventory/input/export paths, and preserve collection/unrelated routes.
+- HTTP regressions use an authorized workspace writer but reject an
+  inventory not belonging to that workspace on both indicator and export
+  routes. They assert 403 and no task, indicator or file access.
+- The authorized ZIP-download test now also verifies ownership lookup.
+  The filter and authorization service are real, not mocked away.
+- Added the required attribution to the two Java files that lacked it.
+  No API contract, migration, dependency or frontend source changed.
+
+### Exact local validation
+
+The same project Maven command ran before and after the production change:
+
+```text
+mvn -o -f services/backend/pom.xml -Dtest=AuthServiceTest,InventoryIndicatorExportSecurityTest -Dorg.slf4j.simpleLogger.defaultLogLevel=warn -Dorg.slf4j.simpleLogger.log.org.apache.maven.plugin.compiler=info -Dorg.slf4j.simpleLogger.log.org.apache.maven.plugin.surefire=info -Dmaven.test.redirectTestOutputToFile=true -DtrimStackTrace=true test
+```
+
+| Run | Total | Passed | Failures | Errors | Skipped | Exit |
+|-----|-------|--------|----------|--------|---------|------|
+| New tests, original production guard | 39 | 30 | 9 | 0 | 0 | 1 |
+| Same tests, corrected guard | 39 | 39 | 0 | 0 | 0 | 0 |
+
+The red run missed ownership checks, returned no exception for malformed
+IDs or a foreign inventory, and returned 500/200 instead of 403 for the
+two foreign-inventory HTTP requests. After the one-literal correction,
+all 29 unit cases and 10 HTTP/security cases passed without skips.
+The targeted Java whitespace check also exited 0.
+
+This is a focused local Maven lifecycle result, not an unfiltered backend
+suite, deployed exploitation test, new coverage measurement or Sonar run.
+No network access or external backend-build investigation was performed.
+
+### Quality handoff
+
+The native SAST state remains failed/fail until the affected security
+assessment is rerun. The verified local correction is not a self-approved
+quality transition. G4IT-48-SAST-002 (CSV formula risk) remains open,
+Java PMD remains deferred and G4IT-48-SONAR-BACKEND remains reserved.
+No commit, push, downstream station or release approval occurred.
+
+## 2026-11-26 — Authorized R01–R18 completion (PRIOR CHECKPOINT)
 
 Station: implementation / feature-implementation / G4IT-48.
 Trace: e6fa33d4-27cf-4d12-84a2-3c70d47d88da.

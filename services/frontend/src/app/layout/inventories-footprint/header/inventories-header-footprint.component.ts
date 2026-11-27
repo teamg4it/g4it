@@ -1,3 +1,7 @@
+// This file has been created (totally or partially) with the assistance of artificial intelligence tools.
+// All content has been generated under the direct supervision of a named individual,
+// and under the AI.Backbone Orchestrator Compliance framework
+
 /*
  * G4IT
  * Copyright 2023 Sopra Steria
@@ -6,7 +10,7 @@
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
 import { AsyncPipe } from "@angular/common";
-import { Component, Input, OnDestroy, OnInit, ViewChild } from "@angular/core";
+import { Component, Input, OnDestroy, OnInit, ViewChild, inject } from "@angular/core";
 import { Router } from "@angular/router";
 import { TranslatePipe, TranslateService } from "@ngx-translate/core";
 import { saveAs } from "file-saver";
@@ -50,6 +54,7 @@ export class InventoriesHeaderFootprintComponent implements OnInit, OnDestroy {
     types = Constants.INVENTORY_TYPE;
     sidebarVisible = false;
     downloadInProgress = false;
+    private readonly confirmationService = inject(ConfirmationService);
 
     ngUnsubscribe = new Subject<void>();
 
@@ -97,20 +102,41 @@ export class InventoriesHeaderFootprintComponent implements OnInit, OnDestroy {
         void this.downloadFile();
     }
 
-    async downloadFile() {
+    confirmRawDownload(event: Event) {
+        this.confirmationService.confirm({
+            target: event.currentTarget ?? undefined,
+            message: this.translate.instant("inventories-footprint.header.raw-warning"),
+            acceptLabel: this.translate.instant(
+                "inventories-footprint.header.raw-confirm",
+            ),
+            rejectLabel: this.translate.instant("common.cancel"),
+            accept: () => {
+                this.downloadInProgress = true;
+                void this.downloadFile("csv");
+            },
+        });
+    }
+
+    async downloadFile(format: "xlsx" | "csv" = "xlsx") {
         try {
             const blob: Blob = await firstValueFrom(
-                this.footprintService.downloadExportResultsFile(this.inventoryId),
+                format === "xlsx"
+                    ? this.footprintService.downloadSpreadsheetExport(this.inventoryId)
+                    : this.footprintService.downloadExportResultsFile(this.inventoryId),
             );
             saveAs(
                 blob,
-                `g4it_${this.selectedOrganization}_${this.selectedWorkspace}_${this.inventoryId}_export-result-files.zip`,
+                `g4it_${this.selectedOrganization}_${this.selectedWorkspace}_${this.inventoryId}_export-result-files.${format === "xlsx" ? "xlsx" : "zip"}`,
             );
             await delay(2000);
         } catch (err) {
             this.messageService.add({
                 severity: "error",
-                summary: this.translate.instant("common.fileNoLongerAvailable"),
+                summary: this.translate.instant(
+                    format === "xlsx"
+                        ? "inventories-footprint.header.export-error"
+                        : "common.fileNoLongerAvailable",
+                ),
             });
         }
         this.downloadInProgress = false;

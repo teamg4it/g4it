@@ -1,3 +1,7 @@
+// This file has been created (totally or partially) with the assistance of artificial intelligence tools.
+// All content has been generated under the direct supervision of a named individual,
+// and under the AI.Backbone Orchestrator Compliance framework
+
 /*
  * G4IT
  * Copyright 2023 Sopra Steria
@@ -13,6 +17,7 @@ import com.soprasteria.g4it.backend.apiindicator.model.GraphLevel;
 import com.soprasteria.g4it.backend.apiindicator.model.RepartitionType;
 import com.soprasteria.g4it.backend.apifiles.business.FileSystemService;
 import com.soprasteria.g4it.backend.apiindicator.business.InventoryIndicatorService;
+import com.soprasteria.g4it.backend.apiindicator.business.InventorySpreadsheetExportService;
 import com.soprasteria.g4it.backend.apiindicator.mapper.ApplicationIndicatorMapper;
 import com.soprasteria.g4it.backend.apiindicator.mapper.IndicatorRestMapper;
 import com.soprasteria.g4it.backend.apiindicator.model.ApplicationImpactBO;
@@ -38,6 +43,8 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 
 import java.io.FileNotFoundException;
@@ -45,6 +52,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -58,6 +66,8 @@ public class InventoryIndicatorController implements InventoryIndicatorApiDelega
     private static final String FILE_NOT_FOUND = "file %s not found in filestorage";
     @Autowired
     private InventoryIndicatorService inventoryIndicatorService;
+    @Autowired
+    private InventorySpreadsheetExportService inventorySpreadsheetExportService;
     @Autowired
     private TaskRepository taskRepository;
     @Autowired
@@ -290,6 +300,25 @@ public class InventoryIndicatorController implements InventoryIndicatorApiDelega
         }
 
 
+    }
+
+    @Override
+    public ResponseEntity<Resource> getIndicatorsSpreadsheetExport(final String organization,
+                                                                   final Long workspace,
+                                                                   final Long inventoryId) {
+        Resource archive = Objects.requireNonNull(
+                getIndicatorsExportResult(organization, workspace, inventoryId).getBody());
+        try (InputStream source = archive.getInputStream()) {
+            Resource spreadsheet = inventorySpreadsheetExportService.toSpreadsheet(source);
+            return ResponseEntity.ok()
+                    .contentType(MediaType.parseMediaType(
+                            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+                    .header(HttpHeaders.CONTENT_DISPOSITION,
+                            "attachment; filename=\"inventory-" + inventoryId + ".xlsx\"")
+                    .body(spreadsheet);
+        } catch (IOException e) {
+            throw new G4itRestException("500", "Unable to create spreadsheet export", e);
+        }
     }
 
     @Override

@@ -1,3 +1,7 @@
+// This file has been created (totally or partially) with the assistance of artificial intelligence tools.
+// All content has been generated under the direct supervision of a named individual,
+// and under the AI.Backbone Orchestrator Compliance framework
+
 /*
  * G4IT
  * Copyright 2023 Sopra Steria
@@ -148,11 +152,23 @@ export class FootprintDataService {
         return this.http.delete<any>(`${endpoint}/${inventoryId}/indicators`);
     }
 
-    downloadExportResultsFile(inventoryId: number): Observable<any> {
+    downloadExportResultsFile(inventoryId: number): Observable<Blob> {
         return this.http.get(`${endpoint}/${inventoryId}/indicators/export/download`, {
             responseType: "blob",
             headers: { Accept: "application/zip" },
         });
+    }
+
+    downloadSpreadsheetExport(inventoryId: number): Observable<Blob> {
+        return this.http.get(
+            `${endpoint}/${inventoryId}/indicators/export/spreadsheet/download`,
+            {
+                responseType: "blob",
+                headers: {
+                    Accept: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/json",
+                },
+            },
+        );
     }
 
     getApplicationLowImpactCount(

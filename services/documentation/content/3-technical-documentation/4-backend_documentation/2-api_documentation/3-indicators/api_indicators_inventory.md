@@ -36,9 +36,41 @@ rows. It appends source context and the stored effective Device fraction as a
 plain decimal when usage was supplied. Both inputs empty leave both cells
 empty; non-Devices retain raw provided values without defaults.
 `physical_equipment.csv` remains source-faithful, including raw fraction
-formatting. No new download route, grouping key or historical ZIP rewrite
-is introduced. See [the export value table]({{% ref "/2-functional-documentation/use_cases/uc_inventory/uc7_export_files.md" %}})
+formatting. The raw route, grouping key and stored historical ZIPs remain
+unchanged. See [the export value table]({{% ref "/2-functional-documentation/use_cases/uc_inventory/uc7_export_files.md" %}})
 and [the Equipment indicators]({{% ref "/2-functional-documentation/use_cases/uc_inventory/uc5_visualize_equipment_footprint.md" %}}).
+
+### Spreadsheet-safe download
+
+`GET /organizations/{organization}/workspaces/{workspace}/inventories/{inventoryId}/indicators/export/spreadsheet/download`
+returns `application/vnd.openxmlformats-officedocument.spreadsheetml.sheet`
+with an attachment filename. It reuses the raw download's task selection and
+role checks. The authentication filter also enforces inventory ownership.
+Authentication failures return 401; role or ownership rejection returns 403;
+missing task/storage returns 404.
+Clients should accept
+`application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/json`
+so binary success responses and standard JSON error payloads can both be negotiated.
+
+The converter streams the stored UTF-8 semicolon-delimited CSV archive into
+Apache POI SXSSF worksheets. All fields, including headers and numeric-looking
+values, are STRING cells, without formulas, hyperlinks or external links.
+A leading UTF-8 BOM is removed from each CSV header only. Quoted delimiters,
+newlines, empty cells and original decimals are preserved as cell text.
+Numbered safe worksheet names avoid path extraction and name collisions.
+The source ZIP and persistence are never rewritten.
+
+SXSSF uses a bounded row window and temporary files rather than buffering the
+entire workbook in heap. POI temporary files are closed with the workbook;
+the completed download file uses delete-on-close. Conversion failures delete
+the incomplete output. Unsupported/empty archives and Excel row, column or
+cell-size limits return 422 instead of partial output or raw-CSV fallback;
+I/O/conversion failures are errors, never successful empty downloads.
+
+Raw CSV is intentionally not spreadsheet-safe. The UI offers XLSX for viewing
+and separately confirms the formula risk before downloading the raw exchange
+ZIP. Converting the text-only XLSX back to CSV removes its cell-type protection.
+Digital-service exports are outside this inventory-only change.
 
 ## API PATH
 
